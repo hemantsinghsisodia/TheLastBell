@@ -21,4 +21,6 @@
 | D-018 | 2026-10-06 | Review: Warden stage source of truth | `State.Warden.Stage.N` tags read by State Tree conditions | Escalation component | One source of truth | Phase 5 may revisit |
 | D-019 | 2026-10-06 | Review M8: checkpoint during pursuit | Checkpoints refuse to save while the Warden is in Chase or Attack | Allow | Prevents unwinnable reloads | Phase 5 hook |
 | D-020 | 2026-10-06 | Review H5/L7/L8: Phase 1 plan gaps | Added CORE-000, INPUT-001, OBJ-DATA-001, a kill volume and a QA acceptance script | — | Complete dependency graph | See IMPLEMENTATION_PLAN |
+| D-021 | 2026-10-06 | Phase 1 implementation: checkpoint 'reached' state | `TSet<FName> ReachedCheckpoints` stored in the save, not tags | Pre-registered tag per checkpoint | Tags can't be created at runtime; avoids a tag per checkpoint | Checkpoints re-entered after a reload don't re-save |
+| D-022 | 2026-10-06 | Phase 1 implementation: file layout | `ALBPlayerController` in `Systems/`, `ULBSaveStateComponent` in `Save/` | Design-doc layout | Grouped by system ownership | TECHNICAL_DESIGN §2 updated |
 | D-010 | 2026-10-06 | Subagent models | Implementers: `model: sonnet`, `effort: high`. Reviewers: sonnet, read-only tools | Opus everywhere | Directive §1–2; keeps lead context for review | Lead must independently inspect agent output |

@@ -17,12 +17,12 @@ There is one runtime module, `Source/LastBell/` (prefix `LB`), added in Phase 1.
 ```
 Source/LastBell/
   LastBell.Build.cs  LastBell.h/.cpp  LBGameplayTags.h/.cpp  LBLog.h
-  Systems/      ALBGameMode, ULBWorldStateSubsystem                              (P1)
-  Character/    ALBCharacter, ALBPlayerController                                (P1)
-  Components/   ULBInteractorComponent, ULBInteractableComponent, ULBSaveStateComponent (P1)
+  Systems/      ALBGameMode, ALBPlayerController, ULBWorldStateSubsystem, FLBWorldState, console commands (P1)
+  Character/    ALBCharacter                                                     (P1)
+  Components/   ULBInteractorComponent, ULBInteractableComponent                 (P1)
                 ULBFootstepComponent, ULBLightSourceComponent                    (P3)
   Objectives/   ULBObjectiveChainData, ULBObjectiveSubsystem                     (P1)
-  Save/         ULBSaveGame, FLBActorSaveRecord, ULBSaveSubsystem, ALBCheckpoint (P1)
+  Save/         ULBSaveGame, FLBActorSaveRecord, FLBSaveIdRegistry, ULBSaveSubsystem, ULBSaveStateComponent, ALBCheckpoint (P1)
   AI/           ALBWarden, ALBWardenController, State Tree tasks/conditions      (P5)
 ```
 Phase 1 dependencies are Core, CoreUObject, Engine, InputCore, EnhancedInput, GameplayTags and UMG. AIModule, NavigationSystem, StateTreeModule and GameplayStateTreeModule are added in Phase 5.
@@ -64,14 +64,14 @@ Not built: an inventory, `Interaction.Type.*` tags (deferred until a second kind
 Not built: branching quests, a quest log or a quest graph.
 
 ## 7. Save and checkpoints
-**Rule 1: progress is tags.** Doors unlocked or opened, levers, notes, items, rituals, checkpoints reached and the Warden stage are all `State.*` tags. Saveable actors are **never destroyed**. A consumed actor hides and disables itself when its tag is present.
+**Rule 1: progress is tags.** Doors unlocked or opened, levers, notes, items, rituals and the Warden stage are all `State.*` tags. (Reached checkpoints are the one exception: they are a `TSet<FName>` in the save, because tag names can't be created at runtime; see D-021.) Saveable actors are **never destroyed**. A consumed actor hides and disables itself when its tag is present.
 **Rule 2: few actor records.** Only state that can't be expressed as a tag, such as a statue's rotation angle, uses a record.
 
 - `FLBActorSaveRecord` is a fixed struct and part of the save-version contract: `bool bState; float Value; int32 Index;`.
 - `ULBSaveStateComponent` has a **hand-authored `FName SaveId`** (required) and an `OnRestore(Record)` event. A Blueprint provides the record it writes. On BeginPlay it **pulls** its own record from the save subsystem when a restore is pending, so there's no ordering race. It registers its SaveId, and a **duplicate SaveId logs an error** and fails an automation check. FName IDs survive duplication and Level Instances once they're validated, and there will be fewer than about 50 such actors.
-- `ULBSaveGame : USaveGame` stores `SaveVersion` (a constant), `CheckpointId`, `MapName`, `WorldState`, `TMap<FName, FLBActorSaveRecord> ActorRecords` and `PlayTimeSeconds`.
+- `ULBSaveGame : USaveGame` stores `SaveVersion` (a constant), `CheckpointId`, `CheckpointTransform`, `MapName`, `ReachedCheckpoints`, `WorldState`, `TMap<FName, FLBActorSaveRecord> ActorRecords` and `PlayTimeSeconds`.
 - `ULBSaveSubsystem : UGameInstanceSubsystem` provides `NewGame(Map)`, `SaveCheckpoint(Id, Transform)`, `LoadLastCheckpoint()`, `HasValidSave()` and `DeleteSave()`. There's one slot, `LB_Slot0`. Loading always reads from disk. Settings go in `GameUserSettings`, not the save.
-- `ALBCheckpoint` is a trigger box with a `CheckpointId` and a spawn arrow. It fires once, and its "reached" state is a tag. It **refuses to save while the Warden is in Chase or Attack**, which is a Phase 5 hook.
+- `ALBCheckpoint` is a trigger box with a `CheckpointId` and a spawn arrow. It fires once; its id is added to the save's `ReachedCheckpoints` set. It **refuses to save while the Warden is in Chase or Attack**, which is a Phase 5 hook.
 - **Restore flow:**
   1. Read the slot.
   2. `ReplaceState`.
@@ -96,7 +96,7 @@ Not built: multiple slots, free saving or whole-world serialization.
 
 ## 9. Gameplay Tags
 - **Native** (referenced from C++): `State.Warden.Stage.1..6`, and `AI.Stimulus.*` from Phase 5.
-- **Ini** (`Config/Tags/LBGameplayTags.ini`, added by designers in the editor): `State.Ritual.1..3`, `State.Door.<Name>.Unlocked`, `State.Item.<Name>`, `State.Event.<Name>`, `State.Checkpoint.<Id>`, `State.Test.*`, `Objective.<Area>.<Name>`.
+- **Ini** (`Config/Tags/LBGameplayTags.ini`, added by designers in the editor): `State.Ritual.1..3`, `State.Door.<Name>.Unlocked`, `State.Item.<Name>`, `State.Event.<Name>`, `State.Test.*`, `Objective.<Area>.<Name>`.
 - Each tag has exactly one source. It's never declared both natively and in ini.
 
 ## 10. Blueprint layer
