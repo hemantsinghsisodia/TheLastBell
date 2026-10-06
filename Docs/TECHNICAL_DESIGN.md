@@ -1,125 +1,130 @@
 # THE LAST BELL — Technical Design
 
-Status: Phase 0 draft (architecture only, nothing implemented). Engine: UE 5.8.3 launcher build, Win64, DX12 SM6.
-Source of truth for architecture. Any deviation must be recorded in `DECISIONS.md` (see rule 66 of the directive).
+Status: Phase 0, revised after the independent architecture review (findings in DECISIONS D-011 to D-020). Nothing is implemented yet. Engine: UE 5.8.3 launcher build, Win64, DX12 SM6.
+This document is the source of truth for the architecture. Any deviation must be recorded in `DECISIONS.md`.
 
 ## 1. Principles
-- **Composition over inheritance.** Actors get behavior from components and interfaces, not deep class trees.
-- **C++ owns systems, Blueprint owns content.** C++ for framework, reusable components, persistent state, AI foundation. Blueprint for puzzles, level scripting, designer tuning, VFX/cinematic hooks.
-- **State is tags.** World progression is a set of Gameplay Tags; systems react to tag changes rather than to each other.
-- **No god classes, no manager actors.** Global services are Subsystems with narrow APIs.
-- **No hard asset references in C++.** Assets come through `UPROPERTY` defaults on Blueprint subclasses, Data Assets, or `TSoftObjectPtr`.
-- **Simplest thing that satisfies the design.** Every system below names what it deliberately does *not* do.
+- **Composition over inheritance.** Actors get their behavior from components, not deep class trees.
+- **C++ owns systems, Blueprint owns content.** C++ handles the framework, reusable components, persistent state and the AI foundation. Blueprint handles puzzles, level scripting, designer tuning and VFX/cinematic hooks.
+- **Progress is tags.** World progression is one set of Gameplay Tags. Systems react to tag changes, not to each other.
+- **No god classes, no manager actors.** Global services are subsystems with narrow APIs.
+- **No hard asset references in C++.** Assets come through `UPROPERTY` defaults on Blueprint subclasses, Data Assets or `TSoftObjectPtr`.
+- **Build only what the current phase needs.** Each system lists what it deliberately does *not* do.
 
 ## 2. Module layout
-One runtime module, added in Phase 1: `Source/LastBell/` (prefix `LB`). No editor module until a real editor-only need appears.
+There is one runtime module, `Source/LastBell/` (prefix `LB`), added in Phase 1. No editor module until a real editor-only need appears. Classes are created only in the phase that needs them.
 
 ```
 Source/LastBell/
   LastBell.Build.cs  LastBell.h/.cpp  LBGameplayTags.h/.cpp  LBLog.h
-  Systems/      ALBGameMode, ULBGameInstance, ULBWorldStateSubsystem
-  Character/    ALBCharacter, ALBPlayerController
-  Components/   ULBInteractorComponent, ULBInteractableComponent, ULBFootstepComponent, ULBLightSourceComponent
-  Interaction/  ILBInteractable, FLBInteractionContext
-  Objectives/   ULBObjectiveSubsystem, ULBObjectiveData (UPrimaryDataAsset)
-  Save/         ULBSaveGame, ULBSaveSubsystem, ILBSaveable, ALBCheckpoint, ULBSaveIdComponent
-  AI/           ALBWardenController, ULBWardenEscalationComponent, StateTree tasks/conditions
-  Utility/      ULBStatics (small Blueprint function library), debug CVars
+  Systems/      ALBGameMode, ULBWorldStateSubsystem                              (P1)
+  Character/    ALBCharacter, ALBPlayerController                                (P1)
+  Components/   ULBInteractorComponent, ULBInteractableComponent, ULBSaveStateComponent (P1)
+                ULBFootstepComponent, ULBLightSourceComponent                    (P3)
+  Objectives/   ULBObjectiveChainData, ULBObjectiveSubsystem                     (P1)
+  Save/         ULBSaveGame, FLBActorSaveRecord, ULBSaveSubsystem, ALBCheckpoint (P1)
+  AI/           ALBWarden, ALBWardenController, State Tree tasks/conditions      (P5)
 ```
-
-Build dependencies: Core, CoreUObject, Engine, InputCore, EnhancedInput, GameplayTags, AIModule, NavigationSystem, StateTreeModule, GameplayStateTreeModule, UMG (prompt widget base only).
+Phase 1 dependencies are Core, CoreUObject, Engine, InputCore, EnhancedInput, GameplayTags and UMG. AIModule, NavigationSystem, StateTreeModule and GameplayStateTreeModule are added in Phase 5.
+There is **no custom GameInstance**, because GameInstance subsystems don't need one. There's no static helper library until a real shared helper exists.
 
 ## 3. Framework
 | Class | Base | Responsibility | Not responsible for |
 |---|---|---|---|
-| `ALBGameMode` | `AGameModeBase` | Default classes; on player death asks SaveSubsystem to reload last checkpoint | Progression logic, objectives |
-| `ALBPlayerController` | `APlayerController` | Adds Input Mapping Contexts, owns HUD widget, pause | Gameplay rules |
-| `ULBGameInstance` | `UGameInstance` | Lifetime host for GI subsystems; holds active save slot name | Game state (lives in subsystems) |
-| `ULBWorldStateSubsystem` | `UGameInstanceSubsystem` | Canonical `FGameplayTagContainer` of world state (`State.*`); `AddState/RemoveState/HasState`; `OnStateChanged` delegate | Deciding *why* states change |
+| `ALBGameMode` | `AGameModeBase` | Sets default classes and holds the objective chain asset property. Spawns the player at the pending checkpoint transform (overrides `ChoosePlayerStart` and the spawn transform). On player death, calls `SaveSubsystem.LoadLastCheckpoint()` | Progression logic |
+| `ALBPlayerController` | `APlayerController` | Adds Input Mapping Contexts, creates the HUD widget from a class property, handles pause (Phase 3+) | Gameplay rules |
+| `ULBWorldStateSubsystem` | `UGameInstanceSubsystem` | Owns the canonical `FGameplayTagContainer` of `State.*` tags. API: `AddState`, `RemoveState`, `HasState`, `ResetState()`, `ReplaceState(Container)`. Delegates: `OnStateChanged(Tag, bAdded)` per tag and `OnStateReplaced` once after a reset or replace. Per-tag events are suppressed during bulk operations | Deciding *why* states change |
 
-`ULBWorldStateSubsystem` is the progression backbone: rituals, doors unlocked, Warden stage are all tags. It lives on the GameInstance so it survives map travel (Main Menu → gameplay map).
+**Lifecycle rule:** New Game calls `ResetState()` **before** opening the map. Continue and death reload call `ReplaceState(SavedState)` **before** opening the map. WorldState is never merged with a save.
 
 ## 4. Player
-`ALBCharacter : ACharacter` — first-person camera on a spring-less `UCameraComponent` attached to capsule; **no full-body mesh** in Phase 1 (arms/hands deferred until justified).
-Components (all `UActorComponent`, reusable, individually testable):
-- `ULBInteractorComponent` — camera-forward sphere trace on a dedicated `Interaction` trace channel at ~10 Hz plus on input; tracks focused target; calls `ILBInteractable`. Broadcasts `OnFocusChanged(Target, PromptText)` for the HUD.
-- `ULBFootstepComponent` — distance-based step cadence (walk/sprint/crouch), physical-surface lookup → sound (data table `DT_Footsteps`), and `UAISense_Hearing::ReportNoiseEvent` with loudness by gait.
-- `ULBLightSourceComponent` — lantern on/off, intensity curve, optional flicker profile. Placed on the character, reusable on any actor.
-- Movement tuning (walk/sprint/crouch speed, accel, decel, camera smoothing) lives in `UCharacterMovementComponent` defaults on `BP_LBCharacter` — no custom movement component unless Phase 3 proves it necessary.
-- Stamina: **not built** until Phase 3 playtest justifies it.
+`ALBCharacter : ACharacter` has a first-person `UCameraComponent` on the capsule and **no full-body mesh**; arms or hands are deferred until there's a reason for them. From Phase 5 it carries a `UAIPerceptionStimuliSourceComponent` so the Warden can see it.
+Components:
+- `ULBInteractorComponent` (P1) does a camera-forward sphere trace on a dedicated `Interaction` trace channel. It runs **from a timer at about 10 Hz**, not Tick, plus on input. It tracks the focused `ULBInteractableComponent` and broadcasts `OnFocusChanged(Component, PromptText)` for the HUD.
+- `ULBFootstepComponent` (P3) sets step cadence by gait, looks up the physical surface to pick a sound from `DT_Footsteps`, and calls `ReportNoiseEvent` from Phase 5.
+- `ULBLightSourceComponent` (P3) handles the lantern: on/off, intensity curve and an optional flicker profile.
+- Movement tuning lives in the `UCharacterMovementComponent` defaults on `BP_LBCharacter`. Stamina isn't built until the Phase 3 playtest justifies it.
 
-Input: Enhanced Input. Actions `IA_Move, IA_Look, IA_Interact, IA_Sprint, IA_Crouch, IA_Lantern, IA_Pause` in `IMC_LB_Gameplay`. Sensitivity is a user setting applied as an input modifier scalar.
+Input uses Enhanced Input. Phase 1 has `IA_Move`, `IA_Look` and `IA_Interact` in `IMC_LB_Gameplay`. Phase 3 adds `IA_Sprint`, `IA_Crouch`, `IA_Lantern` and `IA_Pause`. Sensitivity is a user setting applied as an input-modifier scalar.
 
 ## 5. Interaction
-```
-ILBInteractable (UInterface, BlueprintNativeEvent)
-  bool  CanInteract(const FLBInteractionContext&)
-  void  Interact(const FLBInteractionContext&)
-  FText GetPromptText()
-  void  OnFocusBegin() / OnFocusEnd()
-FLBInteractionContext { AActor* Instigator; FGameplayTag InteractionType; }
-```
-`ULBInteractableComponent` implements the interface on behalf of any actor: exposes `PromptText`, `bEnabled`, `RequiredStateTags` (tags in WorldState needed), `GrantedStateTags` (tags added on interact), `bSingleUse`, and Blueprint delegates `OnInteracted`, `OnFocusBegin/End`. The interactor finds the interface on either the hit actor or its component.
+There is a single path, **`ULBInteractableComponent`**. Adding it to any actor makes that actor interactable, and it's the only thing the player knows about.
+- Properties: `PromptText`, `bEnabled`, `RequiredStateTags` (all must be present), `GrantedStateTags` (added on interact), `bSingleUse`, `ConsumedStateTag` (persists single use as a tag).
+- API: `CanInteract(Instigator)` (BlueprintNativeEvent) and `Interact(Instigator)`.
+- Delegates: `OnInteracted`, `OnInteractDenied`, `OnFocusBegin`, `OnFocusEnd`.
 
-Result: a door, lever, note, valve or ritual mechanism is a Blueprint actor = mesh + `ULBInteractableComponent` + its own timeline/logic. The player knows nothing about any of them.
-
-Deliberately not built: inventory, generic "use item on object" matrix. Keys are WorldState tags (`State.Item.CryptKey`) checked via `RequiredStateTags`.
+A door, lever, note or ritual mechanism is a Blueprint actor built from a mesh, this component and its own timeline.
+Not built: an inventory, `Interaction.Type.*` tags (deferred until a second kind of interaction exists), or a use-item-on-object matrix. Keys are `State.Item.*` tags checked through `RequiredStateTags`.
 
 ## 6. Objectives
-- `ULBObjectiveData : UPrimaryDataAsset` — `ObjectiveTag`, `DisplayText`, `CompletionStateTags` (all required), `NextObjective` (soft ref, optional).
-- `ULBObjectiveSubsystem : UWorldSubsystem` — holds the active objective, listens to `WorldStateSubsystem.OnStateChanged`, completes the objective when its tags are present, advances, broadcasts `OnObjectiveChanged`. Objective *chain* is linear — matches the game's linear progression.
-- Active objective tag is itself stored in WorldState (`Objective.Active.*` is derived, not stored) — on load, the subsystem recomputes the active objective from completed states. No separate objective save data.
+- `ULBObjectiveChainData : UPrimaryDataAsset` holds an **ordered array** of `FLBObjective { FGameplayTag Id; FText Text; FGameplayTagContainer CompletionStateTags; }`. There's one chain for the game and a test chain for the micro slice. It's assigned on `ALBGameMode`.
+- `ULBObjectiveSubsystem : UWorldSubsystem` **derives** the active objective: it's the first entry whose completion tags aren't all present. It recomputes on `OnStateChanged`, and only once on `OnStateReplaced`. It broadcasts `OnObjectiveChanged(Index, Text)` only when the active objective changes.
+- No separate objective save data is needed. Reordering the chain after saves exist means bumping `SaveVersion`.
 
-Not built: branching quests, parallel quest log, quest graph editor.
+Not built: branching quests, a quest log or a quest graph.
 
-## 7. Save / Checkpoint
-- `ULBSaveGame : USaveGame` — `SaveVersion`, `CheckpointId (FName)`, `MapName`, `WorldState (FGameplayTagContainer)`, `TMap<FGuid, FLBActorSaveRecord>` (small struct: bool flags + float + transform optional), `PlayTimeSeconds`.
-- `ULBSaveSubsystem : UGameInstanceSubsystem` — `SaveCheckpoint(Id)`, `LoadLastCheckpoint()`, `HasSave()`, `DeleteSave()`. Single slot `LB_Slot0` + settings in `GameUserSettings` (not in the save).
-- `ILBSaveable` — `WriteSaveRecord(FLBActorSaveRecord&)`, `ReadSaveRecord(const FLBActorSaveRecord&)`. Actors opt in and carry a `ULBSaveIdComponent` holding a stable editor-assigned `FGuid`.
-- `ALBCheckpoint` — trigger volume + `CheckpointId` + spawn transform; on overlap (once) calls `SaveCheckpoint`.
-- Restore order on load: open map → WorldState restored → saveable actors read records → objective subsystem recomputes → player spawned at checkpoint transform. Death = `LoadLastCheckpoint()` (same path; no separate death state).
-- Corrupt/mismatched `SaveVersion` → log + treat as no save (Main Menu hides Continue).
+## 7. Save and checkpoints
+**Rule 1: progress is tags.** Doors unlocked or opened, levers, notes, items, rituals, checkpoints reached and the Warden stage are all `State.*` tags. Saveable actors are **never destroyed**. A consumed actor hides and disables itself when its tag is present.
+**Rule 2: few actor records.** Only state that can't be expressed as a tag, such as a statue's rotation angle, uses a record.
 
-Not built: multiple slots, mid-room free saving, whole-world serialization.
+- `FLBActorSaveRecord` is a fixed struct and part of the save-version contract: `bool bState; float Value; int32 Index;`.
+- `ULBSaveStateComponent` has a **hand-authored `FName SaveId`** (required) and an `OnRestore(Record)` event. A Blueprint provides the record it writes. On BeginPlay it **pulls** its own record from the save subsystem when a restore is pending, so there's no ordering race. It registers its SaveId, and a **duplicate SaveId logs an error** and fails an automation check. FName IDs survive duplication and Level Instances once they're validated, and there will be fewer than about 50 such actors.
+- `ULBSaveGame : USaveGame` stores `SaveVersion` (a constant), `CheckpointId`, `MapName`, `WorldState`, `TMap<FName, FLBActorSaveRecord> ActorRecords` and `PlayTimeSeconds`.
+- `ULBSaveSubsystem : UGameInstanceSubsystem` provides `NewGame(Map)`, `SaveCheckpoint(Id, Transform)`, `LoadLastCheckpoint()`, `HasValidSave()` and `DeleteSave()`. There's one slot, `LB_Slot0`. Loading always reads from disk. Settings go in `GameUserSettings`, not the save.
+- `ALBCheckpoint` is a trigger box with a `CheckpointId` and a spawn arrow. It fires once, and its "reached" state is a tag. It **refuses to save while the Warden is in Chase or Attack**, which is a Phase 5 hook.
+- **Restore flow:**
+  1. Read the slot.
+  2. `ReplaceState`.
+  3. Set the pending restore (the records and the checkpoint transform).
+  4. `OpenLevel`.
+  5. Each actor's BeginPlay reads its tags and records and **snaps instantly** to the final state, with no timelines or sounds.
+  6. The GameMode spawns the player at the checkpoint.
+  7. Objectives recompute once.
+  8. The pending restore is cleared one tick after world begin play.
+- **Death** is just `LoadLastCheckpoint()`. **New Game** is `DeleteSave`, then `ResetState`, then `OpenLevel`. A corrupt save or a `SaveVersion` mismatch is treated as no save: it's logged and Continue is hidden.
+- **Not saved:** the Warden (rebuilt from stage tags and respawned at a designer point for each checkpoint), transient AI state and physics props.
 
-## 8. Warden AI
-- `ALBWarden : ACharacter` (Blueprint child `BP_Warden` owns mesh/anim/audio) controlled by `ALBWardenController : AAIController`.
-- **State Tree** (`ST_Warden`) on the controller via `UStateTreeAIComponent`. States: `Dormant`, `Scripted`, `Patrol`, `Investigate`, `Search`, `Chase`, `Attack`, `Return`. ("Suspicious" and "LostTarget" are transitions/sub-states of Investigate and Search, not separate top-level states.)
-- **AI Perception**: Sight (cone, LoS) + Hearing. Stimuli come from footsteps, sprint, doors, dropped objects, ritual activations — all via `ReportNoiseEvent` with loudness/tag. The Warden only ever knows what perception tells it (no omniscience); scripted moves use explicit `Scripted` state with designer-placed targets.
-- `ULBWardenEscalationComponent` — maps WorldState tags (`State.Ritual.1..3`, scripted beats) to escalation stage 1–6; stage gates which State Tree branches are enabled and perception ranges.
-- EQS: **not used** initially; search points are designer-placed `ALBSearchPoint` actors near the last stimulus, picked nearest-first. Adopt EQS only if this proves inadequate.
-- Debug: `lb.Warden.Debug 1` draws state name, perception cones, last-known location; Gameplay Debugger AI category.
+Not built: multiple slots, free saving or whole-world serialization.
 
-Stage 1–2 (Presence, Partial Sightings) are **not AI** — they are scripted level events (sequencer, audio emitters, a non-AI silhouette actor). The AI pawn only spawns from Stage 3.
+## 8. Warden AI (Phase 5, outline only)
+- `ALBWarden : ACharacter` uses `BP_Warden` for the mesh, animation and audio, and is controlled by `ALBWardenController : AAIController`.
+- It runs a **State Tree** via `UStateTreeAIComponent`, using the AI schema and starting logic on possess. The states are Dormant, Scripted, Patrol, Investigate (including a suspicious look-around), Search (including the lost-target case), Chase, Attack and Return. The controller forwards `OnTargetPerceptionUpdated` to the State Tree as events plus a context struct (last-known location and stimulus strength).
+- **AI Perception** uses sight and hearing, with detect-neutrals on and the player registered as a source. Noise is raised with `UAISense_Hearing::ReportNoiseEvent(Instigator, Loudness, MaxRange, FName Tag)`, and world events use the mechanism actor as the instigator. The Warden knows only what it perceives. The Scripted state ignores perception.
+- The **stage source of truth** is the `State.Warden.Stage.N` tags, added by story events. State Tree conditions read them directly, and a separate escalation component is only added if Phase 5 proves it's needed.
+- There's no EQS at first. Search uses designer-placed `ALBSearchPoint` actors, nearest first. Debugging uses `lb.Warden.Debug` and the Gameplay Debugger.
+- Stages 1–2 are scripted events and a non-AI silhouette. The AI pawn exists from stage 3.
 
-## 9. Gameplay Tags (initial set, `Config/Tags/LBGameplayTags.ini` + native declarations)
-```
-State.Ritual.1 / .2 / .3              State.Door.<Name>.Unlocked
-State.Item.<Name>                     State.Event.<Name>
-Objective.<Area>.<Name>               Interaction.Type.(Use|Pickup|Inspect|Read)
-AI.Stimulus.(Footstep|Sprint|Door|Drop|Ritual)
-Warden.Stage.(1..6)
-```
+## 9. Gameplay Tags
+- **Native** (referenced from C++): `State.Warden.Stage.1..6`, and `AI.Stimulus.*` from Phase 5.
+- **Ini** (`Config/Tags/LBGameplayTags.ini`, added by designers in the editor): `State.Ritual.1..3`, `State.Door.<Name>.Unlocked`, `State.Item.<Name>`, `State.Event.<Name>`, `State.Checkpoint.<Id>`, `State.Test.*`, `Objective.<Area>.<Name>`.
+- Each tag has exactly one source. It's never declared both natively and in ini.
 
 ## 10. Blueprint layer
-`Content/LastBell/Blueprints/`:
-- `BP_LBCharacter`, `BP_LBPlayerController`, `BP_LBGameMode` — data-only children configuring C++ classes.
-- `Interactables/` — `BP_Door_Base` (rotating, lockable via RequiredStateTags), `BP_Lever`, `BP_Note`, `BP_RitualMechanism_Base`.
-- `Puzzles/` — one Blueprint per puzzle, communicating only through WorldState tags.
-- Level Blueprints: minimal; scripted beats live in small `BP_Event_*` actors so they are reusable and saveable.
-- UI: `WBP_HUD` (prompt + objective toast), `WBP_MainMenu`, `WBP_Pause`, `WBP_Settings`.
+These live in `Content/LastBell/Blueprints/`:
+- `BP_LBCharacter`, `BP_LBPlayerController` and `BP_LBGameMode` are data-only children that configure the C++ classes.
+- `Interactables/` contains:
+  - `BP_Door_Base`: rotates, locks via `RequiredStateTags`, stores its open state as a tag and snaps instantly on restore.
+  - `BP_Lever`, `BP_Note` and `BP_RitualMechanism_Base`.
+- `Puzzles/` has one Blueprint per puzzle. They communicate only through WorldState tags.
+- Scripted beats live in small `BP_Event_*` actors, not in Level Blueprints.
+- UI: `WBP_HUD` (prompt and objective) in Phase 1. `WBP_MainMenu`, `WBP_Pause` and `WBP_Settings` come later.
 
-Blueprint rule: no Blueprint reaches into another Blueprint's internals; communication is WorldState tags, interfaces, or delegates.
+**Blueprint rule:** a Blueprint never reaches into another Blueprint's internals. Communication goes through tags, components or delegates.
 
 ## 11. Maps
-- `L_MainMenu` — menu only.
-- `L_Monastery` — single World Partition map (or plain persistent map with Level Instances per area if WP proves heavy for a small map; decided in Phase 2). Areas: Courtyard, Chapel, Crypt, BellTower.
-- `L_Test_MicroSlice` — Phase 1 proof map; kept as a regression test map.
+- `L_MainMenu` holds the menu (Phase 2).
+- `L_Monastery` is a **non-World-Partition** persistent level with one streaming sublevel per area: Courtyard, Chapel, Crypt and BellTower. The map is small, and this keeps save IDs, checkpoints and streaming simple (D-013).
+- `L_Test_MicroSlice` is the Phase 1 proof map, kept afterwards as a regression map.
 
 ## 12. Rendering baseline (to be measured, not assumed)
-Lumen GI + reflections, Virtual Shadow Maps, Nanite for static geometry, TSR (DLSS evaluated later), volumetric fog + local fog volumes, Substrate **off** (current project setting; revisit only with a reason). Hardware ray tracing is currently on in project settings; Lumen HWRT vs software is decided by Phase 7 measurement on the dev GPU. See `PERFORMANCE_BUDGET.md`.
+Lumen GI and reflections, Virtual Shadow Maps, Nanite for static geometry, TSR (DLSS evaluated later), and volumetric fog with local fog volumes. Substrate stays **off**, which is the current setting. Lumen hardware ray tracing versus software will be decided by measurement in Phase 7. See `PERFORMANCE_BUDGET.md`.
 
 ## 13. Testing hooks
-- Automation tests (`LastBell.*`) for WorldState, objectives recompute, save round-trip, interaction routing — run via the AutomationTest toolset / `-ExecCmds="Automation RunTests LastBell"`.
-- `L_Test_MicroSlice` as a functional regression map.
-- Console commands: `lb.State.Add <Tag>`, `lb.State.Dump`, `lb.Checkpoint.Load`, `lb.Warden.Debug`.
+- **Automation tests** (`LastBell.*`):
+  - WorldState reset, replace and delegates
+  - Objective recompute
+  - Save round-trip and version mismatch
+  - Duplicate SaveId detection
+  - Interaction gating
+- **Regression map:** `L_Test_MicroSlice`.
+- **Console commands** (development builds only): `lb.State.Add <Tag>`, `lb.State.Dump`, `lb.NewGame`, `lb.Checkpoint.Load`, `lb.Kill` (death path), and later `lb.Warden.Debug`.

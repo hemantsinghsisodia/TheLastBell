@@ -33,6 +33,11 @@ Stage gating: the escalation component enables or disables the Patrol, Search an
 ## Perception
 - **Sight:** about 90° cone, range 1500–2500 cm depending on stage, peripheral detection about 0.6 s, blocked by geometry. The lantern-on state increases detection range by a tuning factor.
 - **Hearing:** footsteps (crouch 0.1, walk 0.3, sprint 0.8 loudness), doors 0.6, dropped objects 0.7, ritual activation 1.0 at a world-tagged location.
+- Wiring notes for Phase 5:
+  - The controller's perception config detects neutrals.
+  - The player has `UAIPerceptionStimuliSourceComponent` registered for sight.
+  - Noise goes through `ReportNoiseEvent(Instigator, Loudness, MaxRange, FName Tag)`. World events use the emitting actor as the instigator.
+  - Perception updates are forwarded to the State Tree as events.
 - Stimuli age out. The Warden only uses the remembered **last-known location**, never the live player position after losing sight.
 
 ## Fairness rules

@@ -28,20 +28,22 @@ Map `L_Test_MicroSlice` uses primitive geometry only: spawn corridor → door �
 
 | Task | Objective | Owner | Depends on | Risk |
 |---|---|---|---|---|
-| CORE-001 | Add the `LastBell` C++ module (Build.cs, target files, `LBLog`, native Gameplay Tags), generate the project files and compile from the editor via Live Coding/UBT | gameplay-programmer | — | MED (first C++ conversion of a BP project) |
-| CORE-002 | `ALBGameMode`, `ALBPlayerController`, `ULBGameInstance`, `ULBWorldStateSubsystem` plus `lb.State.*` console commands | gameplay-programmer | CORE-001 | LOW |
-| PLAYER-001 | `ALBCharacter` (camera, walk only, Enhanced Input `IMC_LB_Gameplay`: Move, Look, Interact) plus the data-only `BP_LBCharacter` | gameplay-programmer | CORE-002 | LOW |
-| INT-001 | `ILBInteractable`, `FLBInteractionContext`, `ULBInteractorComponent`, `ULBInteractableComponent`, `Interaction` trace channel | gameplay-programmer | PLAYER-001 | MED (core contract) |
-| OBJ-001 | `ULBObjectiveData`, `ULBObjectiveSubsystem` with recompute-from-state | gameplay-programmer | CORE-002 | LOW |
-| SAVE-001 | `ULBSaveGame`, `ULBSaveSubsystem`, `ILBSaveable`, `ULBSaveIdComponent`, `ALBCheckpoint`, death/restart path | gameplay-programmer | CORE-002, OBJ-001 | MED |
-| BP-001 | `BP_Door_Base` (rotating, lockable via RequiredStateTags, saveable) and `BP_Lever` (grants `State.Test.LeverPulled`) | unreal-blueprint-engineer | INT-001, SAVE-001 | LOW |
-| UI-001 | Minimal `WBP_HUD`: interaction prompt and objective text | ui-engineer | INT-001, OBJ-001 | LOW |
-| LVL-001 | Build `L_Test_MicroSlice` with primitive geometry and place the actors and checkpoint | environment-designer | BP-001 | LOW |
-| TEST-001 | Automation tests: WorldState add/remove, objective recompute, save round-trip, interactable routing | gameplay-programmer | SAVE-001 | LOW |
+| CORE-000 | Housekeeping: set the project name in `DefaultGame.ini`, de-duplicate renderer CVars, create the `Content/LastBell/` folder tree, reference-check and remove `/Game/DemoTemplate` (each item user-approved) | lead + unreal-blueprint-engineer | — | LOW |
+| CORE-001 | Add the `LastBell` C++ module (Build.cs, targets, `LBLog`, native tags), generate project files and compile (choose the VS toolchain explicitly) | gameplay-programmer | CORE-000 | MED (first C++ conversion) |
+| CORE-002 | `ALBGameMode` (checkpoint spawn, death hook), `ALBPlayerController` (IMC and HUD class), `ULBWorldStateSubsystem` (reset/replace/bulk delegates), and the `lb.State.*`, `lb.NewGame` and `lb.Kill` commands | gameplay-programmer | CORE-001 | LOW |
+| INPUT-001 | `IA_Move`, `IA_Look`, `IA_Interact` and `IMC_LB_Gameplay` in `Content/LastBell/Input/` | unreal-blueprint-engineer | CORE-000 (parallel with CORE-002) | LOW |
+| PLAYER-001 | `ALBCharacter` (camera, walking) plus data-only `BP_LBCharacter`, `BP_LBPlayerController` and `BP_LBGameMode` | gameplay-programmer | CORE-002, INPUT-001 | LOW |
+| INT-001 | `ULBInteractorComponent` (timer trace) and `ULBInteractableComponent`, plus the `Interaction` trace channel | gameplay-programmer | PLAYER-001 | MED (core contract) |
+| OBJ-001 | `ULBObjectiveChainData` and `ULBObjectiveSubsystem` (derived active objective) | gameplay-programmer | CORE-002 | LOW |
+| SAVE-001 | `ULBSaveGame`, `FLBActorSaveRecord`, `ULBSaveSubsystem`, `ULBSaveStateComponent` (pull restore, duplicate-id check), `ALBCheckpoint`, and the restore flow from TECHNICAL_DESIGN §7 | gameplay-programmer | CORE-002, OBJ-001, PLAYER-001 | MED |
+| TEST-001 | Automation tests listed in TECHNICAL_DESIGN §13 | gameplay-programmer | SAVE-001, INT-001 | LOW |
+| OBJ-DATA-001 | `DA_ObjectiveChain_MicroSlice` (3 objectives) and the micro-slice `State.Test.*` ini tags | unreal-blueprint-engineer | OBJ-001 | LOW |
+| BP-001 | `BP_Door_Base` (lockable, open state as a tag, instant snap on restore) and `BP_Lever` (grants `State.Test.LeverPulled`) | unreal-blueprint-engineer | INT-001, SAVE-001 | LOW |
+| UI-001 | Minimal `WBP_HUD`: interaction prompt and objective text bound to the delegates | ui-engineer | INT-001, OBJ-001 | LOW |
+| LVL-001 | `L_Test_MicroSlice` built from primitives: GameMode override, doors, lever, checkpoint, a test kill volume; set as the editor and game startup map | environment-designer | BP-001, UI-001, OBJ-DATA-001 | LOW |
 | REV-001 | Architecture review of the Phase 1 code against TECHNICAL_DESIGN | architecture-reviewer | all | — |
-| QA-001 | Run the slice flow, the reload and death paths, and check the logs | qa-reviewer | all | — |
+| QA-001 | Acceptance script: slice flow; death reload; `lb.NewGame` resets the state; on reload the door states, lever state, objective and player transform are coherent; no retrigger; logs clean | qa-reviewer | all | — |
 
-Order: CORE-001 → CORE-002 → (PLAYER-001 ∥ OBJ-001) → INT-001 → SAVE-001 → (BP-001 ∥ UI-001 ∥ TEST-001) → LVL-001 → REV-001 ∥ QA-001.
-The gameplay-programmer has sole ownership of the C++ through SAVE-001, so there are no concurrent edits to the core sources.
-
-Also proposed for Phase 1, if you approve: set the project name in `DefaultGame.ini`, de-duplicate renderer CVars, point GameDefaultMap and EditorStartupMap at `L_Test_MicroSlice`, and remove `/Game/DemoTemplate` after a reference check.
+Order: CORE-000 → CORE-001 → (CORE-002 ∥ INPUT-001) → (PLAYER-001 ∥ OBJ-001) → INT-001 → SAVE-001 → (TEST-001 ∥ OBJ-DATA-001 ∥ BP-001 ∥ UI-001) → LVL-001 → (REV-001 ∥ QA-001).
+The gameplay-programmer has sole ownership of the C++ through TEST-001. Content tasks run in parallel only when they touch different assets.
+A Main Menu isn't part of Phase 1. New Game and Continue are exercised through console commands until Phase 2.
