@@ -15,4 +15,6 @@ Likelihood and impact are rated L, M or H.
 | R-09 | Rendering | Lumen noise or light leaking in dark interiors, VSM cost with many candles | M | M | Non-shadow-casting candles, measured HWRT vs software decision, Phase 14 tuning | Open |
 | R-10 | Packaging | Experimental editor plugins or template content leaking into Shipping | L | M | MCP plugins restricted to the Editor target; the template is removed in Phase 1; a packaging test in Phase 22 plus an early smoke package in Phase 2 | Open |
 | R-11 | Process | The repo has no remote, so all history lives on one disk | M | H | Recommend adding a private LFS-capable remote (GitHub or Azure DevOps) at the Phase 0 sign-off | Open |
+| R-13 | Tooling | `LiveCodingToolset` isn't in the MCP toolset list. The project has no C++ module yet, so C++ compile-from-MCP is unverified | M | M | Re-check after CORE-001; fall back to UBT (`Build.bat`) from the shell | Open |
+| R-14 | Tooling | 3d.shep.bot exposes only `search_assets`, `get_asset` and `list_providers` (no download tool); several providers are `downloads:false` | H | L | Manual or scripted download from the provider's direct URL into `ExternalAssets/Incoming/`, with the files' existence verified | Open |
 | R-12 | Scope | Feature creep beyond 20–30 minutes | M | M | Scope rule (directive §71); every addition goes through DECISIONS.md | Open |
