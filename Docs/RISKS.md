@@ -17,4 +17,7 @@ Likelihood and impact are rated L, M or H.
 | R-11 | Process | The repo has no remote, so all history lives on one disk | M | H | Recommend adding a private LFS-capable remote (GitHub or Azure DevOps) at the Phase 0 sign-off | Open |
 | R-13 | Tooling | `LiveCodingToolset` isn't in the MCP toolset list. The project has no C++ module yet, so C++ compile-from-MCP is unverified | M | M | Re-check after CORE-001; fall back to UBT (`Build.bat`) from the shell | Open |
 | R-14 | Tooling | 3d.shep.bot exposes only `search_assets`, `get_asset` and `list_providers` (no download tool); several providers are `downloads:false` | H | L | Manual or scripted download from the provider's direct URL into `ExternalAssets/Incoming/`, with the files' existence verified | Open |
+| R-15 | Packaging | `OpenLevel` to maps outside the default map fails in packaged builds unless they're cooked (REV-001 M4) | H | M | Phase 2: add `DirectoriesToAlwaysCook=/Game/LastBell/Maps`; smoke-package in Phase 2 | Open |
+| R-16 | Architecture | `ULBObjectiveSubsystem` reads the chain by casting to `ALBGameMode` (REV-001 M5) | L | L | Phase 2 (menu map): invert, so the GameMode calls `SetChain` | Open |
+| R-17 | Blueprint | BP_Door_Base and BP_Lever never unbind `OnStateChanged` from the GameInstance subsystem (REV-001 L2) | M | L | Phase 3: add an EndPlay unbind to the interactable BPs | Open |
 | R-12 | Scope | Feature creep beyond 20–30 minutes | M | M | Scope rule (directive §71); every addition goes through DECISIONS.md | Open |
