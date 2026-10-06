@@ -47,3 +47,16 @@ Map `L_Test_MicroSlice` uses primitive geometry only: spawn corridor → door �
 Order: CORE-000 → CORE-001 → (CORE-002 ∥ INPUT-001) → (PLAYER-001 ∥ OBJ-001) → INT-001 → SAVE-001 → (TEST-001 ∥ OBJ-DATA-001 ∥ BP-001 ∥ UI-001) → LVL-001 → (REV-001 ∥ QA-001).
 The gameplay-programmer has sole ownership of the C++ through TEST-001. Content tasks run in parallel only when they touch different assets.
 A Main Menu isn't part of Phase 1. New Game and Continue are exercised through console commands until Phase 2.
+
+## Phase 2 — Complete greybox: task breakdown
+Spec: `Docs/GREYBOX_SPEC.md`. One map, `L_Monastery` (D-023), plus `L_MainMenu`.
+
+| Task | Objective | Owner | Depends on | Risk |
+|---|---|---|---|---|
+| P2-SYS-001 | C++: `ULBGameSettings` (DeveloperSettings: MainMenuMap, NewGameMap soft refs); invert objective chain wiring (GameMode → `ULBObjectiveSubsystem::SetChain`, R-16); `ULBSaveSubsystem::StartNewGame()` / `ContinueGame()` / `CompleteGame()` / `ReturnToMainMenu()` using settings; `ALBPlayerController` `bMenuMode` (UI input, cursor); cook `/Game/LastBell/Maps` (R-15) | gameplay-programmer | — | LOW |
+| P2-TAGS-001 | Author all Phase 2 tags in `Config/Tags/LBGameplayTags.ini` as text while the editor is closed (D-024) | lead | — | LOW |
+| P2-BP-001 | `BP_TagInteractable` (generic: mesh + interactable, optional hide-on-use / show-when-tag), `BP_TagVisibility` (shows/hides target components when a tag is added/present), `BP_WardenSilhouette` (tall placeholder; appears on a tag for N s, optional move A→B), `BP_WardenPlaceholderKill` (silhouette + kill overlap, active while a tag is present), `BP_RitualMechanism` (lever variant with a visual state change), `DA_ObjectiveChain_Main`, unbind `OnStateChanged` on EndPlay in door/lever (R-17) | unreal-blueprint-engineer | P2-SYS-001, P2-TAGS-001 | LOW |
+| P2-UI-001 | `L_MainMenu` + `BP_MenuGameMode` + `WBP_MainMenu` (New Game / Continue if a save exists / Quit); `WBP_Ending`; `BP_EndingTrigger` (on `State.Event.Finale` → ending → `CompleteGame`) | ui-engineer | P2-SYS-001, P2-TAGS-001 | LOW |
+| P2-LVL-001 | Build `L_Monastery` per GREYBOX_SPEC: all areas, route, stand-ins, checkpoints, hazards, lights | environment-designer | P2-BP-001, P2-UI-001 | MED (size) |
+| P2-TEST-001 | `LastBell.Functional.FullRoute`: an objective-driven bot that, for each active objective, finds an interactable/trigger granting the missing tag, teleports there, interacts or overlaps, and asserts progress through Finale → menu; plus death at the crypt pit → restore | gameplay-programmer | P2-LVL-001 | MED |
+| P2-REV / P2-QA | Architecture review and QA of the full route, checkpoints, death and transitions | architecture-reviewer, qa-reviewer | all | — |
