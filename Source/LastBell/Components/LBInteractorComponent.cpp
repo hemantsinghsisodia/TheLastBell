@@ -72,9 +72,9 @@ void ULBInteractorComponent::UpdateFocus()
 	}
 
 	FText Prompt;
-	if (NewFocus && NewFocus->CanInteract(GetOwner()))
+	if (NewFocus)
 	{
-		Prompt = NewFocus->PromptText;
+		Prompt = NewFocus->CanInteract(GetOwner()) ? NewFocus->PromptText : NewFocus->DeniedPromptText;
 	}
 
 	if (bFocusChanged || !Prompt.EqualTo(LastPrompt))

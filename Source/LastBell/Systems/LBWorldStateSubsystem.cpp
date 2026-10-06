@@ -19,6 +19,23 @@ void ULBWorldStateSubsystem::AddState(FGameplayTag Tag)
 	}
 }
 
+void ULBWorldStateSubsystem::AddStates(const FGameplayTagContainer& Tags)
+{
+	TArray<FGameplayTag> Added;
+	for (const FGameplayTag& Tag : Tags)
+	{
+		if (WorldState.Add(Tag))
+		{
+			Added.Add(Tag);
+		}
+	}
+	for (const FGameplayTag& Tag : Added)
+	{
+		UE_LOG(LogLB, Verbose, TEXT("State added: %s"), *Tag.ToString());
+		OnStateChanged.Broadcast(Tag, true);
+	}
+}
+
 void ULBWorldStateSubsystem::RemoveState(FGameplayTag Tag)
 {
 	if (WorldState.Remove(Tag))

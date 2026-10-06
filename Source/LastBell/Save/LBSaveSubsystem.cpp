@@ -41,6 +41,7 @@ void ULBSaveSubsystem::OnPostWorldInitialization(UWorld* World, const UWorld::In
 	{
 		return;
 	}
+	bTravelPending = false;
 	TWeakObjectPtr<UWorld> WeakWorld(World);
 	World->OnWorldBeginPlay.AddWeakLambda(this, [this, WeakWorld]()
 	{
@@ -59,7 +60,6 @@ void ULBSaveSubsystem::ClearPendingRestore()
 		UE_LOG(LogLB, Log, TEXT("Pending restore cleared"));
 	}
 	bPendingRestore = false;
-	PendingRecords.Reset();
 }
 
 void ULBSaveSubsystem::NewGame(const FString& MapName)
@@ -71,10 +71,11 @@ void ULBSaveSubsystem::NewGame(const FString& MapName)
 		WorldState->ResetState();
 	}
 	ReachedCheckpoints.Reset();
-	PendingRecords.Reset();
+	KnownRecords.Reset();
 	bPendingRestore = false;
 	PlayTimeBase = 0.f;
 	PlayTimeSegmentStart = FPlatformTime::Seconds();
+	bTravelPending = true;
 	UGameplayStatics::OpenLevel(GetGameInstance(), FName(*MapName));
 }
 
@@ -86,27 +87,33 @@ bool ULBSaveSubsystem::SaveCheckpoint(FName Id, const FTransform& Transform)
 		return false;
 	}
 
-	ReachedCheckpoints.Add(Id);
-
 	ULBSaveGame* Save = NewObject<ULBSaveGame>(GetTransientPackage());
 	Save->CheckpointId = Id;
-	Save->CheckpointTransform = Transform;
+	Save->CheckpointTransform = FTransform(Transform.GetRotation(), Transform.GetLocation()); // scale stripped
 	Save->MapName = UWorld::RemovePIEPrefix(World->GetOutermost()->GetName());
 	Save->ReachedCheckpoints = ReachedCheckpoints;
+	Save->ReachedCheckpoints.Add(Id);
 	Save->PlayTimeSeconds = GetPlayTime();
 	if (const ULBWorldStateSubsystem* WorldState = GetGameInstance()->GetSubsystem<ULBWorldStateSubsystem>())
 	{
-		Save->WorldState = WorldState->GetState();
+		Save->WorldState = WorldState->GetStateRef();
 	}
+	TMap<FName, FLBActorSaveRecord> Live;
 	for (const TPair<FName, TWeakObjectPtr<ULBSaveStateComponent>>& Pair : SaveComponents)
 	{
 		if (const ULBSaveStateComponent* Comp = Pair.Value.Get())
 		{
-			Save->ActorRecords.Add(Pair.Key, Comp->GetRecord());
+			Live.Add(Pair.Key, Comp->GetRecord());
 		}
 	}
+	Save->ActorRecords = MergeRecords(KnownRecords, Live);
 
 	const bool bOk = UGameplayStatics::SaveGameToSlot(Save, SlotName, UserIndex);
+	if (bOk)
+	{
+		ReachedCheckpoints.Add(Id);
+		KnownRecords = Save->ActorRecords;
+	}
 	UE_LOG(LogLB, Log, TEXT("SaveCheckpoint '%s' map=%s tags=%d records=%d -> %s"), *Id.ToString(), *Save->MapName,
 		Save->WorldState.Num(), Save->ActorRecords.Num(), bOk ? TEXT("ok") : TEXT("FAILED"));
 	return bOk;
@@ -150,9 +157,10 @@ bool ULBSaveSubsystem::LoadLastCheckpoint()
 		WorldState->ReplaceState(Save->WorldState);
 	}
 	ReachedCheckpoints = Save->ReachedCheckpoints;
-	PendingRecords = Save->ActorRecords;
+	KnownRecords = Save->ActorRecords;
 	PendingTransform = Save->CheckpointTransform;
 	bPendingRestore = true;
+	bTravelPending = true;
 	PlayTimeBase = Save->PlayTimeSeconds;
 	PlayTimeSegmentStart = FPlatformTime::Seconds();
 
@@ -174,13 +182,19 @@ void ULBSaveSubsystem::DeleteSave()
 	}
 }
 
-bool ULBSaveSubsystem::TryGetPendingRecord(FName SaveId, FLBActorSaveRecord& OutRecord) const
+TMap<FName, FLBActorSaveRecord> ULBSaveSubsystem::MergeRecords(const TMap<FName, FLBActorSaveRecord>& Known, const TMap<FName, FLBActorSaveRecord>& Live)
 {
-	if (!bPendingRestore)
+	TMap<FName, FLBActorSaveRecord> Result = Known;
+	for (const TPair<FName, FLBActorSaveRecord>& Pair : Live)
 	{
-		return false;
+		Result.Add(Pair.Key, Pair.Value);
 	}
-	if (const FLBActorSaveRecord* Found = PendingRecords.Find(SaveId))
+	return Result;
+}
+
+bool ULBSaveSubsystem::TryGetRecord(FName SaveId, FLBActorSaveRecord& OutRecord) const
+{
+	if (const FLBActorSaveRecord* Found = KnownRecords.Find(SaveId))
 	{
 		OutRecord = *Found;
 		return true;

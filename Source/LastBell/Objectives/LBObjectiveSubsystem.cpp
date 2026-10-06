@@ -76,7 +76,7 @@ void ULBObjectiveSubsystem::Recompute()
 		return;
 	}
 
-	const int32 NewIndex = Chain->FindActiveIndex(State->GetState());
+	const int32 NewIndex = Chain->FindActiveIndex(State->GetStateRef());
 	if (bHasComputed && NewIndex == ActiveIndex)
 	{
 		return;

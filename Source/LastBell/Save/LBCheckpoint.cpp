@@ -45,7 +45,7 @@ void ALBCheckpoint::OnTriggerBeginOverlap(UPrimitiveComponent* OverlappedCompone
 	}
 
 	ULBSaveSubsystem* Save = ULBSaveSubsystem::Get(this);
-	if (!Save || Save->HasReachedCheckpoint(CheckpointId) || !CanSaveNow())
+	if (Character->IsDead() || !Save || Save->IsTravelPending() || Save->HasReachedCheckpoint(CheckpointId) || !CanSaveNow())
 	{
 		return;
 	}

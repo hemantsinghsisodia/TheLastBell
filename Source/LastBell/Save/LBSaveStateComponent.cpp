@@ -21,7 +21,7 @@ void ULBSaveStateComponent::BeginPlay()
 	}
 
 	FLBActorSaveRecord Pending;
-	if (Subsystem->TryGetPendingRecord(SaveId, Pending))
+	if (Subsystem->TryGetRecord(SaveId, Pending))
 	{
 		CurrentRecord = Pending;
 		OnRestore.Broadcast(CurrentRecord);

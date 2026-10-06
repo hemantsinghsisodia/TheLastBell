@@ -22,6 +22,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "LastBell|WorldState")
 	void AddState(FGameplayTag Tag);
 
+	/** Adds all tags first, then broadcasts OnStateChanged once per newly added tag. */
+	UFUNCTION(BlueprintCallable, Category = "LastBell|WorldState")
+	void AddStates(const FGameplayTagContainer& Tags);
+
 	UFUNCTION(BlueprintCallable, Category = "LastBell|WorldState")
 	void RemoveState(FGameplayTag Tag);
 
@@ -33,6 +37,9 @@ public:
 
 	UFUNCTION(BlueprintPure, Category = "LastBell|WorldState")
 	FGameplayTagContainer GetState() const;
+
+	/** Cheap reference for C++ callers; do not hold across state changes. */
+	const FGameplayTagContainer& GetStateRef() const { return WorldState.GetTags(); }
 
 	/** Bulk op: no per-tag events, one OnStateReplaced afterwards. */
 	UFUNCTION(BlueprintCallable, Category = "LastBell|WorldState")

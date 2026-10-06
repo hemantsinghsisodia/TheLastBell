@@ -21,6 +21,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LastBell|Interaction")
 	bool bEnabled = true;
 
+	/** Shown instead of PromptText while the component is focused but cannot be used (empty = no prompt). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LastBell|Interaction")
+	FText DeniedPromptText;
+
 	/** All of these must be present in world state. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LastBell|Interaction")
 	FGameplayTagContainer RequiredStateTags;

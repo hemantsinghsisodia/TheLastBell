@@ -1,5 +1,6 @@
 #include "Components/LBInteractableComponent.h"
 #include "Systems/LBWorldStateSubsystem.h"
+#include "LBLog.h"
 
 bool ULBInteractableComponent::PassesStateRequirements(const FGameplayTagContainer& WorldState) const
 {
@@ -17,7 +18,7 @@ bool ULBInteractableComponent::PassesStateRequirements(const FGameplayTagContain
 bool ULBInteractableComponent::CanInteract_Implementation(AActor* Instigator)
 {
 	const ULBWorldStateSubsystem* WorldState = ULBWorldStateSubsystem::Get(this);
-	return PassesStateRequirements(WorldState ? WorldState->GetState() : FGameplayTagContainer());
+	return PassesStateRequirements(WorldState ? WorldState->GetStateRef() : FGameplayTagContainer());
 }
 
 void ULBInteractableComponent::Interact(AActor* Instigator)
@@ -30,14 +31,12 @@ void ULBInteractableComponent::Interact(AActor* Instigator)
 
 	if (ULBWorldStateSubsystem* WorldState = ULBWorldStateSubsystem::Get(this))
 	{
-		for (const FGameplayTag& Tag : GrantedStateTags)
-		{
-			WorldState->AddState(Tag);
-		}
+		FGameplayTagContainer ToAdd = GrantedStateTags;
 		if (bSingleUse && ConsumedStateTag.IsValid())
 		{
-			WorldState->AddState(ConsumedStateTag);
+			ToAdd.AddTag(ConsumedStateTag);
 		}
+		WorldState->AddStates(ToAdd);
 	}
 	if (bSingleUse)
 	{
@@ -59,6 +58,11 @@ void ULBInteractableComponent::NotifyFocusEnd()
 void ULBInteractableComponent::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (bSingleUse && !ConsumedStateTag.IsValid())
+	{
+		UE_LOG(LogLB, Warning, TEXT("Single-use interactable on '%s' has no ConsumedStateTag: single-use state not persisted"), *GetNameSafe(GetOwner()));
+	}
 
 	if (ConsumedStateTag.IsValid())
 	{

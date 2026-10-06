@@ -9,6 +9,9 @@
 #include "Components/LBInteractableComponent.h"
 #include "LBGameplayTags.h"
 #include "Kismet/GameplayStatics.h"
+#include "Engine/GameInstance.h"
+#include "Save/LBSaveSubsystem.h"
+#include "Systems/LBWorldStateSubsystem.h"
 
 #define LB_TEST_FLAGS (EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
 
@@ -160,6 +163,43 @@ bool FLBInteractableTest::RunTest(const FString& Parameters)
 	State.RemoveTag(LBTags::State_Warden_Stage_2);
 	Comp->bEnabled = false;
 	TestFalse(TEXT("Disabled fails"), Comp->PassesStateRequirements(State));
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBAddStatesTest, "LastBell.WorldState.AddStates", LB_TEST_FLAGS)
+bool FLBAddStatesTest::RunTest(const FString& Parameters)
+{
+	ULBWorldStateSubsystem* Subsystem = NewObject<ULBWorldStateSubsystem>(NewObject<UGameInstance>(GetTransientPackage()));
+	FGameplayTagContainer Tags;
+	Tags.AddTag(LBTags::State_Warden_Stage_1);
+	Tags.AddTag(LBTags::State_Warden_Stage_2);
+	Subsystem->AddStates(Tags);
+	TestTrue(TEXT("All added"), Subsystem->HasAllStates(Tags));
+	TestEqual(TEXT("Count"), Subsystem->GetStateRef().Num(), 2);
+	Subsystem->AddStates(Tags);
+	TestEqual(TEXT("Re-add is idempotent"), Subsystem->GetStateRef().Num(), 2);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBMergeRecordsTest, "LastBell.Save.KnownRecordsOverlay", LB_TEST_FLAGS)
+bool FLBMergeRecordsTest::RunTest(const FString& Parameters)
+{
+	TMap<FName, FLBActorSaveRecord> Known;
+	FLBActorSaveRecord Old;
+	Old.Index = 1;
+	Known.Add(TEXT("Unloaded"), Old);
+	Known.Add(TEXT("Live"), Old);
+	TMap<FName, FLBActorSaveRecord> Live;
+	FLBActorSaveRecord Fresh;
+	Fresh.Index = 9;
+	Live.Add(TEXT("Live"), Fresh);
+	Live.Add(TEXT("New"), Fresh);
+
+	const TMap<FName, FLBActorSaveRecord> Merged = ULBSaveSubsystem::MergeRecords(Known, Live);
+	TestEqual(TEXT("Count"), Merged.Num(), 3);
+	TestEqual(TEXT("Unloaded actor's record preserved"), Merged.FindRef(TEXT("Unloaded")).Index, 1);
+	TestEqual(TEXT("Live overrides known"), Merged.FindRef(TEXT("Live")).Index, 9);
+	TestEqual(TEXT("New live record added"), Merged.FindRef(TEXT("New")).Index, 9);
 	return true;
 }
 

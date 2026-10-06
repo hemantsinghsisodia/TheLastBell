@@ -47,11 +47,18 @@ public:
 	FTransform GetPendingTransform() const { return PendingTransform; }
 
 	UFUNCTION(BlueprintCallable, Category = "LastBell|Save")
-	bool TryGetPendingRecord(FName SaveId, FLBActorSaveRecord& OutRecord) const;
+	bool TryGetRecord(FName SaveId, FLBActorSaveRecord& OutRecord) const;
+
+	/** True between starting a level travel and the next world's initialization. */
+	UFUNCTION(BlueprintPure, Category = "LastBell|Save")
+	bool IsTravelPending() const { return bTravelPending; }
 
 	/** Returns false (and does nothing) for None or duplicate ids. */
 	bool RegisterSaveState(ULBSaveStateComponent* Component);
 	void UnregisterSaveState(ULBSaveStateComponent* Component);
+
+	/** Pure: known records overlaid by live ones (live wins). */
+	static TMap<FName, FLBActorSaveRecord> MergeRecords(const TMap<FName, FLBActorSaveRecord>& Known, const TMap<FName, FLBActorSaveRecord>& Live);
 
 	static const FString SlotName;
 	static constexpr int32 UserIndex = 0;
@@ -66,8 +73,10 @@ private:
 	TMap<FName, TWeakObjectPtr<ULBSaveStateComponent>> SaveComponents;
 
 	bool bPendingRestore = false;
+	bool bTravelPending = false;
 	FTransform PendingTransform;
-	TMap<FName, FLBActorSaveRecord> PendingRecords;
+	/** Last known records (from load or last save). Lets late-streamed components restore. */
+	TMap<FName, FLBActorSaveRecord> KnownRecords;
 
 	TSet<FName> ReachedCheckpoints;
 
