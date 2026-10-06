@@ -5,6 +5,7 @@
 #include "Engine/World.h"
 #include "Kismet/GameplayStatics.h"
 #include "TimerManager.h"
+#include "Systems/LBGameSettings.h"
 #include "LBLog.h"
 
 const FString ULBSaveSubsystem::SlotName = TEXT("LB_Slot0");
@@ -224,4 +225,60 @@ void ULBSaveSubsystem::UnregisterSaveState(ULBSaveStateComponent* Component)
 		SaveComponents.Remove(Component->SaveId);
 		IdRegistry.Unregister(Component->SaveId);
 	}
+}
+
+void ULBSaveSubsystem::StartNewGame()
+{
+	const ULBGameSettings* Settings = ULBGameSettings::Get();
+	if (Settings->NewGameMap.IsNull())
+	{
+		UE_LOG(LogLB, Error, TEXT("StartNewGame: NewGameMap is not set in Project Settings > The Last Bell"));
+		return;
+	}
+	NewGame(Settings->NewGameMap.GetLongPackageName());
+}
+
+bool ULBSaveSubsystem::ContinueGame()
+{
+	return LoadLastCheckpoint();
+}
+
+bool ULBSaveSubsystem::OpenMainMenuMap()
+{
+	const ULBGameSettings* Settings = ULBGameSettings::Get();
+	if (Settings->MainMenuMap.IsNull())
+	{
+		UE_LOG(LogLB, Error, TEXT("MainMenuMap is not set in Project Settings > The Last Bell"));
+		return false;
+	}
+	bTravelPending = true;
+	UGameplayStatics::OpenLevel(GetGameInstance(), FName(*Settings->MainMenuMap.GetLongPackageName()));
+	return true;
+}
+
+void ULBSaveSubsystem::CompleteGame()
+{
+	if (ULBGameSettings::Get()->MainMenuMap.IsNull())
+	{
+		UE_LOG(LogLB, Error, TEXT("CompleteGame: MainMenuMap is not set; nothing done"));
+		return;
+	}
+	UE_LOG(LogLB, Log, TEXT("Game complete: deleting save and returning to main menu"));
+	DeleteSave();
+	if (ULBWorldStateSubsystem* WorldState = GetGameInstance()->GetSubsystem<ULBWorldStateSubsystem>())
+	{
+		WorldState->ResetState();
+	}
+	ReachedCheckpoints.Reset();
+	KnownRecords.Reset();
+	bPendingRestore = false;
+	PlayTimeBase = 0.f;
+	PlayTimeSegmentStart = FPlatformTime::Seconds();
+	OpenMainMenuMap();
+}
+
+void ULBSaveSubsystem::ReturnToMainMenu()
+{
+	UE_LOG(LogLB, Log, TEXT("Returning to main menu"));
+	OpenMainMenuMap();
 }

@@ -12,6 +12,8 @@
 #include "Engine/GameInstance.h"
 #include "Save/LBSaveSubsystem.h"
 #include "Systems/LBWorldStateSubsystem.h"
+#include "Systems/LBGameSettings.h"
+#include "Objectives/LBObjectiveSubsystem.h"
 
 #define LB_TEST_FLAGS (EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
 
@@ -200,6 +202,29 @@ bool FLBMergeRecordsTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("Unloaded actor's record preserved"), Merged.FindRef(TEXT("Unloaded")).Index, 1);
 	TestEqual(TEXT("Live overrides known"), Merged.FindRef(TEXT("Live")).Index, 9);
 	TestEqual(TEXT("New live record added"), Merged.FindRef(TEXT("New")).Index, 9);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBGameSettingsTest, "LastBell.Flow.GameSettingsDefaults", LB_TEST_FLAGS)
+bool FLBGameSettingsTest::RunTest(const FString& Parameters)
+{
+	const ULBGameSettings* Settings = ULBGameSettings::Get();
+	if (!TestNotNull(TEXT("Settings"), Settings))
+	{
+		return false;
+	}
+	TestEqual(TEXT("MainMenuMap"), Settings->MainMenuMap.GetLongPackageName(), FString(TEXT("/Game/LastBell/Maps/L_MainMenu")));
+	TestEqual(TEXT("NewGameMap"), Settings->NewGameMap.GetLongPackageName(), FString(TEXT("/Game/LastBell/Maps/L_Monastery")));
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBSetChainNullTest, "LastBell.Objectives.SetChainNullIsInert", LB_TEST_FLAGS)
+bool FLBSetChainNullTest::RunTest(const FString& Parameters)
+{
+	ULBObjectiveSubsystem* Sub = NewObject<ULBObjectiveSubsystem>(GetTransientPackage());
+	Sub->SetChain(nullptr);
+	TestEqual(TEXT("Inactive index"), Sub->GetActiveIndex(), static_cast<int32>(INDEX_NONE));
+	TestTrue(TEXT("Empty text"), Sub->GetActiveObjectiveText().IsEmpty());
 	return true;
 }
 

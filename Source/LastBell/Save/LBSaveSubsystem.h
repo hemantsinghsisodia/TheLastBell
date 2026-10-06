@@ -23,6 +23,22 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "LastBell|Save")
 	void NewGame(const FString& MapName);
 
+	/** Flow API for menus: new game on the configured NewGameMap. */
+	UFUNCTION(BlueprintCallable, Category = "LastBell|Flow")
+	void StartNewGame();
+
+	/** Loads the last checkpoint; false when there is no valid save. */
+	UFUNCTION(BlueprintCallable, Category = "LastBell|Flow")
+	bool ContinueGame();
+
+	/** Deletes the save, resets all progress and returns to the main menu. */
+	UFUNCTION(BlueprintCallable, Category = "LastBell|Flow")
+	void CompleteGame();
+
+	/** Opens the main menu map without touching the save. */
+	UFUNCTION(BlueprintCallable, Category = "LastBell|Flow")
+	void ReturnToMainMenu();
+
 	/** Marks the checkpoint reached and writes the slot synchronously. */
 	UFUNCTION(BlueprintCallable, Category = "LastBell|Save")
 	bool SaveCheckpoint(FName Id, const FTransform& Transform);
@@ -67,6 +83,7 @@ private:
 	ULBSaveGame* ReadValidSaveFromDisk() const;
 	void OnPostWorldInitialization(UWorld* World, const UWorld::InitializationValues IVS);
 	void ClearPendingRestore();
+	bool OpenMainMenuMap();
 	float GetPlayTime() const;
 
 	FLBSaveIdRegistry IdRegistry;

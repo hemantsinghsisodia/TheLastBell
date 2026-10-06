@@ -24,6 +24,9 @@ public:
 	/** Spawns at the pending checkpoint transform when a restore is pending, else at a PlayerStart. */
 	virtual void RestartPlayer(AController* NewPlayer) override;
 
+	/** Hands the objective chain to the objective subsystem before any actor BeginPlay. */
+	virtual void StartPlay() override;
+
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "LastBell|Objectives")
 	TObjectPtr<ULBObjectiveChainData> ObjectiveChain;

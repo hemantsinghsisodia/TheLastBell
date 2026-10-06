@@ -30,6 +30,10 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "LastBell|Objectives")
 	FLBObjectiveChangedSignature OnObjectiveChanged;
 
+	/** Assigns the chain (null = inactive, silently), recomputes and broadcasts. Safe before world BeginPlay. */
+	UFUNCTION(BlueprintCallable, Category = "LastBell|Objectives")
+	void SetChain(const ULBObjectiveChainData* InChain);
+
 protected:
 	virtual void OnWorldBeginPlay(UWorld& InWorld) override;
 
@@ -41,6 +45,7 @@ private:
 	void HandleStateReplaced();
 
 	void Recompute();
+	void EnsureBoundToWorldState();
 
 	UPROPERTY(Transient)
 	TObjectPtr<const ULBObjectiveChainData> Chain;

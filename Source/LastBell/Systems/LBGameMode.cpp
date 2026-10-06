@@ -2,6 +2,7 @@
 #include "Systems/LBPlayerController.h"
 #include "Character/LBCharacter.h"
 #include "Save/LBSaveSubsystem.h"
+#include "Objectives/LBObjectiveSubsystem.h"
 #include "Engine/GameInstance.h"
 #include "Engine/World.h"
 #include "LBLog.h"
@@ -10,6 +11,18 @@ ALBGameMode::ALBGameMode()
 {
 	DefaultPawnClass = ALBCharacter::StaticClass();
 	PlayerControllerClass = ALBPlayerController::StaticClass();
+}
+
+void ALBGameMode::StartPlay()
+{
+	if (UWorld* World = GetWorld())
+	{
+		if (ULBObjectiveSubsystem* Objectives = World->GetSubsystem<ULBObjectiveSubsystem>())
+		{
+			Objectives->SetChain(ObjectiveChain);
+		}
+	}
+	Super::StartPlay();
 }
 
 void ALBGameMode::RestartPlayer(AController* NewPlayer)

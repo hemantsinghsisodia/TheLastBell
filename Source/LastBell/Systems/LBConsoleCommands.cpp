@@ -82,6 +82,22 @@ namespace LBConsole
 		}
 	}
 
+	static void Menu(const TArray<FString>& Args, UWorld* World)
+	{
+		if (ULBSaveSubsystem* Save = ULBSaveSubsystem::Get(World))
+		{
+			Save->ReturnToMainMenu();
+		}
+	}
+
+	static void CompleteGame(const TArray<FString>& Args, UWorld* World)
+	{
+		if (ULBSaveSubsystem* Save = ULBSaveSubsystem::Get(World))
+		{
+			Save->CompleteGame();
+		}
+	}
+
 	static void Kill(const TArray<FString>& Args, UWorld* World)
 	{
 		const APlayerController* PC = World ? World->GetFirstPlayerController() : nullptr;
@@ -105,6 +121,10 @@ namespace LBConsole
 		FConsoleCommandWithWorldAndArgsDelegate::CreateStatic(&NewGame));
 	static FAutoConsoleCommandWithWorldAndArgs CmdCheckpointLoad(TEXT("lb.Checkpoint.Load"), TEXT("Load the last checkpoint"),
 		FConsoleCommandWithWorldAndArgsDelegate::CreateStatic(&CheckpointLoad));
+	static FAutoConsoleCommandWithWorldAndArgs CmdMenu(TEXT("lb.Menu"), TEXT("Return to the main menu (save untouched)"),
+		FConsoleCommandWithWorldAndArgsDelegate::CreateStatic(&Menu));
+	static FAutoConsoleCommandWithWorldAndArgs CmdCompleteGame(TEXT("lb.CompleteGame"), TEXT("Delete save, reset progress, return to the main menu"),
+		FConsoleCommandWithWorldAndArgsDelegate::CreateStatic(&CompleteGame));
 	static FAutoConsoleCommandWithWorldAndArgs CmdKill(TEXT("lb.Kill"), TEXT("Kill the local player (death path)"),
 		FConsoleCommandWithWorldAndArgsDelegate::CreateStatic(&Kill));
 }

@@ -1,9 +1,7 @@
 #include "Objectives/LBObjectiveSubsystem.h"
 #include "Objectives/LBObjectiveChainData.h"
-#include "Systems/LBGameMode.h"
 #include "Systems/LBWorldStateSubsystem.h"
 #include "Engine/World.h"
-#include "Kismet/GameplayStatics.h"
 #include "LBLog.h"
 
 bool ULBObjectiveSubsystem::ShouldCreateSubsystem(UObject* Outer) const
@@ -19,23 +17,35 @@ bool ULBObjectiveSubsystem::ShouldCreateSubsystem(UObject* Outer) const
 void ULBObjectiveSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 {
 	Super::OnWorldBeginPlay(InWorld);
+	// Chain normally arrives earlier via SetChain (game mode StartPlay); this covers late binding only.
+	EnsureBoundToWorldState();
+	Recompute();
+}
 
-	const ALBGameMode* GameMode = Cast<ALBGameMode>(UGameplayStatics::GetGameMode(&InWorld));
-	Chain = GameMode ? GameMode->GetObjectiveChain() : nullptr;
+void ULBObjectiveSubsystem::EnsureBoundToWorldState()
+{
+	if (WorldState.IsValid())
+	{
+		return;
+	}
+	if (ULBWorldStateSubsystem* State = ULBWorldStateSubsystem::Get(GetWorld()))
+	{
+		WorldState = State;
+		State->OnStateChanged.AddDynamic(this, &ULBObjectiveSubsystem::HandleStateChanged);
+		State->OnStateReplaced.AddDynamic(this, &ULBObjectiveSubsystem::HandleStateReplaced);
+	}
+}
+
+void ULBObjectiveSubsystem::SetChain(const ULBObjectiveChainData* InChain)
+{
+	Chain = InChain;
+	bHasComputed = false;
+	ActiveIndex = INDEX_NONE;
 	if (!Chain)
 	{
-		UE_LOG(LogLB, Log, TEXT("ObjectiveSubsystem inactive: no ObjectiveChain on the game mode"));
 		return;
 	}
-
-	ULBWorldStateSubsystem* State = ULBWorldStateSubsystem::Get(&InWorld);
-	if (!State)
-	{
-		return;
-	}
-	WorldState = State;
-	State->OnStateChanged.AddDynamic(this, &ULBObjectiveSubsystem::HandleStateChanged);
-	State->OnStateReplaced.AddDynamic(this, &ULBObjectiveSubsystem::HandleStateReplaced);
+	EnsureBoundToWorldState();
 	Recompute();
 }
 

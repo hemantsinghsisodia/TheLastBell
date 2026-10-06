@@ -20,6 +20,14 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "LastBell|UI")
 	TSubclassOf<UUserWidget> HUDWidgetClass;
 
+	/** Menu maps: visible cursor, UI-only input. */
+	UPROPERTY(EditDefaultsOnly, Category = "LastBell|UI")
+	bool bMenuMode = false;
+
+	/** Switches cursor and input mode at runtime (e.g. the ending screen). */
+	UFUNCTION(BlueprintCallable, Category = "LastBell|UI")
+	void SetMenuMode(bool bInMenuMode);
+
 	UFUNCTION(BlueprintPure, Category = "LastBell|UI")
 	UUserWidget* GetHUDWidget() const { return HUDWidget; }
 
