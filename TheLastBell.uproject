@@ -3,6 +3,13 @@
 	"EngineAssociation": "{4A82A7F8-47B0-63E9-39ED-42B100E7B5F4}",
 	"Category": "",
 	"Description": "",
+	"Modules": [
+		{
+			"Name": "LastBell",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	],
 	"Plugins": [
 		{
 			"Name": "ModelingToolsEditorMode",
