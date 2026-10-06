@@ -1,0 +1,28 @@
+# Unreal generated
+Binaries/
+Intermediate/
+Saved/
+DerivedDataCache/
+Build/
+Plugins/*/Binaries/
+Plugins/*/Intermediate/
+
+# IDE
+.vs/
+.vscode/
+.idea/
+*.sln
+*.suo
+*.VC.db
+*.opensdf
+*.sdf
+
+# Raw external downloads (staged, not committed)
+ExternalAssets/Incoming/
+
+# Local Claude settings
+.claude/settings.local.json
+
+# OS
+Thumbs.db
+.DS_Store
