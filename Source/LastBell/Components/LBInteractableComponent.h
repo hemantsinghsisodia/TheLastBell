@@ -40,6 +40,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LastBell|Interaction")
 	FGameplayTag ConsumedStateTag;
 
+	/** When true (and the actor also has a ULBInspectableComponent), interacting starts an inspection instead of the normal grant. The normal grant then runs when the inspection closes with a keep (see CompleteInspection). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LastBell|Interaction")
+	bool bInspectOnInteract = false;
+
 	/** Pure gating logic: enabled, all requirements present, not consumed. */
 	bool PassesStateRequirements(const FGameplayTagContainer& WorldState) const;
 
@@ -48,6 +52,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "LastBell|Interaction")
 	void Interact(AActor* Instigator);
+
+	/** Runs the normal interaction path (grant, consume, OnInteracted) after an inspection was kept. Called by the inspection component. */
+	void CompleteInspection(AActor* Instigator);
 
 	/** Called by the interactor. */
 	void NotifyFocusBegin();
@@ -67,4 +74,7 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+
+private:
+	void ApplyInteraction(AActor* Instigator);
 };

@@ -1,5 +1,8 @@
 #include "Components/LBInteractableComponent.h"
 #include "Systems/LBWorldStateSubsystem.h"
+#include "Character/LBCharacter.h"
+#include "Character/LBInspectionComponent.h"
+#include "Components/LBInspectableComponent.h"
 #include "LBLog.h"
 
 bool ULBInteractableComponent::PassesStateRequirements(const FGameplayTagContainer& WorldState) const
@@ -29,6 +32,30 @@ void ULBInteractableComponent::Interact(AActor* Instigator)
 		return;
 	}
 
+	if (bInspectOnInteract)
+	{
+		ULBInspectableComponent* Inspectable = GetOwner() ? GetOwner()->FindComponentByClass<ULBInspectableComponent>() : nullptr;
+		ALBCharacter* Character = Cast<ALBCharacter>(Instigator);
+		if (Inspectable && Character && Character->BeginInspect(Inspectable, this))
+		{
+			return;
+		}
+		UE_LOG(LogLB, Warning, TEXT("'%s' has bInspectOnInteract but cannot be inspected; running the normal interaction"), *GetNameSafe(GetOwner()));
+	}
+
+	ApplyInteraction(Instigator);
+}
+
+void ULBInteractableComponent::CompleteInspection(AActor* Instigator)
+{
+	if (CanInteract(Instigator))
+	{
+		ApplyInteraction(Instigator);
+	}
+}
+
+void ULBInteractableComponent::ApplyInteraction(AActor* Instigator)
+{
 	if (ULBWorldStateSubsystem* WorldState = ULBWorldStateSubsystem::Get(this))
 	{
 		FGameplayTagContainer ToAdd = GrantedStateTags;

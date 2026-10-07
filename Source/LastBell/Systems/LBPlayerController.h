@@ -17,6 +17,16 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "LastBell|Input")
 	TArray<TObjectPtr<UInputMappingContext>> MappingContexts;
 
+	/** Added above the gameplay contexts while the player inspects an item (IMC_LB_Inspect). */
+	UPROPERTY(EditDefaultsOnly, Category = "LastBell|Input")
+	TObjectPtr<UInputMappingContext> InspectMappingContext;
+
+	UPROPERTY(EditDefaultsOnly, Category = "LastBell|Input")
+	int32 InspectMappingPriority = 1;
+
+	/** Adds or removes InspectMappingContext. Safe to call repeatedly. */
+	void SetInspectionContextActive(bool bActive);
+
 	UPROPERTY(EditDefaultsOnly, Category = "LastBell|UI")
 	TSubclassOf<UUserWidget> HUDWidgetClass;
 

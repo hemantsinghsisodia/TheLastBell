@@ -44,6 +44,25 @@ void ALBPlayerController::BeginPlay()
 	}
 }
 
+void ALBPlayerController::SetInspectionContextActive(bool bActive)
+{
+	if (!IsLocalController() || !InspectMappingContext)
+	{
+		return;
+	}
+	if (UEnhancedInputLocalPlayerSubsystem* Input = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+	{
+		if (bActive)
+		{
+			Input->AddMappingContext(InspectMappingContext, InspectMappingPriority);
+		}
+		else
+		{
+			Input->RemoveMappingContext(InspectMappingContext);
+		}
+	}
+}
+
 void ALBPlayerController::SetMenuMode(bool bInMenuMode)
 {
 	bMenuMode = bInMenuMode;
