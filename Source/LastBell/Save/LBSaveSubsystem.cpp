@@ -6,7 +6,21 @@
 #include "Kismet/GameplayStatics.h"
 #include "TimerManager.h"
 #include "Systems/LBGameSettings.h"
+#include "Misc/PackageName.h"
 #include "LBLog.h"
+
+namespace
+{
+	bool IsTravelTargetValid(const FString& LongPackageName, const TCHAR* Context)
+	{
+		if (LongPackageName.IsEmpty() || !FPackageName::IsValidLongPackageName(LongPackageName) || !FPackageName::DoesPackageExist(LongPackageName))
+		{
+			UE_LOG(LogLB, Error, TEXT("%s: target map '%s' is empty or does not exist; nothing changed"), Context, *LongPackageName);
+			return false;
+		}
+		return true;
+	}
+}
 
 const FString ULBSaveSubsystem::SlotName = TEXT("LB_Slot0");
 
@@ -65,6 +79,15 @@ void ULBSaveSubsystem::ClearPendingRestore()
 
 void ULBSaveSubsystem::NewGame(const FString& MapName)
 {
+	if (bTravelPending)
+	{
+		UE_LOG(LogLB, Log, TEXT("NewGame ignored: travel already pending"));
+		return;
+	}
+	if (!IsTravelTargetValid(MapName, TEXT("NewGame")))
+	{
+		return;
+	}
 	UE_LOG(LogLB, Log, TEXT("New game: %s"), *MapName);
 	DeleteSave();
 	if (ULBWorldStateSubsystem* WorldState = GetGameInstance()->GetSubsystem<ULBWorldStateSubsystem>())
@@ -147,8 +170,17 @@ ULBSaveGame* ULBSaveSubsystem::ReadValidSaveFromDisk() const
 
 bool ULBSaveSubsystem::LoadLastCheckpoint()
 {
+	if (bTravelPending)
+	{
+		UE_LOG(LogLB, Log, TEXT("LoadLastCheckpoint ignored: travel already pending"));
+		return false;
+	}
 	const ULBSaveGame* Save = ReadValidSaveFromDisk();
 	if (!Save)
+	{
+		return false;
+	}
+	if (!IsTravelTargetValid(Save->MapName, TEXT("LoadLastCheckpoint")))
 	{
 		return false;
 	}
@@ -229,6 +261,11 @@ void ULBSaveSubsystem::UnregisterSaveState(ULBSaveStateComponent* Component)
 
 void ULBSaveSubsystem::StartNewGame()
 {
+	if (bTravelPending)
+	{
+		UE_LOG(LogLB, Log, TEXT("StartNewGame ignored: travel already pending"));
+		return;
+	}
 	const ULBGameSettings* Settings = ULBGameSettings::Get();
 	if (Settings->NewGameMap.IsNull())
 	{
@@ -240,6 +277,11 @@ void ULBSaveSubsystem::StartNewGame()
 
 bool ULBSaveSubsystem::ContinueGame()
 {
+	if (bTravelPending)
+	{
+		UE_LOG(LogLB, Log, TEXT("ContinueGame ignored: travel already pending"));
+		return false;
+	}
 	return LoadLastCheckpoint();
 }
 
@@ -251,6 +293,15 @@ bool ULBSaveSubsystem::OpenMainMenuMap()
 		UE_LOG(LogLB, Error, TEXT("MainMenuMap is not set in Project Settings > The Last Bell"));
 		return false;
 	}
+	if (bTravelPending)
+	{
+		UE_LOG(LogLB, Log, TEXT("OpenMainMenuMap ignored: travel already pending"));
+		return false;
+	}
+	if (!IsTravelTargetValid(Settings->MainMenuMap.GetLongPackageName(), TEXT("OpenMainMenuMap")))
+	{
+		return false;
+	}
 	bTravelPending = true;
 	UGameplayStatics::OpenLevel(GetGameInstance(), FName(*Settings->MainMenuMap.GetLongPackageName()));
 	return true;
@@ -258,9 +309,18 @@ bool ULBSaveSubsystem::OpenMainMenuMap()
 
 void ULBSaveSubsystem::CompleteGame()
 {
+	if (bTravelPending)
+	{
+		UE_LOG(LogLB, Log, TEXT("CompleteGame ignored: travel already pending"));
+		return;
+	}
 	if (ULBGameSettings::Get()->MainMenuMap.IsNull())
 	{
 		UE_LOG(LogLB, Error, TEXT("CompleteGame: MainMenuMap is not set; nothing done"));
+		return;
+	}
+	if (!IsTravelTargetValid(ULBGameSettings::Get()->MainMenuMap.GetLongPackageName(), TEXT("CompleteGame")))
+	{
 		return;
 	}
 	UE_LOG(LogLB, Log, TEXT("Game complete: deleting save and returning to main menu"));
@@ -279,6 +339,11 @@ void ULBSaveSubsystem::CompleteGame()
 
 void ULBSaveSubsystem::ReturnToMainMenu()
 {
+	if (bTravelPending)
+	{
+		UE_LOG(LogLB, Log, TEXT("ReturnToMainMenu ignored: travel already pending"));
+		return;
+	}
 	UE_LOG(LogLB, Log, TEXT("Returning to main menu"));
 	OpenMainMenuMap();
 }

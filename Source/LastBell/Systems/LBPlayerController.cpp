@@ -38,7 +38,10 @@ void ALBPlayerController::BeginPlay()
 		UE_LOG(LogLB, Verbose, TEXT("%s has no HUDWidgetClass"), *GetName());
 	}
 
-	SetMenuMode(bMenuMode);
+	if (bMenuMode)
+	{
+		SetMenuMode(true);
+	}
 }
 
 void ALBPlayerController::SetMenuMode(bool bInMenuMode)

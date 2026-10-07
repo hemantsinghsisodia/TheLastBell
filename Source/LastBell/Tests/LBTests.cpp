@@ -9,6 +9,7 @@
 #include "Components/LBInteractableComponent.h"
 #include "LBGameplayTags.h"
 #include "Kismet/GameplayStatics.h"
+#include "Misc/PackageName.h"
 #include "Engine/GameInstance.h"
 #include "Save/LBSaveSubsystem.h"
 #include "Systems/LBWorldStateSubsystem.h"
@@ -215,6 +216,8 @@ bool FLBGameSettingsTest::RunTest(const FString& Parameters)
 	}
 	TestEqual(TEXT("MainMenuMap"), Settings->MainMenuMap.GetLongPackageName(), FString(TEXT("/Game/LastBell/Maps/L_MainMenu")));
 	TestEqual(TEXT("NewGameMap"), Settings->NewGameMap.GetLongPackageName(), FString(TEXT("/Game/LastBell/Maps/L_Monastery")));
+	TestTrue(TEXT("MainMenuMap package exists"), FPackageName::DoesPackageExist(Settings->MainMenuMap.GetLongPackageName()));
+	TestTrue(TEXT("NewGameMap package exists"), FPackageName::DoesPackageExist(Settings->NewGameMap.GetLongPackageName()));
 	return true;
 }
 
