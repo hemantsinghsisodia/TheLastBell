@@ -24,7 +24,12 @@ First-person atmospheric survival horror, UE 5.8.3, C++ + Blueprint hybrid. 20â€
 - Git with LFS. Commit at meaningful checkpoints.
 
 ## Git branch rule (owner's instruction, non-negotiable)
-- **Never commit to, merge into or push `main`.** Never push phase tags. `main` belongs to the project owner.
-- All work (lead and every sub-agent) happens on a `claude/<phase-or-topic>` branch, created from the latest `main`.
-- Sub-agents commit only to the currently checked-out `claude/*` branch, never switch branches, and never push.
-- At a milestone (a phase ready for review, or a fix set done), STOP and ask the owner to review, merge into `main` and push. Don't push the `claude/*` branch either unless the owner asks.
+- **Never commit directly on `main`.** All work (lead and every sub-agent) happens on a `claude/<phase-or-topic>` branch, created from the latest `main`.
+- Sub-agents commit only to the currently checked-out `claude/*` branch, never switch branches, never merge, and never push.
+- At a milestone (a phase ready for review, or a fix set done), STOP and ask the owner for review and approval.
+- Only after the owner **explicitly approves and says to merge** does the lead:
+  1. fast-forward or merge the branch into `main`;
+  2. push `main`;
+  3. delete the branch locally and on the remote, after checking `git log main..<branch>` is empty.
+- Don't push work branches or phase tags unless asked.
+- While Unreal has the project open, never check out an older commit: it swaps .umap/.uasset files under the editor. Fast-forward with `git fetch . <branch>:main`, then switch.

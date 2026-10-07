@@ -64,3 +64,23 @@ Spec: `Docs/GREYBOX_SPEC.md`. One map, `L_Monastery` (D-023), plus `L_MainMenu`.
 ## Phase 3 — carry-over from REV-002
 - **P3-000:** introduce the `ALBTagReactiveActor` base (snap, bind, unbind) and migrate the 5 tag-reactive BPs before adding interaction feedback (REV-002 M5).
 - Rerun `RouteBot.*` after every movement or interaction change. The bot assumes standing capsule height and interact range (REV-002 L12).
+
+## Phase 3 — Player feel and interaction: task breakdown
+Branch: `claude/phase-03-player-feel`. Decisions: D-029 (candle), D-030 (inspection), D-031 (no stamina), D-032 (tag-reactive base deferred).
+
+**Feel targets.** All of these are tunable in `DA_PlayerTuning`, with no magic numbers in code:
+- Walk 260 cm/s, sprint 480, crouch 140. Acceleration about 1400, braking about 1600. These are deliberate and grounded, not floaty.
+- Crouch: capsule half-height 92 → 58, and the camera interpolates over about 0.2 s.
+- Head bob: subtle and on by default. Vertical amplitude 0.6 cm walking / 1.4 cm sprinting, with a setting to turn it off. No roll and no camera shake.
+- Sprint FOV +4° eased in. A small landing dip.
+- Mouse sensitivity and invert-Y settings, stored in a settings object (UI comes in Phase 18).
+
+| Task | Objective | Owner | Depends on | Risk |
+|---|---|---|---|---|
+| P3-001 | C++: `ULBPlayerTuningData` (DataAsset); sprint and crouch on `ALBCharacter`; `ULBCameraFeelComponent` (bob, crouch interp, sprint FOV, landing dip); `ULBFootstepComponent` (distance cadence by gait, surface → `DT_Footsteps` sound, `OnFootstep(Loudness, Location, Surface)` delegate for the Phase 5 noise hook); `ULBCandleComponent` (point light, flicker, guttering while sprinting, snuff/relight with a delay, `IsLit()`); `ULBInspectableComponent` plus inspection mode on the character (pick up → hold in front of the camera → rotate → optional text → put back or keep); `ULBUserSettings` (sensitivity, invert Y, head bob) | gameplay-programmer | — | MED |
+| P3-002 | Input: `IA_Sprint` (Shift / L3), `IA_Crouch` (C or Ctrl hold / B), `IA_Candle` (F / Y), `IA_InspectRotate` (mouse drag / right stick), `IA_InspectExit` (E or RMB / B); `IMC_LB_Inspect` | unreal-blueprint-engineer | — | LOW |
+| P3-003 | Content wiring: `DA_PlayerTuning`; `BP_LBCharacter` uses it plus a placeholder held-candle mesh with a sway; `BP_Inspectable_Note` (inspectable with text) and inspectable key and crank; door swings away from the player; HUD crosshair focus state; `WBP_Inspect` overlay (note text and controls hint) | blueprint-engineer + ui-engineer | P3-001, P3-002 | LOW |
+| P3-004 | Place 4–6 placeholder notes in L_Monastery (lore stubs) | environment-designer | P3-003 | LOW |
+| P3-005 | Tests: tuning and footstep cadence unit tests; candle state tests; inspection enter/exit test; RouteBot and WalkPath rerun (gait changes); a crouch-walk path | gameplay-programmer | P3-003 | LOW |
+| P3-006 | Packaged Development build smoke test (R-20): cook, launch, menu → New Game → walk → quit | performance-engineer / lead | P3-005 | MED |
+| P3-REV / P3-QA | Architecture review and QA | reviewers | all | — |
