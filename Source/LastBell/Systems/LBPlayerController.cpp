@@ -52,7 +52,8 @@ void ALBPlayerController::SetMenuMode(bool bInMenuMode)
 	{
 		bShowMouseCursor = true;
 		FInputModeUIOnly Mode;
-		if (HUDWidget)
+		// Only menu widgets take focus; focusing the gameplay HUD logs an engine error.
+		if (HUDWidget && HUDWidget->IsFocusable())
 		{
 			Mode.SetWidgetToFocus(HUDWidget->TakeWidget());
 		}
