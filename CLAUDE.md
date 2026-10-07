@@ -21,4 +21,10 @@ First-person atmospheric survival horror, UE 5.8.3, C++ + Blueprint hybrid. 20â€
 - Composition over inheritance; subsystems over manager actors; Gameplay Tags for state; no hard asset refs in C++.
 - Architecture drift: if the implementation differs from TECHNICAL_DESIGN, either fix the code or update TECHNICAL_DESIGN, DECISIONS and IMPLEMENTATION_PLAN.
 - Naming: BP_, BPC_, BPI_, WBP_, SM_, SK_, M_, MI_, MF_, T_, NS_, NE_, DA_, DT_, ABP_, SFX_, MUS_, LS_, ST_, L_ (maps).
-- Git with LFS. Commit at meaningful checkpoints; the approved phase becomes `phase/NN-name`.
+- Git with LFS. Commit at meaningful checkpoints.
+
+## Git branch rule (owner's instruction, non-negotiable)
+- **Never commit to, merge into or push `main`.** Never push phase tags. `main` belongs to the project owner.
+- All work (lead and every sub-agent) happens on a `claude/<phase-or-topic>` branch, created from the latest `main`.
+- Sub-agents commit only to the currently checked-out `claude/*` branch, never switch branches, and never push.
+- At a milestone (a phase ready for review, or a fix set done), STOP and ask the owner to review, merge into `main` and push. Don't push the `claude/*` branch either unless the owner asks.
