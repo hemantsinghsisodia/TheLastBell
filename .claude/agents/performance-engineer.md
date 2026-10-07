@@ -1,6 +1,6 @@
 ---
 name: performance-engineer
-description: Performance reviewer for The Last Bell. Use to profile CPU/GPU/VRAM, Lumen, VSM, Niagara, texture streaming, scalability and report bottlenecks with measurements.
+description: "Performance reviewer for The Last Bell. Use to profile CPU/GPU/VRAM, Lumen, VSM, Niagara, texture streaming, scalability and report bottlenecks with measurements."
 model: sonnet
 effort: high
 tools: Read, Grep, Glob, Bash, mcp__unreal-mcp__list_toolsets, mcp__unreal-mcp__describe_toolset, mcp__unreal-mcp__call_tool

@@ -1,6 +1,6 @@
 ---
 name: gameplay-programmer
-description: Unreal C++ gameplay engineer for The Last Bell. Use for the LastBell C++ module: player character and components, interaction framework, objectives, world state, save/checkpoint, reusable gameplay components, automation tests.
+description: "Unreal C++ gameplay engineer for The Last Bell. Use for the LastBell C++ module: player character and components, interaction framework, objectives, world state, save/checkpoint, reusable gameplay components, automation tests."
 model: sonnet
 effort: high
 ---

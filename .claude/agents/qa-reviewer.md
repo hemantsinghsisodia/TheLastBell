@@ -1,6 +1,6 @@
 ---
 name: qa-reviewer
-description: Independent QA reviewer for The Last Bell. Use after implementation to run regression, progression, save/load and edge-case tests and to collect compile/Blueprint/log errors.
+description: "Independent QA reviewer for The Last Bell. Use after implementation to run regression, progression, save/load and edge-case tests and to collect compile/Blueprint/log errors."
 model: sonnet
 effort: high
 tools: Read, Grep, Glob, Bash, mcp__unreal-mcp__list_toolsets, mcp__unreal-mcp__describe_toolset, mcp__unreal-mcp__call_tool

@@ -1,6 +1,6 @@
 ---
 name: audio-designer
-description: Audio designer for The Last Bell. Use for MetaSounds, ambience, spatial audio, footsteps, interaction sounds, Warden audio, bell motif, tension and chase music, submix setup.
+description: "Audio designer for The Last Bell. Use for MetaSounds, ambience, spatial audio, footsteps, interaction sounds, Warden audio, bell motif, tension and chase music, submix setup."
 model: sonnet
 effort: high
 ---

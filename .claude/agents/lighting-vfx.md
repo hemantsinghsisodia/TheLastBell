@@ -1,6 +1,6 @@
 ---
 name: lighting-vfx
-description: Lighting and VFX artist for The Last Bell. Use for Lumen, shadows, light placement, fog, post-process, Niagara rain, lightning, mist, dust, smoke and storm effects.
+description: "Lighting and VFX artist for The Last Bell. Use for Lumen, shadows, light placement, fog, post-process, Niagara rain, lightning, mist, dust, smoke and storm effects."
 model: sonnet
 effort: high
 ---

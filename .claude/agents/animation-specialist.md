@@ -1,6 +1,6 @@
 ---
 name: animation-specialist
-description: Animation specialist for The Last Bell. Use for Animation Blueprints, locomotion, blend spaces, IK, Control Rig, creature animation, montages and fixing foot sliding/snapping.
+description: "Animation specialist for The Last Bell. Use for Animation Blueprints, locomotion, blend spaces, IK, Control Rig, creature animation, montages and fixing foot sliding/snapping."
 model: sonnet
 effort: high
 ---

@@ -1,6 +1,6 @@
 ---
 name: technical-artist
-description: Technical artist for The Last Bell. Use for master materials, material instances and functions, decals, wetness/moss/grime layers, surface blending, texture settings, Nanite/LOD and asset technical setup.
+description: "Technical artist for The Last Bell. Use for master materials, material instances and functions, decals, wetness/moss/grime layers, surface blending, texture settings, Nanite/LOD and asset technical setup."
 model: sonnet
 effort: high
 ---

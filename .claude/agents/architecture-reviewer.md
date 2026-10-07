@@ -1,6 +1,6 @@
 ---
 name: architecture-reviewer
-description: Independent architecture critic for The Last Bell. Use to review designs or code for coupling, drift from Docs/TECHNICAL_DESIGN.md, abstraction quality, C++/Blueprint boundaries, hard-coded assumptions, extensibility, performance concerns and unnecessary complexity. Read-only.
+description: "Independent architecture critic for The Last Bell. Use to review designs or code for coupling, drift from Docs/TECHNICAL_DESIGN.md, abstraction quality, C++/Blueprint boundaries, hard-coded assumptions, extensibility, performance concerns and unnecessary complexity. Read-only."
 model: sonnet
 effort: high
 tools: Read, Grep, Glob

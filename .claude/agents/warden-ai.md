@@ -1,6 +1,6 @@
 ---
 name: warden-ai
-description: AI engineer for the Warden in The Last Bell. Use for AI controller, State Tree, AI Perception (sight/hearing), navigation, investigation, search, chase, attack and AI debug tools.
+description: "AI engineer for the Warden in The Last Bell. Use for AI controller, State Tree, AI Perception (sight/hearing), navigation, investigation, search, chase, attack and AI debug tools."
 model: sonnet
 effort: high
 ---

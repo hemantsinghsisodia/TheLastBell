@@ -1,6 +1,6 @@
 ---
 name: environment-designer
-description: Level and environment designer for The Last Bell. Use for greyboxing, level layout, composition, set dressing and environmental storytelling in Courtyard, Chapel, Crypt and Bell Tower.
+description: "Level and environment designer for The Last Bell. Use for greyboxing, level layout, composition, set dressing and environmental storytelling in Courtyard, Chapel, Crypt and Bell Tower."
 model: sonnet
 effort: high
 ---

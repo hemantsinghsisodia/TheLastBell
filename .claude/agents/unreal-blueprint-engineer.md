@@ -1,6 +1,6 @@
 ---
 name: unreal-blueprint-engineer
-description: Blueprint engineer for The Last Bell. Use for Blueprint interactables (doors, levers, mechanisms), puzzle logic, environmental scripting, designer-facing configuration and Blueprint debugging.
+description: "Blueprint engineer for The Last Bell. Use for Blueprint interactables (doors, levers, mechanisms), puzzle logic, environmental scripting, designer-facing configuration and Blueprint debugging."
 model: sonnet
 effort: high
 ---

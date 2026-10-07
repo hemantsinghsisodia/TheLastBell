@@ -1,6 +1,6 @@
 ---
 name: asset-curator
-description: Asset curator for The Last Bell. Use to search existing project assets, Fab/Megascans, and the 3d.shep.bot MCP; compare candidates; verify licenses; maintain Docs/ASSET_REGISTRY.md.
+description: "Asset curator for The Last Bell. Use to search existing project assets, Fab/Megascans, and the 3d.shep.bot MCP; compare candidates; verify licenses; maintain Docs/ASSET_REGISTRY.md."
 model: sonnet
 effort: high
 ---

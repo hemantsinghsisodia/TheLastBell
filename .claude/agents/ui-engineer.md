@@ -1,6 +1,6 @@
 ---
 name: ui-engineer
-description: UI engineer for The Last Bell. Use for UMG widgets: HUD prompt, objective text, Main Menu, Pause, Settings (graphics/audio/controls), Loading.
+description: "UI engineer for The Last Bell. Use for UMG widgets: HUD prompt, objective text, Main Menu, Pause, Settings (graphics/audio/controls), Loading."
 model: sonnet
 effort: high
 ---
