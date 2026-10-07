@@ -7,6 +7,7 @@
 #include "Tests/AutomationEditorCommon.h"
 #include "Engine/World.h"
 #include "Engine/TargetPoint.h"
+#include "Kismet/GameplayStatics.h"
 #include "Misc/PackageName.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -130,8 +131,8 @@ namespace
 	public:
 		enum class EStatus { Running, Passed, Failed };
 
-		FLBWalkPathRunner(FAutomationTestBase* InTest, const FWalkPathDef& InDef, bool bInResetState)
-			: Test(InTest), Def(InDef), bResetState(bInResetState)
+		FLBWalkPathRunner(FAutomationTestBase* InTest, const FWalkPathDef& InDef)
+			: Test(InTest), Def(InDef)
 		{
 		}
 
@@ -153,30 +154,6 @@ namespace
 				if (Def.Points.Num() < 2)
 				{
 					return Fail(FString::Printf(TEXT("no walk path %s"), *Def.Name), FVector::ZeroVector, P);
-				}
-				if (ULBWorldStateSubsystem* State = ULBWorldStateSubsystem::Get(W))
-				{
-					if (bResetState)
-					{
-						State->ResetState();
-					}
-					const FString ReqPrefix = TEXT("Requires.");
-					for (const FString& T : Def.Points[0].Tags)
-					{
-						if (T.StartsWith(ReqPrefix))
-						{
-							const FGameplayTag Tag = LBPie::Tag(*T.Mid(ReqPrefix.Len()));
-							if (Tag.IsValid())
-							{
-								State->AddState(Tag);
-								UE_LOG(LogLB, Display, TEXT("[WalkPath] %s requires %s"), *Def.Name, *Tag.ToString());
-							}
-							else
-							{
-								Test->AddError(FString::Printf(TEXT("WalkPath %s: unknown required tag '%s'"), *Def.Name, *T.Mid(ReqPrefix.Len())));
-							}
-						}
-					}
 				}
 				PlaceAtStart(W, P);
 				PhaseStart = Now;
@@ -205,7 +182,6 @@ namespace
 
 		FAutomationTestBase* Test;
 		FWalkPathDef Def;
-		bool bResetState;
 		EPhase Phase = EPhase::Begin;
 		double PhaseStart = 0.0;
 		double PathStart = 0.0;
@@ -217,6 +193,12 @@ namespace
 		double StuckStart = 0.0;
 		float StuckRefDist = 0.f;
 		double FallingSince = -1.0;
+
+	public:
+		float MaxDriftSeen = 0.f;
+		double Elapsed = 0.0;
+
+	private:
 
 		static float Dist2D(const FVector& A, const FVector& B)
 		{
@@ -279,6 +261,8 @@ namespace
 					return EStatus::Running;
 				}
 				const float Drift = Dist2D(Loc, ReachLoc);
+				MaxDriftSeen = FMath::Max(MaxDriftSeen, Drift);
+				Elapsed = Now - PathStart;
 				UE_LOG(LogLB, Display, TEXT("[WalkPath] %s wp %d/%d reached at %s (t=%.1fs, drift=%.1fcm)"), *Def.Name, WpIdx + 1,
 					Def.Points.Num(), *ReachLoc.ToString(), ReachTime - PathStart, Drift);
 				if (Drift > MaxDrift)
@@ -289,7 +273,7 @@ namespace
 				++WpIdx;
 				if (WpIdx >= Def.Points.Num())
 				{
-					UE_LOG(LogLB, Display, TEXT("[WalkPath] %s PASS (%d waypoints, %.1fs)"), *Def.Name, Def.Points.Num(), Now - PathStart);
+					UE_LOG(LogLB, Display, TEXT("[WalkPath] %s PASS (%d waypoints, %.1fs, max drift %.1fcm)"), *Def.Name, Def.Points.Num(), Now - PathStart, MaxDriftSeen);
 					return EStatus::Passed;
 				}
 				ResetStuck(P, Now);
@@ -401,8 +385,20 @@ namespace
 				}
 				UE_LOG(LogLB, Display, TEXT("[WalkPath] discovered %d path(s)"), Paths.Num());
 				PathIdx = 0;
+				BeginPath();
+				return false;
+
+			case EStage::Reload:
+				if (LBPie::World() == OldWorld.Get() || !LBPie::WorldReady())
+				{
+					return false;
+				}
+				if (++ReloadFrames < 15)
+				{
+					return false;
+				}
 				Stage = EStage::Run;
-				Runner = MakeUnique<FLBWalkPathRunner>(Test, Paths[0], !bSynthetic);
+				Runner = MakeUnique<FLBWalkPathRunner>(Test, Paths[PathIdx]);
 				return false;
 
 			case EStage::Run:
@@ -417,11 +413,13 @@ namespace
 				{
 					return false;
 				}
+				UE_LOG(LogLB, Display, TEXT("[WalkPath] RESULT %s: %s, %.1fs, max drift %.1fcm"), *Runner->Name(),
+					S == FLBWalkPathRunner::EStatus::Passed ? TEXT("PASS") : TEXT("FAIL"), Runner->Elapsed, Runner->MaxDriftSeen);
 				++PathIdx;
 				Runner.Reset();
 				if (PathIdx < Paths.Num())
 				{
-					Runner = MakeUnique<FLBWalkPathRunner>(Test, Paths[PathIdx], !bSynthetic);
+					BeginPath();
 				}
 				else
 				{
@@ -454,7 +452,7 @@ namespace
 		}
 
 	private:
-		enum class EStage { WaitPie, Setup, Run, EndPie, Done };
+		enum class EStage { WaitPie, Setup, Reload, Run, EndPie, Done };
 
 		static constexpr double WallTimeout = 900.0;
 
@@ -467,6 +465,45 @@ namespace
 		TArray<FWalkPathDef> Paths;
 		int32 PathIdx = 0;
 		TUniquePtr<FLBWalkPathRunner> Runner;
+		TWeakObjectPtr<UWorld> OldWorld;
+		int32 ReloadFrames = 0;
+
+		/** Clean world per path, as the game does: replace state first, then reload the map. Synthetic walks in place. */
+		void BeginPath()
+		{
+			if (bSynthetic)
+			{
+				Stage = EStage::Run;
+				Runner = MakeUnique<FLBWalkPathRunner>(Test, Paths[PathIdx]);
+				return;
+			}
+			FGameplayTagContainer Required;
+			const FString ReqPrefix = TEXT("Requires.");
+			for (const FString& T : Paths[PathIdx].Points[0].Tags)
+			{
+				if (T.StartsWith(ReqPrefix))
+				{
+					const FGameplayTag Tag = LBPie::Tag(*T.Mid(ReqPrefix.Len()));
+					if (Tag.IsValid())
+					{
+						Required.AddTag(Tag);
+					}
+					else
+					{
+						Test->AddError(FString::Printf(TEXT("WalkPath %s: unknown required tag '%s'"), *Paths[PathIdx].Name, *T.Mid(ReqPrefix.Len())));
+					}
+				}
+			}
+			UE_LOG(LogLB, Display, TEXT("[WalkPath] %s: replace state with [%s], reload map"), *Paths[PathIdx].Name, *Required.ToStringSimple());
+			if (ULBWorldStateSubsystem* State = ULBWorldStateSubsystem::Get(LBPie::World()))
+			{
+				State->ReplaceState(Required);
+			}
+			OldWorld = LBPie::World();
+			ReloadFrames = 0;
+			Stage = EStage::Reload;
+			UGameplayStatics::OpenLevel(LBPie::World(), FName(*LBPie::MapShortName()));
+		}
 
 		/** Three waypoints straight across the micro-slice entry room floor. */
 		void SpawnSyntheticPoints()
