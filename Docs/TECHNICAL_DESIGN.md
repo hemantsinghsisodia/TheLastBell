@@ -18,22 +18,26 @@ There is one runtime module, `Source/LastBell/` (prefix `LB`), added in Phase 1.
 Source/LastBell/
   LastBell.Build.cs  LastBell.h/.cpp  LBGameplayTags.h/.cpp  LBLog.h
   Systems/      ALBGameMode, ALBPlayerController, ULBWorldStateSubsystem, FLBWorldState, console commands (P1)
+                ULBGameSettings (DeveloperSettings: MainMenuMap, NewGameMap)     (P2)
   Character/    ALBCharacter                                                     (P1)
   Components/   ULBInteractorComponent, ULBInteractableComponent                 (P1)
                 ULBFootstepComponent, ULBLightSourceComponent                    (P3)
   Objectives/   ULBObjectiveChainData, ULBObjectiveSubsystem                     (P1)
   Save/         ULBSaveGame, FLBActorSaveRecord, FLBSaveIdRegistry, ULBSaveSubsystem, ULBSaveStateComponent, ALBCheckpoint (P1)
   AI/           ALBWarden, ALBWardenController, State Tree tasks/conditions      (P5)
+  Tests/        unit tests, MicroSlice PIE test, FLBRouteBot + RouteBot.* (editor/dev-test builds only)
 ```
-Phase 1 dependencies are Core, CoreUObject, Engine, InputCore, EnhancedInput, GameplayTags and UMG. AIModule, NavigationSystem, StateTreeModule and GameplayStateTreeModule are added in Phase 5.
+Dependencies are Core, CoreUObject, Engine, InputCore, EnhancedInput, GameplayTags, UMG and DeveloperSettings (P2), plus UnrealEd only when building the editor (tests). AIModule, NavigationSystem, StateTreeModule and GameplayStateTreeModule are added in Phase 5.
 There is **no custom GameInstance**, because GameInstance subsystems don't need one. There's no static helper library until a real shared helper exists.
 
 ## 3. Framework
 | Class | Base | Responsibility | Not responsible for |
 |---|---|---|---|
 | `ALBGameMode` | `AGameModeBase` | Sets default classes and holds the objective chain asset property. Spawns the player at the pending checkpoint transform (overrides `ChoosePlayerStart` and the spawn transform). On player death, calls `SaveSubsystem.LoadLastCheckpoint()` | Progression logic |
-| `ALBPlayerController` | `APlayerController` | Adds Input Mapping Contexts, creates the HUD widget from a class property, handles pause (Phase 3+) | Gameplay rules |
+| `ALBPlayerController` | `APlayerController` | Adds Input Mapping Contexts, creates the HUD widget from a class property. `bMenuMode` / `SetMenuMode()` switches to UI-only input with the cursor (menus, ending); it's only applied when menu mode is on. Pause comes in Phase 3+ | Gameplay rules |
 | `ULBWorldStateSubsystem` | `UGameInstanceSubsystem` | Owns the canonical `FGameplayTagContainer` of `State.*` tags. API: `AddState`, `RemoveState`, `HasState`, `ResetState()`, `ReplaceState(Container)`. Delegates: `OnStateChanged(Tag, bAdded)` per tag and `OnStateReplaced` once after a reset or replace. Per-tag events are suppressed during bulk operations | Deciding *why* states change |
+
+**Game flow (P2, `ULBSaveSubsystem`):** `StartNewGame()`, `ContinueGame()`, `CompleteGame()` (deletes the save and opens the menu) and `ReturnToMainMenu()` (keeps the save). Maps come from `ULBGameSettings`. Every travel sets `bTravelPending`, which blocks re-entry and checkpoint saves until the next world initialises. The target map is validated before any destructive step. Invariant: New Game and Continue always overwrite the in-memory WorldState and records, so returning to the menu doesn't need to clear them.
 
 **Lifecycle rule:** New Game calls `ResetState()` **before** opening the map. Continue and death reload call `ReplaceState(SavedState)` **before** opening the map. WorldState is never merged with a save.
 
@@ -96,7 +100,7 @@ Not built: multiple slots, free saving or whole-world serialization.
 
 ## 9. Gameplay Tags
 - **Native** (referenced from C++): `State.Warden.Stage.1..6`, and `AI.Stimulus.*` from Phase 5.
-- **Ini** (`Config/Tags/LBGameplayTags.ini`, added by designers in the editor): `State.Ritual.1..3`, `State.Door.<Name>.Unlocked`, `State.Item.<Name>`, `State.Event.<Name>`, `State.Test.*`, `Objective.<Area>.<Name>`.
+- **Ini** (`Config/Tags/LBGameplayTags.ini`, edited as text **only while the editor is closed**, D-024): `State.Ritual.1..3`, `State.Door.<Name>.Open`, `State.Item.<Name>`, `State.Event.<Name>`, `State.Test.*`, `Objective.<Area>.<Name>`.
 - Each tag has exactly one source. It's never declared both natively and in ini.
 
 ## 10. Blueprint layer
@@ -104,16 +108,18 @@ These live in `Content/LastBell/Blueprints/`:
 - `BP_LBCharacter`, `BP_LBPlayerController` and `BP_LBGameMode` are data-only children that configure the C++ classes.
 - `Interactables/` contains:
   - `BP_Door_Base`: rotates, locks via `RequiredStateTags`, stores its open state as a tag and snaps instantly on restore.
-  - `BP_Lever`, `BP_Note` and `BP_RitualMechanism_Base`.
+  - `BP_Lever`, `BP_RitualMechanism`, `BP_TagInteractable` (pickups, candles, bell), `BP_TagTrigger`, `BP_TagVisibility`, `BP_KillVolume`.
+  - Warden stand-ins (Phase 2): `BP_WardenSilhouette` (stages 1–3, no AI) and `BP_WardenPlaceholderKill` (stages 4–5).
+  - All of these share the pattern: snap to state at BeginPlay, bind `OnStateChanged`, unbind at EndPlay. A shared base (`ALBTagReactiveActor`) is planned as P3-000 (REV-002 M5).
 - `Puzzles/` has one Blueprint per puzzle. They communicate only through WorldState tags.
 - Scripted beats live in small `BP_Event_*` actors, not in Level Blueprints.
-- UI: `WBP_HUD` (prompt and objective) in Phase 1. `WBP_MainMenu`, `WBP_Pause` and `WBP_Settings` come later.
+- UI: `WBP_HUD` (prompt and objective) from P1. `WBP_MainMenu`, `WBP_Ending` and `BP_EndingTrigger` from P2. `WBP_Pause` and `WBP_Settings` come later.
 
 **Blueprint rule:** a Blueprint never reaches into another Blueprint's internals. Communication goes through tags, components or delegates.
 
 ## 11. Maps
-- `L_MainMenu` holds the menu (Phase 2).
-- `L_Monastery` is a **non-World-Partition** persistent level with one streaming sublevel per area: Courtyard, Chapel, Crypt and BellTower. The map is small, and this keeps save IDs, checkpoints and streaming simple (D-013).
+- `L_MainMenu` holds the menu (`BP_MenuGameMode`, `WBP_MainMenu`). It's the game's default map. Packaged builds cook exactly `L_MainMenu` and `L_Monastery` (`MapsToCook`), never the test maps.
+- `L_Monastery` is a **non-World-Partition** persistent level. In Phase 2 it's ONE level with Outliner folders per area (D-023). A split into per-area sublevels or level instances (D-013) is decided in Phase 6/7, once streaming needs can be measured. The greybox layout is in `GREYBOX_SPEC.md`.
 - `L_Test_MicroSlice` is the Phase 1 proof map, kept afterwards as a regression map.
 
 ## 12. Rendering baseline (to be measured, not assumed)
@@ -126,5 +132,5 @@ Lumen GI and reflections, Virtual Shadow Maps, Nanite for static geometry, TSR (
   - Save round-trip and version mismatch
   - Duplicate SaveId detection
   - Interaction gating
-- **Regression map:** `L_Test_MicroSlice`.
-- **Console commands** (development builds only): `lb.State.Add <Tag>`, `lb.State.Dump`, `lb.NewGame`, `lb.Checkpoint.Load`, `lb.Kill` (death path), and later `lb.Warden.Debug`.
+- **Regression maps and functional tests:** `L_Test_MicroSlice` (`LastBell.Functional.MicroSlice`, `RouteBot.MicroSlice`). `L_Monastery` is covered by `RouteBot.Monastery`, which plays the whole objective chain through the real interactor, death and restore at CP_TowerBase, then the ending's travel to the menu. **Rerun RouteBot after any gameplay or content change.**
+- **Console commands** (development builds only): `lb.State.Add <Tag>`, `lb.State.Dump`, `lb.NewGame`, `lb.Checkpoint.Load`, `lb.Kill` (death path), `lb.Menu`, `lb.CompleteGame`, and later `lb.Warden.Debug`.
