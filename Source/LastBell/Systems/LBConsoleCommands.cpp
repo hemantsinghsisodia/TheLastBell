@@ -10,6 +10,8 @@
 #include "Save/LBSaveSubsystem.h"
 #include "Character/LBCharacter.h"
 #include "GameFramework/PlayerController.h"
+#include "Systems/LBUserSettings.h"
+#include "Misc/DefaultValueHelper.h"
 #include "LBLog.h"
 
 namespace LBConsole
@@ -110,6 +112,62 @@ namespace LBConsole
 			UE_LOG(LogLB, Error, TEXT("lb.Kill: no ALBCharacter pawn"));
 		}
 	}
+
+	static bool ParseFloat(const TArray<FString>& Args, const TCHAR* Cmd, float& Out)
+	{
+		if (Args.Num() < 1 || !FDefaultValueHelper::ParseFloat(Args[0], Out))
+		{
+			UE_LOG(LogLB, Error, TEXT("%s: expected a number"), Cmd);
+			return false;
+		}
+		return true;
+	}
+
+	static bool ParseBool(const TArray<FString>& Args, const TCHAR* Cmd, bool& Out)
+	{
+		if (Args.Num() < 1 || (Args[0] != TEXT("0") && Args[0] != TEXT("1")))
+		{
+			UE_LOG(LogLB, Error, TEXT("%s: expected 0 or 1"), Cmd);
+			return false;
+		}
+		Out = Args[0] == TEXT("1");
+		return true;
+	}
+
+	static void Sensitivity(const TArray<FString>& Args)
+	{
+		float Value = 1.f;
+		if (ParseFloat(Args, TEXT("lb.Sensitivity"), Value))
+		{
+			ULBUserSettings::GetUserSettings()->SetMouseSensitivity(Value);
+			UE_LOG(LogLB, Display, TEXT("lb.Sensitivity = %.2f"), ULBUserSettings::Get()->MouseSensitivity);
+		}
+	}
+
+	static void InvertY(const TArray<FString>& Args)
+	{
+		bool bValue = false;
+		if (ParseBool(Args, TEXT("lb.InvertY"), bValue))
+		{
+			ULBUserSettings::GetUserSettings()->SetInvertY(bValue);
+		}
+	}
+
+	static void HeadBob(const TArray<FString>& Args)
+	{
+		bool bValue = true;
+		if (ParseBool(Args, TEXT("lb.HeadBob"), bValue))
+		{
+			ULBUserSettings::GetUserSettings()->SetHeadBob(bValue);
+		}
+	}
+
+	static FAutoConsoleCommand CmdSensitivity(TEXT("lb.Sensitivity"), TEXT("lb.Sensitivity <float>: mouse sensitivity (saved)"),
+		FConsoleCommandWithArgsDelegate::CreateStatic(&Sensitivity));
+	static FAutoConsoleCommand CmdInvertY(TEXT("lb.InvertY"), TEXT("lb.InvertY 0|1: invert look Y (saved)"),
+		FConsoleCommandWithArgsDelegate::CreateStatic(&InvertY));
+	static FAutoConsoleCommand CmdHeadBob(TEXT("lb.HeadBob"), TEXT("lb.HeadBob 0|1: head bob (saved)"),
+		FConsoleCommandWithArgsDelegate::CreateStatic(&HeadBob));
 
 	static FAutoConsoleCommandWithWorldAndArgs CmdStateAdd(TEXT("lb.State.Add"), TEXT("lb.State.Add <Tag>"),
 		FConsoleCommandWithWorldAndArgsDelegate::CreateStatic(&StateAdd));
