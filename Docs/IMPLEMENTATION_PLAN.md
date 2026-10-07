@@ -62,7 +62,7 @@ Spec: `Docs/GREYBOX_SPEC.md`. One map, `L_Monastery` (D-023), plus `L_MainMenu`.
 | P2-REV / P2-QA | Architecture review and QA of the full route, checkpoints, death and transitions | architecture-reviewer, qa-reviewer | all | — |
 
 ## Phase 3 — carry-over from REV-002
-- **P3-000:** introduce the `ALBTagReactiveActor` base (snap, bind, unbind) and migrate the 5 tag-reactive BPs before adding interaction feedback (REV-002 M5).
+- ~~P3-000 `ALBTagReactiveActor` base~~: deferred (D-032).
 - Rerun `RouteBot.*` after every movement or interaction change. The bot assumes standing capsule height and interact range (REV-002 L12).
 
 ## Phase 3 — Player feel and interaction: task breakdown

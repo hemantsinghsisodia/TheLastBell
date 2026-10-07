@@ -12,7 +12,7 @@ This document is the source of truth for the architecture. Any deviation must be
 - **Build only what the current phase needs.** Each system lists what it deliberately does *not* do.
 
 ## 2. Module layout
-There is one runtime module, `Source/LastBell/` (prefix `LB`), added in Phase 1. No editor module until a real editor-only need appears. Classes are created only in the phase that needs them.
+There is one runtime module, `Source/LastBell/` (prefix `LB`), added in Phase 1, plus (from Phase 3, REV-003 M6) a **`LastBellTests`** module that holds all automation tests and test helpers. It's built for the Editor target only and never ships. Classes are created only in the phase that needs them.
 
 ```
 Source/LastBell/
@@ -20,14 +20,17 @@ Source/LastBell/
   Systems/      ALBGameMode, ALBPlayerController, ULBWorldStateSubsystem, FLBWorldState, console commands (P1)
                 ULBGameSettings (DeveloperSettings: MainMenuMap, NewGameMap)     (P2)
   Character/    ALBCharacter                                                     (P1)
+                ULBPlayerTuningData (DA_PlayerTuning), LBPlayerTypes (ELBGait + pure logic structs),
+                ULBCameraFeelComponent, ULBFootstepComponent, ULBCandleComponent, ULBInspectionComponent (P3)
   Components/   ULBInteractorComponent, ULBInteractableComponent                 (P1)
-                ULBFootstepComponent, ULBLightSourceComponent                    (P3)
+                ULBInspectableComponent                                           (P3)
   Objectives/   ULBObjectiveChainData, ULBObjectiveSubsystem                     (P1)
   Save/         ULBSaveGame, FLBActorSaveRecord, FLBSaveIdRegistry, ULBSaveSubsystem, ULBSaveStateComponent, ALBCheckpoint (P1)
   AI/           ALBWarden, ALBWardenController, State Tree tasks/conditions      (P5)
-  Tests/        unit tests, MicroSlice PIE test, FLBRouteBot + RouteBot.* (editor/dev-test builds only)
+  Systems/      ULBUserSettings (MouseSensitivity, bInvertY, bHeadBob; config=GameUserSettings) (P3)
+Source/LastBellTests/   (Editor target only) unit tests, MicroSlice, RouteBot.*, WalkPath.*, PlayerFeel.*, test helpers
 ```
-Dependencies are Core, CoreUObject, Engine, InputCore, EnhancedInput, GameplayTags, UMG and DeveloperSettings (P2), plus UnrealEd only when building the editor (tests). AIModule, NavigationSystem, StateTreeModule and GameplayStateTreeModule are added in Phase 5.
+Runtime dependencies are Core, CoreUObject, Engine, InputCore, EnhancedInput, GameplayTags, UMG, DeveloperSettings (P2) and PhysicsCore (P3, footstep surfaces). `UnrealEd` is used only by `LastBellTests`. AIModule, NavigationSystem, StateTreeModule and GameplayStateTreeModule are added in Phase 5.
 There is **no custom GameInstance**, because GameInstance subsystems don't need one. There's no static helper library until a real shared helper exists.
 
 ## 3. Framework
@@ -45,15 +48,19 @@ There is **no custom GameInstance**, because GameInstance subsystems don't need 
 `ALBCharacter : ACharacter` has a first-person `UCameraComponent` on the capsule and **no full-body mesh**; arms or hands are deferred until there's a reason for them. From Phase 5 it carries a `UAIPerceptionStimuliSourceComponent` so the Warden can see it.
 Components:
 - `ULBInteractorComponent` (P1) does a camera-forward sphere trace on a dedicated `Interaction` trace channel. It runs **from a timer at about 10 Hz**, not Tick, plus on input. It tracks the focused `ULBInteractableComponent` and broadcasts `OnFocusChanged(Component, PromptText)` for the HUD.
-- `ULBFootstepComponent` (P3) sets step cadence by gait, looks up the physical surface to pick a sound from `DT_Footsteps`, and calls `ReportNoiseEvent` from Phase 5.
-- `ULBLightSourceComponent` (P3) handles the lantern: on/off, intensity curve and an optional flicker profile.
-- Movement tuning lives in the `UCharacterMovementComponent` defaults on `BP_LBCharacter`. Stamina isn't built until the Phase 3 playtest justifies it.
+- **Tuning:** every feel value (speeds, acceleration, crouch height, head bob, sprint FOV, landing dip, stride and loudness per gait, candle, inspection) lives in `ULBPlayerTuningData` (`DA_PlayerTuning`, assigned on `BP_LBCharacter`), with a CDO fallback. The gait (`ELBGait`: Idle, Walk, Sprint, Crouch) is computed once per frame; walk, sprint and crouch speeds are applied when the state changes.
+- `ULBCameraFeelComponent` (P3) handles the crouch eye blend, a subtle vertical bob (`bHeadBob` setting), the sprint FOV ease and the landing dip. There's **no roll and no shake**.
+- `ULBFootstepComponent` (P3) fires steps by distance per gait, looks up the surface sound in `DT_Footsteps` (sounds come in Phase 16), and broadcasts `OnFootstep(Loudness, Location, Surface)`. In Phase 5 this component calls `ReportNoiseEvent` itself.
+- `ULBCandleComponent` (P3, D-029) is the handheld candle: a warm point light with flicker; it gutters while sprinting; snuff and relight with a delay; `IsLit()` feeds Warden sight in Phase 5; a held placeholder mesh sways with look input.
+- `ULBInspectionComponent` (P3, D-030) holds an item in front of the camera, rotates it, and restores it on close. Kept items grant through their interactable. `CancelInspect` (death, EndPlay, destroyed item) always cleans up and grants nothing.
+- **Stamina:** none (D-031). Sprint is unlimited but loud.
 
-Input uses Enhanced Input. Phase 1 has `IA_Move`, `IA_Look` and `IA_Interact` in `IMC_LB_Gameplay`. Phase 3 adds `IA_Sprint`, `IA_Crouch`, `IA_Lantern` and `IA_Pause`. Sensitivity is a user setting applied as an input-modifier scalar.
+Input uses Enhanced Input. Phase 1 has `IA_Move`, `IA_Look` and `IA_Interact` in `IMC_LB_Gameplay`. Phase 3 adds `IA_Sprint` (hold), `IA_Crouch` (hold), `IA_Candle`, plus `IA_InspectRotate` and `IA_InspectExit` in `IMC_LB_Inspect`. The inspect context is pushed by `ALBPlayerController` during inspection. `IA_Pause` comes in Phase 18. Sensitivity and invert-Y (`ULBUserSettings`) are applied in the character's look handler.
 
 ## 5. Interaction
 There is a single path, **`ULBInteractableComponent`**. Adding it to any actor makes that actor interactable, and it's the only thing the player knows about.
-- Properties: `PromptText`, `bEnabled`, `RequiredStateTags` (all must be present), `GrantedStateTags` (added on interact), `bSingleUse`, `ConsumedStateTag` (persists single use as a tag).
+- Properties: `PromptText`, `DeniedPromptText` (shown when focused but not usable, P2), `bEnabled`, `RequiredStateTags` (all must be present), `GrantedStateTags` (added on interact, via `AddStates`), `bSingleUse`, `ConsumedStateTag` (persists single use as a tag), `bInspectOnInteract` (P3: interacting opens inspection; the grant happens on close if the inspectable is kept).
+- `ULBInspectableComponent` (P3): `DisplayName`, `BodyText`, `bKeepOnClose`, `InitialInspectRotation`. The interactable's grant is the single grant path.
 - API: `CanInteract(Instigator)` (BlueprintNativeEvent) and `Interact(Instigator)`.
 - Delegates: `OnInteracted`, `OnInteractDenied`, `OnFocusBegin`, `OnFocusEnd`.
 
@@ -110,7 +117,7 @@ These live in `Content/LastBell/Blueprints/`:
   - `BP_Door_Base`: rotates, locks via `RequiredStateTags`, stores its open state as a tag and snaps instantly on restore.
   - `BP_Lever`, `BP_RitualMechanism`, `BP_TagInteractable` (pickups, candles, bell), `BP_TagTrigger`, `BP_TagVisibility`, `BP_KillVolume`.
   - Warden stand-ins (Phase 2): `BP_WardenSilhouette` (stages 1–3, no AI) and `BP_WardenPlaceholderKill` (stages 4–5).
-  - All of these share the pattern: snap to state at BeginPlay, bind `OnStateChanged`, unbind at EndPlay. A shared base (`ALBTagReactiveActor`) is planned as P3-000 (REV-002 M5).
+  - All of these share the pattern: snap to state at BeginPlay, bind `OnStateChanged`, unbind at EndPlay. A shared base (`ALBTagReactiveActor`) was considered and deferred (D-032).
 - `Puzzles/` has one Blueprint per puzzle. They communicate only through WorldState tags.
 - Scripted beats live in small `BP_Event_*` actors, not in Level Blueprints.
 - UI: `WBP_HUD` (prompt and objective) from P1. `WBP_MainMenu`, `WBP_Ending` and `BP_EndingTrigger` from P2. `WBP_Pause` and `WBP_Settings` come later.
