@@ -69,7 +69,9 @@ void ULBInteractableComponent::ApplyInteraction(AActor* Instigator)
 		}
 		WorldState->AddStates(ToAdd);
 	}
-	if (bSingleUse)
+	// With a ConsumedStateTag, availability is derived from that tag (absent = usable), so a puzzle reset that removes the
+	// tag makes this usable again. Without one (or without a world state to hold it) the only way to remember use is bEnabled.
+	if (bSingleUse && (!ConsumedStateTag.IsValid() || !ULBWorldStateSubsystem::Get(this)))
 	{
 		bEnabled = false;
 	}
@@ -94,13 +96,5 @@ void ULBInteractableComponent::BeginPlay()
 	{
 		UE_LOG(LogLB, Warning, TEXT("Single-use interactable on '%s' has no ConsumedStateTag: single-use state not persisted"), *GetNameSafe(GetOwner()));
 	}
-
-	if (ConsumedStateTag.IsValid())
-	{
-		const ULBWorldStateSubsystem* WorldState = ULBWorldStateSubsystem::Get(this);
-		if (WorldState && WorldState->HasState(ConsumedStateTag))
-		{
-			bEnabled = false;
-		}
-	}
+	// A present ConsumedStateTag no longer touches bEnabled: PassesStateRequirements derives availability from the tag.
 }

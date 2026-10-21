@@ -29,6 +29,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "LastBell|WorldState")
 	void RemoveState(FGameplayTag Tag);
 
+	/** Removes all tags first, then broadcasts OnStateChanged(Tag, false) once per tag that was actually present. */
+	UFUNCTION(BlueprintCallable, Category = "LastBell|WorldState")
+	void RemoveStates(const FGameplayTagContainer& Tags);
+
 	UFUNCTION(BlueprintPure, Category = "LastBell|WorldState")
 	bool HasState(FGameplayTag Tag) const;
 

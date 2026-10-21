@@ -45,6 +45,26 @@ void ULBWorldStateSubsystem::RemoveState(FGameplayTag Tag)
 	}
 }
 
+void ULBWorldStateSubsystem::RemoveStates(const FGameplayTagContainer& Tags)
+{
+	// Copy first: the argument may alias the live container (GetStateRef).
+	TArray<FGameplayTag> Candidates;
+	Tags.GetGameplayTagArray(Candidates);
+	TArray<FGameplayTag> Removed;
+	for (const FGameplayTag& Tag : Candidates)
+	{
+		if (WorldState.Remove(Tag))
+		{
+			Removed.Add(Tag);
+		}
+	}
+	for (const FGameplayTag& Tag : Removed)
+	{
+		UE_LOG(LogLB, Verbose, TEXT("State removed: %s"), *Tag.ToString());
+		OnStateChanged.Broadcast(Tag, false);
+	}
+}
+
 bool ULBWorldStateSubsystem::HasState(FGameplayTag Tag) const
 {
 	return WorldState.Has(Tag);

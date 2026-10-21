@@ -18,6 +18,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LastBell|Interaction")
 	FText PromptText;
 
+	/** Designer / Blueprint "locked" switch. Not changed by use when ConsumedStateTag is valid (see there). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LastBell|Interaction")
 	bool bEnabled = true;
 
@@ -36,7 +37,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LastBell|Interaction")
 	bool bSingleUse = false;
 
-	/** Persists single use: added on interaction, and disables this component on BeginPlay when present. */
+	/**
+	 * Persists single use. Added to world state on interaction; while it is present the component is unavailable, and removing it
+	 * (e.g. a puzzle reset) makes the component usable again. Availability is derived from the tag, never from bEnabled.
+	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LastBell|Interaction")
 	FGameplayTag ConsumedStateTag;
 
@@ -44,7 +48,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LastBell|Interaction")
 	bool bInspectOnInteract = false;
 
-	/** Pure gating logic: enabled, all requirements present, not consumed. */
+	/** Pure gating logic: enabled, all requirements present, consumed tag absent. */
 	bool PassesStateRequirements(const FGameplayTagContainer& WorldState) const;
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "LastBell|Interaction")

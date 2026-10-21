@@ -24,6 +24,7 @@ Source/LastBell/
                 ULBCameraFeelComponent, ULBFootstepComponent, ULBCandleComponent, ULBInspectionComponent (P3)
   Components/   ULBInteractorComponent, ULBInteractableComponent                 (P1)
                 ULBInspectableComponent                                           (P3)
+  Puzzles/      ULBSequencePuzzleComponent, ULBDialComponent, LBPuzzleLogic (pure logic)  (P4)
   Objectives/   ULBObjectiveChainData, ULBObjectiveSubsystem                     (P1)
   Save/         ULBSaveGame, FLBActorSaveRecord, FLBSaveIdRegistry, ULBSaveSubsystem, ULBSaveStateComponent, ALBCheckpoint (P1)
   AI/           ALBWarden, ALBWardenController, State Tree tasks/conditions      (P5)
@@ -66,6 +67,13 @@ There is a single path, **`ULBInteractableComponent`**. Adding it to any actor m
 
 A door, lever, note or ritual mechanism is a Blueprint actor built from a mesh, this component and its own timeline.
 Not built: an inventory, `Interaction.Type.*` tags (deferred until a second kind of interaction exists), or a use-item-on-object matrix. Keys are `State.Item.*` tags checked through `RequiredStateTags`.
+
+### Puzzles (P4, `Source/LastBell/Puzzles/`)
+Puzzle progress is tags, so it is saved at checkpoints with no per-puzzle save code. Everything below is derived from the tags on BeginPlay, so a mid-puzzle save or load just works.
+- **Derived single-use availability.** A single-use `ULBInteractableComponent` with a valid `ConsumedStateTag` is available if and only if that tag is absent. Using it no longer sets `bEnabled=false`; `bEnabled` stays the designer/Blueprint "locked" switch. Removing the consumed tag (a puzzle reset) makes it usable again with no Blueprint work. Single-use without a consumed tag still disables itself and warns on BeginPlay. A Blueprint that sets `bEnabled=false` from a tag at BeginPlay (doors, levers) is fine as long as the tag is never removed; a reversible Blueprint must not do that.
+- **`ULBSequencePuzzleComponent`** (`Steps`, `SolvedTags`; `OnStepAccepted(Index, Step)`, `OnPuzzleFailed(WrongStep)`, `OnPuzzleSolved`). Listens to WorldState. Progress is the longest present prefix of `Steps`. A step added in order is accepted. A step added out of order removes every step tag (`RemoveStates`, on the next tick, never inside the broadcast) and fires `OnPuzzleFailed`. The last step adds `SolvedTags`, fires `OnPuzzleSolved` and stops listening. On BeginPlay and `OnStateReplaced`, step tags that are not a valid prefix are reset silently. If all `SolvedTags` are already present on BeginPlay the component is inert. No delegates fire for state that was present at BeginPlay, so Blueprints snap their visuals from the tags. The pure logic is `FLBSequenceLogic`.
+- **`ULBDialComponent`** (`PositionTags`, `InitialIndex`, `bLocked`; `CycleNext()`, `GetCurrentIndex()`, `OnDialChanged(NewIndex)`). One tag per position, exactly one present. BeginPlay adds `PositionTags[InitialIndex]` if none is present and removes all but the lowest index if several are. `CycleNext` removes the current tag and adds the next, wrapping. If the owner has a `ULBInteractableComponent`, the dial binds its `OnInteracted`, so the interactable stays unaware of puzzles and keeps its normal gating. A combination puzzle needs no controller: the target interactable's `RequiredStateTags` lists the wanted position tags. The pure logic is `FLBDialLogic`.
+- `ULBWorldStateSubsystem::RemoveStates(Container)` removes all tags first, then broadcasts `OnStateChanged(Tag, false)` once per tag that was present (mirrors `AddStates`).
 
 ## 6. Objectives
 - `ULBObjectiveChainData : UPrimaryDataAsset` holds an **ordered array** of `FLBObjective { FGameplayTag Id; FText Text; FGameplayTagContainer CompletionStateTags; }`. There's one chain for the game and a test chain for the micro slice. It's assigned on `ALBGameMode`.
