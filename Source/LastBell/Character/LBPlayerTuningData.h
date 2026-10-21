@@ -161,9 +161,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Candle", meta = (ClampMin = "0"))
 	float CandleRelightFadeTime = 0.25f;
 
-	/** Candle offset relative to the camera (the hand). */
+	/**
+	 * Candle offset relative to the camera (the hand): X forward, Y right, Z up, cm. Measured by LastBell.Functional.PlayerFeel.CandleOnScreen:
+	 * puts the flame in the lower-right quadrant of the frame (never cut off) for 16:9, 4:3, 1:1 and 0.94 windows, standing, crouched and sprinting.
+	 * The camera keeps its vertical FOV when the window gets narrower, so the horizontal field shrinks; do not push Y out further.
+	 */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Candle")
-	FVector CandleHeldOffset = FVector(30.f, 18.f, -22.f);
+	FVector CandleHeldOffset = FVector(36.f, 14.f, -10.f);
 
 	/** Degrees of held-mesh sway per unit of look input. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Candle|Sway", meta = (ClampMin = "0"))
@@ -180,9 +184,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Inspection", meta = (ClampMin = "5"))
 	float InspectHoldDistance = 45.f;
 
-	/** Degrees of item rotation per unit of rotate input. */
+	/**
+	 * Degrees of item rotation per unit of rotate input. Raw mouse counts reach the action multiplied by 0.07 (the Mouse2D axis
+	 * sensitivity in DefaultInput.ini), so 4 is about 0.28 degrees per mouse count; a gamepad stick delivers up to 1 per frame.
+	 */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Inspection", meta = (ClampMin = "0"))
-	float InspectRotateRate = 0.5f;
+	float InspectRotateRate = 4.0f;
 
 	/** Time for the item to travel to the hold point. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Inspection", meta = (ClampMin = "0"))

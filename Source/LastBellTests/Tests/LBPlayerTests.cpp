@@ -39,7 +39,8 @@ bool FLBTuningDefaultsTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("Candle relight delay"), T->CandleRelightDelay, 1.2f);
 	TestEqual(TEXT("Candle gutter scale"), T->CandleGutterIntensityScale, 0.55f);
 	TestFalse(TEXT("Candle shadows off"), T->bCandleCastShadows);
-	TestTrue(TEXT("Candle offset"), T->CandleHeldOffset.Equals(FVector(30.f, 18.f, -22.f)));
+	TestTrue(TEXT("Candle offset"), T->CandleHeldOffset.Equals(FVector(36.f, 14.f, -10.f)));
+	TestEqual(TEXT("Inspect rotate rate"), T->InspectRotateRate, 4.f);
 	TestEqual(TEXT("Inspect hold distance"), T->InspectHoldDistance, 45.f);
 
 	// Applied to a movement component.
@@ -174,6 +175,50 @@ bool FLBInspectCloseTest::RunTest(const FString& Parameters)
 	// Inspect-on-interact is opt-in; items are put back unless marked as keepable (the grant itself is the interactable's GrantedStateTags).
 	TestFalse(TEXT("bInspectOnInteract defaults off"), GetDefault<ULBInteractableComponent>()->bInspectOnInteract);
 	TestFalse(TEXT("bKeepOnClose defaults off"), GetDefault<ULBInspectableComponent>()->bKeepOnClose);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBFaceCameraRotationTest, "LastBell.Player.InspectFaceCameraRotation", LB_TEST_FLAGS)
+bool FLBFaceCameraRotationTest::RunTest(const FString& Parameters)
+{
+	const FVector Back(-1.0, 0.0, 0.0); // thin axis lands here (towards the camera) in camera space
+	const FVector Up(0.0, 0.0, 1.0);    // long axis lands here
+
+	// A note: 20 x 28 x 0.3 cm in every axis permutation (half extents), thin and long axes must land on Back and Up.
+	const FVector Notes[] = { FVector(10, 14, 0.15), FVector(14, 10, 0.15), FVector(0.15, 10, 14), FVector(10, 0.15, 14), FVector(14, 0.15, 10), FVector(0.15, 14, 10) };
+	for (const FVector& Extent : Notes)
+	{
+		FQuat R;
+		if (!TestTrue(FString::Printf(TEXT("%s counts as flat"), *Extent.ToString()), LBPlayerLogic::ComputeFaceCameraRotation(Extent, R)))
+		{
+			continue;
+		}
+		int32 Thin = 0, Long = 0;
+		for (int32 i = 1; i < 3; ++i)
+		{
+			Thin = Extent[i] < Extent[Thin] ? i : Thin;
+			Long = Extent[i] > Extent[Long] ? i : Long;
+		}
+		FVector ThinAxis = FVector::ZeroVector, LongAxis = FVector::ZeroVector;
+		ThinAxis[Thin] = 1.0;
+		LongAxis[Long] = 1.0;
+		TestTrue(FString::Printf(TEXT("%s: thin axis faces the camera (%s)"), *Extent.ToString(), *R.RotateVector(ThinAxis).ToString()), R.RotateVector(ThinAxis).Equals(Back, 1e-4));
+		TestTrue(FString::Printf(TEXT("%s: long axis points up (%s)"), *Extent.ToString(), *R.RotateVector(LongAxis).ToString()), R.RotateVector(LongAxis).Equals(Up, 1e-4));
+		// A proper rotation (no mirroring): the third axis follows from the first two.
+		const FVector Third = ThinAxis ^ LongAxis;
+		TestTrue(TEXT("Third axis follows the right-handed rule"), R.RotateVector(Third).Equals(Back ^ Up, 1e-4));
+		TestTrue(TEXT("Rotation is normalized"), R.IsNormalized());
+	}
+
+	// Anything that is not flat is left alone: a cube, a key (long and slim), a book (thick).
+	for (const FVector& Extent : { FVector(10, 10, 10), FVector(1, 1, 10), FVector(10, 14, 6), FVector::ZeroVector })
+	{
+		FQuat R;
+		TestFalse(FString::Printf(TEXT("%s does not count as flat"), *Extent.ToString()), LBPlayerLogic::ComputeFaceCameraRotation(Extent, R));
+		TestTrue(TEXT("Not flat leaves identity"), R.Equals(FQuat::Identity));
+	}
+
+	TestTrue(TEXT("bAutoFaceCamera defaults on"), GetDefault<ULBInspectableComponent>()->bAutoFaceCamera);
 	return true;
 }
 

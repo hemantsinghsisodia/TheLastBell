@@ -1,15 +1,43 @@
 #include "Character/LBInspectionComponent.h"
 #include "Character/LBCharacter.h"
 #include "Character/LBPlayerTuningData.h"
+#include "Character/LBPlayerTypes.h"
 #include "Components/LBInspectableComponent.h"
 #include "Components/LBInteractableComponent.h"
 #include "Systems/LBPlayerController.h"
+#include "Components/MeshComponent.h"
 #include "Components/PrimitiveComponent.h"
 #include "Components/SceneComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/PlayerController.h"
 #include "LBLog.h"
+
+namespace
+{
+	/** Half extents of the item's visible meshes along the item's own axes (actor rotation, world-scale size). */
+	bool ComputeLocalVisualExtent(const AActor* Item, FVector& OutHalfExtent)
+	{
+		const FTransform ActorNoScale(Item->GetActorRotation(), Item->GetActorLocation());
+		FBox Box(ForceInit);
+		TInlineComponentArray<UMeshComponent*> Meshes(Item);
+		for (const UMeshComponent* Mesh : Meshes)
+		{
+			if (!Mesh->IsVisible() || Mesh->bHiddenInGame)
+			{
+				continue;
+			}
+			const FTransform Relative = Mesh->GetComponentTransform().GetRelativeTransform(ActorNoScale);
+			Box += Mesh->CalcBounds(Relative).GetBox();
+		}
+		if (!Box.IsValid)
+		{
+			return false;
+		}
+		OutHalfExtent = Box.GetExtent();
+		return true;
+	}
+}
 
 ULBInspectionComponent::ULBInspectionComponent()
 {
@@ -75,7 +103,17 @@ bool ULBInspectionComponent::BeginInspect(ULBInspectableComponent* Inspectable, 
 	}
 	Item->SetActorEnableCollision(false);
 
-	ItemRotationInCameraSpace = Inspectable->InitialInspectRotation.Quaternion();
+	// Flat items are turned face-on first; InitialInspectRotation (camera space) is applied on top of that.
+	FQuat FaceCamera = FQuat::Identity;
+	if (Inspectable->bAutoFaceCamera)
+	{
+		FVector HalfExtent;
+		if (ComputeLocalVisualExtent(Item, HalfExtent))
+		{
+			LBPlayerLogic::ComputeFaceCameraRotation(HalfExtent, FaceCamera);
+		}
+	}
+	ItemRotationInCameraSpace = Inspectable->InitialInspectRotation.Quaternion() * FaceCamera;
 	BlendAlpha = 0.f;
 	BeginFrame = GFrameCounter;
 

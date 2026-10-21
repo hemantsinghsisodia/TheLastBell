@@ -28,6 +28,50 @@ namespace LBPlayerLogic
 		return bSprintHeld && !bCrouched && bHasMoveInput && ForwardDot > MinForwardDot;
 	}
 
+	/** Items whose thinnest half extent is below this fraction of their middle half extent count as flat (a note, a card). */
+	constexpr float FlatItemRatio = 0.35f;
+
+	/**
+	 * Rotation in CAMERA space (X forward, Y right, Z up) that holds a flat item face-on: its thinnest local axis points back at
+	 * the camera and its longest local axis points up. HalfExtent is the item's size along its own X, Y, Z axes.
+	 * Returns false (and Identity) when the item is not flat.
+	 */
+	inline bool ComputeFaceCameraRotation(const FVector& HalfExtent, FQuat& OutRotation)
+	{
+		OutRotation = FQuat::Identity;
+		int32 Thin = 0;
+		int32 Long = 0;
+		for (int32 i = 1; i < 3; ++i)
+		{
+			if (HalfExtent[i] < HalfExtent[Thin])
+			{
+				Thin = i;
+			}
+			if (HalfExtent[i] > HalfExtent[Long])
+			{
+				Long = i;
+			}
+		}
+		if (Thin == Long)
+		{
+			return false;
+		}
+		const int32 Mid = 3 - Thin - Long;
+		if (HalfExtent[Mid] <= UE_KINDA_SMALL_NUMBER || HalfExtent[Thin] > HalfExtent[Mid] * FlatItemRatio)
+		{
+			return false;
+		}
+		FVector ThinAxis = FVector::ZeroVector;
+		FVector LongAxis = FVector::ZeroVector;
+		ThinAxis[Thin] = 1.0;
+		LongAxis[Long] = 1.0;
+		// Frame whose X is the thin axis and Y the long axis, and the frame we want it to land in (X back at the camera, Y up).
+		const FQuat Local(FRotationMatrix::MakeFromXY(ThinAxis, LongAxis));
+		const FQuat Target(FRotationMatrix::MakeFromXY(FVector(-1.0, 0.0, 0.0), FVector(0.0, 0.0, 1.0)));
+		OutRotation = Target * Local.Inverse();
+		return true;
+	}
+
 	inline ELBGait SelectGait(bool bCrouched, bool bSprinting, float HorizontalSpeed, float IdleSpeedThreshold)
 	{
 		if (bCrouched)

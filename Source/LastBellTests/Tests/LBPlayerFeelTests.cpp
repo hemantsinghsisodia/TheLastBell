@@ -9,6 +9,15 @@
 #include "Engine/StaticMeshActor.h"
 #include "Engine/LocalPlayer.h"
 #include "Camera/CameraComponent.h"
+#include "Engine/BlueprintGeneratedClass.h"
+#include "Engine/SCS_Node.h"
+#include "Engine/SimpleConstructionScript.h"
+#include "Camera/CameraTypes.h"
+#include "Camera/PlayerCameraManager.h"
+#include "Engine/GameViewportClient.h"
+#include "GenericPlatform/GenericPlatformInputDeviceMapper.h"
+#include "InputKeyEventArgs.h"
+#include "SceneView.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/PointLightComponent.h"
 #include "Components/StaticMeshComponent.h"
@@ -27,6 +36,7 @@
 #include "Systems/LBPlayerController.h"
 #include "Systems/LBWorldStateSubsystem.h"
 #include "InputMappingContext.h"
+#include "InputAction.h"
 #include "Tests/LBTestSink.h"
 #include "UObject/StrongObjectPtr.h"
 #include "LBLog.h"
@@ -821,6 +831,24 @@ namespace
 		}
 		Item->FinishSpawning(Spawn);
 
+		// The spawn transform (scale 1) replaces the root scale authored in the Blueprint: put the authored scale back, so a flat
+		// note really is a flat note (0.2 x 0.28 x 0.003 in BP_Inspectable_Note), as it is when placed in a level.
+		if (const UBlueprintGeneratedClass* BPClass = Cast<UBlueprintGeneratedClass>(Class))
+		{
+			if (BPClass->SimpleConstructionScript)
+			{
+				for (const USCS_Node* Node : BPClass->SimpleConstructionScript->GetRootNodes())
+				{
+					const USceneComponent* Template = Node ? Cast<USceneComponent>(Node->ComponentTemplate) : nullptr;
+					if (Template && Item->GetRootComponent() && !Template->GetRelativeScale3D().Equals(FVector::OneVector))
+					{
+						Item->SetActorScale3D(Template->GetRelativeScale3D());
+						break;
+					}
+				}
+			}
+		}
+
 		// A tag-interactable stand-in can have no mesh: give it a collider the interactor can hit.
 		if (bKeep)
 		{
@@ -1317,6 +1345,711 @@ bool FLBFeelInspectStaticRefusedTest::RunTest(const FString& Parameters)
 		return true;
 	});
 
+	Enqueue(R);
+	return true;
+}
+
+
+// =====================================================================================================================
+// 7. P3-BUG: the held candle must be on screen (flame in the lower-right quadrant) for any plausible window shape
+// =====================================================================================================================
+namespace
+{
+	constexpr float GFrameMargin = 0.05f;
+	constexpr float GLowerRightMin = 0.55f;
+
+	struct FAspectCase
+	{
+		const TCHAR* Name;
+		float Aspect;
+	};
+
+	// Widescreen, classic, square and the user's PIE viewport (506 x 538).
+	const FAspectCase GAspects[] = {
+		{ TEXT("16:9"), 16.f / 9.f },
+		{ TEXT("4:3"), 4.f / 3.f },
+		{ TEXT("1:1"), 1.f },
+		{ TEXT("0.94 (506x538)"), 506.f / 538.f },
+	};
+	constexpr int32 GNumAspects = UE_ARRAY_COUNT(GAspects);
+
+	struct FRange2D
+	{
+		FVector2D Min = FVector2D(1e9, 1e9);
+		FVector2D Max = FVector2D(-1e9, -1e9);
+		int32 N = 0;
+
+		void Add(const FVector2D& P)
+		{
+			Min.X = FMath::Min(Min.X, P.X);
+			Min.Y = FMath::Min(Min.Y, P.Y);
+			Max.X = FMath::Max(Max.X, P.X);
+			Max.Y = FMath::Max(Max.Y, P.Y);
+			++N;
+		}
+
+		bool InsideFrame() const
+		{
+			return N > 0 && Min.X >= GFrameMargin && Min.Y >= GFrameMargin && Max.X <= 1.f - GFrameMargin && Max.Y <= 1.f - GFrameMargin;
+		}
+
+		FString ToString() const
+		{
+			return FString::Printf(TEXT("x %.3f..%.3f y %.3f..%.3f"), Min.X, Max.X, Min.Y, Max.Y);
+		}
+	};
+
+	struct FCandleProbe
+	{
+		FRange2D Flame;
+		FRange2D FlameTop;
+		FRange2D WaxTop;
+		FRange2D WaxBottom;
+		int32 Behind = 0;
+	};
+
+	struct FCandleScreenState
+	{
+		FCandleProbe Probes[GNumAspects];
+		float MinFOV = 1e9f;
+		float MaxFOV = -1e9f;
+		int32 Samples = 0;
+		double SampleStart = -1.0;
+		FVector Offset = FVector::ZeroVector;
+		FVector FlameLocal = FVector::ZeroVector;
+
+		void Reset()
+		{
+			for (FCandleProbe& P : Probes)
+			{
+				P = FCandleProbe();
+			}
+			MinFOV = 1e9f;
+			MaxFOV = -1e9f;
+			Samples = 0;
+			SampleStart = -1.0;
+		}
+	};
+
+	enum class ECandleStance : uint8
+	{
+		Stand,
+		Crouch,
+		Sprint
+	};
+
+	const TCHAR* StanceName(ECandleStance Stance)
+	{
+		switch (Stance)
+		{
+		case ECandleStance::Crouch: return TEXT("crouched");
+		case ECandleStance::Sprint: return TEXT("sprinting");
+		default: return TEXT("standing");
+		}
+	}
+
+	/** Flame = the topmost mesh under the Candle component, wax = the lowest. Returns false when there are not two meshes. */
+	bool GatherCandlePoints(const ALBCharacter* Pawn, FVector& Flame, FVector& FlameTop, FVector& WaxTop, FVector& WaxBottom)
+	{
+		const ULBCandleComponent* Candle = Pawn->GetCandle();
+		if (!Candle)
+		{
+			return false;
+		}
+		TArray<USceneComponent*> Children;
+		Candle->GetChildrenComponents(true, Children);
+		const UStaticMeshComponent* Top = nullptr;
+		const UStaticMeshComponent* Bottom = nullptr;
+		for (const USceneComponent* Child : Children)
+		{
+			const UStaticMeshComponent* Mesh = Cast<UStaticMeshComponent>(Child);
+			if (!Mesh || !Mesh->GetStaticMesh())
+			{
+				continue;
+			}
+			if (!Top || Mesh->Bounds.Origin.Z > Top->Bounds.Origin.Z)
+			{
+				Top = Mesh;
+			}
+			if (!Bottom || Mesh->Bounds.Origin.Z < Bottom->Bounds.Origin.Z)
+			{
+				Bottom = Mesh;
+			}
+		}
+		if (!Top || !Bottom || Top == Bottom)
+		{
+			return false;
+		}
+		Flame = Top->Bounds.Origin;
+		FlameTop = Top->Bounds.Origin + FVector(0.0, 0.0, Top->Bounds.BoxExtent.Z);
+		WaxTop = Bottom->Bounds.Origin + FVector(0.0, 0.0, Bottom->Bounds.BoxExtent.Z);
+		WaxBottom = Bottom->Bounds.Origin - FVector(0.0, 0.0, Bottom->Bounds.BoxExtent.Z);
+		return true;
+	}
+
+	/** The engine's own projection (same call ULocalPlayer makes), for a viewport of the given width / height ratio. */
+	FMatrix BuildViewProjection(const FMinimalViewInfo& View, EAspectRatioAxisConstraint Constraint, float ViewAspect)
+	{
+		constexpr int32 Height = 1000;
+		const FIntRect Rect(0, 0, FMath::RoundToInt(Height * ViewAspect), Height);
+		FSceneViewProjectionData Data;
+		Data.SetViewRectangle(Rect);
+		Data.ViewOrigin = View.Location;
+		Data.ViewRotationMatrix = FInverseRotationMatrix(View.Rotation) * FMatrix(
+			FPlane(0, 0, 1, 0),
+			FPlane(1, 0, 0, 0),
+			FPlane(0, 1, 0, 0),
+			FPlane(0, 0, 0, 1));
+		FMinimalViewInfo Copy = View;
+		FMinimalViewInfo::CalculateProjectionMatrixGivenViewRectangle(Copy, Constraint, Rect, Data);
+		return Data.ComputeViewProjectionMatrix();
+	}
+
+	/** Normalized screen position, (0,0) top-left, (1,1) bottom-right. False when the point is behind the camera. */
+	bool ProjectToScreen(const FMatrix& ViewProjection, const FVector& World, FVector2D& OutScreen)
+	{
+		const FVector4 Clip = ViewProjection.TransformFVector4(FVector4(World, 1.0));
+		if (Clip.W <= 0.0)
+		{
+			return false;
+		}
+		OutScreen.X = 0.5 + 0.5 * Clip.X / Clip.W;
+		OutScreen.Y = 0.5 - 0.5 * Clip.Y / Clip.W;
+		return true;
+	}
+
+	bool SampleCandle(FStepCtx& C, FCandleScreenState& S)
+	{
+		const APlayerController* PC = Cast<APlayerController>(C.Pawn->GetController());
+		if (!PC || !PC->PlayerCameraManager)
+		{
+			return false;
+		}
+		FVector Flame, FlameTop, WaxTop, WaxBottom;
+		if (!GatherCandlePoints(C.Pawn, Flame, FlameTop, WaxTop, WaxBottom))
+		{
+			return false;
+		}
+		const FMinimalViewInfo View = PC->PlayerCameraManager->GetCameraCacheView();
+		const ULocalPlayer* LP = PC->GetLocalPlayer();
+		const EAspectRatioAxisConstraint Constraint = LP ? static_cast<EAspectRatioAxisConstraint>(LP->AspectRatioAxisConstraint.GetValue()) : AspectRatio_MaintainYFOV;
+
+		S.MinFOV = FMath::Min(S.MinFOV, View.FOV);
+		S.MaxFOV = FMath::Max(S.MaxFOV, View.FOV);
+		++S.Samples;
+		S.FlameLocal = View.Rotation.UnrotateVector(Flame - View.Location);
+
+		for (int32 i = 0; i < GNumAspects; ++i)
+		{
+			const FMatrix VP = BuildViewProjection(View, Constraint, GAspects[i].Aspect);
+			FCandleProbe& Probe = S.Probes[i];
+			FVector2D P;
+			bool bAllFront = true;
+			if (ProjectToScreen(VP, Flame, P)) { Probe.Flame.Add(P); } else { bAllFront = false; }
+			if (ProjectToScreen(VP, FlameTop, P)) { Probe.FlameTop.Add(P); } else { bAllFront = false; }
+			if (ProjectToScreen(VP, WaxTop, P)) { Probe.WaxTop.Add(P); } else { bAllFront = false; }
+			if (ProjectToScreen(VP, WaxBottom, P)) { Probe.WaxBottom.Add(P); } else { bAllFront = false; }
+			Probe.Behind += bAllFront ? 0 : 1;
+		}
+		return true;
+	}
+
+	void EvaluateCandle(FAutomationTestBase* Test, const FString& Label, const FCandleScreenState& S)
+	{
+		Test->TestTrue(FString::Printf(TEXT("%s: gathered candle samples (%d)"), *Label, S.Samples), S.Samples >= 10);
+		Note(FString::Printf(TEXT("%s: offset %s, flame in camera space %s, FOV %.2f..%.2f, %d samples"), *Label, *S.Offset.ToString(), *S.FlameLocal.ToString(), S.MinFOV, S.MaxFOV, S.Samples));
+		for (int32 i = 0; i < GNumAspects; ++i)
+		{
+			const FCandleProbe& P = S.Probes[i];
+			Note(FString::Printf(TEXT("%s @ %s: flame %s | flame top %s | wax top %s | wax bottom %s | behind camera %d"), *Label, GAspects[i].Name,
+				*P.Flame.ToString(), *P.FlameTop.ToString(), *P.WaxTop.ToString(), *P.WaxBottom.ToString(), P.Behind));
+			Test->TestEqual(*FString::Printf(TEXT("%s @ %s: candle never behind the camera"), *Label, GAspects[i].Name), P.Behind, 0);
+			Test->TestTrue(FString::Printf(TEXT("%s @ %s: flame inside the frame with 5%% margin (%s)"), *Label, GAspects[i].Name, *P.Flame.ToString()), P.Flame.InsideFrame());
+			Test->TestTrue(FString::Printf(TEXT("%s @ %s: flame top inside the frame with 5%% margin (%s)"), *Label, GAspects[i].Name, *P.FlameTop.ToString()), P.FlameTop.InsideFrame());
+			Test->TestTrue(FString::Printf(TEXT("%s @ %s: wax top inside the frame with 5%% margin (%s)"), *Label, GAspects[i].Name, *P.WaxTop.ToString()), P.WaxTop.InsideFrame());
+			Test->TestTrue(FString::Printf(TEXT("%s @ %s: flame in the lower-right quadrant, x>%.2f y>%.2f (%s)"), *Label, GAspects[i].Name, GLowerRightMin, GLowerRightMin, *P.Flame.ToString()),
+				P.Flame.N > 0 && P.Flame.Min.X > GLowerRightMin && P.Flame.Min.Y > GLowerRightMin);
+		}
+	}
+
+	/** Holds the stance, waits for it to settle, samples the candle for 0.6 s, evaluates, then restores the tuning's offset. */
+	void AddCandleCase(FFeelRunner& R, const TSharedRef<FCandleScreenState>& S, FAutomationTestBase* Test, const FString& Label, ECandleStance Stance,
+		TFunction<FVector(const ALBCharacter*)> OffsetFn)
+	{
+		const FString FullLabel = FString::Printf(TEXT("%s, %s"), *Label, StanceName(Stance));
+		R.Add(*FString::Printf(TEXT("Candle on screen: %s"), *FullLabel), [S, Test, FullLabel, Stance, OffsetFn](FStepCtx& C)
+		{
+			ULBCandleComponent* Candle = C.Pawn->GetCandle();
+			if (!Test->TestNotNull(TEXT("Pawn has a candle"), Candle))
+			{
+				return true;
+			}
+			if (C.bFirst)
+			{
+				C.Input = FFeelInput();
+				Place(C.Pawn, GStartX);
+				S->Offset = OffsetFn(C.Pawn);
+				Candle->SetRelativeLocation(S->Offset);
+				S->Reset();
+			}
+			if (Stance == ECandleStance::Crouch)
+			{
+				C.Input.bCrouch = true;
+			}
+			else if (Stance == ECandleStance::Sprint)
+			{
+				DriveInput(C.Input, ELBGait::Sprint);
+			}
+			const double Settle = Stance == ECandleStance::Stand ? 0.5 : (Stance == ECandleStance::Crouch ? 1.0 : 1.8);
+			const bool bReady = C.Elapsed >= Settle
+				&& (Stance != ECandleStance::Crouch || C.Pawn->bIsCrouched)
+				&& (Stance != ECandleStance::Sprint || C.Pawn->GetGait() == ELBGait::Sprint);
+			if (!bReady)
+			{
+				return false;
+			}
+			if (S->SampleStart < 0.0)
+			{
+				S->SampleStart = C.Elapsed;
+			}
+			SampleCandle(C, *S);
+			if (C.Elapsed < S->SampleStart + 0.6)
+			{
+				return false;
+			}
+			C.Input = FFeelInput();
+			EvaluateCandle(Test, FullLabel, *S);
+			Candle->SetRelativeLocation(C.Pawn->GetTuning().CandleHeldOffset);
+			return true;
+		}, 60.f);
+
+		if (Stance == ECandleStance::Crouch)
+		{
+			R.Add(TEXT("Candle on screen: stand back up"), [](FStepCtx& C)
+			{
+				C.Input = FFeelInput();
+				return C.Elapsed >= 0.8 && !C.Pawn->bIsCrouched;
+			});
+		}
+		else if (Stance == ECandleStance::Sprint)
+		{
+			AddStopStep(R, TEXT("Candle on screen: stop"));
+		}
+	}
+
+	void AddCandleCases(FFeelRunner& R, const TSharedRef<FCandleScreenState>& S, FAutomationTestBase* Test, const FString& Label, const TFunction<FVector(const ALBCharacter*)>& OffsetFn)
+	{
+		for (const ECandleStance Stance : { ECandleStance::Stand, ECandleStance::Crouch, ECandleStance::Sprint })
+		{
+			AddCandleCase(R, S, Test, Label, Stance, OffsetFn);
+		}
+	}
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBFeelCandleOnScreenTest, "LastBell.Functional.PlayerFeel.CandleOnScreen",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
+bool FLBFeelCandleOnScreenTest::RunTest(const FString& Parameters)
+{
+	TSharedPtr<FFeelRunner> R = StartSession(this);
+	const TSharedRef<FState> Setup = MakeShared<FState>();
+	const TSharedRef<FCandleScreenState> S = MakeShared<FCandleScreenState>();
+	FAutomationTestBase* Test = this;
+	AddSetupSteps(*R, Setup, Test);
+
+	// 1. The offset the pawn really uses (BP_LBCharacter -> DA_PlayerTuning).
+	AddCandleCases(*R, S, Test, TEXT("DA_PlayerTuning offset"), [](const ALBCharacter* P) { return P->GetTuning().CandleHeldOffset; });
+
+	// 2. The C++ default, so it stays a safe fallback (only when the asset overrides it).
+	const ULBPlayerTuningData* Asset = LoadObject<ULBPlayerTuningData>(nullptr, TEXT("/Game/LastBell/Data/DA_PlayerTuning.DA_PlayerTuning"));
+	const FVector DefaultOffset = GetDefault<ULBPlayerTuningData>()->CandleHeldOffset;
+	if (!Asset)
+	{
+		AddError(TEXT("DA_PlayerTuning could not be loaded"));
+	}
+	else if (!Asset->CandleHeldOffset.Equals(DefaultOffset, 0.01))
+	{
+		AddCandleCases(*R, S, Test, TEXT("C++ default offset"), [DefaultOffset](const ALBCharacter*) { return DefaultOffset; });
+	}
+	else
+	{
+		UE_LOG(LogLB, Display, TEXT("[PlayerFeel] DA_PlayerTuning.CandleHeldOffset equals the C++ default %s: one pass covers both"), *DefaultOffset.ToString());
+	}
+
+	// 3. What-if sweep without touching any asset: LB_CANDLE_OFFSETS="x,y,z;x,y,z" is measured and asserted like the real offset.
+	const FString Env = FPlatformMisc::GetEnvironmentVariable(TEXT("LB_CANDLE_OFFSETS"));
+	if (!Env.IsEmpty())
+	{
+		TArray<FString> Entries;
+		Env.ParseIntoArray(Entries, TEXT(";"));
+		for (const FString& Entry : Entries)
+		{
+			FVector V;
+			TArray<FString> Parts;
+			Entry.ParseIntoArray(Parts, TEXT(","));
+			if (Parts.Num() == 3)
+			{
+				V = FVector(FCString::Atod(*Parts[0]), FCString::Atod(*Parts[1]), FCString::Atod(*Parts[2]));
+				AddCandleCases(*R, S, Test, FString::Printf(TEXT("what-if %s"), *V.ToString()), [V](const ALBCharacter*) { return V; });
+			}
+		}
+	}
+
+	Enqueue(R);
+	return true;
+}
+
+// =====================================================================================================================
+// 8. P3-BUG: real raw mouse input must rotate the held note (and only the note)
+// =====================================================================================================================
+namespace
+{
+	/** One frame of raw mouse movement through the game viewport, the same entry the OS mouse uses. False when the viewport ignored it. */
+	bool SendRawMouse(ALBCharacter* Pawn, float DX, float DY)
+	{
+		UWorld* W = Pawn->GetWorld();
+		UGameViewportClient* VC = W ? W->GetGameViewport() : nullptr;
+		const APlayerController* PC = Cast<APlayerController>(Pawn->GetController());
+		const ULocalPlayer* LP = PC ? PC->GetLocalPlayer() : nullptr;
+		if (!VC || !VC->Viewport || !LP)
+		{
+			return false;
+		}
+		const FInputDeviceId Device = IPlatformInputDeviceMapper::Get().GetPrimaryInputDeviceForUser(LP->GetPlatformUserId());
+		const float DeltaTime = W->GetDeltaSeconds();
+		bool bHandled = true;
+		if (DX != 0.f)
+		{
+			bHandled &= VC->InputAxis(FInputKeyEventArgs(VC->Viewport, Device, EKeys::MouseX, DX, DeltaTime, 1, FPlatformTime::Cycles64()));
+		}
+		if (DY != 0.f)
+		{
+			bHandled &= VC->InputAxis(FInputKeyEventArgs(VC->Viewport, Device, EKeys::MouseY, DY, DeltaTime, 1, FPlatformTime::Cycles64()));
+		}
+		return bHandled;
+	}
+
+	FQuat ItemInCamera(const ALBCharacter* Pawn, const AActor* Item)
+	{
+		FVector Loc;
+		FRotator Rot;
+		Pawn->GetController()->GetPlayerViewPoint(Loc, Rot);
+		return Rot.Quaternion().Inverse() * Item->GetActorQuat();
+	}
+
+	struct FRealInputState
+	{
+		FRotator ControlBefore = FRotator::ZeroRotator;
+		FQuat ItemBefore = FQuat::Identity;
+		int32 StartFrame = 0;
+		bool bAllHandled = true;
+		float OriginalRate = -1.f;
+	};
+
+	constexpr int32 GMouseFrames = 20;
+	constexpr float GMouseCountsPerFrame = 5.f;
+	constexpr int32 GMouseSettleFrames = 6;
+
+	/** Drives GMouseFrames frames of raw mouse input, lets it settle, and calls Check(deltaItemDegrees, controlRotationChanged). */
+	void AddMouseStep(FFeelRunner& R, const TSharedRef<FRealInputState>& St, const FString& Name, float DX, float DY,
+		TFunction<void(FStepCtx&, float, const FRotator&, const FRotator&)> Check)
+	{
+		R.Add(*Name, [St, DX, DY, Check](FStepCtx& C)
+		{
+			APlayerController* PC = Cast<APlayerController>(C.Pawn->GetController());
+			if (!PC)
+			{
+				return true;
+			}
+			if (C.bFirst)
+			{
+				St->ControlBefore = PC->GetControlRotation();
+				St->bAllHandled = true;
+				if (const AActor* Item = C.Pawn->GetInspection()->GetInspected() ? C.Pawn->GetInspection()->GetInspected()->GetOwner() : nullptr)
+				{
+					St->ItemBefore = ItemInCamera(C.Pawn, Item);
+				}
+			}
+			if (C.Frames < GMouseFrames)
+			{
+				St->bAllHandled &= SendRawMouse(C.Pawn, DX, DY);
+				return false;
+			}
+			if (C.Frames < GMouseFrames + GMouseSettleFrames)
+			{
+				return false;
+			}
+			float ItemDegrees = 0.f;
+			if (const ULBInspectableComponent* Inspected = C.Pawn->GetInspection()->GetInspected())
+			{
+				ItemDegrees = FMath::RadiansToDegrees(static_cast<float>(St->ItemBefore.AngularDistance(ItemInCamera(C.Pawn, Inspected->GetOwner()))));
+			}
+			Check(C, ItemDegrees, St->ControlBefore, PC->GetControlRotation());
+			return true;
+		});
+	}
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBFeelInspectRealInputTest, "LastBell.Functional.PlayerFeel.InspectRealInput",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
+bool FLBFeelInspectRealInputTest::RunTest(const FString& Parameters)
+{
+	TSharedPtr<FFeelRunner> R = StartSession(this);
+	const TSharedRef<FState> S = MakeShared<FState>();
+	const TSharedRef<FRealInputState> St = MakeShared<FRealInputState>();
+	FAutomationTestBase* Test = this;
+	AddSetupSteps(*R, S, Test);
+	const FString L = TEXT("real input");
+
+	AddPlaceStep(*R, L);
+
+	// Harness check: with no item, raw MouseX must turn the camera through IMC_LB_MouseLook -> IA_Look. Without this the rest proves nothing.
+	AddMouseStep(*R, St, TEXT("Harness: raw MouseX turns the camera when not inspecting"), GMouseCountsPerFrame, 0.f,
+		[Test, St](FStepCtx& C, float, const FRotator& Before, const FRotator& After)
+		{
+			const float Yaw = FMath::Abs(FRotator::NormalizeAxis(After.Yaw - Before.Yaw));
+			Note(FString::Printf(TEXT("Harness: IgnoreInput=%d, all raw events handled=%d, camera yaw changed %.2f deg"),
+				GEngine->GameViewport ? GEngine->GameViewport->IgnoreInput() : -1, St->bAllHandled, Yaw));
+			Test->TestFalse(TEXT("The game viewport does not ignore input"), GEngine->GameViewport && GEngine->GameViewport->IgnoreInput());
+			Test->TestTrue(TEXT("The game viewport accepted every raw mouse event"), St->bAllHandled);
+			Test->TestTrue(FString::Printf(TEXT("Raw MouseX turned the camera (yaw changed %.2f deg)"), Yaw), Yaw > 1.f);
+			C.Pawn->GetController()->SetControlRotation(FRotator::ZeroRotator);
+		});
+
+	AddSpawnStep(*R, S, Test, L, GNoteClassPath, false);
+	AddBeginStep(*R, S, Test, L);
+
+	R->Add(TEXT("Inspecting: wait for the item to arrive, dump the input setup"), [S, St, Test](FStepCtx& C)
+	{
+		if (!C.Pawn->GetInspection()->IsInspecting())
+		{
+			Test->AddError(TEXT("Not inspecting when the mouse test was due"));
+			return true;
+		}
+		if (C.Elapsed < C.Pawn->GetTuning().InspectBlendTime + 0.3)
+		{
+			return false;
+		}
+		// What-if without touching the asset: LB_INSPECT_RATE overrides DA_PlayerTuning.InspectRotateRate in memory for this run only.
+		const FString RateEnv = FPlatformMisc::GetEnvironmentVariable(TEXT("LB_INSPECT_RATE"));
+		if (!RateEnv.IsEmpty() && C.Pawn->Tuning && St->OriginalRate < 0.f)
+		{
+			St->OriginalRate = C.Pawn->Tuning->InspectRotateRate;
+			C.Pawn->Tuning->InspectRotateRate = static_cast<float>(FCString::Atod(*RateEnv));
+			Note(FString::Printf(TEXT("WHAT-IF: InspectRotateRate %.2f (asset has %.2f)"), C.Pawn->Tuning->InspectRotateRate, St->OriginalRate));
+		}
+		Note(FString::Printf(TEXT("Tuning InspectRotateRate = %.2f deg per input unit"), C.Pawn->GetTuning().InspectRotateRate));
+		const ALBPlayerController* PC = Cast<ALBPlayerController>(C.Pawn->GetController());
+		Test->TestTrue(TEXT("Inspect mapping context is active"), InspectContextActive(C.Pawn));
+		Test->TestNotNull(TEXT("Pawn has InspectRotateAction"), C.Pawn->InspectRotateAction.Get());
+		if (PC && PC->InspectMappingContext)
+		{
+			Note(FString::Printf(TEXT("Inspect context priority %d (gameplay contexts are added at 0)"), PC->InspectMappingPriority));
+			for (const FEnhancedActionKeyMapping& M : PC->InspectMappingContext->GetMappings())
+			{
+				Note(FString::Printf(TEXT("  IMC_Inspect: %s -> %s (modifiers %d, triggers %d)"), *M.Key.ToString(), *GetNameSafe(M.Action), M.Modifiers.Num(), M.Triggers.Num()));
+			}
+			for (const TObjectPtr<UInputMappingContext>& Context : PC->MappingContexts)
+			{
+				for (const FEnhancedActionKeyMapping& M : Context->GetMappings())
+				{
+					if (M.Key == EKeys::Mouse2D)
+					{
+						Note(FString::Printf(TEXT("  %s: %s -> %s"), *GetNameSafe(Context), *M.Key.ToString(), *GetNameSafe(M.Action)));
+					}
+				}
+			}
+		}
+		if (const UInputAction* Rotate = C.Pawn->InspectRotateAction)
+		{
+			Note(FString::Printf(TEXT("IA_InspectRotate: ValueType %d (Axis2D=%d), bConsumeInput %d, triggers %d, modifiers %d"), static_cast<int32>(Rotate->ValueType),
+				static_cast<int32>(EInputActionValueType::Axis2D), Rotate->bConsumeInput, Rotate->Triggers.Num(), Rotate->Modifiers.Num()));
+		}
+		return true;
+	});
+
+
+	// 100 raw mouse counts (about 10% of a 1000 px drag) must visibly turn the note: at least 15 degrees, and not a wild spin either.
+	// Raw counts reach the action scaled by the Mouse2D axis sensitivity (0.07), which is what the old tuning value ignored.
+	auto CheckNoteRotation = [Test](const TCHAR* Axis, FStepCtx& C, float ItemDegrees, const FRotator& Before, const FRotator& After)
+	{
+		constexpr float TotalCounts = GMouseFrames * GMouseCountsPerFrame;
+		Note(FString::Printf(TEXT("Mouse%s only: %.0f raw counts rotated the note %.2f deg (%.3f deg/count, tuning rate %.2f), control rotation %s -> %s"), Axis, TotalCounts,
+			ItemDegrees, ItemDegrees / TotalCounts, C.Pawn->GetTuning().InspectRotateRate, *Before.ToString(), *After.ToString()));
+		Test->TestTrue(FString::Printf(TEXT("Mouse%s rotated the held note enough (%.2f deg for %.0f counts, want 15..120)"), Axis, ItemDegrees, TotalCounts), ItemDegrees >= 15.f && ItemDegrees <= 120.f);
+		Test->TestTrue(FString::Printf(TEXT("Mouse%s did not turn the camera while inspecting (%s -> %s)"), Axis, *Before.ToString(), *After.ToString()), Before.Equals(After, 0.01f));
+	};
+
+	AddMouseStep(*R, St, TEXT("Inspecting: raw MouseX rotates the note, camera stays put"), GMouseCountsPerFrame, 0.f,
+		[CheckNoteRotation](FStepCtx& C, float ItemDegrees, const FRotator& Before, const FRotator& After) { CheckNoteRotation(TEXT("X"), C, ItemDegrees, Before, After); });
+
+	AddMouseStep(*R, St, TEXT("Inspecting: raw MouseY rotates the note, camera stays put"), 0.f, GMouseCountsPerFrame,
+		[CheckNoteRotation](FStepCtx& C, float ItemDegrees, const FRotator& Before, const FRotator& After) { CheckNoteRotation(TEXT("Y"), C, ItemDegrees, Before, After); });
+
+	R->Add(TEXT("Close the inspection"), [St, Test](FStepCtx& C)
+	{
+		if (St->OriginalRate >= 0.f && C.Pawn->Tuning)
+		{
+			C.Pawn->Tuning->InspectRotateRate = St->OriginalRate; // undo the LB_INSPECT_RATE what-if
+			St->OriginalRate = -1.f;
+		}
+		ULBInspectionComponent* Inspection = C.Pawn->GetInspection();
+		if (Inspection->IsInspecting() && !Inspection->RequestClose())
+		{
+			return C.Elapsed > 2.0;
+		}
+		Test->TestFalse(TEXT("Not inspecting after close"), Inspection->IsInspecting());
+		return true;
+	});
+
+	AddMouseStep(*R, St, TEXT("After closing: raw MouseX turns the camera again"), GMouseCountsPerFrame, 0.f,
+		[Test](FStepCtx& C, float, const FRotator& Before, const FRotator& After)
+		{
+			const float Yaw = FMath::Abs(FRotator::NormalizeAxis(After.Yaw - Before.Yaw));
+			Test->TestTrue(FString::Printf(TEXT("Look works again after the inspection (yaw changed %.2f deg)"), Yaw), Yaw > 1.f);
+			Test->TestFalse(TEXT("Inspect context removed"), InspectContextActive(C.Pawn));
+		});
+
+	Enqueue(R);
+	return true;
+}
+
+// =====================================================================================================================
+// 9. P3-BUG: a flat note is held face-on to the camera
+// =====================================================================================================================
+namespace
+{
+	struct FFaceResult
+	{
+		bool bValid = false;
+		float FaceDot = 0.f; // |thin axis . camera forward|
+		float UpDot = 0.f;   // |long axis . camera up|
+		FString ThinAxis;
+	};
+
+	/** Finds the item's thinnest and longest local axes on its first visible mesh and compares them with the camera. */
+	FFaceResult MeasureFaceOn(const ALBCharacter* Pawn, const AActor* Item)
+	{
+		FFaceResult Out;
+		TInlineComponentArray<UStaticMeshComponent*> Meshes(const_cast<AActor*>(Item));
+		const UStaticMeshComponent* Mesh = nullptr;
+		for (const UStaticMeshComponent* M : Meshes)
+		{
+			if (M->GetStaticMesh())
+			{
+				Mesh = M;
+				break;
+			}
+		}
+		if (!Mesh)
+		{
+			return Out;
+		}
+		const FVector Extent = Mesh->GetStaticMesh()->GetBounds().BoxExtent * Mesh->GetComponentScale();
+		int32 Thin = 0, Long = 0;
+		for (int32 i = 1; i < 3; ++i)
+		{
+			if (Extent[i] < Extent[Thin]) { Thin = i; }
+			if (Extent[i] > Extent[Long]) { Long = i; }
+		}
+		const FQuat Q = Mesh->GetComponentQuat();
+		const FVector ThinWorld = Q.RotateVector(FVector(Thin == 0, Thin == 1, Thin == 2));
+		const FVector LongWorld = Q.RotateVector(FVector(Long == 0, Long == 1, Long == 2));
+		FVector Loc;
+		FRotator Rot;
+		Pawn->GetController()->GetPlayerViewPoint(Loc, Rot);
+		const FRotationMatrix RM(Rot);
+		Out.bValid = true;
+		Out.FaceDot = static_cast<float>(FMath::Abs(FVector::DotProduct(ThinWorld, RM.GetUnitAxis(EAxis::X))));
+		Out.UpDot = static_cast<float>(FMath::Abs(FVector::DotProduct(LongWorld, RM.GetUnitAxis(EAxis::Z))));
+		Out.ThinAxis = FString::Printf(TEXT("local axis %d (extent %s)"), Thin, *Extent.ToString());
+		return Out;
+	}
+
+	/** Mode 0: the note as authored (auto face camera). 1: auto-facing off, InitialInspectRotation hand-authored. 2: auto-facing off, rotation zero (negative control: edge-on, the original bug). */
+	void AddFaceCase(FFeelRunner& R, const TSharedRef<FState>& S, FAutomationTestBase* Test, const FString& L, int32 Mode)
+	{
+		AddPlaceStep(R, L);
+		AddSpawnStep(R, S, Test, L, GNoteClassPath, false);
+
+		if (Mode != 0)
+		{
+			// Camera space is X forward, Y right, Z up; the sheet's Z (thin) axis must point back at the camera, its Y (long) axis up.
+			R.Add(*FString::Printf(TEXT("%s: auto-facing off"), *L), [S, Test, L, Mode](FStepCtx& C)
+			{
+				AActor* Item = S->Item.Get();
+				ULBInspectableComponent* Inspectable = Item ? Item->FindComponentByClass<ULBInspectableComponent>() : nullptr;
+				if (!Test->TestNotNull(TEXT("Note has an inspectable component"), Inspectable))
+				{
+					return true;
+				}
+				Inspectable->bAutoFaceCamera = false;
+				if (Mode == 1)
+				{
+					Inspectable->InitialInspectRotation = FRotationMatrix::MakeFromZY(FVector(-1.0, 0.0, 0.0), FVector(0.0, 0.0, 1.0)).Rotator();
+				}
+				Note(FString::Printf(TEXT("%s: InitialInspectRotation = %s (camera space)"), *L, *Inspectable->InitialInspectRotation.ToString()));
+				return true;
+			});
+		}
+
+		AddBeginStep(R, S, Test, L);
+
+		R.Add(*FString::Printf(TEXT("%s: held orientation"), *L), [S, Test, L, Mode](FStepCtx& C)
+		{
+			AActor* Item = S->Item.Get();
+			if (!Item || !C.Pawn->GetInspection()->IsInspecting())
+			{
+				Test->AddError(FString::Printf(TEXT("%s: not inspecting when the orientation check was due"), *L));
+				return true;
+			}
+			if (C.Elapsed < C.Pawn->GetTuning().InspectBlendTime + 0.3)
+			{
+				return false;
+			}
+			const FFaceResult F = MeasureFaceOn(C.Pawn, Item);
+			if (!Test->TestTrue(FString::Printf(TEXT("%s: note has a static mesh"), *L), F.bValid))
+			{
+				return true;
+			}
+			Note(FString::Printf(TEXT("%s: thin axis = %s; |thin . camera forward| = %.3f, |long . camera up| = %.3f"), *L, *F.ThinAxis, F.FaceDot, F.UpDot));
+			if (Mode == 2)
+			{
+				Test->TestTrue(FString::Printf(TEXT("%s: without any alignment the sheet is edge-on (|normal . forward| %.3f < 0.2), as in the bug report"), *L, F.FaceDot), F.FaceDot < 0.2f);
+				return true;
+			}
+			Test->TestTrue(FString::Printf(TEXT("%s: the sheet's face points at the camera (|normal . forward| %.3f >= 0.95)"), *L, F.FaceDot), F.FaceDot >= 0.95f);
+			Test->TestTrue(FString::Printf(TEXT("%s: the sheet is upright (|long axis . up| %.3f >= 0.9)"), *L, F.UpDot), F.UpDot >= 0.9f);
+			return true;
+		});
+
+		R.Add(*FString::Printf(TEXT("%s: close and remove the item"), *L), [S](FStepCtx& C)
+		{
+			ULBInspectionComponent* Inspection = C.Pawn->GetInspection();
+			if (Inspection->IsInspecting() && !Inspection->RequestClose())
+			{
+				return C.Elapsed > 2.0;
+			}
+			if (AActor* Item = S->Item.Get())
+			{
+				Item->Destroy();
+			}
+			S->Item.Reset();
+			return true;
+		});
+	}
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBFeelInspectFaceOnTest, "LastBell.Functional.PlayerFeel.InspectFlatFacesCamera",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
+bool FLBFeelInspectFaceOnTest::RunTest(const FString& Parameters)
+{
+	TSharedPtr<FFeelRunner> R = StartSession(this);
+	const TSharedRef<FState> S = MakeShared<FState>();
+	FAutomationTestBase* Test = this;
+	AddSetupSteps(*R, S, Test);
+	AddFaceCase(*R, S, Test, TEXT("Note as authored (auto face camera)"), 0);
+	AddFaceCase(*R, S, Test, TEXT("Note, hand-authored InitialInspectRotation"), 1);
+	AddFaceCase(*R, S, Test, TEXT("Note, negative control (no alignment at all)"), 2);
 	Enqueue(R);
 	return true;
 }
