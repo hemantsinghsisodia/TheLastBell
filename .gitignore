@@ -26,3 +26,6 @@ ExternalAssets/Incoming/
 # OS
 Thumbs.db
 .DS_Store
+
+# Python bytecode (Tools/mcp helper)
+__pycache__/
