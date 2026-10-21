@@ -102,3 +102,30 @@ Branch: `claude/phase-04-puzzles-save`. Owner's puzzle choices (D-035): Chapel =
 | P4-003 | Level: replace the chapel candles, the crypt stand-in and the cloister levers with the real puzzles plus clues; update `DA_ObjectiveChain_Main` (Light the candles in order → CandlesSolved; Balance the chains → dial tags; Ring the bells in order → BellsSolved) | environment-designer + blueprint-engineer | P4-002 | MED |
 | P4-004 | Save hardening tests: corrupt or truncated save file → no Continue and no crash; quit to menu mid-puzzle → Continue restores the partial puzzle; death mid-puzzle; revisiting solved puzzles stays solved | gameplay-programmer | P4-001 | LOW |
 | P4-REV/QA | Architecture review; full RouteBot and WalkPath runs; human playtest of each puzzle | reviewers + owner | all | — |
+
+## Phase 5 — Warden AI: task breakdown
+Branch: `claude/phase-05-warden-ai`. Spec: `Docs/AI_DESIGN.md`. The brain is a **C++ state machine** (D-037, supersedes the State Tree part of D-007/D-018): the MCP tools can't author State Tree or BT assets, and C++ is fully testable by agents.
+
+**Architecture:**
+- `ALBWarden : ACharacter` (placeholder body in `BP_Warden`).
+- `ALBWardenController : AAIController` with `UAIPerceptionComponent` (sight + hearing, detects neutrals).
+- `ULBWardenBrainComponent`: the states Dormant, Patrol, Investigate (with a "suspicious" look-around), Search, Chase, Attack and Return.
+- `ULBWardenTuningData` (`DA_WardenTuning`): every speed, range, timer and stage gate.
+- **Stage gating** from the `State.Warden.Stage.N` tags (D-018):
+  - Stage ≤2: no AI pawn (scripted silhouettes stay as they are).
+  - Stage 3: Investigate noises only; a catch at close range still kills.
+  - Stage 4: adds Patrol and Search.
+  - Stage 5+: adds Chase (Hunt).
+- **Level markers:** `ALBWardenSpawnPoint` (stage + route), `ALBPatrolPoint` (route, order), `ALBSearchPoint`.
+- **Noise:** `ULBFootstepComponent` reports a noise per step (loudness by gait). `ULBInteractableComponent.NoiseLoudness` covers doors and mechanisms.
+- **Candle:** `IsLit()` scales how far the Warden can see you. The Warden only knows what perception reports (no omniscience).
+- **Not saved:** rebuilt from the stage tags at a spawn point (D-012). Checkpoints refuse to save while it is in Chase or Attack (D-019).
+- **Debug:** `lb.Warden.Debug 1` (on-screen state, last-known location, cones), plus the Visual Logger.
+
+| Task | Objective | Owner | Depends on | Risk |
+|---|---|---|---|---|
+| P5-001 | C++: the Warden classes above, perception and noise wiring, the brain state machine, tuning data, the markers, checkpoint refusal, debug drawing; `AIModule`/`NavigationSystem` dependencies | warden-ai | — | HIGH |
+| P5-002 | Content: project navigation set to runtime **Dynamic**, so doors change the navmesh; NavMeshBoundsVolume(s) in `L_Monastery`; a `L_Test_Warden` map (corridor loop, occluding pillars, a sound-test room, an unreachable ledge, a door, NavMesh) | environment-designer | — | MED |
+| P5-003 | `BP_Warden` (tall dark placeholder body, capsule about 55×145) and `DA_WardenTuning`; replace the crypt `BP_WardenPlaceholderKill` with the real Warden flow (spawn, patrol and search points in the crypt and cloister) | blueprint-engineer + environment-designer | P5-001, P5-002 | MED |
+| P5-004 | AI tests in `L_Test_Warden`: sight vs blocked sight; hearing walk vs sprint vs crouch; investigate the noise location; lose the target → search → return; an unreachable player; stuck recovery; repeated chases; chase speed below player sprint; a catch kills; checkpoint refused during a chase; RouteBot and WalkPath still green | warden-ai | P5-001..003 | MED |
+| P5-REV/QA | Architecture review; the owner plays against the Warden repeatedly (difficulty, intelligence, predictability, fairness, chase speed, search time, atmosphere) | reviewers + owner | all | — |
