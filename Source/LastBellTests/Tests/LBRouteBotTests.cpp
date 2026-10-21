@@ -10,6 +10,7 @@
 #include "Components/ArrowComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Character/LBCharacter.h"
+#include "Objectives/LBObjectiveChainData.h"
 #include "Objectives/LBObjectiveSubsystem.h"
 #include "Save/LBCheckpoint.h"
 #include "Save/LBSaveGame.h"
@@ -22,7 +23,19 @@ namespace
 	const TCHAR* GMicroSliceMap = TEXT("/Game/LastBell/Maps/L_Test_MicroSlice");
 	const TCHAR* GMonasteryMap = TEXT("/Game/LastBell/Maps/L_Monastery");
 	const TCHAR* GMainMenuMap = TEXT("/Game/LastBell/Maps/L_MainMenu");
-	constexpr int32 GClimbTowerIndex = 10;
+	const TCHAR* GMainChainPath = TEXT("/Game/LastBell/Data/DA_ObjectiveChain_Main.DA_ObjectiveChain_Main");
+
+	/** Index of "Climb the bell tower" in the main chain, looked up by Id so inserting objectives can't break the test. */
+	int32 FindClimbTowerIndex()
+	{
+		const ULBObjectiveChainData* Chain = LoadObject<ULBObjectiveChainData>(nullptr, GMainChainPath);
+		const FGameplayTag ClimbTower = FGameplayTag::RequestGameplayTag(TEXT("Objective.Main.ClimbTower"), false);
+		if (!Chain || !ClimbTower.IsValid())
+		{
+			return INDEX_NONE;
+		}
+		return Chain->Objectives.IndexOfByPredicate([&](const FLBObjective& O) { return O.Id == ClimbTower; });
+	}
 
 	/** Runs a list of steps (each returns true when done) with per-step and global timeouts; never hangs. */
 	class FLBStepRunner : public IAutomationLatentCommand
@@ -250,7 +263,13 @@ bool FLBRouteBotMonasteryTest::RunTest(const FString& Parameters)
 
 	TSharedRef<FMonasteryContext> Ctx = MakeShared<FMonasteryContext>();
 	FLBRouteBot::FConfig ToTower;
-	ToTower.StopAtIndex = GClimbTowerIndex;
+	const int32 ClimbTowerIndex = FindClimbTowerIndex();
+	if (ClimbTowerIndex == INDEX_NONE)
+	{
+		AddError(TEXT("Objective.Main.ClimbTower not found in DA_ObjectiveChain_Main"));
+		return false;
+	}
+	ToTower.StopAtIndex = ClimbTowerIndex;
 	TSharedRef<FLBRouteBot> TowerBot = MakeShared<FLBRouteBot>(this, ToTower);
 	TSharedRef<FLBRouteBot> FinaleBot = MakeShared<FLBRouteBot>(this, FLBRouteBot::FConfig());
 
@@ -268,13 +287,13 @@ bool FLBRouteBotMonasteryTest::RunTest(const FString& Parameters)
 	} });
 
 	// 2. Route to "Climb the bell tower"
-	Steps.Add(BotStep(TEXT("Route to objective 10 (Climb the bell tower)"), TowerBot, 400.f));
-	Steps.Add({ TEXT("Save with CP_TowerBase exists"), 10.f, [this, Ctx](FLBStepRunner&)
+	Steps.Add(BotStep(TEXT("Route to Climb the bell tower"), TowerBot, 400.f));
+	Steps.Add({ TEXT("Save with CP_TowerBase exists"), 10.f, [this, Ctx, ClimbTowerIndex](FLBStepRunner&)
 	{
 		const ULBSaveGame* Save = LoadSave();
 		if (!Save) { return false; }
 		TestTrue(TEXT("ReachedCheckpoints contains CP_TowerBase"), Save->ReachedCheckpoints.Contains(TEXT("CP_TowerBase")));
-		TestEqual(TEXT("Active objective index"), LBPie::ObjIndex(), GClimbTowerIndex);
+		TestEqual(TEXT("Active objective index"), LBPie::ObjIndex(), ClimbTowerIndex);
 		Ctx->IndexBeforeDeath = LBPie::ObjIndex();
 		if (!FindCheckpointSpawn(TEXT("CP_TowerBase"), Ctx->TowerBaseSpawn)) { AddError(TEXT("CP_TowerBase actor not found in the map")); }
 		Ctx->EndingSeconds = ReadEndingSeconds();

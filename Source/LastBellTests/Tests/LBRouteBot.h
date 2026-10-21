@@ -90,6 +90,9 @@ private:
 	void BeginAttempt();
 	void TickDial();
 	bool PlaceForInteractable(const AActor* Target, int32 Attempt, FVector& OutPawnLoc) const;
+	/** An approach point is usable only if the capsule fits (no static geometry), isn't inside an unreached checkpoint volume, and sees the target. */
+	bool IsApproachValid(const AActor* Target, const FVector& PawnLoc, const FVector& TargetCentre, FString& OutReason) const;
+	bool IsClearLine(const FVector& From, const FVector& To, const AActor* IgnoreActor) const;
 	bool StandPointInBounds(const AActor* Target, FVector& OutPawnLoc) const;
 	bool FindFloor(const FVector& From, float Depth, float& OutZ) const;
 	FVector ReferencePointFor(const FVector& Location) const;
@@ -121,6 +124,8 @@ private:
 
 	TArray<TWeakObjectPtr<ALBCheckpoint>> PendingCheckpoints;
 	double CheckpointStart = 0.0;
+	double CheckpointWaitStart = 0.0; // when the pawn first had no clear line to the head checkpoint; 0 = not waiting
+	static constexpr double ReachWaitSeconds = 3.0;
 	bool bCheckpointEntered = false;
 	int32 PlanWaitFrames = 0;
 };

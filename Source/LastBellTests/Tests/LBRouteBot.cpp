@@ -8,6 +8,7 @@
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/PlayerStart.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Components/BoxComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Character/LBCharacter.h"
@@ -134,6 +135,8 @@ void FLBRouteBot::ResetForNewWorld()
 	CurObjective = -999;
 	FailedProviders.Reset();
 	PendingCheckpoints.Reset();
+	CheckpointWaitStart = 0.0;
+	bCheckpointEntered = false;
 	Attempt = -1;
 }
 
@@ -604,27 +607,113 @@ FVector FLBRouteBot::ReferencePointFor(const FVector& Location) const
 	return Best;
 }
 
+bool FLBRouteBot::IsClearLine(const FVector& From, const FVector& To, const AActor* IgnoreActor) const
+{
+	FCollisionQueryParams Params(SCENE_QUERY_STAT(LBRouteLOS), false, LBPie::Pawn());
+	Params.AddIgnoredActor(IgnoreActor);
+	FHitResult Hit;
+	return !LBPie::World()->LineTraceSingleByChannel(Hit, From, To, ECC_Visibility, Params);
+}
+
+bool FLBRouteBot::IsApproachValid(const AActor* Target, const FVector& PawnLoc, const FVector& TargetCentre, FString& OutReason) const
+{
+	const ALBCharacter* P = LBPie::Pawn();
+	const UCapsuleComponent* Capsule = P ? P->GetCapsuleComponent() : nullptr;
+	const float Radius = Capsule ? Capsule->GetScaledCapsuleRadius() : 34.f;
+	const float HalfHeight = Capsule ? Capsule->GetScaledCapsuleHalfHeight() : 92.f;
+	// A slightly shrunk capsule so resting on the floor (2cm above it) or grazing a wall isn't an "overlap".
+	const FCollisionShape Shape = FCollisionShape::MakeCapsule(FMath::Max(Radius - 2.f, 1.f), FMath::Max(HalfHeight - 4.f, 1.f));
+
+	// (c) not inside static geometry.
+	FCollisionQueryParams Params(SCENE_QUERY_STAT(LBRouteApproach), false, P);
+	Params.AddIgnoredActor(Target);
+	if (LBPie::World()->OverlapAnyTestByObjectType(PawnLoc, FQuat::Identity, FCollisionObjectQueryParams(ECC_WorldStatic), Shape, Params))
+	{
+		OutReason = TEXT("capsule overlaps static geometry");
+		return false;
+	}
+
+	// (b) not inside a checkpoint volume the player hasn't reached yet (the bot would "save" a place the player can't be in yet).
+	const ULBSaveSubsystem* Save = ULBSaveSubsystem::Get(LBPie::World());
+	for (TActorIterator<ALBCheckpoint> It(LBPie::World()); It; ++It)
+	{
+		if (Save && Save->HasReachedCheckpoint(It->CheckpointId))
+		{
+			continue;
+		}
+		TInlineComponentArray<UBoxComponent*> Boxes(*It);
+		for (const UBoxComponent* Box : Boxes)
+		{
+			if (Box->OverlapComponent(PawnLoc, FQuat::Identity, Shape))
+			{
+				OutReason = FString::Printf(TEXT("inside unreached checkpoint volume %s (%s)"), *It->CheckpointId.ToString(), *Label(*It));
+				return false;
+			}
+		}
+	}
+
+	// (a) line of sight from the eye to the target: no shooting through walls.
+	const FVector Eye = PawnLoc + FVector(0, 0, 64.f);
+	FCollisionQueryParams LosParams(SCENE_QUERY_STAT(LBRouteLOS), false, P);
+	LosParams.AddIgnoredActor(Target);
+	FHitResult Hit;
+	if (LBPie::World()->LineTraceSingleByChannel(Hit, Eye, TargetCentre, ECC_Visibility, LosParams))
+	{
+		OutReason = FString::Printf(TEXT("view of target blocked by %s"), *Label(Hit.GetActor()));
+		return false;
+	}
+	return true;
+}
+
 bool FLBRouteBot::PlaceForInteractable(const AActor* Target, int32 AttemptIndex, FVector& OutPawnLoc) const
 {
 	FVector Origin, Extent;
 	Target->GetActorBounds(true, Origin, Extent);
 	const FVector ToRef = (ReferencePointFor(Origin) - Origin).GetSafeNormal2D();
 
-	// Order the four axis directions by how well they face the reference point.
-	TArray<FVector> Dirs(GDirs, 4);
-	Dirs.Sort([&](const FVector& A, const FVector& B) { return FVector::DotProduct(A, ToRef) > FVector::DotProduct(B, ToRef); });
+	// Approach order: the target's own facing first (props face +X by convention, so a wall bell or lever is meant to be used from
+	// in front), then each side (the one nearer the nearest spawn/checkpoint first), the back last. Which side is "nearer a
+	// checkpoint" is only a tie-break: the reachability checks below decide whether a side is actually usable.
+	TArray<FVector> Dirs;
+	const FVector Forward = Target->GetActorForwardVector().GetSafeNormal2D();
+	const bool bHasFacing = !Forward.IsNearlyZero();
+	if (!bHasFacing)
+	{
+		Dirs.Append(GDirs, 4);
+		Dirs.Sort([&](const FVector& A, const FVector& B) { return FVector::DotProduct(A, ToRef) > FVector::DotProduct(B, ToRef); });
+	}
+	else
+	{
+		const FVector Right(-Forward.Y, Forward.X, 0.0);
+		const bool bRightFirst = FVector::DotProduct(Right, ToRef) >= FVector::DotProduct(-Right, ToRef);
+		Dirs.Add(Forward);
+		Dirs.Add(bRightFirst ? Right : -Right);
+		Dirs.Add(bRightFirst ? -Right : Right);
+		Dirs.Add(-Forward);
+	}
 
+	static const TCHAR* DirNames[4] = { TEXT("front"), TEXT("side 1"), TEXT("side 2"), TEXT("back") };
 	const FVector Dir = Dirs[AttemptIndex];
+	const TCHAR* DirName = bHasFacing ? DirNames[AttemptIndex] : TEXT("axis");
 	const double Reach = FMath::Abs(Dir.X) * Extent.X + FMath::Abs(Dir.Y) * Extent.Y + 120.0;
 	const FVector Column = Origin + Dir * Reach;
 	float FloorZ;
 	if (!FindFloor(FVector(Column.X, Column.Y, Origin.Z + 60.0), 4000.f, FloorZ))
 	{
+		UE_LOG(LogLB, Verbose, TEXT("[RouteBot] approach to %s from %s (%s) rejected: no floor"), *Label(Target), DirName, *Dir.ToCompactString());
 		return false;
 	}
 	const ALBCharacter* P = LBPie::Pawn();
 	const float HalfHeight = P ? P->GetCapsuleComponent()->GetScaledCapsuleHalfHeight() : 92.f;
-	OutPawnLoc = FVector(Column.X, Column.Y, FloorZ + HalfHeight + 2.f);
+	const FVector Loc(Column.X, Column.Y, FloorZ + HalfHeight + 2.f);
+	FString Reason;
+	if (!IsApproachValid(Target, Loc, Origin, Reason))
+	{
+		UE_LOG(LogLB, Verbose, TEXT("[RouteBot] approach to %s from %s (%s) at %s rejected: %s"), *Label(Target), DirName, *Dir.ToCompactString(), *Loc.ToString(), *Reason);
+		return false;
+	}
+	UE_LOG(LogLB, Verbose, TEXT("[RouteBot] approach to %s from %s (%s) at %s accepted"), *Label(Target), DirName, *Dir.ToCompactString(), *Loc.ToString());
+	OutPawnLoc = Loc;
 	return true;
 }
 
@@ -696,6 +785,30 @@ FLBRouteBot::EStatus FLBRouteBot::TickCheckpoints()
 	const double Now = FPlatformTime::Seconds();
 	if (!bCheckpointEntered)
 	{
+		// Only step on a checkpoint the player could walk to from where the bot is now: a clear line from the pawn to the volume
+		// (open doorway, same room). Otherwise the bot would teleport through a wall into a place that is still sealed, and save
+		// the checkpoint early. A line that is blocked right after an action may just be a door still swinging open, so wait a short
+		// while before giving up. Skipped checkpoints are re-queued after the next completed action, when the route has moved on.
+		FVector CPOrigin, CPExtent;
+		CP->GetActorBounds(true, CPOrigin, CPExtent);
+		const ALBCharacter* P = LBPie::Pawn();
+		if (P && !IsClearLine(P->GetActorLocation() + FVector(0, 0, 64.f), CPOrigin, CP))
+		{
+			if (CheckpointWaitStart <= 0.0)
+			{
+				CheckpointWaitStart = Now;
+			}
+			if (Now - CheckpointWaitStart < ReachWaitSeconds)
+			{
+				return EStatus::Running;
+			}
+			UE_LOG(LogLB, Verbose, TEXT("[RouteBot] checkpoint %s (%s) skipped: no clear line from the pawn at %s for %.1fs"), *CP->CheckpointId.ToString(),
+				*Label(CP), *P->GetActorLocation().ToString(), ReachWaitSeconds);
+			PendingCheckpoints.RemoveAt(0);
+			CheckpointWaitStart = 0.0;
+			return EStatus::Running;
+		}
+		CheckpointWaitStart = 0.0;
 		FVector Loc;
 		StandPointInBounds(CP, Loc);
 		LBPie::Teleport(Loc, FRotator::ZeroRotator);
