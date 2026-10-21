@@ -43,10 +43,9 @@ void ALBPlayerController::BeginPlay()
 		UE_LOG(LogLB, Verbose, TEXT("%s has no HUDWidgetClass"), *GetName());
 	}
 
-	if (bMenuMode)
-	{
-		SetMenuMode(true);
-	}
+	// Always apply this controller's mode: UI-only input from the previous map (main menu)
+	// sets the viewport to ignore game input, and that survives travel (D-033).
+	SetMenuMode(bMenuMode);
 }
 
 void ALBPlayerController::SetInspectionContextActive(bool bActive)
