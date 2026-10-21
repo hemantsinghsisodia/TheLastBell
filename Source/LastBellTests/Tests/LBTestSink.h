@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "UObject/Object.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
+#include "GameplayTagContainer.h"
 #include "LBTestSink.generated.h"
 
 class ULBInspectableComponent;
@@ -48,6 +49,41 @@ public:
 		CandleStateEvents.Add(bLit);
 	}
 
+	UFUNCTION()
+	void HandleStepAccepted(int32 Index, FGameplayTag Step)
+	{
+		AcceptedSteps.Add(Index);
+	}
+
+	UFUNCTION()
+	void HandlePuzzleFailed(FGameplayTag WrongStep)
+	{
+		FailedWith.Add(WrongStep);
+	}
+
+	UFUNCTION()
+	void HandlePuzzleSolved()
+	{
+		++SolvedCount;
+	}
+
+	UFUNCTION()
+	void HandleStateChanged(FGameplayTag Tag, bool bAdded)
+	{
+		StateEvents.Add(TPair<FGameplayTag, bool>(Tag, bAdded));
+	}
+
+	UFUNCTION()
+	void HandleDialChanged(int32 NewIndex)
+	{
+		DialIndices.Add(NewIndex);
+	}
+
+	TArray<int32> AcceptedSteps;
+	TArray<FGameplayTag> FailedWith;
+	int32 SolvedCount = 0;
+	TArray<int32> DialIndices;
+	TArray<TPair<FGameplayTag, bool>> StateEvents;
 	TArray<float> FootstepLoudness;
 	int32 InspectBeginCount = 0;
 	int32 InspectEndCount = 0;

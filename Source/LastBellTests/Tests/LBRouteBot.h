@@ -12,6 +12,8 @@ class ALBCharacter;
 class UWorld;
 class ULBInteractableComponent;
 class ALBCheckpoint;
+class ULBDialComponent;
+class ULBSequencePuzzleComponent;
 
 /** Helpers for tests that drive a PIE session. */
 namespace LBPie
@@ -45,6 +47,8 @@ public:
 		float ActionTimeout = 5.f;
 		float ObjectiveTimeout = 60.f;
 		float CheckpointRadius = 600.f;
+		/** Test hook: when non-empty the bot ignores the objective chain and just works until all of these tags are present. */
+		TArray<FGameplayTag> GoalTags;
 	};
 
 	FLBRouteBot(FAutomationTestBase* InTest, const FConfig& InConfig);
@@ -52,7 +56,7 @@ public:
 	EStatus Tick();
 
 private:
-	enum class EKind { Interactable, Trigger, Door };
+	enum class EKind { Interactable, Trigger, Door, Dial };
 	enum class EPhase { Plan, Act, Checkpoints };
 
 	struct FAction
@@ -61,6 +65,10 @@ private:
 		EKind Kind = EKind::Interactable;
 		FGameplayTag WaitTag;
 		bool bPending = false; // door already told to open: just wait
+		TWeakObjectPtr<ULBDialComponent> Dial; // Kind == Dial: the dial to cycle until WaitTag is its current position
+		// Set when this action is the provider of a sequence puzzle's next step: lets TickAct notice the puzzle moved on or reset and re-plan.
+		TWeakObjectPtr<const ULBSequencePuzzleComponent> Sequence;
+		int32 StepIndex = INDEX_NONE;
 	};
 
 	// planning
@@ -68,6 +76,10 @@ private:
 	bool ResolveInteractable(const FGameplayTag& Need, int32 Depth, TArray<FGameplayTag>& Stack, FAction& Out) const;
 	bool ResolveTrigger(const FGameplayTag& Need, FAction& Out) const;
 	bool ResolveDoor(const FGameplayTag& Need, int32 Depth, TArray<FGameplayTag>& Stack, FAction& Out) const;
+	/** A sequence puzzle whose SolvedTags contain Need: resolves to the provider of its next missing step. */
+	bool ResolveSequence(const FGameplayTag& Need, int32 Depth, TArray<FGameplayTag>& Stack, FAction& Out) const;
+	/** A dial with a position tag Need: resolves to cycling that dial (after its interactable's requirements). */
+	bool ResolveDial(const FGameplayTag& Need, int32 Depth, TArray<FGameplayTag>& Stack, FAction& Out) const;
 	FGameplayTag FirstMissingTag() const;
 	bool IsFailed(const AActor* Actor, const FGameplayTag& Tag) const;
 
@@ -76,6 +88,7 @@ private:
 	EStatus TickAct();
 	EStatus TickCheckpoints();
 	void BeginAttempt();
+	void TickDial();
 	bool PlaceForInteractable(const AActor* Target, int32 Attempt, FVector& OutPawnLoc) const;
 	bool StandPointInBounds(const AActor* Target, FVector& OutPawnLoc) const;
 	bool FindFloor(const FVector& From, float Depth, float& OutZ) const;
@@ -103,6 +116,7 @@ private:
 	int32 AttemptFrames = 0;
 	double AttemptStart = 0.0;
 	int32 FiredCount = 0;
+	int32 DialPresses = 0;
 	FVector ActionLocation = FVector::ZeroVector;
 
 	TArray<TWeakObjectPtr<ALBCheckpoint>> PendingCheckpoints;

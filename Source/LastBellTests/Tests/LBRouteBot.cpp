@@ -15,6 +15,9 @@
 #include "Components/LBInteractableComponent.h"
 #include "Objectives/LBObjectiveChainData.h"
 #include "Objectives/LBObjectiveSubsystem.h"
+#include "Puzzles/LBDialComponent.h"
+#include "Puzzles/LBPuzzleLogic.h"
+#include "Puzzles/LBSequencePuzzleComponent.h"
 #include "Save/LBCheckpoint.h"
 #include "Save/LBSaveSubsystem.h"
 #include "Systems/LBGameMode.h"
@@ -166,12 +169,27 @@ FLBRouteBot::EStatus FLBRouteBot::Tick()
 
 FString FLBRouteBot::ObjectiveText() const
 {
+	if (!Config.GoalTags.IsEmpty())
+	{
+		return TEXT("goal tags");
+	}
 	const ULBObjectiveChainData* Chain = ActiveChain();
 	return (Chain && Chain->Objectives.IsValidIndex(CurObjective)) ? Chain->Objectives[CurObjective].Text.ToString() : FString();
 }
 
 FGameplayTag FLBRouteBot::FirstMissingTag() const
 {
+	for (const FGameplayTag& Goal : Config.GoalTags)
+	{
+		if (!LBPie::HasState(Goal))
+		{
+			return Goal;
+		}
+	}
+	if (!Config.GoalTags.IsEmpty())
+	{
+		return FGameplayTag();
+	}
 	const ULBObjectiveChainData* Chain = ActiveChain();
 	if (Chain && Chain->Objectives.IsValidIndex(CurObjective))
 	{
@@ -200,7 +218,8 @@ bool FLBRouteBot::Resolve(const FGameplayTag& Need, int32 Depth, TArray<FGamepla
 		return false;
 	}
 	Stack.Add(Need);
-	const bool bFound = ResolveInteractable(Need, Depth, Stack, Out) || ResolveTrigger(Need, Out) || ResolveDoor(Need, Depth, Stack, Out);
+	const bool bFound = ResolveInteractable(Need, Depth, Stack, Out) || ResolveTrigger(Need, Out) || ResolveDoor(Need, Depth, Stack, Out)
+		|| ResolveSequence(Need, Depth, Stack, Out) || ResolveDial(Need, Depth, Stack, Out);
 	Stack.Pop();
 	return bFound;
 }
@@ -282,11 +301,91 @@ bool FLBRouteBot::ResolveDoor(const FGameplayTag& Need, int32 Depth, TArray<FGam
 	return false;
 }
 
+bool FLBRouteBot::ResolveSequence(const FGameplayTag& Need, int32 Depth, TArray<FGameplayTag>& Stack, FAction& Out) const
+{
+	for (TActorIterator<AActor> It(LBPie::World()); It; ++It)
+	{
+		TInlineComponentArray<ULBSequencePuzzleComponent*> Comps(*It);
+		for (const ULBSequencePuzzleComponent* Comp : Comps)
+		{
+			if (!Comp->SolvedTags.HasTagExact(Need) || Comp->IsSolved() || !FLBSequenceLogic::IsConfigValid(Comp->Steps))
+			{
+				continue;
+			}
+			// The next step is the first one not present, re-derived from the live state on every plan. If a wrong step ever resets the
+			// puzzle, the next plan simply starts over from step 0, so no extra "re-plan" state is needed.
+			const ULBWorldStateSubsystem* State = ULBWorldStateSubsystem::Get(LBPie::World());
+			const FLBSequenceLogic::FEval Eval = FLBSequenceLogic::Evaluate(Comp->Steps, State ? State->GetStateRef() : FGameplayTagContainer());
+			if (Eval.Progress >= Comp->Steps.Num())
+			{
+				continue;
+			}
+			if (Resolve(Comp->Steps[Eval.Progress], Depth + 1, Stack, Out))
+			{
+				if (Out.WaitTag == Comp->Steps[Eval.Progress])
+				{
+					Out.Sequence = Comp; // the step provider itself (not a prerequisite of it): watch the puzzle while acting
+					Out.StepIndex = Eval.Progress;
+				}
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+bool FLBRouteBot::ResolveDial(const FGameplayTag& Need, int32 Depth, TArray<FGameplayTag>& Stack, FAction& Out) const
+{
+	for (TActorIterator<AActor> It(LBPie::World()); It; ++It)
+	{
+		AActor* Actor = *It;
+		TInlineComponentArray<ULBDialComponent*> Comps(Actor);
+		for (ULBDialComponent* Dial : Comps)
+		{
+			if (!Dial->PositionTags.Contains(Need) || Dial->bLocked || IsFailed(Actor, Need))
+			{
+				continue;
+			}
+			// The dial is cycled through its interactable, so that interactable's own requirements apply.
+			FGameplayTag Missing;
+			if (const ULBInteractableComponent* Interactable = Actor->FindComponentByClass<ULBInteractableComponent>())
+			{
+				if (!Interactable->bEnabled)
+				{
+					continue;
+				}
+				for (const FGameplayTag& R : Interactable->RequiredStateTags)
+				{
+					if (!LBPie::HasState(R))
+					{
+						Missing = R;
+						break;
+					}
+				}
+			}
+			if (!Missing.IsValid())
+			{
+				Out = FAction{ Actor, EKind::Dial, Need, false, Dial };
+				return true;
+			}
+			if (Resolve(Missing, Depth + 1, Stack, Out))
+			{
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
 // ---- execution -------------------------------------------------------------------------------------------------------
 
 FLBRouteBot::EStatus FLBRouteBot::TickPlan()
 {
-	const int32 Idx = LBPie::ObjIndex();
+	int32 Idx = LBPie::ObjIndex();
+	if (!Config.GoalTags.IsEmpty())
+	{
+		Idx = FirstMissingTag().IsValid() ? 0 : INDEX_NONE;
+	}
 	if (Idx == INDEX_NONE || (Config.StopAtIndex.IsSet() && Idx == Config.StopAtIndex.GetValue()))
 	{
 		UE_LOG(LogLB, Display, TEXT("[RouteBot] done at objective index %d"), Idx);
@@ -327,6 +426,7 @@ FLBRouteBot::EStatus FLBRouteBot::TickPlan()
 	Attempt = -1;
 	AttemptFrames = 0;
 	FiredCount = 0;
+	DialPresses = 0;
 	FVector Origin, Extent;
 	Action.Actor->GetActorBounds(true, Origin, Extent);
 	ActionLocation = Origin;
@@ -335,7 +435,8 @@ FLBRouteBot::EStatus FLBRouteBot::TickPlan()
 
 FString FLBRouteBot::ActionLabel() const
 {
-	const TCHAR* Kind = Action.Kind == EKind::Interactable ? TEXT("interactable") : Action.Kind == EKind::Trigger ? TEXT("trigger") : TEXT("door-auto");
+	const TCHAR* Kind = Action.Kind == EKind::Interactable ? TEXT("interactable") : Action.Kind == EKind::Trigger ? TEXT("trigger")
+		: Action.Kind == EKind::Dial ? TEXT("dial") : TEXT("door-auto");
 	return FString::Printf(TEXT("%s (%s) at %s"), *Label(Action.Actor.Get()), Kind, *ActionLocation.ToString());
 }
 
@@ -362,6 +463,21 @@ FLBRouteBot::EStatus FLBRouteBot::TickAct()
 	{
 		Phase = EPhase::Plan;
 		return EStatus::Running;
+	}
+	if (const ULBSequencePuzzleComponent* Sequence = Action.Sequence.Get())
+	{
+		// A sequence step is only valid while the puzzle is exactly at that step. If it reset (a wrong step, or the bot was moved
+		// by a load) or moved on, drop this action and re-plan from the live state. This is not a provider failure.
+		const ULBWorldStateSubsystem* State = ULBWorldStateSubsystem::Get(LBPie::World());
+		const FLBSequenceLogic::FEval Eval = FLBSequenceLogic::Evaluate(Sequence->Steps, State ? State->GetStateRef() : FGameplayTagContainer());
+		const bool bStepDone = Eval.bValidPrefix && Eval.Progress == Action.StepIndex + 1;
+		if (!bStepDone && (!Eval.bValidPrefix || Eval.Progress != Action.StepIndex))
+		{
+			UE_LOG(LogLB, Display, TEXT("[RouteBot] sequence puzzle on %s changed (progress %d, expected step %d): re-planning"),
+				*Label(Sequence->GetOwner()), Eval.Progress, Action.StepIndex);
+			Phase = EPhase::Plan;
+			return EStatus::Running;
+		}
 	}
 	if (LBPie::HasState(Action.WaitTag))
 	{
@@ -395,7 +511,38 @@ FLBRouteBot::EStatus FLBRouteBot::TickAct()
 			++FiredCount;
 		}
 	}
+	else if (Action.Kind == EKind::Dial && AttemptFrames >= 6 && AttemptFrames % 6 == 0)
+	{
+		TickDial();
+	}
 	return EStatus::Running;
+}
+
+void FLBRouteBot::TickDial()
+{
+	ULBDialComponent* Dial = Action.Dial.Get();
+	ALBCharacter* P = LBPie::Pawn();
+	if (!Dial || !P)
+	{
+		return;
+	}
+	const int32 Target = Dial->PositionTags.Find(Action.WaitTag);
+	const int32 Before = Dial->GetCurrentIndex();
+	if (Before == Target)
+	{
+		return; // the tag is present: TickAct finishes the action next frame
+	}
+	if (DialPresses > Dial->PositionTags.Num())
+	{
+		return; // more effective presses than positions without arriving: let the action time out and report it
+	}
+	AimAt(ActionLocation);
+	P->GetInteractor()->TryInteract();
+	++FiredCount;
+	if (Dial->GetCurrentIndex() != Before)
+	{
+		++DialPresses;
+	}
 }
 
 void FLBRouteBot::BeginAttempt()
@@ -405,7 +552,7 @@ void FLBRouteBot::BeginAttempt()
 	AttemptFrames = 0;
 	const AActor* Target = Action.Actor.Get();
 	FVector Loc;
-	if (Action.Kind == EKind::Interactable)
+	if (Action.Kind == EKind::Interactable || Action.Kind == EKind::Dial)
 	{
 		// Skip directions without a floor.
 		while (Attempt < 4 && !PlaceForInteractable(Target, Attempt, Loc))
