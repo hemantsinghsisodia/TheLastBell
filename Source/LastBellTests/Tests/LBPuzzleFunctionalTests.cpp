@@ -10,6 +10,10 @@
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Components/LightComponent.h"
+#include "UObject/StructOnScope.h"
+#include "UObject/UnrealType.h"
+#include "EngineUtils.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PlayerController.h"
 #include "Character/LBCharacter.h"
@@ -409,10 +413,10 @@ namespace
 		return Comp && Comp->CanInteract(Pawn);
 	}
 
-	TSharedRef<FPuzzleRunner> StartSession(FAutomationTestBase* Test)
+	TSharedRef<FPuzzleRunner> StartSession(FAutomationTestBase* Test, const TCHAR* Map = GMap)
 	{
 		LBPie::ClearSlot();
-		FAutomationEditorCommonUtils::LoadMap(GMap);
+		FAutomationEditorCommonUtils::LoadMap(Map);
 		FRequestPlaySessionParams PlayParams;
 		PlayParams.WorldType = EPlaySessionWorldType::PlayInEditor;
 		GEditor->RequestPlaySession(PlayParams);
@@ -771,6 +775,792 @@ bool FLBPuzzleSaveMidPuzzleTest::RunTest(const FString& Parameters)
 	{
 		Test->TestEqual(TEXT("No failure"), S->Sink->FailedWith.Num(), 0);
 		Test->TestTrue(TEXT("Solved tag present"), HasState(S->Solved));
+	});
+
+	Enqueue(R);
+	return true;
+}
+
+
+// =====================================================================================================================
+// 5. Blueprint puzzles (P4-BPTEST): BP_PuzzleCandle + BP_SequencePuzzle, BP_DialLever, BP_SmallBell on L_Test_Puzzles
+// =====================================================================================================================
+namespace
+{
+	const TCHAR* GBpMap = TEXT("/Game/LastBell/Maps/L_Test_Puzzles");
+	const TCHAR* GBellClass = TEXT("/Game/LastBell/Blueprints/Puzzles/BP_SmallBell.BP_SmallBell_C");
+
+	// ---- reflection helpers (the Blueprints expose their configuration as plain properties) -----------------------------
+
+	bool BpReadTag(const UObject* O, const TCHAR* Name, FGameplayTag& Out)
+	{
+		const FStructProperty* P = O ? FindFProperty<FStructProperty>(O->GetClass(), Name) : nullptr;
+		if (!P || P->Struct != FGameplayTag::StaticStruct())
+		{
+			return false;
+		}
+		Out = *P->ContainerPtrToValuePtr<FGameplayTag>(O);
+		return true;
+	}
+
+	bool BpWriteTag(UObject* O, const TCHAR* Name, const FGameplayTag& In)
+	{
+		const FStructProperty* P = O ? FindFProperty<FStructProperty>(O->GetClass(), Name) : nullptr;
+		if (!P || P->Struct != FGameplayTag::StaticStruct())
+		{
+			return false;
+		}
+		*P->ContainerPtrToValuePtr<FGameplayTag>(O) = In;
+		return true;
+	}
+
+	bool BpReadFloat(const UObject* O, const TCHAR* Name, float& Out)
+	{
+		const FNumericProperty* P = O ? FindFProperty<FNumericProperty>(O->GetClass(), Name) : nullptr;
+		if (!P || !P->IsFloatingPoint())
+		{
+			return false;
+		}
+		Out = static_cast<float>(P->GetFloatingPointPropertyValue(P->ContainerPtrToValuePtr<void>(O)));
+		return true;
+	}
+
+	bool BpReadBool(const UObject* O, const TCHAR* Name, bool& Out)
+	{
+		const FBoolProperty* P = O ? FindFProperty<FBoolProperty>(O->GetClass(), Name) : nullptr;
+		if (!P)
+		{
+			return false;
+		}
+		Out = P->GetPropertyValue(P->ContainerPtrToValuePtr<void>(O));
+		return true;
+	}
+
+	/** Calls a no-argument Blueprint function by name. */
+	bool BpCall(AActor* A, const TCHAR* Name)
+	{
+		UFunction* Fn = A ? A->FindFunction(FName(Name)) : nullptr;
+		if (!Fn)
+		{
+			return false;
+		}
+		A->ProcessEvent(Fn, nullptr);
+		return true;
+	}
+
+	/** BP_DialLever::PitchForIndex(int) -> float, found by name (case-insensitive) so a renamed pure function still resolves. */
+	bool BpPitchForIndex(AActor* Lever, int32 Index, float& OutPitch)
+	{
+		UFunction* Fn = nullptr;
+		for (TFieldIterator<UFunction> It(Lever->GetClass()); It; ++It)
+		{
+			if (It->GetName().Equals(TEXT("PitchForIndex"), ESearchCase::IgnoreCase))
+			{
+				Fn = *It;
+				break;
+			}
+		}
+		if (!Fn)
+		{
+			return false;
+		}
+		FStructOnScope Params(Fn);
+		const FIntProperty* In = nullptr;
+		const FNumericProperty* Out = nullptr;
+		for (TFieldIterator<FProperty> It(Fn); It; ++It)
+		{
+			if (It->HasAnyPropertyFlags(CPF_ReturnParm))
+			{
+				Out = CastField<FNumericProperty>(*It);
+			}
+			else if (It->HasAnyPropertyFlags(CPF_Parm) && !In)
+			{
+				In = CastField<FIntProperty>(*It);
+			}
+		}
+		if (!In || !Out || !Out->IsFloatingPoint())
+		{
+			return false;
+		}
+		In->SetPropertyValue_InContainer(Params.GetStructMemory(), Index);
+		Lever->ProcessEvent(Fn, Params.GetStructMemory());
+		OutPitch = static_cast<float>(Out->GetFloatingPointPropertyValue(Out->ContainerPtrToValuePtr<void>(Params.GetStructMemory())));
+		return true;
+	}
+
+	// ---- component discovery ------------------------------------------------------------------------------------------
+
+	void LogComponents(const AActor* A)
+	{
+		TInlineComponentArray<UActorComponent*> Comps(A);
+		FString List;
+		for (const UActorComponent* C : Comps)
+		{
+			const USceneComponent* Scene = Cast<USceneComponent>(C);
+			List += FString::Printf(TEXT("\n    %s (%s)%s"), *C->GetName(), *C->GetClass()->GetName(),
+				Scene ? *FString::Printf(TEXT(" visible=%d rel=%s attach=%s"), Scene->IsVisible(), *Scene->GetRelativeRotation().ToString(), *GetNameSafe(Scene->GetAttachParent())) : TEXT(""));
+		}
+		Note(FString::Printf(TEXT("Components of %s [%s]:%s"), *A->GetActorLabel(), *A->GetClass()->GetName(), *List));
+	}
+
+	USceneComponent* FindSceneByName(const AActor* A, std::initializer_list<const TCHAR*> Needles)
+	{
+		TInlineComponentArray<USceneComponent*> Comps(A);
+		for (const TCHAR* Needle : Needles)
+		{
+			for (USceneComponent* C : Comps)
+			{
+				if (C->GetName().Contains(Needle, ESearchCase::IgnoreCase))
+				{
+					return C;
+				}
+			}
+		}
+		return nullptr;
+	}
+
+	bool IsShown(const USceneComponent* C)
+	{
+		if (!C || !C->IsVisible())
+		{
+			return false;
+		}
+		const UPrimitiveComponent* Prim = Cast<UPrimitiveComponent>(C);
+		return !Prim || !Prim->bHiddenInGame;
+	}
+
+	TArray<USceneComponent*> FlameParts(const AActor* A)
+	{
+		TArray<USceneComponent*> Out;
+		TInlineComponentArray<USceneComponent*> Comps(A);
+		for (USceneComponent* C : Comps)
+		{
+			if (!Cast<ULightComponent>(C) && C->GetName().Contains(TEXT("flame"), ESearchCase::IgnoreCase))
+			{
+				Out.Add(C);
+			}
+		}
+		return Out;
+	}
+
+	TArray<ULightComponent*> Lights(const AActor* A)
+	{
+		TArray<ULightComponent*> Out;
+		TInlineComponentArray<ULightComponent*> Comps(A);
+		Out.Append(Comps);
+		return Out;
+	}
+
+	float AngleDeg(const FQuat& A, const FQuat& B) { return FMath::RadiansToDegrees(A.AngularDistance(B)); }
+
+	// ---- state ------------------------------------------------------------------------------------------------------------
+
+	struct FBpState
+	{
+		TStrongObjectPtr<ULBTestSink> Sink;
+		TWeakObjectPtr<AActor> Candles[3];
+		TWeakObjectPtr<AActor> SeqActor;
+		TWeakObjectPtr<AActor> Lever;
+		TWeakObjectPtr<AActor> Bell;
+		TWeakObjectPtr<UWorld> OldWorld;
+
+		FGameplayTag Step[3];
+		FGameplayTag Solved;
+		FGameplayTag BellTag;
+		FGameplayTag LockTag;
+
+		bool bLoadIssued = false;
+		bool bLockPreset = false;
+		int32 DialStart = INDEX_NONE;
+		int32 DialBeforeSave = INDEX_NONE;
+		float MoveDuration = 1.f;
+		float SwingDuration = 1.f;
+		float SwingDegrees = 0.f;
+
+		double StrikeTime = 0.0;
+		float BellMaxDev = 0.f;
+		double BellLastDevTime = 0.0;
+		FQuat BellRest = FQuat::Identity;
+
+		ULBSequencePuzzleComponent* Seq() const { return SeqActor.IsValid() ? SeqActor->FindComponentByClass<ULBSequencePuzzleComponent>() : nullptr; }
+		ULBDialComponent* Dial() const { return Lever.IsValid() ? Lever->FindComponentByClass<ULBDialComponent>() : nullptr; }
+		ULBInteractableComponent* LeverInteract() const { return Lever.IsValid() ? Lever->FindComponentByClass<ULBInteractableComponent>() : nullptr; }
+		ULBInteractableComponent* CandleInteract(int32 I) const { return Candles[I].IsValid() ? Candles[I]->FindComponentByClass<ULBInteractableComponent>() : nullptr; }
+		USceneComponent* HandlePivot() const { return Lever.IsValid() ? FindSceneByName(Lever.Get(), { TEXT("HandlePivot"), TEXT("Pivot"), TEXT("Handle") }) : nullptr; }
+		USceneComponent* BellPivot() const { return Bell.IsValid() ? FindSceneByName(Bell.Get(), { TEXT("BellPivot"), TEXT("Pivot"), TEXT("Swing") }) : nullptr; }
+	};
+
+	/** Finds the placed puzzle actors by class name. The candles are matched to the sequence's steps through their LitTag. */
+	bool ResolveBpActors(UWorld* W, FBpState& S, FAutomationTestBase* Test, bool bLogComponents)
+	{
+		TArray<AActor*> CandleActors;
+		for (TActorIterator<AActor> It(W); It; ++It)
+		{
+			const FString ClassName = It->GetClass()->GetName();
+			if (ClassName.Contains(TEXT("BP_PuzzleCandle")))
+			{
+				CandleActors.Add(*It);
+			}
+			else if (ClassName.Contains(TEXT("BP_SequencePuzzle")))
+			{
+				S.SeqActor = *It;
+			}
+			else if (ClassName.Contains(TEXT("BP_DialLever")) && !S.Lever.IsValid())
+			{
+				S.Lever = *It;
+			}
+		}
+		bool bOk = Test->TestEqual(TEXT("Three BP_PuzzleCandle placed"), CandleActors.Num(), 3);
+		bOk &= Test->TestNotNull(TEXT("BP_SequencePuzzle placed"), S.SeqActor.Get());
+		bOk &= Test->TestNotNull(TEXT("BP_DialLever placed"), S.Lever.Get());
+		if (!bOk)
+		{
+			return false;
+		}
+		const ULBSequencePuzzleComponent* Seq = S.Seq();
+		const ULBDialComponent* Dial = S.Dial();
+		bOk &= Test->TestNotNull(TEXT("Sequence puzzle has a ULBSequencePuzzleComponent"), Seq);
+		bOk &= Test->TestNotNull(TEXT("Lever has a ULBDialComponent"), Dial);
+		if (!Seq || !Dial || !Test->TestEqual(TEXT("Sequence has 3 steps"), Seq->Steps.Num(), 3))
+		{
+			return false;
+		}
+		for (int32 i = 0; i < 3; ++i)
+		{
+			S.Step[i] = Seq->Steps[i];
+			for (AActor* Candle : CandleActors)
+			{
+				FGameplayTag Lit;
+				if (BpReadTag(Candle, TEXT("LitTag"), Lit) && Lit == S.Step[i])
+				{
+					S.Candles[i] = Candle;
+				}
+			}
+			bOk &= Test->TestNotNull(*FString::Printf(TEXT("A candle with LitTag %s exists"), *S.Step[i].ToString()), S.Candles[i].Get());
+			bOk &= Test->TestTrue(TEXT("Candle has an interactable"), S.CandleInteract(i) != nullptr);
+		}
+		S.Solved = Seq->SolvedTags.IsEmpty() ? FGameplayTag() : Seq->SolvedTags.First();
+		bOk &= Test->TestTrue(TEXT("Sequence has a solved tag"), S.Solved.IsValid());
+		bOk &= Test->TestTrue(TEXT("Lever has an interactable"), S.LeverInteract() != nullptr);
+		BpReadFloat(S.Lever.Get(), TEXT("MoveDuration"), S.MoveDuration);
+		if (bLogComponents)
+		{
+			if (S.Candles[0].IsValid()) { LogComponents(S.Candles[0].Get()); }
+			LogComponents(S.SeqActor.Get());
+			LogComponents(S.Lever.Get());
+			Note(FString::Printf(TEXT("Lever: MoveDuration=%.3f InitialIndex=%d positions=%d"), S.MoveDuration, Dial->InitialIndex, Dial->PositionTags.Num()));
+		}
+		return bOk;
+	}
+
+	// ---- candle checks ----------------------------------------------------------------------------------------------------
+
+	void CheckCandleVisual(FAutomationTestBase* Test, const AActor* Candle, bool bLit, const FString& Label)
+	{
+		const TArray<ULightComponent*> Ls = Lights(Candle);
+		const TArray<USceneComponent*> Flames = FlameParts(Candle);
+		Test->TestTrue(Label + TEXT(": has a light component"), Ls.Num() > 0);
+		Test->TestTrue(Label + TEXT(": has a flame component"), Flames.Num() > 0);
+		for (const ULightComponent* L : Ls)
+		{
+			Test->TestEqual(FString::Printf(TEXT("%s: light '%s' visible"), *Label, *L->GetName()), IsShown(L), bLit);
+		}
+		for (const USceneComponent* F : Flames)
+		{
+			Test->TestEqual(FString::Printf(TEXT("%s: flame '%s' visible"), *Label, *F->GetName()), IsShown(F), bLit);
+		}
+	}
+
+	void CheckCandles(FBpState& S, FAutomationTestBase* Test, ALBCharacter* Pawn, bool bLit, bool bInteractable, const TCHAR* Phase)
+	{
+		for (int32 i = 0; i < 3; ++i)
+		{
+			const AActor* Candle = S.Candles[i].Get();
+			if (!Test->TestNotNull(TEXT("Candle exists"), Candle))
+			{
+				continue;
+			}
+			const FString Label = FString::Printf(TEXT("%s candle %d (%s)"), Phase, i + 1, *S.Step[i].ToString());
+			CheckCandleVisual(Test, Candle, bLit, Label);
+			ULBInteractableComponent* Comp = S.CandleInteract(i);
+			Test->TestEqual(Label + TEXT(": interactable available"), Comp && Comp->CanInteract(Pawn), bInteractable);
+		}
+	}
+
+	// ---- standing in front of an actor ---------------------------------------------------------------------------------
+
+	struct FStandState
+	{
+		TArray<FVector> Candidates;
+		int32 Index = -1;
+		int32 PlacedFrame = 0;
+		FString LastHit;
+	};
+
+	bool FindFloorZ(UWorld* W, const FVector& From, const AActor* Ignore, float& OutZ)
+	{
+		FCollisionQueryParams Params(SCENE_QUERY_STAT(LBBpFloor), false, Ignore);
+		FHitResult Hit;
+		if (W->LineTraceSingleByChannel(Hit, From, From - FVector(0, 0, 4000.f), ECC_Visibility, Params) && !Hit.bStartPenetrating && Hit.ImpactNormal.Z > 0.6f)
+		{
+			OutZ = Hit.ImpactPoint.Z;
+			return true;
+		}
+		return false;
+	}
+
+	/** Teleports the pawn around the target until the interactor's own sweep (from the controller's view point) hits the target. */
+	void AddStandAndAim(FPuzzleRunner& R, const TSharedRef<FBpState>& S, FAutomationTestBase* Test, const FString& Label, TFunction<AActor*(FBpState&)> GetTarget)
+	{
+		TSharedRef<FStandState> St = MakeShared<FStandState>();
+		R.Add(Label + TEXT(": stand and aim"), [S, St, Test, GetTarget, Label](FPuzzleCtx& C)
+		{
+			AActor* Target = GetTarget(*S);
+			if (!C.Pawn || !Test->TestNotNull(*(Label + TEXT(": press target exists")), Target))
+			{
+				return true;
+			}
+			FVector Origin, Extent;
+			Target->GetActorBounds(true, Origin, Extent);
+			if (C.bFirst)
+			{
+				*St = FStandState();
+				const float Radius = static_cast<float>(FMath::Max(Extent.X, Extent.Y));
+				for (const float Dist : { 110.f, 150.f })
+				{
+					for (int32 k = 0; k < 8; ++k)
+					{
+						const FVector Dir = FRotator(0.f, k * 45.f, 0.f).Vector();
+						float FloorZ;
+						const FVector Col = Origin + Dir * (Radius + Dist);
+						if (FindFloorZ(C.W, FVector(Col.X, Col.Y, Origin.Z + 60.f), C.Pawn, FloorZ))
+						{
+							St->Candidates.Add(FVector(Col.X, Col.Y, FloorZ + HalfHeight(C.Pawn) + 2.f));
+						}
+					}
+				}
+			}
+			const ULBInteractorComponent* Interactor = C.Pawn->GetInteractor();
+			if (St->Index >= 0 && C.Frames - St->PlacedFrame >= 6)
+			{
+				FVector ViewLoc;
+				FRotator ViewRot;
+				C.Pawn->GetController()->GetPlayerViewPoint(ViewLoc, ViewRot);
+				FCollisionQueryParams Params(SCENE_QUERY_STAT(LBBpAim), false, C.Pawn);
+				FHitResult Hit;
+				if (C.W->SweepSingleByChannel(Hit, ViewLoc, ViewLoc + ViewRot.Vector() * Interactor->TraceDistance, FQuat::Identity, LB_TRACE_INTERACTION,
+					FCollisionShape::MakeSphere(Interactor->TraceRadius), Params) && Hit.GetActor() == Target)
+				{
+					return true;
+				}
+				St->LastHit = Hit.GetActor() ? Hit.GetActor()->GetActorLabel() : FString(TEXT("nothing"));
+			}
+			if (C.Frames - St->PlacedFrame >= 6 || St->Index < 0)
+			{
+				if (++St->Index >= St->Candidates.Num())
+				{
+					Test->AddError(FString::Printf(TEXT("%s: no stand point reaches %s with the Interaction trace (last sweep hit %s, %d candidates). "
+						"The mesh may not block the Interaction channel."), *Label, *Target->GetActorLabel(), *St->LastHit, St->Candidates.Num()));
+					return true;
+				}
+				const FVector Loc = St->Candidates[St->Index];
+				C.Pawn->SetActorLocation(Loc, false, nullptr, ETeleportType::TeleportPhysics);
+				if (UCharacterMovementComponent* M = C.Pawn->GetCharacterMovement())
+				{
+					M->StopMovementImmediately();
+				}
+				const UCameraComponent* Cam = C.Pawn->FindComponentByClass<UCameraComponent>();
+				const FVector Eye = Cam ? Cam->GetComponentLocation() : Loc + FVector(0, 0, 64.f);
+				C.Pawn->GetController()->SetControlRotation((Origin - Eye).Rotation());
+				St->PlacedFrame = C.Frames;
+			}
+			return false;
+		}, 40.f);
+	}
+
+	void AddBpPress(FPuzzleRunner& R, const TSharedRef<FBpState>& S, FAutomationTestBase* Test, const FString& Label,
+		TFunction<AActor*(FBpState&)> GetTarget, TFunction<void(FPuzzleCtx&)> SameFrameCheck = nullptr)
+	{
+		AddStandAndAim(R, S, Test, Label, GetTarget);
+		R.Add(Label + TEXT(": press"), [S, Test, GetTarget, Label, SameFrameCheck](FPuzzleCtx& C)
+		{
+			AActor* Target = GetTarget(*S);
+			if (!C.Pawn || !Target)
+			{
+				return true;
+			}
+			C.Pawn->GetInteractor()->TryInteract();
+			const ULBInteractableComponent* Focus = C.Pawn->GetInteractor()->GetFocusedComponent();
+			Test->TestTrue(FString::Printf(TEXT("%s: the interactor focuses the target (focus=%s)"), *Label, *GetNameSafe(Focus ? Focus->GetOwner() : nullptr)),
+				Focus && Focus->GetOwner() == Target);
+			if (SameFrameCheck)
+			{
+				SameFrameCheck(C);
+			}
+			return true;
+		});
+	}
+
+	TFunction<AActor*(FBpState&)> BpCandle(int32 I)
+	{
+		return [I](FBpState& S) { return S.Candles[I].Get(); };
+	}
+
+	void AddWaitSeconds(FPuzzleRunner& R, const FString& Name, float Seconds)
+	{
+		TSharedRef<double> Start = MakeShared<double>(0.0);
+		R.Add(Name, [Start, Seconds](FPuzzleCtx& C)
+		{
+			if (C.bFirst)
+			{
+				*Start = C.W->GetTimeSeconds();
+			}
+			return C.W->GetTimeSeconds() - *Start >= Seconds && C.Frames >= 2;
+		});
+	}
+
+	float HandlePitch(const FBpState& S)
+	{
+		const USceneComponent* H = S.HandlePivot();
+		return H ? FRotator::NormalizeAxis(H->GetRelativeRotation().Pitch) : -9999.f;
+	}
+
+	float ExpectedPitch(FBpState& S, int32 Index)
+	{
+		float Pitch = 0.f;
+		if (BpPitchForIndex(S.Lever.Get(), Index, Pitch))
+		{
+			return Pitch;
+		}
+		return (Index - 1) * 35.f; // documented fallback: -35 / 0 / +35
+	}
+
+	void CheckHandle(FBpState& S, FAutomationTestBase* Test, const FString& Label)
+	{
+		const int32 Index = S.Dial() ? S.Dial()->GetCurrentIndex() : -2;
+		const float Expected = ExpectedPitch(S, Index);
+		const float Actual = HandlePitch(S);
+		Note(FString::Printf(TEXT("%s: dial index %d, handle pitch %.2f (expected %.2f)"), *Label, Index, Actual, Expected));
+		Test->TestTrue(Label + TEXT(": the handle pivot component exists"), S.HandlePivot() != nullptr);
+		Test->TestTrue(FString::Printf(TEXT("%s: handle pitch %.2f within 2 degrees of notch %.2f"), *Label, Actual, Expected), FMath::Abs(Actual - Expected) <= 2.f);
+	}
+
+	bool OpenSpawnPoint(UWorld* W, const ALBCharacter* Pawn, FVector& OutLoc)
+	{
+		for (const float Dist : { 350.f, 450.f, 550.f })
+		{
+			for (int32 k = 0; k < 8; ++k)
+			{
+				const FVector Dir = FRotator(0.f, k * 45.f, 0.f).Vector();
+				const FVector Col = Pawn->GetActorLocation() + Dir * Dist;
+				float FloorZ;
+				if (!FindFloorZ(W, FVector(Col.X, Col.Y, Pawn->GetActorLocation().Z), Pawn, FloorZ))
+				{
+					continue;
+				}
+				FCollisionQueryParams Params(SCENE_QUERY_STAT(LBBpSpawn), false, Pawn);
+				if (!W->OverlapAnyTestByChannel(FVector(Col.X, Col.Y, FloorZ + 120.f), FQuat::Identity, ECC_WorldStatic, FCollisionShape::MakeSphere(90.f), Params))
+				{
+					OutLoc = FVector(Col.X, Col.Y, FloorZ);
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBPuzzleBlueprintsTest, "LastBell.Functional.Puzzles.Blueprints",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
+bool FLBPuzzleBlueprintsTest::RunTest(const FString& Parameters)
+{
+	FRunnerPtr R = StartSession(this, GBpMap);
+	TSharedRef<FBpState> S = MakeShared<FBpState>();
+	FAutomationTestBase* Test = this;
+
+	R->Add(TEXT("PIE ready, resolve placed puzzle actors"), [S, Test, &R = *R](FPuzzleCtx& C)
+	{
+		if (!LBPie::WorldReady() || C.Frames < 8)
+		{
+			return false;
+		}
+		S->Sink.Reset(NewObject<ULBTestSink>(GetTransientPackage()));
+		S->BellTag = LBPie::Tag(TEXT("State.Tower.Bell.1"));
+		if (!Test->TestTrue(TEXT("Tag State.Tower.Bell.1 exists"), S->BellTag.IsValid()) || !ResolveBpActors(C.W, *S, Test, true))
+		{
+			R.Abort(TEXT("Setup failed"));
+			return true;
+		}
+		S->Seq()->OnPuzzleFailed.AddDynamic(S->Sink.Get(), &ULBTestSink::HandlePuzzleFailed);
+		S->Seq()->OnPuzzleSolved.AddDynamic(S->Sink.Get(), &ULBTestSink::HandlePuzzleSolved);
+		S->Dial()->OnDialChanged.AddDynamic(S->Sink.Get(), &ULBTestSink::HandleDialChanged);
+		return true;
+	}, 90.f);
+
+	// ---- 1. candles --------------------------------------------------------------------------------------------------
+	AddCheck(*R, TEXT("Candles at start: all unlit and interactable"), [S, Test](FPuzzleCtx& C)
+	{
+		CheckCandles(*S, Test, C.Pawn, false, true, TEXT("Start"));
+		Test->TestFalse(TEXT("No solved tag at start"), HasState(S->Solved));
+		Test->TestEqual(TEXT("Sequence progress 0"), S->Seq()->GetProgress(), 0);
+	});
+
+	AddBpPress(*R, S, Test, TEXT("Candle 1 (correct)"), BpCandle(0), [S, Test](FPuzzleCtx&)
+	{
+		Test->TestTrue(TEXT("Candle 1 step tag granted"), HasState(S->Step[0]));
+	});
+	AddSettle(*R, TEXT("Settle after candle 1"), 4);
+	AddCheck(*R, TEXT("Candle 1 lit, others unlit"), [S, Test](FPuzzleCtx& C)
+	{
+		CheckCandleVisual(Test, S->Candles[0].Get(), true, TEXT("After step 1: candle 1"));
+		CheckCandleVisual(Test, S->Candles[1].Get(), false, TEXT("After step 1: candle 2"));
+		Test->TestFalse(TEXT("After step 1: candle 1 consumed"), S->CandleInteract(0) && S->CandleInteract(0)->CanInteract(C.Pawn));
+	});
+	AddBpPress(*R, S, Test, TEXT("Candle 3 (wrong)"), BpCandle(2));
+	AddSettle(*R, TEXT("Let the deferred reset run"), 8);
+	AddCheck(*R, TEXT("Wrong order: all unlit again, interactable again, OnPuzzleFailed fired"), [S, Test](FPuzzleCtx& C)
+	{
+		CheckCandles(*S, Test, C.Pawn, false, true, TEXT("After reset"));
+		Test->TestEqual(TEXT("OnPuzzleFailed fired once"), S->Sink->FailedWith.Num(), 1);
+		if (S->Sink->FailedWith.Num() == 1)
+		{
+			Test->TestEqual(TEXT("OnPuzzleFailed reports candle 3"), S->Sink->FailedWith[0], S->Step[2]);
+		}
+		Test->TestEqual(TEXT("Progress 0"), S->Seq()->GetProgress(), 0);
+		Test->TestFalse(TEXT("Not solved"), HasState(S->Solved));
+	});
+
+	AddBpPress(*R, S, Test, TEXT("Candle 1"), BpCandle(0));
+	AddBpPress(*R, S, Test, TEXT("Candle 2"), BpCandle(1));
+	AddBpPress(*R, S, Test, TEXT("Candle 3 (solves)"), BpCandle(2), [S, Test](FPuzzleCtx&)
+	{
+		Test->TestTrue(TEXT("Solved tag added by the last candle"), HasState(S->Solved));
+	});
+	AddSettle(*R, TEXT("Settle after solving"), 8);
+	AddCheck(*R, TEXT("Solved: all lit, none interactable"), [S, Test](FPuzzleCtx& C)
+	{
+		CheckCandles(*S, Test, C.Pawn, true, false, TEXT("Solved"));
+		Test->TestTrue(TEXT("Solved tag present"), HasState(S->Solved));
+		Test->TestEqual(TEXT("OnPuzzleSolved fired once"), S->Sink->SolvedCount, 1);
+		Test->TestEqual(TEXT("Still exactly one failure"), S->Sink->FailedWith.Num(), 1);
+		for (int32 i = 0; i < 3; ++i)
+		{
+			Test->TestTrue(TEXT("Step tag still present"), HasState(S->Step[i]));
+		}
+	});
+
+	// ---- 2. dial lever -----------------------------------------------------------------------------------------------
+	AddCheck(*R, TEXT("Dial at start: InitialIndex and matching handle pitch"), [S, Test](FPuzzleCtx&)
+	{
+		ULBDialComponent* Dial = S->Dial();
+		S->DialStart = Dial->GetCurrentIndex();
+		Test->TestEqual(TEXT("Dial starts at InitialIndex"), S->DialStart, Dial->InitialIndex);
+		Test->TestEqual(TEXT("Dial has 3 positions"), Dial->PositionTags.Num(), 3);
+		Test->TestTrue(TEXT("The lever interactable is enabled at start"), S->LeverInteract()->bEnabled);
+		Test->TestFalse(TEXT("The dial is not locked at start"), Dial->bLocked);
+		TArray<float> Notches;
+		for (int32 i = 0; i < 3; ++i)
+		{
+			Notches.Add(ExpectedPitch(*S, i));
+		}
+		Note(FString::Printf(TEXT("Notch pitches per index: %.2f / %.2f / %.2f"), Notches[0], Notches[1], Notches[2]));
+		TArray<float> Sorted = Notches;
+		Sorted.Sort();
+		Test->TestTrue(TEXT("Notches are -35 / 0 / +35 (any order)"),
+			FMath::Abs(Sorted[0] + 35.f) <= 0.5f && FMath::Abs(Sorted[1]) <= 0.5f && FMath::Abs(Sorted[2] - 35.f) <= 0.5f);
+		CheckHandle(*S, Test, TEXT("Dial at start"));
+	});
+
+	for (int32 Press = 1; Press <= 3; ++Press)
+	{
+		const FString Label = FString::Printf(TEXT("Lever press %d"), Press);
+		AddBpPress(*R, S, Test, Label, [](FBpState& St) { return St.Lever.Get(); }, [S, Test, Press](FPuzzleCtx&)
+		{
+			const int32 Expected = (S->DialStart + Press) % 3;
+			Test->TestEqual(TEXT("Dial index cycled immediately"), S->Dial()->GetCurrentIndex(), Expected);
+			Test->TestTrue(TEXT("OnDialChanged fired with the new index"), S->Sink->DialIndices.Num() == Press && S->Sink->DialIndices.Last() == Expected);
+			Test->TestTrue(TEXT("Exactly one position tag present"), HasState(S->Dial()->PositionTags[Expected]));
+		});
+		AddWaitSeconds(*R, Label + TEXT(": wait for the move"), S->MoveDuration + 0.35f);
+		AddCheck(*R, Label + TEXT(": handle at the new notch"), [S, Test, Label](FPuzzleCtx&) { CheckHandle(*S, Test, Label); });
+	}
+	AddCheck(*R, TEXT("Dial wrapped around"), [S, Test](FPuzzleCtx&)
+	{
+		Test->TestEqual(TEXT("Three presses return to the start index (wrap)"), S->Dial()->GetCurrentIndex(), S->DialStart);
+		S->DialBeforeSave = S->Dial()->GetCurrentIndex();
+	});
+
+	// Lock: if the placed lever has no LockTag, set one by reflection and refresh; if it has one, drive it through world state.
+	AddCheck(*R, TEXT("Lock the lever"), [S, Test](FPuzzleCtx& C)
+	{
+		FGameplayTag Lock;
+		Test->TestTrue(TEXT("BP_DialLever exposes a LockTag property"), BpReadTag(S->Lever.Get(), TEXT("LockTag"), Lock));
+		S->bLockPreset = Lock.IsValid();
+		if (!S->bLockPreset)
+		{
+			Lock = S->Solved;
+			Test->TestTrue(TEXT("LockTag set by reflection"), BpWriteTag(S->Lever.Get(), TEXT("LockTag"), Lock));
+		}
+		S->LockTag = Lock;
+		Note(FString::Printf(TEXT("Lever LockTag %s (%s on the placed instance)"), *Lock.ToString(), S->bLockPreset ? TEXT("preset") : TEXT("empty, set by the test")));
+		ULBWorldStateSubsystem* WS = ULBWorldStateSubsystem::Get(C.W);
+		if (S->bLockPreset)
+		{
+			// Event-driven path: remove the tag, then add it again.
+			WS->RemoveState(Lock);
+		}
+		else
+		{
+			Test->TestTrue(TEXT("RefreshLock exists on the lever"), BpCall(S->Lever.Get(), TEXT("RefreshLock")));
+		}
+	});
+	AddSettle(*R, TEXT("Settle after lock setup"), 3);
+	AddCheck(*R, TEXT("Lock state"), [S, Test](FPuzzleCtx& C)
+	{
+		ULBWorldStateSubsystem* WS = ULBWorldStateSubsystem::Get(C.W);
+		if (S->bLockPreset)
+		{
+			Test->TestTrue(TEXT("Preset lock removed: interactable enabled"), S->LeverInteract()->bEnabled);
+			Test->TestFalse(TEXT("Preset lock removed: dial unlocked"), S->Dial()->bLocked);
+			WS->AddState(S->LockTag);
+		}
+	});
+	AddSettle(*R, TEXT("Let the lock apply"), 3);
+	AddCheck(*R, TEXT("Lever is locked"), [S, Test](FPuzzleCtx& C)
+	{
+		Test->TestTrue(TEXT("LockTag is present"), HasState(S->LockTag));
+		Test->TestFalse(TEXT("Interactable disabled by the lock"), S->LeverInteract()->bEnabled);
+		Test->TestFalse(TEXT("CanInteract false when locked"), S->LeverInteract()->CanInteract(C.Pawn));
+		Test->TestTrue(TEXT("Dial locked"), S->Dial()->bLocked);
+	});
+	AddBpPress(*R, S, Test, TEXT("Locked lever press"), [](FBpState& St) { return St.Lever.Get(); }, [S, Test](FPuzzleCtx&)
+	{
+		Test->TestEqual(TEXT("Locked: index unchanged"), S->Dial()->GetCurrentIndex(), S->DialBeforeSave);
+		Test->TestEqual(TEXT("Locked: no further OnDialChanged"), S->Sink->DialIndices.Num(), 3);
+	});
+
+	// The lock follows world state through the Blueprint's own OnStateChanged binding: remove the tag -> unlocked, add it -> locked.
+	AddCheck(*R, TEXT("Remove the lock tag"), [S](FPuzzleCtx& C) { ULBWorldStateSubsystem::Get(C.W)->RemoveState(S->LockTag); });
+	AddSettle(*R, TEXT("Let the unlock apply"), 3);
+	AddCheck(*R, TEXT("Lever unlocked by the event, then relock"), [S, Test](FPuzzleCtx& C)
+	{
+		Test->TestTrue(TEXT("Lock tag removed: interactable enabled again (event-driven)"), S->LeverInteract()->bEnabled);
+		Test->TestFalse(TEXT("Lock tag removed: dial unlocked (event-driven)"), S->Dial()->bLocked);
+		ULBWorldStateSubsystem::Get(C.W)->AddState(S->LockTag);
+	});
+	AddSettle(*R, TEXT("Let the relock apply"), 3);
+	AddCheck(*R, TEXT("Lever locked again by the event"), [S, Test](FPuzzleCtx& C)
+	{
+		Test->TestFalse(TEXT("Lock tag re-added: interactable disabled (event-driven)"), S->LeverInteract()->bEnabled);
+		Test->TestTrue(TEXT("Lock tag re-added: dial locked (event-driven)"), S->Dial()->bLocked);
+		Test->TestTrue(TEXT("Solved tag is present again for the save"), HasState(S->Solved));
+	});
+
+	// ---- 3. bell ------------------------------------------------------------------------------------------------------
+	AddCheck(*R, TEXT("Spawn a BP_SmallBell"), [S, Test, &R = *R](FPuzzleCtx& C)
+	{
+		UClass* Cls = LoadClass<AActor>(nullptr, GBellClass);
+		FVector Loc;
+		if (!Test->TestNotNull(TEXT("BP_SmallBell class loads"), Cls) || !Test->TestTrue(TEXT("An open spot near the pawn exists"), OpenSpawnPoint(C.W, C.Pawn, Loc)))
+		{
+			R.Abort(TEXT("Bell spawn failed"));
+			return;
+		}
+		const FTransform T(FRotator(0.f, (C.Pawn->GetActorLocation() - Loc).Rotation().Yaw, 0.f), Loc);
+		AActor* Bell = C.W->SpawnActorDeferred<AActor>(Cls, T, nullptr, nullptr, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+		if (!Test->TestNotNull(TEXT("Bell spawned"), Bell) || !Test->TestTrue(TEXT("StruckTag set"), BpWriteTag(Bell, TEXT("StruckTag"), S->BellTag)))
+		{
+			R.Abort(TEXT("Bell spawn failed"));
+			return;
+		}
+		Bell->FinishSpawning(T);
+		S->Bell = Bell;
+		BpReadFloat(Bell, TEXT("SwingDuration"), S->SwingDuration);
+		BpReadFloat(Bell, TEXT("SwingDegrees"), S->SwingDegrees);
+		LogComponents(Bell);
+		Note(FString::Printf(TEXT("Bell at %s: SwingDuration=%.3f SwingDegrees=%.2f"), *Loc.ToString(), S->SwingDuration, S->SwingDegrees));
+		Test->TestFalse(TEXT("Bell tag not present before the strike"), HasState(S->BellTag));
+		Test->TestTrue(TEXT("The bell has a swinging pivot component"), S->BellPivot() != nullptr);
+		Test->TestTrue(TEXT("The bell has an interactable"), Bell->FindComponentByClass<ULBInteractableComponent>() != nullptr);
+		if (const USceneComponent* P = S->BellPivot())
+		{
+			S->BellRest = P->GetRelativeRotation().Quaternion();
+		}
+	});
+	AddSettle(*R, TEXT("Let the bell settle"), 3);
+	AddBpPress(*R, S, Test, TEXT("Strike bell"), [](FBpState& St) { return St.Bell.Get(); }, [S, Test](FPuzzleCtx& C)
+	{
+		Test->TestTrue(TEXT("Bell StruckTag added on strike"), HasState(S->BellTag));
+		S->StrikeTime = C.W->GetTimeSeconds();
+		S->BellMaxDev = 0.f;
+		S->BellLastDevTime = 0.0;
+	});
+	R->Add(TEXT("Watch the bell swing and return to rest"), [S, Test](FPuzzleCtx& C)
+	{
+		const USceneComponent* P = S->BellPivot();
+		if (!P)
+		{
+			return true;
+		}
+		const double T = C.W->GetTimeSeconds() - S->StrikeTime;
+		const float Dev = AngleDeg(P->GetRelativeRotation().Quaternion(), S->BellRest);
+		S->BellMaxDev = FMath::Max(S->BellMaxDev, Dev);
+		if (Dev > 0.5f)
+		{
+			S->BellLastDevTime = T;
+		}
+		if (T < 1.55)
+		{
+			return false;
+		}
+		Note(FString::Printf(TEXT("Bell swing: max deviation %.2f deg, last deviated at t=%.2fs, final deviation %.3f deg"), S->BellMaxDev, S->BellLastDevTime, Dev));
+		Test->TestTrue(FString::Printf(TEXT("The bell swung (max deviation %.2f deg > 1)"), S->BellMaxDev), S->BellMaxDev > 1.f);
+		Test->TestTrue(FString::Printf(TEXT("The bell is at rest within 1.5s (last deviated at %.2fs)"), S->BellLastDevTime), S->BellLastDevTime < 1.5);
+		Test->TestTrue(FString::Printf(TEXT("Final bell rotation is the rest rotation (%.3f deg off)"), Dev), Dev < 0.5f);
+		return true;
+	}, 30.f);
+
+	// ---- 4. save / reload --------------------------------------------------------------------------------------------
+	R->Add(TEXT("SaveCheckpoint with the candles solved, then LoadLastCheckpoint"), [S, Test](FPuzzleCtx& C)
+	{
+		if (!C.bFirst || !C.Pawn)
+		{
+			return S->bLoadIssued && NewWorldReady(C, S->OldWorld);
+		}
+		Test->TestTrue(TEXT("Candles solved before saving"), HasState(S->Solved));
+		S->DialBeforeSave = S->Dial()->GetCurrentIndex();
+		ULBSaveSubsystem* Save = ULBSaveSubsystem::Get(C.W);
+		if (!Test->TestNotNull(TEXT("Save subsystem"), Save))
+		{
+			return true;
+		}
+		Test->TestTrue(TEXT("SaveCheckpoint"), Save->SaveCheckpoint(GCheckpoint, C.Pawn->GetActorTransform()));
+		S->OldWorld = C.W;
+		S->bLoadIssued = true;
+		Test->TestTrue(TEXT("LoadLastCheckpoint accepted"), Save->LoadLastCheckpoint());
+		return false;
+	}, 90.f);
+
+	// The very first frame the new world is ready: the candles must already be lit (snap, no animation, no events needed).
+	AddCheck(*R, TEXT("After reload: candles snap lit, CandlesSolved present"), [S, Test](FPuzzleCtx& C)
+	{
+		Test->TestTrue(TEXT("The reloaded world is a new world"), C.W != S->OldWorld.Get());
+		S->Candles[0].Reset();
+		S->Candles[1].Reset();
+		S->Candles[2].Reset();
+		S->SeqActor.Reset();
+		S->Lever.Reset();
+		if (!ResolveBpActors(C.W, *S, Test, false))
+		{
+			return;
+		}
+		Test->TestTrue(TEXT("CandlesSolved still present after reload"), HasState(S->Solved));
+		CheckCandles(*S, Test, C.Pawn, true, false, TEXT("Reloaded"));
+		Test->TestTrue(TEXT("The sequence puzzle comes back solved/inert"), S->Seq()->IsSolved());
+		Test->TestEqual(TEXT("No puzzle failure after the reload"), S->Seq()->GetProgress(), 3);
+		const int32 Index = S->Dial()->GetCurrentIndex();
+		Test->TestEqual(TEXT("Dial keeps its saved position"), Index, S->DialBeforeSave);
+		CheckHandle(*S, Test, TEXT("Reloaded dial"));
 	});
 
 	Enqueue(R);
