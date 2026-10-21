@@ -147,9 +147,22 @@ void ULBCameraFeelComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 		}
 	}
 
-	Cam->SetRelativeLocation(FVector(BaseRelativeLocation.X, BaseRelativeLocation.Y, RelativeZ + BobZ + DipZ));
+	// Skip the writes when nothing visibly changed so an idle pawn does not dirty the camera transform every frame.
+	constexpr float ApplyEpsilon = 0.001f;
+	const FVector NewLocation(BaseRelativeLocation.X, BaseRelativeLocation.Y, RelativeZ + BobZ + DipZ);
+	if (!bHasApplied || !NewLocation.Equals(LastAppliedLocation, ApplyEpsilon))
+	{
+		Cam->SetRelativeLocation(NewLocation);
+		LastAppliedLocation = NewLocation;
+	}
 
 	// Sprint FOV.
 	SprintAlpha = FMath::FInterpConstantTo(SprintAlpha, Gait == ELBGait::Sprint ? 1.f : 0.f, DeltaTime, 1.f / FMath::Max(T->SprintFOVEaseTime, KINDA_SMALL_NUMBER));
-	Cam->SetFieldOfView(BaseFOV + T->SprintFOVDelta * FMath::SmoothStep(0.f, 1.f, SprintAlpha));
+	const float NewFOV = BaseFOV + T->SprintFOVDelta * FMath::SmoothStep(0.f, 1.f, SprintAlpha);
+	if (!bHasApplied || !FMath::IsNearlyEqual(NewFOV, LastAppliedFOV, ApplyEpsilon))
+	{
+		Cam->SetFieldOfView(NewFOV);
+		LastAppliedFOV = NewFOV;
+	}
+	bHasApplied = true;
 }

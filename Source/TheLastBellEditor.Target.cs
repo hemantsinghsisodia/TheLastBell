@@ -9,5 +9,6 @@ public class TheLastBellEditorTarget : TargetRules
 		DefaultBuildSettings = BuildSettingsVersion.Latest;
 		IncludeOrderVersion = EngineIncludeOrderVersion.Latest;
 		ExtraModuleNames.Add("LastBell");
+		ExtraModuleNames.Add("LastBellTests");
 	}
 }

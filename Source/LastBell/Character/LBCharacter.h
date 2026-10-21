@@ -13,8 +13,6 @@ class ULBCameraFeelComponent;
 class ULBCandleComponent;
 class ULBFootstepComponent;
 class ULBInspectionComponent;
-class ULBInspectableComponent;
-class ULBInteractableComponent;
 struct FInputActionValue;
 
 UCLASS()
@@ -46,10 +44,6 @@ public:
 
 	/** The assigned tuning asset, or the class defaults when none is assigned. Never null. */
 	const ULBPlayerTuningData& GetTuning() const;
-
-	/** Starts inspecting an item (movement and look are blocked until it closes). Source is the interactable that triggered it. */
-	UFUNCTION(BlueprintCallable, Category = "LastBell|Player")
-	bool BeginInspect(ULBInspectableComponent* Inspectable, ULBInteractableComponent* Source = nullptr);
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "LastBell|Tuning")
 	TObjectPtr<ULBPlayerTuningData> Tuning;
@@ -91,6 +85,8 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
+	virtual void OnStartCrouch(float HalfHeightAdjust, float ScaledHalfHeightAdjust) override;
+	virtual void OnEndCrouch(float HalfHeightAdjust, float ScaledHalfHeightAdjust) override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LastBell|Player")
 	TObjectPtr<UCameraComponent> FirstPersonCamera;
@@ -123,9 +119,12 @@ private:
 	void InspectRotate(const FInputActionValue& Value);
 	void InspectExit();
 	bool IsInspecting() const;
+	/** Re-derives bSprinting from the current inputs and applies MaxWalkSpeed. Called whenever one of those inputs changes. */
+	void UpdateSprintState();
 
 	bool bIsDead = false;
 	bool bSprintHeld = false;
 	bool bSprinting = false;
+	ELBGait CachedGait = ELBGait::Idle;
 	FVector2D MoveInput = FVector2D::ZeroVector;
 };

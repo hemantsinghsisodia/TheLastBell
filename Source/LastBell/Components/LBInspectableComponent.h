@@ -19,18 +19,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LastBell|Inspection", meta = (MultiLine = "true"))
 	FText BodyText;
 
-	/** True for items that are collected (e.g. a key): closing grants GrantOnKeep, runs the interactable grant and hides the actor. False: closing puts the item back exactly. */
+	/** True for items that are collected (e.g. a key): closing runs the interactable's normal grant (GrantedStateTags, single use) and hides the actor. False: closing puts the item back exactly. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LastBell|Inspection")
 	bool bKeepOnClose = false;
-
-	/** Added to world state when the item is kept. */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LastBell|Inspection", meta = (EditCondition = "bKeepOnClose"))
-	FGameplayTagContainer GrantOnKeep;
 
 	/** Starting orientation relative to the camera (X forward, Y right, Z up). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LastBell|Inspection")
 	FRotator InitialInspectRotation = FRotator::ZeroRotator;
 
-	/** Grants GrantOnKeep through world state and hides the actor. Called by the inspection component on a keep. */
+	/** Hides the kept actor and disables its collision. Called by the inspection component on a keep; world-state grants go through the interactable. */
 	void ApplyKeep();
 };

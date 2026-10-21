@@ -37,6 +37,9 @@ private:
 
 	FVector BaseRelativeLocation = FVector::ZeroVector;
 	float BaseFOV = 90.f;
+	FVector LastAppliedLocation = FVector::ZeroVector;
+	float LastAppliedFOV = 0.f;
+	bool bHasApplied = false;
 	float StandingHalfHeight = 0.f;
 
 	float CrouchAlpha = 0.f;

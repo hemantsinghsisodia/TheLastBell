@@ -1,6 +1,5 @@
 #include "Components/LBInteractableComponent.h"
 #include "Systems/LBWorldStateSubsystem.h"
-#include "Character/LBCharacter.h"
 #include "Character/LBInspectionComponent.h"
 #include "Components/LBInspectableComponent.h"
 #include "LBLog.h"
@@ -35,8 +34,13 @@ void ULBInteractableComponent::Interact(AActor* Instigator)
 	if (bInspectOnInteract)
 	{
 		ULBInspectableComponent* Inspectable = GetOwner() ? GetOwner()->FindComponentByClass<ULBInspectableComponent>() : nullptr;
-		ALBCharacter* Character = Cast<ALBCharacter>(Instigator);
-		if (Inspectable && Character && Character->BeginInspect(Inspectable, this))
+		ULBInspectionComponent* Inspection = Instigator ? Instigator->FindComponentByClass<ULBInspectionComponent>() : nullptr;
+		if (Inspection && Inspection->IsInspecting())
+		{
+			// Already inspecting (this item or another): ignore the press instead of falling back to the plain grant.
+			return;
+		}
+		if (Inspectable && Inspection && Inspection->BeginInspect(Inspectable, this))
 		{
 			return;
 		}

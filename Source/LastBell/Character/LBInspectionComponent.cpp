@@ -1,11 +1,11 @@
 #include "Character/LBInspectionComponent.h"
 #include "Character/LBCharacter.h"
 #include "Character/LBPlayerTuningData.h"
-#include "Character/LBPlayerTypes.h"
 #include "Components/LBInspectableComponent.h"
 #include "Components/LBInteractableComponent.h"
 #include "Systems/LBPlayerController.h"
 #include "Components/PrimitiveComponent.h"
+#include "Components/SceneComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/PlayerController.h"
@@ -40,9 +40,16 @@ bool ULBInspectionComponent::GetViewPoint(FVector& OutLocation, FRotator& OutRot
 
 bool ULBInspectionComponent::BeginInspect(ULBInspectableComponent* Inspectable, ULBInteractableComponent* InSource)
 {
-	AActor* Item = Inspectable ? Inspectable->GetOwner() : nullptr;
+	AActor* Item = IsValid(Inspectable) ? Inspectable->GetOwner() : nullptr;
 	if (!Item || IsInspecting())
 	{
+		return false;
+	}
+	// The item is moved every frame, which only works on a movable root (static meshes would not even update their render transform).
+	const USceneComponent* Root = Item->GetRootComponent();
+	if (!Root || Root->Mobility != EComponentMobility::Movable)
+	{
+		UE_LOG(LogLB, Warning, TEXT("Cannot inspect '%s': its root component is not Movable"), *GetNameSafe(Item));
 		return false;
 	}
 	if (const ALBCharacter* Owner = Cast<ALBCharacter>(GetOwner()); Owner && Owner->IsDead())
@@ -50,6 +57,7 @@ bool ULBInspectionComponent::BeginInspect(ULBInspectableComponent* Inspectable, 
 		return false;
 	}
 
+	bInspecting = true;
 	Inspected = Inspectable;
 	Source = InSource;
 	OriginalTransform = Item->GetActorTransform();
@@ -71,17 +79,14 @@ bool ULBInspectionComponent::BeginInspect(ULBInspectableComponent* Inspectable, 
 	BlendAlpha = 0.f;
 	BeginFrame = GFrameCounter;
 
-	if (ACharacter* Character = Cast<ACharacter>(GetOwner()))
+	if (const ACharacter* Character = Cast<ACharacter>(GetOwner()))
 	{
 		if (UCharacterMovementComponent* Movement = Character->GetCharacterMovement())
 		{
 			Movement->StopMovementImmediately();
 		}
-		if (ALBPlayerController* PC = Cast<ALBPlayerController>(Character->GetController()))
-		{
-			PC->SetInspectionContextActive(true);
-		}
 	}
+	SetInputContextActive(true);
 
 	SetComponentTickEnabled(true);
 	OnInspectBegin.Broadcast(Inspectable);
@@ -121,11 +126,16 @@ void ULBInspectionComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	if (!bInspecting)
+	{
+		SetComponentTickEnabled(false);
+		return;
+	}
 	ULBInspectableComponent* Inspectable = Inspected.Get();
 	AActor* Item = Inspectable ? Inspectable->GetOwner() : nullptr;
-	if (!Item)
+	if (!IsValid(Item))
 	{
-		// The item vanished under us: just leave inspection mode.
+		// The item vanished under us: just leave inspection mode (no restore, no keep, no grant).
 		EndInspect();
 		return;
 	}
@@ -151,11 +161,10 @@ void ULBInspectionComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	Item->SetActorLocationAndRotation(NewLocation, NewRotation, false, nullptr, ETeleportType::TeleportPhysics);
 }
 
-void ULBInspectionComponent::RestoreItem()
+void ULBInspectionComponent::RestoreItem(ULBInspectableComponent* Inspectable)
 {
-	ULBInspectableComponent* Inspectable = Inspected.Get();
-	AActor* Item = Inspectable ? Inspectable->GetOwner() : nullptr;
-	if (!Item)
+	AActor* Item = IsValid(Inspectable) ? Inspectable->GetOwner() : nullptr;
+	if (!IsValid(Item))
 	{
 		return;
 	}
@@ -170,54 +179,67 @@ void ULBInspectionComponent::RestoreItem()
 	}
 }
 
+void ULBInspectionComponent::SetInputContextActive(bool bActive) const
+{
+	if (const APawn* Pawn = Cast<APawn>(GetOwner()))
+	{
+		if (ALBPlayerController* PC = Cast<ALBPlayerController>(Pawn->GetController()))
+		{
+			PC->SetInspectionContextActive(bActive);
+		}
+	}
+}
+
 void ULBInspectionComponent::EndInspect()
 {
-	ULBInspectableComponent* Inspectable = Inspected.Get();
-	if (!IsInspecting())
+	FinishInspect(false);
+}
+
+void ULBInspectionComponent::CancelInspect()
+{
+	FinishInspect(true);
+}
+
+void ULBInspectionComponent::FinishInspect(bool bCancel)
+{
+	if (!bInspecting)
 	{
 		return;
 	}
 
+	ULBInspectableComponent* Inspectable = Inspected.Get();
 	ULBInteractableComponent* SourceInteractable = Source.Get();
-	const FLBInspectCloseResult Close = LBPlayerLogic::ResolveInspectClose(Inspectable ? Inspectable->bKeepOnClose : false, SourceInteractable != nullptr);
+	const bool bItemValid = IsValid(Inspectable) && IsValid(Inspectable->GetOwner());
+	const bool bKept = !bCancel && bItemValid && Inspectable->bKeepOnClose;
 
-	// The item always goes back to its original transform first; a kept item is then hidden in place.
-	RestoreItem();
-
-	if (Inspectable)
-	{
-		if (Close.bGrantKeepTags || Close.bHideActor)
-		{
-			Inspectable->ApplyKeep();
-		}
-		if (Close.bRunInteractGrant)
-		{
-			SourceInteractable->CompleteInspection(GetOwner());
-		}
-	}
-
+	// Leave the inspection state first so anything reacting below (grants, delegates) sees a consistent "not inspecting".
+	bInspecting = false;
 	Inspected.Reset();
 	Source.Reset();
 	EndFrame = GFrameCounter;
 	SetComponentTickEnabled(false);
+	SetInputContextActive(false);
 
-	if (const ACharacter* Character = Cast<ACharacter>(GetOwner()))
+	if (bItemValid)
 	{
-		if (ALBPlayerController* PC = Cast<ALBPlayerController>(Character->GetController()))
+		// The item always goes back to its original transform first; a kept item is then hidden in place.
+		RestoreItem(Inspectable);
+		if (bKept)
 		{
-			PC->SetInspectionContextActive(false);
+			Inspectable->ApplyKeep();
+			if (SourceInteractable)
+			{
+				SourceInteractable->CompleteInspection(GetOwner());
+			}
 		}
 	}
-	OnInspectEnd.Broadcast(Close.bKept);
+	OnInspectEnd.Broadcast(bKept);
 }
 
 void ULBInspectionComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-	if (IsInspecting())
-	{
-		// Never leave an item floating in the world when the player goes away.
-		RestoreItem();
-		Inspected.Reset();
-	}
+	// Never leave an item floating in the world or the inspect input context active when the player goes away.
+	CancelInspect();
+	SetInputContextActive(false);
 	Super::EndPlay(EndPlayReason);
 }

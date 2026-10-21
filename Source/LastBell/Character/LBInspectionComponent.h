@@ -29,9 +29,17 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "LastBell|Inspection")
 	bool BeginInspect(ULBInspectableComponent* Inspectable, ULBInteractableComponent* Source = nullptr);
 
-	/** Closes the inspection: keeps or puts back according to the inspectable's bKeepOnClose. */
+	/**
+	 * Closes the inspection: keeps or puts back according to the inspectable's bKeepOnClose. Always cleans up (tick off,
+	 * inspect input context removed, OnInspectEnd broadcast), even when the item was destroyed meanwhile; in that case the
+	 * restore, keep and grant steps are skipped.
+	 */
 	UFUNCTION(BlueprintCallable, Category = "LastBell|Inspection")
 	void EndInspect();
+
+	/** Aborts the inspection: puts the item back (if it still exists), grants nothing, cleans up. Used on death and EndPlay. */
+	UFUNCTION(BlueprintCallable, Category = "LastBell|Inspection")
+	void CancelInspect();
 
 	/**
 	 * Player-initiated close (input). Ignored for the first couple of frames after BeginInspect so the key press that
@@ -47,7 +55,7 @@ public:
 	void AddRotateInput(FVector2D Axis);
 
 	UFUNCTION(BlueprintPure, Category = "LastBell|Inspection")
-	bool IsInspecting() const { return Inspected.IsValid(); }
+	bool IsInspecting() const { return bInspecting; }
 
 	UFUNCTION(BlueprintPure, Category = "LastBell|Inspection")
 	ULBInspectableComponent* GetInspected() const { return Inspected.Get(); }
@@ -66,7 +74,11 @@ protected:
 private:
 	const ULBPlayerTuningData& GetTuning() const;
 	bool GetViewPoint(FVector& OutLocation, FRotator& OutRotation) const;
-	void RestoreItem();
+	void RestoreItem(ULBInspectableComponent* Inspectable);
+	void FinishInspect(bool bCancel);
+	void SetInputContextActive(bool bActive) const;
+
+	bool bInspecting = false;
 
 	TWeakObjectPtr<ULBInspectableComponent> Inspected;
 	TWeakObjectPtr<ULBInteractableComponent> Source;

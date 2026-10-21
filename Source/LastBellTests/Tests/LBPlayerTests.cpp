@@ -171,23 +171,7 @@ bool FLBCandleStateTest::RunTest(const FString& Parameters)
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBInspectCloseTest, "LastBell.Player.InspectKeepVsPutBack", LB_TEST_FLAGS)
 bool FLBInspectCloseTest::RunTest(const FString& Parameters)
 {
-	const FLBInspectCloseResult Keep = LBPlayerLogic::ResolveInspectClose(true, true);
-	TestTrue(TEXT("Keep: kept"), Keep.bKept);
-	TestTrue(TEXT("Keep: grants GrantOnKeep"), Keep.bGrantKeepTags);
-	TestTrue(TEXT("Keep: runs the interactable grant"), Keep.bRunInteractGrant);
-	TestTrue(TEXT("Keep: hides the actor"), Keep.bHideActor);
-
-	const FLBInspectCloseResult KeepNoSource = LBPlayerLogic::ResolveInspectClose(true, false);
-	TestTrue(TEXT("Keep without an interactable still grants tags"), KeepNoSource.bGrantKeepTags);
-	TestFalse(TEXT("Keep without an interactable has no interact grant"), KeepNoSource.bRunInteractGrant);
-
-	const FLBInspectCloseResult PutBack = LBPlayerLogic::ResolveInspectClose(false, true);
-	TestFalse(TEXT("Put back: not kept"), PutBack.bKept);
-	TestFalse(TEXT("Put back: no tag grant"), PutBack.bGrantKeepTags);
-	TestFalse(TEXT("Put back: no interact grant"), PutBack.bRunInteractGrant);
-	TestFalse(TEXT("Put back: not hidden"), PutBack.bHideActor);
-
-	// Component defaults: inspect-on-interact is opt-in, items are put back unless marked as keepable.
+	// Inspect-on-interact is opt-in; items are put back unless marked as keepable (the grant itself is the interactable's GrantedStateTags).
 	TestFalse(TEXT("bInspectOnInteract defaults off"), GetDefault<ULBInteractableComponent>()->bInspectOnInteract);
 	TestFalse(TEXT("bKeepOnClose defaults off"), GetDefault<ULBInspectableComponent>()->bKeepOnClose);
 	return true;

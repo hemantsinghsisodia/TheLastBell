@@ -118,25 +118,3 @@ struct FLBCandleStateMachine
 		return ELBCandleEvent::None;
 	}
 };
-
-/** What happens when an inspection is closed. The actor's transform is always restored first. */
-struct FLBInspectCloseResult
-{
-	bool bKept = false;
-	bool bGrantKeepTags = false;
-	bool bRunInteractGrant = false;
-	bool bHideActor = false;
-};
-
-namespace LBPlayerLogic
-{
-	inline FLBInspectCloseResult ResolveInspectClose(bool bKeepOnClose, bool bHasInteractable)
-	{
-		FLBInspectCloseResult Result;
-		Result.bKept = bKeepOnClose;
-		Result.bGrantKeepTags = bKeepOnClose;
-		Result.bRunInteractGrant = bKeepOnClose && bHasInteractable;
-		Result.bHideActor = bKeepOnClose;
-		return Result;
-	}
-}

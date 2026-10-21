@@ -12,7 +12,7 @@ class ULBInspectableComponent;
  * Dynamic delegates can only bind UFUNCTIONs on a UObject, hence this tiny class. Test-only; never spawned by gameplay.
  */
 UCLASS()
-class LASTBELL_API ULBTestSink : public UObject
+class LASTBELLTESTS_API ULBTestSink : public UObject
 {
 	GENERATED_BODY()
 
@@ -37,6 +37,12 @@ public:
 	}
 
 	UFUNCTION()
+	void HandleInteracted(AActor* Instigator)
+	{
+		++InteractedCount;
+	}
+
+	UFUNCTION()
 	void HandleCandleState(bool bLit)
 	{
 		CandleStateEvents.Add(bLit);
@@ -45,6 +51,7 @@ public:
 	TArray<float> FootstepLoudness;
 	int32 InspectBeginCount = 0;
 	int32 InspectEndCount = 0;
+	int32 InteractedCount = 0;
 	bool LastInspectKept = false;
 	TArray<bool> CandleStateEvents;
 };

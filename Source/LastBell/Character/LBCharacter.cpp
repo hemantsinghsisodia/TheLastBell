@@ -62,26 +62,45 @@ bool ALBCharacter::IsInspecting() const
 
 ELBGait ALBCharacter::GetGait() const
 {
-	return LBPlayerLogic::SelectGait(bIsCrouched, bSprinting, GetVelocity().Size2D(), GetTuning().IdleSpeedThreshold);
+	return CachedGait;
 }
 
-bool ALBCharacter::BeginInspect(ULBInspectableComponent* Inspectable, ULBInteractableComponent* Source)
+void ALBCharacter::UpdateSprintState()
 {
-	return !bIsDead && Inspection && Inspection->BeginInspect(Inspectable, Source);
+	const ULBPlayerTuningData& T = GetTuning();
+	bSprinting = !IsInspecting() && LBPlayerLogic::CanSprint(bSprintHeld, bIsCrouched,
+		!MoveInput.IsNearlyZero(), LBPlayerLogic::InputForwardDot(MoveInput), T.SprintMinForwardDot);
+	if (UCharacterMovementComponent* Movement = GetCharacterMovement())
+	{
+		const float Speed = bSprinting ? T.SprintSpeed : T.WalkSpeed;
+		if (Movement->MaxWalkSpeed != Speed)
+		{
+			Movement->MaxWalkSpeed = Speed;
+		}
+	}
+}
+
+void ALBCharacter::OnStartCrouch(float HalfHeightAdjust, float ScaledHalfHeightAdjust)
+{
+	Super::OnStartCrouch(HalfHeightAdjust, ScaledHalfHeightAdjust);
+	UpdateSprintState();
+}
+
+void ALBCharacter::OnEndCrouch(float HalfHeightAdjust, float ScaledHalfHeightAdjust)
+{
+	Super::OnEndCrouch(HalfHeightAdjust, ScaledHalfHeightAdjust);
+	UpdateSprintState();
 }
 
 void ALBCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	const ULBPlayerTuningData& T = GetTuning();
-	bSprinting = !IsInspecting() && LBPlayerLogic::CanSprint(bSprintHeld, bIsCrouched,
-		!MoveInput.IsNearlyZero(), LBPlayerLogic::InputForwardDot(MoveInput), T.SprintMinForwardDot);
-	GetCharacterMovement()->MaxWalkSpeed = bSprinting ? T.SprintSpeed : T.WalkSpeed;
-
+	// Gait is derived once per frame; every consumer (footsteps, candle, camera) reads this cache.
+	CachedGait = LBPlayerLogic::SelectGait(bIsCrouched, bSprinting, GetVelocity().Size2D(), GetTuning().IdleSpeedThreshold);
 	if (Candle)
 	{
-		Candle->SetGuttering(GetGait() == ELBGait::Sprint);
+		Candle->SetGuttering(CachedGait == ELBGait::Sprint);
 	}
 }
 
@@ -141,10 +160,12 @@ void ALBCharacter::Move(const FInputActionValue& Value)
 	if (IsInspecting())
 	{
 		MoveInput = FVector2D::ZeroVector;
+		UpdateSprintState();
 		return;
 	}
 	const FVector2D Axis = Value.Get<FVector2D>();
 	MoveInput = Axis;
+	UpdateSprintState();
 	AddMovementInput(GetActorForwardVector(), Axis.Y);
 	AddMovementInput(GetActorRightVector(), Axis.X);
 }
@@ -152,16 +173,19 @@ void ALBCharacter::Move(const FInputActionValue& Value)
 void ALBCharacter::MoveCompleted()
 {
 	MoveInput = FVector2D::ZeroVector;
+	UpdateSprintState();
 }
 
 void ALBCharacter::SprintStarted()
 {
 	bSprintHeld = true;
+	UpdateSprintState();
 }
 
 void ALBCharacter::SprintCompleted()
 {
 	bSprintHeld = false;
+	UpdateSprintState();
 }
 
 void ALBCharacter::CrouchStarted()
@@ -258,8 +282,8 @@ void ALBCharacter::Kill()
 
 	if (IsInspecting())
 	{
-		// Put the item back before input is cut off.
-		Inspection->EndInspect();
+		// Put the item back (granting nothing) before input is cut off.
+		Inspection->CancelInspect();
 	}
 
 	AController* PlayerController = GetController();

@@ -1,5 +1,6 @@
 #include "Components/LBInteractorComponent.h"
 #include "Components/LBInteractableComponent.h"
+#include "Character/LBInspectionComponent.h"
 #include "LBTraceChannels.h"
 #include "Engine/World.h"
 #include "GameFramework/Controller.h"
@@ -9,6 +10,10 @@
 void ULBInteractorComponent::BeginPlay()
 {
 	Super::BeginPlay();
+	if (const AActor* Owner = GetOwner())
+	{
+		OwnerInspection = Owner->FindComponentByClass<ULBInspectionComponent>();
+	}
 	if (UWorld* World = GetWorld())
 	{
 		World->GetTimerManager().SetTimer(TraceTimer, this, &ULBInteractorComponent::UpdateFocus, FMath::Max(TraceInterval, 0.02f), true);
@@ -52,9 +57,16 @@ ULBInteractableComponent* ULBInteractorComponent::TraceForInteractable() const
 	return nullptr;
 }
 
+bool ULBInteractorComponent::IsOwnerInspecting() const
+{
+	const ULBInspectionComponent* Inspection = OwnerInspection.Get();
+	return Inspection && Inspection->IsInspecting();
+}
+
 void ULBInteractorComponent::UpdateFocus()
 {
-	ULBInteractableComponent* NewFocus = TraceForInteractable();
+	// While inspecting nothing is interactable and no prompt is shown (focus is cleared, an empty prompt is broadcast).
+	ULBInteractableComponent* NewFocus = IsOwnerInspecting() ? nullptr : TraceForInteractable();
 	ULBInteractableComponent* OldFocus = FocusedComponent.Get();
 
 	const bool bFocusChanged = NewFocus != OldFocus;
@@ -86,6 +98,10 @@ void ULBInteractorComponent::UpdateFocus()
 
 void ULBInteractorComponent::TryInteract()
 {
+	if (IsOwnerInspecting())
+	{
+		return;
+	}
 	UpdateFocus();
 	if (ULBInteractableComponent* Focus = FocusedComponent.Get())
 	{

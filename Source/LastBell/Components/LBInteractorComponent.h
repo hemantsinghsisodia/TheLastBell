@@ -5,6 +5,7 @@
 #include "LBInteractorComponent.generated.h"
 
 class ULBInteractableComponent;
+class ULBInspectionComponent;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FLBFocusChangedSignature, ULBInteractableComponent*, NewFocus, FText, Prompt);
 
@@ -41,9 +42,11 @@ protected:
 
 private:
 	void UpdateFocus();
+	bool IsOwnerInspecting() const;
 	ULBInteractableComponent* TraceForInteractable() const;
 
 	TWeakObjectPtr<ULBInteractableComponent> FocusedComponent;
 	FText LastPrompt;
+	TWeakObjectPtr<ULBInspectionComponent> OwnerInspection;
 	FTimerHandle TraceTimer;
 };

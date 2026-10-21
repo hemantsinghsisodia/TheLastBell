@@ -24,7 +24,9 @@
 #include "Components/LBInspectableComponent.h"
 #include "Components/LBInteractableComponent.h"
 #include "Components/LBInteractorComponent.h"
+#include "Systems/LBPlayerController.h"
 #include "Systems/LBWorldStateSubsystem.h"
+#include "InputMappingContext.h"
 #include "Tests/LBTestSink.h"
 #include "UObject/StrongObjectPtr.h"
 #include "LBLog.h"
@@ -96,6 +98,8 @@ namespace
 		FVector PawnBefore = FVector::ZeroVector;
 		double LastTry = -1.0;
 		bool bCrouchSeen = false;
+		int32 SpamCalls = 0;
+		TWeakObjectPtr<UWorld> OldWorld;
 
 		void ResetSamples()
 		{
@@ -773,12 +777,86 @@ namespace
 		return false;
 	}
 
-	void AddInspectCase(FFeelRunner& R, const TSharedRef<FState>& S, FAutomationTestBase* Test, const FInspectCase& Case)
+	/** True when the player controller's inspect mapping context is currently on the local player's input subsystem. */
+	bool InspectContextActive(const ALBCharacter* P)
 	{
-		const FString L = Case.Label;
-		const TCHAR* ClassPath = Case.ClassPath;
-		const bool bKeep = Case.bKeep;
+		const ALBPlayerController* PC = P ? Cast<ALBPlayerController>(P->GetController()) : nullptr;
+		const ULocalPlayer* LP = PC ? PC->GetLocalPlayer() : nullptr;
+		const UEnhancedInputLocalPlayerSubsystem* Subsystem = LP ? LP->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>() : nullptr;
+		return Subsystem && PC->InspectMappingContext && Subsystem->HasMappingContext(PC->InspectMappingContext);
+	}
 
+	bool InspectContextConfigured(const ALBCharacter* P)
+	{
+		const ALBPlayerController* PC = P ? Cast<ALBPlayerController>(P->GetController()) : nullptr;
+		return PC && PC->InspectMappingContext;
+	}
+
+	/** Spawns the item 100 cm in front of the view and binds the test sink to the inspection and interactable delegates. */
+	AActor* SpawnInspectItem(FStepCtx& C, FState& S, FAutomationTestBase* Test, const FString& L, const TCHAR* ClassPath, bool bKeep)
+	{
+		UClass* Class = LoadClass<AActor>(nullptr, ClassPath);
+		if (!Test->TestNotNull(*FString::Printf(TEXT("%s: Blueprint class loads (%s)"), *L, ClassPath), Class))
+		{
+			return nullptr;
+		}
+		FVector ViewLoc;
+		FRotator ViewRot;
+		C.Pawn->GetController()->GetPlayerViewPoint(ViewLoc, ViewRot);
+		// Within interact range (TraceDistance 200) and with an odd rotation so the restore check means something.
+		const FTransform Spawn(FRotator(8.f, 33.f, 5.f), ViewLoc + ViewRot.Vector() * 100.f);
+
+		AActor* Item = C.W->SpawnActorDeferred<AActor>(Class, Spawn, nullptr, nullptr, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+		if (!Test->TestNotNull(*FString::Printf(TEXT("%s: item spawned"), *L), Item))
+		{
+			return nullptr;
+		}
+		if (bKeep)
+		{
+			const FGameplayTag KeepTag = FGameplayTag::RequestGameplayTag(FName(GKeepTagName), false);
+			Test->TestTrue(TEXT("Keep tag exists"), KeepTag.IsValid());
+			Test->TestTrue(TEXT("BP_TagInteractable.bInspectable"), SetBoolProp(Item, TEXT("bInspectable"), true));
+			Test->TestTrue(TEXT("BP_TagInteractable.bHideOnUse"), SetBoolProp(Item, TEXT("bHideOnUse"), true));
+			Test->TestTrue(TEXT("BP_TagInteractable.UseStateTag"), SetTagProp(Item, TEXT("UseStateTag"), KeepTag));
+		}
+		Item->FinishSpawning(Spawn);
+
+		// A tag-interactable stand-in can have no mesh: give it a collider the interactor can hit.
+		if (bKeep)
+		{
+			TInlineComponentArray<UStaticMeshComponent*> Meshes(Item);
+			if (Meshes.Num() > 0 && !Meshes[0]->GetStaticMesh())
+			{
+				Note(TEXT("BP_TagInteractable has no mesh assigned: test assigns the engine cube (content problem, reported)"));
+				Meshes[0]->SetStaticMesh(LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cube.Cube")));
+				Meshes[0]->SetWorldScale3D(FVector(0.3f));
+			}
+		}
+
+		S.Item = Item;
+		S.ItemOriginal = Item->GetActorTransform();
+		S.StateBefore = ULBWorldStateSubsystem::Get(C.W) ? ULBWorldStateSubsystem::Get(C.W)->GetState() : FGameplayTagContainer();
+		S.PawnBefore = C.Pawn->GetActorLocation();
+		ULBInspectionComponent* Inspection = C.Pawn->GetInspection();
+		if (S.Sink.IsValid())
+		{
+			Inspection->OnInspectBegin.RemoveDynamic(S.Sink.Get(), &ULBTestSink::HandleInspectBegin);
+			Inspection->OnInspectEnd.RemoveDynamic(S.Sink.Get(), &ULBTestSink::HandleInspectEnd);
+		}
+		S.Sink.Reset(NewObject<ULBTestSink>(GetTransientPackage()));
+		Inspection->OnInspectBegin.AddDynamic(S.Sink.Get(), &ULBTestSink::HandleInspectBegin);
+		Inspection->OnInspectEnd.AddDynamic(S.Sink.Get(), &ULBTestSink::HandleInspectEnd);
+		if (ULBInteractableComponent* Interactable = Item->FindComponentByClass<ULBInteractableComponent>())
+		{
+			Interactable->OnInteracted.AddDynamic(S.Sink.Get(), &ULBTestSink::HandleInteracted);
+		}
+		S.LastTry = -1.0;
+		Note(FString::Printf(TEXT("%s: item %s at %s"), *L, *GetNameSafe(Item), *Spawn.GetLocation().ToString()));
+		return Item;
+	}
+
+	void AddPlaceStep(FFeelRunner& R, const FString& L)
+	{
 		R.Add(*FString::Printf(TEXT("%s: place pawn"), *L), [](FStepCtx& C)
 		{
 			if (C.bFirst)
@@ -788,63 +866,23 @@ namespace
 			}
 			return C.Elapsed >= 0.5 && OnGround(C.Pawn) && Speed2D(C.Pawn) < 5.f;
 		});
+	}
 
+	void AddSpawnStep(FFeelRunner& R, const TSharedRef<FState>& S, FAutomationTestBase* Test, const FString& L, const TCHAR* ClassPath, bool bKeep)
+	{
 		R.Add(*FString::Printf(TEXT("%s: spawn item in front of the pawn"), *L), [S, Test, L, ClassPath, bKeep](FStepCtx& C)
 		{
 			if (!C.bFirst)
 			{
 				return C.Elapsed >= 0.4;
 			}
-			UClass* Class = LoadClass<AActor>(nullptr, ClassPath);
-			if (!Test->TestNotNull(*FString::Printf(TEXT("%s: Blueprint class loads (%s)"), *L, ClassPath), Class))
-			{
-				return true;
-			}
-			FVector ViewLoc;
-			FRotator ViewRot;
-			C.Pawn->GetController()->GetPlayerViewPoint(ViewLoc, ViewRot);
-			// Within interact range (TraceDistance 200) and with an odd rotation so the restore check means something.
-			const FTransform Spawn(FRotator(8.f, 33.f, 5.f), ViewLoc + ViewRot.Vector() * 100.f);
-
-			AActor* Item = C.W->SpawnActorDeferred<AActor>(Class, Spawn, nullptr, nullptr, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
-			if (!Test->TestNotNull(*FString::Printf(TEXT("%s: item spawned"), *L), Item))
-			{
-				return true;
-			}
-			if (bKeep)
-			{
-				const FGameplayTag KeepTag = FGameplayTag::RequestGameplayTag(FName(GKeepTagName), false);
-				Test->TestTrue(TEXT("Keep tag exists"), KeepTag.IsValid());
-				Test->TestTrue(TEXT("BP_TagInteractable.bInspectable"), SetBoolProp(Item, TEXT("bInspectable"), true));
-				Test->TestTrue(TEXT("BP_TagInteractable.bHideOnUse"), SetBoolProp(Item, TEXT("bHideOnUse"), true));
-				Test->TestTrue(TEXT("BP_TagInteractable.UseStateTag"), SetTagProp(Item, TEXT("UseStateTag"), KeepTag));
-			}
-			Item->FinishSpawning(Spawn);
-
-			// A tag-interactable stand-in can have no mesh: give it a collider the interactor can hit.
-			if (bKeep)
-			{
-				TInlineComponentArray<UStaticMeshComponent*> Meshes(Item);
-				if (Meshes.Num() > 0 && !Meshes[0]->GetStaticMesh())
-				{
-					Note(TEXT("BP_TagInteractable has no mesh assigned: test assigns the engine cube (content problem, reported)"));
-					Meshes[0]->SetStaticMesh(LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cube.Cube")));
-					Meshes[0]->SetWorldScale3D(FVector(0.3f));
-				}
-			}
-
-			S->Item = Item;
-			S->ItemOriginal = Item->GetActorTransform();
-			S->StateBefore = ULBWorldStateSubsystem::Get(C.W) ? ULBWorldStateSubsystem::Get(C.W)->GetState() : FGameplayTagContainer();
-			S->PawnBefore = C.Pawn->GetActorLocation();
-			S->Sink.Reset(NewObject<ULBTestSink>(GetTransientPackage()));
-			C.Pawn->GetInspection()->OnInspectBegin.AddDynamic(S->Sink.Get(), &ULBTestSink::HandleInspectBegin);
-			C.Pawn->GetInspection()->OnInspectEnd.AddDynamic(S->Sink.Get(), &ULBTestSink::HandleInspectEnd);
-			S->LastTry = -1.0;
-			Note(FString::Printf(TEXT("%s: item %s at %s"), *L, *GetNameSafe(Item), *Spawn.GetLocation().ToString()));
-			return false;
+			return SpawnInspectItem(C, *S, Test, L, ClassPath, bKeep) == nullptr;
 		});
+	}
 
+	/** Retries TryInteract every 0.25 s until the inspection starts, then checks the begin event. */
+	void AddBeginStep(FFeelRunner& R, const TSharedRef<FState>& S, FAutomationTestBase* Test, const FString& L)
+	{
 		R.Add(*FString::Printf(TEXT("%s: TryInteract starts the inspection"), *L), [S, Test, L](FStepCtx& C)
 		{
 			AActor* Item = S->Item.Get();
@@ -873,6 +911,17 @@ namespace
 			}
 			return false;
 		});
+	}
+
+	void AddInspectCase(FFeelRunner& R, const TSharedRef<FState>& S, FAutomationTestBase* Test, const FInspectCase& Case)
+	{
+		const FString L = Case.Label;
+		const TCHAR* ClassPath = Case.ClassPath;
+		const bool bKeep = Case.bKeep;
+
+		AddPlaceStep(R, L);
+		AddSpawnStep(R, S, Test, L, ClassPath, bKeep);
+		AddBeginStep(R, S, Test, L);
 
 		R.Add(*FString::Printf(TEXT("%s: item travels to the hold point"), *L), [S, Test, L](FStepCtx& C)
 		{
@@ -996,6 +1045,277 @@ bool FLBFeelInspectionTest::RunTest(const FString& Parameters)
 	});
 
 	AddInspectCase(*R, S, Test, { TEXT("BP_TagInteractable (keep)"), GTagInteractableClassPath, true });
+
+	Enqueue(R);
+	return true;
+}
+
+// =====================================================================================================================
+// 5. Inspection edge cases (REV-003 H1, M2, interact spam)
+// =====================================================================================================================
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBFeelInspectEdgeCasesTest, "LastBell.Functional.PlayerFeel.InspectEdgeCases",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
+bool FLBFeelInspectEdgeCasesTest::RunTest(const FString& Parameters)
+{
+	TSharedPtr<FFeelRunner> R = StartSession(this);
+	const TSharedRef<FState> S = MakeShared<FState>();
+	FAutomationTestBase* Test = this;
+	AddSetupSteps(*R, S, Test);
+
+	// ---- (a) the held item is destroyed mid-inspection ------------------------------------------------------------
+	{
+		const FString L = TEXT("(a) destroy held item");
+		AddPlaceStep(*R, L);
+		AddSpawnStep(*R, S, Test, L, GNoteClassPath, false);
+		AddBeginStep(*R, S, Test, L);
+
+		R->Add(*FString::Printf(TEXT("%s: inspection ends cleanly"), *L), [S, Test](FStepCtx& C)
+		{
+			ULBInspectionComponent* Inspection = C.Pawn->GetInspection();
+			if (C.bFirst)
+			{
+				Test->TestTrue(TEXT("PlayerController has an InspectMappingContext assigned"), InspectContextConfigured(C.Pawn));
+				Test->TestTrue(TEXT("Inspect input context active while inspecting"), InspectContextActive(C.Pawn));
+				if (AActor* Item = S->Item.Get())
+				{
+					Item->Destroy();
+				}
+				return false;
+			}
+			if (Inspection->IsInspecting())
+			{
+				if (C.Elapsed > 2.0)
+				{
+					Test->AddError(TEXT("Inspection never ended after the held item was destroyed"));
+					return true;
+				}
+				return false;
+			}
+			Test->TestEqual(TEXT("OnInspectEnd fired once"), S->Sink->InspectEndCount, 1);
+			Test->TestFalse(TEXT("OnInspectEnd bKept is false for a vanished item"), S->Sink->LastInspectKept);
+			Test->TestFalse(TEXT("Inspect input context removed"), InspectContextActive(C.Pawn));
+			Test->TestFalse(TEXT("Inspection component stopped ticking"), Inspection->IsComponentTickEnabled());
+			return true;
+		});
+
+		R->Add(*FString::Printf(TEXT("%s: movement input works again"), *L), [S, Test](FStepCtx& C)
+		{
+			if (C.bFirst)
+			{
+				Place(C.Pawn, GStartX);
+				S->bMarked = false;
+			}
+			DriveInput(C.Input, ELBGait::Walk);
+			if (!S->bMarked && C.Elapsed >= 0.4)
+			{
+				S->bMarked = true;
+				S->PawnBefore = C.Pawn->GetActorLocation();
+			}
+			if (C.Elapsed < 1.2)
+			{
+				return false;
+			}
+			C.Input = FFeelInput();
+			const float Moved = static_cast<float>(FVector::DistXY(S->PawnBefore, C.Pawn->GetActorLocation()));
+			Note(FString::Printf(TEXT("(a) pawn moved %.1f cm in 0.8s after the item vanished"), Moved));
+			Test->TestTrue(FString::Printf(TEXT("Pawn moves again after the item vanished (%.1f cm)"), Moved), Moved > 50.f);
+			return true;
+		});
+		AddStopStep(*R, TEXT("(a) stop"));
+	}
+
+	// ---- (c) interact spam on consecutive frames --------------------------------------------------------------------
+	{
+		const FString L = TEXT("(c) interact spam");
+		AddPlaceStep(*R, L);
+		AddSpawnStep(*R, S, Test, L, GTagInteractableClassPath, true);
+
+		R->Add(*FString::Printf(TEXT("%s: 10 TryInteract calls in consecutive frames"), *L), [S, Test](FStepCtx& C)
+		{
+			AActor* Item = S->Item.Get();
+			if (!Item)
+			{
+				return true;
+			}
+			ULBInspectionComponent* Inspection = C.Pawn->GetInspection();
+			if (C.bFirst)
+			{
+				S->SpamCalls = 0;
+			}
+			C.Pawn->GetInteractor()->TryInteract();
+			++S->SpamCalls;
+			if (S->SpamCalls == 6)
+			{
+				// Also hit the interactable directly while inspecting: it must be ignored, not fall back to the plain grant.
+				if (ULBInteractableComponent* Interactable = Item->FindComponentByClass<ULBInteractableComponent>())
+				{
+					Interactable->Interact(C.Pawn);
+				}
+			}
+			const bool bConsistent = Inspection->IsInspecting() == (S->Sink->InspectBeginCount > S->Sink->InspectEndCount);
+			Test->TestTrue(FString::Printf(TEXT("Call %d: inspecting matches begin/end event balance (begin %d, end %d)"), S->SpamCalls,
+				S->Sink->InspectBeginCount, S->Sink->InspectEndCount), bConsistent);
+			if (S->SpamCalls < 10)
+			{
+				return false;
+			}
+			Test->TestTrue(TEXT("Inspecting after the spam"), Inspection->IsInspecting());
+			Test->TestEqual(TEXT("OnInspectBegin fired exactly once"), S->Sink->InspectBeginCount, 1);
+			Test->TestEqual(TEXT("No grant while the item is still held (OnInteracted count)"), S->Sink->InteractedCount, 0);
+			const FGameplayTag KeepTag = FGameplayTag::RequestGameplayTag(FName(GKeepTagName), false);
+			Test->TestFalse(TEXT("Keep tag not granted while inspecting"), LBPie::HasState(KeepTag));
+			return true;
+		});
+
+		R->Add(*FString::Printf(TEXT("%s: close grants exactly once"), *L), [S, Test](FStepCtx& C)
+		{
+			ULBInspectionComponent* Inspection = C.Pawn->GetInspection();
+			if (!Inspection->IsInspecting() || !Inspection->RequestClose())
+			{
+				// RequestClose ignores the first frames after BeginInspect: retry on later frames.
+				if (Inspection->IsInspecting() && C.Elapsed <= 2.0)
+				{
+					return false;
+				}
+			}
+			Test->TestFalse(TEXT("Not inspecting after close"), Inspection->IsInspecting());
+			Test->TestEqual(TEXT("OnInspectEnd fired once"), S->Sink->InspectEndCount, 1);
+			Test->TestTrue(TEXT("OnInspectEnd bKept"), S->Sink->LastInspectKept);
+			Test->TestEqual(TEXT("Granted exactly once (OnInteracted count)"), S->Sink->InteractedCount, 1);
+			const FGameplayTag KeepTag = FGameplayTag::RequestGameplayTag(FName(GKeepTagName), false);
+			Test->TestTrue(TEXT("Keep tag granted on close"), LBPie::HasState(KeepTag));
+			Test->TestFalse(TEXT("Inspect input context removed"), InspectContextActive(C.Pawn));
+			S->SpamCalls = 0;
+			return true;
+		});
+
+		R->Add(*FString::Printf(TEXT("%s: spam after the keep does not re-trigger"), *L), [S, Test](FStepCtx& C)
+		{
+			C.Pawn->GetInteractor()->TryInteract();
+			if (++S->SpamCalls < 10)
+			{
+				return false;
+			}
+			Test->TestFalse(TEXT("Not inspecting after post-keep spam"), C.Pawn->GetInspection()->IsInspecting());
+			Test->TestEqual(TEXT("Still exactly one begin"), S->Sink->InspectBeginCount, 1);
+			Test->TestEqual(TEXT("Still exactly one grant"), S->Sink->InteractedCount, 1);
+			// Reset the keep tag so the next scenario's fresh item is not consumed on spawn.
+			if (ULBWorldStateSubsystem* WorldState = ULBWorldStateSubsystem::Get(C.W))
+			{
+				WorldState->RemoveState(FGameplayTag::RequestGameplayTag(FName(GKeepTagName), false));
+			}
+			if (AActor* Item = S->Item.Get())
+			{
+				Item->Destroy();
+			}
+			S->Item.Reset();
+			return true;
+		});
+	}
+
+	// ---- (b) death while inspecting: the item is restored, nothing is granted, the reload proceeds ----------------------
+	{
+		const FString L = TEXT("(b) kill while inspecting");
+		AddPlaceStep(*R, L);
+		AddSpawnStep(*R, S, Test, L, GTagInteractableClassPath, true);
+		AddBeginStep(*R, S, Test, L);
+
+		R->Add(*FString::Printf(TEXT("%s: Kill restores, grants nothing"), *L), [S, Test](FStepCtx& C)
+		{
+			AActor* Item = S->Item.Get();
+			ULBInspectionComponent* Inspection = C.Pawn->GetInspection();
+			if (!Item || !Inspection->IsInspecting())
+			{
+				Test->AddError(TEXT("(b) not inspecting when the kill was due"));
+				return true;
+			}
+			if (C.Elapsed < C.Pawn->GetTuning().InspectBlendTime * 0.5f + 0.1f)
+			{
+				return false;
+			}
+			Test->TestTrue(TEXT("Item has moved away from its original spot before the kill"),
+				FVector::Dist(Item->GetActorLocation(), S->ItemOriginal.GetLocation()) > 5.f);
+			S->OldWorld = C.W;
+			S->bMarked = true;
+			C.Pawn->Kill();
+
+			Test->TestFalse(TEXT("Not inspecting after Kill"), Inspection->IsInspecting());
+			Test->TestEqual(TEXT("OnInspectEnd fired once"), S->Sink->InspectEndCount, 1);
+			Test->TestFalse(TEXT("OnInspectEnd bKept is false on death"), S->Sink->LastInspectKept);
+			Test->TestEqual(TEXT("No grant on death (OnInteracted count)"), S->Sink->InteractedCount, 0);
+			const FGameplayTag KeepTag = FGameplayTag::RequestGameplayTag(FName(GKeepTagName), false);
+			Test->TestFalse(TEXT("Keep tag not granted on death"), LBPie::HasState(KeepTag));
+			Test->TestFalse(TEXT("Inspect input context removed"), InspectContextActive(C.Pawn));
+			const FTransform After = Item->GetActorTransform();
+			Test->TestTrue(TEXT("Item location restored"), After.GetLocation().Equals(S->ItemOriginal.GetLocation(), 0.01f));
+			Test->TestTrue(TEXT("Item rotation restored"), After.GetRotation().Equals(S->ItemOriginal.GetRotation(), 1e-5f));
+			Test->TestFalse(TEXT("Item not hidden (not kept)"), Item->IsHidden());
+			Test->TestTrue(TEXT("Item collision restored"), Item->GetActorEnableCollision());
+			return true;
+		});
+
+		R->Add(*FString::Printf(TEXT("%s: death reload proceeds"), *L), [S, Test](FStepCtx& C)
+		{
+			if (!S->bMarked || !C.W || !C.Pawn || C.W == S->OldWorld.Get() || !LBPie::WorldReady() || C.Frames < 20)
+			{
+				return false;
+			}
+			Test->TestFalse(TEXT("New pawn is not inspecting"), C.Pawn->GetInspection()->IsInspecting());
+			Test->TestFalse(TEXT("New pawn has no inspect input context"), InspectContextActive(C.Pawn));
+			Test->TestFalse(TEXT("New pawn is alive"), C.Pawn->IsDead());
+			const FGameplayTag KeepTag = FGameplayTag::RequestGameplayTag(FName(GKeepTagName), false);
+			Test->TestFalse(TEXT("Keep tag absent after the reload"), LBPie::HasState(KeepTag));
+			return true;
+		}, 90.f);
+	}
+
+	Enqueue(R);
+	return true;
+}
+
+// =====================================================================================================================
+// 6. A Static-mobility item is refused
+// =====================================================================================================================
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBFeelInspectStaticRefusedTest, "LastBell.Functional.PlayerFeel.InspectRefusesStatic",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
+bool FLBFeelInspectStaticRefusedTest::RunTest(const FString& Parameters)
+{
+	TSharedPtr<FFeelRunner> R = StartSession(this);
+	const TSharedRef<FState> S = MakeShared<FState>();
+	FAutomationTestBase* Test = this;
+	AddSetupSteps(*R, S, Test);
+	AddPlaceStep(*R, TEXT("static"));
+
+	R->Add(TEXT("BeginInspect refuses a Static item"), [S, Test](FStepCtx& C)
+	{
+		FVector ViewLoc;
+		FRotator ViewRot;
+		C.Pawn->GetController()->GetPlayerViewPoint(ViewLoc, ViewRot);
+		const FVector Location = ViewLoc + ViewRot.Vector() * 100.f;
+		AStaticMeshActor* Item = C.W->SpawnActor<AStaticMeshActor>(Location, FRotator::ZeroRotator);
+		if (!Test->TestNotNull(TEXT("Static test actor spawned"), Item))
+		{
+			return true;
+		}
+		Test->TestTrue(TEXT("Static test actor root is Static"), Item->GetRootComponent()->Mobility == EComponentMobility::Static);
+		ULBInspectableComponent* Inspectable = NewObject<ULBInspectableComponent>(Item);
+		Inspectable->RegisterComponent();
+
+		ULBInspectionComponent* Inspection = C.Pawn->GetInspection();
+		S->Sink.Reset(NewObject<ULBTestSink>(GetTransientPackage()));
+		Inspection->OnInspectBegin.AddDynamic(S->Sink.Get(), &ULBTestSink::HandleInspectBegin);
+
+		Test->TestFalse(TEXT("BeginInspect returns false for a Static item"), Inspection->BeginInspect(Inspectable));
+		Test->TestFalse(TEXT("Not inspecting"), Inspection->IsInspecting());
+		Test->TestEqual(TEXT("OnInspectBegin did not fire"), S->Sink->InspectBeginCount, 0);
+		Test->TestFalse(TEXT("Inspect input context not added"), InspectContextActive(C.Pawn));
+		Test->TestTrue(TEXT("Item did not move"), Item->GetActorLocation().Equals(Location, 0.01f));
+		Test->TestFalse(TEXT("Inspection component not ticking"), Inspection->IsComponentTickEnabled());
+
+		Inspection->OnInspectBegin.RemoveDynamic(S->Sink.Get(), &ULBTestSink::HandleInspectBegin);
+		Item->Destroy();
+		return true;
+	});
 
 	Enqueue(R);
 	return true;

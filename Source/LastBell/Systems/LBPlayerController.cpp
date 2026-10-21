@@ -16,6 +16,11 @@ void ALBPlayerController::BeginPlay()
 
 	if (UEnhancedInputLocalPlayerSubsystem* Input = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
+		// A context left active by a previous pawn (death, travel) must not leak into this one.
+		if (InspectMappingContext)
+		{
+			Input->RemoveMappingContext(InspectMappingContext);
+		}
 		for (const TObjectPtr<UInputMappingContext>& Context : MappingContexts)
 		{
 			if (Context)
