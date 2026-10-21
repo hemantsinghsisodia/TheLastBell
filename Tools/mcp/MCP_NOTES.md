@@ -45,6 +45,8 @@ Commit ONLY to the currently checked-out `claude/*` branch. Check `git branch --
 ```
 powershell -Command "$l='C:\Hemant\Prj\Learning\TheLastBell\Saved\Logs\<you>.log'; Start-Process -FilePath 'C:\Program Files\Epic Games\UE_5.8\Engine\Binaries\Win64\UnrealEditor-Cmd.exe' -ArgumentList @('C:\Hemant\Prj\Learning\TheLastBell\TheLastBell.uproject','-ExecCmds=\"Automation RunTests LastBell; Quit\"','-unattended','-nullrhi','-nosplash','-nosound','-NoP4','-log',\"-abslog=$l\") -Wait"
 ```
+Mirror pitfall: robocopy keeps the source file timestamps, so a file restored to an earlier version may NOT be recompiled by UBT. Touch the file after the copy (`(Get-Item f).LastWriteTime = Get-Date`) when you revert and restore.
+`InjectInputForAction` bypasses the viewport's ignore-input flag, so input-path tests must also assert `GEngine->GameViewport->IgnoreInput()`.
 C++ can't be built in the real project while the editor is open (Live Coding plus the DLL lock). Build and test C++ in the mirror `C:\lbb` (Content is a junction to the real Content), and sync with PowerShell robocopy.
 
 ## Framework quick reference
