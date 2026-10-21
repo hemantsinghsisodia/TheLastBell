@@ -76,6 +76,15 @@ public:
 	/** Pure: known records overlaid by live ones (live wins). */
 	static TMap<FName, FLBActorSaveRecord> MergeRecords(const TMap<FName, FLBActorSaveRecord>& Known, const TMap<FName, FLBActorSaveRecord>& Live);
 
+	/**
+	 * The slot file is the engine's save-game bytes followed by a 12 byte footer: magic, payload length, CRC32 of the payload.
+	 * The engine's loader trusts its input (a truncated or damaged file can assert inside it, e.g. a garbage FName length), so
+	 * every file is verified here BEFORE it reaches the loader. Encode fails only if the engine can't serialize the object.
+	 */
+	static bool EncodeSave(ULBSaveGame* Save, TArray<uint8>& OutFileBytes);
+	/** Verifies the footer and returns the save, or null with a reason when the bytes are not an intact, complete save file. */
+	static ULBSaveGame* DecodeSave(const TArray<uint8>& FileBytes, FString& OutReason);
+
 	static const FString SlotName;
 	static constexpr int32 UserIndex = 0;
 

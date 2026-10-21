@@ -7,10 +7,14 @@
 #include "TimerManager.h"
 #include "Systems/LBGameSettings.h"
 #include "Misc/PackageName.h"
+#include "Misc/Crc.h"
 #include "LBLog.h"
 
 namespace
 {
+	constexpr uint32 GFooterMagic = 0x5653424C; // 'LBSV'
+	constexpr int32 GFooterSize = 12;
+
 	bool IsTravelTargetValid(const FString& LongPackageName, const TCHAR* Context)
 	{
 		if (LongPackageName.IsEmpty() || !FPackageName::IsValidLongPackageName(LongPackageName) || !FPackageName::DoesPackageExist(LongPackageName))
@@ -132,7 +136,8 @@ bool ULBSaveSubsystem::SaveCheckpoint(FName Id, const FTransform& Transform)
 	}
 	Save->ActorRecords = MergeRecords(KnownRecords, Live);
 
-	const bool bOk = UGameplayStatics::SaveGameToSlot(Save, SlotName, UserIndex);
+	TArray<uint8> FileBytes;
+	const bool bOk = EncodeSave(Save, FileBytes) && UGameplayStatics::SaveDataToSlot(FileBytes, SlotName, UserIndex);
 	if (bOk)
 	{
 		ReachedCheckpoints.Add(Id);
@@ -143,16 +148,76 @@ bool ULBSaveSubsystem::SaveCheckpoint(FName Id, const FTransform& Transform)
 	return bOk;
 }
 
+bool ULBSaveSubsystem::EncodeSave(ULBSaveGame* Save, TArray<uint8>& OutFileBytes)
+{
+	OutFileBytes.Reset();
+	USaveGame* AsSave = Save;
+	if (!AsSave || !UGameplayStatics::SaveGameToMemory(AsSave, OutFileBytes))
+	{
+		OutFileBytes.Reset();
+		return false;
+	}
+	const uint32 Magic = GFooterMagic;
+	const uint32 Length = static_cast<uint32>(OutFileBytes.Num());
+	const uint32 Crc = FCrc::MemCrc32(OutFileBytes.GetData(), OutFileBytes.Num());
+	OutFileBytes.AddUninitialized(GFooterSize);
+	uint8* Footer = OutFileBytes.GetData() + Length;
+	FMemory::Memcpy(Footer, &Magic, 4);
+	FMemory::Memcpy(Footer + 4, &Length, 4);
+	FMemory::Memcpy(Footer + 8, &Crc, 4);
+	return true;
+}
+
+ULBSaveGame* ULBSaveSubsystem::DecodeSave(const TArray<uint8>& FileBytes, FString& OutReason)
+{
+	if (FileBytes.Num() <= GFooterSize)
+	{
+		OutReason = FString::Printf(TEXT("file too short (%d bytes)"), FileBytes.Num());
+		return nullptr;
+	}
+	const int32 PayloadLength = FileBytes.Num() - GFooterSize;
+	const uint8* Footer = FileBytes.GetData() + PayloadLength;
+	uint32 Magic = 0, Length = 0, Crc = 0;
+	FMemory::Memcpy(&Magic, Footer, 4);
+	FMemory::Memcpy(&Length, Footer + 4, 4);
+	FMemory::Memcpy(&Crc, Footer + 8, 4);
+	if (Magic != GFooterMagic)
+	{
+		OutReason = TEXT("no integrity footer (truncated, damaged or not a save file)");
+		return nullptr;
+	}
+	if (Length != static_cast<uint32>(PayloadLength))
+	{
+		OutReason = FString::Printf(TEXT("length mismatch (footer says %u bytes, file holds %d)"), Length, PayloadLength);
+		return nullptr;
+	}
+	if (Crc != FCrc::MemCrc32(FileBytes.GetData(), PayloadLength))
+	{
+		OutReason = TEXT("checksum mismatch");
+		return nullptr;
+	}
+	TArray<uint8> Payload;
+	Payload.Append(FileBytes.GetData(), PayloadLength);
+	ULBSaveGame* Save = Cast<ULBSaveGame>(UGameplayStatics::LoadGameFromMemory(Payload));
+	if (!Save)
+	{
+		OutReason = TEXT("not a LastBell save");
+	}
+	return Save;
+}
+
 ULBSaveGame* ULBSaveSubsystem::ReadValidSaveFromDisk() const
 {
 	if (!UGameplayStatics::DoesSaveGameExist(SlotName, UserIndex))
 	{
 		return nullptr;
 	}
-	ULBSaveGame* Save = Cast<ULBSaveGame>(UGameplayStatics::LoadGameFromSlot(SlotName, UserIndex));
+	TArray<uint8> FileBytes;
+	FString Reason;
+	ULBSaveGame* Save = UGameplayStatics::LoadDataFromSlot(FileBytes, SlotName, UserIndex) ? DecodeSave(FileBytes, Reason) : nullptr;
 	if (!Save)
 	{
-		UE_LOG(LogLB, Warning, TEXT("Save slot '%s' is corrupt or of the wrong class; treating as no save"), *SlotName);
+		UE_LOG(LogLB, Warning, TEXT("Save slot '%s' is corrupt (%s); treating as no save"), *SlotName, Reason.IsEmpty() ? TEXT("unreadable") : *Reason);
 		return nullptr;
 	}
 	if (!ULBSaveGame::IsVersionCompatible(Save->SaveVersion))

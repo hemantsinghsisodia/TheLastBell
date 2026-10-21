@@ -55,6 +55,9 @@ public:
 
 	EStatus Tick();
 
+	/** Test hook: the approach point the bot would use to press an interactable (attempt 0 = in front of it, 1-2 = the sides, 3 = behind). */
+	bool FindApproachPoint(const AActor* Target, int32 AttemptIndex, FVector& OutPawnLoc) const { return PlaceForInteractable(Target, AttemptIndex, OutPawnLoc); }
+
 private:
 	enum class EKind { Interactable, Trigger, Door, Dial };
 	enum class EPhase { Plan, Act, Checkpoints };
