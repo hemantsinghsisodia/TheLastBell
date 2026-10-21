@@ -16,7 +16,7 @@ First-person atmospheric survival horror, UE 5.8.3, C++ + Blueprint hybrid. 20â€
 
 ## Engineering rules
 - Never edit `.uasset` or `.umap` binaries outside Unreal. Use the editor or MCP only.
-- Unreal MCP (`unreal-mcp`, http://127.0.0.1:8000/mcp): check every tool result; serialize mutations to the same asset.
+- Unreal MCP (`unreal-mcp`, http://127.0.0.1:8000/mcp): check every tool result; serialize mutations to the same asset. Agents without native MCP tools use `Tools/mcp/ue.py`; read `Tools/mcp/MCP_NOTES.md` first.
 - Compile after C++ changes, compile the affected Blueprints, validate materials, and check the logs. Don't pile up unvalidated work.
 - Composition over inheritance; subsystems over manager actors; Gameplay Tags for state; no hard asset refs in C++.
 - Architecture drift: if the implementation differs from TECHNICAL_DESIGN, either fix the code or update TECHNICAL_DESIGN, DECISIONS and IMPLEMENTATION_PLAN.
