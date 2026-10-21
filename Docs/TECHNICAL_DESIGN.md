@@ -100,6 +100,7 @@ Not built: branching quests, a quest log or a quest graph.
   6. The GameMode spawns the player at the checkpoint.
   7. Objectives recompute once.
   8. The pending restore is cleared one tick after world begin play.
+- **Slot-file integrity (P4-004, D-036):** the slot file is the serialized save plus a 12-byte footer (magic 'LBSV', payload length, CRC32), written via EncodeSave and checked by DecodeSave BEFORE the engine parser runs. A truncated, damaged or footer-less file is treated as no save, with a warning, and never crashes; the engine parser crashed on truncated files.
 - **Death** is just `LoadLastCheckpoint()`. **New Game** is `DeleteSave`, then `ResetState`, then `OpenLevel`. A corrupt save or a `SaveVersion` mismatch is treated as no save: it's logged and Continue is hidden.
 - **Not saved:** the Warden (rebuilt from stage tags and respawned at a designer point for each checkpoint), transient AI state and physics props.
 

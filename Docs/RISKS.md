@@ -26,4 +26,5 @@ Likelihood and impact are rated L, M or H.
 | R-21 | Test | The route bot teleports, so it proves completability but NOT walkability (gaps, slopes, door widths) | M | M | Human playtest each phase; a navmesh path check when the navmesh arrives in Phase 5 | Open |
 | R-22 | Workflow | Packaging (RunUAT `-build`) fails while the editor has Live Coding active; the editor must be closed for packaged builds | H | L | Package in an editor-closed window; documented in TEST_PLAN | Open |
 | R-23 | Gameplay | Door swing direction (OpenSign) isn't saved; after a reload, a door opened from the far side shows swung toward the player (P3-003a) | M | L | Accept for greybox; revisit with art doors in Phase 7–10 | Open |
+| R-24 | Save | A crash mid-write loses the only save slot (it is detected as invalid, no crash, but progress is lost) | L | M | Write to a temp file and rename, or keep a .bak of the previous slot; Phase 19 QA | Open |
 | R-12 | Scope | Feature creep beyond 20–30 minutes | M | M | Scope rule (directive §71); every addition goes through DECISIONS.md | Open |
