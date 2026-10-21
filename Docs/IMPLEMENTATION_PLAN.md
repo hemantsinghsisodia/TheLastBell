@@ -84,3 +84,21 @@ Branch: `claude/phase-03-player-feel`. Decisions: D-029 (candle), D-030 (inspect
 | P3-005 | Tests: tuning and footstep cadence unit tests; candle state tests; inspection enter/exit test; RouteBot and WalkPath rerun (gait changes); a crouch-walk path | gameplay-programmer | P3-003 | LOW |
 | P3-006 | Packaged Development build smoke test (R-20): cook, launch, menu → New Game → walk → quit | performance-engineer / lead | P3-005 | MED |
 | P3-REV / P3-QA | Architecture review and QA | reviewers | all | — |
+
+## Phase 4 — Objectives, puzzles and save: task breakdown
+Branch: `claude/phase-04-puzzles-save`. Owner's puzzle choices (D-035): Chapel = candle order, Crypt = chain counterweights, Tower base = bell sequence.
+
+**Puzzle framework (progress is tags, so it's saved at checkpoints automatically; no per-puzzle save code):**
+- `ULBInteractableComponent`: single-use availability is **derived from `ConsumedStateTag`** (no permanent `bEnabled=false`), so a puzzle reset (removing the tag) makes the step usable again (REV-003 M6).
+- `ULBSequencePuzzleComponent` (on a `BP_SequencePuzzle` actor): ordered `Steps` (tags). It listens to WorldState. A step tag added out of order → `RemoveStates(all step tags)` + `OnPuzzleFailed`. All steps in order → `AddStates(SolvedTags)` + `OnPuzzleSolved`. Already solved at BeginPlay → no-op.
+- `ULBDialComponent` (on a lever/dial actor): `PositionTags` (one tag per position). Interact cycles the position: remove the old tag, add the new one. The initial position is authored. Combination puzzles need **no controller**: the target interactable's `RequiredStateTags` lists the wanted position tags.
+- Route bot: learns "sequence puzzle" providers (perform steps in order) and "dial" providers (cycle to the required position).
+
+| Task | Objective | Owner | Depends on | Risk |
+|---|---|---|---|---|
+| P4-TAGS | New tags: `State.Chapel.Candle.4`, `State.Chapel.CandlesSolved`, `State.Crypt.Dial.{A,B,C}.{0,1,2}`, `State.Tower.Bell.{1..4}`, `State.Tower.BellsSolved` (text, editor closed, D-024) | lead | — | LOW |
+| P4-001 | C++: derived single-use availability; `ULBSequencePuzzleComponent`; `ULBDialComponent`; unit and functional tests (order, fail reset, solved snap, save mid-puzzle → load); route bot support | gameplay-programmer | — | MED |
+| P4-002 | BPs: `BP_SequencePuzzle`, `BP_PuzzleCandle` (lit/unlit both ways with flame and light), `BP_SmallBell` (strike swing), `BP_DialLever` (3 positions, visible notches), clue props (`BP_StainedGlassClue`, `BP_EngravedDiagram`, `BP_Inscription`: simple planes with readable symbols/text) | unreal-blueprint-engineer | P4-001 | LOW |
+| P4-003 | Level: replace the chapel candles, the crypt stand-in and the cloister levers with the real puzzles plus clues; update `DA_ObjectiveChain_Main` (Light the candles in order → CandlesSolved; Balance the chains → dial tags; Ring the bells in order → BellsSolved) | environment-designer + blueprint-engineer | P4-002 | MED |
+| P4-004 | Save hardening tests: corrupt or truncated save file → no Continue and no crash; quit to menu mid-puzzle → Continue restores the partial puzzle; death mid-puzzle; revisiting solved puzzles stays solved | gameplay-programmer | P4-001 | LOW |
+| P4-REV/QA | Architecture review; full RouteBot and WalkPath runs; human playtest of each puzzle | reviewers + owner | all | — |
