@@ -456,6 +456,9 @@ namespace
 
 		static constexpr double WallTimeout = 900.0;
 
+		/** Walk-path tests must not be disturbed by an active Warden (lb.Warden.Enabled = 0 for the whole command). */
+		LBPie::FWardenSwitch WardenOff{ false };
+
 		FAutomationTestBase* Test;
 		bool bSynthetic;
 		double WallStart;

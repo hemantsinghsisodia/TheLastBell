@@ -28,6 +28,23 @@ namespace LBPie
 	FString MapShortName();
 	void Teleport(const FVector& Location, const FRotator& Rotation);
 	void ClearSlot();
+
+	/**
+	 * Sets lb.Warden.Enabled for the lifetime of the object and restores the previous value afterwards. Completability tests
+	 * (RouteBot, WalkPath) hold one so an active Warden cannot disturb them. Keep it alive as long as the PIE session runs
+	 * (e.g. capture a TSharedRef in the last step / latent command).
+	 */
+	class FWardenSwitch
+	{
+	public:
+		explicit FWardenSwitch(bool bEnabled);
+		~FWardenSwitch();
+		FWardenSwitch(const FWardenSwitch&) = delete;
+		FWardenSwitch& operator=(const FWardenSwitch&) = delete;
+
+	private:
+		bool bPrevious = true;
+	};
 }
 
 /**

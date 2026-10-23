@@ -17,7 +17,7 @@ public class LastBellTests : ModuleRules
 
 		PrivateDependencyModuleNames.AddRange(new string[]
 		{
-			"UnrealEd", "ApplicationCore"
+			"UnrealEd", "ApplicationCore", "AIModule", "NavigationSystem"
 		});
 	}
 }

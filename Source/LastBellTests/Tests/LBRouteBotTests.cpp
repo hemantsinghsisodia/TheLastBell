@@ -158,9 +158,9 @@ namespace
 		return { TEXT("PIE start"), 90.f, [](FLBStepRunner& R) { return LBPie::WorldReady() && R.FramesInStep >= 5; } };
 	}
 
-	FStep EndPie()
+	FStep EndPie(TSharedPtr<LBPie::FWardenSwitch> KeepWardenOff = nullptr)
 	{
-		return { TEXT("End PIE"), 30.f, [](FLBStepRunner& R)
+		return { TEXT("End PIE"), 30.f, [KeepWardenOff](FLBStepRunner& R)
 		{
 			if (R.Aux == 0) { GEditor->RequestEndPlayMap(); R.Aux = 1; return false; }
 			return LBPie::World() == nullptr;
@@ -230,6 +230,7 @@ IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBRouteBotMicroSliceTest, "LastBell.Functional
 bool FLBRouteBotMicroSliceTest::RunTest(const FString& Parameters)
 {
 	LBPie::ClearSlot();
+	const TSharedRef<LBPie::FWardenSwitch> WardenOff = MakeShared<LBPie::FWardenSwitch>(false);
 	StartPie(GMicroSliceMap);
 
 	TSharedRef<FLBRouteBot> Bot = MakeShared<FLBRouteBot>(this, FLBRouteBot::FConfig());
@@ -241,7 +242,7 @@ bool FLBRouteBotMicroSliceTest::RunTest(const FString& Parameters)
 		TestEqual(TEXT("Objective index after route"), LBPie::ObjIndex(), static_cast<int32>(INDEX_NONE));
 		return true;
 	} });
-	Steps.Add(EndPie());
+	Steps.Add(EndPie(WardenOff));
 
 	ADD_LATENT_AUTOMATION_COMMAND(FLBStepRunner(this, MoveTemp(Steps), 300.f));
 	return true;
@@ -259,6 +260,7 @@ bool FLBRouteBotMonasteryTest::RunTest(const FString& Parameters)
 	}
 
 	LBPie::ClearSlot();
+	const TSharedRef<LBPie::FWardenSwitch> WardenOff = MakeShared<LBPie::FWardenSwitch>(false);
 	StartPie(GMonasteryMap);
 
 	TSharedRef<FMonasteryContext> Ctx = MakeShared<FMonasteryContext>();
@@ -344,7 +346,7 @@ bool FLBRouteBotMonasteryTest::RunTest(const FString& Parameters)
 		TestFalse(TEXT("HasValidSave is false after the ending"), Save && Save->HasValidSave());
 		return true;
 	} });
-	Steps.Add(EndPie());
+	Steps.Add(EndPie(WardenOff));
 
 	ADD_LATENT_AUTOMATION_COMMAND(FLBStepRunner(this, MoveTemp(Steps), 600.f));
 	return true;

@@ -11,6 +11,7 @@
 #include "Components/BoxComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "AI/LBWardenBrainComponent.h"
 #include "Character/LBCharacter.h"
 #include "Components/LBInteractorComponent.h"
 #include "Components/LBInteractableComponent.h"
@@ -84,6 +85,17 @@ namespace LBPie
 	}
 
 	void ClearSlot() { UGameplayStatics::DeleteGameInSlot(ULBSaveSubsystem::SlotName, ULBSaveSubsystem::UserIndex); }
+
+	FWardenSwitch::FWardenSwitch(bool bEnabled)
+		: bPrevious(ULBWardenBrainComponent::IsWardenSystemEnabled())
+	{
+		ULBWardenBrainComponent::SetWardenSystemEnabled(bEnabled);
+	}
+
+	FWardenSwitch::~FWardenSwitch()
+	{
+		ULBWardenBrainComponent::SetWardenSystemEnabled(bPrevious);
+	}
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
