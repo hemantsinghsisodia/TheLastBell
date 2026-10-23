@@ -141,11 +141,16 @@ A state that a lowered stage forbids (a reload) is left through Return. Any acti
 
 **Player side.** `ALBCharacter` carries a `UAIPerceptionStimuliSourceComponent`, registered for Sight in BeginPlay (the component's own sense list is protected, so it is registered explicitly).
 
-**Blueprint hooks.** `OnStateChanged(OldState, NewState)`, `OnAttackWindup(WindupSeconds)` (play the tell), `GetState()`, `GetLastKnownLocation()`, `HasLastKnownLocation()`, `GetStage()`, `IsChasingOrAttacking()`, `IsHoldingPost()`.
+**Blueprint hooks.** `OnStateChanged(OldState, NewState)`, `OnPlayerSpotted()` (first sight, before the confirm time: the early audio tell, measured 0.58 s before Chase), `OnPlayerLost()`, `OnAttackWindup(WindupSeconds)` (play the tell), `GetState()`, `GetLastKnownLocation()`, `HasLastKnownLocation()`, `GetStage()`, `IsChasingOrAttacking()`, `IsHoldingPost()`.
 
 **Debug.** `lb.Warden.Debug 1` (non-shipping) draws the state name, stage and sight timer above the head, the sight cone (unlit solid, candle-lit orange), the last-known location, the current move target and the last noise. State changes log at Log verbosity in `LogLBWarden`; the Visual Logger records transitions, noises and stuck events. No Behavior Trees, EQS, Smart Objects or Mass AI.
 
-**Tests.** `LastBell.Warden.*` (pure logic: stage gating, the full transition table plus an exhaustive invariant sweep, attack windup, sight confirm timing, candle multiplier, search point selection, stuck detector, spawn selection, tuning defaults). Functional tests in `L_Test_Warden` come in P5-004.
+**Perception details (P5-004 fixes, D-039).** The controller does not tick, so the brain copies the pawn yaw into the control rotation every tick; without this the sight cone stayed on world +X. The sight origin is pulled back by `SightCloseRangeBackOffset` (150 cm) so a player right in front, below eye level, is inside the 3D cone (there was a blind spot at attack range). At stages 3–4, Suspicious no longer re-enters Investigate on sight (hysteresis); at stage 5+ sight still gives Chase.
+
+**Switch.** `lb.Warden.Enabled 0` (and BlueprintCallable `SetWardenSystemEnabled`) forces every brain Dormant and hidden; completability tests (RouteBot, WalkPath) run with it off.
+
+**Known limitation.** A partial patrol path counts as arrived, so a broken route truncates silently. `Warden.MonasteryReachability` guards against this by checking every patrol and spawn segment is a complete nav path.
+**Tests.** `LastBell.Warden.*` (pure logic: stage gating, the full transition table plus an exhaustive invariant sweep, attack windup, sight confirm timing, candle multiplier, search point selection, stuck detector, spawn selection, tuning defaults). Functional: `LastBell.Functional.Warden.*` (22 tests in `L_Test_Warden` and `L_Monastery`: gating, sight, candle, hearing, lose target, unreachable, stuck, chase speed, catch and escape, checkpoint refusal, repeated chases, flip-flop, stage relocation, reachability).
 
 ## 9. Gameplay Tags
 - **Native** (referenced from C++): `State.Warden.Stage.1..6`, and `AI.Stimulus.*` from Phase 5.
