@@ -2,6 +2,8 @@
 #include "Systems/LBWorldStateSubsystem.h"
 #include "Character/LBInspectionComponent.h"
 #include "Components/LBInspectableComponent.h"
+#include "AI/LBNoiseTags.h"
+#include "Perception/AISense_Hearing.h"
 #include "LBLog.h"
 
 bool ULBInteractableComponent::PassesStateRequirements(const FGameplayTagContainer& WorldState) const
@@ -74,6 +76,11 @@ void ULBInteractableComponent::ApplyInteraction(AActor* Instigator)
 	if (bSingleUse && (!ConsumedStateTag.IsValid() || !ULBWorldStateSubsystem::Get(this)))
 	{
 		bEnabled = false;
+	}
+	if (NoiseLoudness > 0.f && GetOwner())
+	{
+		// The emitting actor is the instigator, so the Warden sees "a door made a noise", not "the player".
+		UAISense_Hearing::ReportNoiseEvent(GetWorld(), GetOwner()->GetActorLocation(), NoiseLoudness, GetOwner(), 0.f, LBNoiseTags::Interact);
 	}
 	OnInteracted.Broadcast(Instigator);
 }

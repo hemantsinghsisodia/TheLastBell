@@ -5,6 +5,8 @@
 #include "Engine/World.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Perception/AISense_Hearing.h"
+#include "AI/LBNoiseTags.h"
 #include "Sound/SoundBase.h"
 
 ULBFootstepComponent::ULBFootstepComponent()
@@ -65,7 +67,7 @@ void ULBFootstepComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 	if (Steps > 0)
 	{
 		// One step per frame at most: a hitch must not machine-gun sounds.
-		EmitStep(T->GetLoudness(Gait));
+		EmitStep(T->GetLoudness(Gait), LBNoiseTags::Footstep);
 	}
 }
 
@@ -76,14 +78,14 @@ void ULBFootstepComponent::HandleLanded(const FHitResult& Hit)
 	if (Owner && T)
 	{
 		// Landing is at least as loud as a walking step.
-		EmitStep(FMath::Max(T->GetLoudness(Owner->GetGait()), T->WalkLoudness));
+		EmitStep(FMath::Max(T->GetLoudness(Owner->GetGait()), T->WalkLoudness), LBNoiseTags::Landing);
 	}
 	Stride.Reset();
 }
 
-void ULBFootstepComponent::EmitStep(float Loudness)
+void ULBFootstepComponent::EmitStep(float Loudness, FName NoiseTag)
 {
-	const ALBCharacter* Owner = Character.Get();
+	ALBCharacter* Owner = Character.Get();
 	const ULBPlayerTuningData* T = Tuning.Get();
 	UWorld* World = GetWorld();
 	if (!Owner || !T || !World)
@@ -136,6 +138,12 @@ void ULBFootstepComponent::EmitStep(float Loudness)
 			const float Pitch = FMath::FRandRange(Chosen->PitchMin, FMath::Max(Chosen->PitchMin, Chosen->PitchMax));
 			UGameplayStatics::PlaySoundAtLocation(World, Chosen->Sound, FootLocation, Volume, Pitch);
 		}
+	}
+
+	// The Warden hears what the player does: loudness by gait, range capped by the player tuning. Dead players make no noise.
+	if (!Owner->IsDead())
+	{
+		UAISense_Hearing::ReportNoiseEvent(World, FootLocation, Loudness, Owner, T->NoiseMaxRange, NoiseTag);
 	}
 
 	OnFootstep.Broadcast(Loudness, FootLocation, Surface);

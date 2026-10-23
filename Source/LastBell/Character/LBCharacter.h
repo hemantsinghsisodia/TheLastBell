@@ -13,6 +13,7 @@ class ULBCameraFeelComponent;
 class ULBCandleComponent;
 class ULBFootstepComponent;
 class ULBInspectionComponent;
+class UAIPerceptionStimuliSourceComponent;
 struct FInputActionValue;
 
 UCLASS()
@@ -105,6 +106,10 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LastBell|Player")
 	TObjectPtr<ULBInspectionComponent> Inspection;
+
+	/** Makes the player visible to AI sight (registered for Sight in BeginPlay). Noise goes through ULBFootstepComponent. */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LastBell|Player")
+	TObjectPtr<UAIPerceptionStimuliSourceComponent> StimuliSource;
 
 private:
 	void Move(const FInputActionValue& Value);

@@ -8,6 +8,8 @@
 #include "Systems/LBGameMode.h"
 #include "Systems/LBUserSettings.h"
 #include "Camera/CameraComponent.h"
+#include "Perception/AIPerceptionStimuliSourceComponent.h"
+#include "Perception/AISense_Sight.h"
 #include "Components/CapsuleComponent.h"
 #include "EnhancedInputComponent.h"
 #include "InputActionValue.h"
@@ -34,6 +36,8 @@ ALBCharacter::ALBCharacter()
 	Candle = CreateDefaultSubobject<ULBCandleComponent>(TEXT("Candle"));
 	Candle->SetupAttachment(FirstPersonCamera);
 
+	StimuliSource = CreateDefaultSubobject<UAIPerceptionStimuliSourceComponent>(TEXT("StimuliSource"));
+
 	UCharacterMovementComponent* Movement = GetCharacterMovement();
 	Movement->GetNavAgentPropertiesRef().bCanCrouch = true;
 	// The capsule shrinks with the feet planted; ULBCameraFeelComponent blends the eye height.
@@ -53,6 +57,12 @@ void ALBCharacter::BeginPlay()
 		UE_LOG(LogLB, Verbose, TEXT("%s has no Tuning asset: using the class defaults"), *GetName());
 	}
 	GetTuning().ApplyToMovement(GetCharacterMovement());
+
+	// Visible to AI sight. The component's own auto-register flag and sense list are protected, so register explicitly here.
+	if (StimuliSource)
+	{
+		StimuliSource->RegisterForSense(UAISense_Sight::StaticClass());
+	}
 }
 
 bool ALBCharacter::IsInspecting() const

@@ -48,6 +48,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LastBell|Interaction")
 	bool bInspectOnInteract = false;
 
+	/**
+	 * Loudness (0..1) of the noise a successful interaction makes, heard by the Warden at this actor's location.
+	 * 0 = silent. Suggested: door 0.6, dropped object 0.7, ritual mechanism 1.0. Heard out to the Warden's hearing range times this.
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LastBell|Interaction", meta = (ClampMin = "0", ClampMax = "1"))
+	float NoiseLoudness = 0.f;
+
 	/** Pure gating logic: enabled, all requirements present, consumed tag absent. */
 	bool PassesStateRequirements(const FGameplayTagContainer& WorldState) const;
 

@@ -112,6 +112,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Footsteps", meta = (ClampMin = "0", ClampMax = "1"))
 	float CrouchLoudness = 0.1f;
 
+	/**
+	 * Maximum distance any listener can hear a footstep or landing, before loudness scaling (the engine multiplies it by the
+	 * loudness). Matches the Warden's default hearing range; a listener's own hearing range still applies.
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Footsteps", meta = (ClampMin = "0"))
+	float NoiseMaxRange = 2500.f;
+
 	/** Extra trace length below the capsule bottom when looking for the floor. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Footsteps", meta = (ClampMin = "0"))
 	float FootstepTraceExtraDepth = 30.f;

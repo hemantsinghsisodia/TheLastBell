@@ -1,6 +1,11 @@
 #include "Save/LBCheckpoint.h"
 #include "Save/LBSaveSubsystem.h"
 #include "Character/LBCharacter.h"
+#include "AI/LBWardenBrainComponent.h"
+#include "AI/LBWardenController.h"
+#include "Engine/World.h"
+#include "GameFramework/PlayerController.h"
+#include "TimerManager.h"
 #include "Components/BoxComponent.h"
 #include "Components/ArrowComponent.h"
 #include "LBLog.h"
@@ -44,11 +49,72 @@ void ALBCheckpoint::OnTriggerBeginOverlap(UPrimitiveComponent* OverlappedCompone
 		return;
 	}
 
-	ULBSaveSubsystem* Save = ULBSaveSubsystem::Get(this);
-	if (Character->IsDead() || !Save || Save->IsTravelPending() || Save->HasReachedCheckpoint(CheckpointId) || !CanSaveNow())
+	TrySave(Character);
+}
+
+bool ALBCheckpoint::CanSaveNow() const
+{
+	const UWorld* World = GetWorld();
+	if (!World)
 	{
+		return true;
+	}
+	// The Warden's controllers are found through the world's controller list: no manager actor and no registry to keep in sync.
+	for (FConstControllerIterator It = World->GetControllerIterator(); It; ++It)
+	{
+		const ALBWardenController* WardenController = Cast<ALBWardenController>(It->Get());
+		const ULBWardenBrainComponent* Brain = WardenController ? WardenController->GetBrain() : nullptr;
+		if (Brain && Brain->IsChasingOrAttacking())
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
+void ALBCheckpoint::TrySave(const ALBCharacter* Character)
+{
+	UWorld* World = GetWorld();
+	ULBSaveSubsystem* Save = ULBSaveSubsystem::Get(this);
+	if (!World || Character->IsDead() || !Save || Save->IsTravelPending() || Save->HasReachedCheckpoint(CheckpointId))
+	{
+		if (World)
+		{
+			World->GetTimerManager().ClearTimer(RetryTimer);
+		}
 		return;
 	}
 
+	if (!CanSaveNow())
+	{
+		// Refused while the Warden hunts the player (D-019). Try again while the player is still inside, after the chase ends.
+		if (!World->GetTimerManager().IsTimerActive(RetryTimer))
+		{
+			UE_LOG(LogLB, Log, TEXT("Checkpoint '%s' refused: the Warden is chasing. Retrying while the player stays inside."), *CheckpointId.ToString());
+			World->GetTimerManager().SetTimer(RetryTimer, this, &ALBCheckpoint::RetryWhileInside, 0.5f, true);
+		}
+		return;
+	}
+
+	World->GetTimerManager().ClearTimer(RetryTimer);
 	Save->SaveCheckpoint(CheckpointId, SpawnArrow->GetComponentTransform());
+}
+
+void ALBCheckpoint::RetryWhileInside()
+{
+	const UWorld* World = GetWorld();
+	const APlayerController* PC = World ? World->GetFirstPlayerController() : nullptr;
+	const ALBCharacter* Player = PC ? Cast<ALBCharacter>(PC->GetPawn()) : nullptr;
+	if (!Player || !Trigger->IsOverlappingActor(Player))
+	{
+		GetWorldTimerManager().ClearTimer(RetryTimer);
+		return;
+	}
+	TrySave(Player);
+}
+
+void ALBCheckpoint::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	GetWorldTimerManager().ClearTimer(RetryTimer);
+	Super::EndPlay(EndPlayReason);
 }

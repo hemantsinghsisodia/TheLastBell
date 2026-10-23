@@ -36,7 +36,7 @@ struct LASTBELL_API FLBFootstepRow : public FTableRowBase
 	float PitchMax = 1.05f;
 };
 
-/** Phase 5 AI noise hook: Loudness is 0..1 by gait. No AI module dependency here. */
+/** Loudness is 0..1 by gait. The component also reports each step to the AI hearing sense (UAISense_Hearing::ReportNoiseEvent). */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FLBFootstepSignature, float, Loudness, FVector, Location, TEnumAsByte<EPhysicalSurface>, Surface);
 
 /** Distance-based footsteps: stride per gait, floor physical material to sound, and the OnFootstep event. */
@@ -65,7 +65,7 @@ private:
 	UFUNCTION()
 	void HandleLanded(const FHitResult& Hit);
 
-	void EmitStep(float Loudness);
+	void EmitStep(float Loudness, FName NoiseTag);
 
 	TWeakObjectPtr<ALBCharacter> Character;
 	TWeakObjectPtr<const ULBPlayerTuningData> Tuning;
