@@ -88,36 +88,46 @@ def cap_course(L, T, z0, z1, seed, ctop=4.0, cbot=2.5, joints=True):
 
 
 def stepped_profile(L, H, zmin, seed, tooth_at=None, seg=(35, 85)):
-    """Piecewise stepped height profile h(x) with one untouched 'tooth' reaching H."""
+    """Irregular broken-top profile h(x): plateaus of random height and tilt joined by breaks that range from
+    near-vertical to 45 degree slopes, with one untouched 'tooth' reaching H.  Returns (h, (xs, h_min per segment))."""
     rng = random.Random(seed)
-    xs, hs = [0.0], []
+    xs = [0.0]
     x = 0.0
     while x < L:
-        w = rng.uniform(*seg)
-        x = min(L, x + w)
+        x = min(L, x + rng.uniform(*seg))
         xs.append(x)
     n = len(xs) - 1
-    hs = []
-    for i in range(n):
-        hs.append(round(rng.uniform(zmin, H * 0.9) / 5.0) * 5.0)
+    hs = [rng.uniform(zmin, H * 0.9) for _ in range(n)]
     k = rng.randrange(n) if tooth_at is None else tooth_at
-    hs[k] = H + 6.0          # untouched tooth
+    hs[k] = H + 6.0                                   # untouched tooth
     if k + 1 < n:
         hs[k + 1] = max(hs[k + 1], zmin + 0.5 * (H - zmin))
-    ramp = 9.0
+    ramps = [rng.choice((5.0, 9.0, 16.0, 28.0, 42.0)) for _ in range(n + 1)]
+    slopes = [rng.uniform(-30.0, 30.0) for _ in range(n)]
+    floor = zmin * 0.85
+    nodes, hmin = [], []
+    prev_end = hs[0]
+    for i in range(n):
+        x0, x1 = xs[i], xs[i + 1]
+        r = min(ramps[i], 0.45 * (x1 - x0)) if i > 0 else 0.0
+        h0 = hs[i]
+        h1 = h0 if i == k else max(floor, min(H * 0.95, h0 + slopes[i]))
+        nodes.append((x0 + r, h0))
+        nodes.append((x1, h1))
+        hmin.append(min(h0, h1, prev_end if i > 0 else h0))
+        prev_end = h1
+    nodes.sort()
 
     def h(x):
-        # find segment
-        for i in range(n):
-            if x <= xs[i + 1]:
-                hi = hs[i]
-                if i > 0 and x - xs[i] < ramp:
-                    t = (x - xs[i]) / ramp
-                    return hs[i - 1] * (1 - t) + hi * t
-                return hi
-        return hs[-1]
+        if x <= nodes[0][0]:
+            return nodes[0][1]
+        for (xa, za), (xb, zb) in zip(nodes, nodes[1:]):
+            if x <= xb:
+                t = 0.0 if xb - xa < 1e-6 else (x - xa) / (xb - xa)
+                return za * (1 - t) + zb * t
+        return nodes[-1][1]
 
-    return h, (xs, hs)
+    return h, (xs, hmin)
 
 
 def fracture_cutters(L, T, H, zmin, seed, *, ends=True, end_from=0.45, na_step=8.0, tooth_at=None, seg=(35, 85), y_amp=16.0):
@@ -411,6 +421,24 @@ def stone_points(rng, sx, sy, sz, jitter=0.14, extra=5, top_flat=False, clip_cor
     return pts
 
 
+def rock_points(rng, sx, sy, sz, n=26, expo=3.2, noise=0.2, flat_top=None):
+    """Random irregular rock: points on a super-ellipsoid with radial noise (hull gives many irregular facets)."""
+    pts = []
+    for _ in range(n):
+        v = Vector((rng.gauss(0, 1), rng.gauss(0, 1), rng.gauss(0, 1)))
+        if v.length < 1e-6:
+            continue
+        v.normalize()
+        r = 1.0 / ((abs(v.x) ** expo + abs(v.y) ** expo + abs(v.z) ** expo) ** (1.0 / expo))
+        r *= 1.0 + noise * rng.uniform(-1.0, 1.0)
+        p = v * r
+        pts.append(Vector((p.x * sx / 2, p.y * sy / 2, p.z * sz / 2)))
+    if flat_top is not None:
+        for p in pts:
+            p.z = min(p.z, flat_top * sz / 2)
+    return pts
+
+
 def fit_points(pts, size):
     mn = Vector((min(p.x for p in pts), min(p.y for p in pts), min(p.z for p in pts)))
     mx = Vector((max(p.x for p in pts), max(p.y for p in pts), max(p.z for p in pts)))
@@ -435,12 +463,12 @@ def build_rubble(name, size, seed, kind):
     if kind == 'S':
         pts = stone_points(rng, *size, jitter=0.05, extra=0, clip_corners=3)
     elif kind == 'M':
-        pts = stone_points(rng, *size, jitter=0.24, extra=10)
+        pts = rock_points(rng, *size, n=28, expo=3.0, noise=0.22)
     else:
-        pts = stone_points(rng, *size, jitter=0.17, extra=9, top_flat=True, clip_corners=2)
+        pts = rock_points(rng, *size, n=30, expo=3.6, noise=0.14, flat_top=0.8)
     pts = fit_points(pts, size)
     hull = K.hull_from_points(pts, S2)
-    col = K.hull_from_points(pts, S2, merge_coplanar=True)
+    col = K.hull_from_points(pts, S2, merge_coplanar=False)
     K.bevel_all(hull, 2.4, 15.0)
     mn, mx = K.bm_bounds(hull)
     for v in hull.verts:
@@ -455,18 +483,18 @@ def build_heap(name, seed=53):
     rng = random.Random(seed)
     out = K.bmesh.new()
     placed = []
-    for _i in range(46):
+    for _i in range(48):
         ang = rng.uniform(0, 2 * math.pi)
-        r = math.sqrt(rng.random()) * 0.92
+        r = (rng.random() ** 0.7) * 0.92
         x, y = 200 + math.cos(ang) * r * 190, 150 + math.sin(ang) * r * 135
         h = 130.0 * max(0.0, 1 - r * r) ** 0.7
-        sz = rng.uniform(30, 90) * (1.0 - 0.35 * r)
+        sz = rng.uniform(28, 80) * (1.0 - 0.3 * r)
         sx, sy, sz2 = sz * rng.uniform(0.8, 1.4), sz * rng.uniform(0.7, 1.2), sz * rng.uniform(0.45, 0.9)
         zc = max(sz2 * 0.5, h * rng.uniform(0.35, 0.8) - sz2 * 0.15)
         placed.append((x, y, zc, sx, sy, sz2))
     placed.sort(key=lambda t: t[2])
     for (x, y, zc, sx, sy, sz) in placed:
-        pts = stone_points(rng, sx, sy, sz, jitter=0.16, extra=3, clip_corners=1)
+        pts = rock_points(rng, sx, sy, sz, n=18, expo=3.0, noise=0.22)
         rot = Euler((rng.uniform(-0.35, 0.35), rng.uniform(-0.35, 0.35), rng.uniform(0, 6.28))).to_matrix()
         pts = [rot @ p + Vector((x, y, zc)) for p in pts]
         hl = K.hull_from_points(pts, S2)

@@ -28,7 +28,7 @@
    2
   ],
   "ucx": 1,
-  "seconds": 0.7
+  "seconds": 0.9
  },
  {
   "name": "SM_LB_Kit_Wall_400x60x800_B",
@@ -59,7 +59,7 @@
    2
   ],
   "ucx": 1,
-  "seconds": 0.4
+  "seconds": 0.5
  },
  {
   "name": "SM_LB_Kit_Wall_100x60x800",
@@ -174,14 +174,14 @@
    60.0,
    800
   ],
-  "tris": 3662,
+  "tris": 3702,
   "slots_used": [
    0,
    1,
    2
   ],
   "ucx": 3,
-  "seconds": 1.0
+  "seconds": 1.1
  },
  {
   "name": "SM_LB_Kit_Wall_400x60x400_Broken",
@@ -205,14 +205,14 @@
    60.0,
    400
   ],
-  "tris": 2596,
+  "tris": 2630,
   "slots_used": [
    0,
    1,
    2
   ],
   "ucx": 3,
-  "seconds": 0.7
+  "seconds": 0.8
  },
  {
   "name": "SM_LB_Kit_Wall_Corner_60x60x800",
@@ -272,7 +272,7 @@
    2
   ],
   "ucx": 2,
-  "seconds": 0.2
+  "seconds": 0.3
  },
  {
   "name": "SM_LB_Kit_Doorway_Pointed_400x60x400",
@@ -303,7 +303,7 @@
    2
   ],
   "ucx": 3,
-  "seconds": 3.8
+  "seconds": 4.1
  },
  {
   "name": "SM_LB_Kit_Gate_Arch_1200x300x800",
@@ -334,7 +334,7 @@
    2
   ],
   "ucx": 3,
-  "seconds": 9.9
+  "seconds": 11.5
  },
  {
   "name": "SM_LB_Kit_Window_Lancet_200x60x400_Blind",
@@ -365,7 +365,7 @@
    2
   ],
   "ucx": 1,
-  "seconds": 1.4
+  "seconds": 1.5
  },
  {
   "name": "SM_LB_Kit_Trim_Plinth_400x80x60",
@@ -566,7 +566,7 @@
    100,
    70
   ],
-  "tris": 108,
+  "tris": 156,
   "slots_used": [
    2
   ],
@@ -595,7 +595,7 @@
    150,
    110
   ],
-  "tris": 88,
+  "tris": 172,
   "slots_used": [
    1,
    2
@@ -625,12 +625,12 @@
    300,
    130
   ],
-  "tris": 3554,
+  "tris": 5872,
   "slots_used": [
    2
   ],
   "ucx": 2,
-  "seconds": 0.0
+  "seconds": 0.1
  },
  {
   "name": "SM_LB_Kit_Cliff_Slab_500x300x600_A",
@@ -714,13 +714,13 @@
    50.0,
    250
   ],
-  "tris": 2166,
+  "tris": 2260,
   "slots_used": [
    0,
    2
   ],
   "ucx": 3,
-  "seconds": 0.4
+  "seconds": 0.6
  },
  {
   "name": "SM_LB_Kit_Well_Wall_350x50x250",
@@ -744,7 +744,7 @@
    50.0,
    250
   ],
-  "tris": 1780,
+  "tris": 1810,
   "slots_used": [
    0,
    2
@@ -774,12 +774,12 @@
    50.0,
    250
   ],
-  "tris": 708,
+  "tris": 704,
   "slots_used": [
    0,
    2
   ],
   "ucx": 1,
-  "seconds": 0.2
+  "seconds": 0.1
  }
 ]
