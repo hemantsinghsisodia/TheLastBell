@@ -129,6 +129,7 @@ Also custom or custom-adapted (from the gaps above): the **modular architecture 
 ---
 
 ## Fab: items the owner must claim
+> **Update 2026-10-23 (owner, D-043):** the owner claimed the three Megascans samples (Dark Ruins, Medieval Village, Goddess Temple; they show 'Add To Project' in the library), but they are **not used**: each is about 27 GB, far too large for the project and the LFS repo for the few pieces we would take. They are not a dependency of any phase. The architecture strategy is the custom modular kit with the CC0 materials. A single piece can be revisited later only with a new owner decision.
 Free listings only. Read anonymously in the Browser pane on 2026-10-23 (no login, nothing claimed). "Free" = price element showed "Free" next to "Add to My Library"; the owner must confirm when signed in. The licence terms text itself was not read.
 
 | Pri | Listing | URL | Seller | Covers | Licence shown | UE ver. | Notes / what it replaces |
