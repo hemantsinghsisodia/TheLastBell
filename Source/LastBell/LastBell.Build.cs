@@ -10,7 +10,8 @@ public class LastBell : ModuleRules
 
 		PublicDependencyModuleNames.AddRange(new string[]
 		{
-			"Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "GameplayTags", "UMG", "DeveloperSettings", "PhysicsCore"
+			"Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "GameplayTags", "UMG", "DeveloperSettings", "PhysicsCore",
+			"AIModule", "NavigationSystem", "GameplayTasks"
 		});
 	}
 }

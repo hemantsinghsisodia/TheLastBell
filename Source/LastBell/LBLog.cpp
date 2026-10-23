@@ -1,3 +1,4 @@
 #include "LBLog.h"
 
 DEFINE_LOG_CATEGORY(LogLB);
+DEFINE_LOG_CATEGORY(LogLBWarden);
