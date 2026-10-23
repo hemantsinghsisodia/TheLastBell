@@ -8,6 +8,16 @@
       "type": "http",
       "url": "https://3d.shep.bot/mcp"
     },
+    "blender": {
+      "type": "stdio",
+      "command": "C:/Users/heman/AppData/Roaming/Python/Python315/Scripts/mcp-for-blender.exe",
+      "args": [],
+      "env": {
+        "BLENDER_HOST": "127.0.0.1",
+        "BLENDER_PORT": "9876",
+        "DISABLE_TELEMETRY": "true"
+      }
+    },
     "3d-assets-local": {
       "type": "stdio",
       "command": "node",
