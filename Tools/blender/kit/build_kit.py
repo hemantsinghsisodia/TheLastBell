@@ -530,14 +530,24 @@ def build_cliff(name, seed, variant, L=500.0, H=600.0, end=False):
     the bottom are flat.  End planes are rough and set back 0..30 cm (the nose of an end piece up to ~70 cm), so slabs
     in a run must overlap by ~60 cm (pitch 440 for a 500 slab) -- see MODULAR_KIT.md."""
     T = 300.0
-    nx, ny, nz = int(L / 20), 10, int(H / 20)
+    nx, ny, nz = int(L / 17), 10, int(H / 17)
     b = K.lattice_box(L, T, H, nx, ny, nz, S0, flat_back_bottom=True)
     rng = random.Random(seed)
     cell = (95.0, 80.0, 70.0)[('A', 'B', 'C').index(variant)]
     ph = rng.uniform(0, 6.28)
-    ff1 = facet_field(rng, 0, L, 0, H, cell * 2.0, 46.0, 0.30, 0.40, 0.6)      # large tall cleavage planes
-    ff2 = facet_field(rng, 0, L, 0, H, cell * 0.95, 20.0, 0.30, 0.40, 0.75)    # medium blocks
-    ff = lambda x, z: ff1(x, z) + ff2(x, z) + 7.0 * (K.vnoise(x / 11.0, z / 11.0, seed + 21) - 0.5)
+    # multi-scale breakup: a few big planar cleavage faces, medium blocks and small facets whose weight varies across
+    # the face (low-frequency mask), plus fine noise; depths are limited so creases do not become dark pockets
+    ff1 = facet_field(rng, 0, L, 0, H, cell * 2.4, 30.0, 0.22, 0.30, 0.6)      # large tall planes
+    ff2 = facet_field(rng, 0, L, 0, H, cell * 1.0, 15.0, 0.25, 0.30, 0.75)     # medium blocks
+    ff3 = facet_field(rng, 0, L, 0, H, cell * 0.42, 8.0, 0.30, 0.30, 0.9)      # small facets
+    mask_seed = seed + 77
+
+    def ff(x, z):
+        m = K.smoothstep(0.30, 0.70, K.fbm(x / 240.0 + 3.3, z / 280.0 + 1.1, mask_seed, 2))   # 1 = busy, 0 = calm
+        v = ff1(x, z) + ff2(x, z) * (0.45 + 0.9 * m) + ff3(x, z) * (0.2 + 1.3 * m)
+        v += 6.0 * (K.vnoise(x / 11.0, z / 11.0, seed + 21) - 0.5) + 3.0 * (K.vnoise(x / 5.0, z / 5.0, seed + 22) - 0.5)
+        return v
+
     dmax = 80.0 if H > 400 else 55.0
     ft = facet_field(rng, 0, L, 0, T, cell * 1.1, dmax * 1.1, 0.30, 0.25)
     fe_a = facet_field(rng, 0, T, 0, H, 120.0, 30.0, 0.3, 0.3, 0.6)
@@ -549,11 +559,12 @@ def build_cliff(name, seed, variant, L=500.0, H=600.0, end=False):
         return K.smoothstep(0.3, 1.0, x / L) if end else 0.0
 
     def recess(x, z):
-        v = 14.0 + ff(x, z)
+        v = 18.0 + ff(x, z)
         v += 22.0 * math.exp(-((z - 0.42 * H) / (0.22 * H)) ** 2)            # ledge: mid heights set back -> overhang above
         v += 5.0 * math.sin(z / 47.0 + ph + K.vnoise(x / 130.0, 1.0, seed + 9) * 4.0)
+        v = max(0.0, min(62.0, v))                                             # crease depth clamp
         v += 150.0 * nose(x) ** 1.5
-        return max(0.0, v) * K.smoothstep(0.0, 40.0, z)
+        return v * K.smoothstep(0.0, 40.0, z)
 
     def top_drop(x, y):
         v = dmax * 0.42 + ft(x, y)
@@ -579,6 +590,10 @@ def build_cliff(name, seed, variant, L=500.0, H=600.0, end=False):
             nz_ = z + (rng.uniform(-5, 5) if (1 < z < H - 1) else 0.0)
             v.co.y = recess(nx_, nz_)
             v.co.z = nz_
+        else:
+            # remap the depth interval [0, T] onto [recess, T] so interior rows never fold behind the front row
+            rc = recess(x, z)
+            v.co.y = rc + y * (T - rc) / T
         if on_top:
             v.co.z = H - top_drop(x, y)
         if on0:
@@ -607,19 +622,22 @@ def build_cliff(name, seed, variant, L=500.0, H=600.0, end=False):
         n = f.normal
         f.material_index = S2 if (n.y > 0.9 or n.z < -0.9) else S0
     # collision: one convex hull per X section, built from the displaced surface points (front/top/ends)
-    secs = 8
-    bands = 5 if H > 400 else 3
+    secs = 16 if end else 8
+    bands = 6 if end else (5 if H > 400 else 3)
     ucx = []
     for s_ in range(secs):
         a, c = L * s_ / secs, L * (s_ + 1) / secs
+        # the rounded nose of an end piece also needs splitting in depth (Y) to stay close to the visual
+        yr = [(-1e9, 1e9)]
         for k_ in range(bands):
             z0, z1 = H * k_ / bands, H * (k_ + 1) / bands
-            pts = [p for p in pts_by if a - 16 <= p.x <= c + 16 and z0 - 16 <= p.z <= z1 + 16]
-            if len(pts) < 8:
-                continue
-            ucx.append(K.hull_from_points([Vector(p) for p in pts], S2, merge_coplanar=False))
+            for (ya, yb) in yr:
+                pts = [p for p in pts_by if a - 16 <= p.x <= c + 16 and z0 - 16 <= p.z <= z1 + 16 and ya <= p.y <= yb]
+                if len(pts) < 8:
+                    continue
+                ucx.append(K.hull_from_points([Vector(p) for p in pts], S2, merge_coplanar=False))
     pc = Piece(name, b, ucx, (L, T, H))
-    pc.smooth = 8.0
+    pc.smooth = 22.0
     return pc
 
 

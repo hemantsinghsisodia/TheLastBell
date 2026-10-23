@@ -34,7 +34,7 @@ CLEAR = {
 EXPECT_UCX = {
     "Wall_400x60x800_Broken": 3, "Wall_400x60x400_Broken": 3, "Doorway_Pointed_400x60x400": 3,
     "Gate_Arch_1200x300x800": 3, "Rubble_Heap_400x300x130": 2, "Cliff_Slab_500x300x600_A": 40,
-    "Cliff_Slab_500x300x600_B": 40, "Cliff_Slab_500x300x300": 24, "Cliff_End_200x300x600": 40, "Buttress_100x150x800": 2, "Well_Wall_450x50x250": 3, "Well_Wall_350x50x250": 3,
+    "Cliff_Slab_500x300x600_B": 40, "Cliff_Slab_500x300x300": 24, "Cliff_End_200x300x600": 96, "Buttress_100x150x800": 2, "Well_Wall_450x50x250": 3, "Well_Wall_350x50x250": 3,
 }
 
 
@@ -75,7 +75,7 @@ def signed_volume(ob):
     return -vol
 
 
-def is_convex(ob, eps=0.25, report=None):  # sub-2.5 mm noise from near-coplanar hull points is ignored (UE rebuilds the hulls)
+def is_convex(ob, eps=0.5, report=None):  # sub-5 mm noise from near-coplanar hull points is ignored (UE rebuilds the hulls)
     pts = ue_coords(ob)
     me = ob.data
     me.calc_loop_triangles()

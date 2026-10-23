@@ -303,7 +303,7 @@
    2
   ],
   "ucx": 3,
-  "seconds": 4.0
+  "seconds": 3.8
  },
  {
   "name": "SM_LB_Kit_Gate_Arch_1200x300x800",
@@ -334,7 +334,7 @@
    2
   ],
   "ucx": 3,
-  "seconds": 10.2
+  "seconds": 10.1
  },
  {
   "name": "SM_LB_Kit_Window_Lancet_200x60x400_Blind",
@@ -654,13 +654,13 @@
    300.0,
    600.0
   ],
-  "tris": 3376,
+  "tris": 4212,
   "slots_used": [
    0,
    2
   ],
   "ucx": 40,
-  "seconds": 0.1
+  "seconds": 0.3
  },
  {
   "name": "SM_LB_Kit_Cliff_Slab_500x300x600_B",
@@ -684,13 +684,13 @@
    300.0,
    600.0
   ],
-  "tris": 3376,
+  "tris": 4212,
   "slots_used": [
    0,
    2
   ],
   "ucx": 40,
-  "seconds": 0.1
+  "seconds": 0.3
  },
  {
   "name": "SM_LB_Kit_Cliff_Slab_500x300x300",
@@ -714,7 +714,7 @@
    300.0,
    300.0
   ],
-  "tris": 1996,
+  "tris": 2412,
   "slots_used": [
    0,
    2
@@ -744,13 +744,13 @@
    300.0,
    600.0
   ],
-  "tris": 2116,
+  "tris": 2520,
   "slots_used": [
    0,
    2
   ],
-  "ucx": 40,
-  "seconds": 0.1
+  "ucx": 96,
+  "seconds": 0.2
  },
  {
   "name": "SM_LB_Kit_Well_Wall_450x50x250",
@@ -840,6 +840,6 @@
    2
   ],
   "ucx": 1,
-  "seconds": 0.1
+  "seconds": 0.2
  }
 ]
