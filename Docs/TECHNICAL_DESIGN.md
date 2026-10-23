@@ -27,11 +27,11 @@ Source/LastBell/
   Puzzles/      ULBSequencePuzzleComponent, ULBDialComponent, LBPuzzleLogic (pure logic)  (P4)
   Objectives/   ULBObjectiveChainData, ULBObjectiveSubsystem                     (P1)
   Save/         ULBSaveGame, FLBActorSaveRecord, FLBSaveIdRegistry, ULBSaveSubsystem, ULBSaveStateComponent, ALBCheckpoint (P1)
-  AI/           ALBWarden, ALBWardenController, State Tree tasks/conditions      (P5)
+  AI/           ALBWarden, ALBWardenController, ULBWardenBrainComponent, ULBWardenTuningData, LBWardenLogic (pure), markers (P5)
   Systems/      ULBUserSettings (MouseSensitivity, bInvertY, bHeadBob; config=GameUserSettings) (P3)
 Source/LastBellTests/   (Editor target only) unit tests, MicroSlice, RouteBot.*, WalkPath.*, PlayerFeel.*, test helpers
 ```
-Runtime dependencies are Core, CoreUObject, Engine, InputCore, EnhancedInput, GameplayTags, UMG, DeveloperSettings (P2) and PhysicsCore (P3, footstep surfaces). `UnrealEd` is used only by `LastBellTests`. AIModule, NavigationSystem, StateTreeModule and GameplayStateTreeModule are added in Phase 5.
+Runtime dependencies are Core, CoreUObject, Engine, InputCore, EnhancedInput, GameplayTags, UMG, DeveloperSettings (P2) and PhysicsCore (P3, footstep surfaces). `UnrealEd` is used only by `LastBellTests`. AIModule, NavigationSystem and GameplayTasks were added in Phase 5 (no State Tree modules, D-037).
 There is **no custom GameInstance**, because GameInstance subsystems don't need one. There's no static helper library until a real shared helper exists.
 
 ## 3. Framework
@@ -106,13 +106,46 @@ Not built: branching quests, a quest log or a quest graph.
 
 Not built: multiple slots, free saving or whole-world serialization.
 
-## 8. Warden AI (Phase 5, outline only)
-- `ALBWarden : ACharacter` uses `BP_Warden` for the mesh, animation and audio, and is controlled by `ALBWardenController : AAIController`.
-- It runs a **State Tree** via `UStateTreeAIComponent`, using the AI schema and starting logic on possess. The states are Dormant, Scripted, Patrol, Investigate (including a suspicious look-around), Search (including the lost-target case), Chase, Attack and Return. The controller forwards `OnTargetPerceptionUpdated` to the State Tree as events plus a context struct (last-known location and stimulus strength).
-- **AI Perception** uses sight and hearing, with detect-neutrals on and the player registered as a source. Noise is raised with `UAISense_Hearing::ReportNoiseEvent(Instigator, Loudness, MaxRange, FName Tag)`, and world events use the mechanism actor as the instigator. The Warden knows only what it perceives. The Scripted state ignores perception.
-- The **stage source of truth** is the `State.Warden.Stage.N` tags, added by story events. State Tree conditions read them directly, and a separate escalation component is only added if Phase 5 proves it's needed.
-- There's no EQS at first. Search uses designer-placed `ALBSearchPoint` actors, nearest first. Debugging uses `lb.Warden.Debug` and the Gameplay Debugger.
-- Stages 1–2 are scripted events and a non-AI silhouette. The AI pawn exists from stage 3.
+## 8. Warden AI (Phase 5, `Source/LastBell/AI/`, D-037)
+The brain is a **C++ state machine**, not a State Tree (D-037). The decisions are pure and unit tested; the component only gathers facts and acts.
+
+**Classes**
+- `ALBWarden : ACharacter`: collision capsule radius 42, half height 110 (D-038: it must fit the 104 x 230 cm doorways; the taller visual body lives in `BP_Warden`). Capsule size and eye height come from the tuning asset. No mesh in C++. It starts hidden and without collision (dormant presentation) and is placed once in the persistent level. **Never saved** (D-012): it is rebuilt from the stage tags.
+- `ALBWardenController : AAIController`: `UAIPerceptionComponent` with Sight and Hearing (enemies, neutrals and friendlies all detected, because the player is neutral), plus `ULBWardenBrainComponent`. It forwards `OnTargetPerceptionUpdated` and `OnMoveCompleted` to the brain and holds no decision logic. The sight sense is configured for the largest effective radius (stage radius x candle multiplier) and narrowed per target by the brain.
+- `ULBWardenBrainComponent` lives on the **controller**: it already owns perception and path following, and the checkpoint rule finds it through `UWorld::GetControllerIterator()`, so there is no manager actor and no registry.
+- `ULBWardenTuningData` (`DA_WardenTuning`): every number (see the file; defaults are the Phase 5 starting values and the fallback when no asset is assigned).
+- Pure logic in `LBWardenLogic.h/.cpp` (`LBWardenLogic::Evaluate`, `HighestStage`, `CapsForStage`, `EffectiveSightRadius`, `SelectSpawnIndex`, `FLBSightConfirm`, `FLBStuckDetector`, `FLBSearchPlan`).
+
+**States** (`ELBWardenState`): Dormant, Patrol, Investigate, Suspicious (stop and look around), Search, Chase, Attack, Return. Each has Enter/Tick/Exit in the brain. `Patrol` is also "hold the post" below stage 4 or when the spawn's route has no points (`IsHoldingPost()`).
+
+**Stage gating** (highest present `State.Warden.Stage.N` tag, re-read on `OnStateChanged` and `OnStateReplaced`):
+| Stage | Allowed |
+|---|---|
+| 1-2 | Dormant: hidden, no collision, ignores perception |
+| 3 | Patrol (holding the post), Investigate, Suspicious, Return, Attack |
+| 4 | + Patrol route, Search |
+| 5+ | + Chase |
+A state that a lowered stage forbids (a reload) is left through Return. Any active stage: the player seen within `AttackRange` with line of sight and the attack off cooldown gives Attack.
+
+**Transitions** (priority order in `Evaluate`): stage gate; Attack resolution (after `AttackWindupSeconds` the range and line of sight are re-checked: still valid then `Kill()` and Return, otherwise Chase, or Investigate when chase is not allowed; a resolved attack starts `AttackCooldownSeconds`); attack start; confirmed sight (Chase at stage 5+, otherwise Investigate; an unreachable player gives Search); a loud enough noise (Investigate, re-targeted by newer noises; Chase only updates the last-known location); then per state: Investigate arrives, Suspicious `SuspiciousSeconds`, then Search (stage 4+) or Return; Search ends when its points are visited or `SearchDurationSeconds` passes, then Return; Chase becomes Search after `LastKnownMemorySeconds` without sight; Return arrives, then Patrol.
+
+**Perception only, no omniscience.** Sight is polled from the perception component's stimulus (refreshed location) and accepted only inside the effective radius: stage radius (1500 / 2000 / 2500) times `CandleLitSightMultiplier` (1.25) while the target's candle is lit, with `LoseSightExtraRadius` hysteresis. It must be continuous for `SightConfirmTime` (0.6 s, which is also the audible-tell lead) before it counts. After sight is lost only the remembered last-known location is used (`GetLastKnownLocation()`); chase goals are locations, never `MoveToActor`. Attack range and line of sight use the Warden's own body and eyes.
+
+**Noise sources** (`UAISense_Hearing::ReportNoiseEvent`, tags in `AI/LBNoiseTags.h`): `ULBFootstepComponent` per step (loudness by gait, capped by `ULBPlayerTuningData::NoiseMaxRange`) and on landing; `ULBInteractableComponent::NoiseLoudness` (default 0 = silent) on a successful interaction, with the interactable's actor as the instigator. The engine scales hearing range by loudness (walk 0.3 is heard at 750 cm, sprint 0.8 at 2000 cm); `HearingLoudnessThreshold` drops very quiet noises.
+
+**Movement.** `AAIController::MoveTo` with `FAIMoveRequest` (partial paths allowed); completion is matched to the request id. A partial or failed path (player off the navmesh) goes to the closest reachable point (partial path end, else a nav projection within `UnreachableFallbackRadius`), then Search, and the player counts as unreachable for `UnreachableRecheckSeconds`. **Stuck:** no progress of `StuckMinProgress` within `StuckSeconds` (or a blocked move) re-paths once; a second failure gives the target up (next patrol or search point; Investigate and Return count as arrived; Chase counts as unreachable). Travelling `StuckForgiveDistance` forgives a failure.
+
+**Markers** (place on the floor): `ALBWardenSpawnPoint` (`MinStage`, `RouteId`), `ALBPatrolPoint` (`RouteId`, `Order`, `WaitSeconds`), `ALBSearchPoint`. The spawn with the highest `MinStage` not above the stage is used. A dormant Warden appears only when the player's view (a cone wider than the FOV, with line of sight) cannot see the spawn point; a stage change that picks a new spawn teleports only when neither the Warden nor the destination is in view, otherwise the Warden walks there (Return). Search uses up to `SearchPointCount` search points within `SearchPointRadius` of the last-known location, nearest unvisited first, with a pause at each; with none in range it uses random reachable points (a nav query, not EQS).
+
+**Checkpoints (D-019).** `ALBCheckpoint::CanSaveNow()` is false while any `ALBWardenController`'s brain is in Chase or Attack. A refused checkpoint retries every 0.5 s while the player is still inside the trigger and saves once the chase ends.
+
+**Player side.** `ALBCharacter` carries a `UAIPerceptionStimuliSourceComponent`, registered for Sight in BeginPlay (the component's own sense list is protected, so it is registered explicitly).
+
+**Blueprint hooks.** `OnStateChanged(OldState, NewState)`, `OnAttackWindup(WindupSeconds)` (play the tell), `GetState()`, `GetLastKnownLocation()`, `HasLastKnownLocation()`, `GetStage()`, `IsChasingOrAttacking()`, `IsHoldingPost()`.
+
+**Debug.** `lb.Warden.Debug 1` (non-shipping) draws the state name, stage and sight timer above the head, the sight cone (unlit solid, candle-lit orange), the last-known location, the current move target and the last noise. State changes log at Log verbosity in `LogLBWarden`; the Visual Logger records transitions, noises and stuck events. No Behavior Trees, EQS, Smart Objects or Mass AI.
+
+**Tests.** `LastBell.Warden.*` (pure logic: stage gating, the full transition table plus an exhaustive invariant sweep, attack windup, sight confirm timing, candle multiplier, search point selection, stuck detector, spawn selection, tuning defaults). Functional tests in `L_Test_Warden` come in P5-004.
 
 ## 9. Gameplay Tags
 - **Native** (referenced from C++): `State.Warden.Stage.1..6`, and `AI.Stimulus.*` from Phase 5.
