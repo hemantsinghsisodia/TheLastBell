@@ -7,6 +7,16 @@
     "3d-shep-bot": {
       "type": "http",
       "url": "https://3d.shep.bot/mcp"
+    },
+    "3d-assets-local": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["C:/Hemant/Tools/3d-asset-server/dist/cli.js", "mcp"],
+      "env": {
+        "ASSET_DOWNLOAD_DIR": "C:/Hemant/Prj/Learning/TheLastBell/ExternalAssets/Incoming",
+        "ASSET_SERVER_PROVIDERS": "polyhaven,ambientcg,texturecan,cgbookcase,sharetextures,threedtexel,blenderkit,sketchfab,grab3d,hdrmaps,texturescom,fab,poliigon,cgtrader,turbosquid",
+        "ASSET_SERVER_TELEMETRY": "0"
+      }
     }
   }
 }
