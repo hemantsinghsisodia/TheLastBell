@@ -8,7 +8,7 @@
       "type": "http",
       "url": "https://3d.shep.bot/mcp"
     },
-    "blender": {
+    "blender-local": {
       "type": "stdio",
       "command": "C:/Users/heman/AppData/Roaming/Python/Python315/Scripts/mcp-for-blender.exe",
       "args": [],
