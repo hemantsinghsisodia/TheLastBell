@@ -198,3 +198,13 @@ Coordinates cm. "Run" lists the instances in X or Y order; **all yaws and origin
 10. **Pivot/yaw tooling.** The "bottom-left-back, yaw 90 shifts the origin to the max-X face" rule makes placement errors easy; P7-003 should place by script from the run table above and verify with a bounds check.
 11. **Collision and Nanite.** Verify in P7-002 that the `UCX_` collision imports with each FBX, that the Nanite fallback keeps the vertex-painted slab colours, and that the doorway and gate collision leaves the clear opening free (a trace test).
 12. **Interiors** (the chapel nave, crypt, cloister) are out of the Phase 7 scope. The kit lists the P1 pieces they will need, but their dimensions (nave 1200 tall, crypt corridors ≥ 200 wide, tower 3500) are unchanged and may need `Wall_400x60x200` fillers to reach the tower height.
+
+## 8. Lead decisions on the open questions (2026-10-23)
+1. **60 cm walls:** accepted. The inner courtyard face stays on the greybox line; the east wall's extra 20 cm on the chapel side is unreachable space.
+2. **Doorways:** keep the 120×240 clear opening (more room for the Warden's 84 cm capsule and the stoop). P7-003 rescales the door leaves to fit (about 118×238) and re-validates door collision, the Warden reachability test and WalkPath.
+3. **Tower sightline:** P7-003 traces it in-engine from the spawn and from `CP_Courtyard`, before and after the rebuild. If the gate crown hides the tower from the spawn, lower the gate crown or the approach-side cliff tops, not the tower.
+4. **Cliffs:** kit cliff slabs wearing the Rock_064 / rock-wall world-aligned materials, with `SM_Rock_Moss_Set_01` boulders at the base for breakup. No library cliff meshes (none are photoreal and free).
+5. **Tower proxy:** no. The greybox tower stays and only gets the world-aligned ashlar MI for the silhouette; tower art is Phase 10.
+6. **Blind lancet windows:** promoted to P0 (the flat chapel front is otherwise a weak spot). P0 = 26 pieces.
+7. **Wall_400x60x800_B:** keep (repetition, R-26).
+8. **Vertex colours:** the R wet / G grime / B wear contract is adopted. Kit meshes export vertex colours (default white = no effect); `M_LB_Surface` reads them in Phase 11.
