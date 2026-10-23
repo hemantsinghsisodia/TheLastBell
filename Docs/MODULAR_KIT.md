@@ -231,3 +231,13 @@ The first cliff slabs had a displaced front but flat, banded-looking ends and to
 - **Door leaves** (`Door_ChapelMain`, `Door_Shortcut`): `BP_Door_Base` has no size property and per-instance component edits do not persist, so the actor scale is (1, 1.18, 1.0818) and the actor Y moved by -9 (hinge to the new jamb edge): leaf about 118 x 238, centred in the 120 x 240 opening.
 - **Ground dressing:** flat cylinders (0.4 cm thick, 1.7..1.9 cm above the slab) with the Brown_Mud MIs: 12 puddles plus soft mud rims, 14 mud strips along wall bases and 4 at the cliff bases. `MI_Env_Puddle` is `MI_Brown_Mud_03_WA_Puddle` with a cooler tint.
 - **Not done / for later:** fountain basin (still a cube), no wall `Trim_Coping`, tower is only re-materialled (D-044 item 5), puddles are flat discs until the master-material puddle layer exists (Phase 11).
+
+## 11. P7-004 look notes (minimum night look, not final lighting)
+- Moon `DirectionalLight_1`: rotation (0,0,0) -> pitch -38 / yaw 35 (matches the sky MI moon direction), intensity 4 -> 2.4, colour white -> (0.55,0.68,1.0). New fill `Moon_Fill` (no shadows, 0.5, (0.38,0.5,0.85)) because editor captures show no GI ambient; cliff crevices still read black in captures.
+- Exposure: the unbound `PostProcess_Exposure` stays at fixed 3 (interiors unchanged); a bounded `PP_Outdoor_Night` volume (Approach plus Courtyard, X -3315..6015) uses fixed 2.0.
+- Sky: `SkySphere` uses `MI_Env_NightSky` (child of `MI_NightStormSky`). Fog inscattering (0,0,0) -> (0.025,0.04,0.075). `SkyLight_1`: 0.6 captured scene -> 1.2 with the night HDRI cubemap, lower hemisphere no longer black.
+- Tower: `MI_Env_TowerStone` (dark, cool); `Light_TowerExt_0..2` 20000 -> 3000 lm.
+- `MI_Kit_Cliff` is now two-sided (a few flipped facets showed black holes).
+- Door tympanum infills (`KC_DoorTympanum`, `KW_ShortcutTympanum`) stop the lit interior showing above the rectangular door leaf; door leaves wear `MI_Weathered_Planks_WA`.
+- Warm islands: `Light_Gatehouse_Warm`, `Light_Well_Warm`, `Light_ChapelDoor_Warm` (movable, no shadows, radius 380-520).
+- Clean capture method: temporarily set `bVisible=false` on every billboard/arrow/shape/brush component (script in the P7-004 report), capture, restore. The saved map has everything visible.
