@@ -67,6 +67,7 @@ void ALBWardenController::UpdatePerceptionForStage(int32 Stage)
 	SightConfig->SightRadius = MaxRadius;
 	SightConfig->LoseSightRadius = MaxRadius + T.LoseSightExtraRadius;
 	SightConfig->PeripheralVisionAngleDegrees = T.PeripheralHalfAngle;
+	SightConfig->PointOfViewBackwardOffset = T.SightCloseRangeBackOffset;
 	SightConfig->SetMaxAge(T.LastKnownMemorySeconds);
 
 	HearingConfig->HearingRange = T.HearingRange;

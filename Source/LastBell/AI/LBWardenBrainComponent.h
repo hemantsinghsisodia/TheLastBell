@@ -17,6 +17,7 @@ class ULBWorldStateSubsystem;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FLBWardenStateChangedSignature, ELBWardenState, OldState, ELBWardenState, NewState);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FLBWardenAttackWindupSignature, float, WindupSeconds);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FLBWardenSightSignature);
 
 /**
  * The Warden's brain (D-037): a C++ state machine on the AI controller. Why the controller and not the pawn: the controller
@@ -64,6 +65,26 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "LastBell|Warden")
 	FLBWardenAttackWindupSignature OnAttackWindup;
 
+	/**
+	 * Fired the moment sight of the player is first gained (inside the effective sight radius), BEFORE the SightConfirmTime
+	 * has passed: this is the audible tell (breath, chain rattle) that must lead any chase by at least 0.5 s (AI_DESIGN fairness).
+	 * Not fired while the Warden is already in Chase or Attack.
+	 */
+	UPROPERTY(BlueprintAssignable, Category = "LastBell|Warden")
+	FLBWardenSightSignature OnPlayerSpotted;
+
+	/** Fired when sight of the player ends (left the radius or cone, line of sight blocked, or the player died). */
+	UPROPERTY(BlueprintAssignable, Category = "LastBell|Warden")
+	FLBWardenSightSignature OnPlayerLost;
+
+	/** lb.Warden.Enabled (default 1). At 0 every Warden stays Dormant and hidden and checkpoints ignore it. */
+	UFUNCTION(BlueprintPure, Category = "LastBell|Warden")
+	static bool IsWardenSystemEnabled();
+
+	/** Sets lb.Warden.Enabled. Tests and cutscenes use it to switch the Warden off and back on. */
+	UFUNCTION(BlueprintCallable, Category = "LastBell|Warden")
+	static void SetWardenSystemEnabled(bool bEnabled);
+
 	// ---- Called by ALBWardenController ----
 	void HandleTargetPerceptionUpdated(AActor* Actor, const FAIStimulus& Stimulus);
 	void HandleMoveCompleted(FAIRequestID RequestID, EPathFollowingResult::Type Result);
@@ -88,6 +109,8 @@ private:
 	const ULBWardenTuningData& GetTuning() const;
 	void Initialize();
 	void RefreshStage();
+	/** Recomputes the capabilities from the stage and lb.Warden.Enabled. */
+	void ApplyCaps();
 
 	// ---- Per frame ----
 	void PollSight(float DeltaTime);
@@ -137,6 +160,7 @@ private:
 	int32 Stage = 0;
 	FLBWardenCaps Caps;
 	bool bInitialized = false;
+	bool bSystemEnabled = true;
 
 	// ---- What perception told us ----
 	TWeakObjectPtr<ALBCharacter> KnownPlayer;

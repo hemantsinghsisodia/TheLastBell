@@ -194,7 +194,10 @@ bool FLBWardenTransitionTableTest::RunTest(const FString& Parameters)
 		{
 			TEST_ENUM(*FString::Printf(TEXT("Stage %d confirmed sight from Search"), Stage), Next(ELBWardenState::Search, F), Expected);
 		}
-		TEST_ENUM(*FString::Printf(TEXT("Stage %d confirmed sight from Suspicious"), Stage), Next(ELBWardenState::Suspicious, F), Expected);
+		// Hysteresis (P5-004): without chase, a Suspicious Warden finishes its look-around instead of flipping back to Investigate
+		// every frame while the player stays in view. With chase, sight still wins at once.
+		const ELBWardenState ExpectedSuspicious = Stage >= 5 ? ELBWardenState::Chase : ELBWardenState::Suspicious;
+		TEST_ENUM(*FString::Printf(TEXT("Stage %d confirmed sight from Suspicious"), Stage), Next(ELBWardenState::Suspicious, F), ExpectedSuspicious);
 	}
 	{
 		FLBWardenFacts F = Facts(5);
@@ -549,6 +552,8 @@ bool FLBWardenTuningTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("Sight confirm"), T.SightConfirmTime, 0.6f);
 	TestTrue(TEXT("The sight confirm time is at least the 0.5 s audible tell"), T.SightConfirmTime >= 0.5f);
 	TestEqual(TEXT("Cone half angle"), T.PeripheralHalfAngle, 45.f);
+	// P5-004: the cone origin sits behind the eyes so a player right in front (eye-to-body drop up to the eye height plus a crouch) is not below the 45 degree cone.
+	TestTrue(TEXT("Close-range back offset covers a body at the feet right under the eyes"), T.SightCloseRangeBackOffset >= T.EyeHeight + T.CapsuleHalfHeight - 58.f);
 	TestEqual(TEXT("Lose-sight extra"), T.LoseSightExtraRadius, 300.f);
 	TestEqual(TEXT("Hearing range"), T.HearingRange, 2500.f);
 	TestEqual(TEXT("Memory"), T.LastKnownMemorySeconds, 6.f);
@@ -574,6 +579,45 @@ bool FLBWardenTuningTest::RunTest(const FString& Parameters)
 
 	TEST_ENUM(TEXT("Move speed lookup: Chase"), T.GetMoveSpeed(ELBWardenState::Chase), T.ChaseSpeed);
 	TEST_ENUM(TEXT("Move speed lookup: Patrol"), T.GetMoveSpeed(ELBWardenState::Patrol), T.PatrolSpeed);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBWardenNoFlipFlopTest, "LastBell.Warden.Transitions.NoInvestigateSuspiciousFlipFlop", LB_TEST_FLAGS)
+bool FLBWardenNoFlipFlopTest::RunTest(const FString& Parameters)
+{
+	// P5-004 reviewer finding: stage 3-4, player visible but not attackable (cooldown, just out of range). Drive the pure
+	// state machine frame by frame the way the brain does (arrival = the move ended instantly) and count state changes.
+	const ULBWardenTuningData& T = Tuning();
+	const float Dt = 1.f / 60.f;
+	for (int32 Stage = 3; Stage <= 4; ++Stage)
+	{
+		ELBWardenState State = ELBWardenState::Investigate;
+		float StateTime = 0.f;
+		int32 Changes = 0;
+		int32 InvestigateEntries = 0;
+		for (float Elapsed = 0.f; Elapsed < T.SuspiciousSeconds - 0.3f; Elapsed += Dt)
+		{
+			FLBWardenFacts F = Facts(Stage);
+			F.bSeesPlayer = true;
+			F.bSightConfirmed = true;
+			F.bInAttackRange = false;
+			F.bArrived = true; // standing next to the last-known spot
+			F.StateTime = StateTime;
+			F.TimeSinceSight = 0.f;
+			const FLBWardenDecision D = LBWardenLogic::Evaluate(State, F, T);
+			StateTime += Dt;
+			if (D.Next != State || D.bReenter)
+			{
+				State = D.Next;
+				StateTime = 0.f;
+				++Changes;
+				InvestigateEntries += (State == ELBWardenState::Investigate) ? 1 : 0;
+			}
+		}
+		TestTrue(*FString::Printf(TEXT("Stage %d: at most Investigate -> Suspicious while the visible player cannot be attacked (changes %d)"), Stage, Changes), Changes <= 1);
+		TEST_ENUM(*FString::Printf(TEXT("Stage %d ends up Suspicious, looking around"), Stage), State, ELBWardenState::Suspicious);
+		TestEqual(*FString::Printf(TEXT("Stage %d: Investigate not re-entered"), Stage), InvestigateEntries, 0);
+	}
 	return true;
 }
 

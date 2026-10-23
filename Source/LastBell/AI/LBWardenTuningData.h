@@ -73,6 +73,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sight", meta = (ClampMin = "0"))
 	float SightConfirmTime = 0.6f;
 
+	/**
+	 * The sight cone's origin is moved this far BEHIND the eyes. The sense measures the cone in 3D, so without this a player
+	 * standing right in front of the Warden (a body 100 cm ahead and 107 cm below the eyes is 47 degrees down) falls outside the
+	 * 45 degree half angle and is invisible exactly where the attack happens. 150 covers a crouched player at the feet.
+	 * The line-of-sight trace still starts at the eyes.
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sight", meta = (ClampMin = "0"))
+	float SightCloseRangeBackOffset = 150.f;
+
 	/** Multiplier on the effective sight radius while the player's candle is lit. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sight", meta = (ClampMin = "1"))
 	float CandleLitSightMultiplier = 1.25f;

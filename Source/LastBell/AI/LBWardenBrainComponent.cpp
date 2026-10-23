@@ -19,6 +19,11 @@
 #include "VisualLogger/VisualLogger.h"
 #include "LBLog.h"
 
+static TAutoConsoleVariable<int32> CVarWardenEnabled(
+	TEXT("lb.Warden.Enabled"), 1,
+	TEXT("1 = the Warden follows the escalation stages. 0 = every Warden stays Dormant and hidden and checkpoints ignore it (route and walk-path tests use this)."),
+	ECVF_Default);
+
 #if !UE_BUILD_SHIPPING
 static TAutoConsoleVariable<int32> CVarWardenDebug(
 	TEXT("lb.Warden.Debug"), 0,
@@ -35,6 +40,16 @@ ULBWardenBrainComponent::ULBWardenBrainComponent()
 // ---------------------------------------------------------------------------------------------------------------------
 // Plumbing
 // ---------------------------------------------------------------------------------------------------------------------
+
+bool ULBWardenBrainComponent::IsWardenSystemEnabled()
+{
+	return CVarWardenEnabled.GetValueOnGameThread() != 0;
+}
+
+void ULBWardenBrainComponent::SetWardenSystemEnabled(bool bEnabled)
+{
+	CVarWardenEnabled->Set(bEnabled ? 1 : 0, ECVF_SetByCode);
+}
 
 AAIController* ULBWardenBrainComponent::GetAIController() const
 {
@@ -106,6 +121,13 @@ void ULBWardenBrainComponent::Initialize()
 	UE_LOG(LogLBWarden, Log, TEXT("%s: brain ready, stage %d"), *GetNameSafe(GetWarden()), Stage);
 }
 
+void ULBWardenBrainComponent::ApplyCaps()
+{
+	bSystemEnabled = IsWardenSystemEnabled();
+	// Switched off: behave as stage 0, so the brain returns to Dormant (hidden) through the normal stage gate.
+	Caps = LBWardenLogic::CapsForStage(bSystemEnabled ? Stage : 0);
+}
+
 void ULBWardenBrainComponent::RefreshStage()
 {
 	const ULBWorldStateSubsystem* WorldState = ULBWorldStateSubsystem::Get(this);
@@ -116,7 +138,7 @@ void ULBWardenBrainComponent::RefreshStage()
 	}
 	const int32 OldStage = Stage;
 	Stage = NewStage;
-	Caps = LBWardenLogic::CapsForStage(Stage);
+	ApplyCaps();
 	UE_LOG(LogLBWarden, Log, TEXT("%s: stage %d -> %d (patrol %d, search %d, chase %d)"), *GetNameSafe(GetWarden()), OldStage, Stage,
 		Caps.bPatrol, Caps.bSearch, Caps.bChase);
 
@@ -221,12 +243,23 @@ void ULBWardenBrainComponent::PollSight(float DeltaTime)
 		}
 	}
 
-	if (bVisible && !bPlayerVisible)
-	{
-		UE_LOG(LogLBWarden, Verbose, TEXT("%s: player in sight"), *GetNameSafe(GetWarden()));
-	}
+	const bool bWasVisible = bPlayerVisible;
 	SightConfirm.Advance(bVisible, DeltaTime);
 	bPlayerVisible = bVisible;
+	if (bVisible && !bWasVisible)
+	{
+		UE_LOG(LogLBWarden, Verbose, TEXT("%s: player in sight"), *GetNameSafe(GetWarden()));
+		// The audible tell: fires now, SightConfirmTime before sight can start a chase. Not while already in pursuit (nothing to announce).
+		if (!IsChasingOrAttacking())
+		{
+			OnPlayerSpotted.Broadcast();
+		}
+	}
+	else if (!bVisible && bWasVisible)
+	{
+		UE_LOG(LogLBWarden, Verbose, TEXT("%s: player out of sight"), *GetNameSafe(GetWarden()));
+		OnPlayerLost.Broadcast();
+	}
 	if (bVisible)
 	{
 		LastKnownLocation = SeenLocation;
@@ -267,6 +300,22 @@ void ULBWardenBrainComponent::TickComponent(float DeltaTime, ELevelTick TickType
 	if (!bInitialized)
 	{
 		Initialize();
+	}
+	// The sight sense aims its cone along the controller's control rotation (AController::GetActorEyesViewPoint). The controller
+	// does not tick (bCanEverTick is false), so AAIController::UpdateControlRotation never copies the pawn's facing: without this
+	// line the cone stays fixed along world +X while the Warden turns (P5-004 bug).
+	if (AAIController* WardenController = GetAIController())
+	{
+		if (const ALBWarden* WardenPawn = GetWarden())
+		{
+			WardenController->SetControlRotation(FRotator(0.f, WardenPawn->GetActorRotation().Yaw, 0.f));
+		}
+	}
+	if (IsWardenSystemEnabled() != bSystemEnabled)
+	{
+		ApplyCaps();
+		bRelocationPending = true;
+		UE_LOG(LogLBWarden, Log, TEXT("%s: lb.Warden.Enabled -> %d"), *GetNameSafe(GetWarden()), bSystemEnabled ? 1 : 0);
 	}
 
 	StateTime += DeltaTime;

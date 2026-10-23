@@ -210,8 +210,10 @@ namespace LBWardenLogic
 					return Go(ELBWardenState::Search, TEXT("player seen but unreachable"));
 				}
 			}
-			else if (State != ELBWardenState::Investigate)
+			else if (State != ELBWardenState::Investigate && State != ELBWardenState::Suspicious)
 			{
+				// Not Suspicious: arriving at a player who is still visible (chase not allowed, attack on cooldown or just out
+				// of range) would flip Investigate <-> Suspicious every frame. A Suspicious Warden finishes its look-around.
 				return Go(ELBWardenState::Investigate, TEXT("sight confirmed, chase not allowed"));
 			}
 		}
