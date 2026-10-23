@@ -87,7 +87,7 @@ Source: a read-only dump of every actor's transform and bounds from `/Game/LastB
 - **Gameplay safety:** no kit piece has its own blueprint behaviour; doors stay `BP_Door_Base` leaves placed in the opening; nothing in the kit overlaps a trigger or checkpoint volume.
 
 ## 4. Piece table
-Sizes are `X×Y×Z` cm. "Clear" is the unobstructed opening at ground level. P0 = needed for the Approach and Courtyard (P7-003); P1 = needed later (Chapel, Cloister, Crypt, Tower) or an optional upgrade. **P0 count: 25** (`Wall_400x60x800_B` is droppable: 24). **P1 count: 14.**
+Sizes are `X×Y×Z` cm. "Clear" is the unobstructed opening at ground level. P0 = needed for the Approach and Courtyard (P7-003); P1 = needed later (Chapel, Cloister, Crypt, Tower) or an optional upgrade. **P0 count: 25** (`Wall_400x60x800_B` is droppable: 24; the lead later promoted the blind lancet window and P7-002c added the cliff low slab and end piece: **28 built**). **P1 count: 14.**
 
 ### 4.1 P0 (Approach and Courtyard)
 | # | Mesh (`SM_LB_Kit_...`) | Size | Opening / notes | Replaces (greybox) | Pri |
@@ -112,8 +112,10 @@ Sizes are `X×Y×Z` cm. "Clear" is the unobstructed opening at ground level. P0 
 | 18 | `Rubble_Chunk_M` | about 120×100×70 | Rough stone chunk | `Rubble_0..4` | P0 |
 | 19 | `Rubble_Chunk_L` | about 170×150×110 | Large fallen block, one flat top | `Rubble_0..4`; also the `Plinth_Key` slab (use a flat-topped chunk) | P0 |
 | 20 | `Rubble_Heap_400x300x130` | 400×300×130 | Collapsed-wall heap, 6k tris, 2 boxes of collision (blocking, no walkable slope) | `Ruin_Wall` ends (south route partial blockers) | P0 |
-| 21 | `Cliff_Slab_500x300x600_A` | 500×300×600 | Faceted rock face on -Y (the player side), flat back, ragged top; slots 0 (rock, world-aligned) and 2 (fracture); 2 hull boxes | `Cliff_S` / `Cliff_N` (6 modules per side, X -3000..0) | P0 |
-| 22 | `Cliff_Slab_500x300x600_B` | 500×300×600 | Alternate face and top profile, same envelope | same | P0 |
+| 21 | `Cliff_Slab_500x300x600_A` | 500×300×600 | Rock face on -Y (the player side): **front, top and both ends are faceted/displaced rock** (ragged skyline 520–600, ledge/overhang band, ends rough and set back 0–30 cm); flat hidden back (+Y) and flat bottom; slot 0 rock (world-aligned), slot 2 only on the hidden back/bottom; 40 small convex hulls following the surface. **Place with a 60 cm overlap (pitch 440)**, see section 9 | `Cliff_S` / `Cliff_N` | P0 |
+| 22 | `Cliff_Slab_500x300x600_B` | 500×300×600 | Different seed, cleavage planes and skyline; same envelope and overlap rule | same | P0 |
+| 22a | `Cliff_Slab_500x300x300` | 500×300×300 | Low slab (stepping down, foreground ledges, base of a run); same rules, 24 hulls | step-downs | P0 |
+| 22b | `Cliff_End_200x300x600` | 200×300×600 | End piece: joins a slab at X=0 (overlap 60) and terminates the run with a rounded, receding nose at X=200 (front falls away up to 150 cm, skyline drops to about 360, rough rounded end); rotate 180 degrees for the other side of the path | run ends | P0 |
 | 23 | `Well_Wall_450x50x250` | 450×50×250 | Ragged-top low wall (ruin) | `Well_W`, `Well_E` | P0 |
 | 24 | `Well_Wall_350x50x250` | 350×50×250 | Ragged-top low wall | `Well_S` | P0 |
 | 25 | `Well_Wall_100x50x250` | 100×50×250 | Ragged-top low wall; two flank the 150 entrance | `Well_N1`, `Well_N2` | P0 |
@@ -156,7 +158,7 @@ Coordinates cm. "Run" lists the instances in X or Y order; **all yaws and origin
 
 | Greybox | Kit replacement | Instances / transforms | Gameplay constraint |
 |---|---|---|---|
-| `Cliff_S/N` (6 m, X -3000..0) | `Cliff_Slab_500x300x600_A/_B` alternating, mirrored on the north side | 6 per side; slab X cells -3000, -2500, ... -500; the faceted face (local -Y) must face the path: north cliff origin (x0, 200, 0) yaw 0; south cliff origin (x0+500, -200, 0) yaw 180; inner face Y=±200; top Z 600 | the corridor stays **400 wide**; the cliff back sits inside the old unreachable ground band |
+| `Cliff_S/N` (6 m, X -3000..0) | `Cliff_Slab_500x300x600_A/_B` alternating, mirrored on the north side | **7 per side at pitch 440 (60 cm overlap, section 9)**, origins -3000, -2560, ... -360 (the last one overhangs X 0 by 140: trim to 6 slabs plus a `Cliff_End` where the run is visible); the former "6 at pitch 500" no longer applies; the faceted face (local -Y) must face the path: north cliff origin (x0, 200, 0) yaw 0; south cliff origin (x0+500, -200, 0) yaw 180; inner face Y=±200; top Z 600 | the corridor stays **400 wide**; the cliff back sits inside the old unreachable ground band |
 | `Boulder_0..2` | library rocks (`Rock_Moss_Set_01` etc.) or `Rubble_Chunk_L` plus the heap | 3, same positions | keep at least 200 free path width (the greybox `Boulder_2` leaves about 260); pure dressing |
 | `Ground_0` (playable zone) | `Floor_Slab_1000x1000x40` | Z=-40; Approach: X -3000..0 × Y -500..500 (3 slabs, beyond the cliff bases); Courtyard: X 0..6000 × Y -3000..3000 (6 × 6 = 36, the outer ring is hidden behind the walls); the greybox slab stays as an underlay | top Z=0 so navmesh, key height and doors do not shift |
 | `GateWall_S/N` + `GateLintel` | `Gate_Arch_1200x300x800` + west curtain of `Wall_*x60x800` | gate: yaw 90, origin (300, -600, 0); curtain (yaw 90, origin X=300, Y 600..2500 and -2500..-600): 4×Wall_400 + 3×Wall_100 per side; buttresses at the gate shoulders on the courtyard side | opening **≥ 400×300** (kit 400×300 clear, higher arch), `Trig_CourtyardEntered` (X100..200) and `Crate_Note_Gatehouse` unchanged; the new gate is 1200 wide vs the old 5080 wide solid wall: only the unreachable rear changes |
@@ -208,3 +210,10 @@ Coordinates cm. "Run" lists the instances in X or Y order; **all yaws and origin
 6. **Blind lancet windows:** promoted to P0 (the flat chapel front is otherwise a weak spot). P0 = 26 pieces.
 7. **Wall_400x60x800_B:** keep (repetition, R-26).
 8. **Vertex colours:** the R wet / G grime / B wear contract is adopted. Kit meshes export vertex colours (default white = no effect); `M_LB_Surface` reads them in Phase 11.
+
+## 9. Cliff run update (P7-002c)
+The first cliff slabs had a displaced front but flat, banded-looking ends and top. They are rebuilt so every visible face is rock:
+- **Faces:** front (-Y), top and both ends are Voronoi-faceted rock (large tall cleavage planes plus medium blocks plus fine noise). The skyline varies about 520–600 with a mid-height ledge that creates an overhang. The back (+Y) and bottom stay flat and use slot 2 (hidden against the terrain). All visible faces use slot 0 (`MI_Kit_Cliff`).
+- **Overlap rule:** each end plane is rough and set back 0–30 cm, so adjacent slabs **must overlap by 60 cm: pitch 440 for a 500 slab** (gaps are impossible because the two recesses sum to at most 60). The recommended Approach build (X -3000..0, 3000 long) is therefore **7 slabs per side at pitch 440 (origins -3000, -2560, ...)** plus a `Cliff_End_200x300x600` at whichever end is visible, instead of 6 slabs at pitch 500. Alternate A/B (and mirror by yaw 180); use the 300 tall low slab to step down. The corridor stays 400 wide (north origin Y +200, yaw 0; south origin Y -200, yaw 180 and X at the max-X end of the piece).
+- **End piece:** joining side at local X=0, nose at X=200. With yaw 180 the nose points to -X, so the two sides of a path end at opposite ends unless the south side is built from its far end; that is fine for a path that is dressed with boulders at both ends.
+- **Collision:** per piece 24–40 convex hulls (8 X sections x 3–5 height bands, 16 cm overlap), built from the displaced surface. Measured against the visual (ray casts): the collision is in front of the visual by a median of 6–12 cm and 33–45 cm at the 95th percentile (rare deep cracks up to about 190 cm, mostly in the end 40 cm which overlaps the neighbour); no gaps. The nose of the end piece is rounder (median 20 cm, p95 about 100 cm): keep boulders or a closing slab in front of it.

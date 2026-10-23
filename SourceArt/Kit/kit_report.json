@@ -28,7 +28,7 @@
    2
   ],
   "ucx": 1,
-  "seconds": 0.9
+  "seconds": 0.7
  },
  {
   "name": "SM_LB_Kit_Wall_400x60x800_B",
@@ -59,7 +59,7 @@
    2
   ],
   "ucx": 1,
-  "seconds": 0.5
+  "seconds": 0.4
  },
  {
   "name": "SM_LB_Kit_Wall_100x60x800",
@@ -181,7 +181,7 @@
    2
   ],
   "ucx": 3,
-  "seconds": 1.1
+  "seconds": 1.0
  },
  {
   "name": "SM_LB_Kit_Wall_400x60x400_Broken",
@@ -212,7 +212,7 @@
    2
   ],
   "ucx": 3,
-  "seconds": 0.8
+  "seconds": 0.7
  },
  {
   "name": "SM_LB_Kit_Wall_Corner_60x60x800",
@@ -272,7 +272,7 @@
    2
   ],
   "ucx": 2,
-  "seconds": 0.3
+  "seconds": 0.2
  },
  {
   "name": "SM_LB_Kit_Doorway_Pointed_400x60x400",
@@ -303,7 +303,7 @@
    2
   ],
   "ucx": 3,
-  "seconds": 4.1
+  "seconds": 4.0
  },
  {
   "name": "SM_LB_Kit_Gate_Arch_1200x300x800",
@@ -334,7 +334,7 @@
    2
   ],
   "ucx": 3,
-  "seconds": 11.5
+  "seconds": 10.2
  },
  {
   "name": "SM_LB_Kit_Window_Lancet_200x60x400_Blind",
@@ -654,13 +654,13 @@
    300.0,
    600.0
   ],
-  "tris": 4320,
+  "tris": 3376,
   "slots_used": [
    0,
    2
   ],
-  "ucx": 2,
-  "seconds": 0.0
+  "ucx": 40,
+  "seconds": 0.1
  },
  {
   "name": "SM_LB_Kit_Cliff_Slab_500x300x600_B",
@@ -684,13 +684,73 @@
    300.0,
    600.0
   ],
-  "tris": 4320,
+  "tris": 3376,
   "slots_used": [
    0,
    2
   ],
-  "ucx": 2,
-  "seconds": 0.0
+  "ucx": 40,
+  "seconds": 0.1
+ },
+ {
+  "name": "SM_LB_Kit_Cliff_Slab_500x300x300",
+  "min": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "max": [
+   500.0,
+   300.0,
+   300.0
+  ],
+  "dims": [
+   500.0,
+   300.0,
+   300.0
+  ],
+  "spec": [
+   500.0,
+   300.0,
+   300.0
+  ],
+  "tris": 1996,
+  "slots_used": [
+   0,
+   2
+  ],
+  "ucx": 24,
+  "seconds": 0.1
+ },
+ {
+  "name": "SM_LB_Kit_Cliff_End_200x300x600",
+  "min": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "max": [
+   200.0,
+   300.0,
+   600.0
+  ],
+  "dims": [
+   200.0,
+   300.0,
+   600.0
+  ],
+  "spec": [
+   200.0,
+   300.0,
+   600.0
+  ],
+  "tris": 2116,
+  "slots_used": [
+   0,
+   2
+  ],
+  "ucx": 40,
+  "seconds": 0.1
  },
  {
   "name": "SM_LB_Kit_Well_Wall_450x50x250",
@@ -720,7 +780,7 @@
    2
   ],
   "ucx": 3,
-  "seconds": 0.6
+  "seconds": 0.4
  },
  {
   "name": "SM_LB_Kit_Well_Wall_350x50x250",

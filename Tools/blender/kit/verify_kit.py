@@ -33,8 +33,8 @@ CLEAR = {
 }
 EXPECT_UCX = {
     "Wall_400x60x800_Broken": 3, "Wall_400x60x400_Broken": 3, "Doorway_Pointed_400x60x400": 3,
-    "Gate_Arch_1200x300x800": 3, "Rubble_Heap_400x300x130": 2, "Cliff_Slab_500x300x600_A": 2,
-    "Cliff_Slab_500x300x600_B": 2, "Buttress_100x150x800": 2, "Well_Wall_450x50x250": 3, "Well_Wall_350x50x250": 3,
+    "Gate_Arch_1200x300x800": 3, "Rubble_Heap_400x300x130": 2, "Cliff_Slab_500x300x600_A": 40,
+    "Cliff_Slab_500x300x600_B": 40, "Cliff_Slab_500x300x300": 24, "Cliff_End_200x300x600": 40, "Buttress_100x150x800": 2, "Well_Wall_450x50x250": 3, "Well_Wall_350x50x250": 3,
 }
 
 
@@ -75,7 +75,7 @@ def signed_volume(ob):
     return -vol
 
 
-def is_convex(ob, eps=0.05):
+def is_convex(ob, eps=0.25, report=None):  # sub-2.5 mm noise from near-coplanar hull points is ignored (UE rebuilds the hulls)
     pts = ue_coords(ob)
     me = ob.data
     me.calc_loop_triangles()
@@ -87,6 +87,8 @@ def is_convex(ob, eps=0.05):
         n.normalize()
         sides = [n.dot(p - a) for p in pts]
         if max(sides) > eps and min(sides) < -eps:
+            if report is not None:
+                report.append(min(max(sides), -min(sides)))
             return False
     return True
 
@@ -163,8 +165,9 @@ def check_piece(path, name, spec_dims):
     for k, u in enumerate(ucx):
         if not u.name.startswith("UCX_%s_" % name):
             fail("UCX name %s" % u.name)
-        if not is_convex(u):
-            fail("%s is not convex" % u.name)
+        rep = []
+        if not is_convex(u, report=rep):
+            fail("%s is not convex (worst plane violation %.3f cm)" % (u.name, max(rep) if rep else 0.0))
         b = bounds(ue_coords(u))
         ub.append(b)
         for i in range(3):

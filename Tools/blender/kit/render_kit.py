@@ -25,6 +25,8 @@ VIEWS = [
     ("09_rubble", ["Rubble_"], 30, 30, 1.0, False),
     ("10_cliff_slabs", ["Cliff_Slab"], 24, 16, 1.0, False),
     ("11_piers_trims_floor", ["Pier_", "Trim_Plinth", "Floor_Slab"], 30, 34, 1.0, False),
+    ("13_cliff_run", ["RUN"], 14, 14, 0.95, False),
+    ("14_cliff_run_end", ["RUNEND"], 50, 14, 0.9, False),
     ("12_checker_walls_door", ["Wall_400x60x800_A", "Doorway_Pointed", "Window_Lancet", "Buttress"], 20, 14, 1.0, True),
 ]
 
@@ -114,6 +116,25 @@ def frame(cam, sc, mn, mx, az, el, dist_factor):
     cam.rotation_euler = direction.to_track_quat('-Z', 'Y').to_euler()
 
 
+def build_run(meshes):
+    """Assemble a cliff run (slabs at pitch 440, end piece) for review; returns the visible copies."""
+    byname = {o.name: o for o in meshes}
+    seq = [("Cliff_Slab_500x300x600_A", 0), ("Cliff_Slab_500x300x600_B", 440), ("Cliff_Slab_500x300x300", 880),
+           ("Cliff_Slab_500x300x600_A", 1320), ("Cliff_End_200x300x600", 1760)]
+    out = []
+    for nm, x in seq:
+        src = byname.get(PREFIX + nm)
+        if src is None:
+            continue
+        c = src.copy()
+        c.data = src.data
+        c.location = (x - 4000.0, 9000.0, 0.0)
+        bpy.context.scene.collection.objects.link(c)
+        out.append(c)
+    bpy.context.view_layer.update()
+    return out
+
+
 def main():
     blend, out, only = parse_args()
     os.makedirs(out, exist_ok=True)
@@ -136,7 +157,13 @@ def main():
     for name, subs, az, el, df, checker in VIEWS:
         if only and not any(o in name for o in only):
             continue
-        sel = meshes if subs == ["*"] else [o for o in meshes if any(s in o.name for s in subs)]
+        if subs in (["RUN"], ["RUNEND"]):
+            run = build_run(meshes)
+            sel = run if subs == ["RUN"] else run[-2:]
+            for o in meshes:
+                o.hide_render = o not in run
+        else:
+            sel = meshes if subs == ["*"] else [o for o in meshes if any(s in o.name for s in subs)]
         if not sel:
             print("no objects for", name)
             continue
@@ -145,7 +172,7 @@ def main():
                 o.hide_render = (o not in sel) and not o.name.startswith("UCX_")
                 if o.name.startswith("UCX_"):
                     o.hide_render = True
-        if subs != ["*"]:
+        if subs not in (["*"], ["RUN"], ["RUNEND"]):
             # compact row so the camera can frame just these pieces
             cur = 0.0
             for o in sorted(sel, key=lambda o: o.name):

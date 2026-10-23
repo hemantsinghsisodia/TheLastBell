@@ -217,7 +217,7 @@ def combine(*bms, mat=None):
 # ----------------------------------------------------------------------------------------------
 # lattice box surface (used by cliffs): closed box surface on a lattice, vertices shared across faces
 # ----------------------------------------------------------------------------------------------
-def lattice_box(L, T, H, nx, ny, nz, mat=SLOT_MASONRY):
+def lattice_box(L, T, H, nx, ny, nz, mat=SLOT_MASONRY, flat_back_bottom=False):
     b = bmesh.new()
     vd = {}
 
@@ -235,11 +235,23 @@ def lattice_box(L, T, H, nx, ny, nz, mat=SLOT_MASONRY):
     for i in range(nx):
         for k in range(nz):
             quad(vert(i, 0, k), vert(i + 1, 0, k), vert(i + 1, 0, k + 1), vert(i, 0, k + 1))
-            quad(vert(i, ny, k), vert(i + 1, ny, k), vert(i + 1, ny, k + 1), vert(i, ny, k + 1))
+            if not flat_back_bottom:
+                quad(vert(i, ny, k), vert(i + 1, ny, k), vert(i + 1, ny, k + 1), vert(i, ny, k + 1))
     for i in range(nx):
         for j in range(ny):
-            quad(vert(i, j, 0), vert(i + 1, j, 0), vert(i + 1, j + 1, 0), vert(i, j + 1, 0))
+            if not flat_back_bottom:
+                quad(vert(i, j, 0), vert(i + 1, j, 0), vert(i + 1, j + 1, 0), vert(i, j + 1, 0))
             quad(vert(i, j, nz), vert(i + 1, j, nz), vert(i + 1, j + 1, nz), vert(i, j + 1, nz))
+    if flat_back_bottom:
+        # back (j = ny) and bottom (k = 0) are single n-gons on the perimeter loops (flat, hidden)
+        loop = ([vert(i, ny, 0) for i in range(nx)] + [vert(nx, ny, k) for k in range(nz)]
+                + [vert(i, ny, nz) for i in range(nx, 0, -1)] + [vert(0, ny, k) for k in range(nz, 0, -1)])
+        f = b.faces.new(loop)
+        f.material_index = mat
+        loop = ([vert(i, 0, 0) for i in range(nx)] + [vert(nx, j, 0) for j in range(ny)]
+                + [vert(i, ny, 0) for i in range(nx, 0, -1)] + [vert(0, j, 0) for j in range(ny, 0, -1)])
+        f = b.faces.new(loop)
+        f.material_index = mat
     for j in range(ny):
         for k in range(nz):
             quad(vert(0, j, k), vert(0, j + 1, k), vert(0, j + 1, k + 1), vert(0, j, k + 1))

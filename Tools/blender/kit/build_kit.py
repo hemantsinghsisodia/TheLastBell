@@ -510,57 +510,115 @@ def build_heap(name, seed=53):
     return Piece(name, out, ucx, (400, 300, 130))
 
 
-def build_cliff(name, seed, variant):
-    L, T, H = 500.0, 300.0, 600.0
-    nx, ny, nz = 25, 6, 30
-    b = K.lattice_box(L, T, H, nx, ny, nz, S0)
-    rng = random.Random(seed)
-    fx = 150.0 if variant == 'A' else 120.0
-    fz = 190.0 if variant == 'A' else 160.0
-    amp = 48.0
-
-    def edge(x):
-        return K.smoothstep(0.0, 70.0, x) * K.smoothstep(0.0, 70.0, L - x)
-
-    cell = 105.0 if variant == 'A' else 85.0
+def facet_field(rng, u0, u1, v0, v1, cell, amp, gu, gv, aniso=1.0):
+    """Voronoi-plane field f(u, v): one randomly tilted plane per cell -> crisp facets and creases."""
     seeds = []
-    for i in range(-1, int(L / cell) + 3):
-        for j in range(-1, int(H / cell) + 3):
-            cx, cz = (i + rng.uniform(0.15, 0.85)) * cell, (j + rng.uniform(0.15, 0.85)) * cell
-            seeds.append((cx, cz, rng.uniform(-0.5, 0.5) * amp, rng.uniform(-0.35, 0.35), rng.uniform(-0.45, 0.45)))
+    for i in range(-1, int((u1 - u0) / cell) + 3):
+        for j in range(-1, int((v1 - v0) / cell) + 3):
+            seeds.append((u0 + (i + rng.uniform(0.15, 0.85)) * cell, v0 + (j + rng.uniform(0.15, 0.85)) * cell,
+                          rng.uniform(-0.5, 0.5) * amp, rng.uniform(-gu, gu), rng.uniform(-gv, gv)))
+
+    def f(u, v):
+        s = min(seeds, key=lambda t: (t[0] - u) ** 2 + ((t[1] - v) * aniso) ** 2)
+        return s[2] + s[3] * (u - s[0]) + s[4] * (v - s[1])
+
+    return f
+
+
+def build_cliff(name, seed, variant, L=500.0, H=600.0, end=False):
+    """Rock cliff piece.  Front (y=0, the path side), top and both ends are faceted/displaced rock; the back (y=T) and
+    the bottom are flat.  End planes are rough and set back 0..30 cm (the nose of an end piece up to ~70 cm), so slabs
+    in a run must overlap by ~60 cm (pitch 440 for a 500 slab) -- see MODULAR_KIT.md."""
+    T = 300.0
+    nx, ny, nz = int(L / 20), 10, int(H / 20)
+    b = K.lattice_box(L, T, H, nx, ny, nz, S0, flat_back_bottom=True)
+    rng = random.Random(seed)
+    cell = (95.0, 80.0, 70.0)[('A', 'B', 'C').index(variant)]
+    ph = rng.uniform(0, 6.28)
+    ff1 = facet_field(rng, 0, L, 0, H, cell * 2.0, 46.0, 0.30, 0.40, 0.6)      # large tall cleavage planes
+    ff2 = facet_field(rng, 0, L, 0, H, cell * 0.95, 20.0, 0.30, 0.40, 0.75)    # medium blocks
+    ff = lambda x, z: ff1(x, z) + ff2(x, z) + 7.0 * (K.vnoise(x / 11.0, z / 11.0, seed + 21) - 0.5)
+    dmax = 80.0 if H > 400 else 55.0
+    ft = facet_field(rng, 0, L, 0, T, cell * 1.1, dmax * 1.1, 0.30, 0.25)
+    fe_a = facet_field(rng, 0, T, 0, H, 120.0, 30.0, 0.3, 0.3, 0.6)
+    fe_b = facet_field(rng, 0, T, 0, H, 120.0, 30.0, 0.3, 0.3, 0.6)
+    fe = lambda y, z: fe_a(y, z) + 10.0 * (K.vnoise(y / 12.0, z / 12.0, seed + 31) - 0.5)
+    fe2 = lambda y, z: fe_b(y, z) + 10.0 * (K.vnoise(y / 12.0, z / 12.0, seed + 33) - 0.5)
+
+    def nose(x):
+        return K.smoothstep(0.3, 1.0, x / L) if end else 0.0
 
     def recess(x, z):
-        # one tilted plane per Voronoi cell -> crisp facets and creases
-        sx, sz, d, gx, gz = min(seeds, key=lambda t: (t[0] - x) ** 2 + (t[1] - z) ** 2)
-        v = amp * 0.55 + d + gx * (x - sx) + gz * (z - sz)
-        v += 7.0 * (0.5 + 0.5 * math.sin(z / 52.0 + K.vnoise(x / 140.0, 1.0, seed + 9) * 4.0))
-        v = max(0.0, v)
-        return v * edge(x) * K.smoothstep(0.0, 45.0, z)
+        v = 14.0 + ff(x, z)
+        v += 22.0 * math.exp(-((z - 0.42 * H) / (0.22 * H)) ** 2)            # ledge: mid heights set back -> overhang above
+        v += 5.0 * math.sin(z / 47.0 + ph + K.vnoise(x / 130.0, 1.0, seed + 9) * 4.0)
+        v += 150.0 * nose(x) ** 1.5
+        return max(0.0, v) * K.smoothstep(0.0, 40.0, z)
 
     def top_drop(x, y):
-        n = K.fbm(x / 90.0 + 7.7, y / 100.0 + 2.2, seed + 3, 3)
-        d = 135.0 * n * n + 25.0 * K.vnoise(x / 25.0, y / 25.0, seed + 4)
-        e = edge(x)
-        return 40.0 + (d - 40.0) * e
+        v = dmax * 0.42 + ft(x, y)
+        v += (240.0 if H > 400 else 130.0) * nose(x) ** 1.2
+        return max(0.0, v)
+
+    def end0(y, z):
+        return max(0.0, min(30.0, 12.0 + fe(y, z)))
+
+    def end1(y, z):
+        e = max(0.0, min(30.0, 12.0 + fe2(y, z)))
+        if end:
+            e = 22.0 + 50.0 * (1.0 - y / T) ** 1.4 + 1.1 * fe2(y, z)
+        return max(0.0, e)
 
     for v in b.verts:
         x, y, z = v.co.x, v.co.y, v.co.z
-        if y < 0.01:
-            x2 = x + (rng.uniform(-5, 5) if 1 < x < L - 1 else 0.0)
-            z2 = z + (rng.uniform(-5, 5) if 1 < z < H - 1 else 0.0)
-            v.co.x, v.co.z = x2, z2
-            v.co.y = recess(x2, z2)
-        if z > H - 0.01:
-            v.co.z = H - top_drop(v.co.x, y)
+        on_front, on_top = y < 0.01, z > H - 0.01
+        on0, on1 = x < 0.01, x > L - 0.01
+        nx_, nz_ = x, z
+        if on_front:
+            nx_ = x + (rng.uniform(-5, 5) if (1 < x < L - 1) else 0.0)
+            nz_ = z + (rng.uniform(-5, 5) if (1 < z < H - 1) else 0.0)
+            v.co.y = recess(nx_, nz_)
+            v.co.z = nz_
+        if on_top:
+            v.co.z = H - top_drop(x, y)
+        if on0:
+            v.co.x = end0(y, z)
+        elif on1:
+            v.co.x = L - end1(y, z)
+        elif on_front:
+            v.co.x = nx_
+    # exact envelope: x in [0, L], top reaches H, y in [0, T]
+    xs = [v.co.x for v in b.verts]
+    x0, x1 = min(xs), max(xs)
+    for v in b.verts:
+        v.co.x = (v.co.x - x0) * L / (x1 - x0)
     zmax = max(v.co.z for v in b.verts)
-    if zmax < H:
-        cand = [v for v in b.verts if v.co.z > H - 160.0 and 40 < v.co.x < L - 40 and v.co.y > 60]
-        max(cand, key=lambda v: v.co.z).co.z = H
+    for v in b.verts:
+        if v.co.z > H - 1e-3 or v.co.z > zmax - 1e-3:
+            pass
+    if zmax < H - 1e-4:
+        top = [v for v in b.verts if v.co.z > zmax - 1e-4]
+        for v in top:
+            v.co.z += H - zmax
+    pts_by = [v.co.copy() for v in b.verts]
     K.bmesh.ops.triangulate(b, faces=b.faces[:], quad_method='SHORT_EDGE')
     b.normal_update()
     for f in b.faces:
-        f.material_index = S0 if f.normal.y < -0.35 else S2
-    pc = Piece(name, b, [K.box_hull(0, 250, 0, T, 0, 520), K.box_hull(250, L, 0, T, 0, 520)], (L, T, H))
+        n = f.normal
+        f.material_index = S2 if (n.y > 0.9 or n.z < -0.9) else S0
+    # collision: one convex hull per X section, built from the displaced surface points (front/top/ends)
+    secs = 8
+    bands = 5 if H > 400 else 3
+    ucx = []
+    for s_ in range(secs):
+        a, c = L * s_ / secs, L * (s_ + 1) / secs
+        for k_ in range(bands):
+            z0, z1 = H * k_ / bands, H * (k_ + 1) / bands
+            pts = [p for p in pts_by if a - 16 <= p.x <= c + 16 and z0 - 16 <= p.z <= z1 + 16]
+            if len(pts) < 8:
+                continue
+            ucx.append(K.hull_from_points([Vector(p) for p in pts], S2, merge_coplanar=False))
+    pc = Piece(name, b, ucx, (L, T, H))
     pc.smooth = 8.0
     return pc
 
@@ -683,6 +741,8 @@ def table():
         ("Rubble_Heap_400x300x130", lambda: build_heap(PREFIX + "Rubble_Heap_400x300x130"), (400, 300, 130)),
         ("Cliff_Slab_500x300x600_A", lambda: build_cliff(PREFIX + "Cliff_Slab_500x300x600_A", 211, 'A'), (500, 300, 600)),
         ("Cliff_Slab_500x300x600_B", lambda: build_cliff(PREFIX + "Cliff_Slab_500x300x600_B", 317, 'B'), (500, 300, 600)),
+        ("Cliff_Slab_500x300x300", lambda: build_cliff(PREFIX + "Cliff_Slab_500x300x300", 419, 'C', 500.0, 300.0), (500, 300, 300)),
+        ("Cliff_End_200x300x600", lambda: build_cliff(PREFIX + "Cliff_End_200x300x600", 523, 'B', 200.0, 600.0, True), (200, 300, 600)),
         W("Well_Wall_450x50x250", 450, 250, 131, T=50.0, cap=0, broken=dict(zmin=110, boxes=3, tooth_at=1, end_from=0.35, seg=(30, 75))),
         W("Well_Wall_350x50x250", 350, 250, 137, T=50.0, cap=0, broken=dict(zmin=100, boxes=3, tooth_at=3, end_from=0.35, seg=(30, 70))),
         W("Well_Wall_100x50x250", 100, 250, 149, T=50.0, cap=0, broken=dict(zmin=120, boxes=1, tooth_at=0, end_from=0.4, seg=(25, 50))),
