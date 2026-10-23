@@ -1456,6 +1456,23 @@ bool FLBPuzzleBlueprintsTest::RunTest(const FString& Parameters)
 		Test->TestTrue(TEXT("Solved tag is present again for the save"), HasState(S->Solved));
 	});
 
+	// The lock follows world state through the Blueprint's own OnStateChanged binding: remove the tag -> unlocked, add it -> locked.
+	AddCheck(*R, TEXT("Remove the lock tag"), [S](FPuzzleCtx& C) { ULBWorldStateSubsystem::Get(C.W)->RemoveState(S->LockTag); });
+	AddSettle(*R, TEXT("Let the unlock apply"), 3);
+	AddCheck(*R, TEXT("Lever unlocked by the event, then relock"), [S, Test](FPuzzleCtx& C)
+	{
+		Test->TestTrue(TEXT("Lock tag removed: interactable enabled again (event-driven)"), S->LeverInteract()->bEnabled);
+		Test->TestFalse(TEXT("Lock tag removed: dial unlocked (event-driven)"), S->Dial()->bLocked);
+		ULBWorldStateSubsystem::Get(C.W)->AddState(S->LockTag);
+	});
+	AddSettle(*R, TEXT("Let the relock apply"), 3);
+	AddCheck(*R, TEXT("Lever locked again by the event"), [S, Test](FPuzzleCtx& C)
+	{
+		Test->TestFalse(TEXT("Lock tag re-added: interactable disabled (event-driven)"), S->LeverInteract()->bEnabled);
+		Test->TestTrue(TEXT("Lock tag re-added: dial locked (event-driven)"), S->Dial()->bLocked);
+		Test->TestTrue(TEXT("Solved tag is present again for the save"), HasState(S->Solved));
+	});
+
 	// ---- 3. bell ------------------------------------------------------------------------------------------------------
 	AddCheck(*R, TEXT("Spawn a BP_SmallBell"), [S, Test, &R = *R](FPuzzleCtx& C)
 	{
