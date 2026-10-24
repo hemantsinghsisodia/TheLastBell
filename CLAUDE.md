@@ -11,6 +11,7 @@ First-person atmospheric survival horror, UE 5.8.3, C++ + Blueprint hybrid. 20â€
 ## Where things are
 - Design docs: `Docs/` (TECHNICAL_DESIGN is the architecture source of truth; DECISIONS and RISKS are logs).
 - Agents: `.claude/agents/`. The lead (Opus) plans, delegates, reviews and approves; Sonnet agents implement.
+- Model/effort rule (owner, D-048): the lead plans in Opus 5.5 at xhigh effort; every implementation agent is spawned with `model: "sonnet", effort: "high"`. Plans live in `Docs/plans/` and are explicit enough that an implementer never guesses (exact assets, paths, values, coordinates, acceptance checks).
 - C++: `Source/LastBell/` (prefix `LB`). Content: `Content/LastBell/` â€” never dump assets in the Content root.
 - Raw downloads: `ExternalAssets/Incoming/` (git-ignored). Every external asset goes in `Docs/ASSET_REGISTRY.md`.
 

@@ -155,3 +155,16 @@ Branch: `claude/phase-07-courtyard`. Scope: the **Approach** path and the **Cour
 | P7-003 | Dress the Approach and Courtyard in `L_Monastery`: replace the greybox primitives with kit pieces at the same footprint; cliff walls from rock materials/meshes; wet flagstone ground; gatehouse, well house (key location), collapsed wall rubble (still blocks the direct line), puddles, props; keep every gameplay actor and the navmesh valid | environment-designer | P7-002 | HIGH |
 | P7-004 | Minimum courtyard look for review: sky sphere (D-046), moon, height fog, warm accent at the gatehouse; a light pass only (Phase 14 owns final lighting); review screenshots from fixed viewpoints | environment-designer | P7-003 | MED |
 | P7-QA | RouteBot + WalkPath + Warden reachability green on `L_Monastery`; no new log errors; collision walk-test of the courtyard; texture/triangle sanity; owner playtest of the courtyard | qa-reviewer + owner | all | â€” |
+
+## Phase 7 fix set 2 — Courtyard polish (P7-FIX2)
+Branch `claude/p7-courtyard-polish`. Full, explicit spec: `Docs/plans/P7_FIX2_COURTYARD_POLISH.md` (owner-approved 2026-10-24). Decisions D-048..D-053.
+
+| Task | Objective | Owner | Depends on |
+|---|---|---|---|
+| P7F-0 | Branch, plan, decisions, model/effort rule | lead | — |
+| P7F-1 | 16 Poly Haven CC0 models + 2 ambientCG decals downloaded (glTF 2K), registry rows | asset-curator | P7F-0 |
+| P7F-2 | Blender: CC0 conversion (bottom-centre pivots, UCX) + procedural key, ledge, gravestones, crosses, mound, hand-cart, fire pit; verify + renders | technical-artist | P7F-1 (2a), — (2b) |
+| P7F-3 | Puddle + Desaturation layers in M_LB_Surface, M_LB_Foliage, M_LB_Mist, MIs, imports, Fab relocation, key child BP | technical-artist [EDITOR] | P7F-2, owner Fab steps |
+| P7F-4 | L_Monastery: remove discs, puddled floors, new key + ledge, work area, graveyard, cart of the dead, overgrowth, decals, 3 courtyard WalkPaths | environment-designer [EDITOR] | P7F-3 |
+| P7F-5 | Moon/fill/skylight fixes, height + volumetric fog, Local Fog Volumes, fog sheets, Niagara smoke wisp, exposure | lighting-vfx [EDITOR] | P7F-4 |
+| P7F-6 | 78/78 + new WalkPaths, lane check, 12 clean captures, owner playtest + stat gpu, docs | qa-reviewer + lead + owner | all |
