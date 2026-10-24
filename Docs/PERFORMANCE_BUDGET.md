@@ -33,4 +33,7 @@ VRAM is 5 GB on the dev floor, leaving headroom out of 6 GB: texture streaming p
 At each art, VFX and AI milestone: `stat unit`, `stat gpu`, `profilegpu`, and an Insights trace (`-trace=default,gpu`) at the fixed camera bookmarks named in TEST_PLAN.md. Results are logged in this file under "Measurements".
 
 ## Measurements
-_None yet (Phase 0)._
+| Date | Build / where | GPU, scalability, res | GPU total | Key passes | Notes |
+|---|---|---|---|---|---|
+| 2026-10-25 | P7-FIX2 before trim, PIE editor viewport | RTX 4050 6 GB, Epic, ~1536×864 | **41.1 ms** graphics queue | VolumetricFog 6.17, RenderDeferredLighting 11.87, Lights 3.86, LumenReflections 3.71, TSR 5.60, Post 6.68; compute: LumenScreenProbeGather 12.8, LumenSceneLighting 6.7 | Over budget → P7F-7 trim (D-054) |
+| 2026-10-25 | P7-FIX2 after trim (39dfcef + DefaultScalability.ini), PIE new window, courtyard | RTX 4050 6 GB, **High**, 1664×846 (87 % of the window) | **11.38 ms** GPU (graphics queue 11.32) | VolumetricFog 0.26, Fog 0.21, Translucency 0.08, LocalFogVolumes 0.03 (fog+translucency+Niagara ≈ 0.6 ms ≤ 2), RenderDeferredLighting 3.07, Lights 1.35, Post 2.54, TSR 1.84, LumenReflections 1.02; compute: LumenScreenProbeGather 2.11, LumenSceneLighting 0.71 | **Within the dev-floor budget (≤ 16.6 ms)**. VRAM 3.44 / 5.03 GB. Frame 16.67 ms (60 fps cap). Game thread 9.27 ms in PIE (editor + AI logging on). Epic scalability not re-measured after the trim. |
