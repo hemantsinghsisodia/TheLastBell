@@ -40,6 +40,26 @@ Commit ONLY to the currently checked-out `claude/*` branch. Check `git branch --
 - BoxExtent: set one axis per call and read it back.
 - A headless test run (UnrealEditor-Cmd) holds .umap/.uasset files open, so saving during one fails with "MoveFile". Save first.
 - Never check out older commits while the editor is open.
+- `ActorTools.set_actor_transform`: always pass location AND rotation AND scale. A partial xform silently resets the missing parts to identity/zero.
+- Component edits on placed **Blueprint instances** often don't persist (the call returns True, the read-back or a reload shows the old value). Put per-instance differences in a **child Blueprint** instead (e.g. `BP_TagInteractable_ChapelKey`); if inherited components can't be overridden in the child's defaults through the tools, set them in the child's construction script.
+- Collision: `collisionEnabled`/`objectType` and per-channel responses (e.g. Interaction = Ignore) don't persist via `set_properties`; `collisionProfileName` does (e.g. `NoCollision`, `BlockAll`).
+- Editor deletes can leave the file on disk (seen with a demo map, its BuiltData and an unreferenced texture). Do not delete `.uasset`/`.umap` by hand; list leftovers and ask the lead.
+
+## Importing meshes (FBX)
+- The import options live on the CDO `/Script/UnrealEd.Default__FbxStaticMeshImportData` and are **in memory only**: in every fresh editor session set `vertexColorImportOption = Replace` and `bBuildNanite = true` (false for small/thin meshes) before `StaticMeshTools.import_file` (`import_materials=false, import_textures=false, combine_meshes=true`). `bAutoGenerateCollision=false` keeps only the `UCX_` hulls.
+- UE drops material slots no face uses, so assign materials by the slot names that exist. "No smoothing group information" is expected (custom normals). `get_triangle_count` returns the Nanite fallback mesh, not the full mesh.
+- Our Blender exports (Tools/blender/kit, Tools/blender/props) already mirror Y for UE; pivots are bottom-left-back (kit) or bottom-centre (props).
+
+## Captures
+- `CaptureViewport`: the first frame after `SetCameraTransform` can have stale occlusion; capture twice per pose and keep the second. The connection often resets ("forcibly closed") — retry. The viewport is portrait (761×862).
+- Editor helper icons/volume wireframes show in captures; either hide every billboard/sprite/arrow/box/sphere/capsule/brush component, capture, then restore (never save while hidden), or capture during PIE Simulate (no helpers).
+- Editor-viewport captures do NOT tick particles or panning materials: capture FX (Niagara, Cascade, fog sheets) in **PIE Simulate**.
+- `CaptureAssetImage` returns a placeholder until shaders finish compiling; wait and retry.
+
+## FX and fog
+- Niagara: `NiagaraToolset_System.CreateNiagaraSystem` needs a template system (`/Niagara/DefaultAssets/DefaultSystem`; it contains its own "Fountain" emitter — remove it), then `AddEmitter` from `/Niagara/DefaultAssets/Templates/Emitters/*`. Place systems with `add_to_scene_from_asset` (adding a NiagaraActor by class and setting its Asset didn't simulate). Check `GetSystemCompileState` and `GetStackIssues`.
+- A **Local Fog Volume is a sphere**: radius = 500 cm × the largest axis scale; non-uniform scale is ignored; `get_actor_bounds` ignores scale. HeightFogFalloff is relative to that radius.
+- Engine fog sheets: `/Engine/EngineVolumetrics/Fogsheet/Mesh/S_EV_FogSheet_01` (flat 256×256 plane); stand it up with pitch 90.
 
 ## Running tests (a separate process; fine with the editor open)
 ```
