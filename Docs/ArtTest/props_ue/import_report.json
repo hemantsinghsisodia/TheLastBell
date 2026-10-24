@@ -1,0 +1,2000 @@
+[
+ {
+  "mesh": "SM_LB_Prop_Key_Chapel",
+  "path": "/Game/LastBell/Environments/Props/Procedural/SM_LB_Prop_Key_Chapel",
+  "dims": [
+   15.6,
+   5.2,
+   1.48
+  ],
+  "min": [
+   -7.8,
+   -2.6,
+   0
+  ],
+  "max": [
+   7.8,
+   2.6,
+   1.48
+  ],
+  "expected": [
+   15.6,
+   5.2,
+   1.48
+  ],
+  "dims_ok": true,
+  "slots": [
+   "MAT_Iron"
+  ],
+  "tris": 1522,
+  "nanite": false,
+  "lods": 1,
+  "collision_shapes": 1,
+  "expected_ucx": 1,
+  "ucx_ok": true,
+  "source_tris": 1554
+ },
+ {
+  "mesh": "SM_LB_Prop_KeyLedge_50x50x70",
+  "path": "/Game/LastBell/Environments/Props/Procedural/SM_LB_Prop_KeyLedge_50x50x70",
+  "dims": [
+   54,
+   54,
+   70
+  ],
+  "min": [
+   -27,
+   -27,
+   0
+  ],
+  "max": [
+   27,
+   27,
+   70
+  ],
+  "expected": [
+   54.0,
+   54.0,
+   70.0
+  ],
+  "dims_ok": true,
+  "slots": [
+   "MAT_Trim"
+  ],
+  "tris": 1238,
+  "nanite": true,
+  "lods": 1,
+  "collision_shapes": 1,
+  "expected_ucx": 1,
+  "ucx_ok": true,
+  "source_tris": 21984
+ },
+ {
+  "mesh": "SM_LB_Prop_Gravestone_A",
+  "path": "/Game/LastBell/Environments/Props/Procedural/SM_LB_Prop_Gravestone_A",
+  "dims": [
+   60,
+   14,
+   95
+  ],
+  "min": [
+   -30,
+   -7,
+   0
+  ],
+  "max": [
+   30,
+   7,
+   95
+  ],
+  "expected": [
+   60.0,
+   14.0,
+   95.0
+  ],
+  "dims_ok": true,
+  "slots": [
+   "MAT_Stone"
+  ],
+  "tris": 608,
+  "nanite": true,
+  "lods": 1,
+  "collision_shapes": 1,
+  "expected_ucx": 1,
+  "ucx_ok": true,
+  "source_tris": 9654
+ },
+ {
+  "mesh": "SM_LB_Prop_Gravestone_B",
+  "path": "/Game/LastBell/Environments/Props/Procedural/SM_LB_Prop_Gravestone_B",
+  "dims": [
+   55.0,
+   14,
+   85
+  ],
+  "min": [
+   -27.5,
+   -7,
+   0
+  ],
+  "max": [
+   27.5,
+   7,
+   85
+  ],
+  "expected": [
+   55.0,
+   14.0,
+   85.0
+  ],
+  "dims_ok": true,
+  "slots": [
+   "MAT_Stone"
+  ],
+  "tris": 682,
+  "nanite": true,
+  "lods": 1,
+  "collision_shapes": 1,
+  "expected_ucx": 1,
+  "ucx_ok": true,
+  "source_tris": 13892
+ },
+ {
+  "mesh": "SM_LB_Prop_Gravestone_C",
+  "path": "/Game/LastBell/Environments/Props/Procedural/SM_LB_Prop_Gravestone_C",
+  "dims": [
+   60,
+   14,
+   45
+  ],
+  "min": [
+   -30,
+   -7,
+   0
+  ],
+  "max": [
+   30,
+   7,
+   45
+  ],
+  "expected": [
+   60.0,
+   14.0,
+   45.0
+  ],
+  "dims_ok": true,
+  "slots": [
+   "MAT_Stone"
+  ],
+  "tris": 756,
+  "nanite": true,
+  "lods": 1,
+  "collision_shapes": 1,
+  "expected_ucx": 1,
+  "ucx_ok": true,
+  "source_tris": 6676
+ },
+ {
+  "mesh": "SM_LB_Prop_Gravestone_C_Frag",
+  "path": "/Game/LastBell/Environments/Props/Procedural/SM_LB_Prop_Gravestone_C_Frag",
+  "dims": [
+   50,
+   14,
+   30
+  ],
+  "min": [
+   -25,
+   -7,
+   0
+  ],
+  "max": [
+   25,
+   7,
+   30
+  ],
+  "expected": [
+   50.0,
+   14.0,
+   30.0
+  ],
+  "dims_ok": true,
+  "slots": [
+   "MAT_Stone"
+  ],
+  "tris": 610,
+  "nanite": true,
+  "lods": 1,
+  "collision_shapes": 1,
+  "expected_ucx": 1,
+  "ucx_ok": true,
+  "source_tris": 2276
+ },
+ {
+  "mesh": "SM_LB_Prop_Gravestone_D",
+  "path": "/Game/LastBell/Environments/Props/Procedural/SM_LB_Prop_Gravestone_D",
+  "dims": [
+   35.0,
+   20,
+   45
+  ],
+  "min": [
+   -17.5,
+   -10,
+   0
+  ],
+  "max": [
+   17.5,
+   10,
+   45
+  ],
+  "expected": [
+   35.0,
+   20.0,
+   45.0
+  ],
+  "dims_ok": true,
+  "slots": [
+   "MAT_Stone"
+  ],
+  "tris": 624,
+  "nanite": true,
+  "lods": 1,
+  "collision_shapes": 1,
+  "expected_ucx": 1,
+  "ucx_ok": true,
+  "source_tris": 2482
+ },
+ {
+  "mesh": "SM_LB_Prop_StoneCross_A",
+  "path": "/Game/LastBell/Environments/Props/Procedural/SM_LB_Prop_StoneCross_A",
+  "dims": [
+   55.0,
+   30,
+   150
+  ],
+  "min": [
+   -27.5,
+   -15,
+   0
+  ],
+  "max": [
+   27.5,
+   15,
+   150
+  ],
+  "expected": [
+   55.0,
+   30.0,
+   150.0
+  ],
+  "dims_ok": true,
+  "slots": [
+   "MAT_Stone"
+  ],
+  "tris": 856,
+  "nanite": true,
+  "lods": 1,
+  "collision_shapes": 3,
+  "expected_ucx": 3,
+  "ucx_ok": true,
+  "source_tris": 16410
+ },
+ {
+  "mesh": "SM_LB_Prop_WoodCross_A",
+  "path": "/Game/LastBell/Environments/Props/Procedural/SM_LB_Prop_WoodCross_A",
+  "dims": [
+   55.0,
+   11.2,
+   120
+  ],
+  "min": [
+   -27.5,
+   -5.6,
+   0
+  ],
+  "max": [
+   27.5,
+   5.6,
+   120
+  ],
+  "expected": [
+   55.0,
+   11.2,
+   120.0
+  ],
+  "dims_ok": true,
+  "slots": [
+   "MAT_Wood",
+   "MAT_Rope"
+  ],
+  "tris": 622,
+  "nanite": true,
+  "lods": 1,
+  "collision_shapes": 2,
+  "expected_ucx": 2,
+  "ucx_ok": true,
+  "source_tris": 2968
+ },
+ {
+  "mesh": "SM_LB_Prop_GraveMound_A",
+  "path": "/Game/LastBell/Environments/Props/Procedural/SM_LB_Prop_GraveMound_A",
+  "dims": [
+   200,
+   90,
+   22
+  ],
+  "min": [
+   -100,
+   -45,
+   0
+  ],
+  "max": [
+   100,
+   45,
+   22
+  ],
+  "expected": [
+   200.0,
+   90.0,
+   22.0
+  ],
+  "dims_ok": true,
+  "slots": [
+   "MAT_Earth"
+  ],
+  "tris": 256,
+  "nanite": true,
+  "lods": 1,
+  "collision_shapes": 0,
+  "expected_ucx": 0,
+  "ucx_ok": true,
+  "source_tris": 1566
+ },
+ {
+  "mesh": "SM_LB_Prop_HandCart_A",
+  "path": "/Game/LastBell/Environments/Props/Procedural/SM_LB_Prop_HandCart_A",
+  "dims": [
+   280,
+   140,
+   100
+  ],
+  "min": [
+   -140,
+   -70,
+   0
+  ],
+  "max": [
+   140,
+   70,
+   100
+  ],
+  "expected": [
+   280.0,
+   140.0,
+   100.0
+  ],
+  "dims_ok": true,
+  "slots": [
+   "MAT_Wood",
+   "MAT_Iron"
+  ],
+  "tris": 1486,
+  "nanite": true,
+  "lods": 1,
+  "collision_shapes": 3,
+  "expected_ucx": 3,
+  "ucx_ok": true,
+  "source_tris": 5436
+ },
+ {
+  "mesh": "SM_LB_Prop_FirePit_A",
+  "path": "/Game/LastBell/Environments/Props/Procedural/SM_LB_Prop_FirePit_A",
+  "dims": [
+   124.85,
+   124.7,
+   31.04
+  ],
+  "min": [
+   -62.43,
+   -62.35,
+   0
+  ],
+  "max": [
+   62.43,
+   62.35,
+   31.04
+  ],
+  "expected": [
+   124.85,
+   124.7,
+   31.04
+  ],
+  "dims_ok": true,
+  "slots": [
+   "MAT_Stone",
+   "MAT_Charred"
+  ],
+  "tris": 3150,
+  "nanite": true,
+  "lods": 1,
+  "collision_shapes": 1,
+  "expected_ucx": 1,
+  "ucx_ok": true,
+  "source_tris": 10412
+ },
+ {
+  "mesh": "SM_LB_CC0_WineBarrel01",
+  "path": "/Game/LastBell/Environments/Props/CC0/WineBarrel01/SM_LB_CC0_WineBarrel01",
+  "dims": [
+   74.19,
+   75.6,
+   87.13
+  ],
+  "min": [
+   -37.1,
+   -37.8,
+   0
+  ],
+  "max": [
+   37.1,
+   37.8,
+   87.13
+  ],
+  "expected": [
+   74.19,
+   75.6,
+   87.13
+  ],
+  "dims_ok": true,
+  "slots": [
+   "wine_barrel_01"
+  ],
+  "tris": 2308,
+  "nanite": true,
+  "lods": 1,
+  "collision_shapes": 1,
+  "expected_ucx": 1,
+  "ucx_ok": true,
+  "source_tris": 10820
+ },
+ {
+  "mesh": "SM_LB_CC0_WoodenBucket01",
+  "path": "/Game/LastBell/Environments/Props/CC0/WoodenBucket01/SM_LB_CC0_WoodenBucket01",
+  "dims": [
+   36.7,
+   34.22,
+   54.99
+  ],
+  "min": [
+   -18.35,
+   -17.11,
+   0
+  ],
+  "max": [
+   18.35,
+   17.11,
+   54.99
+  ],
+  "expected": [
+   36.7,
+   34.22,
+   54.99
+  ],
+  "dims_ok": true,
+  "slots": [
+   "wooden_bucket_01"
+  ],
+  "tris": 1493,
+  "nanite": true,
+  "lods": 1,
+  "collision_shapes": 0,
+  "expected_ucx": 0,
+  "ucx_ok": true,
+  "source_tris": 5116
+ },
+ {
+  "mesh": "SM_LB_CC0_WoodenBucket02",
+  "path": "/Game/LastBell/Environments/Props/CC0/WoodenBucket02/SM_LB_CC0_WoodenBucket02",
+  "dims": [
+   61.53,
+   61.63,
+   35.04
+  ],
+  "min": [
+   -30.77,
+   -30.82,
+   0
+  ],
+  "max": [
+   30.77,
+   30.82,
+   35.04
+  ],
+  "expected": [
+   61.53,
+   61.63,
+   35.04
+  ],
+  "dims_ok": true,
+  "slots": [
+   "wooden_bucket_02"
+  ],
+  "tris": 1444,
+  "nanite": true,
+  "lods": 1,
+  "collision_shapes": 0,
+  "expected_ucx": 0,
+  "ucx_ok": true,
+  "source_tris": 7252
+ },
+ {
+  "mesh": "SM_LB_CC0_WoodenTable02",
+  "path": "/Game/LastBell/Environments/Props/CC0/WoodenTable02/SM_LB_CC0_WoodenTable02",
+  "dims": [
+   113.44,
+   70.6,
+   79.95
+  ],
+  "min": [
+   -56.72,
+   -35.3,
+   0
+  ],
+  "max": [
+   56.72,
+   35.3,
+   79.95
+  ],
+  "expected": [
+   113.44,
+   70.6,
+   79.95
+  ],
+  "dims_ok": true,
+  "slots": [
+   "wooden_table_02"
+  ],
+  "tris": 196,
+  "nanite": true,
+  "lods": 1,
+  "collision_shapes": 1,
+  "expected_ucx": 1,
+  "ucx_ok": true,
+  "source_tris": 196
+ },
+ {
+  "mesh": "SM_LB_CC0_DeadTreeTrunk",
+  "path": "/Game/LastBell/Environments/Props/CC0/DeadTreeTrunk/SM_LB_CC0_DeadTreeTrunk",
+  "dims": [
+   305.1,
+   27.75,
+   29.04
+  ],
+  "min": [
+   -152.55,
+   -13.88,
+   0
+  ],
+  "max": [
+   152.55,
+   13.88,
+   29.04
+  ],
+  "expected": [
+   305.1,
+   27.75,
+   29.04
+  ],
+  "dims_ok": true,
+  "slots": [
+   "dead_tree_trunk"
+  ],
+  "tris": 4758,
+  "nanite": true,
+  "lods": 1,
+  "collision_shapes": 1,
+  "expected_ucx": 1,
+  "ucx_ok": true,
+  "source_tris": 101802
+ },
+ {
+  "mesh": "SM_LB_CC0_TreeStump01",
+  "path": "/Game/LastBell/Environments/Props/CC0/TreeStump01/SM_LB_CC0_TreeStump01",
+  "dims": [
+   142.56,
+   159.03,
+   57.27
+  ],
+  "min": [
+   -71.28,
+   -79.52,
+   0
+  ],
+  "max": [
+   71.28,
+   79.52,
+   57.27
+  ],
+  "expected": [
+   142.56,
+   159.03,
+   57.27
+  ],
+  "dims_ok": true,
+  "slots": [
+   "tree_stump_01"
+  ],
+  "tris": 6113,
+  "nanite": true,
+  "lods": 1,
+  "collision_shapes": 1,
+  "expected_ucx": 1,
+  "ucx_ok": true,
+  "source_tris": 41046
+ },
+ {
+  "mesh": "SM_LB_CC0_DryBranchesMedium01",
+  "path": "/Game/LastBell/Environments/Props/CC0/DryBranchesMedium01/SM_LB_CC0_DryBranchesMedium01",
+  "dims": [
+   105.95,
+   129.92,
+   34.1
+  ],
+  "min": [
+   -52.97,
+   -64.96,
+   0
+  ],
+  "max": [
+   52.97,
+   64.96,
+   34.1
+  ],
+  "expected": [
+   105.95,
+   129.92,
+   34.1
+  ],
+  "dims_ok": true,
+  "slots": [
+   "dry_branches_medium_01"
+  ],
+  "tris": 2236,
+  "nanite": true,
+  "lods": 1,
+  "collision_shapes": 0,
+  "expected_ucx": 0,
+  "ucx_ok": true,
+  "source_tris": 16803
+ },
+ {
+  "mesh": "SM_LB_CC0_WeedPlant02_01",
+  "path": "/Game/LastBell/Environments/Props/CC0/WeedPlant02/SM_LB_CC0_WeedPlant02_01",
+  "dims": [
+   21.94,
+   29.09,
+   7.25
+  ],
+  "min": [
+   -10.97,
+   -14.55,
+   0
+  ],
+  "max": [
+   10.97,
+   14.55,
+   7.25
+  ],
+  "expected": [
+   21.94,
+   29.09,
+   7.25
+  ],
+  "dims_ok": true,
+  "slots": [
+   "weed_plant_02"
+  ],
+  "tris": 805,
+  "nanite": true,
+  "lods": 1,
+  "collision_shapes": 0,
+  "expected_ucx": 0,
+  "ucx_ok": true,
+  "source_tris": 2967
+ },
+ {
+  "mesh": "SM_LB_CC0_WeedPlant02_02",
+  "path": "/Game/LastBell/Environments/Props/CC0/WeedPlant02/SM_LB_CC0_WeedPlant02_02",
+  "dims": [
+   18.75,
+   19.85,
+   6.77
+  ],
+  "min": [
+   -9.38,
+   -9.93,
+   0
+  ],
+  "max": [
+   9.38,
+   9.93,
+   6.77
+  ],
+  "expected": [
+   18.75,
+   19.85,
+   6.77
+  ],
+  "dims_ok": true,
+  "slots": [
+   "weed_plant_02"
+  ],
+  "tris": 638,
+  "nanite": true,
+  "lods": 1,
+  "collision_shapes": 0,
+  "expected_ucx": 0,
+  "ucx_ok": true,
+  "source_tris": 2273
+ },
+ {
+  "mesh": "SM_LB_CC0_WeedPlant02_03",
+  "path": "/Game/LastBell/Environments/Props/CC0/WeedPlant02/SM_LB_CC0_WeedPlant02_03",
+  "dims": [
+   14.24,
+   14.35,
+   5.49
+  ],
+  "min": [
+   -7.12,
+   -7.17,
+   0
+  ],
+  "max": [
+   7.12,
+   7.17,
+   5.49
+  ],
+  "expected": [
+   14.24,
+   14.35,
+   5.49
+  ],
+  "dims_ok": true,
+  "slots": [
+   "weed_plant_02"
+  ],
+  "tris": 428,
+  "nanite": true,
+  "lods": 1,
+  "collision_shapes": 0,
+  "expected_ucx": 0,
+  "ucx_ok": true,
+  "source_tris": 1766
+ },
+ {
+  "mesh": "SM_LB_CC0_WeedPlant02_04",
+  "path": "/Game/LastBell/Environments/Props/CC0/WeedPlant02/SM_LB_CC0_WeedPlant02_04",
+  "dims": [
+   15.41,
+   10.81,
+   3.89
+  ],
+  "min": [
+   -7.7,
+   -5.41,
+   0
+  ],
+  "max": [
+   7.7,
+   5.41,
+   3.89
+  ],
+  "expected": [
+   15.41,
+   10.81,
+   3.89
+  ],
+  "dims_ok": true,
+  "slots": [
+   "weed_plant_02"
+  ],
+  "tris": 421,
+  "nanite": true,
+  "lods": 1,
+  "collision_shapes": 0,
+  "expected_ucx": 0,
+  "ucx_ok": true,
+  "source_tris": 1928
+ },
+ {
+  "mesh": "SM_LB_CC0_WeedPlant02_05",
+  "path": "/Game/LastBell/Environments/Props/CC0/WeedPlant02/SM_LB_CC0_WeedPlant02_05",
+  "dims": [
+   11.93,
+   6.1,
+   4.01
+  ],
+  "min": [
+   -5.96,
+   -3.05,
+   0
+  ],
+  "max": [
+   5.96,
+   3.05,
+   4.01
+  ],
+  "expected": [
+   11.93,
+   6.1,
+   4.01
+  ],
+  "dims_ok": true,
+  "slots": [
+   "weed_plant_02"
+  ],
+  "tris": 568,
+  "nanite": true,
+  "lods": 1,
+  "collision_shapes": 0,
+  "expected_ucx": 0,
+  "ucx_ok": true,
+  "source_tris": 2182
+ },
+ {
+  "mesh": "SM_LB_CC0_NettlePlant_01",
+  "path": "/Game/LastBell/Environments/Props/CC0/NettlePlant/SM_LB_CC0_NettlePlant_01",
+  "dims": [
+   7.73,
+   8.91,
+   13.15
+  ],
+  "min": [
+   -3.86,
+   -4.45,
+   0
+  ],
+  "max": [
+   3.86,
+   4.45,
+   13.15
+  ],
+  "expected": [
+   7.73,
+   8.91,
+   13.15
+  ],
+  "dims_ok": true,
+  "slots": [
+   "nettle_plant"
+  ],
+  "tris": 927,
+  "nanite": true,
+  "lods": 1,
+  "collision_shapes": 0,
+  "expected_ucx": 0,
+  "ucx_ok": true,
+  "source_tris": 5896
+ },
+ {
+  "mesh": "SM_LB_CC0_NettlePlant_02",
+  "path": "/Game/LastBell/Environments/Props/CC0/NettlePlant/SM_LB_CC0_NettlePlant_02",
+  "dims": [
+   6.55,
+   6.62,
+   10.46
+  ],
+  "min": [
+   -3.27,
+   -3.31,
+   0
+  ],
+  "max": [
+   3.27,
+   3.31,
+   10.46
+  ],
+  "expected": [
+   6.55,
+   6.62,
+   10.46
+  ],
+  "dims_ok": true,
+  "slots": [
+   "nettle_plant"
+  ],
+  "tris": 836,
+  "nanite": true,
+  "lods": 1,
+  "collision_shapes": 0,
+  "expected_ucx": 0,
+  "ucx_ok": true,
+  "source_tris": 5664
+ },
+ {
+  "mesh": "SM_LB_CC0_NettlePlant_03",
+  "path": "/Game/LastBell/Environments/Props/CC0/NettlePlant/SM_LB_CC0_NettlePlant_03",
+  "dims": [
+   6.42,
+   4.35,
+   6.26
+  ],
+  "min": [
+   -3.21,
+   -2.17,
+   0
+  ],
+  "max": [
+   3.21,
+   2.17,
+   6.26
+  ],
+  "expected": [
+   6.42,
+   4.35,
+   6.26
+  ],
+  "dims_ok": true,
+  "slots": [
+   "nettle_plant"
+  ],
+  "tris": 629,
+  "nanite": true,
+  "lods": 1,
+  "collision_shapes": 0,
+  "expected_ucx": 0,
+  "ucx_ok": true,
+  "source_tris": 3592
+ },
+ {
+  "mesh": "SM_LB_CC0_NettlePlant_04",
+  "path": "/Game/LastBell/Environments/Props/CC0/NettlePlant/SM_LB_CC0_NettlePlant_04",
+  "dims": [
+   5.97,
+   3.85,
+   2.17
+  ],
+  "min": [
+   -2.99,
+   -1.93,
+   0
+  ],
+  "max": [
+   2.99,
+   1.93,
+   2.17
+  ],
+  "expected": [
+   5.97,
+   3.85,
+   2.17
+  ],
+  "dims_ok": true,
+  "slots": [
+   "nettle_plant"
+  ],
+  "tris": 256,
+  "nanite": true,
+  "lods": 1,
+  "collision_shapes": 0,
+  "expected_ucx": 0,
+  "ucx_ok": true,
+  "source_tris": 1088
+ },
+ {
+  "mesh": "SM_LB_CC0_NettlePlant_05",
+  "path": "/Game/LastBell/Environments/Props/CC0/NettlePlant/SM_LB_CC0_NettlePlant_05",
+  "dims": [
+   10.36,
+   9.01,
+   21.68
+  ],
+  "min": [
+   -5.18,
+   -4.5,
+   0
+  ],
+  "max": [
+   5.18,
+   4.5,
+   21.68
+  ],
+  "expected": [
+   10.36,
+   9.01,
+   21.68
+  ],
+  "dims_ok": true,
+  "slots": [
+   "nettle_plant"
+  ],
+  "tris": 841,
+  "nanite": true,
+  "lods": 1,
+  "collision_shapes": 0,
+  "expected_ucx": 0,
+  "ucx_ok": true,
+  "source_tris": 6984
+ },
+ {
+  "mesh": "SM_LB_CC0_NettlePlant_06",
+  "path": "/Game/LastBell/Environments/Props/CC0/NettlePlant/SM_LB_CC0_NettlePlant_06",
+  "dims": [
+   8.23,
+   9.47,
+   19.27
+  ],
+  "min": [
+   -4.12,
+   -4.73,
+   0
+  ],
+  "max": [
+   4.12,
+   4.73,
+   19.27
+  ],
+  "expected": [
+   8.23,
+   9.47,
+   19.27
+  ],
+  "dims_ok": true,
+  "slots": [
+   "nettle_plant"
+  ],
+  "tris": 954,
+  "nanite": true,
+  "lods": 1,
+  "collision_shapes": 0,
+  "expected_ucx": 0,
+  "ucx_ok": true,
+  "source_tris": 8080
+ },
+ {
+  "mesh": "SM_LB_CC0_Fern02_01",
+  "path": "/Game/LastBell/Environments/Props/CC0/Fern02/SM_LB_CC0_Fern02_01",
+  "dims": [
+   55.19,
+   61.34,
+   28.68
+  ],
+  "min": [
+   -27.6,
+   -30.67,
+   0
+  ],
+  "max": [
+   27.6,
+   30.67,
+   28.68
+  ],
+  "expected": [
+   55.19,
+   61.34,
+   28.68
+  ],
+  "dims_ok": true,
+  "slots": [
+   "fern_02"
+  ],
+  "tris": 602,
+  "nanite": true,
+  "lods": 1,
+  "collision_shapes": 0,
+  "expected_ucx": 0,
+  "ucx_ok": true,
+  "source_tris": 784
+ },
+ {
+  "mesh": "SM_LB_CC0_Fern02_02",
+  "path": "/Game/LastBell/Environments/Props/CC0/Fern02/SM_LB_CC0_Fern02_02",
+  "dims": [
+   98.97,
+   89.37,
+   42.77
+  ],
+  "min": [
+   -49.49,
+   -44.68,
+   0
+  ],
+  "max": [
+   49.49,
+   44.68,
+   42.77
+  ],
+  "expected": [
+   98.97,
+   89.37,
+   42.77
+  ],
+  "dims_ok": true,
+  "slots": [
+   "fern_02"
+  ],
+  "tris": 1374,
+  "nanite": true,
+  "lods": 1,
+  "collision_shapes": 0,
+  "expected_ucx": 0,
+  "ucx_ok": true,
+  "source_tris": 2384
+ },
+ {
+  "mesh": "SM_LB_CC0_Fern02_03",
+  "path": "/Game/LastBell/Environments/Props/CC0/Fern02/SM_LB_CC0_Fern02_03",
+  "dims": [
+   87.43,
+   76.52,
+   34.9
+  ],
+  "min": [
+   -43.72,
+   -38.26,
+   0
+  ],
+  "max": [
+   43.72,
+   38.26,
+   34.9
+  ],
+  "expected": [
+   87.43,
+   76.52,
+   34.9
+  ],
+  "dims_ok": true,
+  "slots": [
+   "fern_02"
+  ],
+  "tris": 1563,
+  "nanite": true,
+  "lods": 1,
+  "collision_shapes": 0,
+  "expected_ucx": 0,
+  "ucx_ok": true,
+  "source_tris": 2248
+ },
+ {
+  "mesh": "SM_LB_CC0_Fern02_04",
+  "path": "/Game/LastBell/Environments/Props/CC0/Fern02/SM_LB_CC0_Fern02_04",
+  "dims": [
+   57.28,
+   59.33,
+   21.31
+  ],
+  "min": [
+   -28.64,
+   -29.66,
+   0
+  ],
+  "max": [
+   28.64,
+   29.66,
+   21.31
+  ],
+  "expected": [
+   57.28,
+   59.33,
+   21.31
+  ],
+  "dims_ok": true,
+  "slots": [
+   "fern_02"
+  ],
+  "tris": 628,
+  "nanite": true,
+  "lods": 1,
+  "collision_shapes": 0,
+  "expected_ucx": 0,
+  "ucx_ok": true,
+  "source_tris": 816
+ },
+ {
+  "mesh": "SM_LB_CC0_Moss01_01",
+  "path": "/Game/LastBell/Environments/Props/CC0/Moss01/SM_LB_CC0_Moss01_01",
+  "dims": [
+   1.42,
+   1.59,
+   2.6
+  ],
+  "min": [
+   -0.71,
+   -0.8,
+   0
+  ],
+  "max": [
+   0.71,
+   0.8,
+   2.6
+  ],
+  "expected": [
+   1.42,
+   1.59,
+   2.6
+  ],
+  "dims_ok": true,
+  "slots": [
+   "moss_01"
+  ],
+  "tris": 24,
+  "nanite": true,
+  "lods": 1,
+  "collision_shapes": 0,
+  "expected_ucx": 0,
+  "ucx_ok": true,
+  "source_tris": 24
+ },
+ {
+  "mesh": "SM_LB_CC0_Moss01_02",
+  "path": "/Game/LastBell/Environments/Props/CC0/Moss01/SM_LB_CC0_Moss01_02",
+  "dims": [
+   0.95,
+   0.95,
+   1.48
+  ],
+  "min": [
+   -0.47,
+   -0.48,
+   0
+  ],
+  "max": [
+   0.47,
+   0.48,
+   1.48
+  ],
+  "expected": [
+   0.95,
+   0.95,
+   1.48
+  ],
+  "dims_ok": true,
+  "slots": [
+   "moss_01"
+  ],
+  "tris": 16,
+  "nanite": true,
+  "lods": 1,
+  "collision_shapes": 0,
+  "expected_ucx": 0,
+  "ucx_ok": true,
+  "source_tris": 16
+ },
+ {
+  "mesh": "SM_LB_CC0_Moss01_03",
+  "path": "/Game/LastBell/Environments/Props/CC0/Moss01/SM_LB_CC0_Moss01_03",
+  "dims": [
+   1.82,
+   1.4,
+   2.77
+  ],
+  "min": [
+   -0.91,
+   -0.7,
+   0
+  ],
+  "max": [
+   0.91,
+   0.7,
+   2.77
+  ],
+  "expected": [
+   1.82,
+   1.4,
+   2.77
+  ],
+  "dims_ok": true,
+  "slots": [
+   "moss_01"
+  ],
+  "tris": 24,
+  "nanite": true,
+  "lods": 1,
+  "collision_shapes": 0,
+  "expected_ucx": 0,
+  "ucx_ok": true,
+  "source_tris": 24
+ },
+ {
+  "mesh": "SM_LB_CC0_Moss01_04",
+  "path": "/Game/LastBell/Environments/Props/CC0/Moss01/SM_LB_CC0_Moss01_04",
+  "dims": [
+   1.36,
+   1.56,
+   2.67
+  ],
+  "min": [
+   -0.68,
+   -0.78,
+   0
+  ],
+  "max": [
+   0.68,
+   0.78,
+   2.67
+  ],
+  "expected": [
+   1.36,
+   1.56,
+   2.67
+  ],
+  "dims_ok": true,
+  "slots": [
+   "moss_01"
+  ],
+  "tris": 16,
+  "nanite": true,
+  "lods": 1,
+  "collision_shapes": 0,
+  "expected_ucx": 0,
+  "ucx_ok": true,
+  "source_tris": 16
+ },
+ {
+  "mesh": "SM_LB_CC0_Moss01_05",
+  "path": "/Game/LastBell/Environments/Props/CC0/Moss01/SM_LB_CC0_Moss01_05",
+  "dims": [
+   1.12,
+   1.27,
+   2.16
+  ],
+  "min": [
+   -0.56,
+   -0.64,
+   0
+  ],
+  "max": [
+   0.56,
+   0.64,
+   2.16
+  ],
+  "expected": [
+   1.12,
+   1.27,
+   2.16
+  ],
+  "dims_ok": true,
+  "slots": [
+   "moss_01"
+  ],
+  "tris": 20,
+  "nanite": true,
+  "lods": 1,
+  "collision_shapes": 0,
+  "expected_ucx": 0,
+  "ucx_ok": true,
+  "source_tris": 20
+ },
+ {
+  "mesh": "SM_LB_CC0_Moss01_06",
+  "path": "/Game/LastBell/Environments/Props/CC0/Moss01/SM_LB_CC0_Moss01_06",
+  "dims": [
+   1.28,
+   1.3,
+   3.01
+  ],
+  "min": [
+   -0.64,
+   -0.65,
+   0
+  ],
+  "max": [
+   0.64,
+   0.65,
+   3.01
+  ],
+  "expected": [
+   1.28,
+   1.3,
+   3.01
+  ],
+  "dims_ok": true,
+  "slots": [
+   "moss_01"
+  ],
+  "tris": 20,
+  "nanite": true,
+  "lods": 1,
+  "collision_shapes": 0,
+  "expected_ucx": 0,
+  "ucx_ok": true,
+  "source_tris": 20
+ },
+ {
+  "mesh": "SM_LB_CC0_Moss01_07",
+  "path": "/Game/LastBell/Environments/Props/CC0/Moss01/SM_LB_CC0_Moss01_07",
+  "dims": [
+   1.29,
+   0.95,
+   2.16
+  ],
+  "min": [
+   -0.64,
+   -0.47,
+   0
+  ],
+  "max": [
+   0.64,
+   0.47,
+   2.16
+  ],
+  "expected": [
+   1.29,
+   0.95,
+   2.16
+  ],
+  "dims_ok": true,
+  "slots": [
+   "moss_01"
+  ],
+  "tris": 16,
+  "nanite": true,
+  "lods": 1,
+  "collision_shapes": 0,
+  "expected_ucx": 0,
+  "ucx_ok": true,
+  "source_tris": 16
+ },
+ {
+  "mesh": "SM_LB_CC0_Moss01_08",
+  "path": "/Game/LastBell/Environments/Props/CC0/Moss01/SM_LB_CC0_Moss01_08",
+  "dims": [
+   1.07,
+   0.57,
+   1.76
+  ],
+  "min": [
+   -0.53,
+   -0.29,
+   0
+  ],
+  "max": [
+   0.53,
+   0.29,
+   1.76
+  ],
+  "expected": [
+   1.07,
+   0.57,
+   1.76
+  ],
+  "dims_ok": true,
+  "slots": [
+   "moss_01"
+  ],
+  "tris": 6,
+  "nanite": true,
+  "lods": 1,
+  "collision_shapes": 0,
+  "expected_ucx": 0,
+  "ucx_ok": true,
+  "source_tris": 6
+ },
+ {
+  "mesh": "SM_LB_CC0_Moss01_09",
+  "path": "/Game/LastBell/Environments/Props/CC0/Moss01/SM_LB_CC0_Moss01_09",
+  "dims": [
+   1.65,
+   1.27,
+   1.47
+  ],
+  "min": [
+   -0.82,
+   -0.64,
+   0
+  ],
+  "max": [
+   0.82,
+   0.64,
+   1.47
+  ],
+  "expected": [
+   1.65,
+   1.27,
+   1.47
+  ],
+  "dims_ok": true,
+  "slots": [
+   "moss_01"
+  ],
+  "tris": 6,
+  "nanite": true,
+  "lods": 1,
+  "collision_shapes": 0,
+  "expected_ucx": 0,
+  "ucx_ok": true,
+  "source_tris": 6
+ },
+ {
+  "mesh": "SM_LB_CC0_Moss01_10",
+  "path": "/Game/LastBell/Environments/Props/CC0/Moss01/SM_LB_CC0_Moss01_10",
+  "dims": [
+   1.66,
+   1.88,
+   0.9
+  ],
+  "min": [
+   -0.83,
+   -0.94,
+   0
+  ],
+  "max": [
+   0.83,
+   0.94,
+   0.9
+  ],
+  "expected": [
+   1.66,
+   1.88,
+   0.9
+  ],
+  "dims_ok": true,
+  "slots": [
+   "moss_01"
+  ],
+  "tris": 8,
+  "nanite": true,
+  "lods": 1,
+  "collision_shapes": 0,
+  "expected_ucx": 0,
+  "ucx_ok": true,
+  "source_tris": 8
+ },
+ {
+  "mesh": "SM_LB_CC0_Moss01_11",
+  "path": "/Game/LastBell/Environments/Props/CC0/Moss01/SM_LB_CC0_Moss01_11",
+  "dims": [
+   2.14,
+   1.13,
+   3.36
+  ],
+  "min": [
+   -1.07,
+   -0.57,
+   0
+  ],
+  "max": [
+   1.07,
+   0.57,
+   3.36
+  ],
+  "expected": [
+   2.14,
+   1.13,
+   3.36
+  ],
+  "dims_ok": true,
+  "slots": [
+   "moss_01"
+  ],
+  "tris": 24,
+  "nanite": true,
+  "lods": 1,
+  "collision_shapes": 0,
+  "expected_ucx": 0,
+  "ucx_ok": true,
+  "source_tris": 24
+ },
+ {
+  "mesh": "SM_LB_CC0_Moss01_12",
+  "path": "/Game/LastBell/Environments/Props/CC0/Moss01/SM_LB_CC0_Moss01_12",
+  "dims": [
+   1.77,
+   1.18,
+   3.72
+  ],
+  "min": [
+   -0.88,
+   -0.59,
+   0
+  ],
+  "max": [
+   0.88,
+   0.59,
+   3.72
+  ],
+  "expected": [
+   1.77,
+   1.18,
+   3.72
+  ],
+  "dims_ok": true,
+  "slots": [
+   "moss_01"
+  ],
+  "tris": 24,
+  "nanite": true,
+  "lods": 1,
+  "collision_shapes": 0,
+  "expected_ucx": 0,
+  "ucx_ok": true,
+  "source_tris": 24
+ },
+ {
+  "mesh": "SM_LB_CC0_RustedSpade01",
+  "path": "/Game/LastBell/Environments/Props/CC0/RustedSpade01/SM_LB_CC0_RustedSpade01",
+  "dims": [
+   16.81,
+   4.56,
+   110.09
+  ],
+  "min": [
+   -8.41,
+   -2.28,
+   0
+  ],
+  "max": [
+   8.41,
+   2.28,
+   110.09
+  ],
+  "expected": [
+   16.81,
+   4.56,
+   110.09
+  ],
+  "dims_ok": true,
+  "slots": [
+   "rusted_spade_01"
+  ],
+  "tris": 420,
+  "nanite": true,
+  "lods": 1,
+  "collision_shapes": 0,
+  "expected_ucx": 0,
+  "ucx_ok": true,
+  "source_tris": 11436
+ },
+ {
+  "mesh": "SM_LB_CC0_PickeDirty01",
+  "path": "/Game/LastBell/Environments/Props/CC0/PickeDirty01/SM_LB_CC0_PickeDirty01",
+  "dims": [
+   54.98,
+   6.91,
+   111.56
+  ],
+  "min": [
+   -27.49,
+   -3.46,
+   0
+  ],
+  "max": [
+   27.49,
+   3.46,
+   111.56
+  ],
+  "expected": [
+   54.98,
+   6.91,
+   111.56
+  ],
+  "dims_ok": true,
+  "slots": [
+   "picke_dirty_01"
+  ],
+  "tris": 568,
+  "nanite": true,
+  "lods": 1,
+  "collision_shapes": 0,
+  "expected_ucx": 0,
+  "ucx_ok": true,
+  "source_tris": 6196
+ },
+ {
+  "mesh": "SM_LB_CC0_WoodenAxe",
+  "path": "/Game/LastBell/Environments/Props/CC0/WoodenAxe/SM_LB_CC0_WoodenAxe",
+  "dims": [
+   4.72,
+   21.43,
+   63.03
+  ],
+  "min": [
+   -2.36,
+   -10.72,
+   0
+  ],
+  "max": [
+   2.36,
+   10.72,
+   63.03
+  ],
+  "expected": [
+   4.72,
+   21.43,
+   63.03
+  ],
+  "dims_ok": true,
+  "slots": [
+   "wooden_axe"
+  ],
+  "tris": 648,
+  "nanite": true,
+  "lods": 1,
+  "collision_shapes": 0,
+  "expected_ucx": 0,
+  "ucx_ok": true,
+  "source_tris": 3348
+ },
+ {
+  "mesh": "SM_LB_CC0_WoodenCandlestick",
+  "path": "/Game/LastBell/Environments/Props/CC0/WoodenCandlestick/SM_LB_CC0_WoodenCandlestick",
+  "dims": [
+   9.72,
+   9.87,
+   21.97
+  ],
+  "min": [
+   -4.86,
+   -4.93,
+   0
+  ],
+  "max": [
+   4.86,
+   4.93,
+   21.97
+  ],
+  "expected": [
+   9.72,
+   9.87,
+   21.97
+  ],
+  "dims_ok": true,
+  "slots": [
+   "wooden_candlestick"
+  ],
+  "tris": 7978,
+  "nanite": false,
+  "lods": 1,
+  "collision_shapes": 0,
+  "expected_ucx": 0,
+  "ucx_ok": true,
+  "source_tris": 8000
+ },
+ {
+  "mesh": "SM_LB_CC0_RockMossSet02_01",
+  "path": "/Game/LastBell/Environments/Props/CC0/RockMossSet02/SM_LB_CC0_RockMossSet02_01",
+  "dims": [
+   169.3,
+   121.51,
+   74.48
+  ],
+  "min": [
+   -84.65,
+   -60.76,
+   0
+  ],
+  "max": [
+   84.65,
+   60.76,
+   74.48
+  ],
+  "expected": [
+   169.3,
+   121.51,
+   74.48
+  ],
+  "dims_ok": true,
+  "slots": [
+   "rock_moss_set_02"
+  ],
+  "tris": 2040,
+  "nanite": true,
+  "lods": 1,
+  "collision_shapes": 1,
+  "expected_ucx": 1,
+  "ucx_ok": true,
+  "source_tris": 9826
+ },
+ {
+  "mesh": "SM_LB_CC0_RockMossSet02_02",
+  "path": "/Game/LastBell/Environments/Props/CC0/RockMossSet02/SM_LB_CC0_RockMossSet02_02",
+  "dims": [
+   120.63,
+   98.36,
+   52.87
+  ],
+  "min": [
+   -60.32,
+   -49.18,
+   0
+  ],
+  "max": [
+   60.32,
+   49.18,
+   52.87
+  ],
+  "expected": [
+   120.63,
+   98.36,
+   52.87
+  ],
+  "dims_ok": true,
+  "slots": [
+   "rock_moss_set_02"
+  ],
+  "tris": 4242,
+  "nanite": true,
+  "lods": 1,
+  "collision_shapes": 1,
+  "expected_ucx": 1,
+  "ucx_ok": true,
+  "source_tris": 8000
+ },
+ {
+  "mesh": "SM_LB_CC0_RockMossSet02_03",
+  "path": "/Game/LastBell/Environments/Props/CC0/RockMossSet02/SM_LB_CC0_RockMossSet02_03",
+  "dims": [
+   162.89,
+   101.15,
+   60.99
+  ],
+  "min": [
+   -81.45,
+   -50.57,
+   0
+  ],
+  "max": [
+   81.45,
+   50.57,
+   60.99
+  ],
+  "expected": [
+   162.89,
+   101.15,
+   60.99
+  ],
+  "dims_ok": true,
+  "slots": [
+   "rock_moss_set_02"
+  ],
+  "tris": 2286,
+  "nanite": true,
+  "lods": 1,
+  "collision_shapes": 1,
+  "expected_ucx": 1,
+  "ucx_ok": true,
+  "source_tris": 7894
+ },
+ {
+  "mesh": "SM_LB_CC0_RockMossSet02_04",
+  "path": "/Game/LastBell/Environments/Props/CC0/RockMossSet02/SM_LB_CC0_RockMossSet02_04",
+  "dims": [
+   220.29,
+   155.16,
+   76.85
+  ],
+  "min": [
+   -110.15,
+   -77.58,
+   0
+  ],
+  "max": [
+   110.15,
+   77.58,
+   76.85
+  ],
+  "expected": [
+   220.29,
+   155.16,
+   76.85
+  ],
+  "dims_ok": true,
+  "slots": [
+   "rock_moss_set_02"
+  ],
+  "tris": 2530,
+  "nanite": true,
+  "lods": 1,
+  "collision_shapes": 1,
+  "expected_ucx": 1,
+  "ucx_ok": true,
+  "source_tris": 8000
+ },
+ {
+  "mesh": "SM_LB_CC0_RockMossSet02_05",
+  "path": "/Game/LastBell/Environments/Props/CC0/RockMossSet02/SM_LB_CC0_RockMossSet02_05",
+  "dims": [
+   195.37,
+   152.89,
+   131.05
+  ],
+  "min": [
+   -97.68,
+   -76.44,
+   0
+  ],
+  "max": [
+   97.68,
+   76.44,
+   131.05
+  ],
+  "expected": [
+   195.37,
+   152.89,
+   131.05
+  ],
+  "dims_ok": true,
+  "slots": [
+   "rock_moss_set_02"
+  ],
+  "tris": 2826,
+  "nanite": true,
+  "lods": 1,
+  "collision_shapes": 1,
+  "expected_ucx": 1,
+  "ucx_ok": true,
+  "source_tris": 8000
+ },
+ {
+  "mesh": "SM_LB_CC0_RockMossSet02_06",
+  "path": "/Game/LastBell/Environments/Props/CC0/RockMossSet02/SM_LB_CC0_RockMossSet02_06",
+  "dims": [
+   157.96,
+   144.35,
+   73.6
+  ],
+  "min": [
+   -78.98,
+   -72.17,
+   0
+  ],
+  "max": [
+   78.98,
+   72.17,
+   73.6
+  ],
+  "expected": [
+   157.96,
+   144.35,
+   73.6
+  ],
+  "dims_ok": true,
+  "slots": [
+   "rock_moss_set_02"
+  ],
+  "tris": 3656,
+  "nanite": true,
+  "lods": 1,
+  "collision_shapes": 1,
+  "expected_ucx": 1,
+  "ucx_ok": true,
+  "source_tris": 7999
+ },
+ {
+  "mesh": "SM_LB_CC0_RockMossSet02_07",
+  "path": "/Game/LastBell/Environments/Props/CC0/RockMossSet02/SM_LB_CC0_RockMossSet02_07",
+  "dims": [
+   209.14,
+   113.83,
+   125.64
+  ],
+  "min": [
+   -104.57,
+   -56.91,
+   0
+  ],
+  "max": [
+   104.57,
+   56.91,
+   125.64
+  ],
+  "expected": [
+   209.14,
+   113.83,
+   125.64
+  ],
+  "dims_ok": true,
+  "slots": [
+   "rock_moss_set_02"
+  ],
+  "tris": 2936,
+  "nanite": true,
+  "lods": 1,
+  "collision_shapes": 1,
+  "expected_ucx": 1,
+  "ucx_ok": true,
+  "source_tris": 7928
+ }
+]
