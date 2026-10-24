@@ -298,3 +298,12 @@ Commit P7F-5.
 - Visual: 12 clean captures reviewed by the lead against the acceptance criteria in 4.2, 5d, 5f, 5g.
 - Human: owner playtest + `stat gpu` numbers on the RTX 4050.
 - Git: everything on `claude/p7-courtyard-polish`; merge to `main` only after explicit owner approval.
+
+---
+
+## Amendments (lead, during execution)
+**A1 (2026-10-24, after P7F-1):**
+- Wall rain-streak decals (4.8) use the existing **Leaking006** (has a real opacity map): create `MI_Decal_Leaking006_Wall` as a child of `MI_Leaking006` with OpacityStrength 1.6, DarkenStrength 0.3 (EdgeFade/DepthFade as already tuned; DecalHalfDepthCm = DecalSize.X). `ambientcg:Leaking019C` was downloaded but has no opacity map → not used (registry row marked "not used").
+- Leaf-litter decals: skipped (ScatteredLeaves009 has no opacity map; the plan's rule).
+- Plants: Poly Haven weed/nettle/fern/moss leaves are cut in the geometry; their diffuse JPGs have no alpha. **`M_LB_Foliage` (3d) is therefore Blend Opaque** (not Masked), Shading TwoSidedFoliage, TwoSided ✓, no opacity inputs (drop `bSeparateOpacity`/`OpacityTex`); everything else in 3d stays. moss_01's real triangle count is checked in P7F-2 (listing says 246k, glTF index ~204).
+- `rock_moss_set_02` has separate rough (no ARM) → its MI uses the separate-maps path (`bUseARM` off).
