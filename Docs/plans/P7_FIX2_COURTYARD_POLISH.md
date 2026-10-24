@@ -307,3 +307,12 @@ Commit P7F-5.
 - Leaf-litter decals: skipped (ScatteredLeaves009 has no opacity map; the plan's rule).
 - Plants: Poly Haven weed/nettle/fern/moss leaves are cut in the geometry; their diffuse JPGs have no alpha. **`M_LB_Foliage` (3d) is therefore Blend Opaque** (not Masked), Shading TwoSidedFoliage, TwoSided ✓, no opacity inputs (drop `bSeparateOpacity`/`OpacityTex`); everything else in 3d stays. moss_01's real triangle count is checked in P7F-2 (listing says 246k, glTF index ~204).
 - `rock_moss_set_02` has separate rough (no ARM) → its MI uses the separate-maps path (`bUseARM` off).
+
+**A2 (2026-10-24, after P7F-2 review):**
+- `convert_cc0.py`: **split** `weed_plant_02`, `nettle_plant` and `moss_01` into one mesh per variant (`SM_LB_CC0_WeedPlant02_01…NN`, `SM_LB_CC0_NettlePlant_01…NN`, `SM_LB_CC0_Moss01_01…NN`; delete the joined strip FBX). Barrel, branches and the rest stay as they are. In 4.7 the placements **cycle through the variants** in order (weed 1→N, nettle 1→N, moss 1→N). **Moss** tufts are tiny (≈ 2–4 cm): each moss coordinate in 4.7 becomes a **cluster of 3 tufts** (offsets (0,0), (+18,+9), (−12,+15) cm, yaws 0/120/240) at **scale 3.0**.
+- **Axe** (4.4 `KX_Axe`): the converted mesh stands handle-down/head-up, so rotate pitch 180 (head down) and then lean −35 so the blade bites 4 cm into the stump top.
+- **Hand-cart** pivot facts for 4.6: axle at local X −55, Z 50; shafts point +X. "Pitch about the axle" means rotate around the local point (−55, 0, 50); the plan's ≈15° front-down + ground traces still apply.
+- **Fire pit rework** (`build_props.py`, keep dims ≈ Ø130 × 30 and slots): 13 stones, flatter (height 0.55–0.75 × width), irregular, touching/overlapping neighbours with no visible gaps, each sunk 3–5 cm below Z 0 before the final re-seat; ash bed = irregular noisy low mound (≈ Ø85, 3–5 cm high, lumpy), not a flat disc; logs 16 segments with tapered, split/broken ends and a few small charred chunks. Re-render `07_firepit`; it must read as a real camp-fire ring at 2 m.
+- **Hand-cart wear** (`build_props.py`): one side board cracked and missing its rear 40 cm; one floor plank missing; 1.5–2 cm edge rounding on all boards; bed boards sag 1–2 cm in the middle; one wheel tilted 3° on the axle; seeded. Re-render `06_cart_3q`.
+- Ledge (22k tris), StoneCross (16k) and Gravestone_B (14k) are accepted under Nanite. Stone character beyond this is carried by the stone material.
+- **P7F-3 order:** 3a–3f and 3h run now; **3g (Fab relocation) runs when the owner finishes the Fab steps** (separate checkpoint).
