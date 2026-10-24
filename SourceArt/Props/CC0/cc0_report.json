@@ -1,0 +1,1256 @@
+[
+ {
+  "id": "wine_barrel_01",
+  "mesh": "SM_LB_CC0_WineBarrel01",
+  "status": "ok",
+  "source_objects": [
+   "wine_barrel_01",
+   "wine_barrel_01_Lid",
+   "wine_barrel_01_base",
+   "wine_barrel_01_bung"
+  ],
+  "min": [
+   -37.1,
+   -37.8,
+   0.0
+  ],
+  "max": [
+   37.1,
+   37.8,
+   87.13
+  ],
+  "dims_cm": [
+   74.19,
+   75.6,
+   87.13
+  ],
+  "tris": 10820,
+  "slots": [
+   "wine_barrel_01"
+  ],
+  "ucx": 1,
+  "textures": [
+   "wine_barrel_01_arm_2k.jpg",
+   "wine_barrel_01_diff_2k.jpg",
+   "wine_barrel_01_nor_gl_2k.jpg"
+  ],
+  "pivot_shift_cm": [
+   -0.0,
+   0.71,
+   -0.07
+  ],
+  "orientation": {
+   "top15_xy_extent": [
+    64.9,
+    65.4
+   ],
+   "bottom15_xy_extent": [
+    64.9,
+    65.4
+   ]
+  },
+  "source_total_tris": 10820
+ },
+ {
+  "id": "wooden_bucket_01",
+  "mesh": "SM_LB_CC0_WoodenBucket01",
+  "status": "ok",
+  "source_objects": [
+   "wooden_bucket_01",
+   "wooden_bucket_01_handle"
+  ],
+  "min": [
+   -18.35,
+   -17.11,
+   0.0
+  ],
+  "max": [
+   18.35,
+   17.11,
+   54.99
+  ],
+  "dims_cm": [
+   36.7,
+   34.22,
+   54.99
+  ],
+  "tris": 5116,
+  "slots": [
+   "wooden_bucket_01"
+  ],
+  "ucx": 0,
+  "textures": [
+   "wooden_bucket_01_arm_2k.jpg",
+   "wooden_bucket_01_diff_2k.jpg",
+   "wooden_bucket_01_nor_gl_2k.jpg"
+  ],
+  "pivot_shift_cm": [
+   0.1,
+   0.11,
+   -0.01
+  ],
+  "orientation": {
+   "top15_xy_extent": [
+    20.1,
+    0.7
+   ],
+   "bottom15_xy_extent": [
+    31.8,
+    31.5
+   ]
+  },
+  "source_total_tris": 5116
+ },
+ {
+  "id": "wooden_bucket_02",
+  "mesh": "SM_LB_CC0_WoodenBucket02",
+  "status": "ok",
+  "source_objects": [
+   "wooden_bucket_02",
+   "wooden_bucket_02_handle_01",
+   "wooden_bucket_02_handle_02"
+  ],
+  "min": [
+   -30.77,
+   -30.82,
+   0.0
+  ],
+  "max": [
+   30.77,
+   30.82,
+   35.04
+  ],
+  "dims_cm": [
+   61.53,
+   61.63,
+   35.04
+  ],
+  "tris": 7252,
+  "slots": [
+   "wooden_bucket_02"
+  ],
+  "ucx": 0,
+  "textures": [
+   "wooden_bucket_02_arm_2k.jpg",
+   "wooden_bucket_02_diff_2k.jpg",
+   "wooden_bucket_02_nor_gl_2k.jpg"
+  ],
+  "pivot_shift_cm": [
+   0.01,
+   -0.05,
+   -0.03
+  ],
+  "orientation": {
+   "top15_xy_extent": [
+    61.5,
+    61.6
+   ],
+   "bottom15_xy_extent": [
+    50.5,
+    50.1
+   ]
+  },
+  "source_total_tris": 7252
+ },
+ {
+  "id": "wooden_table_02",
+  "mesh": "SM_LB_CC0_WoodenTable02",
+  "status": "ok",
+  "source_objects": [
+   "wooden_table_02"
+  ],
+  "min": [
+   -56.72,
+   -35.3,
+   0.0
+  ],
+  "max": [
+   56.72,
+   35.3,
+   79.95
+  ],
+  "dims_cm": [
+   113.44,
+   70.6,
+   79.95
+  ],
+  "tris": 196,
+  "slots": [
+   "wooden_table_02"
+  ],
+  "ucx": 1,
+  "textures": [
+   "wooden_table_02_arm_2k.jpg",
+   "wooden_table_02_diff_2k.jpg",
+   "wooden_table_02_nor_gl_2k.jpg"
+  ],
+  "pivot_shift_cm": [
+   -0.0,
+   -0.0,
+   0.01
+  ],
+  "orientation": {
+   "top15_xy_extent": [
+    113.4,
+    70.6
+   ],
+   "bottom15_xy_extent": [
+    102.6,
+    59.6
+   ]
+  },
+  "source_total_tris": 196
+ },
+ {
+  "id": "dead_tree_trunk",
+  "mesh": "SM_LB_CC0_DeadTreeTrunk",
+  "status": "ok",
+  "source_objects": [
+   "dead_tree_trunk"
+  ],
+  "min": [
+   -152.55,
+   -13.88,
+   0.0
+  ],
+  "max": [
+   152.55,
+   13.88,
+   29.04
+  ],
+  "dims_cm": [
+   305.1,
+   27.75,
+   29.04
+  ],
+  "tris": 101802,
+  "slots": [
+   "dead_tree_trunk"
+  ],
+  "ucx": 1,
+  "textures": [
+   "dead_tree_trunk_arm_2k.jpg",
+   "dead_tree_trunk_diff_2k.jpg",
+   "dead_tree_trunk_nor_gl_2k.jpg"
+  ],
+  "pivot_shift_cm": [
+   1.36,
+   -3.2,
+   2.77
+  ],
+  "orientation": {
+   "top15_xy_extent": [
+    293.9,
+    14.6
+   ],
+   "bottom15_xy_extent": [
+    208.5,
+    21.3
+   ]
+  },
+  "source_total_tris": 101802
+ },
+ {
+  "id": "tree_stump_01",
+  "mesh": "SM_LB_CC0_TreeStump01",
+  "status": "ok",
+  "source_objects": [
+   "tree_stump_01"
+  ],
+  "min": [
+   -71.28,
+   -79.52,
+   0.0
+  ],
+  "max": [
+   71.28,
+   79.52,
+   57.27
+  ],
+  "dims_cm": [
+   142.56,
+   159.03,
+   57.27
+  ],
+  "tris": 41046,
+  "slots": [
+   "tree_stump_01"
+  ],
+  "ucx": 1,
+  "textures": [
+   "tree_stump_01_arm_2k.jpg",
+   "tree_stump_01_diff_2k.jpg",
+   "tree_stump_01_nor_gl_2k.jpg"
+  ],
+  "pivot_shift_cm": [
+   7.16,
+   3.47,
+   19.3
+  ],
+  "orientation": {
+   "top15_xy_extent": [
+    60.0,
+    59.9
+   ],
+   "bottom15_xy_extent": [
+    142.6,
+    159.0
+   ]
+  },
+  "source_total_tris": 41046
+ },
+ {
+  "id": "dry_branches_medium_01",
+  "mesh": "SM_LB_CC0_DryBranchesMedium01",
+  "status": "ok",
+  "source_objects": [
+   "dry_branches_medium_01_a",
+   "dry_branches_medium_01_b",
+   "dry_branches_medium_01_c"
+  ],
+  "min": [
+   -52.97,
+   -64.96,
+   0.0
+  ],
+  "max": [
+   52.97,
+   64.96,
+   34.1
+  ],
+  "dims_cm": [
+   105.95,
+   129.92,
+   34.1
+  ],
+  "tris": 16803,
+  "slots": [
+   "dry_branches_medium_01"
+  ],
+  "ucx": 0,
+  "textures": [
+   "dry_branches_medium_01_arm_2k.jpg",
+   "dry_branches_medium_01_diff_2k.jpg",
+   "dry_branches_medium_01_nor_gl_2k.jpg"
+  ],
+  "pivot_shift_cm": [
+   1.77,
+   -4.03,
+   1.65
+  ],
+  "orientation": {
+   "top15_xy_extent": [
+    4.1,
+    2.1
+   ],
+   "bottom15_xy_extent": [
+    95.9,
+    128.4
+   ]
+  },
+  "source_total_tris": 16803
+ },
+ {
+  "id": "weed_plant_02",
+  "mesh": "SM_LB_CC0_WeedPlant02",
+  "status": "ok",
+  "source_objects": [
+   "weed_plant_02_a_LOD0",
+   "weed_plant_02_b_LOD0",
+   "weed_plant_02_c_LOD0",
+   "weed_plant_02_d_LOD0",
+   "weed_plant_02_e_LOD0"
+  ],
+  "min": [
+   -106.26,
+   -14.55,
+   0.0
+  ],
+  "max": [
+   106.26,
+   14.55,
+   7.51
+  ],
+  "dims_cm": [
+   212.53,
+   29.09,
+   7.51
+  ],
+  "tris": 11116,
+  "slots": [
+   "weed_plant_02"
+  ],
+  "ucx": 0,
+  "textures": [
+   "weed_plant_02_arm_2k.jpg",
+   "weed_plant_02_diff_2k.jpg",
+   "weed_plant_02_nor_gl_2k.jpg"
+  ],
+  "pivot_shift_cm": [
+   -97.7,
+   3.43,
+   0.86
+  ],
+  "orientation": {
+   "top15_xy_extent": [
+    64.0,
+    8.1
+   ],
+   "bottom15_xy_extent": [
+    210.6,
+    27.9
+   ]
+  },
+  "source_total_tris": 11116
+ },
+ {
+  "id": "nettle_plant",
+  "mesh": "SM_LB_CC0_NettlePlant",
+  "status": "ok",
+  "source_objects": [
+   "nettle_plant_medium_a_LOD0",
+   "nettle_plant_medium_b_LOD0",
+   "nettle_plant_small_a_LOD0",
+   "nettle_plant_small_b_LOD0",
+   "nettle_plant_tall_a_LOD0",
+   "nettle_plant_tall_b_LOD0"
+  ],
+  "min": [
+   -54.14,
+   -4.73,
+   0.0
+  ],
+  "max": [
+   54.14,
+   4.73,
+   21.84
+  ],
+  "dims_cm": [
+   108.28,
+   9.47,
+   21.84
+  ],
+  "tris": 31304,
+  "slots": [
+   "nettle_plant"
+  ],
+  "ucx": 0,
+  "textures": [
+   "nettle_plant_arm_2k.jpg",
+   "nettle_plant_diff_2k.jpg",
+   "nettle_plant_nor_gl_2k.jpg"
+  ],
+  "pivot_shift_cm": [
+   -48.88,
+   -0.12,
+   0.56
+  ],
+  "orientation": {
+   "top15_xy_extent": [
+    23.1,
+    6.9
+   ],
+   "bottom15_xy_extent": [
+    106.1,
+    7.8
+   ]
+  },
+  "source_total_tris": 31304
+ },
+ {
+  "id": "fern_02",
+  "mesh": "SM_LB_CC0_Fern02_01",
+  "status": "ok",
+  "source_objects": [
+   "fern_02_a"
+  ],
+  "min": [
+   -27.6,
+   -30.67,
+   0.0
+  ],
+  "max": [
+   27.6,
+   30.67,
+   28.68
+  ],
+  "dims_cm": [
+   55.19,
+   61.34,
+   28.68
+  ],
+  "tris": 784,
+  "slots": [
+   "fern_02"
+  ],
+  "ucx": 0,
+  "textures": [
+   "fern_02_arm_2k.jpg",
+   "fern_02_diff_2k.jpg",
+   "fern_02_nor_gl_2k.jpg"
+  ],
+  "pivot_shift_cm": [
+   2.17,
+   99.54,
+   2.88
+  ],
+  "orientation": {
+   "top15_xy_extent": [
+    11.0,
+    13.5
+   ],
+   "bottom15_xy_extent": [
+    45.2,
+    36.6
+   ]
+  },
+  "source_total_tris": 6232
+ },
+ {
+  "id": "fern_02",
+  "mesh": "SM_LB_CC0_Fern02_02",
+  "status": "ok",
+  "source_objects": [
+   "fern_02_b"
+  ],
+  "min": [
+   -49.49,
+   -44.68,
+   0.0
+  ],
+  "max": [
+   49.49,
+   44.68,
+   42.77
+  ],
+  "dims_cm": [
+   98.97,
+   89.37,
+   42.77
+  ],
+  "tris": 2384,
+  "slots": [
+   "fern_02"
+  ],
+  "ucx": 0,
+  "textures": [
+   "fern_02_arm_2k.jpg",
+   "fern_02_diff_2k.jpg",
+   "fern_02_nor_gl_2k.jpg"
+  ],
+  "pivot_shift_cm": [
+   3.33,
+   2.5,
+   3.05
+  ],
+  "orientation": {
+   "top15_xy_extent": [
+    5.3,
+    9.9
+   ],
+   "bottom15_xy_extent": [
+    89.2,
+    82.2
+   ]
+  },
+  "source_total_tris": 6232
+ },
+ {
+  "id": "fern_02",
+  "mesh": "SM_LB_CC0_Fern02_03",
+  "status": "ok",
+  "source_objects": [
+   "fern_02_c"
+  ],
+  "min": [
+   -43.72,
+   -38.26,
+   0.0
+  ],
+  "max": [
+   43.72,
+   38.26,
+   34.9
+  ],
+  "dims_cm": [
+   87.43,
+   76.52,
+   34.9
+  ],
+  "tris": 2248,
+  "slots": [
+   "fern_02"
+  ],
+  "ucx": 0,
+  "textures": [
+   "fern_02_arm_2k.jpg",
+   "fern_02_diff_2k.jpg",
+   "fern_02_nor_gl_2k.jpg"
+  ],
+  "pivot_shift_cm": [
+   -100.72,
+   -3.47,
+   2.88
+  ],
+  "orientation": {
+   "top15_xy_extent": [
+    2.7,
+    3.8
+   ],
+   "bottom15_xy_extent": [
+    77.6,
+    64.0
+   ]
+  },
+  "source_total_tris": 6232
+ },
+ {
+  "id": "fern_02",
+  "mesh": "SM_LB_CC0_Fern02_04",
+  "status": "ok",
+  "source_objects": [
+   "fern_02_d"
+  ],
+  "min": [
+   -28.64,
+   -29.66,
+   0.0
+  ],
+  "max": [
+   28.64,
+   29.66,
+   21.31
+  ],
+  "dims_cm": [
+   57.28,
+   59.33,
+   21.31
+  ],
+  "tris": 816,
+  "slots": [
+   "fern_02"
+  ],
+  "ucx": 0,
+  "textures": [
+   "fern_02_arm_2k.jpg",
+   "fern_02_diff_2k.jpg",
+   "fern_02_nor_gl_2k.jpg"
+  ],
+  "pivot_shift_cm": [
+   -99.56,
+   94.45,
+   1.36
+  ],
+  "orientation": {
+   "top15_xy_extent": [
+    40.3,
+    38.4
+   ],
+   "bottom15_xy_extent": [
+    29.8,
+    32.5
+   ]
+  },
+  "source_total_tris": 6232
+ },
+ {
+  "id": "moss_01",
+  "mesh": "SM_LB_CC0_Moss01",
+  "status": "ok",
+  "source_objects": [
+   "moss_01_a_LOD0",
+   "moss_01_b_LOD0",
+   "moss_01_c_LOD0",
+   "moss_01_d_LOD0",
+   "moss_01_e_LOD0",
+   "moss_01_f_LOD0",
+   "moss_01_g_LOD0",
+   "moss_01_h_LOD0",
+   "moss_01_i_LOD0",
+   "moss_01_j_LOD0",
+   "moss_01_tall_a_LOD0",
+   "moss_01_tall_b_LOD0"
+  ],
+  "min": [
+   -10.76,
+   -1.47,
+   0.0
+  ],
+  "max": [
+   10.76,
+   1.47,
+   4.04
+  ],
+  "dims_cm": [
+   21.53,
+   2.94,
+   4.04
+  ],
+  "tris": 204,
+  "slots": [
+   "moss_01"
+  ],
+  "ucx": 0,
+  "textures": [
+   "moss_01_arm_2k.jpg",
+   "moss_01_diff_2k.jpg",
+   "moss_01_nor_gl_2k.jpg"
+  ],
+  "pivot_shift_cm": [
+   -9.87,
+   0.46,
+   0.35
+  ],
+  "orientation": {
+   "top15_xy_extent": [
+    1.0,
+    1.2
+   ],
+   "bottom15_xy_extent": [
+    20.6,
+    1.2
+   ]
+  },
+  "source_total_tris": 204
+ },
+ {
+  "id": "rusted_spade_01",
+  "mesh": "SM_LB_CC0_RustedSpade01",
+  "status": "ok",
+  "source_objects": [
+   "rusted_spade_01"
+  ],
+  "min": [
+   -8.41,
+   -2.28,
+   0.0
+  ],
+  "max": [
+   8.41,
+   2.28,
+   110.09
+  ],
+  "dims_cm": [
+   16.81,
+   4.56,
+   110.09
+  ],
+  "tris": 11436,
+  "slots": [
+   "rusted_spade_01"
+  ],
+  "ucx": 0,
+  "textures": [
+   "rusted_spade_01_arm_2k.jpg",
+   "rusted_spade_01_diff_2k.jpg",
+   "rusted_spade_01_nor_gl_2k.jpg"
+  ],
+  "pivot_shift_cm": [
+   -0.0,
+   -0.02,
+   50.32
+  ],
+  "orientation": {
+   "top15_xy_extent": [
+    13.3,
+    3.1
+   ],
+   "bottom15_xy_extent": [
+    16.8,
+    2.7
+   ]
+  },
+  "source_total_tris": 11436
+ },
+ {
+  "id": "picke_dirty_01",
+  "mesh": "SM_LB_CC0_PickeDirty01",
+  "status": "ok",
+  "source_objects": [
+   "picke_dirty_01"
+  ],
+  "min": [
+   -27.49,
+   -3.46,
+   0.0
+  ],
+  "max": [
+   27.49,
+   3.46,
+   111.56
+  ],
+  "dims_cm": [
+   54.98,
+   6.91,
+   111.56
+  ],
+  "tris": 6196,
+  "slots": [
+   "picke_dirty_01"
+  ],
+  "ucx": 0,
+  "textures": [
+   "picke_dirty_01_arm_2k.jpg",
+   "picke_dirty_01_diff_2k.jpg",
+   "picke_dirty_01_nor_gl_2k.jpg"
+  ],
+  "pivot_shift_cm": [
+   -0.97,
+   1.18,
+   35.44
+  ],
+  "orientation": {
+   "top15_xy_extent": [
+    55.0,
+    6.9
+   ],
+   "bottom15_xy_extent": [
+    5.3,
+    3.6
+   ]
+  },
+  "source_total_tris": 6196
+ },
+ {
+  "id": "wooden_axe",
+  "mesh": "SM_LB_CC0_WoodenAxe",
+  "status": "ok",
+  "source_objects": [
+   "wooden_axe"
+  ],
+  "min": [
+   -2.36,
+   -10.72,
+   0.0
+  ],
+  "max": [
+   2.36,
+   10.72,
+   63.03
+  ],
+  "dims_cm": [
+   4.72,
+   21.43,
+   63.03
+  ],
+  "tris": 3348,
+  "slots": [
+   "wooden_axe"
+  ],
+  "ucx": 0,
+  "textures": [
+   "wooden_axe_arm_2k.jpg",
+   "wooden_axe_diff_2k.jpg",
+   "wooden_axe_nor_gl_2k.jpg"
+  ],
+  "pivot_shift_cm": [
+   0.02,
+   7.13,
+   21.86
+  ],
+  "orientation": {
+   "top15_xy_extent": [
+    4.7,
+    21.4
+   ],
+   "bottom15_xy_extent": [
+    3.5,
+    5.4
+   ]
+  },
+  "source_total_tris": 3348
+ },
+ {
+  "id": "wooden_candlestick",
+  "mesh": "SM_LB_CC0_WoodenCandlestick",
+  "status": "ok",
+  "source_objects": [
+   "wooden_candlestick"
+  ],
+  "min": [
+   -4.86,
+   -4.93,
+   0.0
+  ],
+  "max": [
+   4.86,
+   4.93,
+   21.97
+  ],
+  "dims_cm": [
+   9.72,
+   9.87,
+   21.97
+  ],
+  "tris": 8000,
+  "slots": [
+   "wooden_candlestick"
+  ],
+  "ucx": 0,
+  "textures": [
+   "wooden_candlestick_arm_2k.jpg",
+   "wooden_candlestick_diff_2k.jpg",
+   "wooden_candlestick_nor_gl_2k.jpg"
+  ],
+  "pivot_shift_cm": [
+   0.01,
+   -0.01,
+   0.0
+  ],
+  "orientation": {
+   "top15_xy_extent": [
+    2.7,
+    2.6
+   ],
+   "bottom15_xy_extent": [
+    9.7,
+    9.9
+   ]
+  },
+  "decimated_from_tris": 212992,
+  "source_total_tris": 212992
+ },
+ {
+  "id": "rock_moss_set_02",
+  "mesh": "SM_LB_CC0_RockMossSet02_01",
+  "status": "ok",
+  "source_objects": [
+   "rock_moss_set_02_rock07"
+  ],
+  "min": [
+   -84.65,
+   -60.76,
+   0.0
+  ],
+  "max": [
+   84.65,
+   60.76,
+   74.48
+  ],
+  "dims_cm": [
+   169.3,
+   121.51,
+   74.48
+  ],
+  "tris": 9826,
+  "slots": [
+   "rock_moss_set_02"
+  ],
+  "ucx": 1,
+  "textures": [
+   "rock_moss_set_02_diff_2k.jpg",
+   "rock_moss_set_02_nor_gl_2k.jpg",
+   "rock_moss_set_02_rough_2k.jpg"
+  ],
+  "pivot_shift_cm": [
+   296.21,
+   72.39,
+   9.29
+  ],
+  "orientation": {
+   "top15_xy_extent": [
+    122.5,
+    109.6
+   ],
+   "bottom15_xy_extent": [
+    121.4,
+    114.6
+   ]
+  },
+  "source_total_tris": 57647
+ },
+ {
+  "id": "rock_moss_set_02",
+  "mesh": "SM_LB_CC0_RockMossSet02_02",
+  "status": "ok",
+  "source_objects": [
+   "rock_moss_set_02_rock08"
+  ],
+  "min": [
+   -60.32,
+   -49.18,
+   0.0
+  ],
+  "max": [
+   60.32,
+   49.18,
+   52.87
+  ],
+  "dims_cm": [
+   120.63,
+   98.36,
+   52.87
+  ],
+  "tris": 8000,
+  "slots": [
+   "rock_moss_set_02"
+  ],
+  "ucx": 1,
+  "textures": [
+   "rock_moss_set_02_diff_2k.jpg",
+   "rock_moss_set_02_nor_gl_2k.jpg",
+   "rock_moss_set_02_rough_2k.jpg"
+  ],
+  "pivot_shift_cm": [
+   89.87,
+   77.66,
+   1.1
+  ],
+  "orientation": {
+   "top15_xy_extent": [
+    65.7,
+    73.1
+   ],
+   "bottom15_xy_extent": [
+    120.3,
+    90.4
+   ]
+  },
+  "source_total_tris": 57647
+ },
+ {
+  "id": "rock_moss_set_02",
+  "mesh": "SM_LB_CC0_RockMossSet02_03",
+  "status": "ok",
+  "source_objects": [
+   "rock_moss_set_02_rock09"
+  ],
+  "min": [
+   -81.45,
+   -50.57,
+   0.0
+  ],
+  "max": [
+   81.45,
+   50.57,
+   60.99
+  ],
+  "dims_cm": [
+   162.89,
+   101.15,
+   60.99
+  ],
+  "tris": 7894,
+  "slots": [
+   "rock_moss_set_02"
+  ],
+  "ucx": 1,
+  "textures": [
+   "rock_moss_set_02_diff_2k.jpg",
+   "rock_moss_set_02_nor_gl_2k.jpg",
+   "rock_moss_set_02_rough_2k.jpg"
+  ],
+  "pivot_shift_cm": [
+   -89.07,
+   70.85,
+   3.79
+  ],
+  "orientation": {
+   "top15_xy_extent": [
+    45.4,
+    48.0
+   ],
+   "bottom15_xy_extent": [
+    153.1,
+    100.1
+   ]
+  },
+  "source_total_tris": 57647
+ },
+ {
+  "id": "rock_moss_set_02",
+  "mesh": "SM_LB_CC0_RockMossSet02_04",
+  "status": "ok",
+  "source_objects": [
+   "rock_moss_set_02_rock10"
+  ],
+  "min": [
+   -110.15,
+   -77.58,
+   0.0
+  ],
+  "max": [
+   110.15,
+   77.58,
+   76.85
+  ],
+  "dims_cm": [
+   220.29,
+   155.16,
+   76.85
+  ],
+  "tris": 8000,
+  "slots": [
+   "rock_moss_set_02"
+  ],
+  "ucx": 1,
+  "textures": [
+   "rock_moss_set_02_diff_2k.jpg",
+   "rock_moss_set_02_nor_gl_2k.jpg",
+   "rock_moss_set_02_rough_2k.jpg"
+  ],
+  "pivot_shift_cm": [
+   -336.8,
+   72.01,
+   2.43
+  ],
+  "orientation": {
+   "top15_xy_extent": [
+    134.4,
+    78.9
+   ],
+   "bottom15_xy_extent": [
+    187.6,
+    143.3
+   ]
+  },
+  "source_total_tris": 57647
+ },
+ {
+  "id": "rock_moss_set_02",
+  "mesh": "SM_LB_CC0_RockMossSet02_05",
+  "status": "ok",
+  "source_objects": [
+   "rock_moss_set_02_rock11"
+  ],
+  "min": [
+   -97.68,
+   -76.44,
+   0.0
+  ],
+  "max": [
+   97.68,
+   76.44,
+   131.05
+  ],
+  "dims_cm": [
+   195.37,
+   152.89,
+   131.05
+  ],
+  "tris": 8000,
+  "slots": [
+   "rock_moss_set_02"
+  ],
+  "ucx": 1,
+  "textures": [
+   "rock_moss_set_02_diff_2k.jpg",
+   "rock_moss_set_02_nor_gl_2k.jpg",
+   "rock_moss_set_02_rough_2k.jpg"
+  ],
+  "pivot_shift_cm": [
+   213.34,
+   -115.0,
+   25.73
+  ],
+  "orientation": {
+   "top15_xy_extent": [
+    97.9,
+    76.7
+   ],
+   "bottom15_xy_extent": [
+    147.8,
+    62.9
+   ]
+  },
+  "source_total_tris": 57647
+ },
+ {
+  "id": "rock_moss_set_02",
+  "mesh": "SM_LB_CC0_RockMossSet02_06",
+  "status": "ok",
+  "source_objects": [
+   "rock_moss_set_02_rock12"
+  ],
+  "min": [
+   -78.98,
+   -72.17,
+   0.0
+  ],
+  "max": [
+   78.98,
+   72.17,
+   73.6
+  ],
+  "dims_cm": [
+   157.96,
+   144.35,
+   73.6
+  ],
+  "tris": 7999,
+  "slots": [
+   "rock_moss_set_02"
+  ],
+  "ucx": 1,
+  "textures": [
+   "rock_moss_set_02_diff_2k.jpg",
+   "rock_moss_set_02_nor_gl_2k.jpg",
+   "rock_moss_set_02_rough_2k.jpg"
+  ],
+  "pivot_shift_cm": [
+   -19.18,
+   -96.54,
+   3.22
+  ],
+  "orientation": {
+   "top15_xy_extent": [
+    92.5,
+    108.2
+   ],
+   "bottom15_xy_extent": [
+    142.6,
+    90.3
+   ]
+  },
+  "source_total_tris": 57647
+ },
+ {
+  "id": "rock_moss_set_02",
+  "mesh": "SM_LB_CC0_RockMossSet02_07",
+  "status": "ok",
+  "source_objects": [
+   "rock_moss_set_02_rock13"
+  ],
+  "min": [
+   -104.57,
+   -56.91,
+   0.0
+  ],
+  "max": [
+   104.57,
+   56.91,
+   125.64
+  ],
+  "dims_cm": [
+   209.14,
+   113.83,
+   125.64
+  ],
+  "tris": 7928,
+  "slots": [
+   "rock_moss_set_02"
+  ],
+  "ucx": 1,
+  "textures": [
+   "rock_moss_set_02_diff_2k.jpg",
+   "rock_moss_set_02_nor_gl_2k.jpg",
+   "rock_moss_set_02_rough_2k.jpg"
+  ],
+  "pivot_shift_cm": [
+   -262.64,
+   -112.34,
+   31.52
+  ],
+  "orientation": {
+   "top15_xy_extent": [
+    181.7,
+    112.8
+   ],
+   "bottom15_xy_extent": [
+    110.8,
+    109.8
+   ]
+  },
+  "source_total_tris": 57647
+ }
+]

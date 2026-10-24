@@ -707,6 +707,40 @@ def box_hull(x0, x1, y0, y1, z0, z1):
     return box(x0, x1, y0, y1, z0, z1, SLOT_MASONRY, 0.0)
 
 
+def cylinder(r, h, segs, mat=SLOT_TRIM):
+    """Capped cylinder along +Z: axis through the origin, z in [0, h], `segs` side quads (props helper)."""
+    b = bmesh.new()
+    lo = [b.verts.new((r * math.cos(2 * math.pi * i / segs), r * math.sin(2 * math.pi * i / segs), 0.0)) for i in range(segs)]
+    hi = [b.verts.new((r * math.cos(2 * math.pi * i / segs), r * math.sin(2 * math.pi * i / segs), h)) for i in range(segs)]
+    b.faces.new(lo)
+    b.faces.new(hi)
+    for i in range(segs):
+        j = (i + 1) % segs
+        b.faces.new((lo[i], lo[j], hi[j], hi[i]))
+    _outward(b)
+    bm_set_mat(b, mat)
+    return b
+
+
+def ring(r_out, r_in, h, segs, mat=SLOT_TRIM):
+    """Annulus prism along +Z (outer radius r_out, hole radius r_in), z in [0, h] (props helper)."""
+    b = bmesh.new()
+
+    def circ(r, z):
+        return [b.verts.new((r * math.cos(2 * math.pi * i / segs), r * math.sin(2 * math.pi * i / segs), z)) for i in range(segs)]
+
+    oo0, oo1, ii0, ii1 = circ(r_out, 0.0), circ(r_out, h), circ(r_in, 0.0), circ(r_in, h)
+    for i in range(segs):
+        j = (i + 1) % segs
+        b.faces.new((oo0[i], oo0[j], oo1[j], oo1[i]))      # outer wall
+        b.faces.new((ii0[i], ii0[j], ii1[j], ii1[i]))      # inner wall
+        b.faces.new((oo1[i], oo1[j], ii1[j], ii1[i]))      # top
+        b.faces.new((oo0[i], oo0[j], ii0[j], ii0[i]))      # bottom
+    _outward(b)
+    bm_set_mat(b, mat)
+    return b
+
+
 # ----------------------------------------------------------------------------------------------
 # export
 # ----------------------------------------------------------------------------------------------
@@ -727,9 +761,10 @@ def _to_object(bm, name, mats, ue_y_flip, link=True, collection=None):
     return ob
 
 
-def export_piece_fbx(name, bm, ucx_bms, path):
-    """Export bm (+ UCX convex hull meshes) to FBX at `path` with Unreal-correct axes and units."""
-    mats = get_materials()
+def export_piece_fbx(name, bm, ucx_bms, path, mats=None):
+    """Export bm (+ UCX convex hull meshes) to FBX at `path` with Unreal-correct axes and units.
+    mats = list of bpy materials for the slots (default: the three kit materials)."""
+    mats = get_materials() if mats is None else mats
     objs = [_to_object(bm, name, mats, True)]
     for i, ub in enumerate(ucx_bms):
         objs.append(_to_object(ub, "UCX_%s_%02d" % (name, i), None, True))
@@ -751,9 +786,9 @@ def export_piece_fbx(name, bm, ucx_bms, path):
         bpy.data.meshes.remove(me)
 
 
-def add_to_layout(name, bm, ucx_bms, location):
+def add_to_layout(name, bm, ucx_bms, location, mats=None):
     """Un-mirrored copy for the review .blend (authoring space)."""
-    mats = get_materials()
+    mats = get_materials() if mats is None else mats
     ob = _to_object(bm, name, mats, False)
     ob.location = location
     for i, ub in enumerate(ucx_bms):

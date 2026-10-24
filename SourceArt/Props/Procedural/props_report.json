@@ -1,0 +1,404 @@
+[
+ {
+  "name": "SM_LB_Prop_Key_Chapel",
+  "min": [
+   -7.8,
+   -2.6,
+   0.0
+  ],
+  "max": [
+   7.8,
+   2.6,
+   1.48
+  ],
+  "dims": [
+   15.6,
+   5.2,
+   1.48
+  ],
+  "tris": 1554,
+  "slots": [
+   "MAT_Iron"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 1,
+  "pivot_shift_applied": [
+   0.2,
+   -0.0,
+   0.384
+  ],
+  "note": "tall UCX 17x7x12 (Z 0..12) deliberately taller than the visual; lies flat, bow at -X, bit toward -Y",
+  "seconds": 0.3
+ },
+ {
+  "name": "SM_LB_Prop_KeyLedge_50x50x70",
+  "min": [
+   -27.0,
+   -27.0,
+   0.0
+  ],
+  "max": [
+   27.0,
+   27.0,
+   70.0
+  ],
+  "dims": [
+   54.0,
+   54.0,
+   70.0
+  ],
+  "tris": 21984,
+  "slots": [
+   "MAT_Trim"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 1,
+  "pivot_shift_applied": [
+   -0.187,
+   -0.089,
+   -0.0
+  ],
+  "note": "flat 22x22 centre exactly at Z 70; UCX 50x50x70 inside the 54x54 base",
+  "seconds": 0.9
+ },
+ {
+  "name": "SM_LB_Prop_Gravestone_A",
+  "min": [
+   -30.0,
+   -7.0,
+   0.0
+  ],
+  "max": [
+   30.0,
+   7.0,
+   95.0
+  ],
+  "dims": [
+   60.0,
+   14.0,
+   95.0
+  ],
+  "tris": 9654,
+  "slots": [
+   "MAT_Stone"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 1,
+  "pivot_shift_applied": [
+   0.038,
+   -0.036,
+   -0.0
+  ],
+  "note": "round-top slab, front +Y / back -Y (symmetric)",
+  "seconds": 0.6
+ },
+ {
+  "name": "SM_LB_Prop_Gravestone_B",
+  "min": [
+   -27.5,
+   -7.0,
+   0.0
+  ],
+  "max": [
+   27.5,
+   7.0,
+   85.0
+  ],
+  "dims": [
+   55.0,
+   14.0,
+   85.0
+  ],
+  "tris": 13892,
+  "slots": [
+   "MAT_Stone"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 1,
+  "pivot_shift_applied": [
+   0.157,
+   0.03,
+   0.241
+  ],
+  "note": "gabled slab; incised cross relief (1 cm deep) on the +Y face",
+  "seconds": 0.7
+ },
+ {
+  "name": "SM_LB_Prop_Gravestone_C",
+  "min": [
+   -30.0,
+   -7.0,
+   0.0
+  ],
+  "max": [
+   30.0,
+   7.0,
+   45.0
+  ],
+  "dims": [
+   60.0,
+   14.0,
+   45.0
+  ],
+  "tris": 6676,
+  "slots": [
+   "MAT_Stone"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 1,
+  "pivot_shift_applied": [
+   0.278,
+   0.1,
+   -0.0
+  ],
+  "note": "broken slab with a faceted fractured top",
+  "seconds": 0.4
+ },
+ {
+  "name": "SM_LB_Prop_Gravestone_C_Frag",
+  "min": [
+   -25.0,
+   -7.0,
+   0.0
+  ],
+  "max": [
+   25.0,
+   7.0,
+   30.0
+  ],
+  "dims": [
+   50.0,
+   14.0,
+   30.0
+  ],
+  "tris": 2276,
+  "slots": [
+   "MAT_Stone"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 1,
+  "pivot_shift_applied": [
+   0.124,
+   -0.003,
+   -0.597
+  ],
+  "note": "fallen fragment of Gravestone_C",
+  "seconds": 0.1
+ },
+ {
+  "name": "SM_LB_Prop_Gravestone_D",
+  "min": [
+   -17.5,
+   -10.0,
+   0.0
+  ],
+  "max": [
+   17.5,
+   10.0,
+   45.0
+  ],
+  "dims": [
+   35.0,
+   20.0,
+   45.0
+  ],
+  "tris": 2482,
+  "slots": [
+   "MAT_Stone"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 1,
+  "pivot_shift_applied": [
+   0.17,
+   -0.024,
+   -0.0
+  ],
+  "note": "rough irregular hull marker; UCX = the convex hull",
+  "seconds": 0.1
+ },
+ {
+  "name": "SM_LB_Prop_StoneCross_A",
+  "min": [
+   -27.5,
+   -15.0,
+   0.0
+  ],
+  "max": [
+   27.5,
+   15.0,
+   150.0
+  ],
+  "dims": [
+   55.0,
+   30.0,
+   150.0
+  ],
+  "tris": 16410,
+  "slots": [
+   "MAT_Stone"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 3,
+  "pivot_shift_applied": [
+   0.037,
+   0.01,
+   -0.0
+  ],
+  "note": "latin cross 55 wide, upright 18x18, base block 40x30x20 (so total Y = 30)",
+  "seconds": 0.9
+ },
+ {
+  "name": "SM_LB_Prop_WoodCross_A",
+  "min": [
+   -27.5,
+   -5.6,
+   0.0
+  ],
+  "max": [
+   27.5,
+   5.6,
+   120.0
+  ],
+  "dims": [
+   55.0,
+   11.2,
+   120.0
+  ],
+  "tris": 2968,
+  "slots": [
+   "MAT_Wood",
+   "MAT_Rope"
+  ],
+  "slots_used": [
+   0,
+   1
+  ],
+  "ucx": 2,
+  "pivot_shift_applied": [
+   -0.019,
+   -0.0,
+   -0.0
+  ],
+  "note": "upright 120, arm 55 at Z 80..88, 3 rope rings (r 5, tube 1.2 cm)",
+  "seconds": 0.1
+ },
+ {
+  "name": "SM_LB_Prop_GraveMound_A",
+  "min": [
+   -100.0,
+   -45.0,
+   0.0
+  ],
+  "max": [
+   100.0,
+   45.0,
+   22.0
+  ],
+  "dims": [
+   200.0,
+   90.0,
+   22.0
+  ],
+  "tris": 1566,
+  "slots": [
+   "MAT_Earth"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 0,
+  "pivot_shift_applied": [
+   1.251,
+   0.588,
+   -0.0
+  ],
+  "note": "no collision (walkable); dome with noisy outline and surface",
+  "seconds": 0.0
+ },
+ {
+  "name": "SM_LB_Prop_HandCart_A",
+  "min": [
+   -140.0,
+   -70.0,
+   0.0
+  ],
+  "max": [
+   140.0,
+   70.0,
+   100.0
+  ],
+  "dims": [
+   280.0,
+   140.0,
+   100.0
+  ],
+  "tris": 2372,
+  "slots": [
+   "MAT_Wood",
+   "MAT_Iron"
+  ],
+  "slots_used": [
+   0,
+   1
+  ],
+  "ucx": 3,
+  "pivot_shift_applied": [
+   -55.0,
+   -0.0,
+   -0.0
+  ],
+  "note": "shafts toward +X; axle at design X 0 (bed centre) Z 50; bed top Z 75 when level",
+  "seconds": 0.0
+ },
+ {
+  "name": "SM_LB_Prop_FirePit_A",
+  "min": [
+   -64.8,
+   -65.54,
+   0.0
+  ],
+  "max": [
+   64.8,
+   65.54,
+   29.25
+  ],
+  "dims": [
+   129.59,
+   131.09,
+   29.25
+  ],
+  "tris": 6708,
+  "slots": [
+   "MAT_Stone",
+   "MAT_Charred"
+  ],
+  "slots_used": [
+   0,
+   1
+  ],
+  "ucx": 1,
+  "pivot_shift_applied": [
+   -1.965,
+   -1.633,
+   -0.0
+  ],
+  "note": "9 stones on a O110 circle (centres), ash disc O80, 3 charred logs; UCX = box around the stone ring",
+  "seconds": 0.2
+ }
+]
