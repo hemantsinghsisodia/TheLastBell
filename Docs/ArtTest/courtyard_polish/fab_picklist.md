@@ -24,7 +24,7 @@ Source project: `C:\Hemant\FabStaging\LB_FabStaging`. Select **only these meshes
 | `Meshes/Props/SM_Torture_Devices_Breaking_Wheel` | wooden wheel leaning on the north wall (replaces the planned cart wheel) |
 | `Candles/Meshes/SM_Candle_Melted_03` | melted candle stubs on the key ledge |
 | `Candles/Meshes/SM_Candle_Melted_07` | melted candle stubs on the key ledge |
-| `Meshes/Props/SM_Skull_01` | one weathered skull at the edge of the fresh grave (sparing) |
+| `Meshes/Skeletons/SM_Skull_01` | one weathered skull at the edge of the fresh grave (sparing) |
 
 Not migrated now (kept in staging for the crypt, Phase 9): skeleton piles/arms/legs, other skulls, shackles, bars, Judas cradle, iron belt, dungeon door/window/walls, tavern food props, weapons.
 
