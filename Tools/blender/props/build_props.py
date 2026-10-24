@@ -611,27 +611,55 @@ def build_mound():
 
 
 # ==============================================================================================
-# HAND CART
+# HAND CART  (A2: worn / abandoned)
 # ==============================================================================================
+def rounded_box(x0, x1, y0, y1, z0, z1, mat, r):
+    b = K.box(x0, x1, y0, y1, z0, z1, mat, 0.0)
+    if r > 0:
+        K.bevel_all(b, r, 20.0, segments=2)
+    return b
+
+
+def sag(bm, amount, x_half=85.0):
+    """Bed boards droop by `amount` cm in the middle of the bed (parabola along X)."""
+    for v in bm.verts:
+        t = 1.0 - (v.co.x / x_half) ** 2
+        if t > 0:
+            v.co.z -= amount * t
+    return bm
+
+
 def build_cart():
     rng = random.Random(3301)
-    W, L = 100.0, 170.0
     wood, iron = 0, 1
     wp = []
     for s in (-1, 1):                                       # shafts (also the side rails of the bed frame)
-        wp.append(K.box(-85, 195, s * 46 - 4, s * 46 + 4, 65, 72, wood, 0.5))
+        wp.append(rounded_box(-85, 195, s * 46 - 4, s * 46 + 4, 65, 72, wood, 1.5))
     for xc in (-81.0, -27.0, 27.0, 81.0):                   # cross beams 8 x 8
-        wp.append(K.box(xc - 4, xc + 4, -46, 46, 64, 72, wood, 0.5))
-    for k in range(6):                                      # 6 planks 15 x 3 with 2 cm gaps, bed top Z 75
+        wp.append(rounded_box(xc - 4, xc + 4, -46, 46, 64, 72, wood, 1.5))
+    MISSING = 2                                             # one floor plank is gone
+    for k in range(6):                                      # 6 planks 15 x 3 with 2 cm gaps, bed top Z 75 (before sag)
+        if k == MISSING:
+            continue
         y0 = -50.0 + k * 17.0
-        xa, xb = -85.0 + rng.uniform(-0.0, 1.5), 85.0 - rng.uniform(0.0, 1.5)
-        wp.append(K.box(xa, xb, y0, y0 + 15.0, 72, 75, wood, 0.4))
-    for s in (-1, 1):                                       # side boards 25 high x 2.5 thick
-        y0, y1 = (47.5, 50.0) if s > 0 else (-50.0, -47.5)
-        wp.append(K.box(-85, 85, y0, y1, 75, 100, wood, 0.4))
+        xa, xb = -85.0 + rng.uniform(0.0, 3.0), 85.0 - rng.uniform(0.0, 3.0)
+        p = K.box(xa, xb, y0, y0 + 15.0, 72, 75, wood, 0.0)
+        lng = [e for e in p.edges if e.calc_length() > 100.0]
+        bmesh.ops.subdivide_edges(p, edges=lng, cuts=16, use_grid_fill=True)
+        K.bevel_all(p, 1.5, 20.0, segments=2)
+        sag(p, rng.uniform(1.0, 2.0))
+        wp.append(p)
+    # side boards 25 high x 2.5 thick: -Y board intact; +Y board cracked in two and missing its rear 40 cm
+    wp.append(rounded_box(-85, 85, -50.0, -47.5, 75, 100, wood, 1.5))
+    rear = [(-45.0, 75.0), (-39.0, 83.0), (-46.0, 91.0), (-37.0, 100.0), (20.0, 100.0), (15.0, 90.0), (20.5, 80.0), (19.0, 75.0)]
+    front = [(22.0, 75.0), (21.0, 88.0), (24.5, 95.0), (21.0, 100.0), (85.0, 100.0), (85.0, 75.0)]
+    for poly in (rear, front):
+        piece = K.prism(poly, 'y', 47.5, 50.0, wood)
+        K.bevel_all(piece, 1.0, 25.0, segments=2)
+        wp.append(piece)
     for s in (-1, 1):                                       # axle saddles
         y0, y1 = (42.0, 50.0) if s > 0 else (-50.0, -42.0)
-        wp.append(K.box(-6, 6, y0, y1, 54, 64.5, wood, 0.4))
+        wp.append(rounded_box(-6, 6, y0, y1, 54, 64.5, wood, 1.0))
     axle = K.cylinder(4.0, 140.0, 12, wood)
     rot(axle, 'X', 90.0)                                    # z -> -y
     shift(axle, 0, 70.0, 50.0)
@@ -652,92 +680,158 @@ def build_cart():
             parts.append(sp)
         w = join(parts)
         rot(w, 'X', 90.0)                                   # wheel axis Z -> Y
+        if s > 0:
+            rot(w, 'Y', 3.0)                                # loose wheel: tilted 3 degrees on the axle (about the bed's X axis)
         shift(w, 0, s * 60.0, 50.0)
         wheels.append(w)
     bm = join(wp + wheels)
-    ucx = [ucx_box(-85, 195, -50, 50, 64, 100), ucx_box(-50, 50, 54, 66, 0, 100), ucx_box(-50, 50, -66, -54, 0, 100)]
+    ucx = [ucx_box(-85, 195, -50, 50, 64, 100), ucx_box(-50, 50, 52, 68, 0, 100), ucx_box(-50, 50, -68, -52, 0, 100)]
     return Piece(PREFIX + "HandCart_A", bm, ["MAT_Wood", "MAT_Iron"], ucx_design=ucx,
-                 note="shafts toward +X; axle at design X 0 (bed centre) Z 50; bed top Z 75 when level")
+                 note="shafts toward +X; axle at design X 0 (bed centre) Z 50; bed top Z 75 when level; +Y side board cracked and missing its rear 40 cm, one plank missing, bed sags 1-2 cm, +Y wheel tilted 3 deg")
 
 
 # ==============================================================================================
-# FIRE PIT
+# FIRE PIT  (A2: 13 overlapping flat stones, lumpy ash bed, split / broken logs)
 # ==============================================================================================
-def log_mesh(rng, length, r, segs=10, rings=9, mat=1):
+def log_mesh(rng, length, r_root, r_tip, segs=16, rings=12, mat=1, broken_end=1):
+    """Charred log along X: tapered, rough, with longitudinal cracks; one end split/ragged."""
     b = bmesh.new()
     vr = []
+    crack = set(rng.sample(range(segs), 3))
     for k in range(rings):
-        x = -length / 2 + length * k / (rings - 1)
+        t = k / (rings - 1)
+        x = -length / 2 + length * t
+        r = r_root + (r_tip - r_root) * t
         row = []
         for i in range(segs):
-            a = 2 * math.pi * i / segs + 0.03 * k
-            rr = r * (0.86 + 0.26 * rng.random())
+            a = 2 * math.pi * i / segs
+            rr = r * (0.88 + 0.22 * rng.random())
+            if i in crack:
+                rr *= 0.82
+            rr *= 1.0 + 0.05 * math.sin(t * 9.0 + i)
+            xx = x
             if k in (0, rings - 1):
-                rr *= 0.9
-            row.append(b.verts.new((x + rng.uniform(-0.6, 0.6) * (k in (0, rings - 1)), rr * math.cos(a), rr * math.sin(a))))
+                end_dir = -1 if k == 0 else 1
+                if end_dir == broken_end:
+                    # ragged / split end: some verts pulled back a lot, others stick out as splinters
+                    xx += -end_dir * rng.choice((0.5, 1.5, 3.0, 6.0, 9.0)) * (1.0 if i % 3 else 0.4)
+                    rr *= rng.uniform(0.55, 0.95)
+                else:
+                    xx += -end_dir * rng.uniform(0.0, 1.6)
+                    rr *= 0.9
+            row.append(b.verts.new((xx, rr * math.cos(a), rr * math.sin(a))))
         vr.append(row)
     for k in range(rings - 1):
         for i in range(segs):
             j = (i + 1) % segs
             b.faces.new((vr[k][i], vr[k][j], vr[k + 1][j], vr[k + 1][i]))
-    b.faces.new(vr[0])
-    b.faces.new(vr[-1])
+    for row, sgn in ((vr[0], -1), (vr[-1], 1)):             # ragged caps: fan to an off-centre apex
+        cx = sum(v.co.x for v in row) / segs + (-sgn * 1.5 if sgn == broken_end else 0.0)
+        c = b.verts.new((cx, rng.uniform(-0.8, 0.8), rng.uniform(-0.8, 0.8)))
+        for i in range(segs):
+            j = (i + 1) % segs
+            b.faces.new((row[i], row[j], c))
+    bmesh.ops.recalc_face_normals(b, faces=b.faces)
+    K.bm_set_mat(b, mat)
+    return b
+
+
+def ash_bed(rng, radius=42.5, base=-5.0, mat=1):
+    """Irregular lumpy ash mound: flat bottom at `base`, top 3-5 cm above the ground plane (z 0), noisy outline."""
+    nth, nr = 40, 8
+    b = bmesh.new()
+    apex_z = rng.uniform(4.0, 5.0)
+    rows = []
+
+    def top_z(x, y, rho):
+        return (apex_z * (1 - rho ** 2) ** 0.9 + 0.3) * (0.55 + 0.9 * fbm3(x / 14.0 + 3, y / 14.0 + 8, 0.7, 61, 3)) - 0.5
+
+    apex = b.verts.new((0, 0, top_z(0, 0, 0)))
+    for k in range(1, nr + 1):
+        rho = k / nr
+        row = []
+        for i in range(nth):
+            th = 2 * math.pi * i / nth
+            n = fbm3(math.cos(th) * 1.6 + 7, math.sin(th) * 1.6 + 2, 0.4, 62, 3)
+            re = rho * (1.0 + 0.16 * (n - 0.5))
+            x, y = radius * re * math.cos(th), radius * re * math.sin(th)
+            row.append(b.verts.new((x, y, top_z(x, y, rho) if k < nr else 0.2 * n)))
+        rows.append(row)
+    for i in range(nth):
+        j = (i + 1) % nth
+        b.faces.new((apex, rows[0][i], rows[0][j]))
+    for k in range(nr - 1):
+        for i in range(nth):
+            j = (i + 1) % nth
+            b.faces.new((rows[k][i], rows[k + 1][i], rows[k + 1][j], rows[k][j]))
+    bottom = [b.verts.new((v.co.x, v.co.y, base)) for v in rows[-1]]
+    for i in range(nth):
+        j = (i + 1) % nth
+        b.faces.new((rows[-1][i], rows[-1][j], bottom[j], bottom[i]))
+    b.faces.new(bottom)
     bmesh.ops.recalc_face_normals(b, faces=b.faces)
     K.bm_set_mat(b, mat)
     return b
 
 
 def build_firepit():
-    rng = random.Random(4401)
+    rng = random.Random(4402)
     stone, char = 0, 1
+    N = 13
+    R = 52.0
     stones = []
-    N = 9
     for k in range(N):
-        ang = 2 * math.pi * k / N + rng.uniform(-0.07, 0.07)
-        L, Wd, Hs = rng.uniform(28.0, 35.0), rng.uniform(21.0, 28.0), rng.uniform(18.0, 28.0)
+        ang = 2 * math.pi * k / N + rng.uniform(-0.04, 0.04)
+        L = rng.uniform(29.0, 38.0)                           # along the circle
+        Wd = rng.uniform(21.0, 28.0)                          # radial width
+        Hs = Wd * rng.uniform(0.55, 0.75)                     # flat-ish
         pts = []
-        for i in range(5):                                   # footprint
-            a = 2 * math.pi * i / 5 + rng.uniform(-0.3, 0.3)
-            pts.append((L / 2 * math.cos(a) * rng.uniform(0.85, 1.0), Wd / 2 * math.sin(a) * rng.uniform(0.85, 1.0), 0.0))
-        for i in range(6):                                   # belly
-            a = 2 * math.pi * i / 6 + rng.uniform(-0.3, 0.3)
-            pts.append((L / 2 * math.cos(a) * rng.uniform(0.9, 1.05), Wd / 2 * math.sin(a) * rng.uniform(0.9, 1.05), Hs * rng.uniform(0.35, 0.6)))
-        for i in range(5):                                   # lumpy top
-            a = 2 * math.pi * i / 5 + rng.uniform(-0.4, 0.4)
-            pts.append((L / 2 * 0.7 * math.cos(a) * rng.uniform(0.5, 1.0), Wd / 2 * 0.7 * math.sin(a) * rng.uniform(0.5, 1.0), Hs * rng.uniform(0.85, 1.0)))
+        for i in range(6):                                    # footprint, irregular
+            a = 2 * math.pi * i / 6 + rng.uniform(-0.35, 0.35)
+            pts.append((L / 2 * math.cos(a) * rng.uniform(0.8, 1.0), Wd / 2 * math.sin(a) * rng.uniform(0.8, 1.0), 0.0))
+        for i in range(7):                                    # belly
+            a = 2 * math.pi * i / 7 + rng.uniform(-0.3, 0.3)
+            pts.append((L / 2 * math.cos(a) * rng.uniform(0.92, 1.08), Wd / 2 * math.sin(a) * rng.uniform(0.92, 1.1), Hs * rng.uniform(0.35, 0.65)))
+        for i in range(6):                                    # lumpy, rounded top
+            a = 2 * math.pi * i / 6 + rng.uniform(-0.5, 0.5)
+            pts.append((L / 2 * 0.65 * math.cos(a) * rng.uniform(0.4, 1.0), Wd / 2 * 0.65 * math.sin(a) * rng.uniform(0.4, 1.0), Hs * rng.uniform(0.85, 1.0)))
         s = K.hull_from_points([Vector(p) for p in pts], stone)
-        K.bevel_all(s, 1.0, 20.0)
-        densify(s, 5.0)
-        weather(s, 4410 + k, 1.0)
-        # tangent along the circle, radial outward
-        rot(s, 'Z', math.degrees(ang) + 90.0)
-        shift(s, 55.0 * math.cos(ang), 55.0 * math.sin(ang), 0.0)
+        K.bevel_all(s, 1.4, 20.0)
+        densify(s, 4.5)
+        weather(s, 4420 + k, 1.4, mask=lambda co, n: 1.0)
+        warp(s, 4430 + k, 0.8, axes=(0, 1, 2))
+        rot(s, 'Z', math.degrees(ang) + 90.0 + rng.uniform(-12.0, 12.0))
+        sink = rng.uniform(3.0, 5.0)                          # sunk into the ground (ground plane = design z 0)
+        shift(s, R * math.cos(ang), R * math.sin(ang), -sink)
         stones.append(s)
     ring_bm = join(stones)
-    ash = K.cylinder(40.0, 2.0, 28, char)
-    for v in ash.verts:
-        a = math.atan2(v.co.y, v.co.x)
-        k = 1.0 + 0.07 * (fbm3(math.cos(a) * 2 + 4, math.sin(a) * 2 + 9, 0.3, 44, 2) - 0.5) * 2
-        v.co.x *= k
-        v.co.y *= k
-        if v.co.z > 1.0:
-            v.co.z += rng.uniform(-0.3, 0.3)
+    ash = ash_bed(rng)
     logs = []
     a0 = rng.uniform(5.0, 25.0)
-    specs = [(a0, 2.0 + 6.5, (-2.0, -3.0), 0.0), (a0 + 68.0, 2.0 + 6.5 * 2 + 6.0 - 1.0, (3.0, 4.0), 7.0), (a0 + 128.0, 2.0 + 6.0, (-4.0, 11.0), 0.0)]
-    for ang, zc, (ox, oy), tilt in specs:
-        rr = rng.uniform(6.0, 7.0)
-        lg = log_mesh(rng, rng.uniform(55.0, 65.0), rr)
+    # (angle, centre z above the ground plane, offset, tilt, length, root r, tip r)
+    specs = [(a0, 4.0 + 6.5, (-2.0, -3.0), 0.0, 62.0, 7.0, 5.8),
+             (a0 + 66.0, 16.0, (3.0, 4.0), 8.0, 58.0, 6.8, 5.5),
+             (a0 + 126.0, 4.0 + 6.0, (-5.0, 12.0), -3.0, 55.0, 6.4, 5.2)]
+    for n, (ang, zc, (ox, oy), tilt, ln, r0, r1) in enumerate(specs):
+        lg = log_mesh(rng, ln, r0, r1, broken_end=1 if n != 1 else -1)
         rot(lg, 'Y', tilt)
         rot(lg, 'Z', ang)
         shift(lg, ox, oy, zc)
         logs.append(lg)
-    bm = join([ring_bm, ash] + logs)
+    chunks = []
+    for _ in range(5):                                        # small charred chunks / embers on the ash
+        r = rng.uniform(2.0, 3.6)
+        pts = [Vector((rng.uniform(-1, 1) * r, rng.uniform(-1, 1) * r, rng.uniform(0, 1) * r * 0.9)) for _ in range(9)]
+        c = K.hull_from_points(pts, char)
+        a = rng.uniform(0, 2 * math.pi)
+        d = rng.uniform(8.0, 30.0)
+        shift(c, d * math.cos(a), d * math.sin(a), 2.0)
+        chunks.append(c)
+    bm = join([ring_bm, ash] + logs + chunks)
     mn, mx = bounds(ring_bm)
-    # collision = one box around the stone ring
-    ucx = [ucx_box(mn[0], mx[0], mn[1], mx[1], 0.0, mx[2])]
+    ucx = [ucx_box(mn[0], mx[0], mn[1], mx[1], mn[2], mx[2])]
     return Piece(PREFIX + "FirePit_A", bm, ["MAT_Stone", "MAT_Charred"], ucx_design=ucx,
-                 note="9 stones on a O110 circle (centres), ash disc O80, 3 charred logs; UCX = box around the stone ring")
+                 note="13 overlapping flat stones sunk 3-5 cm below the design ground plane (the plane sits ~5 cm above pivot Z 0 after seating: sink the actor ~4 cm in the level), lumpy ash bed O85, 3 split charred logs + chunks; UCX = box around the stone ring")
 
 
 # ==============================================================================================

@@ -96,7 +96,7 @@
    -0.0
   ],
   "note": "round-top slab, front +Y / back -Y (symmetric)",
-  "seconds": 0.6
+  "seconds": 0.4
  },
  {
   "name": "SM_LB_Prop_Gravestone_B",
@@ -129,7 +129,7 @@
    0.241
   ],
   "note": "gabled slab; incised cross relief (1 cm deep) on the +Y face",
-  "seconds": 0.7
+  "seconds": 0.8
  },
  {
   "name": "SM_LB_Prop_Gravestone_C",
@@ -261,7 +261,7 @@
    -0.0
   ],
   "note": "latin cross 55 wide, upright 18x18, base block 40x30x20 (so total Y = 30)",
-  "seconds": 0.9
+  "seconds": 1.0
  },
  {
   "name": "SM_LB_Prop_WoodCross_A",
@@ -348,7 +348,7 @@
    140.0,
    100.0
   ],
-  "tris": 2372,
+  "tris": 5436,
   "slots": [
    "MAT_Wood",
    "MAT_Iron"
@@ -363,27 +363,27 @@
    -0.0,
    -0.0
   ],
-  "note": "shafts toward +X; axle at design X 0 (bed centre) Z 50; bed top Z 75 when level",
-  "seconds": 0.0
+  "note": "shafts toward +X; axle at design X 0 (bed centre) Z 50; bed top Z 75 when level; +Y side board cracked and missing its rear 40 cm, one plank missing, bed sags 1-2 cm, +Y wheel tilted 3 deg",
+  "seconds": 0.1
  },
  {
   "name": "SM_LB_Prop_FirePit_A",
   "min": [
-   -64.8,
-   -65.54,
+   -62.43,
+   -62.35,
    0.0
   ],
   "max": [
-   64.8,
-   65.54,
-   29.25
+   62.43,
+   62.35,
+   31.04
   ],
   "dims": [
-   129.59,
-   131.09,
-   29.25
+   124.85,
+   124.7,
+   31.04
   ],
-  "tris": 6708,
+  "tris": 10412,
   "slots": [
    "MAT_Stone",
    "MAT_Charred"
@@ -394,11 +394,11 @@
   ],
   "ucx": 1,
   "pivot_shift_applied": [
-   -1.965,
-   -1.633,
-   -0.0
+   -0.884,
+   0.434,
+   5.0
   ],
-  "note": "9 stones on a O110 circle (centres), ash disc O80, 3 charred logs; UCX = box around the stone ring",
-  "seconds": 0.2
+  "note": "13 overlapping flat stones sunk 3-5 cm below the design ground plane (the plane sits ~5 cm above pivot Z 0 after seating: sink the actor ~4 cm in the level), lumpy ash bed O85, 3 split charred logs + chunks; UCX = box around the stone ring",
+  "seconds": 0.5
  }
 ]

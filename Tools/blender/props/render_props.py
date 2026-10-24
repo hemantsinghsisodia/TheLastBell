@@ -147,6 +147,8 @@ def main():
     ct = put("HandCart_A", (0, 0, 0))
     shot("06_cart_3q", [ct], 35, 20, 1.0)
     shot("06b_cart_side", [ct], 90, 8, 1.0)
+    shot("06c_cart_worn_side", [ct], 215, 28, 1.0)
+    shot("06d_cart_top", [ct], 0, 80, 1.0)
     clear()
 
     # 07 fire pit

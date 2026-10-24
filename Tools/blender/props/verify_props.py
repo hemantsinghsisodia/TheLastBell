@@ -35,7 +35,7 @@ SPEC = {
     "WoodCross_A": dict(dims=(55.0, 11.2, 120.0), slots=["MAT_Wood", "MAT_Rope"], ucx=2),   # Y 11.2 = rope rings (r 5 + tube)
     "GraveMound_A": dict(dims=(200.0, 90.0, 22.0), slots=["MAT_Earth"], ucx=0),
     "HandCart_A": dict(dims=(280.0, 140.0, 100.0), slots=["MAT_Wood", "MAT_Iron"], ucx=3),  # 170 bed + 110 shafts; wheels/axle set the width
-    "FirePit_A": dict(dims=(135.0, 135.0, 27.0), tol=12.0, slots=["MAT_Stone", "MAT_Charred"], ucx=1),  # O110 stone-centre circle + 25-35 cm stones
+    "FirePit_A": dict(dims=(125.0, 125.0, 31.0), tol=5.0, slots=["MAT_Stone", "MAT_Charred"], ucx=1),  # O110 stone-centre circle + 25-35 cm stones
 }
 
 

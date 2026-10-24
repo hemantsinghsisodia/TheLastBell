@@ -352,31 +352,27 @@
  },
  {
   "id": "weed_plant_02",
-  "mesh": "SM_LB_CC0_WeedPlant02",
+  "mesh": "SM_LB_CC0_WeedPlant02_01",
   "status": "ok",
   "source_objects": [
-   "weed_plant_02_a_LOD0",
-   "weed_plant_02_b_LOD0",
-   "weed_plant_02_c_LOD0",
-   "weed_plant_02_d_LOD0",
-   "weed_plant_02_e_LOD0"
+   "weed_plant_02_a_LOD0"
   ],
   "min": [
-   -106.26,
+   -10.97,
    -14.55,
    0.0
   ],
   "max": [
-   106.26,
+   10.97,
    14.55,
-   7.51
+   7.25
   ],
   "dims_cm": [
-   212.53,
+   21.94,
    29.09,
-   7.51
+   7.25
   ],
-  "tris": 11116,
+  "tris": 2967,
   "slots": [
    "weed_plant_02"
   ],
@@ -387,50 +383,241 @@
    "weed_plant_02_nor_gl_2k.jpg"
   ],
   "pivot_shift_cm": [
-   -97.7,
+   -2.41,
    3.43,
    0.86
   ],
   "orientation": {
    "top15_xy_extent": [
-    64.0,
-    8.1
+    3.3,
+    1.5
    ],
    "bottom15_xy_extent": [
-    210.6,
+    18.6,
     27.9
    ]
   },
   "source_total_tris": 11116
  },
  {
-  "id": "nettle_plant",
-  "mesh": "SM_LB_CC0_NettlePlant",
+  "id": "weed_plant_02",
+  "mesh": "SM_LB_CC0_WeedPlant02_02",
   "status": "ok",
   "source_objects": [
-   "nettle_plant_medium_a_LOD0",
-   "nettle_plant_medium_b_LOD0",
-   "nettle_plant_small_a_LOD0",
-   "nettle_plant_small_b_LOD0",
-   "nettle_plant_tall_a_LOD0",
-   "nettle_plant_tall_b_LOD0"
+   "weed_plant_02_b_LOD0"
   ],
   "min": [
-   -54.14,
-   -4.73,
+   -9.38,
+   -9.93,
    0.0
   ],
   "max": [
-   54.14,
-   4.73,
-   21.84
+   9.38,
+   9.93,
+   6.77
   ],
   "dims_cm": [
-   108.28,
-   9.47,
-   21.84
+   18.75,
+   19.85,
+   6.77
   ],
-  "tris": 31304,
+  "tris": 2273,
+  "slots": [
+   "weed_plant_02"
+  ],
+  "ucx": 0,
+  "textures": [
+   "weed_plant_02_arm_2k.jpg",
+   "weed_plant_02_diff_2k.jpg",
+   "weed_plant_02_nor_gl_2k.jpg"
+  ],
+  "pivot_shift_cm": [
+   -51.85,
+   -1.19,
+   0.12
+  ],
+  "orientation": {
+   "top15_xy_extent": [
+    5.2,
+    5.2
+   ],
+   "bottom15_xy_extent": [
+    15.1,
+    19.7
+   ]
+  },
+  "source_total_tris": 11116
+ },
+ {
+  "id": "weed_plant_02",
+  "mesh": "SM_LB_CC0_WeedPlant02_03",
+  "status": "ok",
+  "source_objects": [
+   "weed_plant_02_c_LOD0"
+  ],
+  "min": [
+   -7.12,
+   -7.17,
+   0.0
+  ],
+  "max": [
+   7.12,
+   7.17,
+   5.49
+  ],
+  "dims_cm": [
+   14.24,
+   14.35,
+   5.49
+  ],
+  "tris": 1766,
+  "slots": [
+   "weed_plant_02"
+  ],
+  "ucx": 0,
+  "textures": [
+   "weed_plant_02_arm_2k.jpg",
+   "weed_plant_02_diff_2k.jpg",
+   "weed_plant_02_nor_gl_2k.jpg"
+  ],
+  "pivot_shift_cm": [
+   -100.91,
+   0.39,
+   0.16
+  ],
+  "orientation": {
+   "top15_xy_extent": [
+    3.3,
+    1.1
+   ],
+   "bottom15_xy_extent": [
+    14.2,
+    8.9
+   ]
+  },
+  "source_total_tris": 11116
+ },
+ {
+  "id": "weed_plant_02",
+  "mesh": "SM_LB_CC0_WeedPlant02_04",
+  "status": "ok",
+  "source_objects": [
+   "weed_plant_02_d_LOD0"
+  ],
+  "min": [
+   -7.7,
+   -5.41,
+   0.0
+  ],
+  "max": [
+   7.7,
+   5.41,
+   3.89
+  ],
+  "dims_cm": [
+   15.41,
+   10.81,
+   3.89
+  ],
+  "tris": 1928,
+  "slots": [
+   "weed_plant_02"
+  ],
+  "ucx": 0,
+  "textures": [
+   "weed_plant_02_arm_2k.jpg",
+   "weed_plant_02_diff_2k.jpg",
+   "weed_plant_02_nor_gl_2k.jpg"
+  ],
+  "pivot_shift_cm": [
+   -150.04,
+   -0.78,
+   0.04
+  ],
+  "orientation": {
+   "top15_xy_extent": [
+    4.0,
+    4.4
+   ],
+   "bottom15_xy_extent": [
+    15.4,
+    10.8
+   ]
+  },
+  "source_total_tris": 11116
+ },
+ {
+  "id": "weed_plant_02",
+  "mesh": "SM_LB_CC0_WeedPlant02_05",
+  "status": "ok",
+  "source_objects": [
+   "weed_plant_02_e_LOD0"
+  ],
+  "min": [
+   -5.96,
+   -3.05,
+   0.0
+  ],
+  "max": [
+   5.96,
+   3.05,
+   4.01
+  ],
+  "dims_cm": [
+   11.93,
+   6.1,
+   4.01
+  ],
+  "tris": 2182,
+  "slots": [
+   "weed_plant_02"
+  ],
+  "ucx": 0,
+  "textures": [
+   "weed_plant_02_arm_2k.jpg",
+   "weed_plant_02_diff_2k.jpg",
+   "weed_plant_02_nor_gl_2k.jpg"
+  ],
+  "pivot_shift_cm": [
+   -198.0,
+   -0.29,
+   0.35
+  ],
+  "orientation": {
+   "top15_xy_extent": [
+    4.5,
+    1.0
+   ],
+   "bottom15_xy_extent": [
+    4.1,
+    6.1
+   ]
+  },
+  "source_total_tris": 11116
+ },
+ {
+  "id": "nettle_plant",
+  "mesh": "SM_LB_CC0_NettlePlant_01",
+  "status": "ok",
+  "source_objects": [
+   "nettle_plant_medium_a_LOD0"
+  ],
+  "min": [
+   -3.86,
+   -4.45,
+   0.0
+  ],
+  "max": [
+   3.86,
+   4.45,
+   13.15
+  ],
+  "dims_cm": [
+   7.73,
+   8.91,
+   13.15
+  ],
+  "tris": 5896,
   "slots": [
    "nettle_plant"
   ],
@@ -441,18 +628,263 @@
    "nettle_plant_nor_gl_2k.jpg"
   ],
   "pivot_shift_cm": [
-   -48.88,
+   -41.02,
+   -0.2,
+   0.16
+  ],
+  "orientation": {
+   "top15_xy_extent": [
+    5.0,
+    3.7
+   ],
+   "bottom15_xy_extent": [
+    5.0,
+    5.7
+   ]
+  },
+  "source_total_tris": 31304
+ },
+ {
+  "id": "nettle_plant",
+  "mesh": "SM_LB_CC0_NettlePlant_02",
+  "status": "ok",
+  "source_objects": [
+   "nettle_plant_medium_b_LOD0"
+  ],
+  "min": [
+   -3.27,
+   -3.31,
+   0.0
+  ],
+  "max": [
+   3.27,
+   3.31,
+   10.46
+  ],
+  "dims_cm": [
+   6.55,
+   6.62,
+   10.46
+  ],
+  "tris": 5664,
+  "slots": [
+   "nettle_plant"
+  ],
+  "ucx": 0,
+  "textures": [
+   "nettle_plant_arm_2k.jpg",
+   "nettle_plant_diff_2k.jpg",
+   "nettle_plant_nor_gl_2k.jpg"
+  ],
+  "pivot_shift_cm": [
+   -61.29,
+   -0.04,
+   0.17
+  ],
+  "orientation": {
+   "top15_xy_extent": [
+    3.6,
+    3.5
+   ],
+   "bottom15_xy_extent": [
+    3.7,
+    1.9
+   ]
+  },
+  "source_total_tris": 31304
+ },
+ {
+  "id": "nettle_plant",
+  "mesh": "SM_LB_CC0_NettlePlant_03",
+  "status": "ok",
+  "source_objects": [
+   "nettle_plant_small_a_LOD0"
+  ],
+  "min": [
+   -3.21,
+   -2.17,
+   0.0
+  ],
+  "max": [
+   3.21,
+   2.17,
+   6.26
+  ],
+  "dims_cm": [
+   6.42,
+   4.35,
+   6.26
+  ],
+  "tris": 3592,
+  "slots": [
+   "nettle_plant"
+  ],
+  "ucx": 0,
+  "textures": [
+   "nettle_plant_arm_2k.jpg",
+   "nettle_plant_diff_2k.jpg",
+   "nettle_plant_nor_gl_2k.jpg"
+  ],
+  "pivot_shift_cm": [
+   -80.12,
+   -0.05,
+   0.13
+  ],
+  "orientation": {
+   "top15_xy_extent": [
+    2.5,
+    2.7
+   ],
+   "bottom15_xy_extent": [
+    3.6,
+    3.2
+   ]
+  },
+  "source_total_tris": 31304
+ },
+ {
+  "id": "nettle_plant",
+  "mesh": "SM_LB_CC0_NettlePlant_04",
+  "status": "ok",
+  "source_objects": [
+   "nettle_plant_small_b_LOD0"
+  ],
+  "min": [
+   -2.99,
+   -1.93,
+   0.0
+  ],
+  "max": [
+   2.99,
+   1.93,
+   2.17
+  ],
+  "dims_cm": [
+   5.97,
+   3.85,
+   2.17
+  ],
+  "tris": 1088,
+  "slots": [
+   "nettle_plant"
+  ],
+  "ucx": 0,
+  "textures": [
+   "nettle_plant_arm_2k.jpg",
+   "nettle_plant_diff_2k.jpg",
+   "nettle_plant_nor_gl_2k.jpg"
+  ],
+  "pivot_shift_cm": [
+   -100.03,
+   0.1,
+   0.07
+  ],
+  "orientation": {
+   "top15_xy_extent": [
+    5.4,
+    2.1
+   ],
+   "bottom15_xy_extent": [
+    0.7,
+    1.9
+   ]
+  },
+  "source_total_tris": 31304
+ },
+ {
+  "id": "nettle_plant",
+  "mesh": "SM_LB_CC0_NettlePlant_05",
+  "status": "ok",
+  "source_objects": [
+   "nettle_plant_tall_a_LOD0"
+  ],
+  "min": [
+   -5.18,
+   -4.5,
+   0.0
+  ],
+  "max": [
+   5.18,
+   4.5,
+   21.68
+  ],
+  "dims_cm": [
+   10.36,
+   9.01,
+   21.68
+  ],
+  "tris": 6984,
+  "slots": [
+   "nettle_plant"
+  ],
+  "ucx": 0,
+  "textures": [
+   "nettle_plant_arm_2k.jpg",
+   "nettle_plant_diff_2k.jpg",
+   "nettle_plant_nor_gl_2k.jpg"
+  ],
+  "pivot_shift_cm": [
+   0.08,
+   -0.08,
+   0.39
+  ],
+  "orientation": {
+   "top15_xy_extent": [
+    5.3,
+    6.9
+   ],
+   "bottom15_xy_extent": [
+    7.1,
+    5.4
+   ]
+  },
+  "source_total_tris": 31304
+ },
+ {
+  "id": "nettle_plant",
+  "mesh": "SM_LB_CC0_NettlePlant_06",
+  "status": "ok",
+  "source_objects": [
+   "nettle_plant_tall_b_LOD0"
+  ],
+  "min": [
+   -4.12,
+   -4.73,
+   0.0
+  ],
+  "max": [
+   4.12,
+   4.73,
+   19.27
+  ],
+  "dims_cm": [
+   8.23,
+   9.47,
+   19.27
+  ],
+  "tris": 8080,
+  "slots": [
+   "nettle_plant"
+  ],
+  "ucx": 0,
+  "textures": [
+   "nettle_plant_arm_2k.jpg",
+   "nettle_plant_diff_2k.jpg",
+   "nettle_plant_nor_gl_2k.jpg"
+  ],
+  "pivot_shift_cm": [
+   -20.01,
    -0.12,
    0.56
   ],
   "orientation": {
    "top15_xy_extent": [
-    23.1,
-    6.9
+    4.6,
+    6.0
    ],
    "bottom15_xy_extent": [
-    106.1,
-    7.8
+    3.5,
+    4.5
    ]
   },
   "source_total_tris": 31304
@@ -655,38 +1087,27 @@
  },
  {
   "id": "moss_01",
-  "mesh": "SM_LB_CC0_Moss01",
+  "mesh": "SM_LB_CC0_Moss01_01",
   "status": "ok",
   "source_objects": [
-   "moss_01_a_LOD0",
-   "moss_01_b_LOD0",
-   "moss_01_c_LOD0",
-   "moss_01_d_LOD0",
-   "moss_01_e_LOD0",
-   "moss_01_f_LOD0",
-   "moss_01_g_LOD0",
-   "moss_01_h_LOD0",
-   "moss_01_i_LOD0",
-   "moss_01_j_LOD0",
-   "moss_01_tall_a_LOD0",
-   "moss_01_tall_b_LOD0"
+   "moss_01_a_LOD0"
   ],
   "min": [
-   -10.76,
-   -1.47,
+   -0.71,
+   -0.8,
    0.0
   ],
   "max": [
-   10.76,
-   1.47,
-   4.04
+   0.71,
+   0.8,
+   2.6
   ],
   "dims_cm": [
-   21.53,
-   2.94,
-   4.04
+   1.42,
+   1.59,
+   2.6
   ],
-  "tris": 204,
+  "tris": 24,
   "slots": [
    "moss_01"
   ],
@@ -697,9 +1118,548 @@
    "moss_01_nor_gl_2k.jpg"
   ],
   "pivot_shift_cm": [
-   -9.87,
-   0.46,
+   0.18,
+   -0.21,
+   -0.0
+  ],
+  "orientation": {
+   "top15_xy_extent": [
+    0.1,
+    0.2
+   ],
+   "bottom15_xy_extent": [
+    0.9,
+    0.4
+   ]
+  },
+  "source_total_tris": 204
+ },
+ {
+  "id": "moss_01",
+  "mesh": "SM_LB_CC0_Moss01_02",
+  "status": "ok",
+  "source_objects": [
+   "moss_01_b_LOD0"
+  ],
+  "min": [
+   -0.47,
+   -0.48,
+   0.0
+  ],
+  "max": [
+   0.47,
+   0.48,
+   1.48
+  ],
+  "dims_cm": [
+   0.95,
+   0.95,
+   1.48
+  ],
+  "tris": 16,
+  "slots": [
+   "moss_01"
+  ],
+  "ucx": 0,
+  "textures": [
+   "moss_01_arm_2k.jpg",
+   "moss_01_diff_2k.jpg",
+   "moss_01_nor_gl_2k.jpg"
+  ],
+  "pivot_shift_cm": [
+   -1.83,
+   -0.03,
+   -0.0
+  ],
+  "orientation": {
+   "top15_xy_extent": [
+    0.0,
+    0.0
+   ],
+   "bottom15_xy_extent": [
+    0.4,
+    0.4
+   ]
+  },
+  "source_total_tris": 204
+ },
+ {
+  "id": "moss_01",
+  "mesh": "SM_LB_CC0_Moss01_03",
+  "status": "ok",
+  "source_objects": [
+   "moss_01_c_LOD0"
+  ],
+  "min": [
+   -0.91,
+   -0.7,
+   0.0
+  ],
+  "max": [
+   0.91,
+   0.7,
+   2.77
+  ],
+  "dims_cm": [
+   1.82,
+   1.4,
+   2.77
+  ],
+  "tris": 24,
+  "slots": [
+   "moss_01"
+  ],
+  "ucx": 0,
+  "textures": [
+   "moss_01_arm_2k.jpg",
+   "moss_01_diff_2k.jpg",
+   "moss_01_nor_gl_2k.jpg"
+  ],
+  "pivot_shift_cm": [
+   -3.48,
+   -0.2,
+   0.01
+  ],
+  "orientation": {
+   "top15_xy_extent": [
+    0.1,
+    0.2
+   ],
+   "bottom15_xy_extent": [
+    0.1,
+    0.1
+   ]
+  },
+  "source_total_tris": 204
+ },
+ {
+  "id": "moss_01",
+  "mesh": "SM_LB_CC0_Moss01_04",
+  "status": "ok",
+  "source_objects": [
+   "moss_01_d_LOD0"
+  ],
+  "min": [
+   -0.68,
+   -0.78,
+   0.0
+  ],
+  "max": [
+   0.68,
+   0.78,
+   2.67
+  ],
+  "dims_cm": [
+   1.36,
+   1.56,
+   2.67
+  ],
+  "tris": 16,
+  "slots": [
+   "moss_01"
+  ],
+  "ucx": 0,
+  "textures": [
+   "moss_01_arm_2k.jpg",
+   "moss_01_diff_2k.jpg",
+   "moss_01_nor_gl_2k.jpg"
+  ],
+  "pivot_shift_cm": [
+   -5.39,
+   0.1,
    0.35
+  ],
+  "orientation": {
+   "top15_xy_extent": [
+    0.0,
+    0.0
+   ],
+   "bottom15_xy_extent": [
+    0.1,
+    0.1
+   ]
+  },
+  "source_total_tris": 204
+ },
+ {
+  "id": "moss_01",
+  "mesh": "SM_LB_CC0_Moss01_05",
+  "status": "ok",
+  "source_objects": [
+   "moss_01_e_LOD0"
+  ],
+  "min": [
+   -0.56,
+   -0.64,
+   0.0
+  ],
+  "max": [
+   0.56,
+   0.64,
+   2.16
+  ],
+  "dims_cm": [
+   1.12,
+   1.27,
+   2.16
+  ],
+  "tris": 20,
+  "slots": [
+   "moss_01"
+  ],
+  "ucx": 0,
+  "textures": [
+   "moss_01_arm_2k.jpg",
+   "moss_01_diff_2k.jpg",
+   "moss_01_nor_gl_2k.jpg"
+  ],
+  "pivot_shift_cm": [
+   -7.89,
+   0.17,
+   -0.0
+  ],
+  "orientation": {
+   "top15_xy_extent": [
+    0.1,
+    0.1
+   ],
+   "bottom15_xy_extent": [
+    0.0,
+    0.0
+   ]
+  },
+  "source_total_tris": 204
+ },
+ {
+  "id": "moss_01",
+  "mesh": "SM_LB_CC0_Moss01_06",
+  "status": "ok",
+  "source_objects": [
+   "moss_01_f_LOD0"
+  ],
+  "min": [
+   -0.64,
+   -0.65,
+   0.0
+  ],
+  "max": [
+   0.64,
+   0.65,
+   3.01
+  ],
+  "dims_cm": [
+   1.28,
+   1.3,
+   3.01
+  ],
+  "tris": 20,
+  "slots": [
+   "moss_01"
+  ],
+  "ucx": 0,
+  "textures": [
+   "moss_01_arm_2k.jpg",
+   "moss_01_diff_2k.jpg",
+   "moss_01_nor_gl_2k.jpg"
+  ],
+  "pivot_shift_cm": [
+   -9.66,
+   -0.02,
+   -0.0
+  ],
+  "orientation": {
+   "top15_xy_extent": [
+    0.1,
+    0.2
+   ],
+   "bottom15_xy_extent": [
+    0.0,
+    0.0
+   ]
+  },
+  "source_total_tris": 204
+ },
+ {
+  "id": "moss_01",
+  "mesh": "SM_LB_CC0_Moss01_07",
+  "status": "ok",
+  "source_objects": [
+   "moss_01_g_LOD0"
+  ],
+  "min": [
+   -0.64,
+   -0.47,
+   0.0
+  ],
+  "max": [
+   0.64,
+   0.47,
+   2.16
+  ],
+  "dims_cm": [
+   1.29,
+   0.95,
+   2.16
+  ],
+  "tris": 16,
+  "slots": [
+   "moss_01"
+  ],
+  "ucx": 0,
+  "textures": [
+   "moss_01_arm_2k.jpg",
+   "moss_01_diff_2k.jpg",
+   "moss_01_nor_gl_2k.jpg"
+  ],
+  "pivot_shift_cm": [
+   -11.11,
+   0.08,
+   0.0
+  ],
+  "orientation": {
+   "top15_xy_extent": [
+    0.1,
+    0.3
+   ],
+   "bottom15_xy_extent": [
+    0.5,
+    0.1
+   ]
+  },
+  "source_total_tris": 204
+ },
+ {
+  "id": "moss_01",
+  "mesh": "SM_LB_CC0_Moss01_08",
+  "status": "ok",
+  "source_objects": [
+   "moss_01_h_LOD0"
+  ],
+  "min": [
+   -0.53,
+   -0.29,
+   0.0
+  ],
+  "max": [
+   0.53,
+   0.29,
+   1.76
+  ],
+  "dims_cm": [
+   1.07,
+   0.57,
+   1.76
+  ],
+  "tris": 6,
+  "slots": [
+   "moss_01"
+  ],
+  "ucx": 0,
+  "textures": [
+   "moss_01_arm_2k.jpg",
+   "moss_01_diff_2k.jpg",
+   "moss_01_nor_gl_2k.jpg"
+  ],
+  "pivot_shift_cm": [
+   -15.59,
+   -0.29,
+   -0.0
+  ],
+  "orientation": {
+   "top15_xy_extent": [
+    0.0,
+    0.0
+   ],
+   "bottom15_xy_extent": [
+    0.5,
+    0.3
+   ]
+  },
+  "source_total_tris": 204
+ },
+ {
+  "id": "moss_01",
+  "mesh": "SM_LB_CC0_Moss01_09",
+  "status": "ok",
+  "source_objects": [
+   "moss_01_i_LOD0"
+  ],
+  "min": [
+   -0.82,
+   -0.64,
+   0.0
+  ],
+  "max": [
+   0.82,
+   0.64,
+   1.47
+  ],
+  "dims_cm": [
+   1.65,
+   1.27,
+   1.47
+  ],
+  "tris": 6,
+  "slots": [
+   "moss_01"
+  ],
+  "ucx": 0,
+  "textures": [
+   "moss_01_arm_2k.jpg",
+   "moss_01_diff_2k.jpg",
+   "moss_01_nor_gl_2k.jpg"
+  ],
+  "pivot_shift_cm": [
+   -18.21,
+   0.05,
+   -0.0
+  ],
+  "orientation": {
+   "top15_xy_extent": [
+    0.0,
+    0.0
+   ],
+   "bottom15_xy_extent": [
+    0.0,
+    0.0
+   ]
+  },
+  "source_total_tris": 204
+ },
+ {
+  "id": "moss_01",
+  "mesh": "SM_LB_CC0_Moss01_10",
+  "status": "ok",
+  "source_objects": [
+   "moss_01_j_LOD0"
+  ],
+  "min": [
+   -0.83,
+   -0.94,
+   0.0
+  ],
+  "max": [
+   0.83,
+   0.94,
+   0.9
+  ],
+  "dims_cm": [
+   1.66,
+   1.88,
+   0.9
+  ],
+  "tris": 8,
+  "slots": [
+   "moss_01"
+  ],
+  "ucx": 0,
+  "textures": [
+   "moss_01_arm_2k.jpg",
+   "moss_01_diff_2k.jpg",
+   "moss_01_nor_gl_2k.jpg"
+  ],
+  "pivot_shift_cm": [
+   -19.81,
+   0.99,
+   0.22
+  ],
+  "orientation": {
+   "top15_xy_extent": [
+    0.2,
+    1.0
+   ],
+   "bottom15_xy_extent": [
+    0.0,
+    0.0
+   ]
+  },
+  "source_total_tris": 204
+ },
+ {
+  "id": "moss_01",
+  "mesh": "SM_LB_CC0_Moss01_11",
+  "status": "ok",
+  "source_objects": [
+   "moss_01_tall_a_LOD0"
+  ],
+  "min": [
+   -1.07,
+   -0.57,
+   0.0
+  ],
+  "max": [
+   1.07,
+   0.57,
+   3.36
+  ],
+  "dims_cm": [
+   2.14,
+   1.13,
+   3.36
+  ],
+  "tris": 24,
+  "slots": [
+   "moss_01"
+  ],
+  "ucx": 0,
+  "textures": [
+   "moss_01_arm_2k.jpg",
+   "moss_01_diff_2k.jpg",
+   "moss_01_nor_gl_2k.jpg"
+  ],
+  "pivot_shift_cm": [
+   -13.07,
+   -0.19,
+   0.04
+  ],
+  "orientation": {
+   "top15_xy_extent": [
+    0.6,
+    0.6
+   ],
+   "bottom15_xy_extent": [
+    0.5,
+    0.5
+   ]
+  },
+  "source_total_tris": 204
+ },
+ {
+  "id": "moss_01",
+  "mesh": "SM_LB_CC0_Moss01_12",
+  "status": "ok",
+  "source_objects": [
+   "moss_01_tall_b_LOD0"
+  ],
+  "min": [
+   -0.88,
+   -0.59,
+   0.0
+  ],
+  "max": [
+   0.88,
+   0.59,
+   3.72
+  ],
+  "dims_cm": [
+   1.77,
+   1.18,
+   3.72
+  ],
+  "tris": 24,
+  "slots": [
+   "moss_01"
+  ],
+  "ucx": 0,
+  "textures": [
+   "moss_01_arm_2k.jpg",
+   "moss_01_diff_2k.jpg",
+   "moss_01_nor_gl_2k.jpg"
+  ],
+  "pivot_shift_cm": [
+   -14.11,
+   0.02,
+   0.04
   ],
   "orientation": {
    "top15_xy_extent": [
@@ -707,8 +1667,8 @@
     1.2
    ],
    "bottom15_xy_extent": [
-    20.6,
-    1.2
+    0.5,
+    0.5
    ]
   },
   "source_total_tris": 204
