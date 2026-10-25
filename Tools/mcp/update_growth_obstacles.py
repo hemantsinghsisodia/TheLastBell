@@ -26,7 +26,9 @@ MPC_DIR = "/Game/LastBell/Materials"
 MPC_NAME = "MPC_LB_GrowthObstacles"
 SLOTS = 48
 LEVEL = "/Game/LastBell/Maps/L_Monastery"
-PREFIXES = ("KW_", "KG_", "KC_", "KD_", "KA_Cliff", "Chapel_", "Cl_", "KP_Statue", "Arc_", "KK_", "KB_", "KT_", "KR_", "KS_")
+PREFIXES = ("KW_", "KG_", "KC_", "KD_", "KA_Cliff", "Chapel_", "Cl_", "KP_Statue", "Arc_", "KK_", "KB_", "KT_", "KR_", "KS_",
+            # P7-FIX3 G4: twin-arch arcade (Arc_*: bays + columns), garden kerbs / well-head / trees, roof posts, arcade rubble
+            "Garden_WellHead", "Garden_Kerb", "Garden_DeadTree", "Garden_Snag_Trunk", "Roof_N_Post", "Roof_S_Post", "Rub_")
 SKIP_PREFIX = ("KD_FountainPost", "KW_Pl", "KG_Pl", "KC_Pl", "KW_Butt", "KG_Butt", "KC_Butt")      # plinth pieces are inside the wall footprint anyway
 REGION = (150.0, 6300.0, -2800.0, 2800.0)
 MIN_LEN_KEEP = 0.0
@@ -51,13 +53,23 @@ def collect(ue, prefixes):
         if not b.get("isValid"):
             continue
         mn, mx = b["min"], b["max"]
-        if mx["z"] < 60 or mn["z"] > 400:
+        if (mx["z"] < 60 or mn["z"] > 400) and not lab.startswith("Garden_Kerb"):      # kerbs are only 40-45 cm high but outline the beds
             continue
         x0, x1, y0, y1 = mn["x"], mx["x"], mn["y"], mx["y"]
         if x1 < REGION[0] or x0 > REGION[1] or y1 < REGION[2] or y0 > REGION[3] or (x1 - x0) > 9000 or (y1 - y0) > 9000:
             continue
         boxes.append([x0, y0, x1, y1, lab])
-    return boxes
+    # a kerbed bed is one obstacle: the union of its kerb pieces (label Garden_Kerb[Corner]_<bed>_...); inside it the earth patch covers the floor
+    beds = {}
+    rest = []
+    for b in boxes:
+        if b[4].startswith("Garden_Kerb"):
+            k = b[4].split("_")[2]
+            u = beds.setdefault(k, [b[0], b[1], b[2], b[3], "Garden_Bed_" + k])
+            u[0], u[1], u[2], u[3] = min(u[0], b[0]), min(u[1], b[1]), max(u[2], b[2]), max(u[3], b[3])
+        else:
+            rest.append(b)
+    return rest + list(beds.values())
 
 
 def merge(boxes):
