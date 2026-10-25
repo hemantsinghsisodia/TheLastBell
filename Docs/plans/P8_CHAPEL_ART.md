@@ -628,3 +628,20 @@ The owner migrates the assets per `Docs/ArtTest/chapel/fab_picklist_p8.md`. **P8
 13. **Also:**
     - `KC_DoorTympanum` (`StaticMeshActor_812`, plank panel in the main door's tympanum) and `PointLight_2` (chapel-door warm light) stay.
     - Pew seat height 45 and back top 95 are fine for `MaxStepHeight` 45: pews are BlockAll and are not meant to be climbed.
+
+**C2 (2026-10-26, after the P8-3 review, commits abe0728…296fbd0).** P8-3 is accepted, with these decisions:
+- **Accepted deviations:**
+  - Wall details stand 3 cm proud (not 5/8), so the 60 cm envelope and the §1.2 bounds stay exact.
+  - The `_Clue` bay spans local Y −8…60: the hood and sill ledge project 8 cm into the nave, and its world bounds read Y 742–810. Place it exactly like the other bays.
+  - `CrossFinial_A` is 130 tall.
+  - The backdrop is a zero-thickness quad: place it at X 9440, facing −X.
+  - The truss is now 30 wide; rafters 40, collar 35, braces 30, posts 30 × 35.
+- **Textures** come from `ExternalAssets/Generated/chapel/`, which is git-ignored. If they're missing, regenerate with `python Tools/textures/gen_chapel_textures.py` (deterministic).
+- **Slates:** `MI_Kit_Slate` uses `bUseARM` with `T_LB_RoofSlates_arm` (the source roughness map is constant 1.0), plus `T_LB_RoofSlates_diff` / `_nor_dx`, with UV mode (not world-aligned). Start the UV scale at U 0.2, V 0.3 per 100 cm (≈ 25 × 20 cm slates) and tune by eye on the roof capture.
+- **Placement references from the P8-3 report:**
+  - `Altar_A` local Z 0 = world 30.
+  - `Glass_East` local Z 0 = world 310 (lights to 464.7, quatrefoil at 480).
+  - `Glass_Lancet*` / `Glass_Clue_Ext` local Z 0 = sill.
+  - The glass slabs are 1 cm thick and centred in Y: place them in the groove at wall-local Y 39–42.
+  - `PricketStand_150`'s shaft is 4.5 cm off the bbox centre.
+  - `Cobweb_Corner_A`'s corner edge is at local (−60, −60).
