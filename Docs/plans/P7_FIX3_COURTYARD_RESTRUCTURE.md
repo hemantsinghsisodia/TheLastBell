@@ -200,3 +200,5 @@ Fixes, in this order. Read back and record old → new for each.
    - Recapture g6_01, g6_03, g6_04, g6_06, g6_14, g6_15 (overwrite) and give the B2 four-number luma table plus the B3 colour numbers.
    - Save the map and every touched asset, check not dirty, run the suite with the map saved (78/78 + 4 Courtyard WalkPaths + RouteBot), commit (include this plan file in your commit), stop.
    - Leave the chapel interior (g6_12, mean 0.40) untouched: Phase 8 note only.
+
+**As built (2026-10-25, G6b/G6c; supersedes the numbers in G6/B2/B3 where they differ, see D-058/D-059):** SkyAtmosphere_1 hidden, fog cutoff 1,000,000; moon 0.9 lux (190,205,235); Moon_Fill 0.06; SkyLight_1 0.28 (225,220,215); Light_Approach_0..2 70 lm (190,205,235); Light_WellHead_Warm 1200 lm r 650; Light_Route_Lantern_1..3 400 lm; Light_TowerExt_0..2 300 lm (190,205,235); ColorSaturationShadows 0.65; EV100 1.15; tower luma 0.09 accepted (R-31); lantern glass not emissive (R-32).

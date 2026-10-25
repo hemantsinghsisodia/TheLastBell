@@ -228,6 +228,6 @@ Props checked: 212 (excluding 6 overhead). Violations: 0
 Minimum lane distance (walk-level props): 73 cm (Plinth_Key)
 
 ## G5 addendum (vegetation scatter)
-- 914 PCG-scattered instances in 243 ISM components (19 `PCGV_*` volumes) plus 4 hand-placed Searsia actors: all read back as `collisionEnabled = NoCollision` / profile `NoCollision`, so none of them can block a lane (not part of the table above).
+- After the G5 tune and wall-base follow-up (2080d81, 84103d0): 2248 PCG-scattered instances in 312 ISM components (19 `PCGV_*` volumes; first pass was 914 in 243) plus 4 hand-placed Searsia actors; closest instance 120 cm from any route centreline: all read back as `collisionEnabled = NoCollision` / profile `NoCollision`, so none of them can block a lane (not part of the table above).
 - Every scattered instance centre is >= 123 cm from every route centreline (the 240 cm wide `LB_PCG_Exclude` strips keep 120 cm clear); 0 instances inside the plaza box or the well-house interior; instance Z range -3..+3 (nothing landed on kerb tops).
 - The 36 exclusion actors are `TriggerVolume`s tagged `LB_PCG_Exclude`; their (and the 19 PCG volumes') brush collision is set to `NoCollision`: with the default Trigger profile they answered the interaction trace and made `RouteBot.Monastery` fail at the chapel key.
