@@ -31,6 +31,11 @@ KIT_VIEWS = [
     ("fix3_arcade_broken_A_3q", ["=ArcadeBay_1000x60x400_BrokenA"], 28, 18, 1.0, 60, 50),
     ("fix3_arcade_broken_B_3q", ["=ArcadeBay_1000x60x400_BrokenB"], -28, 18, 1.0, 60, 50),
     ("fix3_arcade_broken_AB_back", ["=ArcadeBay_1000x60x400_BrokenA", "=ArcadeBay_1000x60x400_BrokenB"], 200, 20, 1.0, 60, 50),
+    ("fix3_arcade_columns_front", ["=ArcadeBay_1000x60x400", "+COLUMNS"], 0, 4, 1.0, 60, 50),
+    ("fix3_arcade_columns_3q", ["=ArcadeBay_1000x60x400", "+COLUMNS"], 30, 14, 1.0, 60, 50),
+    ("fix3_arcade_columns_low", ["=ArcadeBay_1000x60x400", "+COLUMNS"], 22, -6, 0.9, 60, 40),
+    ("fix3_arcade_row_columns", ["=ArcadeBay_1000x60x400_BrokenA", "=ArcadeBay_1000x60x400", "=ArcadeBay_1000x60x400_BrokenB", "+COLUMNS"], 15, 8, 1.0, 40, 50),
+    ("fix3_arcade_column", ["=ArcadeColumn_30x30x300"], 25, 8, 1.0, 60, 50),
     ("fix3_kerbs", ["Kerb"], 22, 28, 1.0, 40, 50),
 ]
 PROP_VIEWS = [
@@ -227,7 +232,8 @@ def main():
     for name, subs, az, el, df, gap, lens in views:
         if only and not any(k in name for k in only):
             continue
-        sel = pick(meshes, subs)
+        want_cols = "+COLUMNS" in subs
+        sel = pick(meshes, [x for x in subs if x != "+COLUMNS"])
         if name.endswith("ivy_cards"):
             sel = [o for o in sel if o.name.endswith("_Green")]
         if name.endswith("ivy_dead_cards"):
@@ -247,6 +253,15 @@ def main():
             xmin, xmax = min(c.x for c in bb), max(c.x for c in bb)
             o.location = (cur - xmin, 0.0, 0.0)
             cur += (xmax - xmin) + gap
+        if want_cols:                                   # a column under the centre springer of every bay (column top = bay Z 0)
+            colsrc = [o for o in meshes if o.name.endswith("ArcadeColumn_30x30x300")][0]
+            for bay in list(sel):
+                c = colsrc.copy()
+                c.data = colsrc.data
+                c.hide_render = False
+                c.location = (bay.location.x + 500.0, 30.0, -300.0)
+                sc.collection.objects.link(c)
+                sel.append(c)
         bpy.context.view_layer.update()
         cam.data.lens = lens
         mn, mx = RK.world_bbox(sel)

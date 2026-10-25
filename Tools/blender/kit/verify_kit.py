@@ -30,23 +30,22 @@ MATS = ("MAT_Masonry", "MAT_Trim", "MAT_Rubble")
 CLEAR = {
     "Doorway_Pointed_400x60x400": (140, 260, 0, 60, 0, 240),
     "Gate_Arch_1200x300x800": (400, 800, 0, 300, 0, 300),
-    # P7-FIX3 arcade: the collision must leave the whole rectangle free (the visual four-centred arch is lower at the springing,
-    # so the visual ray test uses the arch profile itself, see ARCH_RAYS)
-    "ArcadeBay_1000x60x400": (50, 950, 0, 60, 0, 250),
-    "ArcadeBay_1000x60x400_BrokenA": (50, 350, 0, 60, 0, 200),
-    "ArcadeBay_1000x60x400_BrokenB": (650, 950, 0, 60, 0, 200),
+    # P7-FIX3 B1 arcade (twin drop-pointed arches): each opening's rectangle must be collision-clear (a list of rectangles)
+    "ArcadeBay_1000x60x400": [(50, 475, 0, 60, 0, 220), (525, 950, 0, 60, 0, 220)],
+    "ArcadeBay_1000x60x400_BrokenA": [(50, 475, 0, 60, 0, 220), (525, 640, 0, 60, 0, 200)],
+    "ArcadeBay_1000x60x400_BrokenB": [(360, 475, 0, 60, 0, 200), (525, 950, 0, 60, 0, 220)],
 }
 # pieces whose visual opening is the arch intrados (BK.arch_intrados_z), not the full clear rectangle: x range for the rays
 ARCH_RAYS = {
     "ArcadeBay_1000x60x400": (52.0, 948.0),
-    "ArcadeBay_1000x60x400_BrokenA": (52.0, 345.0),
-    "ArcadeBay_1000x60x400_BrokenB": (655.0, 948.0),
+    "ArcadeBay_1000x60x400_BrokenA": (52.0, 640.0),
+    "ArcadeBay_1000x60x400_BrokenB": (360.0, 948.0),
 }
 EXPECT_UCX = {
     "Wall_400x60x800_Broken": 3, "Wall_400x60x400_Broken": 3, "Doorway_Pointed_400x60x400": 3,
     "Gate_Arch_1200x300x800": 3, "Rubble_Heap_400x300x130": 2, "Cliff_Slab_500x300x600_A": 40,
     "Cliff_Slab_500x300x600_B": 40, "Cliff_Slab_500x300x300": 24, "Cliff_End_200x300x600": 96, "Buttress_100x150x800": 2, "Well_Wall_450x50x250": 3, "Well_Wall_350x50x250": 3,
-    "ArcadeBay_1000x60x400": 3, "ArcadeBay_1000x60x400_BrokenA": 2, "ArcadeBay_1000x60x400_BrokenB": 2,
+    "ArcadeBay_1000x60x400": 4, "ArcadeBay_1000x60x400_BrokenA": 4, "ArcadeBay_1000x60x400_BrokenB": 4,
 }
 
 
@@ -186,12 +185,14 @@ def check_piece(path, name, spec_dims):
         for i in range(3):
             if b[0][i] < org[i] - TOL or b[1][i] > org[i] + spec_dims[i] + TOL:
                 fail("%s outside the envelope on %s" % (u.name, "XYZ"[i]))
-    # clear opening
+    # clear opening(s): a rectangle or a list of rectangles that the collision must leave free
     clear = CLEAR.get(short)
     if clear:
-        x0, x1, y0, y1, z0, z1 = clear
-        cbox = (Vector((x0, y0, z0)), Vector((x1, y1, z1)))
-        worst = max([overlap_volume(cbox, b) for b in ub] or [0.0])
+        rects = clear if isinstance(clear, list) else [clear]
+        worst = 0.0
+        for (x0, x1, y0, y1, z0, z1) in rects:
+            cbox = (Vector((x0, y0, z0)), Vector((x1, y1, z1)))
+            worst = max([worst] + [overlap_volume(cbox, b) for b in ub])
         res['ucx_overlap_with_clear_cm3'] = round(worst, 3)
         if worst > 1.0:
             fail("collision overlaps the clear opening (%.1f cm3)" % worst)
@@ -205,22 +206,27 @@ def check_piece(path, name, spec_dims):
         hits = 0
         n = 0
         arch = ARCH_RAYS.get(short)
-        for ix in range(1, 20 if not arch else 60):
-            for iz in range(1, 15):
-                x = x0 + 0.5 + (x1 - x0 - 1.0) * ix / 20.0
-                z = z0 + 0.5 + (z1 - z0 - 1.0) * iz / 15.0
-                if arch:                                   # rays only through the real arch opening (intrados height - 2 cm)
-                    x = arch[0] + (arch[1] - arch[0]) * ix / 60.0
-                    zi = BK.arch_intrados_z(x)
-                    if zi is None or zi < 4.0:
-                        continue
-                    z = 0.5 + (zi - 2.5) * iz / 15.0
-                # ray along file-space +Y through the piece; file y = -ue_y
-                origin = Vector((x / sc, 20.0 / sc, z / sc))
-                h = bvh.ray_cast(origin, Vector((0, -1, 0)))
-                n += 1
-                if h[0] is not None:
-                    hits += 1
+        samples = []
+        if arch:                                           # rays only through the real arch openings (intrados height - 2 cm)
+            for ix in range(1, 60):
+                x = arch[0] + (arch[1] - arch[0]) * ix / 60.0
+                zi = BK.arch_intrados_z(x)
+                if zi is None or zi < 4.0:
+                    continue
+                for iz in range(1, 15):
+                    samples.append((x, 0.5 + (zi - 2.5) * iz / 15.0))
+        else:
+            (x0, x1, y0, y1, z0, z1) = rects[0]
+            for ix in range(1, 20):
+                for iz in range(1, 15):
+                    samples.append((x0 + 0.5 + (x1 - x0 - 1.0) * ix / 20.0, z0 + 0.5 + (z1 - z0 - 1.0) * iz / 15.0))
+        for (x, z) in samples:
+            # ray along file-space +Y through the piece; file y = -ue_y
+            origin = Vector((x / sc, 20.0 / sc, z / sc))
+            h = bvh.ray_cast(origin, Vector((0, -1, 0)))
+            n += 1
+            if h[0] is not None:
+                hits += 1
         bm.free()
         res['clear_ray_hits'] = "%d/%d" % (hits, n)
         if hits:

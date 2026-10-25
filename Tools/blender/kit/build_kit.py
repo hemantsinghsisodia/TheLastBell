@@ -731,88 +731,68 @@ def build_window_blind(name, seed=19):
 
 
 # ==============================================================================================
-# P7-FIX3 G2a: cloister arcade bay (four-centred pointed arch) and garden kerbs
+# P7-FIX3 G2a + B1: cloister arcade bay = TWIN drop-pointed arches on a central column; garden kerbs
 # ==============================================================================================
 ARC_L, ARC_T, ARC_H = 1000.0, 60.0, 400.0
-ARC_X0, ARC_X1, ARC_RISE = 50.0, 950.0, 300.0       # opening X 50..950, springing Z 0, apex Z 300
-ARC_R_LOW, ARC_PHI = 150.0, 57.0                    # lower (corner) arc radius cm, junction angle deg
-ARC_RING = 60.0                                     # voussoir ring width (radial)
+ARC_RING = 50.0                                     # voussoir ring width (radial)
 ARC_BAND_TOP = 370.0                                # masonry band top; coping 370..400
 ARC_RECESS = 2.0                                    # band face recessed behind ring + coping
 ARC_COURSES = [50.0] * 6 + [35.0, 35.0]
+ARC_SPANS = ((50.0, 475.0), (525.0, 950.0))         # the two openings (425 clear each), springing Z 0, apex ~ Z 300
+ARC_R = 0.75 * 425.0                                # drop-pointed: radius = 0.75 x span, centres inside the span
+ARC_X_END_A = 650.0                                 # BrokenA keeps X 0..650 (BrokenB the mirror: X 350..1000)
 
 
-class FourCentre:
-    """Four-centred (Tudor) pointed arch: two lower arcs of radius r centred on the springing line and two upper arcs
-    of radius R (centres below the springing line) that meet in a point on the axis.  Offset curves (extrados)
-    are concentric, so radial joints stay radial."""
+class DropArch:
+    """Two-centred drop-pointed arch over [xa, xb] (centres on the springing line inside the span).  Offset curves
+    (extrados) are concentric, so radial joints stay radial.  Same interface as the old four-centred arch."""
 
-    def __init__(self, x0=ARC_X0, x1=ARC_X1, rise=ARC_RISE, r=ARC_R_LOW, phi_deg=ARC_PHI):
-        self.cx = (x0 + x1) * 0.5
-        a = (x1 - x0) * 0.5
-        p = math.radians(phi_deg)
-        A = a - r
-        d = (A * A + rise * rise - r * r) / (2 * A * math.cos(p) - 2 * rise * math.sin(p) + 2 * r)
-        self.x0, self.r, self.R, self.phi = x0, r, r + d, p
-        self.C1 = (x0 + r, 0.0)
-        self.C2 = (x0 + r + d * math.cos(p), -d * math.sin(p))
-        self.th_a0 = self.theta_apex(0.0)
-        L1, L2 = r * p, self.R * (self.th_a0 - p)
-        self.u_junction = L1 / (L1 + L2)
-        self.length = L1 + L2
+    def __init__(self, xa, xb, R=ARC_R):
+        self.xa, self.xb, self.R = xa, xb, R
+        self.mid = (xa + xb) * 0.5
+        self.CLx = xa + R                              # centre of the left arc
+        self.length = R * self.theta_apex(0.0)
 
     def theta_apex(self, t):
-        return math.acos((self.C2[0] - self.cx) / (self.R + t))
+        return math.acos((self.CLx - self.mid) / (self.R + t))
 
     def pt(self, u, t):
         """Left-half point at parameter u (0 springing .. 1 apex), radial offset t (outside positive)."""
-        uj = self.u_junction
-        if u <= uj + 1e-12:
-            th = self.phi * (u / uj)
-            return (self.C1[0] - (self.r + t) * math.cos(th), (self.r + t) * math.sin(th))
-        f = (u - uj) / (1.0 - uj)
-        th = self.phi + (self.theta_apex(t) - self.phi) * f
-        return (self.C2[0] - (self.R + t) * math.cos(th), self.C2[1] + (self.R + t) * math.sin(th))
+        th = self.theta_apex(t) * u
+        return (self.CLx - (self.R + t) * math.cos(th), (self.R + t) * math.sin(th))
 
-    def curve_left(self, t, n_low=10, n_up=24):
-        uj = self.u_junction
-        us = [uj * i / n_low for i in range(n_low)] + [uj + (1 - uj) * i / n_up for i in range(n_up + 1)]
-        return [self.pt(u, t) for u in us]
+    def curve_left(self, t, n=24):
+        return [self.pt(i / n, t) for i in range(n + 1)]
 
     def mirror(self, p):
-        return (2 * self.cx - p[0], p[1])
+        return (2 * self.mid - p[0], p[1])
 
-    def intrados_z(self, x):
-        """Intrados height at X (None outside the opening)."""
-        if x < self.x0 or x > 2 * self.cx - self.x0:
-            return None
-        if x > self.cx:
-            x = 2 * self.cx - x
-        lo, hi = 0.0, 1.0
-        for _ in range(48):
-            mid = (lo + hi) * 0.5
-            if self.pt(mid, 0.0)[0] < x:
-                lo = mid
-            else:
-                hi = mid
-        return self.pt(lo, 0.0)[1]
-
-    def extrados_z(self, x, t=ARC_RING):
-        pts = self.curve_left(t, 40, 80)
-        if x > self.cx:
-            x = 2 * self.cx - x
-        best = None
-        for (xa, za), (xb, zb) in zip(pts, pts[1:]):
-            if xa <= x <= xb and xb > xa:
-                best = za + (zb - za) * (x - xa) / (xb - xa)
-        return best if best is not None else 0.0
+    def z_at(self, x, t):
+        if x > self.mid:
+            x = 2 * self.mid - x
+        dx = x - self.CLx
+        r = self.R + t
+        return math.sqrt(r * r - dx * dx) if abs(dx) < r else None
 
 
-ARCH = FourCentre()
+ARCHES = [DropArch(a, b) for a, b in ARC_SPANS]
 
 
 def arch_intrados_z(x):
-    return ARCH.intrados_z(x)
+    """Intrados height at X (None if X is not inside one of the two openings)."""
+    for a in ARCHES:
+        if a.xa < x < a.xb:
+            return a.z_at(x, 0.0)
+    return None
+
+
+def arch_extrados_z(x):
+    best = 0.0
+    for a in ARCHES:
+        z = a.z_at(x, ARC_RING)
+        if z is not None and a.xa - ARC_RING <= x <= a.xb + ARC_RING:
+            best = max(best, z)
+    return best
 
 
 def clip_x(poly, xmin, xmax):
@@ -844,67 +824,69 @@ def clip_x(poly, xmin, xmax):
 
 
 def arcade_ring_stones(seed, bevel=1.5):
-    """Voussoir stones of the ring (both halves), slot 1, full thickness Y 0..60, chamfered; clipped to the slab X 0..1000.
-    Every other stone is a 'long' stone that bites 5 cm into the band (keystone halves are not)."""
+    """Voussoir stones of both rings (slot 1, Y 0..60, 1.5 cm chamfer).  Each ring is clipped to its half of the bay
+    (X 0..500 / 500..1000) so the two rings meet at the centre; every other stone bites 5 cm into the band."""
     rng = random.Random(seed)
-    n = int(round(ARCH.length / 58.0))
     stones = []
-    for side in (-1, 1):
-        for k in range(n):
-            u0, u1 = k / n, (k + 1) / n
-            alt = 5.0 if (k % 2 == 1 and k != n - 1 and k != 0) else 0.0
-            if rng.random() < 0.15 and k not in (0, n - 1):
-                alt = 5.0 - alt
-            uu = [u0 + (u1 - u0) * i / 3.0 for i in range(4)]
-            if u0 < ARCH.u_junction < u1:
-                uu = sorted(set(uu + [ARCH.u_junction]))
-            inner = [ARCH.pt(u, 0.0) for u in uu]
-            outer = [ARCH.pt(u, ARC_RING + alt) for u in uu]
-            poly = inner + outer[::-1]
-            if side > 0:
-                poly = [ARCH.mirror(p) for p in poly][::-1]
-            poly = clip_x(poly, 0.0, ARC_L)
-            if len(poly) < 3:
-                continue
-            s = K.prism(poly, 'y', 0.0, ARC_T, S1)
-            K.bevel_all(s, bevel, 25.0)
-            stones.append(s)
+    for ai, arch in enumerate(ARCHES):
+        n = int(round(arch.length / 52.0))
+        xlo, xhi = (0.0, 500.0) if ai == 0 else (500.0, ARC_L)
+        for side in (-1, 1):
+            for k in range(n):
+                u0, u1 = k / n, (k + 1) / n
+                alt = 5.0 if (k % 2 == 1 and k != n - 1) else 0.0
+                if rng.random() < 0.15 and k not in (0, n - 1):
+                    alt = 5.0 - alt
+                uu = [u0 + (u1 - u0) * i / 3.0 for i in range(4)]
+                inner = [arch.pt(u, 0.0) for u in uu]
+                outer = [arch.pt(u, ARC_RING + alt) for u in uu]
+                poly = inner + outer[::-1]
+                if side > 0:
+                    poly = [arch.mirror(p) for p in poly][::-1]
+                poly = clip_x(poly, xlo, xhi)
+                if len(poly) < 3:
+                    continue
+                s = K.prism(poly, 'y', 0.0, ARC_T, S1)
+                K.bevel_all(s, bevel, 25.0)
+                stones.append(s)
     return stones
 
 
-def arcade_carve_polygon():
-    left = ARCH.curve_left(ARC_RING, 20, 60)
-    right = [ARCH.mirror(p) for p in left][::-1]
-    poly = [(left[0][0] - 1.0, -1.0)] + left + right[1:] + [(right[0][0] + 1.0, -1.0)]
-    return poly
+def arcade_carve_polygons():
+    polys = []
+    for arch in ARCHES:
+        left = arch.curve_left(ARC_RING, 30)
+        right = [arch.mirror(p) for p in left][::-1]
+        polys.append([(left[0][0] - 1.0, -1.0)] + left + right[1:] + [(right[0][0] + 1.0, -1.0)])
+    return polys
 
 
 def build_arcade_intact(seed=151):
-    """Returns (shell_pieces, stones): masonry body (slot 0, relief, arch carved) + coping; stones are the ring."""
+    """Returns (body, relief, carves, stones): masonry band (slot 0, relief) + the two arch carves + ring stones."""
     body = K.box(0, ARC_L, ARC_RECESS, ARC_T - ARC_RECESS, 0, ARC_BAND_TOP, S0)
     f = K.FaceFrame((0, ARC_RECESS, 0), (1, 0, 0), (0, -1, 0))
     b = K.FaceFrame((ARC_L, ARC_T - ARC_RECESS, 0), (-1, 0, 0), (0, 1, 0))
     relief = K.relief_cutters(f, 0, ARC_L, 0, ARC_BAND_TOP, ARC_COURSES, seed, z_start=0.0, wmin=80, wmax=160, chips=6, recess_prob=0.15)
     K.bm_append(relief, K.relief_cutters(b, 0, ARC_L, 0, ARC_BAND_TOP, ARC_COURSES, seed + 101, z_start=0.0, wmin=80, wmax=160, chips=6, recess_prob=0.15))
-    carve = K.prism(arcade_carve_polygon(), 'y', -1.0, ARC_T + 1.0, S1)
+    carves = [K.prism(p, 'y', -1.0, ARC_T + 1.0, S1) for p in arcade_carve_polygons()]
     stones = arcade_ring_stones(seed + 3)
-    return body, relief, carve, stones
+    return body, relief, carves, stones
 
 
-def arcade_cutters(seed):
-    """Fracture cutters for BrokenA (material remains for X < 350): ragged end plane stepped per course + collapsed top."""
+def arcade_cutters(seed, x_end=ARC_X_END_A):
+    """Fracture cutters for BrokenA (material remains for X < x_end): ragged end plane stepped per course + collapsed top
+    that only starts beyond the centre springer (the left opening stays complete)."""
     rng = random.Random(seed + 900)
-    X_END = 350.0
     zb = [0.0]
     for h in ARC_COURSES:
         zb.append(zb[-1] + h)
+    z_mid = 0.5 * (arch_intrados_z(x_end - 8.0) + arch_extrados_z(x_end - 8.0))
     c_ring = None
-    z_mid = 0.5 * (ARCH.intrados_z(X_END - 8.0) + ARCH.extrados_z(X_END - 8.0))
     for i in range(len(zb) - 1):
         if zb[i] <= z_mid < zb[i + 1]:
             c_ring = i
     offs = [rng.choice((20.0, 35.0, 55.0, 75.0)) for _ in ARC_COURSES]
-    offs[c_ring] = 0.0                                   # this course reaches X 350 exactly (envelope)
+    offs[c_ring] = 0.0                                   # this course reaches x_end exactly (envelope)
     if c_ring + 1 < len(offs):
         offs[c_ring + 1] = rng.choice((25.0, 45.0))
 
@@ -915,7 +897,6 @@ def arcade_cutters(seed):
             if zb[k] <= zz:
                 i = k
         i = min(i, len(offs) - 1)
-        # soften the course steps over 10 cm so the cutter stays a height field
         t = (zz - zb[i]) / 10.0
         o = offs[i]
         if t < 1.0 and i > 0:
@@ -923,9 +904,10 @@ def arcade_cutters(seed):
         v = o + (K.vnoise(y / 11.0 + 9.0, z / 17.0, seed + 41) - 0.5) * 20.0 + 0.18 * (y - ARC_T * 0.5) * (1.0 if o > 10 else 0.0)
         return max(0.0, v)
 
-    cut = K.hf_solid(-6, ARC_T + 6, -6, ARC_H + 8, lambda y, z: X_END - e(y, z), 1100.0, 6, 70, ('y', 'z', 'x'), S2, rng)
-    # collapsed top: stair of course tops that falls toward the break
-    blocks, x = [], 110.0
+    cut = K.hf_solid(-6, ARC_T + 6, -6, ARC_H + 8, lambda y, z: x_end - e(y, z), 1100.0, 6, 70, ('y', 'z', 'x'), S2, rng)
+    # collapsed top: stair of course tops that falls toward the break (only right of the centre springer)
+    x0_top = 530.0
+    blocks, x = [], x0_top
     while x < 1010.0:
         w = rng.uniform(34.0, 66.0)
         blocks.append((x, x + w))
@@ -934,17 +916,12 @@ def arcade_cutters(seed):
     zcands = zb[1:]                                       # 50 .. 370
     for (xa, xb) in blocks:
         xc = 0.5 * (xa + xb)
-        need = ARCH.extrados_z(min(xb, 940.0)) + 6.0 if xb < 940.0 else 0.0
-        target = 400.0 - 92.0 * K.smoothstep(130.0, 350.0, xc)
-        target = max(target, need)
-        if xc < 150.0:
-            tops.append(460.0)
-            continue
+        need = arch_extrados_z(min(xb, x_end + 40.0)) + 6.0
+        target = max(400.0 - 92.0 * K.smoothstep(x0_top + 10.0, x_end, xc), need)
         z = min([c for c in zcands if c >= target] or [400.0])
-        if rng.random() < 0.3 and z - 50.0 >= need:
-            z -= 50.0 if z > 100.0 else 0.0
+        if rng.random() < 0.3 and z - 50.0 >= need and z > 100.0:
+            z -= 50.0
         tops.append(max(z, need) if z < 400.0 else 460.0)
-
     import bisect
     edges_ = [bb[1] for bb in blocks]
 
@@ -955,7 +932,7 @@ def arcade_cutters(seed):
             return zt
         return zt + (K.vnoise(xv / 7.0, yv / 7.0, seed + 61) - 0.5) * 7.0 + 0.12 * (yv - ARC_T * 0.5)
 
-    top = K.hf_solid(100.0, 1010.0, -6, ARC_T + 6, ztop, 520.0, int(910 / 6), 6, ('x', 'y', 'z'), S2, rng)
+    top = K.hf_solid(x0_top, 1010.0, -6, ARC_T + 6, ztop, 520.0, int((1010.0 - x0_top) / 6), 6, ('x', 'y', 'z'), S2, rng)
     K.bm_append(cut, top)
     top.free()
     return cut
@@ -979,14 +956,14 @@ def _top_heights(bm, xs, y=ARC_T * 0.5):
 
 
 def build_arcade(name, broken=None, seed=151):
-    """broken: None | 'A' | 'B'.  A keeps X 0..350 (seeded fractured edge, ring stub springing from X 50), B is its mirror (X 650..1000)."""
-    body, relief, carve, stones = build_arcade_intact(seed)
+    """broken: None | 'A' | 'B'.  A keeps X 0..650 (left opening complete + ring stub of the right opening, seeded fractured edge),
+    B is its mirror (X 350..1000).  Both stay in the 1000 cm bay frame."""
+    body, relief, carves, stones = build_arcade_intact(seed)
     coping = cap_course(ARC_L, ARC_T, ARC_BAND_TOP, ARC_H, seed)
-    cutters = [relief, carve]
     fc = None
     if broken:
         fc = arcade_cutters(seed if broken == 'A' else seed + 77)
-        bc = K.boolean_diff(body, fc)             # fracture first (closed solid), then the arch carve + ring stones
+        bc = K.boolean_diff(body, fc)             # fracture first (closed solid), then the arch carves + ring stones
         body.free()
         body = bc
         kept = []
@@ -999,32 +976,51 @@ def build_arcade(name, broken=None, seed=151):
         cp = K.boolean_diff(coping, fc)
         coping.free()
         coping = cp
-    shell = carve_and_merge(body, cutters, stones)
+    shell = carve_and_merge(body, [relief] + carves, stones)
     out = K.combine(shell, coping)
-    for bb in (body, shell, coping, relief, carve):
+    for bb in [body, shell, coping, relief] + carves:
         bb.free()
     if fc is not None:
         fc.free()
     if not broken:
         ucx = [K.box_hull(0, 50, 0, ARC_T, 0, ARC_H), K.box_hull(950, 1000, 0, ARC_T, 0, ARC_H),
-               K.box_hull(0, ARC_L, 0, ARC_T, 300, ARC_H)]
-        return Piece(name, out, ucx, (ARC_L, ARC_T, ARC_H), clear=(50, 950, 0, ARC_T, 0, 250))
-    # broken stub: end band box + one box over the ring stub (kept above the intrados so the opening stays clear)
-    x_hi = 320.0
-    xs = [60.0 + 10.0 * i for i in range(int((x_hi - 60.0) / 10.0) + 1)]
+               K.box_hull(475, 525, 0, ARC_T, 0, ARC_H), K.box_hull(0, ARC_L, 0, ARC_T, 300, ARC_H)]
+        return Piece(name, out, ucx, (ARC_L, ARC_T, ARC_H))
+    # broken: end band, centre springer, band above the complete left opening, + a box over the right ring stub
+    # (kept above its intrados so the stub opening stays clear)
+    ucx = [K.box_hull(0, 50, 0, ARC_T, 0, ARC_H), K.box_hull(475, 525, 0, ARC_T, 0, ARC_H),
+           K.box_hull(50, 475, 0, ARC_T, 300, ARC_H)]
+    x_lo, x_hi = 560.0, 630.0
+    xs = [x_lo + 10.0 * i for i in range(int((x_hi - x_lo) / 10.0) + 1)]
     tops = [t for t in _top_heights(out, xs) if t is not None]
-    z_lo = ARCH.intrados_z(x_hi) + 2.0
+    z_lo = arch_intrados_z(x_hi) + 2.0
     z_hi = (min(tops) - 4.0) if tops else 0.0
-    ucx = [K.box_hull(0, 50, 0, ARC_T, 0, ARC_H)]
     if z_hi - z_lo > 12.0:
-        ucx.append(K.box_hull(50, x_hi, 4, ARC_T - 4, z_lo, z_hi))
+        ucx.append(K.box_hull(x_lo, x_hi, 4, ARC_T - 4, z_lo, z_hi))
     if broken == 'B':
         _bm_mirror_x(out)
         for u in ucx:
             _bm_mirror_x(u)
-    pc = Piece(name, out, ucx, (350.0, ARC_T, ARC_H))
-    pc.clear = (50, 350, 0, ARC_T, 0, 200) if broken == 'A' else (650, 950, 0, ARC_T, 0, 200)
-    return pc
+    return Piece(name, out, ucx, (ARC_X_END_A, ARC_T, ARC_H))
+
+
+def build_arcade_column(name, seed=171):
+    """Round shaft O26 (24-sided) on a 34x34x20 square base, 40x40x20 chamfered square capital; total 300; pivot bottom-centre."""
+    out = K.bmesh.new()
+    base = K.box(-17, 17, -17, 17, 0, 12, S1, 2.0)
+    K.bm_append(out, base)
+    fr = K.hull_from_points([Vector(p) for p in [(-17, -17, 12), (17, -17, 12), (17, 17, 12), (-17, 17, 12),
+                                                  (-13, -13, 20), (13, -13, 20), (13, 13, 20), (-13, 13, 20)]], S1)
+    K.bm_append(out, fr)
+    shaft = K.cylinder(13.0, 262.0, 24, S1)
+    K.bmesh.ops.translate(shaft, vec=(0, 0, 19.0), verts=shaft.verts)
+    K.bm_append(out, shaft)
+    cap_lo = K.hull_from_points([Vector(p) for p in [(-13, -13, 280), (13, -13, 280), (13, 13, 280), (-13, 13, 280),
+                                                      (-20, -20, 288), (20, -20, 288), (20, 20, 288), (-20, 20, 288)]], S1)
+    K.bm_append(out, cap_lo)
+    cap_hi = K.box(-20, 20, -20, 20, 287, 300, S1, 2.2)
+    K.bm_append(out, cap_hi)
+    return Piece(name, out, [K.box_hull(-15, 15, -15, 15, 0, 300)], (40, 40, 300))
 
 
 def build_kerb(name, L, seed, broken=False):
@@ -1079,7 +1075,7 @@ def build_kerb_corner(name, seed=181):
 # registry (table mirrors Docs/MODULAR_KIT.md 4.1)
 # ==============================================================================================
 # pieces whose mesh does not start at the local origin (arcade BrokenB lives in the bay frame: X 650..1000)
-ORIGIN = {"ArcadeBay_1000x60x400_BrokenB": (650.0, 0.0, 0.0)}
+ORIGIN = {"ArcadeBay_1000x60x400_BrokenB": (350.0, 0.0, 0.0), "ArcadeColumn_30x30x300": (-20.0, -20.0, 0.0)}
 def table():
     W = lambda nm, L, H, seed, **kw: (nm, (lambda nm=nm, L=L, H=H, seed=seed, kw=kw: build_wall(PREFIX + nm, L, H, seed, **kw)), (L, kw.get('T', 60), H))
     return [
@@ -1113,8 +1109,9 @@ def table():
         W("Well_Wall_100x50x250", 100, 250, 149, T=50.0, cap=0, broken=dict(zmin=120, boxes=1, tooth_at=0, end_from=0.4, seg=(25, 50))),
         # ---- P7-FIX3 G2a ----
         ("ArcadeBay_1000x60x400", lambda: build_arcade(PREFIX + "ArcadeBay_1000x60x400", None), (1000, 60, 400)),
-        ("ArcadeBay_1000x60x400_BrokenA", lambda: build_arcade(PREFIX + "ArcadeBay_1000x60x400_BrokenA", 'A'), (350, 60, 400)),
-        ("ArcadeBay_1000x60x400_BrokenB", lambda: build_arcade(PREFIX + "ArcadeBay_1000x60x400_BrokenB", 'B'), (350, 60, 400)),
+        ("ArcadeBay_1000x60x400_BrokenA", lambda: build_arcade(PREFIX + "ArcadeBay_1000x60x400_BrokenA", 'A'), (650, 60, 400)),
+        ("ArcadeBay_1000x60x400_BrokenB", lambda: build_arcade(PREFIX + "ArcadeBay_1000x60x400_BrokenB", 'B'), (650, 60, 400)),
+        ("ArcadeColumn_30x30x300", lambda: build_arcade_column(PREFIX + "ArcadeColumn_30x30x300"), (40, 40, 300)),
         ("Kerb_200x30x40", lambda: build_kerb(PREFIX + "Kerb_200x30x40", 200.0, 201), (200, 30, 40)),
         ("Kerb_100x30x40", lambda: build_kerb(PREFIX + "Kerb_100x30x40", 100.0, 207), (100, 30, 40)),
         ("Kerb_Broken_200x30x40", lambda: build_kerb(PREFIX + "Kerb_Broken_200x30x40", 200.0, 211, broken=True), (200, 30, 40)),
