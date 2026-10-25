@@ -1390,7 +1390,7 @@ def build_roof_slab(name, broken, seed=441):
         out.free()
         out = hb
         add_battens(out, seed)
-    K.bmesh.ops.triangulate(out, faces=out.faces[:])
+    K.bmesh.ops.triangulate(out, faces=out.faces[:], quad_method='BEAUTY', ngon_method='EAR_CLIP')
     note = "slope frame: X 0..1000 along the ridge, Y 0 = ridge .. 1322 = eaves (incl. the 40 cm overhang), Z 0 = underside .. 20 = slate crest"
     if broken:
         note += "; ragged hole about X 250..750 x slope 294..987 (board ends snapped, slate skin overhangs), 4 batten stubs"

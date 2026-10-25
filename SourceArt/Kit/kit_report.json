@@ -1112,7 +1112,7 @@
    2
   ],
   "ucx": 4,
-  "seconds": 3.4
+  "seconds": 2.7
  },
  {
   "name": "SM_LB_Kit_NaveBay_1000x60x1200_Door",
@@ -1143,7 +1143,7 @@
    2
   ],
   "ucx": 6,
-  "seconds": 7.4
+  "seconds": 5.4
  },
  {
   "name": "SM_LB_Kit_NaveBay_1000x60x1200_Clue",
@@ -1174,7 +1174,7 @@
    2
   ],
   "ucx": 5,
-  "seconds": 3.8
+  "seconds": 2.5
  },
  {
   "name": "SM_LB_Kit_EastWall_1620x60x1200",
@@ -1205,7 +1205,7 @@
    2
   ],
   "ucx": 4,
-  "seconds": 6.4
+  "seconds": 4.6
  },
  {
   "name": "SM_LB_Kit_Gable_1620x60x1015",
@@ -1236,7 +1236,7 @@
    2
   ],
   "ucx": 5,
-  "seconds": 4.5
+  "seconds": 2.6
  },
  {
   "name": "SM_LB_Kit_Corbel_40x60x60",
@@ -1294,7 +1294,7 @@
    0
   ],
   "ucx": 1,
-  "seconds": 0.3
+  "seconds": 0.2
  },
  {
   "name": "SM_LB_Kit_RoofSlab_1000x1322x20",
@@ -1354,7 +1354,7 @@
    1
   ],
   "ucx": 0,
-  "seconds": 0.5
+  "seconds": 0.4
  },
  {
   "name": "SM_LB_Kit_RidgeCap_1000x40x30",

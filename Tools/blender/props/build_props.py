@@ -1462,6 +1462,12 @@ MAT_COLORS.update({
 })
 
 
+def tri_ear(bm):
+    """Triangulate with ear clipping (the default BEAUTY method can produce overlapping triangles on concave n-gons)."""
+    bmesh.ops.triangulate(bm, faces=bm.faces[:], quad_method='BEAUTY', ngon_method='EAR_CLIP')
+    return bm
+
+
 def rot_about(bm, axis, deg, pivot):
     shift(bm, -pivot[0], -pivot[1], -pivot[2])
     rot(bm, axis, deg)
@@ -1508,6 +1514,7 @@ def build_truss():
 
     def finish(b, amp=0.3):
         K.bevel_all(b, 0.8, 25.0)
+        tri_ear(b)
         subdiv_long(b, 30.0)
         bmesh.ops.triangulate(b, faces=b.faces[:])
         weather(b, seed[0], amp, mask=lambda co, n: 0.0 if co.z <= 0.02 else 1.0, f1=1 / 70.0, f2=1 / 22.0)
@@ -1587,6 +1594,7 @@ def build_pew(broken):
         stump = K.prism([(-27.5, 0.0), (27.5, 0.0), (27.5, 17.0), (19.0, 24.0), (12.0, 15.0), (4.0, 27.0), (-6.0, 14.0), (-14.0, 22.0), (-27.5, 12.0)],
                         'y', 120.0, 125.0, 0)
         K.bevel_all(stump, 0.6, 25.0)
+        tri_ear(stump)
         densify(stump, 10.0)
         weather(stump, sd + 3, 0.45, mask=lambda co, n_: 0.0 if co.z < 0.02 else 1.0, f1=1 / 25.0, f2=1 / 7.0)
         parts.append(stump)
@@ -1788,12 +1796,12 @@ def build_slate_shards():
 def build_cross_finial():
     base = K.prism([(-20.0, 0.0), (20.0, 0.0), (20.0, 30.0), (17.0, 38.0), (15.0, 40.0), (-15.0, 40.0), (-17.0, 38.0), (-20.0, 30.0)], 'y', -12.5, 12.5, 0)
     K.bevel_all(base, 1.4, 25.0)
-    cp = [(-7.0, 40.0), (7.0, 40.0), (7.0, 100.0), (30.0, 100.0), (30.0, 114.0), (7.0, 114.0), (7.0, 130.0), (-7.0, 130.0),
-          (-7.0, 114.0), (-30.0, 114.0), (-30.0, 100.0), (-7.0, 100.0)]
-    cross = K.prism(cp, 'y', -10.0, 10.0, 0)
-    K.bevel_all(cross, 1.2, 25.0)
+    shaft = K.box(-7.0, 7.0, -10.0, 10.0, 40.0, 130.0, 0, 1.2)           # three convex boxes: a concave 12-gon bevelled badly
+    arms = K.box(-30.0, 30.0, -10.0, 10.0, 100.0, 114.0, 0, 1.2)
+    cross = join([shaft, arms])
     rng = random.Random(9901)
     bm = join([base, cross])
+    tri_ear(bm)
     densify(bm, 7.0)
     weather(bm, 9902, 0.6, mask=lambda co, n_: 0.0 if co.z < 0.02 else 1.0)
     return Piece(PREFIX + "CrossFinial_A", bm, ["MAT_Trim"],

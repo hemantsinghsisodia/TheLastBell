@@ -59,3 +59,14 @@ set B="C:\Program Files\Blender Foundation\Blender 5.2\blender.exe"
 - **Masonry relief:** 3 cm V-grooves (about 1.5 cm deep) between 25-75 cm courses and staggered blocks, shallow weathered recesses and chips
   on slot 0 faces. These are modelled; if they fight the scanned material's own joints in Unreal, re-run with fewer or no joints
   (`relief_cutters(vertical=..., h_grooves=..., recess_prob=...)` in `kit_lib.py`).
+
+## P8-3 chapel pieces (10 pieces; plan `Docs/plans/P8_CHAPEL_ART.md` section 2 P8-3 + amendment C1)
+```
+%B% -b --factory-startup --python Tools/blender/kit/build_kit.py -- --out SourceArt/Kit --only NaveBay EastWall Gable Corbel Dais RoofSlab RidgeCap --blend LB_Kit_P8.blend
+%B% -b --factory-startup --python Tools/blender/kit/verify_kit.py                      # 46/46 (36 + 10)
+%B% -b --factory-startup --python Tools/blender/props/render_p8.py -- --blend SourceArt/Kit/LB_Kit_P8.blend --set kit   # Docs/ArtTest/props/p8_kit_*.png
+```
+- Walls keep the 60 cm envelope: ashlar body 57 deep on the exterior (3 cm recess between 50 cm end pilasters), plinth / hood moulds / cornice trim proud to Y 60; interior face = local Y 0. Lancet `NaveBay`: clear 140, sill 450, apex 1010, splay 220 inside (Y 0..38), groove Y 39..42, string course 430..450.
+- `NaveBay_Clue` mesh spans local Y -8..60 (inner hood moulding + sill ledge project 8 cm into the nave, C1-1): `ORIGIN` entry (0, -8, 0), spec dims 1000 x 68 x 1200; place the actor at the wall's inner face as for the other bays.
+- New slot names: roof pieces `MAT_Slate` / `MAT_Wood`, `RidgeCap` `MAT_Slate`, `Corbel` / `Dais` `MAT_Trim` only (`SLOTS` table in build_kit.py / verify_kit.py).
+- `verify_kit.py`: CLEAR rectangles for every opening (lancet, doorway + lancet, clue, east window) + `RAY_RECTS` (east window: only the two lights are ray-tested, the tracery is real geometry).

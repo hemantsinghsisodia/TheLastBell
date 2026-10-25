@@ -62,3 +62,12 @@ set B="C:\Program Files\Blender Foundation\Blender 5.2\blender.exe"
 - `Ivy_{Climb_300x450,Patch_200x300,Hang_150x600,Creep_400x200}_{Green,Dead}`: pivot = X centre, back plane at **Y 0 (wall side)**, min Z 0 (not bottom-centre in Y); slots `MAT_Leaf`, `MAT_Stem`; UV0 = atlas leaf cells
   (cell rects in `IVY_ATLAS` in build_props.py; Green = LeafSet017 (6 cells, tip up), Dead = LeafSet030 (12 oak cells, petiole right -> mapped rotated)); Color/Opacity/Roughness/NormalGL copied next to the FBX. Leaves face +Y. No UCX.
 - `build_props.py` options: `--tag NAME` names the partial blend/report (default `partial`). `kit_lib.finalize(keep_uv=True)` keeps the custom UVs (ivy, tree).
+
+## P8-3 chapel props (20 pieces)
+```
+%B% -b --factory-startup --python Tools/blender/props/build_props.py -- --only Truss Pew AltarRail Lectern Altar MechShell SlateShards CrossFinial Backdrop Glass_ Cobweb PricketStand CandleFlame --tag P8
+%B% -b --factory-startup --python Tools/blender/props/verify_props.py                  # 49/49 (29 + 20), incl. structural ray checks (truss roof plane / arch brace, pew seat, altar core + hole)
+%B% -b --factory-startup --python Tools/blender/props/render_p8.py -- --blend SourceArt/Props/Procedural/LB_Props_P8.blend --set props   # Docs/ArtTest/props/p8_*.png (views in render_p8_props.py)
+python Tools/textures/gen_chapel_textures.py                                           # ExternalAssets/Generated/chapel/*.png + Docs/ArtTest/chapel/tex_*.png
+```
+Pivot = bottom-centre of the bounds (props rule): `Cobweb_Hang_A` (Y sag 12) and `PricketStand_150` (tripod, shaft 4.5 cm off the bbox centre in Y) are the two pieces whose design axis is not the bbox centre; see the per-piece notes in `SourceArt/Props/Procedural/props_report_P8.json`.

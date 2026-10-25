@@ -16,7 +16,7 @@
    1499.86,
    1264.3
   ],
-  "tris": 3460,
+  "tris": 6468,
   "slots": [
    "MAT_Wood"
   ],
@@ -26,7 +26,7 @@
   "ucx": 0,
   "pivot_shift_applied": [
    -0.0,
-   0.024,
+   0.025,
    -0.0
   ],
   "note": "arch-braced truss: local Z 0 = post foot (world 900), Y across the nave (+-750), X 25 thick; rafters 25x20 with top faces on the roof plane (Y+-810,Z300)-(0,1265), posts 25x25 at Y+-737.5, collar top Z 850, pointed arch braces springing (Y+-725,Z50) r 803.9; no UCX",
@@ -63,7 +63,7 @@
    -0.0
   ],
   "note": "monastic pew facing +X: end panels with pointed-trefoil cut-out, 2 seat planks (top Z 45, covers X -22..27.5), 3-board back + top rail (top Z 95); UCX seat box + back box",
-  "seconds": 0.4
+  "seconds": 0.3
  },
  {
   "name": "SM_LB_Prop_Pew_Broken",
@@ -82,7 +82,7 @@
    249.82,
    94.88
   ],
-  "tris": 3978,
+  "tris": 4028,
   "slots": [
    "MAT_Wood"
   ],
@@ -96,7 +96,7 @@
    -0.0
   ],
   "note": "worn pew: +Y end panel missing, back snapped (upper boards hanging forward), seat split (front plank missing for Y > -10); 3 UCX",
-  "seconds": 0.3
+  "seconds": 0.2
  },
  {
   "name": "SM_LB_Prop_AltarRail_600x40x100",
@@ -129,7 +129,7 @@
    -0.0
   ],
   "note": "rail along Y (600), 40 deep along X (kneeler on the -X/nave side), top rail Z 88..100, 13 balusters (2 missing, 1 snapped), 1 UCX box",
-  "seconds": 0.1
+  "seconds": 0.0
  },
  {
   "name": "SM_LB_Prop_Lectern_A",
@@ -164,7 +164,7 @@
    -0.0
   ],
   "note": "octagonal stone foot (56 flat-to-flat) + octagonal wooden shaft + slanted book desk (reader at +Y); 2 UCX (foot+shaft hull, desk hull)",
-  "seconds": 0.1
+  "seconds": 0.0
  },
  {
   "name": "SM_LB_Prop_Altar_A",
@@ -315,7 +315,7 @@
    24.63,
    129.86
   ],
-  "tris": 6672,
+  "tris": 5006,
   "slots": [
    "MAT_Trim"
   ],
