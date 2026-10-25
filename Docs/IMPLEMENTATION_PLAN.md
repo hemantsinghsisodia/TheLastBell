@@ -185,3 +185,10 @@ Branch `claude/p7-courtyard-polish` (continues P7-FIX2). Full spec: `Docs/plans/
 | G7 | QA, docs, owner stat gpu + playtest | qa + lead + owner | all |
 
 Status 2026-10-25: G0–G6c done (latest fefe4f7; suite 78/78 after each editor task). G7: independent QA passed with no blocking defects (doc fixes 9829e48); owner `stat gpu` at High 13.1 ms (≤ 16.6). Awaiting the owner's playtest and review.
+
+## Deferred to Phase 14–15 (Lighting, VFX: storm work)
+Items the owner asked to fold into the storm pass. Plan them in detail (Docs/plans/) when Phase 14–15 starts.
+
+| Item | Scope | Notes |
+|---|---|---|
+| Foliage wind (owner, 2026-10-25, D-060) | One wind control `MPC_LB_Wind` (direction, strength, gust speed) driven by the storm; a sway material function in `M_LB_Foliage` (grass/shrubs/ferns bend by height above the pivot, roots fixed) and `M_LB_FoliageMasked` (ivy leaf flutter, wall side fixed); per-family strength in the MIs; WPO evaluation and a WPO disable distance (≈ 3000–5000 cm) on the 312 PCG ISM components (script); optional twig sway for `SM_LB_Prop_DeadTree_A` via its own bark material (never add WPO to `M_LB_Surface`) | Estimated one technical-artist task (~half a day of agent time) plus the owner's PIE check. Risk: GPU +0.3–1.5 ms, mainly VSM invalidation from shadow-casting grass (mitigate with the disable distance or the shadow-cache invalidation setting); masked ivy WPO is costlier. Owner re-runs `stat gpu` (P7-FIX3 baseline 13.1 ms at High, budget 16.6). Stills can't show motion: needs a PIE review |
