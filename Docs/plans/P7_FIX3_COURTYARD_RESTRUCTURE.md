@@ -91,3 +91,15 @@ Suite 78/78 incl. `WalkPath.Monastery` with CourtyardKey/Door/Shortcut/WellToDoo
 
 ## 4. Verification
 Automated suite (78/78 + 4 courtyard WalkPaths + RouteBot), verify_kit/verify_props all pass, material regression ≤ 2/255, lane checks ≥ 60 cm, luma script targets, lead review of ~20 captures (PIE Simulate), owner `stat gpu` ≤ 16.6 ms at High and playtest.
+
+---
+
+## Amendments (lead, during execution)
+**B1 (2026-10-25, after G2a review):**
+- **Arcade redesign** (the 900-span / 300-rise single arch is geometrically forced into a flat Tudor shape that does not read as a cloister): each 1000 cm bay becomes **twin drop-pointed arches on a central column**.
+  - `SM_LB_Kit_ArcadeBay_1000x60x400` (rebuild): two openings X 50…475 and X 525…950 (425 clear each), springing Z 0, drop-pointed (two-centred, radius = 0.75 × span ≈ 319, centres inside the span), apex ≈ Z 300; voussoir rings 50 wide (MAT_Trim, 1.5 cm chamfer); the two rings meet on a 50-wide springer block over the centre (X 475…525); masonry band (2 cm recessed) to Z 370; coping Z 370…400. UCX: 4 boxes (two ends X 0…50, the centre springer X 475…525 above Z 0, the band above the apexes Z 300…400) — each opening's rectangle X 50…475 / 525…950 × Z 0…220 is collision-clear (add CLEAR entries).
+  - New `SM_LB_Kit_ArcadeColumn_30x30x300`: round shaft Ø 26, 24-sided, with a square base 34×34×20 and a square capital 40×40×20 (chamfered), total height 300, pivot bottom-centre (props-style), MAT_Trim; UCX 1 box 30×30×300. Placed under the centre springer of every intact bay at (bay left X + 500, row centre Y, 0).
+  - `_BrokenA` (rebuild): left opening complete (ring + band + coping X 0…525, with the centre springer) and a ring stub of the right opening to X ≈ 650, fractured seeded edge; its column stands. `_BrokenB`: mirror (X 350…1000 kept, column stands). In the level, broken bays get their column too, except north bay 3000→4000 where the column lies **fallen** on the garth side (rotated 90° pitch, bounds Y 820…950) so the 300 cm route gap at X 3250…3550 stays clear.
+  - Re-run verify_kit (all pass), re-render `fix3_arcade_*`, LOOK: it must read as a gothic cloister arcade (two pointed arches per bay on a slim column).
+- **Scale corrections for G5** (real sizes measured in G2a): GrassMedium02 clumps are 16–40 cm → scale **3.0–4.5** (≈ 50–180 cm); WildRooibos 27–54 cm → **1.3–2.0**; Searsia 74–234 cm → 1.0 (hand-placed, max 1 per bed, only `_02…_05`, `_01` excluded for cost); Weed ×5 and Nettle ×4 as specified; ferns 1.0–1.4.
+- Accepted from G2a: upright `SM_LB_CC0_DeadTreeTrunk02` (no pitch needed), BrokenA/B placed at the left pier X in the bay frame, timber authored upright (rotate in the level), oak-leaf "dead ivy" look, ivy pivot = X centre / back plane Y 0 / min Z 0 (cards face +Y), procedural dead tree `SM_LB_Prop_DeadTree_A` (700 cm).
