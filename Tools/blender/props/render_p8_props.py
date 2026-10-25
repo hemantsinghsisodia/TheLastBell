@@ -1,0 +1,41 @@
+"""render_p8_props.py -- view table of the P8-3 chapel props for render_p8.py (--set props).
+
+View tuple: (file, [names ('=' exact short name)], azimuth, elevation, dist factor, gap, lens, option).
+Azimuth 0 = camera at -Y looking +Y; 90 = camera at +X looking -X; 270 = camera at -X (the altar / backdrop front); 180 = from +Y.
+"""
+PROP_VIEWS = [
+    ("p8_truss_front", ["=Truss_ArchBraced_1500"], 90, 2, 1.0, 60, 50, ""),
+    ("p8_truss_3q", ["=Truss_ArchBraced_1500"], 62, 14, 1.0, 60, 50, ""),
+    ("p8_truss_apex", ["=Truss_ArchBraced_1500"], 70, 6, 0.4, 60, 50, ""),
+    ("p8_truss_foot", ["=Truss_ArchBraced_1500"], 60, 10, 0.3, 60, 50, ""),
+    ("p8_pew_a_front", ["=Pew_A"], 90, 8, 1.0, 60, 50, ""),
+    ("p8_pew_a_3q", ["=Pew_A"], 55, 22, 1.0, 60, 50, ""),
+    ("p8_pew_a_back_3q", ["=Pew_A"], 235, 22, 1.0, 60, 50, ""),
+    ("p8_pew_a_side", ["=Pew_A"], 0, 4, 1.0, 60, 50, ""),
+    ("p8_pew_broken_3q", ["=Pew_Broken"], 55, 22, 1.0, 60, 50, ""),
+    ("p8_pew_broken_back_3q", ["=Pew_Broken"], 235, 22, 1.0, 60, 50, ""),
+    ("p8_pew_pair", ["=Pew_A", "=Pew_Broken"], 65, 20, 1.0, 60, 50, ""),
+    ("p8_altarrail", ["=AltarRail_600x40x100"], 300, 14, 1.0, 60, 50, ""),
+    ("p8_altarrail_close", ["=AltarRail_600x40x100"], 300, 12, 0.5, 60, 50, ""),
+    ("p8_lectern", ["=Lectern_A"], 35, 16, 1.3, 60, 50, ""),
+    ("p8_lectern_side", ["=Lectern_A"], 90, 6, 1.3, 60, 50, ""),
+    ("p8_altar_front", ["=Altar_A"], 270, 8, 1.0, 60, 50, ""),
+    ("p8_altar_3q", ["=Altar_A"], 245, 24, 1.0, 60, 50, ""),
+    ("p8_altar_top", ["=Altar_A"], 270, 70, 1.0, 60, 50, ""),
+    ("p8_altar_under", ["=Altar_A"], 250, -35, 1.0, 60, 50, ""),
+    ("p8_mechshells", ["=MechShell_Cyl", "=MechShell_Cube"], 30, 25, 1.0, 20, 50, ""),
+    ("p8_slateshards", ["=SlateShards_A"], 25, 40, 1.0, 60, 50, ""),
+    ("p8_crossfinial", ["=CrossFinial_A"], 25, 12, 1.0, 60, 50, ""),
+    ("p8_backdrop", ["=Backdrop_Plane_800x850"], 270, 4, 1.0, 60, 50, ""),
+    ("p8_glass_lancet", ["=Glass_Lancet_140x560"], 0, 2, 1.0, 60, 50, "back"),
+    ("p8_glass_lancet_broken", ["=Glass_Lancet_Broken"], 0, 2, 1.0, 60, 50, "back"),
+    ("p8_glass_east", ["=Glass_East"], 0, 2, 1.0, 60, 50, "back"),
+    ("p8_glass_clue", ["=Glass_Clue_Ext"], 0, 2, 1.0, 60, 50, "back"),
+    ("p8_glass_set", ["=Glass_Lancet_140x560", "=Glass_Lancet_Broken", "=Glass_East", "=Glass_Clue_Ext"], 0, 2, 1.0, 40, 50, "back"),
+    ("p8_cobwebs", ["=Cobweb_Corner_A", "=Cobweb_Hang_A"], 25, 14, 1.0, 60, 50, "back"),
+    ("p8_pricket_small", ["=PricketStand_Small_10x30"], 20, 14, 1.5, 60, 50, ""),
+    ("p8_pricket_150", ["=PricketStand_150"], 25, 14, 1.4, 60, 50, ""),
+    ("p8_pricket_150_top", ["=PricketStand_150"], 25, 45, 0.35, 60, 50, ""),
+    ("p8_candleflame", ["=CandleFlame_A"], 20, 10, 1.4, 60, 50, ""),
+    ("p8_small_set", ["=PricketStand_Small_10x30", "=CandleFlame_A"], 20, 12, 1.0, 6, 50, ""),
+]

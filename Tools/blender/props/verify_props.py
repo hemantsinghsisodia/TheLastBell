@@ -13,8 +13,12 @@ import json
 import os
 import sys
 
+import math
+
 import bpy
+import bmesh
 from mathutils import Vector
+from mathutils.bvhtree import BVHTree
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.normpath(os.path.join(HERE, "..", "kit")))
@@ -47,6 +51,29 @@ SPEC = {
     "EarthPatch_400x400x15": dict(dims=(400.0, 400.0, 15.0), slots=["MAT_Earth"], ucx=1),
     "DeadTree_A": dict(dims=(None, None, 700.0), slots=["MAT_Bark"], ucx=1),              # 650-750 cm target, built to 700
 }
+# ---- P8-3 chapel props (plan section 2 P8-3 + amendment C1) ----
+SPEC.update({
+    "Truss_ArchBraced_1500": dict(dims=(26.2, 1500.0, 1265.0), tol=1.5, slots=["MAT_Wood"], ucx=0, struct="truss"),          # 25 thick + pegs, +-750 across, apex 1265 (world 2165)
+    "Pew_A": dict(dims=(55.0, 250.0, 95.0), slots=["MAT_Wood"], ucx=2, struct="pew"),
+    "Pew_Broken": dict(dims=(55.0, 250.0, 95.0), slots=["MAT_Wood"], ucx=3),
+    "AltarRail_600x40x100": dict(dims=(40.0, 600.0, 100.0), slots=["MAT_Wood"], ucx=1),
+    "Lectern_A": dict(dims=(56.0, 56.0, 125.0), slots=["MAT_Trim", "MAT_Wood"], ucx=2),
+    "Altar_A": dict(dims=(104.0, 300.0, 101.0), slots=["MAT_Trim"], ucx=2, struct="altar"),
+    "MechShell_Cyl": dict(dims=(84.0, 84.0, 51.0), slots=["MAT_Trim"], ucx=0, struct="shell_cyl"),
+    "MechShell_Cube": dict(dims=(17.0, 17.0, 17.0), slots=["MAT_Trim"], ucx=0),
+    "SlateShards_A": dict(dims=(120.0, 90.0, None), slots=["MAT_Slate"], ucx=0),
+    "CrossFinial_A": dict(dims=(60.0, 25.0, 130.0), slots=["MAT_Trim"], ucx=0),
+    "Backdrop_Plane_800x850": dict(dims=(0.0, 800.0, 850.0), slots=["MAT_Backdrop"], ucx=0, open_mesh=True, struct="backdrop"),
+    "Glass_Lancet_140x560": dict(dims=(140.0, 1.0, 560.0), slots=["MAT_Glass"], ucx=0, uv01=True),
+    "Glass_Lancet_Broken": dict(dims=(140.0, 1.0, None), zmax=450.0, slots=["MAT_Glass"], ucx=0, uv01=True),
+    "Glass_East": dict(dims=(300.0, 1.0, None), zmax=540.0, slots=["MAT_Glass"], ucx=0, uv01=True),
+    "Glass_Clue_Ext": dict(dims=(100.0, 1.0, 220.2), slots=["MAT_Glass"], ucx=0, uv01=True),
+    "Cobweb_Corner_A": dict(dims=(120.0, 120.0, 120.0), slots=["MAT_Cobweb"], ucx=0, open_mesh=True, uv01=True),
+    "Cobweb_Hang_A": dict(dims=(150.0, 12.0, 80.0), slots=["MAT_Cobweb"], ucx=0, open_mesh=True, uv01=True),
+    "PricketStand_Small_10x30": dict(dims=(10.0, 10.0, 30.0), tol=0.5, slots=["MAT_Iron"], ucx=1, ucx_env=(10.0, 10.0, 30.0)),
+    "PricketStand_150": dict(dims=(42.0, 39.0, 150.0), slots=["MAT_Iron"], ucx=1),
+    "CandleFlame_A": dict(dims=(3.0, 3.0, 6.5), tol=0.5, slots=["MAT_Flame"], ucx=0),
+})
 for _shape, _w, _h in (("Climb", 300.0, 450.0), ("Patch", 200.0, 300.0), ("Hang", 150.0, 600.0), ("Creep", 400.0, 200.0)):
     for _kind in ("Green", "Dead"):
         SPEC["Ivy_%s_%gx%g_%s" % (_shape, _w, _h, _kind)] = dict(dims=(_w, None, _h), ymax=25.0, slots=["MAT_Leaf", "MAT_Stem"], ucx=0,
@@ -64,6 +91,106 @@ def parse():
         if a == "--json":
             js = os.path.abspath(argv[i + 1])
     return fbx, js
+
+
+def _bvh(ob):
+    bm = bmesh.new()
+    bm.from_mesh(ob.data)
+    bm.transform(ob.matrix_world)
+    return BVHTree.FromBMesh(bm), bm
+
+
+def _ray(bvh, x, y, z, d):
+    """Ray in Unreal-space cm (file y = -ue y); d = (dx, dy, dz) in UE space.  Returns the hit (x, y, z) in UE cm or None."""
+    sc = bpy.context.scene.unit_settings.scale_length * 100.0
+    h = bvh.ray_cast(Vector((x / sc, -y / sc, z / sc)), Vector((d[0], -d[1], d[2])))
+    if h[0] is None:
+        return None
+    return (h[0].x * sc, -h[0].y * sc, h[0].z * sc)
+
+
+def structural(short, spec, ob, ucx, fail, res):
+    """Geometry checks that the bounds cannot show (arch brace, roof plane, seat height, altar core and hole...)."""
+    kind = spec.get('struct')
+    if not kind:
+        return
+    bvh, bm = _bvh(ob)
+    notes = []
+    if kind == "truss":
+        zt = lambda y: 1265.0 - (965.0 / 810.0) * abs(y)
+        for y in (-600.0, -400.0, 400.0, 600.0):                       # rafter top faces on the roof plane (through (+-810, 300) and (0, 1265))
+            h = _ray(bvh, 0.0, y, 1400.0, (0, 0, -1))
+            ok = h is not None and abs(h[2] - zt(y)) < 1.6
+            notes.append("rafter top Y%+d: %s (plane %.1f)" % (y, "%.1f" % h[2] if h else None, zt(y)))
+            if not ok:
+                fail("rafter top at Y %g is %s, roof plane %.1f" % (y, h and round(h[2], 1), zt(y)))
+        for sg in (-1, 1):                                              # arch brace intrados: circle r 783.9 around (-sg 78.9, 50)
+            for y in (300.0, 500.0):
+                yy = sg * y
+                h = _ray(bvh, 0.0, yy, 0.0, (0, 0, 1))
+                zi = 50.0 + math.sqrt(783.9 ** 2 - (yy + sg * 78.9) ** 2)
+                ok = h is not None and abs(h[2] - zi) < 1.6
+                notes.append("brace intrados Y%+d: %s (r=783.9 circle %.1f)" % (yy, "%.1f" % h[2] if h else None, zi))
+                if not ok:
+                    fail("arch brace intrados at Y %g is %s, expected %.1f" % (yy, h and round(h[2], 1), zi))
+        h = _ray(bvh, 0.0, 200.0, 990.0, (0, 0, -1))                    # collar top
+        notes.append("collar top: %s (850)" % (("%.1f" % h[2]) if h else None))
+        if h is None or abs(h[2] - 850.0) > 1.0:
+            fail("collar top %s expected 850" % (h and round(h[2], 1)))
+    elif kind == "pew":
+        for x in (-20.0, -10.0, 0.0, 10.0, 20.0):                     # seat top Z 45 over X -20..20 (note sits on it)
+            h = _ray(bvh, x, -87.0, 200.0, (0, 0, -1))
+            notes.append("seat top X%+d: %s" % (x, ("%.2f" % h[2]) if h else None))
+            if h is None or not (44.4 <= h[2] <= 45.05):
+                fail("seat top at X %g is %s (expected 45)" % (x, h and round(h[2], 2)))
+        h = _ray(bvh, -24.5, 0.0, 200.0, (0, 0, -1))
+        notes.append("back top: %s (95)" % (("%.2f" % h[2]) if h else None))
+        if h is None or h[2] < 94.4:
+            fail("back top %s expected 95" % (h and round(h[2], 2)))
+    elif kind == "altar":
+        # hollow core + O84 hole: a vertical ray through the centre must pass the whole altar; the wings carry the only collision
+        for (x, y) in ((0.0, 0.0), (30.0, 0.0), (-30.0, 20.0), (0.0, -35.0)):
+            h = _ray(bvh, x, y, 150.0, (0, 0, -1))
+            notes.append("centre ray (%g,%g): %s" % (x, y, h))
+            if h is not None:
+                fail("vertical ray at (%g, %g) hits the altar at Z %.1f (hole / core must be open)" % (x, y, h[2]))
+        h = _ray(bvh, -49.0, 0.0, 50.0, (0, 0, 1))                      # inside the core, looking up: mensa underside at Z 91
+        notes.append("core ceiling: %s (91)" % (("%.1f" % h[2]) if h else None))
+        if h is None or abs(h[2] - 91.0) > 1.5:
+            fail("core ceiling %s expected 91" % (h and round(h[2], 1)))
+        h = _ray(bvh, -200.0, 0.0, 60.0, (1, 0, 0))                     # front face of the centre panel at X -52
+        notes.append("front panel face: %s (-52)" % (("%.1f" % h[0]) if h else None))
+        if h is None or abs(h[0] + 52.0) > 1.0:
+            fail("centre front face %s expected -52" % (h and round(h[0], 1)))
+        for u in ucx:                                                   # UCX only on the wings: |Y| >= 53.5
+            ys = [p.y for p in VK.ue_coords(u)]
+            if min(abs(v) for v in ys) < 53.5 or min(ys) * max(ys) > 0 and False:
+                fail("%s reaches the centre (Y %.1f..%.1f)" % (u.name, min(ys), max(ys)))
+            if min(ys) < 0 < max(ys):
+                fail("%s spans Y = 0" % u.name)
+    elif kind == "shell_cyl":
+        h = _ray(bvh, 0.0, 0.0, -10.0, (0, 0, 1))                        # open bottom: first hit is the cap underside at Z 50
+        notes.append("cap underside: %s" % (("%.1f" % h[2]) if h else None))
+        if h is None or abs(h[2] - 50.0) > 1.0:
+            fail("shell cap underside %s expected 50 (open bottom, 1 cm wall)" % (h and round(h[2], 1)))
+    elif kind == "backdrop":
+        n = ob.data.polygons[0].normal
+        notes.append("normal %.2f %.2f %.2f" % (n.x, n.y, n.z))
+        if n.x > -0.9:
+            fail("backdrop normal %s should face -X" % (tuple(round(v, 2) for v in n),))
+    bm.free()
+    res['struct'] = notes
+
+
+def uv_in_unit(ob, fail, res):
+    uvs = ob.data.uv_layers.active.data
+    us = [d.uv[0] for d in uvs]
+    vs = [d.uv[1] for d in uvs]
+    res['uv'] = [round(min(us), 3), round(max(us), 3), round(min(vs), 3), round(max(vs), 3)]
+    if min(us) < -0.001 or max(us) > 1.001 or min(vs) < -0.001 or max(vs) > 1.001:
+        fail("UVs outside 0..1: %s" % res['uv'])
+    if max(us) - min(us) < 0.45 or max(vs) - min(vs) < 0.45:
+        fail("UV span too small: %s" % res['uv'])
 
 
 def check(path, short, spec):
@@ -156,6 +283,9 @@ def check(path, short, spec):
             for i in range(3):
                 if b0[i] < mn[i] - TOL or b1[i] > mx[i] + TOL:
                     fail("%s outside the visual bounds on %s" % (u.name, "XYZ"[i]))
+    structural(short, spec, ob, ucx, fail, res)
+    if spec.get('uv01'):
+        uv_in_unit(ob, fail, res)
     # ledge: flat 22 x 22 centre exactly at Z 70
     if short.startswith("KeyLedge"):
         zs = [p.z for p in pts if abs(p.x) <= 10.5 and abs(p.y) <= 10.5 and p.z > 60.0]
@@ -185,6 +315,9 @@ def main():
                                                   "PASS" if r['ok'] else "FAIL: " + "; ".join(r['fails'])))
     ok = all(r['ok'] for r in rows)
     print("pieces: %d  passed: %d  failed: %d  => %s" % (len(rows), sum(1 for r in rows if r['ok']), sum(1 for r in rows if not r['ok']), "ALL PASS" if ok else "FAILURES"))
+    for r in rows:
+        if r.get('struct'):
+            print("  %s: %s" % (r['name'][len(P):], "; ".join(r['struct'])))
     for r in rows:
         if 'flat_centre_z' in r:
             print("  key ledge flat centre Z range: %s" % r['flat_centre_z'])

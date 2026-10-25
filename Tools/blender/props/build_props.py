@@ -1451,6 +1451,624 @@ def build_deadtree():
 
 
 # ==============================================================================================
+# P8-3 chapel props (plan Docs/plans/P8_CHAPEL_ART.md section 2 P8-3 + amendment C1).  Pivot = bottom-centre (props rule).
+# ==============================================================================================
+MAT_COLORS.update({
+    "MAT_Slate": (0.16, 0.17, 0.19, 1.0),
+    "MAT_Glass": (0.20, 0.30, 0.55, 1.0),
+    "MAT_Cobweb": (0.80, 0.80, 0.78, 1.0),
+    "MAT_Flame": (1.0, 0.62, 0.18, 1.0),
+    "MAT_Backdrop": (0.06, 0.065, 0.08, 1.0),
+})
+
+
+def rot_about(bm, axis, deg, pivot):
+    shift(bm, -pivot[0], -pivot[1], -pivot[2])
+    rot(bm, axis, deg)
+    shift(bm, pivot[0], pivot[1], pivot[2])
+    return bm
+
+
+def set_uv(bm, fn):
+    """fn(face, vert_co) -> (u, v) for every loop (creates the UVMap layer; build the piece with keep_uv = True)."""
+    uv = bm.loops.layers.uv.get("UVMap") or bm.loops.layers.uv.new("UVMap")
+    bm.normal_update()
+    for f in bm.faces:
+        for l in f.loops:
+            l[uv].uv = fn(f, l.vert.co)
+    return bm
+
+
+def glass_slab(poly, thick, ref_min, ref_size, uv_rect=(0.0, 0.0, 1.0, 1.0), mat=0):
+    """Thin closed slab of a (x, z) outline, Y -thick/2..thick/2.  UV: the two big faces map the reference box
+    (ref_min, ref_size) onto uv_rect = (u0, v0, u1, v1); rims collapse to the rect centre."""
+    s = K.prism(poly, 'y', -thick / 2, thick / 2, mat)
+    s.normal_update()
+    u0, v0, u1, v1 = uv_rect
+
+    def fn(f, c):
+        if abs(f.normal.y) > 0.9:
+            return (u0 + (c.x - ref_min[0]) / ref_size[0] * (u1 - u0), v0 + (c.z - ref_min[1]) / ref_size[1] * (v1 - v0))
+        return ((u0 + u1) * 0.5, (v0 + v1) * 0.5)
+
+    return set_uv(s, fn)
+
+
+# ---------------------------------------------------------------------------------------------- truss
+def build_truss():
+    TH = math.atan2(965.0, 810.0)
+    vt = 20.0 / math.cos(TH)
+
+    def zt(y):
+        return 1265.0 - (965.0 / 810.0) * abs(y)
+
+    X0, X1 = -12.5, 12.5
+    parts = []
+    seed = [9101]
+
+    def finish(b, amp=0.3):
+        K.bevel_all(b, 0.8, 25.0)
+        subdiv_long(b, 30.0)
+        bmesh.ops.triangulate(b, faces=b.faces[:])
+        weather(b, seed[0], amp, mask=lambda co, n: 0.0 if co.z <= 0.02 else 1.0, f1=1 / 70.0, f2=1 / 22.0)
+        seed[0] += 7
+        return b
+
+    for sgn in (-1, 1):
+        # principal rafter: top face on the roof plane, 20 deep (perpendicular), clipped at Y 0 and at the wall face |Y| 750
+        ya, yb = (0.0, 750.0) if sgn > 0 else (-750.0, 0.0)
+        pts = [(0.0, 1265.0 - vt), (750.0, zt(750.0) - vt), (750.0, zt(750.0)), (0.0, 1265.0)]
+        pts = [(sgn * y, z) for (y, z) in pts]
+        parts.append(finish(K.prism(pts, 'x', X0, X1, 0)))
+        # post 25 x 25 at |Y| 725..750, top cut along the rafter underside plane (buried 8 cm into the rafter)
+        pp = [(sgn * 725.0, 0.0), (sgn * 750.0, 0.0), (sgn * 750.0, zt(750.0) - 8.0), (sgn * 725.0, zt(725.0) - 8.0)]
+        parts.append(finish(K.prism(pp, 'x', X0, X1, 0), 0.25))
+        # arch brace: band between r 783.9 and 803.9 around the centre (-sgn 78.9, 50): springing (sgn 725, 50) .. apex (0, 830..850)
+        cy = -sgn * 78.9
+        n = 32
+        ro, ri = 803.9, 783.9
+        pol = []
+        pho = math.acos(78.9 / ro)
+        phi = math.acos(78.9 / ri)
+        for i in range(n + 1):
+            ph = pho * i / n
+            pol.append((cy + sgn * ro * math.cos(ph), 50.0 + ro * math.sin(ph)))
+        for i in range(n, -1, -1):
+            ph = phi * i / n
+            pol.append((cy + sgn * ri * math.cos(ph), 50.0 + ri * math.sin(ph)))
+        parts.append(finish(K.prism(pol, 'x', X0, X1, 0), 0.25))
+    # collar 25 x 20, top at Z 850, ends buried in the rafters
+    col = K.box(X0, X1, -345.0, 345.0, 830.0, 850.0, 0, 0.0)
+    parts.append(finish(col, 0.25))
+    # pegs (O2.4, protruding 0.6 on each face)
+    for sgn in (-1, 1):
+        for (py, pz) in ((737.0, 340.0), (718.0, 90.0), (340.0, 840.0), (120.0, 838.0)):
+            pg = K.cylinder(1.2, 26.2, 8, 0)
+            rot(pg, 'Y', 90.0)
+            shift(pg, -13.1, sgn * py, pz)
+            parts.append(pg)
+    bm = join(parts)
+    return Piece(PREFIX + "Truss_ArchBraced_1500", bm, ["MAT_Wood"],
+                 note="arch-braced truss: local Z 0 = post foot (world 900), Y across the nave (+-750), X 25 thick; rafters 25x20 with top faces on the roof plane "
+                      "(Y+-810,Z300)-(0,1265), posts 25x25 at Y+-737.5, collar top Z 850, pointed arch braces springing (Y+-725,Z50) r 803.9; no UCX")
+
+
+# ---------------------------------------------------------------------------------------------- pews
+def pew_panel(y0, y1, seed, rng, chips=True):
+    n = 14
+    pts = [(-27.5, 0.0), (27.5, 0.0), (27.5, 68.0)]
+    for i in range(1, n + 1):
+        x = 27.5 - 55.0 * i / n
+        t = (27.5 - x) / 55.0
+        pts.append((x, 68.0 + 27.0 * t * t * (3 - 2 * t)))
+    p = K.prism(pts, 'y', y0, y1, 0)
+    K.bevel_all(p, 0.8, 25.0)
+    cut = K.prism(K.pointed_light_poly(3.0, 50.0, 58.0, 18.0, 18.0, cusp=1.0, n_arc=10), 'y', y0 - 1.0, y1 + 1.0, 0)
+    p = bool_op(p, cut, 'DIFFERENCE', 1)
+    cut.free()
+    if chips:
+        spots = [((rng.uniform(-20, 5), (y0 + y1) / 2, 89.0 + rng.uniform(-3, 2)), rng.uniform(2.0, 3.2)),
+                 ((27.0, (y0 + y1) / 2, rng.uniform(62, 68)), rng.uniform(2.0, 2.8)),
+                 ((rng.uniform(-20, 20), (y0 + y1) / 2, 0.0), 2.4)]
+        p = cut_chips(p, rng, spots, 0)
+    densify(p, 10.0)
+    weather(p, seed, 0.45, mask=lambda co, n_: 0.0 if co.z < 0.02 else 1.0, f1=1 / 25.0, f2=1 / 7.0)
+    return p
+
+
+def build_pew(broken):
+    rng = random.Random(9201 if not broken else 9211)
+    sd = 9300 if not broken else 9400
+    parts = []
+    parts.append(pew_panel(-125.0, -120.0, sd + 1, rng))
+    if not broken:
+        parts.append(pew_panel(120.0, 125.0, sd + 2, rng))
+    else:                                                            # the +Y end panel is gone: only a jagged stump is left (keeps the bounds symmetric)
+        stump = K.prism([(-27.5, 0.0), (27.5, 0.0), (27.5, 17.0), (19.0, 24.0), (12.0, 15.0), (4.0, 27.0), (-6.0, 14.0), (-14.0, 22.0), (-27.5, 12.0)],
+                        'y', 120.0, 125.0, 0)
+        K.bevel_all(stump, 0.6, 25.0)
+        densify(stump, 10.0)
+        weather(stump, sd + 3, 0.45, mask=lambda co, n_: 0.0 if co.z < 0.02 else 1.0, f1=1 / 25.0, f2=1 / 7.0)
+        parts.append(stump)
+    # seat: two planks across (X -22..2 and 2.6..27.5), top Z 45
+    sp = lambda x0, x1, y0, y1, k: lbeam(x0, x1, y0, y1, 41.0, 45.0, sd + 10 + k, 0, 0.6, 24.0, 0.3)
+    if not broken:
+        parts += [sp(-22.0, 2.0, -120.0, 120.0, 0), sp(2.6, 27.5, -120.0, 120.0, 1)]
+    else:
+        back_a = sp(-22.0, 2.0, -120.0, 43.0, 0)
+        back_b = sp(-22.0, 2.0, 47.0, 120.0, 1)
+        rot_about(back_b, 'X', -5.0, (0.0, 47.0, 43.0))                 # right half of the back plank sags
+        front = sp(2.6, 27.5, -120.0, -10.0, 2)
+        parts += [back_a, back_b, front]
+        for k, (x0, x1, yy) in enumerate(((5.0, 8.0, -10.0), (13.0, 16.0, -10.0), (21.0, 24.0, -10.0))):   # splinters of the missing plank
+            parts.append(lbeam(x0, x1, yy, yy + rng.uniform(5.0, 11.0), 41.0, 44.0 + rng.uniform(-0.5, 0.5), sd + 30 + k, 0, 0.3, 24.0, 0.1))
+    # apron under the seat front + rear stretcher
+    parts.append(lbeam(24.0, 27.5, -120.0, 120.0 if not broken else 20.0, 9.0, 41.0, sd + 20, 0, 0.5, 24.0, 0.3))
+    parts.append(lbeam(-20.0, -16.0, -120.0, 120.0, 22.0, 33.0, sd + 21, 0, 0.5, 24.0, 0.3))
+    # back: lower board + two upper boards + top rail (X -27.5..-24, rail to -21.5)
+    parts.append(lbeam(-27.5, -24.0, -120.0, 120.0, 52.0, 64.0, sd + 22, 0, 0.5, 24.0, 0.3))
+    upper = [lbeam(-27.5, -24.0, 10.0 if broken else -120.0, 120.0, 66.0, 78.0, sd + 23, 0, 0.5, 24.0, 0.3),
+             lbeam(-27.5, -24.0, 10.0 if broken else -120.0, 120.0, 80.0, 89.0, sd + 24, 0, 0.5, 24.0, 0.3),
+             lbeam(-27.5, -21.5, 10.0 if broken else -120.0, 120.0, 89.0, 95.0, sd + 25, 0, 0.8, 24.0, 0.3)]
+    if broken:
+        for u in upper:
+            rot_about(u, 'Y', 118.0, (-26.0, 0.0, 64.0))             # snapped at the lower board, hanging forward / down onto the seat
+        parts += upper
+        for k in range(3):                                           # left half keeps its upper boards / rail up to the break
+            z0, z1 = ((66.0, 78.0), (80.0, 89.0), (89.0, 95.0))[k]
+            x1 = (-24.0, -24.0, -21.5)[k]
+            parts.append(lbeam(-27.5, x1, -120.0, 8.0 + 2.0 * k, z0, z1, sd + 40 + k, 0, 0.5, 24.0, 0.3))
+    else:
+        parts += upper
+    bm = join(parts)
+    if not broken:
+        ucx = [K.box_hull(-27.5, 27.5, -125.0, 125.0, 0.0, 45.0), K.box_hull(-27.5, -21.5, -125.0, 125.0, 45.0, 95.0)]
+        note = "monastic pew facing +X: end panels with pointed-trefoil cut-out, 2 seat planks (top Z 45, covers X -22..27.5), 3-board back + top rail (top Z 95); UCX seat box + back box"
+    else:
+        ucx = [K.box_hull(-27.5, 27.5, -125.0, -10.0, 0.0, 45.0), K.box_hull(-27.5, 2.0, -10.0, 125.0, 0.0, 45.0),
+               K.box_hull(-27.5, -24.0, -125.0, 8.0, 45.0, 95.0)]
+        note = "worn pew: +Y end panel missing, back snapped (upper boards hanging forward), seat split (front plank missing for Y > -10); 3 UCX"
+    return Piece(PREFIX + ("Pew_Broken" if broken else "Pew_A"), bm, ["MAT_Wood"], ucx_design=ucx, note=note)
+
+
+# ---------------------------------------------------------------------------------------------- altar rail
+def build_altar_rail():
+    parts = []
+    sd = 9500
+    parts.append(lbeam(-20.0, -6.0, -300.0, 300.0, 0.0, 9.0, sd, 0, 1.2, 25.0, 0.3))               # kneeler (nave side)
+    parts.append(lbeam(-10.0, 10.0, -300.0, 300.0, 88.0, 100.0, sd + 1, 0, 2.5, 25.0, 0.3))          # top rail
+    parts.append(lbeam(6.0, 20.0, -300.0, 300.0, 0.0, 6.0, sd + 9, 0, 1.0, 25.0, 0.3))                # base skirting on the altar side
+    parts.append(lbeam(-6.0, 6.0, -286.0, 286.0, 8.0, 16.0, sd + 2, 0, 0.8, 25.0, 0.3))              # bottom rail
+    for k, (y0, y1) in enumerate(((-300.0, -286.0), (286.0, 300.0))):
+        parts.append(lbeam(-7.0, 7.0, y0, y1, 0.0, 100.0, sd + 3 + k, 0, 1.0, 25.0, 0.3))
+    prof = [(2.3, 16.0), (2.5, 20.0), (3.6, 26.0), (2.2, 32.0), (2.2, 44.0), (3.2, 52.0), (3.9, 58.0), (3.2, 64.0), (2.2, 70.0),
+            (2.2, 80.0), (2.9, 86.0), (2.9, 88.0)]
+    pitch = 572.0 / 14.0
+    for i in range(13):
+        yc = -286.0 + (i + 1) * pitch
+        if i in (3, 9):
+            continue                                                  # two balusters missing
+        p = prof
+        if i == 6:                                                    # one snapped at z 40 (ragged tip)
+            p = [(r, z) for (r, z) in prof if z < 40.0] + [(2.2, 40.0), (1.6, 41.5), (0.6, 44.0)]
+        b = K.lathe_z(p, 10, 0)
+        shift(b, 0.0, yc, 0.0)
+        parts.append(b)
+    bm = join(parts)
+    return Piece(PREFIX + "AltarRail_600x40x100", bm, ["MAT_Wood"], ucx_design=[K.box_hull(-20.0, 20.0, -300.0, 300.0, 0.0, 100.0)],
+                 note="rail along Y (600), 40 deep along X (kneeler on the -X/nave side), top rail Z 88..100, 13 balusters (2 missing, 1 snapped), 1 UCX box")
+
+
+# ---------------------------------------------------------------------------------------------- lectern
+def build_lectern():
+    TR, WD = 0, 1                                                    # slots: MAT_Trim, MAT_Wood
+    sd = 9600
+    parts = []
+
+    def octa(r_flat, z0, z1, bevel=1.5):
+        rc = r_flat / math.cos(math.radians(22.5))
+        pts = [(rc * math.cos(math.radians(45.0 * i + 22.5)), rc * math.sin(math.radians(45.0 * i + 22.5))) for i in range(8)]
+        b = K.prism(pts, 'z', z0, z1, TR)
+        K.bevel_all(b, bevel, 25.0)
+        return b, pts
+
+    foot, fpts = octa(28.0, 0.0, 7.0)
+    foot2, _ = octa(19.0, 7.0, 16.0, 1.2)
+    for b in (foot, foot2):
+        densify(b, 6.0)
+        weather(b, sd, 0.5, mask=lambda co, n_: 0.0 if co.z < 0.02 else 1.0)
+    parts += [foot, foot2]
+    prof = [(8.0, 16.0), (8.0, 19.0), (6.2, 22.0), (6.2, 60.0), (8.4, 63.0), (8.4, 67.0), (6.2, 70.0), (6.2, 92.0), (9.5, 96.0), (9.5, 100.0)]
+    parts.append(K.lathe_z(prof, 8, WD))
+    # slanted desk (Y -20..20): back edge high (z 125), front (+Y) low (z 109); 3 cm board + front lip + support wedge
+    desk = K.prism([(-20.0, 121.0), (20.0, 105.0), (20.0, 108.0), (-20.0, 124.0)], 'x', -26.0, 26.0, WD)
+    K.bevel_all(desk, 0.6, 25.0)
+    lip = K.box(-26.0, 26.0, 17.0, 20.0, 108.0, 111.5, WD, 0.4)
+    back = K.box(-26.0, 26.0, -20.0, -17.0, 121.0, 125.0, WD, 0.5)
+    wedge = K.prism([(-12.0, 100.0), (12.0, 100.0), (14.0, 106.0), (-17.0, 122.0)], 'x', -9.0, 9.0, WD)
+    for b in (desk, lip, back, wedge):
+        parts.append(b)
+    bm = join(parts)
+    hull_a = K.hull_from_points([Vector((p[0], p[1], 0.0)) for p in fpts] + [Vector((9.0, 9.0, 100.0)), Vector((-9.0, 9.0, 100.0)), Vector((9.0, -9.0, 100.0)), Vector((-9.0, -9.0, 100.0))], 0)
+    hull_b = K.hull_from_points([Vector((x, y, z)) for x in (-26.0, 26.0) for (y, z) in ((-20.0, 124.0), (-20.0, 100.0), (20.0, 100.0), (20.0, 111.5))], 0)
+    return Piece(PREFIX + "Lectern_A", bm, ["MAT_Trim", "MAT_Wood"], ucx_design=[hull_a, hull_b],
+                 note="octagonal stone foot (56 flat-to-flat) + octagonal wooden shaft + slanted book desk (reader at +Y); 2 UCX (foot+shaft hull, desk hull)")
+
+
+# ---------------------------------------------------------------------------------------------- altar (C1-3)
+def build_altar():
+    rng = random.Random(9301)
+    sd = 9700
+    parts = []
+    H = 101.0
+    # wings (front recessed 4 cm behind the mensa lip), blind pointed niches in the fronts
+    for sgn in (-1, 1):
+        y0, y1 = (60.0, 150.0) if sgn > 0 else (-150.0, -60.0)
+        w = K.box(-48.0, 52.0, y0, y1, 0.0, 91.0, 0, 1.0)
+        niche = K.prism(K.pointed_light_poly(sgn * 105.0, 16.0, 44.0, 52.0, 41.6, cusp=0.0, n_arc=10), 'x', -49.0, -46.5, 0)
+        # prism axis 'x': (p, q) = (y, z) -> the polygon above is (x, z) = (y, z) with centre y = +-105
+        w = bool_op(w, niche, 'DIFFERENCE', 1)
+        niche.free()
+        densify(w, 12.0)
+        weather(w, sd + sgn, 0.5, mask=lambda co, n_: 0.0 if co.z < 0.02 else 1.0, f1=1 / 25.0, f2=1 / 7.0)
+        plinth = K.box(-50.0, 52.0, y0, y1, 0.0, 8.0, 0, 1.0)
+        parts += [w, plinth]
+    # centre block: raised front panel (front at the mensa lip), hollow core Y +-52 / X -51..51 open at the bottom
+    blk = K.box(-52.0, 52.0, -60.0, 60.0, 0.0, 91.0, 0, 1.0)
+    core = K.box(-51.0, 51.0, -52.0, 52.0, -1.0, 91.0, 0, 0.0)
+    blk = bool_op(blk, core, 'DIFFERENCE', 1)
+    core.free()
+    parts.append(blk)
+    # mensa: Z 91..101, O84 hole at the centre, 5 incised crosses
+    men = K.box(-52.0, 52.0, -150.0, 150.0, 91.0, H, 0, 1.2)
+    hole = K.cylinder(42.0, 14.0, 48, 0)
+    shift(hole, 0.0, 0.0, 89.0)
+    men = bool_op(men, hole, 'DIFFERENCE', 1)
+    hole.free()
+    cut = K.bmesh.new()
+    for (cx_, cy_) in ((-34.0, -112.0), (-34.0, 112.0), (34.0, -112.0), (34.0, 112.0), (0.0, 128.0)):
+        for (a0, a1, b0, b1) in ((-7.0, 7.0, -0.8, 0.8), (-0.8, 0.8, -7.0, 7.0)):
+            K.bm_append(cut, K.box(cx_ + a0, cx_ + a1, cy_ + b0, cy_ + b1, H - 0.6, H + 1.0, 0, 0.0))
+    men = bool_op(men, cut, 'DIFFERENCE', 1)
+    cut.free()
+    densify(men, 9.0, region=lambda p: p.z > 99.0)
+    parts.append(men)
+    bm = join(parts)
+    ucx = [K.box_hull(-52.0, 52.0, 54.0, 150.0, 0.0, H), K.box_hull(-52.0, 52.0, -150.0, -54.0, 0.0, H)]
+    return Piece(PREFIX + "Altar_A", bm, ["MAT_Trim"], ucx_design=ucx,
+                 note="C1-3 shell: X -52..52 (104), Y +-150, Z 0..101 (world 30..131); front panel at X -52, wings recessed 4, mensa Z 91..101 O84 hole at centre, "
+                      "hollow core Y +-52 X -51..51 open at the bottom, UCX only the two wings Y +-(54..150)")
+
+
+def build_mech_shell_cyl():
+    outer = K.lathe_z([(42.0, 0.0), (42.0, 49.4), (41.2, 51.0), (0.0, 51.0)], 32, 0)
+    inner = K.cylinder(41.0, 51.0, 32, 0)
+    shift(inner, 0.0, 0.0, -1.0)
+    bm = bool_op(outer, inner, 'DIFFERENCE', 1)
+    return Piece(PREFIX + "MechShell_Cyl", bm, ["MAT_Trim"], note="C1-3 fallback: O84 x 51 shell, open at the bottom, 1 cm wall; place Z 130..181 centred on the mechanism cylinder; NoCollision")
+
+
+def build_mech_shell_cube():
+    outer = K.box(-8.5, 8.5, -8.5, 8.5, 0.0, 17.0, 0, 0.8)
+    inner = K.box(-7.7, 7.7, -7.7, 7.7, -1.0, 16.2, 0, 0.0)
+    bm = bool_op(outer, inner, 'DIFFERENCE', 1)
+    return Piece(PREFIX + "MechShell_Cube", bm, ["MAT_Trim"], note="C1-3 fallback: 17 cm cube shell around the 15 cm marker cube, open at the bottom; NoCollision")
+
+
+# ---------------------------------------------------------------------------------------------- slate shards, finial, backdrop
+def build_slate_shards():
+    rng = random.Random(9801)
+    parts = []
+    n = 17
+    for i in range(n):
+        s = rng.uniform(11.0, 30.0)
+        k = rng.choice((4, 5, 5, 6))
+        ang0 = rng.uniform(0, 6.28)
+        pts = []
+        for j in range(k):
+            a = ang0 + 2 * math.pi * j / k + rng.uniform(-0.3, 0.3)
+            r = s * rng.uniform(0.55, 1.0)
+            pts.append((r * math.cos(a) * rng.uniform(1.0, 1.5), r * math.sin(a)))
+        b = K.prism(pts, 'z', 0.0, rng.uniform(0.7, 1.2), 0)
+        rot(b, 'X', rng.uniform(-22.0, 22.0))
+        rot(b, 'Y', rng.uniform(-22.0, 22.0))
+        rot(b, 'Z', rng.uniform(0.0, 360.0))
+        t = rng.random() ** 0.6
+        a = rng.uniform(0, 6.28)
+        shift(b, 50.0 * t * math.cos(a), 37.0 * t * math.sin(a), 0.5 + 1.5 * (1.0 - t) * rng.uniform(0.3, 1.8) + 0.8 * (i % 5))
+        parts.append(b)
+    bm = join(parts)
+    mn, mx = bounds(bm)
+    for v in bm.verts:
+        v.co.x = (v.co.x - (mn[0] + mx[0]) / 2) * 120.0 / (mx[0] - mn[0])
+        v.co.y = (v.co.y - (mn[1] + mx[1]) / 2) * 90.0 / (mx[1] - mn[1])
+    return Piece(PREFIX + "SlateShards_A", bm, ["MAT_Slate"], note="17 slate fragments (11-30 cm, 0.7-1.2 cm thick) in a 120 x 90 heap; NoCollision")
+
+
+def build_cross_finial():
+    base = K.prism([(-20.0, 0.0), (20.0, 0.0), (20.0, 30.0), (17.0, 38.0), (15.0, 40.0), (-15.0, 40.0), (-17.0, 38.0), (-20.0, 30.0)], 'y', -12.5, 12.5, 0)
+    K.bevel_all(base, 1.4, 25.0)
+    cp = [(-7.0, 40.0), (7.0, 40.0), (7.0, 100.0), (30.0, 100.0), (30.0, 114.0), (7.0, 114.0), (7.0, 130.0), (-7.0, 130.0),
+          (-7.0, 114.0), (-30.0, 114.0), (-30.0, 100.0), (-7.0, 100.0)]
+    cross = K.prism(cp, 'y', -10.0, 10.0, 0)
+    K.bevel_all(cross, 1.2, 25.0)
+    rng = random.Random(9901)
+    bm = join([base, cross])
+    densify(bm, 7.0)
+    weather(bm, 9902, 0.6, mask=lambda co, n_: 0.0 if co.z < 0.02 else 1.0)
+    return Piece(PREFIX + "CrossFinial_A", bm, ["MAT_Trim"],
+                 note="stone gable cross: arms 60 wide, 25 deep (base) / 20 deep (cross), cross 90 tall on a 40 high base -> bounds 60 x 25 x 130")
+
+
+def build_backdrop():
+    b = bmesh.new()
+    vs = [b.verts.new(p) for p in ((0.0, -400.0, 0.0), (0.0, -400.0, 850.0), (0.0, 400.0, 850.0), (0.0, 400.0, 0.0))]
+    b.faces.new(vs)                                                  # normal -X
+    set_uv(b, lambda f, c: ((c.y + 400.0) / 800.0, c.z / 850.0))
+    pc = Piece(PREFIX + "Backdrop_Plane_800x850", b, ["MAT_Backdrop"], note="single quad facing -X (towards the window), UV 0..1")
+    pc.keep_uv = True
+    return pc
+
+
+# ---------------------------------------------------------------------------------------------- glass
+def lancet_poly(w, h, ratio=0.8, n_arc=18, cusp=0.0):
+    half, R, rise = K.arch_dims(w, ratio)
+    return K.pointed_light_poly(0.0, 0.0, h - rise, w, R, cusp=cusp, n_arc=n_arc)
+
+
+def build_glass_lancet():
+    poly = lancet_poly(140.0, 560.0)
+    b = glass_slab(poly, 1.0, (-70.0, 0.0), (140.0, 560.0))
+    pc = Piece(PREFIX + "Glass_Lancet_140x560", b, ["MAT_Glass"], note="lancet outline 140 x 560 (clear opening), 1 cm slab, UV 0..1 over the bounding box (front = -Y), NoCollision")
+    pc.keep_uv = True
+    return pc
+
+
+def clip_halfplane(poly, p, d, off):
+    """Keep the part of the convex polygon with (x - p) . d <= off  (d unit)."""
+    out = []
+    n = len(poly)
+    f = lambda q: (q[0] - p[0]) * d[0] + (q[1] - p[1]) * d[1] - off
+    for i in range(n):
+        a, b = poly[i], poly[(i + 1) % n]
+        fa, fb = f(a), f(b)
+        if fa <= 0:
+            out.append(a)
+        if (fa <= 0) != (fb <= 0):
+            t = fa / (fa - fb)
+            out.append((a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t))
+    return out
+
+
+def build_glass_broken():
+    base = lancet_poly(140.0, 560.0)
+    rng = random.Random(9951)
+    for attempt in range(200):
+        sites = [(rng.uniform(-70, 70), rng.uniform(0, 560)) for _ in range(16)]
+        cells = []
+        for i, s in enumerate(sites):
+            poly = base
+            for j, t in enumerate(sites):
+                if i == j or not poly:
+                    continue
+                d = (t[0] - s[0], t[1] - s[1])
+                ln = math.hypot(*d)
+                d = (d[0] / ln, d[1] / ln)
+                mid = ((s[0] + t[0]) / 2, (s[1] + t[1]) / 2)
+                poly = clip_halfplane(poly, mid, d, -0.6)
+            if len(poly) >= 3 and abs(K.poly_area(poly)) > 40.0:
+                cells.append((s, poly))
+        keep = [c for c in cells if c[0][1] < 215.0]
+        xs = [p[0] for (_s, pl) in keep for p in pl]
+        zs = [p[1] for (_s, pl) in keep for p in pl]
+        if 5 <= len(keep) <= 7 and xs and min(xs) < -69.5 and max(xs) > 69.5 and min(zs) < 0.01:
+            break
+    parts = []
+    for (_s, pl) in keep:
+        parts.append(glass_slab(pl, 1.0, (-70.0, 0.0), (140.0, 560.0)))
+    # one loose lead came: a thin curved strip hanging off the left jamb (0.9 wide)
+    pts = [Vector((-66.0 + 5.0 * math.sin(t * 2.1), 0.0, 262.0 + 150.0 * t)) for t in [i / 10.0 for i in range(11)]]
+    strip = bmesh.new()
+    L_, R_ = [], []
+    for p in pts:
+        L_.append(strip.verts.new((p.x - 0.45, -0.5, p.z)))
+        R_.append(strip.verts.new((p.x + 0.45, -0.5, p.z)))
+    for i in range(10):
+        strip.faces.new((L_[i], R_[i], R_[i + 1], L_[i + 1]))
+    ex = bmesh.ops.extrude_face_region(strip, geom=strip.faces[:])
+    bmesh.ops.translate(strip, vec=(0, 1.0, 0), verts=[e for e in ex['geom'] if isinstance(e, bmesh.types.BMVert)])
+    bmesh.ops.recalc_face_normals(strip, faces=strip.faces)
+    K.bm_set_mat(strip, 0)
+    set_uv(strip, lambda f, c: ((c.x + 70.0) / 140.0, c.z / 560.0))
+    parts.append(strip)
+    bm = join(parts)
+    set_uv(bm, lambda f, c: ((c.x + 70.0) / 140.0, c.z / 560.0) if abs(f.normal.y) > 0.9 else (0.5, 0.5))
+    pc = Piece(PREFIX + "Glass_Lancet_Broken", bm, ["MAT_Glass"],
+               note="%d shards remain in the lower part of the 140 x 560 lancet + a loose lead came; UV = the intact lancet's box; NoCollision" % len(keep))
+    pc.keep_uv = True
+    return pc
+
+
+def build_glass_clue():
+    half, R, rise = K.arch_dims(100.0, 0.8)
+    h = 220.2
+    poly = K.pointed_light_poly(0.0, 0.0, h - rise, 100.0, R, cusp=0.0, n_arc=14)
+    b = glass_slab(poly, 1.0, (-50.0, 0.0), (100.0, h))
+    pc = Piece(PREFIX + "Glass_Clue_Ext", b, ["MAT_Glass"], note="clue opening outline 100 x 220.2 (sill 312 .. apex 532.2), 1 cm slab, UV 0..1; NoCollision")
+    pc.keep_uv = True
+    return pc
+
+
+def build_glass_east():
+    sill = 310.0
+    lights = [K.pointed_light_poly(s * 78.0, 0.0, 340.0, 144.0, 144.0, cusp=5.0) for s in (-1, 1)]
+    quat = K.quatrefoil_poly(0.0, 790.0 - sill, 45.0)
+    parts = []
+    # atlas 1:2 (u 0..1, v 0..1): left light u 0..0.5 / v 0..0.75, right light u 0.5..1 / v 0..0.75, quatrefoil u .25..0.75 / v 0.75..1
+    parts.append(glass_slab(lights[0], 1.0, (-150.0, 0.0), (144.0, 124.7 + 340.0), (0.0, 0.0, 0.5, 0.75)))
+    parts.append(glass_slab(lights[1], 1.0, (6.0, 0.0), (144.0, 124.7 + 340.0), (0.5, 0.0, 1.0, 0.75)))
+    qx = [p[0] for p in quat]
+    qz = [p[1] for p in quat]
+    parts.append(glass_slab(quat, 1.0, (min(qx), min(qz)), (max(qx) - min(qx), max(qz) - min(qz)), (0.25, 0.75, 0.75, 1.0)))
+    bm = join(parts)                                                 # join drops the UVs: re-assign them per island
+    qmin = (min(qx), min(qz))
+    qsize = (max(qx) - min(qx), max(qz) - min(qz))
+
+    def east_uv(f, c):
+        if abs(f.normal.y) < 0.9:
+            return (0.5, 0.5)
+        cc = f.calc_center_median()
+        if math.hypot(cc.x, cc.z - 480.0) < 48.0:
+            return (0.25 + (c.x - qmin[0]) / qsize[0] * 0.5, 0.75 + (c.z - qmin[1]) / qsize[1] * 0.25)
+        if cc.x < 0:
+            return ((c.x + 150.0) / 144.0 * 0.5, c.z / (124.7 + 340.0) * 0.75)
+        return (0.5 + (c.x - 6.0) / 144.0 * 0.5, c.z / (124.7 + 340.0) * 0.75)
+
+    set_uv(bm, east_uv)
+    pc = Piece(PREFIX + "Glass_East", bm, ["MAT_Glass"],
+               note="C1-2 window: two cusped lights (144 wide, Z 0..465 = world 310..775) + quatrefoil O90 at Z 480 (world 790); 1:2 atlas UVs; NoCollision")
+    pc.keep_uv = True
+    return pc
+
+
+# ---------------------------------------------------------------------------------------------- cobwebs
+def grid_quad(p00, p10, p11, p01, nu, nv, sag=None, jit=None):
+    b = bmesh.new()
+    vs = []
+    for j in range(nv + 1):
+        row = []
+        for i in range(nu + 1):
+            u, v = i / nu, j / nv
+            P = [(1 - u) * (1 - v) * p00[k] + u * (1 - v) * p10[k] + u * v * p11[k] + (1 - u) * v * p01[k] for k in range(3)]
+            if sag:
+                d = sag(u, v)
+                P = [P[0] + d[0], P[1] + d[1], P[2] + d[2]]
+            row.append(b.verts.new(P))
+        vs.append(row)
+    for j in range(nv):
+        for i in range(nu):
+            f = b.faces.new((vs[j][i], vs[j][i + 1], vs[j + 1][i + 1], vs[j + 1][i]))
+    return b
+
+
+def build_cobweb_corner():
+    s = 120.0
+    h = 120.0
+    parts = []
+    ba = grid_quad((-60, -60, 0), (60, -60, 0), (60, -60, h), (-60, -60, h), 6, 6, sag=lambda u, v: (0, 4.0 * math.sin(math.pi * u) * math.sin(math.pi * v), 0))
+    bb = grid_quad((-60, -60, 0), (-60, 60, 0), (-60, 60, h), (-60, -60, h), 6, 6, sag=lambda u, v: (4.0 * math.sin(math.pi * u) * math.sin(math.pi * v), 0, 0))
+    bc = grid_quad((-60, -60, h), (60, -60, h), (35, 35, h - 25.0), (-60, 60, h), 8, 8, sag=lambda u, v: (0, 0, -22.0 * math.sin(math.pi * u) * math.sin(math.pi * v)))
+    for b in (ba, bb, bc):
+        parts.append(b)
+    bm = join(parts)
+    uvs = {}
+    # per-quad UV 0..1: derive from the original grid order (faces were created in grid order per quad)
+    uv = bm.loops.layers.uv.new("UVMap")
+    nf = [(36, 6, 6), (36, 6, 6), (64, 8, 8)]
+    idx = 0
+    bm.faces.ensure_lookup_table()
+    for (cnt, nu, nv) in nf:
+        for k in range(cnt):
+            j, i = divmod(k, nu)
+            f = bm.faces[idx + k]
+            for l, (du, dv) in zip(f.loops, ((0, 0), (1, 0), (1, 1), (0, 1))):
+                l[uv].uv = ((i + du) / nu, (j + dv) / nv)
+        idx += cnt
+    pc = Piece(PREFIX + "Cobweb_Corner_A", bm, ["MAT_Cobweb"],
+               note="two 120 x 120 quads meeting at 90 deg (wall planes Y -60 and X -60; the vertical corner edge is at local (-60,-60)) + a sagging third quad over the top edges; UV 0..1 per quad; two-sided material; NoCollision")
+    pc.keep_uv = True
+    return pc
+
+
+def build_cobweb_hang():
+    rng = random.Random(9961)
+    W, Hh = 150.0, 80.0
+    nu, nv = 10, 4
+    b = bmesh.new()
+    vs = []
+    for j in range(nv + 1):
+        row = []
+        for i in range(nu + 1):
+            u, v = i / nu, j / nv
+            x = -W / 2 + W * u
+            z = Hh * (1.0 - v)
+            if j == nv:
+                z = rng.choice((0.0, 4.0, 9.0, 14.0, 2.0))                      # ragged lower edge
+            y = 12.0 * math.sin(math.pi * u) * (1.0 - 0.45 * v)
+            row.append(b.verts.new((x, y, z)))
+        vs.append(row)
+    for j in range(nv):
+        for i in range(nu):
+            b.faces.new((vs[j][i], vs[j][i + 1], vs[j + 1][i + 1], vs[j + 1][i]))
+    uv = b.loops.layers.uv.new("UVMap")
+    b.faces.ensure_lookup_table()
+    for k, f in enumerate(b.faces):
+        j, i = divmod(k, nu)
+        for l, (du, dv) in zip(f.loops, ((0, 0), (1, 0), (1, 1), (0, 1))):
+            l[uv].uv = ((i + du) / nu, 1.0 - (j + dv) / nv)
+    zmin = min(v.co.z for v in b.verts)
+    for v in b.verts:
+        v.co.z -= zmin
+    mx = max(v.co.z for v in b.verts)
+    for v in b.verts:
+        v.co.z *= Hh / mx
+    pc = Piece(PREFIX + "Cobweb_Hang_A", b, ["MAT_Cobweb"], note="150 x 80 sagging sheet (hangs from its top edge, Y sag 12), ragged lower edge; UV 0..1; two-sided material; NoCollision")
+    pc.keep_uv = True
+    return pc
+
+
+# ---------------------------------------------------------------------------------------------- pricket stands, flame
+def build_pricket_small():
+    prof = [(4.6, 0.0), (4.6, 0.9), (1.4, 1.4), (0.9, 2.2), (0.9, 8.0), (1.9, 9.0), (1.9, 10.0), (0.9, 11.0), (0.9, 20.0), (1.7, 21.5),
+            (2.4, 23.5), (5.0, 27.4), (5.0, 28.4), (4.3, 28.7), (1.2, 27.8), (0.45, 28.0), (0.0, 30.0)]
+    b = K.lathe_z(prof, 14, 0)
+    return Piece(PREFIX + "PricketStand_Small_10x30", b, ["MAT_Iron"], ucx_design=[K.box_hull(-5.0, 5.0, -5.0, 5.0, 0.0, 30.0)],
+                 note="C1-4: iron pricket for the puzzle candle Stand: 10 x 10 x 30 envelope (foot disc, stem with knops, drip dish, central pricket tip at Z 30); UCX box 10 x 10 x 30")
+
+
+def build_pricket_150():
+    parts = []
+    shaft = K.lathe_z([(1.5, 18.0), (1.5, 40.0), (2.6, 41.5), (2.6, 43.5), (1.5, 45.0), (1.5, 78.0), (2.8, 80.0), (2.8, 83.0), (1.5, 85.0),
+                       (1.5, 112.0), (2.6, 113.5), (2.6, 115.5), (1.5, 117.0), (1.5, 132.0), (0.0, 134.0)], 12, 0)
+    parts.append(shaft)
+    pan = K.lathe_z([(1.5, 132.0), (6.0, 133.4), (13.0, 134.6), (15.0, 135.2), (15.0, 137.0), (14.2, 137.0), (14.2, 136.0), (3.0, 135.8), (1.5, 135.8)], 24, 0,
+                    cap_bottom=False, cap_top=False, closed=True)
+    parts.append(pan)
+    for k in range(3):
+        a = math.radians(90.0 + 120.0 * k)
+        rc = 22.0 / math.sqrt(3.0)
+        pk = K.lathe_z([(1.7, 135.8), (1.7, 138.0), (0.8, 138.5), (0.5, 139.0), (0.0, 150.0)], 8, 0)
+        shift(pk, rc * math.cos(a), rc * math.sin(a), 0.0)
+        parts.append(pk)
+    # tripod legs: curved tubes from the shaft (z 28) out to feet at radius 22.5, small foot pads
+    for k in range(3):
+        a = math.radians(90.0 + 120.0 * k)
+        ca, sa = math.cos(a), math.sin(a)
+        pts = []
+        for i in range(9):
+            t = i / 8.0
+            r = 1.0 + 21.5 * (t ** 1.6)
+            z = 1.0 + 29.0 * (1.0 - t) ** 1.35
+            pts.append(Vector((r * ca, r * sa, z)))
+        leg = bmesh.new()
+        add_tube(leg, pts, [1.0] * 9, 6, 0, uvscale=50.0)
+        parts.append(leg)
+        pad = K.cylinder(1.5, 1.0, 8, 0)
+        shift(pad, 22.5 * ca, 22.5 * sa, 0.0)
+        parts.append(pad)
+    bm = join(parts)
+    return Piece(PREFIX + "PricketStand_150", bm, ["MAT_Iron"], ucx_fixed=(30.0, 30.0, 150.0),
+                 note="C1-5: wrought-iron floor pricket: tripod feet at radius 22.5 (angles 90/210/330 deg; the shaft is 5.6 cm off the bbox centre in Y), shaft O3, drip pan O30 at Z 133..137, "
+                      "3 prickets on a 22 cm triangle (radius 12.7, same angles) tips at Z 150; UCX 30 x 30 x 150")
+
+
+def build_candle_flame():
+    prof = [(0.0, 0.0), (0.55, 0.25), (1.0, 0.7), (1.38, 1.3), (1.5, 1.9), (1.38, 2.7), (1.05, 3.7), (0.65, 4.8), (0.28, 5.8), (0.0, 6.5)]
+    b = K.lathe_z(prof, 10, 0)
+    return Piece(PREFIX + "CandleFlame_A", b, ["MAT_Flame"], note="C1-6 teardrop 3 x 3 x 6.5 cm (matches the puzzle candles' flame look); NoCollision")
+
+
+# ==============================================================================================
 # table
 # ==============================================================================================
 def table():
@@ -1486,6 +2104,27 @@ def table():
         ("Ivy_Patch_200x300_Dead", lambda: build_ivy("Ivy_Patch_200x300_Dead", 200.0, 300.0, "Dead", "patch", 9112)),
         ("Ivy_Hang_150x600_Dead", lambda: build_ivy("Ivy_Hang_150x600_Dead", 150.0, 600.0, "Dead", "hang", 9113)),
         ("Ivy_Creep_400x200_Dead", lambda: build_ivy("Ivy_Creep_400x200_Dead", 400.0, 200.0, "Dead", "creep", 9114)),
+        # ---- P8-3 chapel ----
+        ("Truss_ArchBraced_1500", build_truss),
+        ("Pew_A", lambda: build_pew(False)),
+        ("Pew_Broken", lambda: build_pew(True)),
+        ("AltarRail_600x40x100", build_altar_rail),
+        ("Lectern_A", build_lectern),
+        ("Altar_A", build_altar),
+        ("MechShell_Cyl", build_mech_shell_cyl),
+        ("MechShell_Cube", build_mech_shell_cube),
+        ("SlateShards_A", build_slate_shards),
+        ("CrossFinial_A", build_cross_finial),
+        ("Backdrop_Plane_800x850", build_backdrop),
+        ("Glass_Lancet_140x560", build_glass_lancet),
+        ("Glass_Lancet_Broken", build_glass_broken),
+        ("Glass_East", build_glass_east),
+        ("Glass_Clue_Ext", build_glass_clue),
+        ("Cobweb_Corner_A", build_cobweb_corner),
+        ("Cobweb_Hang_A", build_cobweb_hang),
+        ("PricketStand_Small_10x30", build_pricket_small),
+        ("PricketStand_150", build_pricket_150),
+        ("CandleFlame_A", build_candle_flame),
     ]
 
 

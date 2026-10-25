@@ -1,0 +1,664 @@
+[
+ {
+  "name": "SM_LB_Prop_Truss_ArchBraced_1500",
+  "min": [
+   -13.1,
+   -749.93,
+   0.0
+  ],
+  "max": [
+   13.1,
+   749.93,
+   1264.3
+  ],
+  "dims": [
+   26.2,
+   1499.86,
+   1264.3
+  ],
+  "tris": 3460,
+  "slots": [
+   "MAT_Wood"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 0,
+  "pivot_shift_applied": [
+   -0.0,
+   0.024,
+   -0.0
+  ],
+  "note": "arch-braced truss: local Z 0 = post foot (world 900), Y across the nave (+-750), X 25 thick; rafters 25x20 with top faces on the roof plane (Y+-810,Z300)-(0,1265), posts 25x25 at Y+-737.5, collar top Z 850, pointed arch braces springing (Y+-725,Z50) r 803.9; no UCX",
+  "seconds": 0.4
+ },
+ {
+  "name": "SM_LB_Prop_Pew_A",
+  "min": [
+   -27.44,
+   -124.88,
+   0.0
+  ],
+  "max": [
+   27.44,
+   124.88,
+   94.9
+  ],
+  "dims": [
+   54.88,
+   249.76,
+   94.9
+  ],
+  "tris": 5308,
+  "slots": [
+   "MAT_Wood"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 2,
+  "pivot_shift_applied": [
+   -0.024,
+   -0.003,
+   -0.0
+  ],
+  "note": "monastic pew facing +X: end panels with pointed-trefoil cut-out, 2 seat planks (top Z 45, covers X -22..27.5), 3-board back + top rail (top Z 95); UCX seat box + back box",
+  "seconds": 0.4
+ },
+ {
+  "name": "SM_LB_Prop_Pew_Broken",
+  "min": [
+   -27.42,
+   -124.91,
+   0.0
+  ],
+  "max": [
+   27.42,
+   124.91,
+   94.88
+  ],
+  "dims": [
+   54.84,
+   249.82,
+   94.88
+  ],
+  "tris": 3978,
+  "slots": [
+   "MAT_Wood"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 3,
+  "pivot_shift_applied": [
+   -0.0,
+   -0.02,
+   -0.0
+  ],
+  "note": "worn pew: +Y end panel missing, back snapped (upper boards hanging forward), seat split (front plank missing for Y > -10); 3 UCX",
+  "seconds": 0.3
+ },
+ {
+  "name": "SM_LB_Prop_AltarRail_600x40x100",
+  "min": [
+   -19.95,
+   -299.91,
+   0.0
+  ],
+  "max": [
+   19.95,
+   299.91,
+   99.91
+  ],
+  "dims": [
+   39.9,
+   599.83,
+   99.91
+  ],
+  "tris": 4312,
+  "slots": [
+   "MAT_Wood"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 1,
+  "pivot_shift_applied": [
+   0.011,
+   0.007,
+   -0.0
+  ],
+  "note": "rail along Y (600), 40 deep along X (kneeler on the -X/nave side), top rail Z 88..100, 13 balusters (2 missing, 1 snapped), 1 UCX box",
+  "seconds": 0.1
+ },
+ {
+  "name": "SM_LB_Prop_Lectern_A",
+  "min": [
+   -27.81,
+   -27.81,
+   0.0
+  ],
+  "max": [
+   27.81,
+   27.81,
+   125.0
+  ],
+  "dims": [
+   55.63,
+   55.62,
+   125.0
+  ],
+  "tris": 2408,
+  "slots": [
+   "MAT_Trim",
+   "MAT_Wood"
+  ],
+  "slots_used": [
+   0,
+   1
+  ],
+  "ucx": 2,
+  "pivot_shift_applied": [
+   0.026,
+   -0.043,
+   -0.0
+  ],
+  "note": "octagonal stone foot (56 flat-to-flat) + octagonal wooden shaft + slanted book desk (reader at +Y); 2 UCX (foot+shaft hull, desk hull)",
+  "seconds": 0.1
+ },
+ {
+  "name": "SM_LB_Prop_Altar_A",
+  "min": [
+   -52.0,
+   -150.0,
+   0.0
+  ],
+  "max": [
+   52.0,
+   150.0,
+   101.0
+  ],
+  "dims": [
+   104.0,
+   300.0,
+   101.0
+  ],
+  "tris": 17712,
+  "slots": [
+   "MAT_Trim"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 2,
+  "pivot_shift_applied": [
+   -0.0,
+   -0.0,
+   -0.0
+  ],
+  "note": "C1-3 shell: X -52..52 (104), Y +-150, Z 0..101 (world 30..131); front panel at X -52, wings recessed 4, mensa Z 91..101 O84 hole at centre, hollow core Y +-52 X -51..51 open at the bottom, UCX only the two wings Y +-(54..150)",
+  "seconds": 0.4
+ },
+ {
+  "name": "SM_LB_Prop_MechShell_Cyl",
+  "min": [
+   -42.0,
+   -42.0,
+   0.0
+  ],
+  "max": [
+   42.0,
+   42.0,
+   51.0
+  ],
+  "dims": [
+   84.0,
+   84.0,
+   51.0
+  ],
+  "tris": 318,
+  "slots": [
+   "MAT_Trim"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 0,
+  "pivot_shift_applied": [
+   -0.0,
+   -0.0,
+   -0.0
+  ],
+  "note": "C1-3 fallback: O84 x 51 shell, open at the bottom, 1 cm wall; place Z 130..181 centred on the mechanism cylinder; NoCollision",
+  "seconds": 0.0
+ },
+ {
+  "name": "SM_LB_Prop_MechShell_Cube",
+  "min": [
+   -8.5,
+   -8.5,
+   0.0
+  ],
+  "max": [
+   8.5,
+   8.5,
+   17.0
+  ],
+  "dims": [
+   17.0,
+   17.0,
+   17.0
+  ],
+  "tris": 52,
+  "slots": [
+   "MAT_Trim"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 0,
+  "pivot_shift_applied": [
+   -0.0,
+   -0.0,
+   -0.0
+  ],
+  "note": "C1-3 fallback: 17 cm cube shell around the 15 cm marker cube, open at the bottom; NoCollision",
+  "seconds": 0.0
+ },
+ {
+  "name": "SM_LB_Prop_SlateShards_A",
+  "min": [
+   -60.0,
+   -45.0,
+   0.0
+  ],
+  "max": [
+   60.0,
+   45.0,
+   21.24
+  ],
+  "dims": [
+   120.0,
+   90.0,
+   21.24
+  ],
+  "tris": 280,
+  "slots": [
+   "MAT_Slate"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 0,
+  "pivot_shift_applied": [
+   -0.0,
+   -0.0,
+   7.587
+  ],
+  "note": "17 slate fragments (11-30 cm, 0.7-1.2 cm thick) in a 120 x 90 heap; NoCollision",
+  "seconds": 0.0
+ },
+ {
+  "name": "SM_LB_Prop_CrossFinial_A",
+  "min": [
+   -29.83,
+   -12.31,
+   0.0
+  ],
+  "max": [
+   29.83,
+   12.31,
+   129.86
+  ],
+  "dims": [
+   59.66,
+   24.63,
+   129.86
+  ],
+  "tris": 6672,
+  "slots": [
+   "MAT_Trim"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 0,
+  "pivot_shift_applied": [
+   0.016,
+   0.018,
+   -0.0
+  ],
+  "note": "stone gable cross: arms 60 wide, 25 deep (base) / 20 deep (cross), cross 90 tall on a 40 high base -> bounds 60 x 25 x 130",
+  "seconds": 0.1
+ },
+ {
+  "name": "SM_LB_Prop_Backdrop_Plane_800x850",
+  "min": [
+   0.0,
+   -400.0,
+   0.0
+  ],
+  "max": [
+   0.0,
+   400.0,
+   850.0
+  ],
+  "dims": [
+   0.0,
+   800.0,
+   850.0
+  ],
+  "tris": 2,
+  "slots": [
+   "MAT_Backdrop"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 0,
+  "pivot_shift_applied": [
+   -0.0,
+   -0.0,
+   -0.0
+  ],
+  "note": "single quad facing -X (towards the window), UV 0..1",
+  "seconds": 0.0
+ },
+ {
+  "name": "SM_LB_Prop_Glass_Lancet_140x560",
+  "min": [
+   -70.0,
+   -0.5,
+   0.0
+  ],
+  "max": [
+   70.0,
+   0.5,
+   560.0
+  ],
+  "dims": [
+   140.0,
+   1.0,
+   560.0
+  ],
+  "tris": 152,
+  "slots": [
+   "MAT_Glass"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 0,
+  "pivot_shift_applied": [
+   -0.0,
+   -0.0,
+   -0.0
+  ],
+  "note": "lancet outline 140 x 560 (clear opening), 1 cm slab, UV 0..1 over the bounding box (front = -Y), NoCollision",
+  "seconds": 0.0
+ },
+ {
+  "name": "SM_LB_Prop_Glass_Lancet_Broken",
+  "min": [
+   -70.0,
+   -0.5,
+   0.0
+  ],
+  "max": [
+   70.0,
+   0.5,
+   412.0
+  ],
+  "dims": [
+   140.0,
+   1.0,
+   412.0
+  ],
+  "tris": 176,
+  "slots": [
+   "MAT_Glass"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 0,
+  "pivot_shift_applied": [
+   -0.0,
+   -0.0,
+   -0.0
+  ],
+  "note": "6 shards remain in the lower part of the 140 x 560 lancet + a loose lead came; UV = the intact lancet's box; NoCollision",
+  "seconds": 0.0
+ },
+ {
+  "name": "SM_LB_Prop_Glass_East",
+  "min": [
+   -150.0,
+   -0.5,
+   0.0
+  ],
+  "max": [
+   150.0,
+   0.5,
+   518.82
+  ],
+  "dims": [
+   300.0,
+   1.0,
+   518.82
+  ],
+  "tris": 716,
+  "slots": [
+   "MAT_Glass"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 0,
+  "pivot_shift_applied": [
+   -0.0,
+   -0.0,
+   -0.0
+  ],
+  "note": "C1-2 window: two cusped lights (144 wide, Z 0..465 = world 310..775) + quatrefoil O90 at Z 480 (world 790); 1:2 atlas UVs; NoCollision",
+  "seconds": 0.0
+ },
+ {
+  "name": "SM_LB_Prop_Glass_Clue_Ext",
+  "min": [
+   -50.0,
+   -0.5,
+   0.0
+  ],
+  "max": [
+   50.0,
+   0.5,
+   220.2
+  ],
+  "dims": [
+   100.0,
+   1.0,
+   220.2
+  ],
+  "tris": 120,
+  "slots": [
+   "MAT_Glass"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 0,
+  "pivot_shift_applied": [
+   -0.0,
+   -0.0,
+   -0.0
+  ],
+  "note": "clue opening outline 100 x 220.2 (sill 312 .. apex 532.2), 1 cm slab, UV 0..1; NoCollision",
+  "seconds": 0.0
+ },
+ {
+  "name": "SM_LB_Prop_Cobweb_Corner_A",
+  "min": [
+   -60.0,
+   -60.0,
+   0.0
+  ],
+  "max": [
+   60.0,
+   60.0,
+   120.0
+  ],
+  "dims": [
+   120.0,
+   120.0,
+   120.0
+  ],
+  "tris": 272,
+  "slots": [
+   "MAT_Cobweb"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 0,
+  "pivot_shift_applied": [
+   -0.0,
+   -0.0,
+   -0.0
+  ],
+  "note": "two 120 x 120 quads meeting at 90 deg (wall planes Y -60 and X -60; the vertical corner edge is at local (-60,-60)) + a sagging third quad over the top edges; UV 0..1 per quad; two-sided material; NoCollision",
+  "seconds": 0.0
+ },
+ {
+  "name": "SM_LB_Prop_Cobweb_Hang_A",
+  "min": [
+   -75.0,
+   -6.0,
+   0.0
+  ],
+  "max": [
+   75.0,
+   6.0,
+   80.0
+  ],
+  "dims": [
+   150.0,
+   12.0,
+   80.0
+  ],
+  "tris": 80,
+  "slots": [
+   "MAT_Cobweb"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 0,
+  "pivot_shift_applied": [
+   -0.0,
+   -6.0,
+   -0.0
+  ],
+  "note": "150 x 80 sagging sheet (hangs from its top edge, Y sag 12), ragged lower edge; UV 0..1; two-sided material; NoCollision",
+  "seconds": 0.0
+ },
+ {
+  "name": "SM_LB_Prop_PricketStand_Small_10x30",
+  "min": [
+   -5.0,
+   -4.87,
+   0.0
+  ],
+  "max": [
+   5.0,
+   4.87,
+   30.0
+  ],
+  "dims": [
+   10.0,
+   9.75,
+   30.0
+  ],
+  "tris": 446,
+  "slots": [
+   "MAT_Iron"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 1,
+  "pivot_shift_applied": [
+   -0.0,
+   -0.0,
+   -0.0
+  ],
+  "note": "C1-4: iron pricket for the puzzle candle Stand: 10 x 10 x 30 envelope (foot disc, stem with knops, drip dish, central pricket tip at Z 30); UCX box 10 x 10 x 30",
+  "seconds": 0.0
+ },
+ {
+  "name": "SM_LB_Prop_PricketStand_150",
+  "min": [
+   -20.99,
+   -19.5,
+   0.0
+  ],
+  "max": [
+   20.99,
+   19.5,
+   150.0
+  ],
+  "dims": [
+   41.97,
+   39.0,
+   150.0
+  ],
+  "tris": 1348,
+  "slots": [
+   "MAT_Iron"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 1,
+  "pivot_shift_applied": [
+   -0.0,
+   -4.5,
+   -0.0
+  ],
+  "note": "C1-5: wrought-iron floor pricket: tripod feet at radius 22.5 (angles 90/210/330 deg; the shaft is 5.6 cm off the bbox centre in Y), shaft O3, drip pan O30 at Z 133..137, 3 prickets on a 22 cm triangle (radius 12.7, same angles) tips at Z 150; UCX 30 x 30 x 150",
+  "seconds": 0.0
+ },
+ {
+  "name": "SM_LB_Prop_CandleFlame_A",
+  "min": [
+   -1.5,
+   -1.43,
+   0.0
+  ],
+  "max": [
+   1.5,
+   1.43,
+   6.5
+  ],
+  "dims": [
+   3.0,
+   2.85,
+   6.5
+  ],
+  "tris": 160,
+  "slots": [
+   "MAT_Flame"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 0,
+  "pivot_shift_applied": [
+   -0.0,
+   -0.0,
+   -0.0
+  ],
+  "note": "C1-6 teardrop 3 x 3 x 6.5 cm (matches the puzzle candles' flame look); NoCollision",
+  "seconds": 0.0
+ }
+]

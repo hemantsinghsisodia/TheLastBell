@@ -850,9 +850,10 @@ def pointed_light_poly(cx, z_bot, zs, w, R, cusp=0.0, cusp_u=0.55, cusp_du=0.045
     if cusp > 0.0:
         ccx = cx - half + R
         new = []
+        ic = int(round(cusp_u * n_arc))
         for i, p in enumerate(left):
             u = i / n_arc
-            if abs(u - cusp_u) < 0.5 / n_arc + 1e-9:
+            if i == ic:
                 a = arch_point(cx, zs, half, R, 0.0, cusp_u - cusp_du, -1)
                 c = arch_point(cx, zs, half, R, 0.0, cusp_u, -1)
                 d = arch_point(cx, zs, half, R, 0.0, cusp_u + cusp_du, -1)
@@ -932,8 +933,9 @@ def densify(bm, max_len, region=None, max_iter=9):
     return bm
 
 
-def lathe_z(profile, segs=16, mat=SLOT_TRIM, cap_bottom=True, cap_top=True):
-    """Solid of revolution around +Z from [(r, z), ...]; r == 0 points become apexes (and are not capped)."""
+def lathe_z(profile, segs=16, mat=SLOT_TRIM, cap_bottom=True, cap_top=True, closed=False):
+    """Solid of revolution around +Z from [(r, z), ...]; r == 0 points become apexes (and are not capped).
+    closed=True also joins the last ring to the first (a closed ring profile, e.g. a drip pan around a shaft)."""
     b = bmesh.new()
     rings = []
     for r, z in profile:
@@ -945,8 +947,10 @@ def lathe_z(profile, segs=16, mat=SLOT_TRIM, cap_bottom=True, cap_top=True):
         b.faces.new(rings[0])
     if isinstance(rings[-1], list) and cap_top:
         b.faces.new(rings[-1])
-    for k in range(len(rings) - 1):
-        a, c = rings[k], rings[k + 1]
+    pairs = [(rings[k], rings[k + 1]) for k in range(len(rings) - 1)]
+    if closed:
+        pairs.append((rings[-1], rings[0]))
+    for (a, c) in pairs:
         for i in range(segs):
             j = (i + 1) % segs
             if isinstance(a, list) and isinstance(c, list):
