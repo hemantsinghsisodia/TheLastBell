@@ -34,7 +34,18 @@ CLEAR = {
     "ArcadeBay_1000x60x400": [(50, 475, 0, 60, 0, 220), (525, 950, 0, 60, 0, 220)],
     "ArcadeBay_1000x60x400_BrokenA": [(50, 475, 0, 60, 0, 220), (525, 640, 0, 60, 0, 200)],
     "ArcadeBay_1000x60x400_BrokenB": [(360, 475, 0, 60, 0, 200), (525, 950, 0, 60, 0, 220)],
+    # P8-3 chapel: every opening must be collision-clear and the visual mesh must not block the clear rectangle
+    "NaveBay_1000x60x1200": [(430, 570, 0, 60, 450, 906)],                               # lancet: clear 140, sill 450, springing ~906
+    "NaveBay_1000x60x1200_Door": [(440, 560, 0, 60, 0, 240), (430, 570, 0, 60, 450, 906)],   # doorway to the springline + the lancet above
+    "NaveBay_1000x60x1200_Clue": [(700, 800, 0, 60, 312, 458)],                           # clue opening: clear 100, sill 312, springing 458
+    "EastWall_1620x60x1200": [(660.05, 959.95, 0, 60, 310, 650)],                               # east window: clear 300, sill 310, springing 650
 }
+# extra visual ray windows (x0, x1, z0, z1) for openings that carry tracery: only the lights are tested (mullion / tracery are real geometry)
+RAY_RECTS = {
+    "EastWall_1620x60x1200": [(664, 800, 312, 640), (820, 956, 312, 640)],
+}
+# P8 pieces with their own slot lists
+SLOTS = BK.SLOTS
 # pieces whose visual opening is the arch intrados (BK.arch_intrados_z), not the full clear rectangle: x range for the rays
 ARCH_RAYS = {
     "ArcadeBay_1000x60x400": (52.0, 948.0),
@@ -46,6 +57,10 @@ EXPECT_UCX = {
     "Gate_Arch_1200x300x800": 3, "Rubble_Heap_400x300x130": 2, "Cliff_Slab_500x300x600_A": 40,
     "Cliff_Slab_500x300x600_B": 40, "Cliff_Slab_500x300x300": 24, "Cliff_End_200x300x600": 96, "Buttress_100x150x800": 2, "Well_Wall_450x50x250": 3, "Well_Wall_350x50x250": 3,
     "ArcadeBay_1000x60x400": 4, "ArcadeBay_1000x60x400_BrokenA": 4, "ArcadeBay_1000x60x400_BrokenB": 4,
+    # P8-3 chapel
+    "NaveBay_1000x60x1200": 4, "NaveBay_1000x60x1200_Door": 6, "NaveBay_1000x60x1200_Clue": 5, "EastWall_1620x60x1200": 4,
+    "Gable_1620x60x1015": 5, "Corbel_40x60x60": 1, "Dais_460x1000x30": 1,
+    "RoofSlab_1000x1322x20": 0, "RoofSlab_1000x1322x20_Broken": 0, "RidgeCap_1000x40x30": 0,
 }
 
 
@@ -147,8 +162,9 @@ def check_piece(path, name, spec_dims):
     # materials
     names = [m.name.split(".")[0] if m else None for m in ob.data.materials]
     res['slots'] = names
-    if tuple(names) != MATS:
-        fail("material slots %s" % (names,))
+    want = tuple(SLOTS.get(short, MATS))
+    if tuple(names) != want:
+        fail("material slots %s (expected %s)" % (names, list(want)))
     # vertex colour + uv + normals
     ca = [a.name for a in ob.data.color_attributes]
     res['color_attrs'] = ca
@@ -216,10 +232,10 @@ def check_piece(path, name, spec_dims):
                 for iz in range(1, 15):
                     samples.append((x, 0.5 + (zi - 2.5) * iz / 15.0))
         else:
-            (x0, x1, y0, y1, z0, z1) = rects[0]
-            for ix in range(1, 20):
-                for iz in range(1, 15):
-                    samples.append((x0 + 0.5 + (x1 - x0 - 1.0) * ix / 20.0, z0 + 0.5 + (z1 - z0 - 1.0) * iz / 15.0))
+            for (x0, x1, z0, z1) in (RAY_RECTS.get(short) or [(r[0], r[1], r[4], r[5]) for r in rects]):
+                for ix in range(1, 20):
+                    for iz in range(1, 15):
+                        samples.append((x0 + 0.5 + (x1 - x0 - 1.0) * ix / 20.0, z0 + 0.5 + (z1 - z0 - 1.0) * iz / 15.0))
         for (x, z) in samples:
             # ray along file-space +Y through the piece; file y = -ue_y
             origin = Vector((x / sc, 20.0 / sc, z / sc))
@@ -251,7 +267,7 @@ def main():
             print("%-40s %s" % (r['name'], "; ".join(r['fails'])))
             continue
         print("%-40s %-22s %-8d %-9s %-4d %s" % (r['name'][len(BK.PREFIX):], "x".join("%g" % d for d in r['dims']), r['tris'],
-                                                 "012" if r['slots'] == list(MATS) else "BAD", r['ucx'],
+                                                 "012" if r['slots'] == list(MATS) else ("ok" if r['slots'] == SLOTS.get(r['name'][len(BK.PREFIX):]) else "BAD"), r['ucx'],
                                                  "PASS" if r['ok'] else "FAIL: " + "; ".join(r['fails'])))
     ok = all(r['ok'] for r in rows)
     print("pieces: %d  passed: %d  failed: %d  => %s" % (len(rows), sum(1 for r in rows if r['ok']), sum(1 for r in rows if not r['ok']), "ALL PASS" if ok else "FAILURES"))

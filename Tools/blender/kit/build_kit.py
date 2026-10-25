@@ -35,6 +35,7 @@ GRID = 500.0          # layout spacing helper
 class Piece:
     def __init__(self, name, bm, ucx, dims, clear=None, note=""):
         self.name, self.bm, self.ucx, self.dims, self.clear, self.note = name, bm, ucx, dims, clear, note
+        self.slots = None          # None = the three kit slots; P8 roof/dais pieces list their own (indices refer to this list)
 
 
 # ==============================================================================================
@@ -1072,10 +1073,412 @@ def build_kerb_corner(name, seed=181):
 
 
 # ==============================================================================================
+# P8-3 chapel pieces (plan Docs/plans/P8_CHAPEL_ART.md section 2 P8-3 + amendment C1)
+# Walls keep the 60 cm envelope: the ashlar panel is 57 deep on the exterior (3 cm recess between the 50 cm end
+# pilasters), hood moulds / plinth / cornice are trim standing proud to Y 60.  Interior face = local Y 0.
+# ==============================================================================================
+EXTRA_COLORS = {"MAT_Slate": (0.16, 0.17, 0.19, 1.0), "MAT_Wood": (0.34, 0.24, 0.15, 1.0), "MAT_Glass": (0.2, 0.3, 0.5, 1.0)}
+SLATE_SLOTS = ["MAT_Slate", "MAT_Wood"]
+EXT_RECESS = 3.0          # exterior ashlar recess (cm); trim stands proud to the full 60
+PLINTH_H = 60.0
+LANCET = dict(w=140.0, ratio=0.8, sill=450.0, apex=1010.0, splay_w=220.0, y_splay=38.0, y_groove=40.0)
+
+
+def mats_for(slots):
+    if slots is None:
+        return K.get_materials()
+    out = []
+    base = dict(zip(K.MAT_NAMES, K.MAT_COLORS))
+    for n in slots:
+        m = bpy.data.materials.get(n)
+        if m is None:
+            m = bpy.data.materials.new(n)
+            m.diffuse_color = base.get(n) or EXTRA_COLORS[n]
+            m.roughness = 0.9
+        out.append(m)
+    return out
+
+
+def opening_cutters(cx, z_sill, apex, w, ratio, splay_w, y_splay=38.0, y_groove=40.0, T=60.0, sill_drop=5.0):
+    """Cutters (cut faces in slot 0) for a splayed pointed opening: inner splay (width splay_w at Y 0) narrowing to the clear
+    width w at y_splay, straight reveal to the outer face with the sill sloping outward, plus the glazing groove."""
+    half, R, rise = K.arch_dims(w, ratio)
+    zs = apex - rise
+    half_i, R_i, _ = K.arch_dims(splay_w, ratio)
+    n = 18
+    p_in = K.arch_polygon(cx, z_sill, zs, half_i, R_i, 0.0, n)
+    p_mid = K.arch_polygon(cx, z_sill, zs, half, R, 0.0, n)
+    p_out = [(x, z - sill_drop) if abs(z - z_sill) < 1e-6 else (x, z) for (x, z) in p_mid]
+    cut = K.bmesh.new()
+    for part in (K.loft_y(p_in, 0.0, p_mid, y_splay, S0), K.prism(p_in, 'y', -1.5, 0.3, S0),
+                 K.loft_y(p_mid, y_splay, p_out, T + 1.0, S0)):
+        K.bm_append(cut, part)
+        part.free()
+    p_gr = K.arch_polygon(cx, z_sill, zs, half, R, 4.0, n)
+    g = K.prism(p_gr, 'y', y_groove - 1.0, y_groove + 2.0, S0)
+    K.bm_append(cut, g)
+    g.free()
+    return cut, zs, rise
+
+
+def hood_mould(cx, zs, w, ratio, t0, t1, z_bot, y0, y1, bevel=1.4, n=16):
+    poly = K.arch_band(cx, zs, w, ratio, t0, t1, z_bot, n)
+    s = K.prism(poly, 'y', y0, y1, S1)
+    K.bevel_all(s, bevel, 25.0)
+    return s
+
+
+def sloped_sill(cx, half_w, z_top0, drop, y0, y1, thick=10.0):
+    """Trim slab under an opening, top sloping down outward (z_top0 at y0, z_top0 - drop at y1)."""
+    poly = [(y0, z_top0 - thick), (y1, z_top0 - drop - thick), (y1, z_top0 - drop), (y0, z_top0)]
+    s = K.prism(poly, 'x', cx - half_w, cx + half_w, S1)
+    K.bevel_all(s, 1.0, 25.0)
+    return s
+
+
+def wall_extras(L, T, H, plinth_cuts=()):
+    """Plinth course (Z 0..60, trim, weathered slope on the exterior) and the exterior end pilasters (masonry, flush to Y 60)."""
+    ex = []
+    zb = H - CAP_H
+    spans, x = [], 0.0
+    for (a, b) in plinth_cuts:
+        spans.append((x, a))
+        x = b
+    spans.append((x, L))
+    for (a, b) in spans:
+        if b - a < 1.0:
+            continue
+        prof = [(0, 0), (T, 0), (T, PLINTH_H - 7.0), (T - EXT_RECESS, PLINTH_H), (0, PLINTH_H)]
+        ex.append(K.prism(prof, 'x', a, b, S1))
+    for (a, b) in ((0.0, 50.0), (L - 50.0, L)):
+        ex.append(K.box(a, b, T - EXT_RECESS - 0.5, T, PLINTH_H, zb, S0, 0.0))
+    return ex
+
+
+def build_nave_bay(name, variant, seed):
+    L, T, H = 1000.0, 60.0, 1200.0
+    zb = H - CAP_H
+    body, courses = ashlar_body(L, T - EXT_RECESS, 50.0, zb, seed, vary=True)
+    cutters, extras, ucx = [], [], []
+    plinth_cuts = []
+    note = ""
+    lc = LANCET
+    if variant in ("plain", "door"):
+        cx = 500.0
+        cut, zs, rise = opening_cutters(cx, lc['sill'], lc['apex'], lc['w'], lc['ratio'], lc['splay_w'], y_splay=lc['y_splay'],
+                                        y_groove=lc['y_groove'], T=T)
+        cutters.append(cut)
+        extras.append(hood_mould(cx, zs, lc['w'], lc['ratio'], 4.0, 12.0, lc['sill'], T - EXT_RECESS - 1.0, T))
+        extras.append(sloped_sill(cx, 80.0, lc['sill'], 5.0, 36.0, T))
+        extras.append(K.box(0.0, L, 0.0, 3.0, 430.0, 450.0, S1, 1.0))          # string course Z 430..450 (flush, inner face)
+    if variant == "door":
+        op = K.Opening(500.0, 0.0, 240.0, 120.0, 120.0,
+                       orders=[dict(t0=0.0, t1=12.5, recess=10.0), dict(t0=12.5, t1=25.0, recess=0.0)],
+                       T=T, seed=seed, n_vouss=6, bevel=1.8, jamb_h=44.0, alt=7.0)
+        cutters.append(op.carve)
+        extras.append(op.stones)
+        plinth_cuts = [(410.0, 590.0)]
+        ucx = [K.box_hull(0, 430, 0, T, 0, H), K.box_hull(570, L, 0, T, 0, H), K.box_hull(430, 440, 0, T, 0, 450),
+               K.box_hull(560, 570, 0, T, 0, 450), K.box_hull(440, 560, 0, T, 240, 450), K.box_hull(430, 570, 0, T, lc['apex'], H)]
+        note = "pointed doorway clear X 440..560 (springline 240, apex ~344, Doorway_Pointed profile) + lancet above (clear 140, sill 450, apex 1010)"
+    elif variant == "plain":
+        ucx = [K.box_hull(0, 430, 0, T, 0, H), K.box_hull(570, L, 0, T, 0, H), K.box_hull(430, 570, 0, T, 0, lc['sill']),
+               K.box_hull(430, 570, 0, T, lc['apex'], H)]
+        note = "lancet clear 140 wide, sill 450, apex 1010, inner splay 220 (Y 0..38), groove Y 39..42, string course 430..450, hood mould outside"
+    if variant == "clue":
+        cx = 750.0
+        cl = dict(w=100.0, ratio=0.8, sill=312.0, apex=532.2, splay_w=112.0)
+        cut, zs, rise = opening_cutters(cx, cl['sill'], cl['apex'], cl['w'], cl['ratio'], cl['splay_w'], y_splay=38.0, y_groove=40.0,
+                                        T=T, sill_drop=4.0)
+        cutters.append(cut)
+        extras.append(hood_mould(cx, zs, cl['w'], cl['ratio'], 3.0, 10.0, cl['sill'], T - EXT_RECESS - 1.0, T))
+        extras.append(sloped_sill(cx, 62.0, cl['sill'], 4.0, 36.0, T))
+        # inner hood moulding: springing 470, inner width 150, apex 575 (radius fitted), 10 wide x 8 deep, label stops at the springing
+        h_in, h_apex, h_sp = 75.0, 575.0, 470.0
+        rise_h = h_apex - h_sp
+        R_h = (rise_h * rise_h + h_in * h_in) / (2 * h_in)
+        extras.append(hood_mould(cx, h_sp, 2 * h_in, R_h / (2 * h_in), 0.0, 10.0, h_sp, -8.0, 0.0, bevel=1.5))
+        for sx in (-1, 1):
+            xc = cx + sx * (h_in + 5.0)
+            extras.append(K.box(xc - 8.0, xc + 8.0, -8.0, 0.0, h_sp - 14.0, h_sp, S1, 1.5))
+        extras.append(K.box(cx - 80.0, cx + 80.0, -8.0, 0.0, 288.0, 300.0, S1, 1.8))      # sill ledge Z 288..300, projects 8
+        ucx = [K.box_hull(0, 700, 0, T, 0, H), K.box_hull(800, L, 0, T, 0, H), K.box_hull(700, 800, 0, T, 0, cl['sill']),
+               K.box_hull(700, 800, 0, T, 532.3, H), K.box_hull(670, 830, -8, 0, 288, 300)]
+        note = "clue opening clear X 700..800 (sill 312, springing 458, apex 532.2); inner hood moulding + sill ledge project to local Y -8"
+    extras = wall_extras(L, T, H, plinth_cuts) + extras
+    shell = carve_and_merge(body, cutters, extras)
+    capm = cap_course(L, T, zb, H, seed)
+    out = K.combine(shell, capm)
+    for b_ in [body, shell, capm] + cutters + extras:
+        b_.free()
+    return Piece(name, out, ucx, (L, T + (8.0 if variant == "clue" else 0.0), H), note=note)
+
+
+def build_east_wall(name, seed=401):
+    L, T, H = 1620.0, 60.0, 1200.0
+    cx, zb = 810.0, H - CAP_H
+    sill, spring, apex, w = 310.0, 650.0, 900.0, 300.0
+    half = w / 2
+    rise = apex - spring
+    R = (rise * rise + half * half) / (2 * half)
+    ratio = R / w
+    body, courses = ashlar_body(L, T - EXT_RECESS, 50.0, zb, seed, vary=True)
+    main = K.arch_polygon(cx, sill, spring, half, R, 0.0, 24)
+    cut = K.prism(main, 'y', -1.5, T + 1.5, S0)
+    extras = wall_extras(L, T, H)
+    ring_in = K.prism(K.arch_band(cx, spring, w, ratio, 0.0, 14.0, sill, 24), 'y', 0.0, 22.0, S1)      # moulded surround, flush inside
+    K.bevel_all(ring_in, 1.4, 25.0)
+    extras.append(ring_in)
+    extras.append(hood_mould(cx, spring, w, ratio, 4.0, 14.0, sill, T - EXT_RECESS - 1.0, T, 1.6, 24))
+    extras.append(sloped_sill(cx, half + 14.0, sill, 5.0, 30.0, T, 12.0))
+    # tracery: main outline minus two cusped lights and the quatrefoil; glazing groove Y 39..42
+    lights = [K.pointed_light_poly(cx + s * 78.0, sill, spring, 144.0, 144.0, cusp=5.0) for s in (-1, 1)]
+    quat = K.quatrefoil_poly(cx, 790.0, 45.0)
+    trac = K.prism(main, 'y', 14.0, 46.0, S1)
+    cutg = K.bmesh.new()
+    for lp in lights + [quat]:
+        for part in (K.prism(lp, 'y', 12.0, 48.0, S1), K.prism(K.offset_poly(lp, 3.5), 'y', 39.0, 42.0, S1)):
+            K.bm_append(cutg, part)
+            part.free()
+    trac2 = K.boolean_diff(trac, cutg)
+    trac.free()
+    cutg.free()
+    extras.append(trac2)
+    shell = carve_and_merge(body, [cut], extras)
+    capm = cap_course(L, T, zb, H, seed)
+    out = K.combine(shell, capm)
+    ucx = [K.box_hull(0, 660, 0, T, 0, H), K.box_hull(960, L, 0, T, 0, H), K.box_hull(660, 960, 0, T, 0, sill),
+           K.box_hull(660, 960, 0, T, apex, H)]
+    for b_ in [body, shell, capm, cut] + extras:
+        b_.free()
+    return Piece(name, out, ucx, (L, T, H), note="east window clear 300: sill 310, springing 650, apex 900; mullion 12, two cusped lights 144 wide, quatrefoil O90 at (810, 790)")
+
+
+def rake_z(x, L=1620.0):
+    return 50.0 + (965.0 / (L / 2)) * (x if x <= L / 2 else L - x)
+
+
+def build_gable(name, seed=411):
+    L, T, H = 1620.0, 60.0, 1015.0
+    hl = L / 2
+    body = K.prism([(0, 0), (L, 0), (L, 20), (hl, H - 30), (0, 20)], 'y', 5.0, T - 5.0, S0)
+    courses = K.make_courses(975.0, seed, True)
+    f = K.FaceFrame((0, 5.0, 0), (1, 0, 0), (0, -1, 0))
+    b = K.FaceFrame((L, T - 5.0, 0), (-1, 0, 0), (0, 1, 0))
+    relief = K.relief_cutters(f, 0, L, 0, 975.0, courses, seed, z_start=0.0)
+    r2 = K.relief_cutters(b, 0, L, 0, 975.0, courses, seed + 101, z_start=0.0)
+    K.bm_append(relief, r2)
+    r2.free()
+    body2 = K.boolean_diff(body, relief)
+    body.free()
+    relief.free()
+    kx = 70.0
+    ex = []
+    zt = rake_z(kx)
+    for poly in ([(0, 0), (kx, 0), (kx, zt), (0, 50.0)], [(L - kx, 0), (L, 0), (L, 50.0), (L - kx, zt)]):
+        k_ = K.prism(poly, 'y', 0.0, T, S1)
+        K.bevel_all(k_, 2.0, 25.0)
+        ex.append(k_)
+    cl = K.prism([(kx, zt - 30.0), (hl, H - 30.0), (hl, H), (kx, zt)], 'y', 0.0, T, S1)
+    cr = K.prism([(hl, H - 30.0), (L - kx, zt - 30.0), (L - kx, zt), (hl, H)], 'y', 0.0, T, S1)
+    for c_ in (cl, cr):
+        K.bevel_all(c_, 1.8, 25.0)
+        ex.append(c_)
+    shell = carve_and_merge(body2, [], ex)
+    zhi = max(v.co.z for v in shell.verts)
+    for v in shell.verts:
+        v.co.z *= H / zhi                      # the apex bevel lowers the top by ~1 cm: restore the exact 1015
+    ucx = []
+    for i in range(5):
+        a, c = L * i / 5, L * (i + 1) / 5
+        ucx.append(K.box_hull(a, c, 5.0, T - 5.0, 0, max(30.0, min(rake_z(a), rake_z(c)) - 35.0)))
+    for b_ in [body2] + ex:
+        b_.free()
+    return Piece(name, shell, ucx, (L, T, H),
+                 note="parapet gable: ashlar Y 5..55, coping 30 high (rake top Z 50 at the ends -> 1015) Y 0..60, kneelers X 0..70, 5 stepped UCX")
+
+
+def build_corbel(name, seed=421):
+    prof = [(0.0, 60.0), (60.0, 60.0), (60.0, 0.0)]
+    for i in range(1, 15):
+        u = i / 14.0
+        s = u * u * (3 - 2 * u)
+        prof.append((60.0 - 60.0 * u, 36.0 * s))
+    b = K.prism(prof, 'x', 0.0, 40.0, 0)
+    K.bevel_all(b, 1.2, 25.0)
+    zlo = min(v.co.z for v in b.verts)
+    zhi = max(v.co.z for v in b.verts)
+    for v in b.verts:
+        v.co.z = (v.co.z - zlo) * 60.0 / (zhi - zlo)
+    hull = K.hull_from_points([Vector((x, y, z)) for (y, z) in prof for x in (0.0, 40.0)], 0)
+    pc = Piece(name, b, [hull], (40, 60, 60), note="back (wall) face at local Y 60, free end at Y 0; ogee underside; top Z 60 flat")
+    pc.slots = ["MAT_Trim"]
+    return pc
+
+
+def build_dais(name, seed=431):
+    L, W, H = 460.0, 1000.0, 30.0
+    b = K.box(0, L, 0, W, 0, H, 0, 0.0)
+    front = [e for e in b.edges if all(v.co.x < 1e-6 and v.co.z > H - 1e-6 for v in e.verts)]
+    K.bmesh.ops.bevel(b, geom=front, offset=2.0, offset_type='OFFSET', profile=0.5, segments=1, affect='EDGES')
+    K.densify(b, 18.0)
+    for v in b.verts:
+        if v.co.z > H - 0.01 and v.co.x > 2.2:
+            wear = (K.fbm(v.co.x / 55.0 + 2.0, v.co.y / 55.0 + 5.0, seed, 3) - 0.5) * 0.9
+            worn = K.smoothstep(0.0, 25.0, v.co.x) * (1.0 - K.smoothstep(L - 40.0, L, v.co.x))
+            v.co.z = H - abs(wear) * (0.6 + 0.9 * worn)
+    pc = Piece(name, b, [K.box_hull(0, L, 0, W, 0, H)], (L, W, H), note="trim slab, 2 cm bevel on the front (-X) top edge, worn top; local Y 0..1000 = world Y -500..500")
+    pc.slots = ["MAT_Trim"]
+    pc.smooth = 40.0
+    return pc
+
+
+def build_roof_slab(name, broken, seed=441):
+    L, S, TH = 1000.0, 1322.0, 20.0
+    nc = 66
+    cw = S / nc
+    nx = 10
+    xs = [L * i / nx for i in range(nx + 1)]
+    relief = 0.4
+    b = K.bmesh.new()
+    rows = []
+    for k in range(nc):
+        rows.append((k * cw, relief))
+        rows.append(((k + 1) * cw, 0.0))
+    top = []
+    for (y, h) in rows:
+        row = []
+        for i, x in enumerate(xs):
+            jit = (K.vnoise(x / 120.0 + 1.0, y / 60.0 + 2.0, seed) - 0.5) * 0.18 if 0 < i < nx else 0.0
+            row.append(b.verts.new((x, y, min(TH, TH - relief + h + jit))))
+        top.append(row)
+    for r in range(len(top) - 1):
+        for i in range(nx):
+            f_ = b.faces.new((top[r][i], top[r][i + 1], top[r + 1][i + 1], top[r + 1][i]))
+            f_.material_index = 0
+    prof = [(0.0, 0.0)]
+    nb = int(S // 21.0)
+    for k in range(nb):
+        yb = k * 21.0
+        prof += [(yb + 20.0, 0.0), (yb + 20.0, 1.0), (yb + 21.0, 1.0), (yb + 21.0, 0.0)]
+    prof.append((S, 0.0))
+    ded = []
+    for p in prof:
+        if not ded or abs(p[0] - ded[-1][0]) > 1e-6 or abs(p[1] - ded[-1][1]) > 1e-6:
+            ded.append(p)
+    prof = ded
+    bot = [[b.verts.new((x, y_, z_)) for x in (0.0, L)] for (y_, z_) in prof]
+    for r in range(len(bot) - 1):
+        f_ = b.faces.new((bot[r][0], bot[r + 1][0], bot[r + 1][1], bot[r][1]))
+        f_.material_index = 1
+    f_ = b.faces.new([top[0][i] for i in range(nx + 1)] + [bot[0][1], bot[0][0]])
+    f_.material_index = 1
+    f_ = b.faces.new([top[-1][i] for i in range(nx, -1, -1)] + [bot[-1][0], bot[-1][1]])
+    f_.material_index = 1
+    left_loop = [top[r][0] for r in range(len(top))] + [bot[r][0] for r in range(len(bot) - 1, -1, -1)]
+    right_loop = [top[r][nx] for r in range(len(top))] + [bot[r][1] for r in range(len(bot) - 1, -1, -1)]
+    f_ = b.faces.new(left_loop[::-1])
+    f_.material_index = 1
+    f_ = b.faces.new(right_loop)
+    f_.material_index = 1
+    K._outward(b)
+    out = b
+    if broken:
+        hole = hole_cutters(seed)
+        hb = K.boolean_diff(out, hole)
+        hole.free()
+        out.free()
+        out = hb
+        add_battens(out, seed)
+    K.bmesh.ops.triangulate(out, faces=out.faces[:])
+    note = "slope frame: X 0..1000 along the ridge, Y 0 = ridge .. 1322 = eaves (incl. the 40 cm overhang), Z 0 = underside .. 20 = slate crest"
+    if broken:
+        note += "; ragged hole about X 250..750 x slope 294..987 (board ends snapped, slate skin overhangs), 4 batten stubs"
+    pc = Piece(name, out, [], (L, S, TH), note=note)
+    pc.slots = list(SLATE_SLOTS)
+    pc.smooth = 25.0
+    return pc
+
+
+Y_HOLE_TOP, Y_HOLE_BOT = 21.0 * 14.0, 21.0 * 47.0
+
+
+def hole_cutters(seed):
+    rng = random.Random(seed + 7)
+    cut = K.bmesh.new()
+    rowsy = [Y_HOLE_TOP + 21.0 * i for i in range(34)]
+    left = [250.0 + rng.uniform(-30.0, 22.0) for _ in range(33)]
+    right = [750.0 + rng.uniform(-22.0, 30.0) for _ in range(33)]
+    poly = []
+    for i in range(33):
+        poly += [(left[i], rowsy[i]), (left[i], rowsy[i + 1] - 1.0)]
+    for i in range(32, -1, -1):
+        poly += [(right[i], rowsy[i + 1] - 1.0), (right[i], rowsy[i])]
+    for part in (K.prism(poly, 'z', -1.0, 13.0, 1),):
+        K.bm_append(cut, part)
+        part.free()
+    pts = []
+    cyh = (Y_HOLE_TOP + Y_HOLE_BOT) * 0.5
+    nsk = 20
+    for k in range(nsk):
+        a = 2 * math.pi * k / nsk + rng.uniform(-0.08, 0.08)
+        f = rng.uniform(0.66, 1.0) if k % 2 == 0 else rng.uniform(0.86, 1.04)     # alternate spikes / notches: jagged, angular
+        pts.append((500.0 + 240.0 * f * math.cos(a), cyh + 335.0 * f * math.sin(a)))
+    p2 = K.prism(pts, 'z', 11.0, 21.0, 1)
+    K.bm_append(cut, p2)
+    p2.free()
+    return cut
+
+
+def add_battens(bm, seed):
+    rng = random.Random(seed + 11)
+    spots = [(330.0, Y_HOLE_TOP - 6.0, 1.0), (470.0, Y_HOLE_TOP - 6.0, 1.0), (640.0, Y_HOLE_BOT + 6.0, -1.0), (705.0, Y_HOLE_BOT + 6.0, -1.0)]
+    for (x, y, sgn) in spots:
+        ln = rng.uniform(24.0, 36.0)
+        ya, yb = (y, y + 6.0 + ln) if sgn > 0 else (y - 6.0 - ln, y)
+        s = K.box(x - 2.0, x + 2.0, ya, yb, 3.0, 7.0, 1, 0.5)
+        K.bm_append(bm, s)
+        s.free()
+
+
+def build_ridge_cap(name, seed=451):
+    L, W, H = 1000.0, 40.0, 30.0
+    n = 14
+    prof = [(W / 2 + W / 2 * math.cos(math.pi * i / n), H * math.sin(math.pi * i / n) ** 0.85) for i in range(n + 1)]
+    secs = [(0.0, 1.0)]
+    for j in range(1, 25):
+        secs += [(j * 40.0 - 1.2, 1.0), (j * 40.0, 0.955), (j * 40.0 + 1.2, 1.0)]
+    secs.append((L, 1.0))
+    b = K.bmesh.new()
+    rings = []
+    for (x, s) in secs:
+        jit = 1.0 + 0.012 * (K.vnoise(x / 40.0, 0.5, seed) - 0.5)
+        rings.append([b.verts.new((x, W / 2 + (py - W / 2) * s, (pz * s * jit) if pz > 0.01 else 0.0)) for (py, pz) in prof])
+    m = len(prof)
+    for r in range(len(rings) - 1):
+        for j in range(m):
+            j2 = (j + 1) % m
+            b.faces.new((rings[r][j], rings[r][j2], rings[r + 1][j2], rings[r + 1][j]))
+    b.faces.new(rings[0][::-1])
+    b.faces.new(rings[-1])
+    K._outward(b)
+    K.bm_set_mat(b, 0)
+    zhi = max(v.co.z for v in b.verts)
+    for v in b.verts:
+        v.co.z *= H / zhi
+    pc = Piece(name, b, [], (L, W, H), note="rounded ridge tile run, 40 cm tiles with shallow joints; ridge line at Y 20")
+    pc.slots = ["MAT_Slate"]
+    return pc
+
+
+# ==============================================================================================
 # registry (table mirrors Docs/MODULAR_KIT.md 4.1)
 # ==============================================================================================
 # pieces whose mesh does not start at the local origin (arcade BrokenB lives in the bay frame: X 650..1000)
-ORIGIN = {"ArcadeBay_1000x60x400_BrokenB": (350.0, 0.0, 0.0), "ArcadeColumn_30x30x300": (-20.0, -20.0, 0.0)}
+ORIGIN = {"ArcadeBay_1000x60x400_BrokenB": (350.0, 0.0, 0.0), "ArcadeColumn_30x30x300": (-20.0, -20.0, 0.0),
+          "NaveBay_1000x60x1200_Clue": (0.0, -8.0, 0.0)}      # clue bay: inner hood moulding / sill ledge project 8 cm (local Y -8)
+SLOTS = {"RoofSlab_1000x1322x20": ["MAT_Slate", "MAT_Wood"], "RoofSlab_1000x1322x20_Broken": ["MAT_Slate", "MAT_Wood"],
+         "RidgeCap_1000x40x30": ["MAT_Slate"], "Corbel_40x60x60": ["MAT_Trim"], "Dais_460x1000x30": ["MAT_Trim"]}
 def table():
     W = lambda nm, L, H, seed, **kw: (nm, (lambda nm=nm, L=L, H=H, seed=seed, kw=kw: build_wall(PREFIX + nm, L, H, seed, **kw)), (L, kw.get('T', 60), H))
     return [
@@ -1116,6 +1519,17 @@ def table():
         ("Kerb_100x30x40", lambda: build_kerb(PREFIX + "Kerb_100x30x40", 100.0, 207), (100, 30, 40)),
         ("Kerb_Broken_200x30x40", lambda: build_kerb(PREFIX + "Kerb_Broken_200x30x40", 200.0, 211, broken=True), (200, 30, 40)),
         ("KerbCorner_30x30x45", lambda: build_kerb_corner(PREFIX + "KerbCorner_30x30x45"), (30, 30, 45)),
+        # ---- P8-3 chapel ----
+        ("NaveBay_1000x60x1200", lambda: build_nave_bay(PREFIX + "NaveBay_1000x60x1200", "plain", 461), (1000, 60, 1200)),
+        ("NaveBay_1000x60x1200_Door", lambda: build_nave_bay(PREFIX + "NaveBay_1000x60x1200_Door", "door", 463), (1000, 60, 1200)),
+        ("NaveBay_1000x60x1200_Clue", lambda: build_nave_bay(PREFIX + "NaveBay_1000x60x1200_Clue", "clue", 467), (1000, 68, 1200)),
+        ("EastWall_1620x60x1200", lambda: build_east_wall(PREFIX + "EastWall_1620x60x1200"), (1620, 60, 1200)),
+        ("Gable_1620x60x1015", lambda: build_gable(PREFIX + "Gable_1620x60x1015"), (1620, 60, 1015)),
+        ("Corbel_40x60x60", lambda: build_corbel(PREFIX + "Corbel_40x60x60"), (40, 60, 60)),
+        ("Dais_460x1000x30", lambda: build_dais(PREFIX + "Dais_460x1000x30"), (460, 1000, 30)),
+        ("RoofSlab_1000x1322x20", lambda: build_roof_slab(PREFIX + "RoofSlab_1000x1322x20", False), (1000, 1322, 20)),
+        ("RoofSlab_1000x1322x20_Broken", lambda: build_roof_slab(PREFIX + "RoofSlab_1000x1322x20_Broken", True), (1000, 1322, 20)),
+        ("RidgeCap_1000x40x30", lambda: build_ridge_cap(PREFIX + "RidgeCap_1000x40x30"), (1000, 40, 30)),
     ]
 
 
@@ -1159,7 +1573,7 @@ def run():
         K.finalize(pc.bm, smooth_deg=getattr(pc, 'smooth', 30.0))
         for u in pc.ucx:
             pass
-        K.export_piece_fbx(pc.name, pc.bm, pc.ucx, os.path.join(out_dir, "FBX", pc.name + ".fbx"))
+        K.export_piece_fbx(pc.name, pc.bm, pc.ucx, os.path.join(out_dir, "FBX", pc.name + ".fbx"), mats_for(pc.slots))
         used = sorted({f.material_index for f in pc.bm.faces})
         rec = dict(name=pc.name, min=[round(v, 2) for v in mn], max=[round(v, 2) for v in mx],
                    dims=[round(mx[i] - mn[i], 2) for i in range(3)], spec=list(pc.dims), tris=K.tri_count(pc.bm),
@@ -1176,7 +1590,7 @@ def run():
         if x + w > 4500.0:
             x, row_y = 0.0, row_y + row_h + 300.0
             row_h = 0.0
-        K.add_to_layout(pc.name, pc.bm, pc.ucx, (x - mn[0], row_y - mn[1], 0.0))
+        K.add_to_layout(pc.name, pc.bm, pc.ucx, (x - mn[0], row_y - mn[1], 0.0), mats_for(pc.slots))
         x += w + 150.0
         row_h = max(row_h, d + 400.0)
     os.makedirs(out_dir, exist_ok=True)

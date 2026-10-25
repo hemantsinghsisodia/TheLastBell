@@ -798,3 +798,163 @@ def add_to_layout(name, bm, ucx_bms, location, mats=None):
         u.hide_render = True
         u.parent = ob
     return ob
+
+
+# ----------------------------------------------------------------------------------------------
+# P8 chapel helpers: lofts, 2D outlines (pointed / trefoil lights, quatrefoil, offset), lathe, densify
+# ----------------------------------------------------------------------------------------------
+def loft_y(poly_a, ya, poly_b, yb, mat=SLOT_TRIM, triangulate=True):
+    """Closed solid between two (x, z) polygons with the same vertex count at y = ya and y = yb (ruled sides).
+    Used for splayed reveals: the two profiles may differ in size."""
+    b = bmesh.new()
+    ra = [b.verts.new((x, ya, z)) for x, z in poly_a]
+    rb = [b.verts.new((x, yb, z)) for x, z in poly_b]
+    n = len(ra)
+    b.faces.new(ra)
+    b.faces.new(rb)
+    for i in range(n):
+        j = (i + 1) % n
+        b.faces.new((ra[i], ra[j], rb[j], rb[i]))
+    _outward(b)
+    if triangulate:
+        bmesh.ops.triangulate(b, faces=b.faces[:])
+    bm_set_mat(b, mat)
+    return b
+
+
+def arch_dims(w, ratio):
+    """(half width, radius, rise above the springing line) of a two-centred pointed arch of span w, R = ratio * w."""
+    half = w * 0.5
+    R = ratio * w
+    return half, R, math.sqrt(R * R - (R - half) ** 2)
+
+
+def arch_band(cx, zs, w, ratio, t0, t1, z_bot=None, n_arc=16):
+    """Closed (x, z) outline of a band between the radial offsets t0 and t1 of a pointed arch, legs down to z_bot
+    (default: the springing line, i.e. the legs have zero length)."""
+    half, R, _ = arch_dims(w, ratio)
+    zb = zs if z_bot is None else z_bot
+    outer = arch_polygon(cx, zb, zs, half, R, t1, n_arc)
+    inner = arch_polygon(cx, zb, zs, half, R, t0, n_arc)
+    return outer + inner[::-1]
+
+
+def pointed_light_poly(cx, z_bot, zs, w, R, cusp=0.0, cusp_u=0.55, cusp_du=0.045, n_arc=18):
+    """Outline (x, z) of a pointed light: vertical jambs z_bot..zs, two-centred head of radius R.  cusp > 0 adds two
+    inward-pointing tracery cusps (a trefoil head, cusp depth in cm)."""
+    half = w * 0.5
+    left = []
+    for i in range(n_arc + 1):
+        u = i / n_arc
+        left.append(arch_point(cx, zs, half, R, 0.0, u, -1))
+    if cusp > 0.0:
+        ccx = cx - half + R
+        new = []
+        for i, p in enumerate(left):
+            u = i / n_arc
+            if abs(u - cusp_u) < 0.5 / n_arc + 1e-9:
+                a = arch_point(cx, zs, half, R, 0.0, cusp_u - cusp_du, -1)
+                c = arch_point(cx, zs, half, R, 0.0, cusp_u, -1)
+                d = arch_point(cx, zs, half, R, 0.0, cusp_u + cusp_du, -1)
+                vx, vz = ccx - c[0], zs - c[1]
+                ln = math.hypot(vx, vz)
+                tip = (c[0] + vx / ln * cusp, c[1] + vz / ln * cusp)
+                new += [a, tip, d]
+            else:
+                new.append(p)
+        left = new
+    right = [(2 * cx - x, z) for (x, z) in left[::-1]]
+    poly = [(cx - half, z_bot)] + left + right[1:] + [(cx + half, z_bot)]
+    out = []
+    for p in poly:
+        if not out or abs(p[0] - out[-1][0]) > 1e-6 or abs(p[1] - out[-1][1]) > 1e-6:
+            out.append(p)
+    if len(out) > 2 and abs(out[0][0] - out[-1][0]) < 1e-9 and abs(out[0][1] - out[-1][1]) < 1e-9:
+        out.pop()
+    return out
+
+
+def quatrefoil_poly(cx, cz, r_out, n=96, rot_deg=45.0):
+    """Four overlapping circular lobes (union outline); r_out = radius of the circumscribed circle."""
+    rho = 0.5333 * r_out
+    d = r_out - rho
+    pts = []
+    for k in range(n):
+        th = 2 * math.pi * k / n
+        r = 0.0
+        for q in range(4):
+            phi = math.radians(rot_deg) + q * math.pi / 2
+            dl = th - phi
+            s = d * math.sin(dl)
+            if abs(s) < rho:
+                r = max(r, d * math.cos(dl) + math.sqrt(rho * rho - s * s))
+        pts.append((cx + r * math.cos(th), cz + r * math.sin(th)))
+    return pts
+
+
+def poly_area(p):
+    return 0.5 * sum(p[i][0] * p[(i + 1) % len(p)][1] - p[(i + 1) % len(p)][0] * p[i][1] for i in range(len(p)))
+
+
+def offset_poly(p, d):
+    """Offset a simple closed (x, z) polygon outward by d (per-vertex mitre, clamped); d < 0 shrinks."""
+    n = len(p)
+    sgn = 1.0 if poly_area(p) > 0 else -1.0
+    out = []
+    for i in range(n):
+        a, b, c = p[i - 1], p[i], p[(i + 1) % n]
+        e1 = (b[0] - a[0], b[1] - a[1])
+        e2 = (c[0] - b[0], c[1] - b[1])
+        l1, l2 = math.hypot(*e1) or 1.0, math.hypot(*e2) or 1.0
+        n1 = (e1[1] / l1 * sgn, -e1[0] / l1 * sgn)
+        n2 = (e2[1] / l2 * sgn, -e2[0] / l2 * sgn)
+        mx, mz = n1[0] + n2[0], n1[1] + n2[1]
+        ml = math.hypot(mx, mz) or 1.0
+        mx, mz = mx / ml, mz / ml
+        cos_h = max(0.45, mx * n1[0] + mz * n1[1])
+        out.append((b[0] + mx * d / cos_h, b[1] + mz * d / cos_h))
+    return out
+
+
+def densify(bm, max_len, region=None, max_iter=9):
+    """Split every edge longer than max_len (optionally only where region(mid_point) is true) until none is."""
+    bmesh.ops.triangulate(bm, faces=bm.faces[:])
+    for _ in range(max_iter):
+        edges = []
+        for e in bm.edges:
+            if e.calc_length() > max_len:
+                if region is None or region((e.verts[0].co + e.verts[1].co) * 0.5):
+                    edges.append(e)
+        if not edges:
+            break
+        bmesh.ops.subdivide_edges(bm, edges=edges, cuts=1, use_grid_fill=False)
+        bmesh.ops.triangulate(bm, faces=bm.faces[:])
+    return bm
+
+
+def lathe_z(profile, segs=16, mat=SLOT_TRIM, cap_bottom=True, cap_top=True):
+    """Solid of revolution around +Z from [(r, z), ...]; r == 0 points become apexes (and are not capped)."""
+    b = bmesh.new()
+    rings = []
+    for r, z in profile:
+        if r <= 1e-9:
+            rings.append(b.verts.new((0.0, 0.0, z)))
+        else:
+            rings.append([b.verts.new((r * math.cos(2 * math.pi * i / segs), r * math.sin(2 * math.pi * i / segs), z)) for i in range(segs)])
+    if isinstance(rings[0], list) and cap_bottom:
+        b.faces.new(rings[0])
+    if isinstance(rings[-1], list) and cap_top:
+        b.faces.new(rings[-1])
+    for k in range(len(rings) - 1):
+        a, c = rings[k], rings[k + 1]
+        for i in range(segs):
+            j = (i + 1) % segs
+            if isinstance(a, list) and isinstance(c, list):
+                b.faces.new((a[i], a[j], c[j], c[i]))
+            elif isinstance(a, list):
+                b.faces.new((a[i], a[j], c))
+            else:
+                b.faces.new((a, c[j], c[i]))
+    _outward(b)
+    bm_set_mat(b, mat)
+    return b
