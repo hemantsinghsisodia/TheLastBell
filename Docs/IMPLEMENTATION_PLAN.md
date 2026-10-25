@@ -168,3 +168,17 @@ Branch `claude/p7-courtyard-polish`. Full, explicit spec: `Docs/plans/P7_FIX2_CO
 | P7F-4 | L_Monastery: remove discs, puddled floors, new key + ledge, work area, graveyard, cart of the dead, overgrowth, decals, 3 courtyard WalkPaths | environment-designer [EDITOR] | P7F-3 |
 | P7F-5 | Moon/fill/skylight fixes, height + volumetric fog, Local Fog Volumes, fog sheets, Niagara smoke wisp, exposure | lighting-vfx [EDITOR] | P7F-4 |
 | P7F-6 | 78/78 + new WalkPaths, lane check, 12 clean captures, owner playtest + stat gpu, docs | qa-reviewer + lead + owner | all |
+
+## Phase 7 fix set 3 — Courtyard restructure (P7-FIX3)
+Branch `claude/p7-courtyard-polish` (continues P7-FIX2). Full spec: `Docs/plans/P7_FIX3_COURTYARD_RESTRUCTURE.md` (owner-approved 2026-10-25). Decisions D-055..D-058.
+
+| Task | Objective | Owner | Depends on |
+|---|---|---|---|
+| G0 | Spec, decisions, plan table | lead | — |
+| G1 | CC0 downloads: tall grass, dry bush, shrub, dead trunk, CC0 dead tree, ivy/dead-leaf atlases, moss texture | asset-curator | G0 |
+| G2a | Blender: arcade bays (intact + 2 broken), kerbs, well-head, timber roof set, earth patch, ivy cards, dead tree, CC0 conversions | technical-artist | G0 (ivy/tree/conversions after G1) |
+| G3 | Floor growth layer in M_LB_Surface, M_LB_FoliageMasked, light-function flicker material, imports, MIs | technical-artist [EDITOR] | G2a |
+| G4 | L_Monastery: remove fountain + tiny plants, arcade, roofed walks, beds, well-head, trees, ivy, new WalkPaths, lane check, tests | environment-designer [EDITOR] | G3 |
+| G5 | Vegetation scatter (PCG, fallbacks ISM/actors) | environment-designer / technical-artist [EDITOR] | G4 |
+| G6 | Darkness, contrast and flicker pass; luma targets | lighting-vfx [EDITOR] | G5 |
+| G7 | QA, docs, owner stat gpu + playtest | qa + lead + owner | all |
