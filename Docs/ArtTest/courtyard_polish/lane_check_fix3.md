@@ -226,3 +226,8 @@ Method: world-bounds rectangle (conservative) of each actor; the well-head is me
 
 Props checked: 212 (excluding 6 overhead). Violations: 0
 Minimum lane distance (walk-level props): 73 cm (Plinth_Key)
+
+## G5 addendum (vegetation scatter)
+- 914 PCG-scattered instances in 243 ISM components (19 `PCGV_*` volumes) plus 4 hand-placed Searsia actors: all read back as `collisionEnabled = NoCollision` / profile `NoCollision`, so none of them can block a lane (not part of the table above).
+- Every scattered instance centre is >= 123 cm from every route centreline (the 240 cm wide `LB_PCG_Exclude` strips keep 120 cm clear); 0 instances inside the plaza box or the well-house interior; instance Z range -3..+3 (nothing landed on kerb tops).
+- The 36 exclusion actors are `TriggerVolume`s (overlap-only brushes, no blocking collision) tagged `LB_PCG_Exclude`.
