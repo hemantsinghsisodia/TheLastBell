@@ -103,3 +103,52 @@ Automated suite (78/78 + 4 courtyard WalkPaths + RouteBot), verify_kit/verify_pr
   - Re-run verify_kit (all pass), re-render `fix3_arcade_*`, LOOK: it must read as a gothic cloister arcade (two pointed arches per bay on a slim column).
 - **Scale corrections for G5** (real sizes measured in G2a): GrassMedium02 clumps are 16–40 cm → scale **3.0–4.5** (≈ 50–180 cm); WildRooibos 27–54 cm → **1.3–2.0**; Searsia 74–234 cm → 1.0 (hand-placed, max 1 per bed, only `_02…_05`, `_01` excluded for cost); Weed ×5 and Nettle ×4 as specified; ferns 1.0–1.4.
 - Accepted from G2a: upright `SM_LB_CC0_DeadTreeTrunk02` (no pitch needed), BrokenA/B placed at the left pier X in the bay frame, timber authored upright (rotate in the level), oak-leaf "dead ivy" look, ivy pivot = X centre / back plane Y 0 / min Z 0 (cards face +Y), procedural dead tree `SM_LB_Prop_DeadTree_A` (700 cm).
+
+**B2 (2026-10-25, before G6): G6 execution detail.** Where this conflicts with the G6 paragraph above, B2 wins.
+- **Exact light names.**
+  - Warm pools: `Light_Gatehouse_Warm`, `Light_ChapelDoor_Warm`, `Light_Well_Warm`, `Light_WorkArea_Torch` (the "Torch"), `Light_FirePit_Ember` (the "FirePit"), `Light_KeyLedge_Warm`, and `Light_WorkArea_Lantern` if it exists (set it to 500 lm with MI_LF_Lantern).
+  - Cool fills to delete: `Light_Courtyard_0…6`. Leave `Light_Courtyard_7` (east passage) and every interior light untouched.
+  - Before changing anything, read every value you will change and record old → new → read-back in the report table. Do the same for the sky MI parameters.
+- **Light functions.** Set `lightFunctionMaterial` on each light component to `/Game/LastBell/Materials/Instances/MI_LF_*`. Leave `lightFunctionScale`, `lightFunctionFadeDistance` and `disabledBrightness` at their defaults. Do not turn shadows on to make a light function work.
+  - Flicker check: in PIE Simulate, take two captures about 0.3 s apart of the torch pool, with the camera unchanged. The mean luma of a 120×120 px crop over the lit wall must differ by ≥ 1 %.
+  - If it doesn't, report it. Light functions may not apply to shadowless local lights in this setup. Leave the MI assigned and carry on.
+- **Grave candles.** Use `/Game/LastBell/ThirdParty/Fab/Dungeon/Candles/Meshes/SM_Candle_Melted_03` at `KY_Stone_A0` and `SM_Candle_Melted_07` at `KY_Stone_B1`.
+  - Put each on the ground at the foot of its stone, on the garth-facing (−Y) side: X = stone bounds centre X (+12 for A0, −12 for B1), Y = stone bounds min Y − 15. Get Z from a `trace_world` straight down at that XY.
+  - Random yaw, scale 1.0, `collisionProfileName` NoCollision. Labels `KY_Candle_A0` and `KY_Candle_B1`, in the same folder as the stones.
+  - Flame: if `FX_Candle_Flame` (PS_Fire_00 at scale 0.04) still exists on the key ledge, add the same at each candle's wick. Otherwise add no flame.
+  - Lights `Light_Grave_Candle_A0` and `Light_Grave_Candle_B1`: PointLight 6 cm above the candle's bounds max Z; 120 lm, attenuation radius 200, colour (255, 147, 41); CastShadows false; Movable; VolumetricScatteringIntensity 1.0; source radius 2; MI_LF_Candle.
+- **Exposure.** Read the exposure method and EV100 min/max of `PP_Outdoor_Night`, and keep the method. Set min = max EV100, starting at 1.0. Tune within **0.0…2.5** (lower = brighter) until the luma targets are met, and record the final value. Do not touch `PP_*` volumes other than PP_Outdoor_Night.
+- **Luma script (definition).**
+  - Capture in PIE Simulate after ≥ 3 s warm-up; take the second of two captures.
+  - Per pixel, Y = 0.2126 R + 0.7152 G + 0.0722 B on the 8-bit sRGB values ÷ 255, with no linearisation, over the full frame.
+  - Targets on the courtyard→chapel pose (500, 0, 170, yaw 0, pitch 0):
+    - mean Y **0.04–0.07**;
+    - fraction of pixels with Y < 0.02 **≥ 0.20**;
+    - 99th-percentile Y **≥ 0.45** and max Y **≥ 0.9**.
+  - The 99th-percentile and max targets replace "brightest 2 % > 0.6". Warm pools can't cover 2 % of a 50 m view.
+  - Report the same four numbers for every g6 capture.
+- **Readability gates (numbers + lead judgement).**
+  - (a) Key: camera 200 cm from the key at its height + 30 cm, looking at it, key centred. The central 60×60 px crop must have mean Y ≥ 0.12.
+  - (b) Lanterns from the gate (gate pose of P7F-5): report the max Y within ±30 px of where the chapel-door lantern and the well-head lantern appear. Each must be ≥ 0.6. Say how you located them.
+  - (c) Gate arch from the spawn: the lead judges this from the spawn capture.
+  - (d) Warm-pool coverage:
+    - Sample each of the 4 courtyard routes (§1) every 100 cm. For each sample, take the XY distance to the nearest warm light (the 7 warm pools plus `Light_WellHead_Warm` plus the two grave candles). Every sample must be ≤ 1500 cm.
+    - Write a per-route table (max distance, worst sample, nearest light) to `Docs/ArtTest/courtyard_polish/warm_pool_check_g6.md`.
+    - If a stretch fails, place `SM_Wooden_Lantern_01` against the nearest wall or pier face to the worst sample, at Z 180 on a wall or on the ground at a pier base. Add `Light_Route_Lantern_N`: 400 lm, attenuation radius 500, colour (255, 140, 56), no shadows, VolumetricScatteringIntensity 1.5, MI_LF_Lantern.
+    - Add at most 2 of these and re-check. If it still fails, stop and report.
+- **Fog.** Compare the mist on the courtyard→chapel pose with `g5_courtyard_chapel.png`. If the mist is no longer distinguishable, raise each Local Fog Volume's emissive by at most ×1.5. Record old → new.
+- **Shadows and cost.** All new lights are shadowless. List CastShadows for every courtyard local light in the report, and do not change existing ones. No new Niagara or fog volumes.
+- **Out of scope.**
+  - Chapel interior lights (Phase 8): don't touch them. Report the chapel-interior capture's luma only.
+  - No audio, rain or lightning.
+  - Any new helper volume must be `collisionProfileName` NoCollision.
+- **Finish.**
+  - Save the map and `MI_Env_NightSky` (and any LFV/PP changes), and check the map is not dirty.
+  - Run the full suite with the map saved. Expect 78/78, `WalkPath.Monastery` with all 4 Courtyard paths PASS, and `RouteBot.Monastery` Success.
+  - Captures in `Docs/ArtTest/courtyard_polish/`:
+    - `g6_01…g6_13`: the 13 P7F-5 poses, same names after the number;
+    - `g6_14_garth_from_gate`;
+    - `g6_15_arcade_south_walk`;
+    - `g6_16_key_2m`;
+    - `g6_17_flicker_a/b`.
+  - Commit on `claude/p7-courtyard-polish` and stop.
