@@ -181,4 +181,7 @@ Branch `claude/p7-courtyard-polish` (continues P7-FIX2). Full spec: `Docs/plans/
 | G4 | L_Monastery: remove fountain + tiny plants, arcade, roofed walks, beds, well-head, trees, ivy, new WalkPaths, lane check, tests | environment-designer [EDITOR] | G3 |
 | G5 | Vegetation scatter (PCG, fallbacks ISM/actors) | environment-designer / technical-artist [EDITOR] | G4 |
 | G6 | Darkness, contrast and flicker pass; luma targets | lighting-vfx [EDITOR] | G5 |
+| G6b/G6c | Storm sky (SkyAtmosphere hidden, fog cutoff), colour grading, centrepiece pool, third route lantern, tower fills (amendment B3, D-059) | lighting-vfx [EDITOR] | G6 |
 | G7 | QA, docs, owner stat gpu + playtest | qa + lead + owner | all |
+
+Status 2026-10-25: G0–G6c done (latest fefe4f7; suite 78/78 after each editor task). G7: independent QA running; then owner `stat gpu` at High and playtest.
