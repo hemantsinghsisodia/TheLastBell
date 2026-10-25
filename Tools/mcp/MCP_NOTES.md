@@ -71,3 +71,9 @@ C++ can't be built in the real project while the editor is open (Live Coding plu
 
 ## Framework quick reference
 For C++ API names, read `Source/LastBell/`; for architecture, read `Docs/TECHNICAL_DESIGN.md`. The key Blueprints are in `/Game/LastBell/Blueprints/` (Interactables: BP_Door_Base, BP_Lever, BP_TagInteractable, BP_RitualMechanism, BP_TagTrigger, BP_TagVisibility, BP_WardenSilhouette, BP_WardenPlaceholderKill, BP_KillVolume, BP_Inspectable_Note). Data is in `/Game/LastBell/Data/`.
+
+## Floor growth layer, light functions (P7-FIX3 G3)
+- `M_LB_Surface` growth layer (`bGapGrowth`, group Growth): wall proximity comes from `MPC_LB_GrowthObstacles` (48 XY boxes, `Ob00..Ob47` = centreX, centreY, halfX, halfY; halfX < 0 = unused), NOT from `DistanceToNearestSurface`: the global distance field returns ~0 in this project (Lumen hardware RT, no GDF), which fills every joint. The DTNS path is kept behind the static switch `bWallUseDistanceField` (default off). Refresh the boxes after moving walls/piers/kerbs: `python Tools/mcp/update_growth_obstacles.py [--dry] [--prefix ...]` (editor open on L_Monastery; ~40 s; add the label prefixes of new structures, e.g. kerbs, arcade, well-head).
+- Same-session material A/B: the first recompile of a long-running editor session shifts thumbnail output vs the previously loaded shader (about 6/255 mean on M_LB_Surface); compare two recompiles in the same session, not "before the session" vs "after".
+- Light Function materials: `MaterialDomain = "MD_LightFunction"` can be set with `ObjectTools.set_properties` on the material; the output is `MP_EmissiveColor`. Scalar/vector MI parameters work as usual (`MI_LF_*` in /Game/LastBell/Materials/Instances).
+- UE drops FBX material slots no face uses (e.g. the arcade column only has MAT_Trim): read `get_material_slots` before `set_material`.
