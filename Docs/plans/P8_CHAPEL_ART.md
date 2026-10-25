@@ -536,3 +536,95 @@ The owner migrates the assets per `Docs/ArtTest/chapel/fab_picklist_p8.md`. **P8
 **Readability.** The clue view (P8-7 gate (a)) and the dais view (gate (b)) must stay uncluttered:
 - no chains, bodies or candles between the camera poses and the clue window or the 4 puzzle candles;
 - the east chains hang beside the window, not in front of it.
+
+**C1 (2026-10-25, after the P8-1 downloads and the P8-2 survey `Docs/ArtTest/chapel/survey_p8.md`).** Where C1 conflicts with §1, §2 or C0, C1 wins.
+
+1. **Clue window (north bay B3).** The clue is a free-standing plaque against the wall's inner face, not an object in a window:
+   - Frame X 8688–8812, Y 744–750, Z 300–544, BlockAllDynamic;
+   - Glass 112 × 232 at X 8694–8806, Z 306–538;
+   - saints at Y 739–744;
+   - left to right from the nave: green, red, amber, blue (Saint1 at X 8792 … Saint4 at X 8708). This matches the puzzle steps 3, 1, 4, 2.
+
+   It stays exactly where it is.
+
+   `SM_LB_Kit_NaveBay_1000x60x1200_Clue` replaces the §2 default:
+   - **Real opening** behind the plaque: clear X 8700–8800 (100 wide), sill Z 312, springing Z 458, two-centred head (radius 80), apex Z 532.
+     - Piece-local, with the piece spanning X 8000–9000: centred local X 750.
+     - Glazing groove at local Y 40 (outer side).
+     - The plaque's Frame (124 × 244) hides the opening's edges from inside.
+   - **Inner face:**
+     - a pointed hood moulding framing the plaque (MAT_Trim, 10 × 8): springing at Z 470, inner width 150 (X 8675–8825), apex Z 575, label stops at the springing;
+     - a stone sill ledge Z 288–300, X 8670–8830, projecting 8 cm from the inner face (Y 742–750; its collision may touch the Frame).
+   - **No lancet** in this bay.
+   - UCX keeps the opening clear.
+   - **Exterior glass:** `SM_LB_Prop_Glass_Clue_Ext` (opening outline, UV 0…1, NoCollision) in the groove, with `MI_Glass_Lancet_B`.
+
+   **Template re-skin:** `Frame` material → `MI_Kit_Trim` only (P8-6b). The Glass, the four saints' materials and colours, their positions and every collision setting are **never changed**.
+
+2. **East window and the silhouette ledge.**
+   - `Window_Ledge` (`StaticMeshActor_105`, X 9000–9300, Y ±300, Z 0–300, BlockAll) holds `Silh_ChapelWindow` (`BP_WardenSilhouette`, centre (9150, 0, 300)). It stays and gets `MI_Kit_Masonry`.
+   - The east window moves up so the ledge's top isn't seen as a block in the window: **sill Z 310, springing Z 650, apex Z 900** (clear 300 wide; the rest per §2).
+   - The silhouette is visible in the **editor viewport** (it is hidden only at BeginPlay in game and shown for 3 s on `State.Ritual.1`). Do gate (e) as an editor-viewport capture, with no PIE and nothing to change.
+3. **Altar** (`SM_LB_Prop_Altar_A`, P8-3), designed as a shell around the mechanism.
+   - **Mechanism:** `Altar_Ritual1` = `BP_RitualMechanism_C_1`, bounds X 8850–8950, Y ±50, Z 30–195, made of:
+     - a 100 cm WorldGrid cube pedestal Z 30–130;
+     - a cylinder Ø 80 at Z 130–180, centred (8900, 0);
+     - a 15 cm marker cube at Z 180–195 at the cylinder's edge.
+   - **Altar extent:** X 8848–8952 (104 deep), Y −150…150 (300 wide), Z 30–131. Hollow core Y −52…52 / X 8849–8951, open at the bottom, so the pedestal sits inside it.
+   - **Mensa:** top slab Z 121–131 over the full 300 width, chamfered and overhanging 4 cm on −X, with a **circular hole Ø 84 at (8900, 0)** for the cylinder.
+   - **Front face** at X 8848 (2 cm in front of the pedestal), so the WorldGrid cube is fully hidden.
+   - **UCX only on the two wings:** Y −150…−54 and 54…150 (X 8848–8952, Z 30–131). The centre has **no collision**, so the player's interaction sweep (200 cm reach, 8 cm sphere, Interaction channel) passes the altar front and hits the pedestal as it does today.
+   - Detail: chalk-scrawled front panel (the chalk sigil decal moves here, see 10); 5 incised crosses on the mensa.
+   - Placed with bounds exactly as above; label `Ch_Altar`; `MI_Kit_Trim`.
+   - The visible cylinder and marker get a template material re-skin in P8-6b: cylinder → `MI_LB_Bronze`, marker → `MI_LB_Iron`.
+     - If the template edit doesn't persist, use NoCollision shells instead: `SM_LB_Prop_MechShell_Cyl` Ø 84 × 51 open at the bottom (Z 130–181, centred (8900, 0)) and `SM_LB_Prop_MechShell_Cube` 17³ around the marker. Both are built in P8-3 just in case.
+4. **Puzzle candles** (`Candle_P1…P4`): bands red, blue, green, amber at Y −200 / −67 / 67 / 200; X 8800 (P1, P4) / 8820 (P2, P3); on the dais at Z 30.
+   - Components: Stand (cylinder 10 Ø × 30, Z 30–60, `MI_LB_DarkWood`, BlockAllDynamic), BandRing (13 Ø × 4 at Z 50–54, MID of `MI_LB_StainedGlass`, BlockAllDynamic), Wax, Flame (emissive sphere at Z 77–84), FlameLight (8 cd, radius 300, (1, 0.6, 0.3)).
+   - Lit/unlit toggles visibility of Flame and FlameLight only.
+   - **P8-6b template re-skin**, all optional with verification and revert on failure:
+     - `Stand` mesh → new `SM_LB_Prop_PricketStand_Small_10x30` (iron, same 10 × 30 envelope, a UCX box 10 × 10 × 30), material `MI_LB_Iron`;
+     - `Wax` material → `MI_LB_CandleWax` (mesh unchanged).
+   - **Never changed:** BandRing (colour = clue), Flame, FlameLight, InteractComp, any collision profile or transform.
+   - No dressing actor may stand between X 8550 and 8830 within |Y| ≤ 260 on the dais, apart from the existing BPs.
+5. **Altar candles.**
+   - The Dungeon pack has **no floor candelabrum** (holders 01–04 are 27 cm table-top pieces; 00 is a plate). **Holder 05, a 9-branch menorah, is not used anywhere** (religious-symbol sensitivity).
+   - New procedural `SM_LB_Prop_PricketStand_150`: wrought-iron floor pricket, tripod feet 45 cm spread, shaft Ø 3, drip pan Ø 30 at Z 135, 3 prickets in a 22 cm triangle at Z 138–150; `MI_LB_Iron`; UCX: one box 30 × 30 × 150.
+   - Two of them, `Ch_AltarStand_N/S`, at (8880, ±430) on the dais, each with 3 `SM_Candle_0x` on the prickets.
+   - Table-top `SM_Candles_Holder_03` / `_04` stand on the altar wings' top (Z 131) at (8900, ±110), with candles, NoCollision.
+6. **Flames (C0).** `BP_Flame_00/01` have **no light** and are Cascade (`PS_Fire_00/01` at component scale 0.25); their size is unknown, and `PS_Fire_00` at tiny scale was rejected as a candle flame in P7.
+   - P8-6 first places one `BP_Flame_00` on a candle and captures it in PIE Simulate at actor scales 1.0 / 0.5 / 0.25 / 0.12.
+   - Use it only if one scale gives a flame **4–8 cm tall** that reads as a candle flame. Record the scale.
+   - Otherwise use the puzzle candles' own flame look: a new `SM_LB_Prop_CandleFlame_A` (teardrop 3 × 3 × 6.5 cm, NoCollision) with `MI_LB_CandleFlame`, which is consistent with the puzzle.
+   - The cap of 16 lit flames still applies.
+7. **Hanging body.** `SK_Dead_Man` **includes its rope** (one material slot). It is 233 cm tall: bounds Z 33.6–266.8 above its pivot, rope top at +266.8. Anim lengths: Idle 4.0 s, other 3.3 s.
+   - The truss collar is at Z 1750, far too high, so it hangs from the **north arch brace** of `Ch_Truss_7000` instead. At Y 580 the brace's underside is at Z ≈ 1410 (brace circle centre (Y −78.9, Z 950), radius 803.9).
+   - **Feet at Z 200**, above the player's capsule top (176), so it is NoCollision without being walkable-through at head height. That puts the pivot at Z 166.4 and the mesh rope top at Z 433.2.
+   - `SM_Torture_Devices_Rope_00` is stretched (scaled along its length) from the mesh rope top (Z 433) to the brace underside (Z 1410), at (7000, 580). A knot or loop over the brace is optional.
+   - Looping `Anim_Dead_Man_Idle`, CastShadow on, NoCollision.
+8. **Notes ride on furniture** (they are gameplay actors; this is the only allowed move, Z only, same XY and yaw):
+   - `Note_Nave` (`BP_Inspectable_Note_C_6`, (7100, 238, 90.3), yaw −12) was on greybox `Pew_N1`, now `Ch_Pew_N2`. Set its Z to `Ch_Pew_N2`'s seat top + 0.3 at the same XY.
+     - Build `Pew_A` so its seat spans at least X −20…+20 around the pew centre.
+     - Place `Ch_Pew_N2` exactly at (7100, 325) yaw 0, so the note lies on the seat.
+   - `Note_Sacristy` (`BP_Inspectable_Note_C_7`, (8300, −1450, 90.3), yaw 8): set its Z to `Sa_Table`'s top + 0.3. The table's top must cover (8300, −1450).
+   - Keep a 25 cm radius around both notes free of other props (e.g. the meal props).
+9. **Textures.**
+   - **Floor:** Tiles139 is warm beige square limestone, 6 × 6 slabs per texture, no AO map. `MI_Chapel_Floor` uses world-aligned tile size **360 cm** (60 cm slabs), Desaturation 0.45, BrightnessMul 0.5, and a slight cool tint (0.92, 0.95, 1.0) if the master has a tint parameter (record it).
+   - **Roof:** `roof_slates_03`'s top rows are a ridge-cap strip. `Tools/textures/gen_chapel_textures.py` also writes cropped `T_LB_RoofSlates_*` maps (diff, nor_dx, rough), removing the strip plus whole slate courses so they tile vertically. Check the seam with a 2×2 tiled preview `Docs/ArtTest/chapel/tex_roofslates_tile.png`.
+   - The roof slab's top uses slope-aligned UVs (not world-aligned), so slate courses run along X and a slate is about 25 × 40 cm. `MI_Kit_Slate` has bWorldAlignedUV off.
+10. **Chalk sigil.** `Ch_ChalkSigil_E` moves from the east wall onto the altar's front panel: centred (8848, 0, 80), 80 × 80, projecting +X. The east wall below the window gets `Ch_ChalkSigil_E2` (second sigil) at Y 0, Z 180.
+11. **Dirty Blueprints.** The survey's `read_graph_dsl` left `BP_StainedGlassClue`, `BP_PuzzleCandle`, `BP_RitualMechanism` and `BP_WardenSilhouette` dirty in memory, unsaved. The owner restarts the editor with **Don't Save** before P8-4. No agent saves these packages unless P8-6b edits them on purpose.
+12. **New task P8-6b: puzzle prop re-skin (unreal-blueprint-engineer) [EDITOR], after P8-6 and before P8-7.**
+    - Template edits only, on `BP_StainedGlassClue` (Frame material), `BP_PuzzleCandle` (Stand mesh and material, Wax material) and `BP_RitualMechanism` (cylinder → `MI_LB_Bronze`, marker → `MI_LB_Iron`).
+    - For each BP:
+      1. Read the current value.
+      2. Write the template.
+      3. Compile with warnings as errors off; errors must be 0.
+      4. Save only that BP.
+      5. Read back the template and **the placed instance's component** to confirm the instance uses the new mesh/material.
+      6. Capture.
+    - Then run the full suite: puzzle tests, RouteBot and WalkPaths.
+    - Any failure or non-persistence: restore the old value, recompile, save, and use the fallback (shells for the mechanism; leave the candles and clue as they are).
+    - Report a table of old → new → instance read-back.
+13. **Also:**
+    - `KC_DoorTympanum` (`StaticMeshActor_812`, plank panel in the main door's tympanum) and `PointLight_2` (chapel-door warm light) stay.
+    - Pew seat height 45 and back top 95 are fine for `MaxStepHeight` 45: pews are BlockAll and are not meant to be climbed.

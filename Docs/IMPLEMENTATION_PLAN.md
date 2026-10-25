@@ -199,6 +199,7 @@ Branch `claude/phase-08-chapel`. Full spec: `Docs/plans/P8_CHAPEL_ART.md`. Owner
 | P8-4 | Materials (floor, interior masonry, slate, old wood, stained glass opaque/translucent, light-pool and chalk decals, cobweb, backdrop) and imports; statue/candleholder relocation | technical-artist [EDITOR] | P8-1, P8-3 |
 | P8-5 | Structure: walls, sacristy, roof, trusses, floors, choir, glass, crypt-door leaf, greybox removal, chapel WalkPaths, lane check, tests | environment-designer [EDITOR] | P8-4 |
 | P8-6 | Dressing: pews, ritual circle, statues, lectern, candles, collapse debris, cobwebs, sacristy, clue re-skin | environment-designer [EDITOR] | P8-5 |
+| P8-6b | Puzzle prop re-skin by BP template edits with verification and revert (clue frame, candle stand/wax, mechanism cylinder/marker); amendment C1 | unreal-blueprint-engineer [EDITOR] | P8-6 |
 | P8-7 | Lighting: greybox lights out, candle clusters, moon shafts, roof-hole shaft, coloured pools, glass emissive, nave mist; luma targets and readability gates | lighting-vfx [EDITOR] | P8-6 |
 | P8-8 | QA, docs, owner stat gpu + playtest; PHASE 8 READY FOR YOUR REVIEW | qa + lead + owner | all |
 
