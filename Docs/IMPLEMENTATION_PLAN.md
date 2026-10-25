@@ -186,6 +186,22 @@ Branch `claude/p7-courtyard-polish` (continues P7-FIX2). Full spec: `Docs/plans/
 
 Status 2026-10-25: G0–G6c done (latest fefe4f7; suite 78/78 after each editor task). G7: independent QA passed with no blocking defects (doc fixes 9829e48); owner `stat gpu` at High 13.1 ms (≤ 16.6). Awaiting the owner's playtest and review.
 
+## Phase 8 — Chapel art: task breakdown
+Branch `claude/phase-08-chapel`. Full spec: `Docs/plans/P8_CHAPEL_ART.md`. Owner choices 2026-10-25: timber roof with one fallen bay, glowing glass + coloured floor light, desecrated-but-restrained dressing, interior as dark as the courtyard (D-061…D-064).
+
+| Task | Objective | Owner | Depends on |
+|---|---|---|---|
+| P8-0 | Spec, plan table, decisions, risks | lead | — |
+| P8-1 | CC0 downloads: limestone floor (Tiles139), roof slates (roof_slates_03); registry | asset-curator | P8-0 |
+| P8-2 | Read-only survey: clue window, puzzle candles, mechanism, silhouette, misc actors, decal/glass materials, step height | technical-artist [EDITOR read-only] | P8-0 |
+| C1 | Lead amendment: clue-window opening, clue re-skin, altar fit, candle stand, silhouette capture | lead | P8-2 |
+| P8-3 | Blender: nave bays (lancet/door/clue), east wall + tracery, gables, corbels, dais, roof slabs (+broken), ridge, truss, pews, rail, lectern, altar, shards, finial, glass, cobwebs; generated glass/chalk/cobweb textures | technical-artist | C1 |
+| P8-4 | Materials (floor, interior masonry, slate, old wood, stained glass opaque/translucent, light-pool and chalk decals, cobweb, backdrop) and imports; statue/candleholder relocation | technical-artist [EDITOR] | P8-1, P8-3 |
+| P8-5 | Structure: walls, sacristy, roof, trusses, floors, choir, glass, crypt-door leaf, greybox removal, chapel WalkPaths, lane check, tests | environment-designer [EDITOR] | P8-4 |
+| P8-6 | Dressing: pews, ritual circle, statues, lectern, candles, collapse debris, cobwebs, sacristy, clue re-skin | environment-designer [EDITOR] | P8-5 |
+| P8-7 | Lighting: greybox lights out, candle clusters, moon shafts, roof-hole shaft, coloured pools, glass emissive, nave mist; luma targets and readability gates | lighting-vfx [EDITOR] | P8-6 |
+| P8-8 | QA, docs, owner stat gpu + playtest; PHASE 8 READY FOR YOUR REVIEW | qa + lead + owner | all |
+
 ## Deferred to Phase 14–15 (Lighting, VFX: storm work)
 Items the owner asked to fold into the storm pass. Plan them in detail (Docs/plans/) when Phase 14–15 starts.
 
