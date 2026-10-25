@@ -463,13 +463,12 @@ Per §1.6, with the C1 clue re-skin and puzzle-candle stand if approved:
 
 The owner chose:
 - **Dungeon pack:** candles, candelabra and flames; chains and shackles; bones and skulls; sacristy life and cobwebs.
-- **Horror pack:** hanging body from a truss; the cloth body in the sacristy; the burlap body among the pews; the stretcher and body bag re-added.
+- **Horror pack:** hanging body from a truss; the cloth body in the sacristy; the burlap body among the pews. (The stretcher and body bag were dropped by the owner the same day: they don't suit a chapel.)
 
 The tone moves from "restrained" to **desecrated, heavier** (D-063 updated): bodies and bones are deliberate, but there is still no gore or blood pools.
 
 The owner migrates the assets per `Docs/ArtTest/chapel/fab_picklist_p8.md`. **P8-4** relocates them:
 - `/Game/Dungeon/**` → `/Game/LastBell/ThirdParty/Fab/Dungeon/` (same sub-folders as the P7 relocation);
-- the Horror items → `/Game/LastBell/ThirdParty/Fab/HorrorProps/Mesh/`;
 - references fixed;
 - duplicate shared materials merged into the existing relocated copies (as P7F-3g);
 - `MaxTextureSize` 1024 for candles, bones, tavern props and shackles, 2048 for bodies, chest, bench and chair;
@@ -478,7 +477,7 @@ The owner migrates the assets per `Docs/ArtTest/chapel/fab_picklist_p8.md`. **P8
 **P8-2 survey additions:**
 - (k) After the migrate: `BP_Flame_00/01` components, i.e. whether they contain a light, which particle system or mesh they use, and their size.
 - (l) `SK_Dead_Man` with `Anim_Dead_Man_Idle` / `_other`: does the mesh include a rope? Its height and pivot.
-- (m) Sizes and pivots of `SM_Candles_Holder_00…05`, the skeleton piles, the stretcher and the body bag.
+- (m) Sizes and pivots of `SM_Candles_Holder_00…05` and the skeleton piles.
 
 **Flames.** Use the pack flames as provided, but **no flame may carry its own light**.
 - If `BP_Flame_00/01` contain a light component, create a child `BP_LB_CandleFlame` (in `/Game/LastBell/Blueprints/Props/`) with that light disabled (child defaults, or the child's construction script if the inherited component can't be overridden).
@@ -529,7 +528,6 @@ The owner migrates the assets per `Docs/ArtTest/chapel/fab_picklist_p8.md`. **P8
   - `SM_Pot_00` and `SM_Plate_00` on the floor by the chest.
   - Wall ring: `SM_Dungeon_chain_holder` on the south wall at (8500, −1500, 140) with `SM_Dungeon_shackles_01` hanging.
   - `Sa_Body`: `SM_Man_under_cloth` along the south wall at (8650, −1440), head +X, as before.
-  - `Sa_Stretcher`: the stretcher at centre (8685, −1270), long axis along X, BlockAll, with `Sa_BodyBag` on it.
   - Bone pile per the bones list above.
   - Keep ≥ 60 cm from the line (8500, −810) → (8500, −1100) → (7980, −1100).
 - **Cobwebs.** The cobweb cards use an MI of the pack's `M_Cobweb` (`MI_Cobweb_Dungeon`) instead of the generated `T_LB_Cobweb_A`. P8-3 still builds the card meshes; the generated texture is optional (fallback).

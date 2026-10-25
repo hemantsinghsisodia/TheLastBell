@@ -1,12 +1,10 @@
 # Phase 8: Fab pick list (owner steps)
 
-Two jobs:
-- **A:** migrate Dungeon-pack items from the staging project into TheLastBell.
-- **B:** re-add two Horror-pack items.
+One job: migrate Dungeon-pack items from the staging project into TheLastBell. The Horror-pack bodies used in the chapel are already in the game, so nothing is needed from that pack.
 
-Do them any time before task P8-4. The agents relocate everything into `/Game/LastBell/ThirdParty/Fab/` afterwards, with references fixed, and merge duplicate shared materials.
+Do it any time before task P8-4. The agents relocate everything into `/Game/LastBell/ThirdParty/Fab/` afterwards, with references fixed, and merge duplicate shared materials.
 
-## A. Dungeon Environment (from `C:\Hemant\FabStaging\LB_FabStaging`)
+## Dungeon Environment (from `C:\Hemant\FabStaging\LB_FabStaging`)
 1. Open LB_FabStaging.
 2. In the Content Browser, select **only the assets below**. Ctrl+click across folders, or do it folder by folder. Migrate pulls in their materials and textures automatically.
 3. Right-click → **Asset Actions → Migrate…** → target folder `C:\Hemant\Prj\Learning\TheLastBell\Content`.
@@ -27,10 +25,3 @@ Do them any time before task P8-4. The agents relocate everything into `/Game/La
 Already in the game, so **don't migrate** them again: `SM_Torture_Devices_Chains`, `SM_Dungeon_chain_holder`, `SM_Candle_Melted_03/07`, `SM_Skull_00/01`, `PS_Fire_00`, `SM_Torch`, cage, breaking wheel.
 
 When the migrate finishes, tell me "migrate done".
-
-## B. Horror Props (Bugrimov Maksim): stretcher and body bag
-These two were removed in Phase 7 before they were ever committed, so they have to come from Fab again.
-1. In the Epic launcher, go to Fab Library → **Horror Props** → **Add to project** → choose **LB_FabStaging**. Use "Show all projects" / a lower engine version if needed, as last time. Don't add it to TheLastBell directly.
-2. Open LB_FabStaging. Find the **stretcher** mesh and the **body bag** mesh (named something like `SM_Stretcher*` and `SM_Body_Bag*` / `SM_Bodybag*`).
-3. Select only those two, then **Migrate…** to `C:\Hemant\Prj\Learning\TheLastBell\Content`. Skip overwrites.
-4. Tell me the two asset names you migrated.
