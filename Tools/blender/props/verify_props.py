@@ -53,7 +53,7 @@ SPEC = {
 }
 # ---- P8-3 chapel props (plan section 2 P8-3 + amendment C1) ----
 SPEC.update({
-    "Truss_ArchBraced_1500": dict(dims=(26.2, 1500.0, 1265.0), tol=1.5, slots=["MAT_Wood"], ucx=0, struct="truss"),          # 25 thick + pegs, +-750 across, apex 1265 (world 2165)
+    "Truss_ArchBraced_1500": dict(dims=(30.8, 1500.0, 1265.0), tol=1.5, slots=["MAT_Wood"], ucx=0, struct="truss"),          # members 30 wide + pegs (0.4 each side), +-750 across, apex 1265 (world 2165)
     "Pew_A": dict(dims=(55.0, 250.0, 95.0), slots=["MAT_Wood"], ucx=2, struct="pew"),
     "Pew_Broken": dict(dims=(55.0, 250.0, 95.0), slots=["MAT_Wood"], ucx=3),
     "AltarRail_600x40x100": dict(dims=(40.0, 600.0, 100.0), slots=["MAT_Wood"], ucx=1),
@@ -133,7 +133,7 @@ def structural(short, spec, ob, ucx, fail, res):
                 notes.append("brace intrados Y%+d: %s (r=783.9 circle %.1f)" % (yy, "%.1f" % h[2] if h else None, zi))
                 if not ok:
                     fail("arch brace intrados at Y %g is %s, expected %.1f" % (yy, h and round(h[2], 1), zi))
-        h = _ray(bvh, 0.0, 200.0, 990.0, (0, 0, -1))                    # collar top
+        h = _ray(bvh, 0.0, 200.0, 940.0, (0, 0, -1))                    # collar top (start below the rafter underside)
         notes.append("collar top: %s (850)" % (("%.1f" % h[2]) if h else None))
         if h is None or abs(h[2] - 850.0) > 1.0:
             fail("collar top %s expected 850" % (h and round(h[2], 1)))

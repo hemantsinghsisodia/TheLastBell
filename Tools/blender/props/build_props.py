@@ -1503,12 +1503,12 @@ def glass_slab(poly, thick, ref_min, ref_size, uv_rect=(0.0, 0.0, 1.0, 1.0), mat
 # ---------------------------------------------------------------------------------------------- truss
 def build_truss():
     TH = math.atan2(965.0, 810.0)
-    vt = 20.0 / math.cos(TH)
+    vt = 40.0 / math.cos(TH)                                     # rafters 40 deep (perpendicular to the roof plane)
 
     def zt(y):
         return 1265.0 - (965.0 / 810.0) * abs(y)
 
-    X0, X1 = -12.5, 12.5
+    X0, X1 = -15.0, 15.0                                         # every member 30 wide (X)
     parts = []
     seed = [9101]
 
@@ -1522,42 +1522,42 @@ def build_truss():
         return b
 
     for sgn in (-1, 1):
-        # principal rafter: top face on the roof plane, 20 deep (perpendicular), clipped at Y 0 and at the wall face |Y| 750
+        # principal rafter: top face on the roof plane, 40 deep (perpendicular, grows downward), clipped at Y 0 and at the wall face |Y| 750
         ya, yb = (0.0, 750.0) if sgn > 0 else (-750.0, 0.0)
         pts = [(0.0, 1265.0 - vt), (750.0, zt(750.0) - vt), (750.0, zt(750.0)), (0.0, 1265.0)]
         pts = [(sgn * y, z) for (y, z) in pts]
         parts.append(finish(K.prism(pts, 'x', X0, X1, 0)))
-        # post 25 x 25 at |Y| 725..750, top cut along the rafter underside plane (buried 8 cm into the rafter)
-        pp = [(sgn * 725.0, 0.0), (sgn * 750.0, 0.0), (sgn * 750.0, zt(750.0) - 8.0), (sgn * 725.0, zt(725.0) - 8.0)]
+        # post 30 (X) x 35 (Y) at |Y| 715..750 (back face on the wall plane), top cut along the roof plane (buried 8 cm below the rafter top)
+        pp = [(sgn * 715.0, 0.0), (sgn * 750.0, 0.0), (sgn * 750.0, zt(750.0) - 8.0), (sgn * 715.0, zt(715.0) - 8.0)]
         parts.append(finish(K.prism(pp, 'x', X0, X1, 0), 0.25))
-        # arch brace: band between r 783.9 and 803.9 around the centre (-sgn 78.9, 50): springing (sgn 725, 50) .. apex (0, 830..850)
+        # arch brace 30 x 30: band between r 783.9 (intrados, unchanged) and 813.9 around the centre (-sgn 78.9, 50); outer edge clamped to the collar top Z 850
         cy = -sgn * 78.9
         n = 32
-        ro, ri = 803.9, 783.9
+        ro, ri = 813.9, 783.9
         pol = []
         pho = math.acos(78.9 / ro)
         phi = math.acos(78.9 / ri)
         for i in range(n + 1):
             ph = pho * i / n
-            pol.append((cy + sgn * ro * math.cos(ph), 50.0 + ro * math.sin(ph)))
+            pol.append((cy + sgn * ro * math.cos(ph), min(850.0, 50.0 + ro * math.sin(ph))))
         for i in range(n, -1, -1):
             ph = phi * i / n
             pol.append((cy + sgn * ri * math.cos(ph), 50.0 + ri * math.sin(ph)))
         parts.append(finish(K.prism(pol, 'x', X0, X1, 0), 0.25))
-    # collar 25 x 20, top at Z 850, ends buried in the rafters
-    col = K.box(X0, X1, -345.0, 345.0, 830.0, 850.0, 0, 0.0)
+    # collar 30 x 35, top at Z 850 (grows downward), ends buried in the rafters
+    col = K.box(X0, X1, -345.0, 345.0, 815.0, 850.0, 0, 0.0)
     parts.append(finish(col, 0.25))
-    # pegs (O2.4, protruding 0.6 on each face)
+    # pegs (O2.4, protruding 0.4 on each face -> X bounds 30.8)
     for sgn in (-1, 1):
-        for (py, pz) in ((737.0, 340.0), (718.0, 90.0), (340.0, 840.0), (120.0, 838.0)):
-            pg = K.cylinder(1.2, 26.2, 8, 0)
+        for (py, pz) in ((732.0, 352.0), (722.0, 90.0), (335.0, 832.0), (120.0, 832.0)):
+            pg = K.cylinder(1.2, 30.8, 8, 0)
             rot(pg, 'Y', 90.0)
-            shift(pg, -13.1, sgn * py, pz)
+            shift(pg, -15.4, sgn * py, pz)
             parts.append(pg)
     bm = join(parts)
     return Piece(PREFIX + "Truss_ArchBraced_1500", bm, ["MAT_Wood"],
-                 note="arch-braced truss: local Z 0 = post foot (world 900), Y across the nave (+-750), X 25 thick; rafters 25x20 with top faces on the roof plane "
-                      "(Y+-810,Z300)-(0,1265), posts 25x25 at Y+-737.5, collar top Z 850, pointed arch braces springing (Y+-725,Z50) r 803.9; no UCX")
+                 note="arch-braced truss: local Z 0 = post foot (world 900), Y across the nave (+-750), X 30 (pegs to 30.8); rafters 30x40 with top faces on the roof plane "
+                      "(Y+-810,Z300)-(0,1265), posts 30x35 at |Y| 715..750, collar 30x35 top Z 850, pointed arch braces 30x30 (intrados r 783.9, springing (Y+-705,Z50)); no UCX")
 
 
 # ---------------------------------------------------------------------------------------------- pews

@@ -2,21 +2,21 @@
  {
   "name": "SM_LB_Prop_Truss_ArchBraced_1500",
   "min": [
-   -13.1,
+   -15.4,
    -749.93,
    0.0
   ],
   "max": [
-   13.1,
+   15.4,
    749.93,
    1264.3
   ],
   "dims": [
-   26.2,
+   30.8,
    1499.86,
    1264.3
   ],
-  "tris": 6468,
+  "tris": 6920,
   "slots": [
    "MAT_Wood"
   ],
@@ -26,10 +26,10 @@
   "ucx": 0,
   "pivot_shift_applied": [
    -0.0,
-   0.025,
+   0.022,
    -0.0
   ],
-  "note": "arch-braced truss: local Z 0 = post foot (world 900), Y across the nave (+-750), X 25 thick; rafters 25x20 with top faces on the roof plane (Y+-810,Z300)-(0,1265), posts 25x25 at Y+-737.5, collar top Z 850, pointed arch braces springing (Y+-725,Z50) r 803.9; no UCX",
+  "note": "arch-braced truss: local Z 0 = post foot (world 900), Y across the nave (+-750), X 30 (pegs to 30.8); rafters 30x40 with top faces on the roof plane (Y+-810,Z300)-(0,1265), posts 30x35 at |Y| 715..750, collar 30x35 top Z 850, pointed arch braces 30x30 (intrados r 783.9, springing (Y+-705,Z50)); no UCX",
   "seconds": 0.4
  },
  {
