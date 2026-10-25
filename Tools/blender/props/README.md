@@ -6,7 +6,7 @@ Shared helpers: `Tools/blender/kit/kit_lib.py` (`cylinder`, `ring` were added fo
 ## Commands (run from the repo root)
 
 ```
-set B="C:\Program Files\Blender Foundation\Blender 5.2\blender.exe"
+set B="C:\Program Files\Blender Foundation\Blender 5.2blender.exe"
 
 # 2b. procedural props: 12 FBX + LB_Props.blend + props_report.json   (about 5 s, seeded/reproducible)
 %B% -b --factory-startup --python Tools/blender/props/build_props.py -- --out SourceArt/Props/Procedural
@@ -37,3 +37,28 @@ set B="C:\Program Files\Blender Foundation\Blender 5.2\blender.exe"
   CC0 slot names = the original glTF material names (e.g. `wine_barrel_01`). Collision: `UCX_<Mesh>_NN` boxes in the same FBX.
 - Props face +Y in authoring space (gravestone relief, cross); the level yaws them. Key lies flat: bow at -X, bit toward -Y, bit teeth point -Y.
 - Outputs: `SourceArt/Props/Procedural/` (FBX, `LB_Props.blend`, `props_report.json`), `SourceArt/Props/CC0/<Name>/` (FBX, textures, `../cc0_report.json`).
+
+## P7-FIX3 G2a additions
+
+```
+set B="C:\Program Files\Blender Foundation\Blender 5.2blender.exe"
+
+# new procedural props only (17 pieces; the 12 existing FBX are not rewritten). Ivy FBX + atlas textures go to SourceArt/Props/Procedural/Ivy/
+%B% -b --factory-startup --python Tools/blender/props/build_props.py -- --only WellHead TimberPost Purlin Rafter RoofPlanks EarthPatch DeadTree Ivy --tag Fix3
+#    -> LB_Props_Fix3.blend + props_report_Fix3.json ; verify (29/29 incl. the 12 old ones):
+%B% -b --factory-startup --python Tools/blender/props/verify_props.py
+
+# CC0 conversions: grass_medium_02 (5 clumps), wild_rooibos_bush (5), searsia_lucida (7), dead_tree_trunk_02 (1, converted UPRIGHT, thick end down)
+%B% -b --factory-startup --python Tools/blender/props/convert_cc0.py -- --only grass_medium_02 wild_rooibos_bush searsia_lucida dead_tree_trunk_02
+
+# review renders -> Docs/ArtTest/props/fix3_*.png (kit pieces, props incl. Cycles ivy with the real atlas + opacity, CC0 plants)
+%B% -b --factory-startup --python Tools/blender/props/render_fix3.py -- --blend SourceArt/Kit/LB_Kit_Fix3.blend --set kit
+%B% -b --factory-startup --python Tools/blender/props/render_fix3.py -- --blend SourceArt/Props/Procedural/LB_Props_Fix3.blend --set props
+%B% -b --factory-startup --python Tools/blender/props/render_fix3.py -- --set cc0
+```
+- `WellHead_A` (slots Stone, Wood, Rope, Iron, Water; UCX 8 convex ring sides + 2 post boxes), timber set (`TimberPost` 1 UCX, `Purlin`/`Rafter*`/`RoofPlanks*` no UCX; **timber is authored upright, length along Z**; the level lays it down),
+  `EarthPatch_400x400x15` (UCX 400x400x8).
+- `DeadTree_A`: seeded bpy branching tree (the BlenderKit tree is a single 1.7 m pole with no limbs and a 4K colour-only texture, so it was rejected); slot `MAT_Bark`, UV 1 tile / 150 cm (use the DeadTreeTrunk bark textures); built to exactly 700 cm tall.
+- `Ivy_{Climb_300x450,Patch_200x300,Hang_150x600,Creep_400x200}_{Green,Dead}`: pivot = X centre, back plane at **Y 0 (wall side)**, min Z 0 (not bottom-centre in Y); slots `MAT_Leaf`, `MAT_Stem`; UV0 = atlas leaf cells
+  (cell rects in `IVY_ATLAS` in build_props.py; Green = LeafSet017 (6 cells, tip up), Dead = LeafSet030 (12 oak cells, petiole right -> mapped rotated)); Color/Opacity/Roughness/NormalGL copied next to the FBX. Leaves face +Y. No UCX.
+- `build_props.py` options: `--tag NAME` names the partial blend/report (default `partial`). `kit_lib.finalize(keep_uv=True)` keeps the custom UVs (ivy, tree).

@@ -36,7 +36,21 @@ SPEC = {
     "GraveMound_A": dict(dims=(200.0, 90.0, 22.0), slots=["MAT_Earth"], ucx=0),
     "HandCart_A": dict(dims=(280.0, 140.0, 100.0), slots=["MAT_Wood", "MAT_Iron"], ucx=3),  # 170 bed + 110 shafts; wheels/axle set the width
     "FirePit_A": dict(dims=(125.0, 125.0, 31.0), tol=5.0, slots=["MAT_Stone", "MAT_Charred"], ucx=1),  # O110 stone-centre circle + 25-35 cm stones
+    # ---- P7-FIX3 G2a ----
+    "WellHead_A": dict(dims=(358.0, 258.0, 230.0), tol=2.5, slots=["MAT_Stone", "MAT_Wood", "MAT_Rope", "MAT_Iron", "MAT_Water"], ucx=10),  # ring O260, posts at +-152, cranks to +-179
+    "TimberPost_20x20x420": dict(dims=(20.0, 20.0, 420.0), slots=["MAT_Wood"], ucx=1),
+    "Purlin_15x15x1000": dict(dims=(15.0, 15.0, 1000.0), slots=["MAT_Wood"], ucx=0),
+    "Rafter_15x10x420": dict(dims=(15.0, 10.0, 420.0), slots=["MAT_Wood"], ucx=0),
+    "Rafter_Broken_15x10x260": dict(dims=(15.0, 10.0, 260.0), slots=["MAT_Wood"], ucx=0),
+    "RoofPlanks_200x100x4": dict(dims=(200.0, 100.0, 4.0), slots=["MAT_Wood"], ucx=0),
+    "RoofPlanks_Broken_200x100x4": dict(dims=(200.0, 100.0, 4.0), slots=["MAT_Wood"], ucx=0),
+    "EarthPatch_400x400x15": dict(dims=(400.0, 400.0, 15.0), slots=["MAT_Earth"], ucx=1),
+    "DeadTree_A": dict(dims=(None, None, 700.0), slots=["MAT_Bark"], ucx=1),              # 650-750 cm target, built to 700
 }
+for _shape, _w, _h in (("Climb", 300.0, 450.0), ("Patch", 200.0, 300.0), ("Hang", 150.0, 600.0), ("Creep", 400.0, 200.0)):
+    for _kind in ("Green", "Dead"):
+        SPEC["Ivy_%s_%gx%g_%s" % (_shape, _w, _h, _kind)] = dict(dims=(_w, None, _h), ymax=25.0, slots=["MAT_Leaf", "MAT_Stem"], ucx=0,
+                                                                 wall_pivot=True, open_mesh=True, subdir="Ivy")
 
 
 def parse():
@@ -75,11 +89,19 @@ def check(path, short, spec):
     res['dims'] = [round(v, 2) for v in dims]
     res['bounds_min'] = [round(v, 2) for v in mn]
     res['tris'] = sum(len(p.vertices) - 2 for p in ob.data.polygons)
-    # pivot: XY centre at 0, min Z at 0
-    for i, ax in enumerate("XY"):
-        c = (mn[i] + mx[i]) * 0.5
-        if abs(c) > TOL:
-            fail("pivot: %s centre %.2f (should be 0)" % (ax, c))
+    # pivot: XY centre at 0, min Z at 0 (ivy cards: X centre at 0, back plane at Y 0)
+    if spec.get('wall_pivot'):
+        if abs((mn[0] + mx[0]) * 0.5) > TOL:
+            fail("pivot: X centre %.2f (should be 0)" % ((mn[0] + mx[0]) * 0.5))
+        if abs(mn.y) > TOL:
+            fail("pivot: back plane Y min %.2f (should be 0)" % mn.y)
+        if dims.y > spec['ymax'] + 0.01:
+            fail("depth Y %.2f > %.1f" % (dims.y, spec['ymax']))
+    else:
+        for i, ax in enumerate("XY"):
+            c = (mn[i] + mx[i]) * 0.5
+            if abs(c) > TOL:
+                fail("pivot: %s centre %.2f (should be 0)" % (ax, c))
     if abs(mn.z) > TOL:
         fail("pivot: min Z %.2f (should be 0)" % mn.z)
     if ob.matrix_world.translation.length > 1e-4:
@@ -110,7 +132,7 @@ def check(path, short, spec):
         fail("no normals")
     vol = VK.signed_volume(ob)
     res['volume_cm3'] = round(vol, 1)
-    if vol <= 0:
+    if vol <= 0 and not spec.get('open_mesh'):
         fail("non-positive volume (%.1f)" % vol)
     # collision
     res['ucx'] = len(ucx)
@@ -147,7 +169,7 @@ def main():
     fbx_dir, js = parse()
     rows = []
     for short, spec in SPEC.items():
-        path = os.path.join(fbx_dir, P + short + ".fbx")
+        path = os.path.join(fbx_dir, spec.get('subdir', ''), P + short + ".fbx")
         if not os.path.exists(path):
             rows.append(dict(name=P + short, ok=False, fails=["missing FBX"]))
             continue

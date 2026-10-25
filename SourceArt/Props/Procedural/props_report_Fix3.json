@@ -1,0 +1,587 @@
+[
+ {
+  "name": "SM_LB_Prop_WellHead_A",
+  "min": [
+   -179.0,
+   -128.65,
+   0.0
+  ],
+  "max": [
+   179.0,
+   128.65,
+   229.87
+  ],
+  "dims": [
+   358.0,
+   257.29,
+   229.87
+  ],
+  "tris": 15698,
+  "slots": [
+   "MAT_Stone",
+   "MAT_Wood",
+   "MAT_Rope",
+   "MAT_Iron",
+   "MAT_Water"
+  ],
+  "slots_used": [
+   0,
+   1,
+   2,
+   3,
+   4
+  ],
+  "ucx": 10,
+  "pivot_shift_applied": [
+   -0.0,
+   0.009,
+   -0.0
+  ],
+  "note": "octagonal well curb O260 (corners on the axes), 2 courses + coping (2 segments missing), dark water slab Z 18..20; timber winch posts at X +-152 (outside the ring), drum O20 x 200 at Z 210, iron axle + 2 cranks, rope; UCX 8 ring sides + 2 posts",
+  "seconds": 0.8
+ },
+ {
+  "name": "SM_LB_Prop_TimberPost_20x20x420",
+  "min": [
+   -10.0,
+   -10.0,
+   0.0
+  ],
+  "max": [
+   10.0,
+   10.0,
+   420.0
+  ],
+  "dims": [
+   20.0,
+   20.0,
+   420.0
+  ],
+  "tris": 292,
+  "slots": [
+   "MAT_Wood"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 1,
+  "pivot_shift_applied": [
+   0.009,
+   -0.002,
+   -0.0
+  ],
+  "note": "weathered square post, saddle notch 15 wide x 7 deep at the top for the purlin; UCX = bounds",
+  "seconds": 0.0
+ },
+ {
+  "name": "SM_LB_Prop_Purlin_15x15x1000",
+  "min": [
+   -7.5,
+   -7.5,
+   0.0
+  ],
+  "max": [
+   7.5,
+   7.5,
+   1000.0
+  ],
+  "dims": [
+   15.0,
+   15.0,
+   1000.0
+  ],
+  "tris": 604,
+  "slots": [
+   "MAT_Wood"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 0,
+  "pivot_shift_applied": [
+   -0.974,
+   0.006,
+   -0.0
+  ],
+  "note": "authored upright (length along Z); the level lays it horizontal; no collision",
+  "seconds": 0.0
+ },
+ {
+  "name": "SM_LB_Prop_Rafter_15x10x420",
+  "min": [
+   -7.5,
+   -5.0,
+   0.0
+  ],
+  "max": [
+   7.5,
+   5.0,
+   420.0
+  ],
+  "dims": [
+   15.0,
+   10.0,
+   420.0
+  ],
+  "tris": 252,
+  "slots": [
+   "MAT_Wood"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 0,
+  "pivot_shift_applied": [
+   0.001,
+   -0.002,
+   -0.0
+  ],
+  "note": "authored upright (length along Z); no collision",
+  "seconds": 0.0
+ },
+ {
+  "name": "SM_LB_Prop_Rafter_Broken_15x10x260",
+  "min": [
+   -7.5,
+   -5.0,
+   0.0
+  ],
+  "max": [
+   7.5,
+   5.0,
+   260.0
+  ],
+  "dims": [
+   15.0,
+   10.0,
+   260.0
+  ],
+  "tris": 216,
+  "slots": [
+   "MAT_Wood"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 0,
+  "pivot_shift_applied": [
+   -0.0,
+   -0.003,
+   -0.0
+  ],
+  "note": "snapped rafter: slanted break + 5 splinters; no collision",
+  "seconds": 0.0
+ },
+ {
+  "name": "SM_LB_Prop_RoofPlanks_200x100x4",
+  "min": [
+   -100.0,
+   -50.0,
+   0.0
+  ],
+  "max": [
+   100.0,
+   50.0,
+   4.0
+  ],
+  "dims": [
+   200.0,
+   100.0,
+   4.0
+  ],
+  "tris": 468,
+  "slots": [
+   "MAT_Wood"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 0,
+  "pivot_shift_applied": [
+   -100.0,
+   -50.0,
+   -0.0
+  ],
+  "note": "boards 1-2 cm apart, ragged ends, 6 boards; no collision",
+  "seconds": 0.0
+ },
+ {
+  "name": "SM_LB_Prop_RoofPlanks_Broken_200x100x4",
+  "min": [
+   -100.0,
+   -50.0,
+   0.0
+  ],
+  "max": [
+   100.0,
+   50.0,
+   4.0
+  ],
+  "dims": [
+   200.0,
+   100.0,
+   4.0
+  ],
+  "tris": 304,
+  "slots": [
+   "MAT_Wood"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 0,
+  "pivot_shift_applied": [
+   -100.0,
+   -50.0,
+   -0.0
+  ],
+  "note": "boards 1-2 cm apart, ragged ends, 2 boards gone, 2 snapped short; no collision",
+  "seconds": 0.0
+ },
+ {
+  "name": "SM_LB_Prop_EarthPatch_400x400x15",
+  "min": [
+   -200.0,
+   -200.0,
+   0.0
+  ],
+  "max": [
+   200.0,
+   200.0,
+   15.0
+  ],
+  "dims": [
+   400.0,
+   400.0,
+   15.0
+  ],
+  "tris": 3358,
+  "slots": [
+   "MAT_Earth"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 1,
+  "pivot_shift_applied": [
+   -200.0,
+   -200.0,
+   -0.0
+  ],
+  "note": "noisy earth top 8-15 cm (edges taper to 0 over 40 cm), flat bottom; UCX 400x400x8",
+  "seconds": 0.0
+ },
+ {
+  "name": "SM_LB_Prop_DeadTree_A",
+  "min": [
+   -217.55,
+   -239.68,
+   0.0
+  ],
+  "max": [
+   217.55,
+   239.68,
+   700.0
+  ],
+  "dims": [
+   435.1,
+   479.37,
+   700.0
+  ],
+  "tris": 3816,
+  "slots": [
+   "MAT_Bark"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 1,
+  "pivot_shift_applied": [
+   1.519,
+   -8.543,
+   1.308
+  ],
+  "note": "seeded bpy branching tree (seed 7034, scale 1.148): trunk O52 at the base, 3 main limbs + 2 snapped stubs, 3 levels, twig tips O1; bark UV 1 tile / 150 cm, use the DeadTreeTrunk bark textures; UCX = trunk box only",
+  "seconds": 0.3
+ },
+ {
+  "name": "SM_LB_Prop_Ivy_Climb_300x450_Green",
+  "min": [
+   -150.0,
+   0.0,
+   0.0
+  ],
+  "max": [
+   150.0,
+   17.83,
+   450.0
+  ],
+  "dims": [
+   300.0,
+   17.83,
+   450.0
+  ],
+  "tris": 18448,
+  "slots": [
+   "MAT_Leaf",
+   "MAT_Stem"
+  ],
+  "slots_used": [
+   0,
+   1
+  ],
+  "ucx": 0,
+  "pivot_shift_applied": [
+   -0.0,
+   -0.0,
+   -0.0
+  ],
+  "note": "ivy climb Green card 300x450: 964 leaves on 101 vines, atlas LeafSet017, 6 cells; back at Y 0, no collision",
+  "seconds": 0.1
+ },
+ {
+  "name": "SM_LB_Prop_Ivy_Patch_200x300_Green",
+  "min": [
+   -100.0,
+   0.0,
+   0.0
+  ],
+  "max": [
+   100.0,
+   18.08,
+   300.0
+  ],
+  "dims": [
+   200.0,
+   18.08,
+   300.0
+  ],
+  "tris": 9728,
+  "slots": [
+   "MAT_Leaf",
+   "MAT_Stem"
+  ],
+  "slots_used": [
+   0,
+   1
+  ],
+  "ucx": 0,
+  "pivot_shift_applied": [
+   -0.0,
+   -0.0,
+   -0.0
+  ],
+  "note": "ivy patch Green card 200x300: 517 leaves on 97 vines, atlas LeafSet017, 6 cells; back at Y 0, no collision",
+  "seconds": 0.1
+ },
+ {
+  "name": "SM_LB_Prop_Ivy_Hang_150x600_Green",
+  "min": [
+   -75.0,
+   0.0,
+   0.0
+  ],
+  "max": [
+   75.0,
+   17.58,
+   600.0
+  ],
+  "dims": [
+   150.0,
+   17.58,
+   600.0
+  ],
+  "tris": 3768,
+  "slots": [
+   "MAT_Leaf",
+   "MAT_Stem"
+  ],
+  "slots_used": [
+   0,
+   1
+  ],
+  "ucx": 0,
+  "pivot_shift_applied": [
+   -0.0,
+   -0.0,
+   -0.0
+  ],
+  "note": "ivy hang Green card 150x600: 188 leaves on 14 vines, atlas LeafSet017, 6 cells; back at Y 0, no collision",
+  "seconds": 0.0
+ },
+ {
+  "name": "SM_LB_Prop_Ivy_Creep_400x200_Green",
+  "min": [
+   -200.0,
+   0.0,
+   0.0
+  ],
+  "max": [
+   200.0,
+   18.29,
+   200.0
+  ],
+  "dims": [
+   400.0,
+   18.29,
+   200.0
+  ],
+  "tris": 17664,
+  "slots": [
+   "MAT_Leaf",
+   "MAT_Stem"
+  ],
+  "slots_used": [
+   0,
+   1
+  ],
+  "ucx": 0,
+  "pivot_shift_applied": [
+   -0.0,
+   -0.0,
+   -0.0
+  ],
+  "note": "ivy creep Green card 400x200: 916 leaves on 111 vines, atlas LeafSet017, 6 cells; back at Y 0, no collision",
+  "seconds": 0.1
+ },
+ {
+  "name": "SM_LB_Prop_Ivy_Climb_300x450_Dead",
+  "min": [
+   -150.0,
+   0.0,
+   0.0
+  ],
+  "max": [
+   150.0,
+   20.44,
+   450.0
+  ],
+  "dims": [
+   300.0,
+   20.44,
+   450.0
+  ],
+  "tris": 20598,
+  "slots": [
+   "MAT_Leaf",
+   "MAT_Stem"
+  ],
+  "slots_used": [
+   0,
+   1
+  ],
+  "ucx": 0,
+  "pivot_shift_applied": [
+   -0.0,
+   -0.0,
+   -0.0
+  ],
+  "note": "ivy climb Dead card 300x450: 1078 leaves on 119 vines, atlas LeafSet030, 12 cells; back at Y 0, no collision",
+  "seconds": 0.1
+ },
+ {
+  "name": "SM_LB_Prop_Ivy_Patch_200x300_Dead",
+  "min": [
+   -100.0,
+   0.0,
+   0.0
+  ],
+  "max": [
+   100.0,
+   21.79,
+   300.0
+  ],
+  "dims": [
+   200.0,
+   21.79,
+   300.0
+  ],
+  "tris": 9098,
+  "slots": [
+   "MAT_Leaf",
+   "MAT_Stem"
+  ],
+  "slots_used": [
+   0,
+   1
+  ],
+  "ucx": 0,
+  "pivot_shift_applied": [
+   -0.0,
+   -0.0,
+   -0.0
+  ],
+  "note": "ivy patch Dead card 200x300: 500 leaves on 88 vines, atlas LeafSet030, 12 cells; back at Y 0, no collision",
+  "seconds": 0.1
+ },
+ {
+  "name": "SM_LB_Prop_Ivy_Hang_150x600_Dead",
+  "min": [
+   -75.0,
+   0.0,
+   0.0
+  ],
+  "max": [
+   75.0,
+   20.76,
+   600.0
+  ],
+  "dims": [
+   150.0,
+   20.76,
+   600.0
+  ],
+  "tris": 4490,
+  "slots": [
+   "MAT_Leaf",
+   "MAT_Stem"
+  ],
+  "slots_used": [
+   0,
+   1
+  ],
+  "ucx": 0,
+  "pivot_shift_applied": [
+   -0.0,
+   -0.0,
+   -0.0
+  ],
+  "note": "ivy hang Dead card 150x600: 234 leaves on 18 vines, atlas LeafSet030, 12 cells; back at Y 0, no collision",
+  "seconds": 0.0
+ },
+ {
+  "name": "SM_LB_Prop_Ivy_Creep_400x200_Dead",
+  "min": [
+   -200.0,
+   0.0,
+   0.0
+  ],
+  "max": [
+   200.0,
+   20.45,
+   200.0
+  ],
+  "dims": [
+   400.0,
+   20.45,
+   200.0
+  ],
+  "tris": 16666,
+  "slots": [
+   "MAT_Leaf",
+   "MAT_Stem"
+  ],
+  "slots_used": [
+   0,
+   1
+  ],
+  "ucx": 0,
+  "pivot_shift_applied": [
+   -0.0,
+   -0.0,
+   -0.0
+  ],
+  "note": "ivy creep Dead card 400x200: 866 leaves on 113 vines, atlas LeafSet030, 12 cells; back at Y 0, no collision",
+  "seconds": 0.1
+ }
+]

@@ -19,6 +19,22 @@ set B="C:\Program Files\Blender Foundation\Blender 5.2\blender.exe"
 %B% -b --factory-startup --python Tools/blender/kit/render_kit.py
 ```
 
+## P7-FIX3 G2a additions (7 pieces: arcade bays + garden kerbs)
+```
+# build ONLY the new pieces (the 28 existing FBX stay byte-identical; kit_report.json gets the new records merged in; LB_Kit_P0.blend is untouched)
+%B% -b --factory-startup --python Tools/blender/kit/build_kit.py -- --out SourceArt/Kit --only ArcadeBay Kerb --blend LB_Kit_Fix3.blend
+%B% -b --factory-startup --python Tools/blender/kit/verify_kit.py            # 35/35 (28 + 7)
+%B% -b --factory-startup --python Tools/blender/props/render_fix3.py -- --blend SourceArt/Kit/LB_Kit_Fix3.blend --set kit   # Docs/ArtTest/props/fix3_arcade_*.png, fix3_kerbs.png
+```
+- `SM_LB_Kit_ArcadeBay_1000x60x400`: four-centred pointed arch (lower arcs R150, junction 57 deg, upper arcs R~1700, opening X 50..950, springing Z 0, apex Z 300; the
+  geometry is a depressed Tudor-type arch because 900 span / 300 rise cannot be more pointed), voussoir ring 60 radial (slot 1, 1.5 cm chamfer, every other stone bites 5 cm
+  into the band, ring clipped at the slab ends), masonry band Z 0..370 recessed 2 cm behind ring + coping (slot 0 with relief), coping Z 370..400 (slot 1).
+  UCX: 3 boxes (X 0..50, X 950..1000, Z 300..400 across); the opening below the ring is clear in collision.
+- `_BrokenA` keeps X 0..350, `_BrokenB` is its mirror (X 650..1000). **Both stay in the 1000 cm bay frame (pivot = left pier centre)**, so place them at the left pier X exactly like the intact bay
+  (BrokenB's mesh bounds start at X 650). 2 UCX each (end band + a box over the ring stub that stays above the intrados). Fracture = seeded, stepped per course, collapsed top, fracture faces in slot 2.
+- `Kerb_200x30x40`, `Kerb_100x30x40`, `Kerb_Broken_200x30x40` (broken top, missing chunk, 1 UCX only 11 cm high so the gap can be stepped over) and `KerbCorner_30x30x45`: slot 1 (+ chips in slot 2), 1 UCX each.
+- `verify_kit.py`: CLEAR entries for the three arcade pieces (collision rectangle must be free) + `ARCH_RAYS` (visual ray test only through the real arch intrados, because a Tudor arch cannot contain the full X 50..950 x Z 0..250 rectangle); `ORIGIN` in build_kit.py declares the BrokenB mesh origin (650, 0, 0).
+
 ## Files
 - `kit_lib.py` -- bmesh helpers: solids (chamfered boxes, prisms, hulls, height fields), exact-boolean wrapper, ashlar relief cutters
   (V-grooves, weathered recesses, chips), pointed-arch / voussoir / jamb / quoin generators, UV0, vertex colour, smoothing, FBX export.

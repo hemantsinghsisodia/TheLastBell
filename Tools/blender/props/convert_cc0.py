@@ -51,7 +51,14 @@ MODELS = [
     ("wooden_axe", "WoodenAxe", "join", False, None),
     ("wooden_candlestick", "WoodenCandlestick", "join", False, 8000),     # source mesh is 213k tris -> decimate (see report)
     ("rock_moss_set_02", "RockMossSet02", "split", True, None),
+    # ---- P7-FIX3 G2a (clumps/plants are 12-54 cm, searsia 74-234 cm: scale them in the PCG ranges) ----
+    ("grass_medium_02", "GrassMedium02", "split", False, None),          # 5 clumps a..e -> _01.._05
+    ("wild_rooibos_bush", "WildRooibos", "split", False, None),          # 5 plants a..e
+    ("searsia_lucida", "SearsiaLucida", "split", False, None),           # 7 shrubs a..g (LOD0 only, 6-113k tris each)
+    ("dead_tree_trunk_02", "DeadTreeTrunk02", "join", True, None),       # one mesh, converted UPRIGHT (see UPRIGHT)
 ]
+# models whose longest axis is rotated to +Z with the thicker end down (the source log lies along X)
+UPRIGHT = {"dead_tree_trunk_02"}
 
 
 def parse_args():
@@ -115,6 +122,24 @@ def unify_duplicate_materials(obs, src_dir):
             bm_ = bpy.data.materials.get(base)
             if base != m.name and bm_ is not None and sorted(mat_images(m, src_dir)) == sorted(mat_images(bm_, src_dir)):
                 o.data.materials[i] = bm_
+
+
+def make_upright(obs):
+    """Rotate the meshes (about Y) so the longest axis becomes +Z and the thicker end is at the bottom."""
+    xs = [v.co.x for o in obs for v in o.data.vertices]
+    x0, x1 = min(xs), max(xs)
+    span = x1 - x0
+
+    def cross(sel):
+        pts = [v.co for o in obs for v in o.data.vertices if sel(v.co.x)]
+        return (max(p.y for p in pts) - min(p.y for p in pts)) * (max(p.z for p in pts) - min(p.z for p in pts))
+
+    thick_at_plus_x = cross(lambda x: x > x1 - 0.1 * span) > cross(lambda x: x < x0 + 0.1 * span)
+    ang = math.radians(90.0 if thick_at_plus_x else -90.0)       # +90 about Y sends +X to -Z (thick end down)
+    m = Matrix.Rotation(ang, 4, 'Y')
+    for o in obs:
+        o.data.transform(m)
+    return dict(thick_end_was="+X" if thick_at_plus_x else "-X", rotated_deg_about_Y=math.degrees(ang))
 
 
 def decimate(ob, target_tris):
@@ -222,6 +247,7 @@ def run():
             report.append(dict(id=mid, status="missing"))
             continue
         obs = import_model(os.path.join(d, gl[0]))
+        upright_info = make_upright(obs) if mid in UPRIGHT else None
         unify_duplicate_materials(obs, d)
         # texture files per material (read before the materials are replaced)
         mat_tex = {}
@@ -276,6 +302,8 @@ def run():
                        dims_cm=[round(mx[i] - mn[i], 2) for i in range(3)], tris=K.tri_count(bm), slots=slots,
                        ucx=len(ucx_list), textures=[os.path.basename(t) for t in texs], pivot_shift_cm=[round(v, 2) for v in shift_v],
                        orientation=orientation_hint(bm))
+            if upright_info:
+                rec['upright'] = upright_info
             if decimated_from:
                 rec['decimated_from_tris'] = decimated_from
             rec['source_total_tris'] = src_tris

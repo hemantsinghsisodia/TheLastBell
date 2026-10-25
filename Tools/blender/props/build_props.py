@@ -19,6 +19,7 @@ import json
 import math
 import os
 import random
+import shutil
 import sys
 import time
 
@@ -32,6 +33,7 @@ from mathutils import Vector, Matrix
 import kit_lib as K
 
 PREFIX = "SM_LB_Prop_"
+ROOT = os.path.normpath(os.path.join(HERE, "..", "..", ".."))
 
 # slot name -> viewport colour (review renders only; the real materials are Unreal MIs)
 MAT_COLORS = {
@@ -42,6 +44,10 @@ MAT_COLORS = {
     "MAT_Rope": (0.55, 0.46, 0.30, 1.0),
     "MAT_Earth": (0.24, 0.18, 0.12, 1.0),
     "MAT_Charred": (0.06, 0.055, 0.05, 1.0),
+    "MAT_Water": (0.015, 0.025, 0.03, 1.0),
+    "MAT_Bark": (0.30, 0.27, 0.23, 1.0),
+    "MAT_Leaf": (0.20, 0.34, 0.12, 1.0),
+    "MAT_Stem": (0.20, 0.15, 0.10, 1.0),
 }
 
 
@@ -302,11 +308,18 @@ class Piece:
         self.note = note
         self.shift = (0.0, 0.0, 0.0)
         self.ucx = []
+        self.keep_uv = False                      # custom UV0 (ivy atlas cells, tree bark): finalize must not overwrite it
+        self.seat_mode = "centre"                 # "centre" = bottom-centre; "wall" = X centre, back plane at Y 0, min Z 0
+        self.smooth = 30.0
+        self.subdir = ""
+        self.textures = []                        # (ambientCG id, map name) copied next to the FBX
 
     def seat(self):
         """Pivot = bottom-centre: shift visual + collision so XY bounds centre = 0 and min Z = 0."""
         mn, mx = bounds(self.bm)
         s = (-(mn[0] + mx[0]) * 0.5, -(mn[1] + mx[1]) * 0.5, -mn[2])
+        if self.seat_mode == "wall":
+            s = (s[0], -mn[1], s[2])
         shift(self.bm, *s)
         for u in self.ucx_design:
             shift(u, *s)
@@ -835,6 +848,609 @@ def build_firepit():
 
 
 # ==============================================================================================
+# P7-FIX3 G2a -- well-head, timber set, earth patch
+# ==============================================================================================
+def oct_pt(rho, t):
+    """Point on the regular octagon (corners on the +X/+Y axes, circumradius rho) at side parameter t (corner k at t = k)."""
+    i = int(math.floor(t))
+    f = t - i
+    a0, a1 = math.radians(45.0 * (i % 8)), math.radians(45.0 * ((i + 1) % 8))
+    return ((1 - f) * rho * math.cos(a0) + f * rho * math.cos(a1), (1 - f) * rho * math.sin(a0) + f * rho * math.sin(a1))
+
+
+def oct_block(r_in, r_out, t0, t1, z0, z1, mat=0, bevel=1.5):
+    """Stone block of the octagonal ring between side parameters t0..t1 (may bend around corners), z0..z1."""
+    ks = [k for k in range(int(math.floor(t0)) + 1, int(math.ceil(t1))) if t0 + 1e-6 < k < t1 - 1e-6]
+    outer = [oct_pt(r_out, t0)] + [oct_pt(r_out, k) for k in ks] + [oct_pt(r_out, t1)]
+    inner = [oct_pt(r_in, t0)] + [oct_pt(r_in, k) for k in ks] + [oct_pt(r_in, t1)]
+    b = K.prism(outer + inner[::-1], 'z', z0, z1, mat)
+    K.bevel_all(b, bevel, 25.0)
+    return b
+
+
+def subdiv_long(bm, seg, min_len=None):
+    """Cut every edge longer than 1.5 x seg into pieces of about `seg` (quad strips along long beams, no sliver triangles)."""
+    min_len = seg * 1.5 if min_len is None else min_len
+    groups = {}
+    for e in bm.edges:
+        ln = e.calc_length()
+        if ln > min_len:
+            groups.setdefault(int(round(ln / seg)) - 1, []).append(e)
+    for cuts, edges in groups.items():
+        live = [e for e in edges if e.is_valid]
+        if live and cuts > 0:
+            bmesh.ops.subdivide_edges(bm, edges=live, cuts=cuts, use_grid_fill=True)
+    return bm
+
+
+def lbeam(x0, x1, y0, y1, z0, z1, seed, mat=0, bevel=0.5, seg=25.0, amp=0.35):
+    """Weathered long timber with a low vertex count: chamfered box, long edges cut into ~seg strips, inward wobble."""
+    b = K.box(x0, x1, y0, y1, z0, z1, mat, bevel)
+    subdiv_long(b, seg)
+    bmesh.ops.triangulate(b, faces=b.faces[:])
+    weather(b, seed, amp, mask=lambda co, n: 0.0 if (co.z <= z0 + 0.02 and z0 < 1.0) else 1.0, f1=1 / 70.0, f2=1 / 22.0)
+    return b
+
+
+def beam_cyl(r, length, seed, mat=0, segs=14, seg=25.0):
+    """Weathered cylinder along +Z, z in [0, length]."""
+    c = K.cylinder(r, length, segs, mat)
+    subdiv_long(c, seg)
+    bmesh.ops.triangulate(c, faces=c.faces[:])
+    weather(c, seed, 0.3, mask=lambda co, n: 1.0, f1=1 / 70.0, f2=1 / 22.0)
+    return c
+
+
+def build_wellhead():
+    rng = random.Random(5101)
+    ST, WD, RP, IR, WT = 0, 1, 2, 3, 4                       # slot indices: Stone, Wood, Rope, Iron, Water
+    R_COP_OUT, R_COP_IN, R_BODY_OUT, R_BODY_IN = 130.0, 90.0, 124.0, 96.0
+    H_BODY, H_TOT, ZM = 73.0, 85.0, 36.5
+    parts = []
+
+    def chip(bm, n, r_out, z_top):
+        spots = []
+        for _ in range(n):
+            px, py = oct_pt(r_out, rng.uniform(0, 8))
+            spots.append(((px, py, z_top - rng.uniform(0.0, 2.0)), rng.uniform(5.5, 11.0)))
+        return cut_chips(bm, rng, spots, ST)
+
+    # two courses of stone blocks: lower = one block per side, upper = blocks centred on the corners (staggered joints)
+    for i in range(8):
+        b = oct_block(R_BODY_IN, R_BODY_OUT, i, i + 1, 0.0, ZM, ST)
+        if i in (0, 3, 5):
+            b = chip(b, 2, R_BODY_OUT, ZM)
+        parts.append(b)
+    for i in range(8):
+        b = oct_block(R_BODY_IN, R_BODY_OUT, i - 0.5, i + 0.5, ZM, H_BODY, ST)
+        if i in (1, 4, 6, 7):
+            b = chip(b, 2, R_BODY_OUT, ZM)
+        if i == 3:                                           # one big bite out of the upper course (inner top edge)
+            px, py = oct_pt(R_BODY_IN + 4.0, 3.0)
+            b = cut_chips(b, rng, [((px, py, H_BODY), 15.0)], ST)
+        parts.append(b)
+    # coping: one slab per side, two segments missing (sides 2 and 6), chips on the others
+    for i in range(8):
+        if i in (2, 6):
+            continue
+        b = oct_block(R_COP_IN, R_COP_OUT, i, i + 1, H_BODY, H_TOT, ST, 1.4)
+        if i in (0, 3, 5, 7):
+            b = chip(b, 3, R_COP_OUT, H_TOT)
+        parts.append(b)
+    for k, p_ in enumerate(parts):                           # weather every block (inward only) and settle it a little
+        densify(p_, 16.0)
+        weather(p_, 5200 + k, 1.8, mask=lambda co, n: 0.0 if co.z < 0.02 else 1.0, f1=1 / 34.0, f2=1 / 10.0)
+        rot(p_, 'Z', rng.uniform(-0.9, 0.9))
+        shift(p_, rng.uniform(-0.5, 0.5), rng.uniform(-0.5, 0.5), 0.0)
+        bmesh.ops.triangulate(p_, faces=p_.faces[:])
+    # dark water slab inside the ring, top at Z 20
+    parts.append(K.prism([oct_pt(95.5, k) for k in range(8)], 'z', 18.0, 20.0, WT))
+    # timber winch: two posts outside the ring (X +-152), drum O20 x 200 over the well at Z 210, iron axle + 2 cranks, rope
+    PX = 152.0
+    for sgn, sd in ((1, 5111), (-1, 5112)):
+        parts.append(lbeam(sgn * PX - 9, sgn * PX + 9, -9, 9, 0, 230.0, sd, WD, 0.7, 30.0, 0.4))
+    drum = beam_cyl(10.0, 200.0, 5113, WD)
+    rot(drum, 'Y', 90.0)                                    # +Z -> +X
+    shift(drum, -100.0, 0.0, 210.0)
+    parts.append(drum)
+    axle = K.cylinder(3.2, 332.0, 10, IR)
+    rot(axle, 'Y', 90.0)
+    shift(axle, -166.0, 0.0, 210.0)
+    parts.append(axle)
+    for x in (-62.0, -56.0, -50.0, -44.0, -38.0, -32.0):    # rope turns on the drum
+        t = torus(11.4, 1.2, 14, 5, RP)
+        rot(t, 'Y', 90.0)
+        shift(t, x, 0.0, 210.0)
+        parts.append(t)
+    for side, ang in ((1, -22.0), (-1, 22.0)):              # cranks outside the posts, both ends, opposite phase
+        arm = K.box(0.0, 4.0, -2.5, 30.0, -2.0, 2.0, IR, 0.5)
+        hdl = K.cylinder(2.2, 17.0, 8, IR)
+        rot(hdl, 'Y', 90.0)
+        shift(hdl, 0.0, 28.0, 0.0)
+        grp = join([arm, hdl])
+        shift(grp, 162.0, 0.0, 0.0)
+        rot(grp, 'X', ang)
+        if side < 0:
+            tf(grp, Matrix.Scale(-1.0, 4, (1, 0, 0)))        # mirror to -X ...
+            bmesh.ops.reverse_faces(grp, faces=grp.faces)
+            rot(grp, 'X', 180.0)                             # ... then 180 deg about X (arm toward -Y)
+        shift(grp, 0.0, 0.0, 210.0)
+        parts.append(grp)
+    rope = K.cylinder(1.2, 192.0, 6, RP)                    # hangs from the drum front into the water
+    shift(rope, -18.0, 11.4, 18.0)
+    parts.append(rope)
+    bm = join(parts)
+    ucx = []
+    for i in range(8):                                      # 8 convex hulls, one per ring side
+        pts = []
+        for (rho, t) in ((R_COP_OUT - 3.0, i), (R_COP_OUT - 3.0, i + 1), (R_COP_IN + 1.0, i + 1), (R_COP_IN + 1.0, i)):
+            x, y = oct_pt(rho, t)
+            pts += [Vector((x, y, 0.0)), Vector((x, y, H_TOT))]
+        ucx.append(K.hull_from_points(pts, 0))
+    ucx.append(ucx_box(PX - 9, PX + 9, -9, 9, 0.0, 230.0))
+    ucx.append(ucx_box(-PX - 9, -PX + 9, -9, 9, 0.0, 230.0))
+    return Piece(PREFIX + "WellHead_A", bm, ["MAT_Stone", "MAT_Wood", "MAT_Rope", "MAT_Iron", "MAT_Water"], ucx_design=ucx,
+                 note="octagonal well curb O260 (corners on the axes), 2 courses + coping (2 segments missing), dark water slab Z 18..20; "
+                      "timber winch posts at X +-152 (outside the ring), drum O20 x 200 at Z 210, iron axle + 2 cranks, rope; UCX 8 ring sides + 2 posts")
+
+
+def build_timber_post():
+    raw = K.box(-10, 10, -10, 10, 0, 420, 0, 0.0)
+    notch = K.box(-11, 11, -7.6, 7.6, 413.0, 421.0, 0, 0.0)
+    b = bool_op(raw, notch, 'DIFFERENCE', 1)
+    K.bevel_all(b, 0.8, 25.0)
+    subdiv_long(b, 30.0)
+    bmesh.ops.triangulate(b, faces=b.faces[:])
+    weather(b, 8101, 0.5, mask=lambda co, n: 0.0 if co.z <= 0.02 else 1.0, f1=1 / 70.0, f2=1 / 22.0)
+    fit_bounds(b, (20.0, 20.0, 420.0))
+    return Piece(PREFIX + "TimberPost_20x20x420", b, ["MAT_Wood"], ucx_from_bounds=True,
+                 note="weathered square post, saddle notch 15 wide x 7 deep at the top for the purlin; UCX = bounds")
+
+
+def build_purlin():
+    b = lbeam(-7.5, 7.5, -7.5, 7.5, 0, 1000.0, 8201, 0, 0.6, 28.0, 0.45)
+    for v in b.verts:                                       # slight bow so it is not ruler straight
+        v.co.x += 1.8 * math.sin(math.pi * v.co.z / 1000.0)
+    fit_bounds(b, (15.0, 15.0, 1000.0))
+    return Piece(PREFIX + "Purlin_15x15x1000", b, ["MAT_Wood"], note="authored upright (length along Z); the level lays it horizontal; no collision")
+
+
+def build_rafter():
+    b = lbeam(-7.5, 7.5, -5.0, 5.0, 0, 420.0, 8301, 0, 0.5, 30.0, 0.4)
+    fit_bounds(b, (15.0, 10.0, 420.0))
+    return Piece(PREFIX + "Rafter_15x10x420", b, ["MAT_Wood"], note="authored upright (length along Z); no collision")
+
+
+def build_rafter_broken():
+    rng = random.Random(8401)
+    main = K.prism([(-7.5, 0.0), (7.5, 0.0), (7.5, 226.0), (-7.5, 238.0)], 'y', -5.0, 5.0, 0)
+    K.bevel_all(main, 0.5, 25.0)
+    subdiv_long(main, 30.0)
+    bmesh.ops.triangulate(main, faces=main.faces[:])
+    weather(main, 8402, 0.4, mask=lambda co, n: 0.0 if co.z <= 0.02 else 1.0, f1=1 / 70.0, f2=1 / 22.0)
+    parts = [main]
+    tops = [247.0, 238.0, 260.0, 243.0, 252.0]
+    for k in range(5):                                      # splinters: thin slivers with slanted tips
+        x0, x1 = -7.5 + 3.0 * k, -7.5 + 3.0 * (k + 1)
+        poly = [(x0 + 0.1, 224.0 + 2.0 * k), (x1 - 0.1, 224.0 + 2.0 * k), (x1 - 0.1, tops[k] + rng.uniform(-6, 2)), (x0 + 0.1, tops[k])]
+        parts.append(K.prism(poly, 'y', -5.0 + rng.uniform(0.0, 2.5), 5.0 - rng.uniform(0.0, 2.5), 0))
+    bm = join(parts)
+    fit_bounds(bm, (15.0, 10.0, 260.0))
+    return Piece(PREFIX + "Rafter_Broken_15x10x260", bm, ["MAT_Wood"], note="snapped rafter: slanted break + 5 splinters; no collision")
+
+
+def plank_board(y0, y1, xa, xb, thick, rng, ragged_l, ragged_r):
+    """One board (XY outline with jagged ends) extruded to `thick`."""
+    ww = y1 - y0
+    lx = [xa + (rng.uniform(0.0, 7.0) if ragged_l else 0.0) for _ in range(4)]
+    rx = [xb - (rng.uniform(0.0, 7.0) if ragged_r else 0.0) for _ in range(4)]
+    poly = [(lx[0], y0), (rx[0], y0), (rx[1], y0 + ww * 0.33), (rx[2], y0 + ww * 0.66), (rx[3], y1),
+            (lx[3], y1), (lx[2], y0 + ww * 0.66), (lx[1], y0 + ww * 0.33)]
+    b = K.prism(poly, 'z', 0.0, thick, 0)
+    K.bevel_all(b, 0.4, 25.0)
+    return b
+
+
+def build_planks(broken):
+    rng = random.Random(8601 if broken else 8501)
+    n = 6
+    gaps = [rng.uniform(1.0, 2.0) for _ in range(n - 1)]
+    avail = 100.0 - sum(gaps)
+    ws = [rng.uniform(0.9, 1.1) for _ in range(n)]
+    ws = [w * avail / sum(ws) for w in ws]
+    y = 0.0
+    parts = []
+    for i in range(n):
+        y0, y1 = y, y + ws[i]
+        y = y1 + (gaps[i] if i < n - 1 else 0.0)
+        xa, xb = 0.0, 200.0
+        rl, rr = (rng.random() < 0.6 and i not in (0, 5)), (rng.random() < 0.6 and i not in (0, 5))
+        if broken:
+            if i in (1, 4):
+                continue                                    # whole boards gone
+            if i == 2:
+                xb, rr = rng.uniform(95.0, 120.0), True     # snapped short
+            if i == 3:
+                xa, rl = rng.uniform(60.0, 85.0), True
+        thick = 4.0 if i in (0, 3) else rng.uniform(3.4, 3.9)
+        b = plank_board(y0, y1, xa, xb, thick, rng, rl, rr)
+        tilt = rng.uniform(-0.7, 0.7)
+        for v in b.verts:                                   # warped boards
+            v.co.z += tilt * (v.co.x - 100.0) / 100.0 * 0.5 + 0.25 * math.sin(v.co.x / 31.0 + i)
+        parts.append(b)
+    bm = join(parts)
+    zmin = min(v.co.z for v in bm.verts)
+    for v in bm.verts:
+        v.co.z -= zmin
+    fit_bounds(bm, (200.0, 100.0, 4.0))
+    nm = "RoofPlanks_Broken_200x100x4" if broken else "RoofPlanks_200x100x4"
+    return Piece(PREFIX + nm, bm, ["MAT_Wood"],
+                 note="boards 1-2 cm apart, ragged ends, %s; no collision" % ("2 boards gone, 2 snapped short" if broken else "6 boards"))
+
+
+def build_earthpatch():
+    N, S = 40, 400.0
+    b = bmesh.new()
+    raw = {(i, j): fbm3(S * i / N / 70.0 + 3.0, S * j / N / 70.0 + 9.0, 1.3, 87, 3) for i in range(N + 1) for j in range(N + 1)}
+    lo, hi = min(raw.values()), max(raw.values())
+    g = {}
+    for i in range(N + 1):
+        for j in range(N + 1):
+            x, y = S * i / N, S * j / N
+            h = 8.0 + 7.0 * (raw[(i, j)] - lo) / (hi - lo)
+            h *= K.smoothstep(0.0, 40.0, min(x, y, S - x, S - y))
+            g[(i, j)] = b.verts.new((x, y, h))
+    for i in range(N):
+        for j in range(N):
+            a, c, d, e = g[(i, j)], g[(i + 1, j)], g[(i + 1, j + 1)], g[(i, j + 1)]
+            if (i + j) % 2 == 0:
+                b.faces.new((a, c, d))
+                b.faces.new((a, d, e))
+            else:
+                b.faces.new((a, c, e))
+                b.faces.new((c, d, e))
+    loop = [g[(i, 0)] for i in range(N)] + [g[(N, j)] for j in range(N)] + [g[(i, N)] for i in range(N, 0, -1)] + [g[(0, j)] for j in range(N, 0, -1)]
+    bottom = b.faces.new(loop[::-1])
+    bmesh.ops.triangulate(b, faces=[bottom])
+    bmesh.ops.recalc_face_normals(b, faces=b.faces)
+    K.bm_set_mat(b, 0)
+    return Piece(PREFIX + "EarthPatch_400x400x15", b, ["MAT_Earth"], ucx_design=[ucx_box(0, S, 0, S, 0, 8.0)],
+                 note="noisy earth top 8-15 cm (edges taper to 0 over 40 cm), flat bottom; UCX 400x400x8")
+
+
+
+
+# ==============================================================================================
+# P7-FIX3 G2a -- ivy cards (atlas UVs) and the procedural dead tree
+# ==============================================================================================
+# leaf cells of the ambientCG atlases (pixel rects x0, y0, x1, y1, origin top-left, 2048 x 2048), found from the Opacity maps
+IVY_ATLAS = {
+    "Green": dict(src="LeafSet017", orient="up", cells=[(103, 33, 779, 669), (1271, 109, 1788, 648), (130, 756, 830, 1389),
+                                                      (1283, 809, 1863, 1305), (92, 1420, 882, 2023), (1211, 1415, 1841, 2001)]),
+    # oak leaves lie horizontally (petiole to the right) -> the quad's up axis maps to atlas-left
+    "Dead": dict(src="LeafSet030", orient="left", cells=[(31, 92, 503, 380), (530, 125, 1011, 412), (1055, 120, 1517, 431),
+                                                         (1550, 111, 2015, 416), (50, 1162, 481, 1407), (517, 1151, 1010, 1407),
+                                                         (1037, 1137, 1527, 1399), (1571, 1178, 1994, 1399), (41, 1688, 465, 1910),
+                                                         (580, 1667, 968, 1903), (1054, 1671, 1523, 1904), (1550, 1675, 2020, 1919)]),
+}
+IVY_TEX = {"LeafSet017": ["Color", "Opacity", "Roughness", "NormalGL"], "LeafSet030": ["Color", "Opacity", "Roughness", "NormalGL"]}
+
+
+def _uvl(bm):
+    return bm.loops.layers.uv.verify()
+
+
+def add_tube(bm, pts, radii, sides, mat, uvscale=50.0, cap_start=True, cap_end=True, uvoff=(0.0, 0.0)):
+    """Tapered tube along a polyline (Vector list); UV = (around / uvscale, along / uvscale)."""
+    uv = _uvl(bm)
+    rings = []
+    s_acc = [0.0]
+    for i in range(1, len(pts)):
+        s_acc.append(s_acc[-1] + (pts[i] - pts[i - 1]).length)
+    prev_x = None
+    for i, p in enumerate(pts):
+        d = (pts[min(i + 1, len(pts) - 1)] - pts[max(i - 1, 0)])
+        if d.length < 1e-6:
+            d = Vector((0, 0, 1))
+        d.normalize()
+        ref = Vector((0, 1, 0)) if abs(d.y) < 0.9 else Vector((1, 0, 0))
+        if prev_x is not None:                       # parallel transport
+            ref = prev_x
+        x = (ref - d * ref.dot(d))
+        if x.length < 1e-6:
+            x = d.orthogonal()
+        x.normalize()
+        y = d.cross(x)
+        prev_x = x
+        rr = radii[i]
+        rings.append([bm.verts.new(p + (x * math.cos(2 * math.pi * k / sides) + y * math.sin(2 * math.pi * k / sides)) * rr) for k in range(sides)])
+    for i in range(len(pts) - 1):
+        r_ = max(radii[i], radii[i + 1])
+        cu = 2 * math.pi * r_ / uvscale
+        for k in range(sides):
+            k2 = (k + 1) % sides
+            quad = (rings[i][k], rings[i][k2], rings[i + 1][k2], rings[i + 1][k])
+            f = bm.faces.new(quad)
+            f.material_index = mat
+            uvs = ((cu * k / sides, s_acc[i]), (cu * (k + 1) / sides, s_acc[i]), (cu * (k + 1) / sides, s_acc[i + 1]), (cu * k / sides, s_acc[i + 1]))
+            for l, (uu, vv) in zip(f.loops, uvs):
+                l[uv].uv = (uvoff[0] + uu, uvoff[1] + vv / uvscale)
+    for flag, ring, rev in ((cap_start, rings[0], True), (cap_end, rings[-1], False)):
+        if flag:
+            f = bm.faces.new(ring[::-1] if rev else ring)
+            f.material_index = mat
+            for l in f.loops:
+                l[uv].uv = (uvoff[0], uvoff[1])
+    return bm
+
+
+def add_leaf(bm, base, phi, size, cell, orient, pitch, rng, atlas_px=2048.0, mat=0):
+    """3x3 grid leaf (folded along the midrib) at `base`, tip direction angle phi in the XZ plane (0 = +Z, + toward +X)."""
+    uv = _uvl(bm)
+    x0, y0, x1, y1 = cell
+    cw, ch = x1 - x0, y1 - y0
+    aspect = (cw / ch) if orient == "up" else (ch / cw)           # width / length of the quad
+    if aspect >= 1.0:
+        w, L = size, size / aspect
+    else:
+        L, w = size, size * aspect
+    U2 = Vector((math.sin(phi), 0.0, math.cos(phi)))
+    R2 = Vector((math.cos(phi), 0.0, -math.sin(phi)))
+    N = Vector((0.0, 1.0, 0.0))
+    ca, sa = math.cos(pitch), math.sin(pitch)
+    Ua = U2 * ca + N * sa
+    Nl = N * ca - U2 * sa
+    droop = rng.uniform(0.0, 0.18)
+    grid = []
+    for j in range(3):
+        t = j / 2.0
+        row = []
+        for i in range(3):
+            s = (i / 2.0) - 0.5
+            p = base + Ua * (t * L) + R2 * (s * w) + Nl * (0.14 * w * (1.0 - abs(2 * s)) - droop * L * t * t)
+            row.append(bm.verts.new(p))
+        grid.append(row)
+
+    def uv_of(t, s):
+        if orient == "up":
+            px, py = x0 + (s + 0.5) * cw, y1 - t * ch                  # t 0 = petiole (bottom of the cell)
+        else:
+            px, py = x1 - t * cw, y1 - (s + 0.5) * ch                  # petiole at the right; quad right = atlas top
+        return (px / atlas_px, 1.0 - py / atlas_px)
+
+    for j in range(2):
+        for i in range(2):
+            # winding (i,j) (i,j+1) (i+1,j+1) (i+1,j): normal = +Y side (outward from the wall)
+            f = bm.faces.new((grid[j][i], grid[j + 1][i], grid[j + 1][i + 1], grid[j][i + 1]))
+            f.material_index = mat
+            corners = ((j, i), (j + 1, i), (j + 1, i + 1), (j, i + 1))
+            for l, (jj, ii) in zip(f.loops, corners):
+                l[uv].uv = uv_of(jj / 2.0, ii / 2.0 - 0.5)
+    return bm
+
+
+def build_ivy(name, W, H, kind, shape, seed):
+    """Ivy card.  shape: climb | patch | hang | creep.  kind: Green | Dead.  Back at Y 0 (wall side), leaves up to ~25 cm out."""
+    rng = random.Random(seed)
+    atlas = IVY_ATLAS[kind]
+    bm = bmesh.new()
+    _uvl(bm)
+    LEAF, STEM = 0, 1
+    cfg = dict(climb=dict(step=12.0, gap=12.5, depth=2, pb=0.17, margin=(12.0, 12.0), wander=0.12),
+               patch=dict(step=9.0, gap=10.0, depth=2, pb=0.20, margin=(12.0, 12.0), wander=0.30),
+               hang=dict(step=14.0, gap=15.0, depth=1, pb=0.07, margin=(12.0, 8.0), wander=0.05),
+               creep=dict(step=10.0, gap=10.5, depth=2, pb=0.2, margin=(12.0, 12.0), wander=0.10))[shape]
+    hx, hz = W / 2.0 - cfg['margin'][0], H - cfg['margin'][1]
+
+    def inside(x, z):
+        if shape == "patch":
+            return ((x / hx) ** 2 + ((z - H / 2.0) / (H / 2.0 - cfg['margin'][1])) ** 2) <= 1.0
+        return abs(x) <= hx and 2.0 <= z <= hz
+
+    polylines = []                         # (points 3D, depth)
+    leaves = []                            # (base, phi, size, depth)
+
+    def grow(p, a, length, depth, target, pull):
+        pts = [Vector((p[0], 1.8 + rng.uniform(0.0, 1.2), p[1]))]
+        n = max(2, int(length / cfg['step']))
+        x, z = p
+        since = rng.uniform(0.0, cfg['gap'])
+        for _ in range(n):
+            a += rng.gauss(0.0, cfg['wander']) + pull * math.sin(target - a)
+            x2, z2 = x + math.sin(a) * cfg['step'], z + math.cos(a) * cfg['step']
+            if not inside(x2, z2):
+                break
+            x, z = x2, z2
+            y = 1.8 + rng.uniform(0.0, 2.4)
+            pts.append(Vector((x, y, z)))
+            since += cfg['step']
+            if since >= cfg['gap']:
+                since = 0.0
+                for sgn in (-1, 1):
+                    if rng.random() < 0.8:
+                        ph = a + sgn * rng.uniform(0.35, 1.15) + rng.uniform(-0.4, 0.4)
+                        leaves.append((Vector((x, y, z)), ph, rng.uniform(9.0, 16.0) * (1.0 - 0.12 * depth), depth))
+            if depth < cfg['depth'] and rng.random() < cfg['pb']:
+                da = rng.choice((-1, 1)) * rng.uniform(0.6, 1.2)
+                tgt = target if shape in ("climb", "creep", "hang") else a + da
+                grow((x, z), a + da, length * rng.uniform(0.3, 0.6), depth + 1, tgt, pull)
+        if len(pts) >= 2:
+            leaves.append((pts[-1].copy(), a + rng.uniform(-0.3, 0.3), rng.uniform(9.0, 14.0), depth))
+            polylines.append((pts, depth))
+
+    if shape == "climb":
+        for k in range(6):
+            x = -W * 0.4 + W * 0.8 * k / 5.0 + rng.uniform(-12, 12)
+            grow((x, 2.0), rng.uniform(-0.2, 0.2), H * rng.uniform(0.95, 1.4), 0, 0.0, 0.07)
+    elif shape == "patch":
+        for k in range(16):
+            ang = rng.uniform(0, 2 * math.pi)
+            rad = rng.uniform(0.0, 0.55)
+            x, z = rad * hx * math.cos(ang), H / 2.0 + rad * (H / 2.0) * math.sin(ang)
+            a0 = rng.uniform(0, 2 * math.pi)
+            grow((x, z), a0, rng.uniform(90, 190), 0, a0, 0.0)
+    elif shape == "hang":
+        for k in range(9):
+            x = -W * 0.43 + W * 0.86 * k / 8.0 + rng.uniform(-5, 5)
+            ln = H * (0.97 if k == 4 else rng.uniform(0.35, 0.92))
+            grow((x, H - 3.0), math.pi + rng.uniform(-0.1, 0.1), ln, 0, math.pi, 0.08)
+    else:                                  # creep
+        for zz, ang in ((6.0, math.pi / 2), (16.0, math.pi / 2 + 0.1), (30.0, math.pi / 2 - 0.1)):
+            grow((-W * 0.46, zz), ang, W * 1.0, 0, 0.0 if zz > 20 else math.pi / 2, 0.02)
+            grow((W * 0.46, zz), -ang, W * 1.0, 0, 0.0 if zz > 20 else -math.pi / 2, 0.02)
+        for k in range(8):
+            x = -W * 0.4 + W * 0.8 * k / 7.0 + rng.uniform(-10, 10)
+            grow((x, 4.0), rng.uniform(-0.35, 0.35), H * rng.uniform(0.5, 1.0), 1, 0.0, 0.12)
+    for pts, depth in polylines:
+        n = len(pts)
+        r0 = (1.5, 1.1, 0.8)[min(depth, 2)] * (1.3 if kind == "Dead" else 1.0)
+        radii = [max(0.6, r0 * (1.0 - 0.45 * i / max(1, n - 1))) for i in range(n)]
+        add_tube(bm, pts, radii, 5, STEM, 40.0, True, True, (rng.random(), rng.random()))
+    cells = atlas['cells']
+    for base, ph, size, depth in leaves:
+        pitch = math.radians(rng.uniform(10.0, 38.0) if kind == "Dead" else rng.uniform(12.0, 50.0))
+        b2 = base.copy()
+        b2.y += rng.uniform(0.0, 5.0)
+        add_leaf(bm, b2, ph, size * (1.45 if kind == "Dead" else 1.0), rng.choice(cells), atlas['orient'], pitch, rng, 2048.0, LEAF)
+    # fit: X centred and exactly W wide, Z 0..H, Y back at 0
+    xs = [v.co.x for v in bm.verts]
+    zs = [v.co.z for v in bm.verts]
+    sx = W / (max(xs) - min(xs))
+    sz = H / (max(zs) - min(zs))
+    cx = (max(xs) + min(xs)) / 2.0
+    zmin = min(zs)
+    for v in bm.verts:
+        v.co.x = (v.co.x - cx) * sx
+        v.co.z = (v.co.z - zmin) * sz
+    ymin = min(v.co.y for v in bm.verts)
+    for v in bm.verts:
+        v.co.y -= ymin
+    p = Piece(PREFIX + name, bm, ["MAT_Leaf", "MAT_Stem"],
+              note="ivy %s %s card %gx%g: %d leaves on %d vines, atlas %s, %d cells; back at Y 0, no collision" % (shape, kind, W, H, len(leaves), len(polylines), atlas['src'], len(cells)))
+    p.keep_uv = True
+    p.seat_mode = "wall"
+    p.smooth = 75.0
+    p.subdir = "Ivy"
+    p.textures = [(atlas['src'], t) for t in IVY_TEX[atlas['src']]]
+    return p
+
+
+def _gen_tree(seed):
+    rng = random.Random(seed)
+    bm = bmesh.new()
+    _uvl(bm)
+    BARK = 0
+    seg_len = (40.0, 34.0, 22.0, 17.0)
+    sides = (12, 8, 6, 5)
+    info = dict(fork_z=0.0, trunk_r=0.0)
+
+    def perp_rot(d, ang):
+        ax = d.orthogonal()
+        ax = Matrix.Rotation(rng.uniform(0, 2 * math.pi), 3, d) @ ax
+        return (Matrix.Rotation(ang, 3, ax) @ d).normalized()
+
+    def branch(p, d, length, r0, r1, level, bend, up_bias, droop=0.0):
+        n = max(3, int(length / seg_len[level]))
+        pts = [p.copy()]
+        cur = d.copy()
+        for i in range(n):
+            jitter = Vector((rng.gauss(0, bend), rng.gauss(0, bend), rng.gauss(0, bend * 0.6)))
+            cur = (cur + jitter + Vector((0, 0, up_bias - droop * (i / n)))).normalized()
+            pts.append(pts[-1] + cur * (length / n))
+        radii = []
+        for i in range(n + 1):
+            t = i / n
+            r = r0 + (r1 - r0) * t
+            if level == 0:
+                r *= 1.0 + 0.4 * max(0.0, 1.0 - pts[i].z / 55.0) ** 2
+            radii.append(max(0.5, r))
+        add_tube(bm, pts, radii, sides[level], BARK, 150.0, level == 0, True, (rng.random(), rng.random()))
+        return pts, radii
+
+    # trunk: O45 at the base, slightly leaning and wobbling, forks at ~260 cm
+    tp, tr = branch(Vector((0, 0, 0)), Vector((rng.uniform(-0.06, 0.06), rng.uniform(-0.06, 0.06), 1.0)).normalized(), 260.0, 22.5, 14.5, 0, 0.03, 0.0)
+    top = tp[-1]
+    info['fork_z'] = top.z
+    info['trunk_r'] = 22.5
+    for k in range(4):                                   # root flares
+        az = k * math.pi / 2 + rng.uniform(-0.4, 0.4)
+        branch(Vector((math.cos(az) * 12, math.sin(az) * 12, 28.0)), Vector((math.cos(az), math.sin(az), -0.3)).normalized(), 62.0, 12.0, 4.5, 1, 0.02, 0.0)
+    az0 = rng.uniform(0, 2 * math.pi)
+    limbs = []
+    for k in range(3):                                   # three main limbs
+        az = az0 + k * 2 * math.pi / 3 + rng.uniform(-0.3, 0.3)
+        el = math.radians(rng.uniform(30, 55))
+        d = Vector((math.cos(az) * math.cos(el), math.sin(az) * math.cos(el), math.sin(el)))
+        ln = rng.uniform(330, 420)
+        r1 = 6.0 if k == 2 else 2.4                      # one limb snapped off short and blunt
+        if k == 2:
+            ln *= 0.6
+        pts, radii = branch(top - Vector((0, 0, 8.0)), d, ln, 13.5, r1, 1, 0.09, 0.05, 0.0)
+        limbs.append((pts, radii, ln))
+    az = az0 + rng.uniform(0, 2 * math.pi)               # fourth, lower limb for an asymmetric crown
+    d = Vector((math.cos(az) * 0.9, math.sin(az) * 0.9, 0.45)).normalized()
+    pts, radii = branch(tp[int(0.7 * (len(tp) - 1))], d, 230.0, 8.5, 2.0, 1, 0.09, 0.05, 0.0)
+    limbs.append((pts, radii, 230.0))
+    for zf, ln in ((0.42, 80.0), (0.58, 55.0)):          # snapped stubs lower on the trunk
+        i = int(zf * (len(tp) - 1))
+        az = rng.uniform(0, 2 * math.pi)
+        d = Vector((math.cos(az) * 0.9, math.sin(az) * 0.9, 0.3)).normalized()
+        branch(tp[i], d, ln, 5.5, 3.5, 1, 0.03, 0.0)
+    for pts, radii, ln in limbs:                         # level 2 and 3 on each limb
+        n = len(pts) - 1
+        for i in range(max(1, n // 8), n):
+            if rng.random() > 0.78:
+                continue
+            d0 = (pts[min(i + 1, n)] - pts[i]).normalized()
+            d1 = perp_rot(d0, math.radians(rng.uniform(30, 68)))
+            if d1.z < -0.15:
+                d1.z = -0.15
+                d1.normalize()
+            l2 = ln * rng.uniform(0.2, 0.5) * (1.0 - 0.45 * i / n)
+            p2, r2 = branch(pts[i], d1, max(45.0, l2), max(1.4, radii[i] * 0.5), 1.0, 2, 0.12, 0.025, 0.0)
+            m = len(p2) - 1
+            for j in range(1, m):
+                if rng.random() < 0.8:
+                    dd = (p2[min(j + 1, m)] - p2[j]).normalized()
+                    d3 = perp_rot(dd, math.radians(rng.uniform(28, 75)))
+                    branch(p2[j], d3, rng.uniform(25, 70), max(0.9, r2[j] * 0.6), 0.5, 3, 0.18, 0.0, 0.25)
+        if radii[-1] < 3.0:
+            branch(pts[-1], (pts[-1] - pts[-2]).normalized(), 45.0, 2.0, 0.5, 3, 0.15, 0.0)   # limb tip twig
+    return bm, info
+
+
+def build_deadtree():
+    best = None
+    for seed in range(7000, 7400):
+        bm, info = _gen_tree(seed)
+        mn, mx = bounds(bm)
+        s = 700.0 / (mx[2] - mn[2])
+        cx, cy = (mn[0] + mx[0]) * 0.5 * s, (mn[1] + mx[1]) * 0.5 * s
+        spread = max(mx[0] - mn[0], mx[1] - mn[1]) * s
+        off = math.hypot(cx, cy)
+        score = off + abs(spread - 520.0) * 0.1
+        if best is None or score < best[0]:
+            if best is not None:
+                best[1].free()
+            best = (score, bm, info, s, seed)
+        else:
+            bm.free()
+        if off < 12.0 and 420.0 < spread < 620.0:
+            break
+    score, bm, info, s, seed = best
+    for v in bm.verts:
+        v.co *= s
+    tr = info['trunk_r'] * s
+    ucx_h = info['fork_z'] * s * 0.9
+    p = Piece(PREFIX + "DeadTree_A", bm, ["MAT_Bark"], ucx_design=[ucx_box(-tr * 0.85, tr * 0.85, -tr * 0.85, tr * 0.85, 0.0, ucx_h)],
+              note="seeded bpy branching tree (seed %d, scale %.3f): trunk O%.0f at the base, 3 main limbs + 2 snapped stubs, 3 levels, twig tips O1; "
+                   "bark UV 1 tile / 150 cm, use the DeadTreeTrunk bark textures; UCX = trunk box only" % (seed, s, 2 * tr))
+    p.keep_uv = True
+    p.smooth = 70.0
+    return p
+
+
+# ==============================================================================================
 # table
 # ==============================================================================================
 def table():
@@ -852,6 +1468,24 @@ def table():
         ("GraveMound_A", build_mound),
         ("HandCart_A", build_cart),
         ("FirePit_A", build_firepit),
+        # ---- P7-FIX3 G2a ----
+        ("WellHead_A", build_wellhead),
+        ("TimberPost_20x20x420", build_timber_post),
+        ("Purlin_15x15x1000", build_purlin),
+        ("Rafter_15x10x420", build_rafter),
+        ("Rafter_Broken_15x10x260", build_rafter_broken),
+        ("RoofPlanks_200x100x4", lambda: build_planks(False)),
+        ("RoofPlanks_Broken_200x100x4", lambda: build_planks(True)),
+        ("EarthPatch_400x400x15", build_earthpatch),
+        ("DeadTree_A", build_deadtree),
+        ("Ivy_Climb_300x450_Green", lambda: build_ivy("Ivy_Climb_300x450_Green", 300.0, 450.0, "Green", "climb", 9101)),
+        ("Ivy_Patch_200x300_Green", lambda: build_ivy("Ivy_Patch_200x300_Green", 200.0, 300.0, "Green", "patch", 9102)),
+        ("Ivy_Hang_150x600_Green", lambda: build_ivy("Ivy_Hang_150x600_Green", 150.0, 600.0, "Green", "hang", 9103)),
+        ("Ivy_Creep_400x200_Green", lambda: build_ivy("Ivy_Creep_400x200_Green", 400.0, 200.0, "Green", "creep", 9104)),
+        ("Ivy_Climb_300x450_Dead", lambda: build_ivy("Ivy_Climb_300x450_Dead", 300.0, 450.0, "Dead", "climb", 9111)),
+        ("Ivy_Patch_200x300_Dead", lambda: build_ivy("Ivy_Patch_200x300_Dead", 200.0, 300.0, "Dead", "patch", 9112)),
+        ("Ivy_Hang_150x600_Dead", lambda: build_ivy("Ivy_Hang_150x600_Dead", 150.0, 600.0, "Dead", "hang", 9113)),
+        ("Ivy_Creep_400x200_Dead", lambda: build_ivy("Ivy_Creep_400x200_Dead", 400.0, 200.0, "Dead", "creep", 9114)),
     ]
 
 
@@ -860,10 +1494,14 @@ def parse_args():
     argv = argv[argv.index("--") + 1:] if "--" in argv else []
     out = os.path.normpath(os.path.join(HERE, "..", "..", "..", "SourceArt", "Props", "Procedural"))
     only = []
+    tag = None
     i = 0
     while i < len(argv):
         if argv[i] == "--out":
             out = os.path.abspath(argv[i + 1])
+            i += 2
+        elif argv[i] == "--tag":
+            tag = argv[i + 1]
             i += 2
         elif argv[i] == "--only":
             i += 1
@@ -872,11 +1510,11 @@ def parse_args():
                 i += 1
         else:
             i += 1
-    return out, only
+    return out, only, tag
 
 
 def run():
-    out_dir, only = parse_args()
+    out_dir, only, tag = parse_args()
     K.setup_scene_units()
     report = []
     pieces = []
@@ -889,9 +1527,13 @@ def run():
         pc.seat()
         mn, mx = bounds(pc.bm)
         used = sorted({f.material_index for f in pc.bm.faces})
-        K.finalize(pc.bm, smooth_deg=30.0)
+        K.finalize(pc.bm, smooth_deg=pc.smooth, keep_uv=pc.keep_uv)
         mats = prop_mats(pc.slots)
-        K.export_piece_fbx(pc.name, pc.bm, pc.ucx, os.path.join(out_dir, pc.name + ".fbx"), mats)
+        K.export_piece_fbx(pc.name, pc.bm, pc.ucx, os.path.join(out_dir, pc.subdir, pc.name + ".fbx"), mats)
+        for src_id, mapname in pc.textures:                                  # atlas textures next to the FBX
+            srcp = os.path.join(ROOT, "ExternalAssets", "Incoming", "ambientcg-" + src_id, src_id + "_2K-JPG", "%s_2K-JPG_%s.jpg" % (src_id, mapname))
+            if os.path.exists(srcp):
+                shutil.copy2(srcp, os.path.join(out_dir, pc.subdir, os.path.basename(srcp)))
         rec = dict(name=pc.name, min=[round(v, 2) for v in mn], max=[round(v, 2) for v in mx],
                    dims=[round(mx[i] - mn[i], 2) for i in range(3)], tris=K.tri_count(pc.bm), slots=pc.slots,
                    slots_used=used, ucx=len(pc.ucx), pivot_shift_applied=[round(v, 3) for v in pc.shift],
@@ -907,9 +1549,10 @@ def run():
         K.add_to_layout(pc.name, pc.bm, pc.ucx, (x + w / 2, 0.0, 0.0), prop_mats(pc.slots))
         x += w + 60.0
     os.makedirs(out_dir, exist_ok=True)
-    blend = os.path.join(out_dir, "LB_Props.blend" if not only else "LB_Props_partial.blend")
+    suffix = ("_" + tag) if tag else "_partial"
+    blend = os.path.join(out_dir, "LB_Props.blend" if not only else "LB_Props%s.blend" % suffix)
     bpy.ops.wm.save_as_mainfile(filepath=blend)
-    with open(os.path.join(out_dir, "props_report.json" if not only else "props_report_partial.json"), "w") as fh:
+    with open(os.path.join(out_dir, "props_report.json" if not only else "props_report%s.json" % suffix), "w") as fh:
         json.dump(report, fh, indent=1)
     print("DONE %d props in %.1fs -> %s" % (len(pieces), time.time() - t0, out_dir))
 

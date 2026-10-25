@@ -671,7 +671,7 @@ def quoin_stones(x_face0, x_face1, y_face0, y_face1, z0, z1, courses, corner, lo
 # ----------------------------------------------------------------------------------------------
 # finishing: UV0 (box projection), vertex colour, smoothing, collision
 # ----------------------------------------------------------------------------------------------
-def finalize(bm, smooth_deg=30.0):
+def finalize(bm, smooth_deg=30.0, keep_uv=False):
     bm.normal_update()
     bm.faces.ensure_lookup_table()
     uv = bm.loops.layers.uv.get("UVMap") or bm.loops.layers.uv.new("UVMap")
@@ -689,7 +689,8 @@ def finalize(bm, smooth_deg=30.0):
                 u, v = (-c.x, c.z) if pos else (c.x, c.z)
             else:
                 u, v = (c.x, c.y) if pos else (c.x, -c.y)
-            l[uv].uv = (u / UV_CM_PER_UNIT + d * UV_DIR_OFFSET, v / UV_CM_PER_UNIT)
+            if not keep_uv:
+                l[uv].uv = (u / UV_CM_PER_UNIT + d * UV_DIR_OFFSET, v / UV_CM_PER_UNIT)
             l[col] = (1.0, 1.0, 1.0, 1.0)
     lim = math.radians(smooth_deg)
     for f in bm.faces:
