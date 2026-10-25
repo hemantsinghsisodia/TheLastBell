@@ -184,4 +184,4 @@ Branch `claude/p7-courtyard-polish` (continues P7-FIX2). Full spec: `Docs/plans/
 | G6b/G6c | Storm sky (SkyAtmosphere hidden, fog cutoff), colour grading, centrepiece pool, third route lantern, tower fills (amendment B3, D-059) | lighting-vfx [EDITOR] | G6 |
 | G7 | QA, docs, owner stat gpu + playtest | qa + lead + owner | all |
 
-Status 2026-10-25: G0–G6c done (latest fefe4f7; suite 78/78 after each editor task). G7: independent QA running; then owner `stat gpu` at High and playtest.
+Status 2026-10-25: G0–G6c done (latest fefe4f7; suite 78/78 after each editor task). G7: independent QA passed with no blocking defects (doc fixes 9829e48); owner `stat gpu` at High 13.1 ms (≤ 16.6). Awaiting the owner's playtest and review.
