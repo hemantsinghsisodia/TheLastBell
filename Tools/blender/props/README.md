@@ -6,7 +6,7 @@ Shared helpers: `Tools/blender/kit/kit_lib.py` (`cylinder`, `ring` were added fo
 ## Commands (run from the repo root)
 
 ```
-set B="C:\Program Files\Blender Foundation\Blender 5.2blender.exe"
+set B="C:\Program Files\Blender Foundation\Blender 5.2\blender.exe"
 
 # 2b. procedural props: 12 FBX + LB_Props.blend + props_report.json   (about 5 s, seeded/reproducible)
 %B% -b --factory-startup --python Tools/blender/props/build_props.py -- --out SourceArt/Props/Procedural
@@ -41,7 +41,7 @@ set B="C:\Program Files\Blender Foundation\Blender 5.2blender.exe"
 ## P7-FIX3 G2a additions
 
 ```
-set B="C:\Program Files\Blender Foundation\Blender 5.2blender.exe"
+set B="C:\Program Files\Blender Foundation\Blender 5.2\blender.exe"
 
 # new procedural props only (17 pieces; the 12 existing FBX are not rewritten). Ivy FBX + atlas textures go to SourceArt/Props/Procedural/Ivy/
 %B% -b --factory-startup --python Tools/blender/props/build_props.py -- --only WellHead TimberPost Purlin Rafter RoofPlanks EarthPatch DeadTree Ivy --tag Fix3
