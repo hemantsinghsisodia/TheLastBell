@@ -152,3 +152,51 @@ Automated suite (78/78 + 4 courtyard WalkPaths + RouteBot), verify_kit/verify_pr
     - `g6_16_key_2m`;
     - `g6_17_flicker_a/b`.
   - Commit on `claude/p7-courtyard-polish` and stop.
+
+**B3 (2026-10-25, after the G6 review, f399a26): G6b, storm sky, grading, centrepiece pool and third lantern.** The lead reviewed g6_01/04/06/14/15. The graveyard view (g6_06) is the target look. Remaining problems, measured on the captures as 8-bit sRGB averages:
+- the sky reads saturated navy: g6_14 top 150 px is (4.6, 8.1, 33.4), B/R ≈ 7, with no cloud structure;
+- the spawn canyon is bright blue: g6_01 cobbles (23, 33, 62), mean 0.083;
+- the warm pools are tiny in wide views: p99 0.21;
+- WellToDoor fails coverage at X 4600–4800, Y −1150;
+- there is an unidentified blue-white dot in g6_15 at about (646, 656) px.
+
+Fixes, in this order. Read back and record old → new for each.
+1. **Find out why the sky is blue before changing it.** Read and report:
+   - the sky-dome actor (StaticMeshActor_24?): mesh, material, scale;
+   - `SkyAtmosphere_1`: Rayleigh scattering and scale, multi-scattering, sky luminance factor, Mie scale, hidden or visible;
+   - `ExponentialHeightFog_1`: fog inscattering luminance/colour, directional inscattering, sky-atmosphere ambient contribution colour scale, volumetric fog albedo;
+   - `DirectionalLight_1`: light colour, `bAtmosphereSunLight`;
+   - `SkyLight_1`: source type, cubemap, light colour, lower hemisphere.
+
+   Then make the sky an **overcast storm sky**. Target on g6_14, top 150 px:
+   - average B/R ≤ 2.0 (now 7.3);
+   - mean luma 0.03–0.06;
+   - visible cloud structure: luma standard deviation in that crop ≥ 0.008, measured with the same luma formula as B2.
+
+   Allowed levers, cheapest first:
+   - (a) if the SkyAtmosphere's Rayleigh blue shows through or around the dome, reduce `rayleighScatteringScale` or `skyLuminanceFactor` (towards grey), or hide `SkyAtmosphere_1` if the dome fully covers the sky. Hiding it removes atmospheric aerial perspective; the height fog still gives depth. Record which you chose and why.
+   - (b) if the dome's material ignores the MI values, find out why (e.g. a Blueprint/dynamic MI override), report it, and fix it at the source.
+   - (c) height-fog inscattering colour: desaturate toward (0.05, 0.06, 0.075)-ish grey-blue, keeping its luminance roughly the same so the mist stays.
+   - Volumetric clouds stay banned (D-046).
+2. **Moonlight colour and grading** (removes the "blue filter" look and keeps the warm pools saturated):
+   - `DirectionalLight_1` light colour → (190, 205, 235); `Moon_Fill` → (185, 200, 225); `SkyLight_1` light colour → (200, 210, 228). Intensities unchanged.
+   - `PP_Outdoor_Night` (PostProcessVolume_1): `ColorSaturationShadows` → (0.72, 0.72, 0.72, 1.0) with the override enabled. Keep `ColorCorrectionShadowsMax` at its default (0.09). Change no other grading values.
+   - Targets: g6_01 cobble crop (250…510, 600…800 px) average B/R ≤ 1.8 (now 2.7). The warm pools must still read orange: in g6_06, the candle-pool crop average R/B ≥ 1.8.
+3. **Spawn brightness.** `Light_Approach_0…2`: 200 → 120 lm. Target g6_01 mean ≤ 0.075. If it is still higher, report; do not change the moon.
+4. **Centrepiece pool.**
+   - `Light_WellHead_Warm`: 500 → 900 lm, attenuation radius 450 → 650.
+   - Read `SM_Wooden_Lantern_01`'s material(s) for an emissive scalar/vector parameter. If one exists, set it on the well-head lantern instance's MI so the lantern itself reads lit: luma ≥ 0.9 at the lantern on g6_14.
+   - If it needs a new MI, duplicate the existing one to `/Game/LastBell/Materials/Instances/MI_Lantern_Lit` and assign it to the well-head lantern and the route lanterns only.
+   - If there is no emissive parameter, do not author a material; report it.
+   - New target on pose 04 (replaces B2's p99 ≥ 0.45, which assumed pools that cover far more of the frame than they can): mean 0.04–0.07, fraction < 0.02 ≥ 0.20, **p99 ≥ 0.25**, max ≥ 0.9. Keep EV100 1.1 unless needed; the range stays 0.0–2.5.
+5. **Third route lantern** (the lead authorises a third; this overrides B2's cap of two):
+   - Find the south roofed-walk east post near (4950, −1350) (label prefix `Roof_S_Post`). On its −X face, place `KP_Lantern_Route_3` (`SM_Wooden_Lantern_01`): bounds min Z 165, flush to the face (±2 cm), NoCollision, same folder as the other route lanterns.
+   - Add `Light_Route_Lantern_3` 15 cm in front of it (−X), at the lantern's bounds-centre Z: 400 lm, radius 500, colour (255, 140, 56), no shadows, scattering 1.5, MI_LF_Lantern.
+   - Re-run the warm-pool check; all 4 routes must PASS. Update `warm_pool_check_g6.md`.
+6. **The dot in g6_15.** Deproject pixel (646, 656) from pose 15 (camera (3600, −1150, 170), yaw 0, using the capture FOV) and `trace_world` along it. Report the hit actor, component and material.
+   - If it is a stray actor, a misplaced emissive or a debug/editor object, fix it (remove it, or set the emissive to 0) and report.
+   - If it is a legitimate reflection (e.g. the moon disc in a puddle), leave it and say so.
+7. **Finish.**
+   - Recapture g6_01, g6_03, g6_04, g6_06, g6_14, g6_15 (overwrite) and give the B2 four-number luma table plus the B3 colour numbers.
+   - Save the map and every touched asset, check not dirty, run the suite with the map saved (78/78 + 4 Courtyard WalkPaths + RouteBot), commit (include this plan file in your commit), stop.
+   - Leave the chapel interior (g6_12, mean 0.40) untouched: Phase 8 note only.
