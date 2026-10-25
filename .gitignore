@@ -19,6 +19,7 @@ Plugins/*/Intermediate/
 
 # Raw external downloads (staged, not committed)
 ExternalAssets/Incoming/
+ExternalAssets/Generated/
 
 # Local Claude settings
 .claude/settings.local.json
