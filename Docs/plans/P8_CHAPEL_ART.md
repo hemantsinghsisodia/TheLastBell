@@ -454,3 +454,87 @@ Per §1.6, with the C1 clue re-skin and puzzle-candle stand if approved:
 - Luma targets and readability gates.
 - Lead review of the captures.
 - Owner `stat gpu` and playtest.
+
+---
+
+## Amendments (lead)
+
+**C0 (2026-10-25, owner request): more Dungeon- and Horror-pack items.**
+
+The owner chose:
+- **Dungeon pack:** candles, candelabra and flames; chains and shackles; bones and skulls; sacristy life and cobwebs.
+- **Horror pack:** hanging body from a truss; the cloth body in the sacristy; the burlap body among the pews; the stretcher and body bag re-added.
+
+The tone moves from "restrained" to **desecrated, heavier** (D-063 updated): bodies and bones are deliberate, but there is still no gore or blood pools.
+
+The owner migrates the assets per `Docs/ArtTest/chapel/fab_picklist_p8.md`. **P8-4** relocates them:
+- `/Game/Dungeon/**` → `/Game/LastBell/ThirdParty/Fab/Dungeon/` (same sub-folders as the P7 relocation);
+- the Horror items → `/Game/LastBell/ThirdParty/Fab/HorrorProps/Mesh/`;
+- references fixed;
+- duplicate shared materials merged into the existing relocated copies (as P7F-3g);
+- `MaxTextureSize` 1024 for candles, bones, tavern props and shackles, 2048 for bodies, chest, bench and chair;
+- the registry rows for both packs updated with the added items.
+
+**P8-2 survey additions:**
+- (k) After the migrate: `BP_Flame_00/01` components, i.e. whether they contain a light, which particle system or mesh they use, and their size.
+- (l) `SK_Dead_Man` with `Anim_Dead_Man_Idle` / `_other`: does the mesh include a rope? Its height and pivot.
+- (m) Sizes and pivots of `SM_Candles_Holder_00…05`, the skeleton piles, the stretcher and the body bag.
+
+**Flames.** Use the pack flames as provided, but **no flame may carry its own light**.
+- If `BP_Flame_00/01` contain a light component, create a child `BP_LB_CandleFlame` (in `/Game/LastBell/Blueprints/Props/`) with that light disabled (child defaults, or the child's construction script if the inherited component can't be overridden).
+- Place only the child.
+- The cluster lights stay the planned P8-7 point lights.
+- Cap: **at most 16 lit flames** in the chapel and sacristy. Every other candle is snuffed (no flame).
+
+**Placement changes to §1.6.** All NoCollision unless noted. The aisle rule and route clearance (≥ 60 cm) still hold.
+
+- **Altar candelabra.**
+  - Replace the two `brass_candleholders` with the tallest floor-standing `SM_Candles_Holder_0x` (from survey (m)) at (8880, ±430), labels `Ch_AltarStand_N/S`.
+  - Fill the holders' sockets with `SM_Candle_0x` (fresh).
+  - 3 lit flames per stand.
+  - `brass_candleholders` moves to the statue plinth (below).
+- **Ritual circle.**
+  - The 5 candles become `SM_Candle_Melted_01/04/08/05/09` at the same 5 points, with 3 lit flames (angles 90°, 234° and 18°).
+  - `Ch_RitualSkull`: `SM_Skull_02` at the centre (7500, 0), yaw 180 (facing the entrance).
+  - 2 `SM_Dungeon_bowl` / `SM_Pot_00` offerings at radius 120 (angles 135° and 315°).
+- **Statue plinth (standing saint, (6200, −710)).**
+  - `brass_candleholders` on the floor beside the plinth at (6310, −690), with 2 lit flames.
+  - `SM_Torture_Devices_Shackles_01` wrapped around the plinth foot.
+- **Toppled saint.**
+  - 3 `SM_Candle_Melted_02/06/10` knocked over (lying) around the empty plinth.
+  - 1 upright `SM_Candle_Melted_03`, unlit.
+- **Window sills.** On the interior sills (Z 450) of N1, N2, S2 and S3: 4–6 burnt-down melted candles each, mixed sizes, unlit; on S2, 1 lit flame.
+- **Chains.**
+  - Two `SM_Dungeon_chain_holder` rings on the east wall's inner face at Y ±260, Z 260, with `SM_Torture_Devices_Chains` hanging from each down to the dais, the last 40 cm pooled on the floor (`Ch_EastChain_N/S`).
+  - Two chains hang from `Ch_Truss_8000`'s collar at Y ±320 down to Z ≈ 1000.
+  - `SM_Dungeon_shackles_00` lies open on the dais floor at (8700, −380).
+- **Hanging body.**
+  - `Ch_HangingBody`: `SK_Dead_Man` as a SkeletalMeshActor, looping `Anim_Dead_Man_Idle`, NoCollision, CastShadow on.
+  - It hangs from `Ch_Truss_7000`'s collar beam over the north side aisle at (7000, 580). The rope's top is at the collar underside (Z ≈ 1730), the feet at Z 110–140, and it must never be over Y < 300.
+  - If the mesh has no rope, use `SM_Torture_Devices_Rope_00` stretched from the collar to the neck.
+- **Burlap body.** `Ch_BurlapBody`: `SM_Dead_Man` lying half under the fallen `Rafter_Broken` in bay B1, centre (6880, −560), yaw 80, inside the collapse footprint (X 6250–6950, Y −740…−230).
+- **Bones.**
+  - `SM_Skull_00` half under `Ch_Pew_S1`.
+  - `SM_Skeleton_Arm_00` and `SM_Skeleton_Leg_01` among the collapse debris.
+  - `SM_Skeleton_Pile_02` (or the smallest pile per survey (m)) in the sacristy's SW corner at (8120, −1440).
+  - No bones in the central aisle except the ritual skull.
+- **Sacristy** (replaces the §1.6 sacristy list):
+  - `Sa_Table`: `wooden_table_02` at (8300, −1430). On the table:
+    - `SM_Bread` + `SM_Bread_Slice`, `SM_Jug`, 2 × `SM_Bowl`, `SM_Cup_01`, `SM_Plate` + `SM_Cutlery`, `SM_Pitcher_01`;
+    - `SM_Mug_Empty` tipped over;
+    - a small `SM_Candles_Holder_0x` with 2 `SM_Candle_0x`, 1 lit flame.
+  - `Sa_Chair`: `SM_Scribe_Chair`, pulled back askew at (8300, −1330), yaw 200.
+  - `Sa_Bench`: `SM_Dungeon_bench` along the west wall, bounds Y −1490…−1250, X 8045–8110, BlockAll.
+  - `Sa_Chest`: `SM_Dungeon_chest` against the east wall at (8900, −1300), yaw 90, BlockAll, with `SM_Pouch_01` on top. This replaces the Fab trunk.
+  - `SM_Pot_00` and `SM_Plate_00` on the floor by the chest.
+  - Wall ring: `SM_Dungeon_chain_holder` on the south wall at (8500, −1500, 140) with `SM_Dungeon_shackles_01` hanging.
+  - `Sa_Body`: `SM_Man_under_cloth` along the south wall at (8650, −1440), head +X, as before.
+  - `Sa_Stretcher`: the stretcher at centre (8685, −1270), long axis along X, BlockAll, with `Sa_BodyBag` on it.
+  - Bone pile per the bones list above.
+  - Keep ≥ 60 cm from the line (8500, −810) → (8500, −1100) → (7980, −1100).
+- **Cobwebs.** The cobweb cards use an MI of the pack's `M_Cobweb` (`MI_Cobweb_Dungeon`) instead of the generated `T_LB_Cobweb_A`. P8-3 still builds the card meshes; the generated texture is optional (fallback).
+- **Lights (P8-7).** No change to the planned light list. The extra lit flames sit inside the existing warm pools (altar, ritual, statue, sacristy table). The S2 sill flame gets no light of its own.
+
+**Readability.** The clue view (P8-7 gate (a)) and the dais view (gate (b)) must stay uncluttered:
+- no chains, bodies or candles between the camera poses and the clue window or the 4 puzzle candles;
+- the east chains hang beside the window, not in front of it.
