@@ -758,3 +758,106 @@ Diagnosis (lead):
    - darkness targets re-measured (grime darkens the floor; keep the means in range);
    - readability gates (a) and (b) unchanged;
    - the owner re-checks GPU if many decals are added.
+
+**C5-detail (2026-10-26, lead expansion of C5): grime pass, as two tasks.**
+
+The GPU after P8-9b was 15.27 ms; P8-9c trims the moon spots first. The grime pass must stay within budget: about 45 decals, cheap material switches, and the owner re-measures at the end.
+
+**P8-10a: grime materials and textures (technical-artist) [EDITOR].**
+
+1. **Generated decal textures.** Extend `Tools/textures/gen_chapel_textures.py` (seeded; record the seeds), output to `ExternalAssets/Generated/chapel/`. All RGBA, A = opacity.
+
+   | Texture | Size | Content |
+   |---|---|---|
+   | `T_LB_Decal_Soot_A`, `_B` | 512x1024 | Vertical soot plume, densest at the bottom (alpha 0.85), fading and widening upward with turbulent noise; colour (0.02, 0.02, 0.02) |
+   | `T_LB_Decal_Mould_Band` | 1024x256 | Rising-damp band: dark green-black (0.05, 0.06, 0.04) at the bottom, an irregular noisy top edge, blotchy alpha 0.4-0.8 |
+   | `T_LB_Decal_WaterStain` | 1024^2 | Irregular stain with 2-3 tide-mark rings: edges darker brown (0.10, 0.08, 0.06), centre lighter, alpha 0.3-0.7 |
+   | `T_LB_Decal_WaxDrips` | 512^2 | 5-8 creamy (0.80, 0.74, 0.60) splats and run-drips, alpha 0.9 |
+   | `T_LB_Decal_DragMarks` | 1024x512 | Two parallel scuffed drag trails plus scattered simple boot-sole prints (invented shapes): darker dirt (0.12, 0.10, 0.08), alpha 0.5 |
+   | `T_LB_Decal_LeafLitter_A`, `_B` | 1024^2 | 40-80 leaf cells sampled from `ExternalAssets/Incoming/ambientcg-LeafSet030/` (Color + Opacity), random rotation and scale 0.6-1.2, darkened x0.7 |
+   | `T_LB_Decal_DustDrift` | 1024^2 | Soft grey dust drift for corners and wall bases: (0.38, 0.36, 0.33), alpha falling off radially from one corner of the texture |
+
+   Previews go to `Docs/ArtTest/chapel/tex_grime_*.png`.
+2. **Import and decal MIs.**
+   - Import into `/Game/LastBell/Environments/Chapel/Textures/` (sRGB colour, alpha kept).
+   - Decal MIs on the existing `M_LB_Decal` (read its params first): `MI_Decal_Soot_A/B`, `MI_Decal_Mould`, `MI_Decal_WaterStain`, `MI_Decal_WaxDrips`, `MI_Decal_DragMarks`, `MI_Decal_LeafLitter_A/B`, `MI_Decal_DustDrift`.
+   - Reuse the existing `MI_Decal_Leaking006_Wall` for damp streaks.
+   - Thumbnails.
+3. **`M_LB_Surface`: new static switch `bTopDust`** (default **false**, group "TopDust").
+   - Params: `DustColor` (0.40, 0.38, 0.34), `DustAmount` 0.6, `DustUpThreshold` 0.65, `DustUpSharpness` 5, `DustNoiseScaleCm` 80, `DustNoiseContrast` 1.5, `DustRoughness` 0.95.
+   - Mask = saturate((WorldNormal.z - DustUpThreshold) x DustUpSharpness) x noise term (world-space value noise, as the puddle mask uses, at `DustNoiseScaleCm`, contrast-shaped) x DustAmount.
+   - Apply after the base and growth layers, **before** the puddles:
+     - BaseColor -> lerp to DustColor;
+     - Roughness -> lerp to DustRoughness;
+     - Normal -> lerp toward (0, 0, 1) by 0.5 x mask.
+   - **One recompile.** Regression with the switch off: same-session A/B (MCP_NOTES) on `MI_Kit_Floor`, `MI_Kit_Masonry`, `MI_Kit_Cliff` and `MI_Medieval_Blocks_03`, <= 2/255 mean difference.
+4. **Material instances.**
+   - `MI_Chapel_Floor_Dirty`: child of `MI_Chapel_Floor`, with `bGapGrowth` on and `GrowthColorTex` / `GrowthNormalTex` = `T_Brown_Mud_03_BC` / `_N` (in `/Game/LastBell/ArtTest/Materials/Brown_Mud_03/`).
+     - Use the roughness input the master expects. If it needs a plain roughness map and only ARM exists, use the master default and record it.
+     - `GrowthTint` (0.55, 0.50, 0.44), `GrowthLevel` 0.50, `GrowthSharpness` 10, `GrowthNoiseScaleCm` 250, `GrowthNoiseContrast` 1.4, `GrowthNoiseAmount` 0.45, `WallGrowthWeight` **0**. The chapel walls are not in `MPC_LB_GrowthObstacles`; corners and wall bases get DustDrift decals instead.
+     - Also `bTopDust` on, with DustAmount 0.35, so the slab tops get a light dusting.
+   - `bTopDust` on, with the defaults, in:
+     - `MI_Chapel_Wood_Old` (pews, trusses, rail, lectern, purlins, rafters);
+     - `MI_Chapel_Masonry_Interior` (sills, string course, plinth tops; vertical faces are unaffected);
+     - `MI_Sacristy_Table_Old`.
+   - New `MI_Chapel_Trim_Dusty`: child of `MI_Kit_Trim`, `bTopDust` on. **`MI_Kit_Trim` itself is shared with the courtyard and must not change.**
+   - LOOK and capture (PIE Simulate): pews, altar, sills and floor. Dust must read on the up-facing surfaces only.
+5. Commit after each block (textures, master, MIs).
+
+**P8-10b: grime placement (environment-designer) [EDITOR].**
+
+1. **Swap MIs:**
+   - `Ch_Floor_B1..B3` and `Sa_Floor` -> `MI_Chapel_Floor_Dirty`;
+   - `Ch_Altar`, `Ch_Dais`, the 4 corbels and the 2 statue plinths -> `MI_Chapel_Trim_Dusty` (read the slot first).
+2. **Decals.** DecalActors. Decal size = half-extent; depth <= 20 on floors, <= 15 on walls, so they don't paint props.
+   - **Soot** (`MI_Decal_Soot_A/B`, alternating), on walls above lit clusters:
+     - east wall inner face (X 8960) above the altar stands: centre (8960, +-430, 420), size 130 x 320;
+     - south wall above the statue holder: (6300, -750, 330), 110 x 260;
+     - sacristy south wall above the table: (8300, -1500, 300), 100 x 220;
+     - each lancet reveal top N1/N2/S2/S3 above the sill candles: centre (X, +-760, 560), 70 x 160.
+   - **Damp streaks** (`MI_Decal_Leaking006_Wall`), under each lancet on the inner face, from Z 440 down to Z 60:
+     - N1, N2 at Y 750; S1, S2, S3 at Y -750;
+     - centre X = the window centre, size 150 x 380;
+     - plus two on the south inner face under the roof hole: (6350 / 6650, -750, 700), 200 x 600.
+   - **Rising damp** (`MI_Decal_Mould`), along every interior wall base, Z 0-90:
+     - nave north (X 6060-8960) as three 1000-long decals;
+     - nave south (skipping the door X 8440-8560);
+     - west front inner face (skipping the door Y -60..60);
+     - east wall (skipping Y -150..150 under the altar);
+     - sacristy walls (skipping its doors).
+   - **Water stain** (`MI_Decal_WaterStain`):
+     - floor under the roof hole: (6500, -420), 500 x 400;
+     - under S1: (6500, -690), 260 x 140.
+   - **Wax drips** (`MI_Decal_WaxDrips`), 30 x 30:
+     - at each of the 5 ritual candles;
+     - 60 x 60 at each altar stand foot;
+     - 40 x 40 at the statue holder;
+     - 20 x 20 on the sacristy table under its holder (top-down, depth 5).
+   - **Drag marks** (`MI_Decal_DragMarks`): (6550, 0) and (7050, 0), yaw 0, each 300 x 60 half-extents, i.e. from the door to the ritual circle.
+   - **Leaf litter** (`MI_Decal_LeafLitter_A/B`):
+     - 3 under the roof hole within X 6300-6900, Y -650..-150, each 150 x 150 half-extents;
+     - 1 under S1 at (6550, -620);
+     - 1 inside the door at (6150, 0), 120 x 100.
+   - **Dust drifts** (`MI_Decal_DustDrift`): nave corners NW (6060, 750), NE (8960, 750), SW (6060, -750), SE (8960, -750), and the 4 sacristy corners; each 120 x 120, rotated so the dense corner of the texture sits in the room corner.
+3. **Debris** (NoCollision; outside the aisle-route lanes):
+   - 3 x `SM_LB_CC0_DryBranchesMedium01` at scale 0.5-0.8 under the roof hole;
+   - 8 x `SM_LB_Kit_Rubble_Chunk_S` at scale 0.2-0.35 with `MI_Chapel_Rubble` at wall bases near the corners and under the hole;
+   - 2 more `SM_LB_Prop_SlateShards_A`.
+4. **Cobwebs.** 8 more pack cobweb cards (`MI_Cobweb_Dungeon`):
+   - 2 per truss at the collar/brace junction;
+   - the tops of the N1 and N2 window splays;
+   - between the back and end panel of `Ch_Pew_N3` and `Ch_Pew_S3` (scale 0.4);
+   - one on the lectern.
+5. **Exclusions:**
+   - **No decal box may intersect the puzzle zone** (X 8550-8830, |Y| <= 260, Z 0-250), the clue plaque (X 8688-8812, Y 742-750, Z 300-544), or any `BP_PuzzleCandle`.
+   - No decal on the altar's top or front, except the existing chalk sigil.
+   - Debris stays out of the aisle (Y -200..200, X 6060-8350) and at least 60 cm from all WalkPath segments.
+6. **Checks:**
+   - lane check (append a section);
+   - collision read-back on the debris;
+   - the suite with the map saved;
+   - captures `g8g_01..08` (entrance, mid-nave, roof-hole floor, sacristy, pews close, altar close, a south lancet wall close, a corner close);
+   - the B2 luma on entrance, mid-nave and sacristy, where a darker floor is expected. Accept an entrance mean >= 0.03; otherwise raise `Light_Chapel_Statue` or the S1 moon patch slightly and report;
+   - gates (a) and (b) unchanged.
+7. Commit.
+8. **The owner re-measures GPU.** If it's over 16.6 ms, halve the decal count (drop the mould band on the north wall first).
