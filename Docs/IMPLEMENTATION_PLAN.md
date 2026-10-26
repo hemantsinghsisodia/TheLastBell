@@ -203,6 +203,8 @@ Branch `claude/phase-08-chapel`. Full spec: `Docs/plans/P8_CHAPEL_ART.md`. Owner
 | P8-7 | Lighting: greybox lights out, candle clusters, moon shafts, roof-hole shaft, coloured pools, glass emissive, nave mist; luma targets and readability gates | lighting-vfx [EDITOR] | P8-6 |
 | P8-8 | QA, docs, owner stat gpu + playtest; PHASE 8 READY FOR YOUR REVIEW | qa + lead + owner | all |
 
+Status 2026-10-26: P8-0…P8-7b done (latest c646e7e; suite 78/78 incl. ChapelNave, ChapelSacristy, SacristyToCrypt, RouteBot). P8-8: independent QA running; then owner `stat gpu` in the chapel and playtest.
+
 ## Deferred to Phase 14–15 (Lighting, VFX: storm work)
 Items the owner asked to fold into the storm pass. Plan them in detail (Docs/plans/) when Phase 14–15 starts.
 

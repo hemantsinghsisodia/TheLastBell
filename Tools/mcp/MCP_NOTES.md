@@ -93,3 +93,12 @@ For C++ API names, read `Source/LastBell/`; for architecture, read `Docs/TECHNIC
 - Placed instances keep their old component values (mesh, override materials, transform) after a template write and compile, even if they equalled the old template. Treat this as "template edits don't reach placed instances": use dressing actors or NoCollision shells (e.g. `Mech_Shell_*`), or change a shared material instance's default (it propagates to every user that does not override the parameter).
 - Never save the map while a template and its placed instance differ: the instance's old value would be serialized as an explicit override. Revert the template (write back, compile, save the BP) first.
 - A headless `UnrealEditor-Cmd -ExecCmds="py ..."` did not run the script in this project (the process hung); don't rely on it to inspect the on-disk map.
+
+## Level dressing and lighting (Phase 8)
+- Collision on placed StaticMeshActors: set `bodyInstance.collisionProfileName` together with `bUseDefaultCollision=false`, then read both back (setting `collisionProfileName` alone doesn't stick).
+- Kit pieces: inner face = mesh-local Y 0; compute yaw/roll from read-back bounds (e.g. the east wall needed yaw −90, not 90). Roof slabs: roll 50 (north), roll 50 + yaw 180 with X offset +1000 (south).
+- Animated props: `add_to_scene_from_asset` with a SkeletalMesh gives a SkeletalMeshActor; set `animationMode` AnimationSingleNode + the anim asset + looping/playing and read back. Its first-frame pose can sit lower than the reference pose: measure bounds after setting the animation.
+- Wall decals placed with DecalActor came out rotated 90°; fix with roll 90 and check the glyph orientation in a capture. DecalSize is a half-extent.
+- Light-pool decals (Translucent, Unlit, emissive) add light on the floor (verified by on/off captures); `Additive` is not allowed in the decal domain.
+- Lit-state captures of puzzle candles: in PIE Simulate the PIE-world instances' `Flame`/`FlameLight` visibility can be toggled for a capture (never in the editor world).
+- A wide even wash on a ceiling is easier with a RectLight facing up than with a spot (spots made hot ellipses).
