@@ -74,6 +74,15 @@ SPEC.update({
     "PricketStand_150": dict(dims=(42.0, 39.0, 150.0), slots=["MAT_Iron"], ucx=1),
     "CandleFlame_A": dict(dims=(3.0, 3.0, 6.5), tol=0.5, slots=["MAT_Flame"], ucx=0),
 })
+# ---- P8-9a light-shaft cards (amendment C4): open oblique tubes along the moon direction d, free pivot (see struct == "shaft") ----
+SHAFT_D = (math.cos(math.radians(-38.0)) * math.cos(math.radians(35.0)), math.cos(math.radians(-38.0)) * math.sin(math.radians(35.0)),
+           math.sin(math.radians(-38.0)))   # DirectionalLight_1 forward (pitch -38, yaw 35) = (0.6455, 0.4520, -0.6157)
+SPEC.update({
+    "LightShaft_Lancet": dict(dims=(1294.9, 813.6, 1640.2), bmin=(-66.5, 0.0, -1094.9), slots=["MAT_LightShaft"], ucx=0, open_mesh=True, uv01=True,
+                              free_pivot=True, struct="shaft", length=1800.0, segs=12),
+    "LightShaft_RoofHole": dict(dims=(2367.0, 1743.6, 2309.0), bmin=(-220.1, -177.5, -2058.5), slots=["MAT_LightShaft"], ucx=0, open_mesh=True, uv01=True,
+                                free_pivot=True, struct="shaft", length=3000.0, segs=16),
+})
 for _shape, _w, _h in (("Climb", 300.0, 450.0), ("Patch", 200.0, 300.0), ("Hang", 150.0, 600.0), ("Creep", 400.0, 200.0)):
     for _kind in ("Green", "Dead"):
         SPEC["Ivy_%s_%gx%g_%s" % (_shape, _w, _h, _kind)] = dict(dims=(_w, None, _h), ymax=25.0, slots=["MAT_Leaf", "MAT_Stem"], ucx=0,
@@ -109,10 +118,119 @@ def _ray(bvh, x, y, z, d):
     return (h[0].x * sc, -h[0].y * sc, h[0].z * sc)
 
 
+def shaft_checks(spec, ob, fail, res):
+    """Light-shaft cards: open ends only (boundary = the two end rings), every side face parallel to d, normals outward
+    (even-odd test of a point just off the face against the t = 0 outline projected along d), UV U/V span exactly 0..1 and V = t / length."""
+    me = ob.data
+    d = Vector(SHAFT_D).normalized()
+    notes = []
+    pts = VK.ue_coords(ob)
+    sc = bpy.context.scene.unit_settings.scale_length * 100.0
+    bm = bmesh.new()
+    bm.from_mesh(me)
+    bm.verts.ensure_lookup_table()
+    uvl = bm.loops.layers.uv.active
+    # direction check: the edges between the two end rings follow d
+    L, S = spec['length'], spec['segs']
+    bnd = [e for e in bm.edges if len(e.link_faces) == 1]
+    rings = {0: [], 1: []}
+    for e in bnd:
+        vs = [e.verts[0], e.verts[1]]
+        vv = []
+        for v in vs:
+            lv = [l[uvl].uv[1] for l in v.link_loops]
+            vv.append(round(min(lv), 3) if min(lv) < 0.5 else round(max(lv), 3))
+        if vv[0] == vv[1] and vv[0] in (0.0, 1.0):
+            rings[int(vv[0])].append(e)
+        else:
+            fail("boundary edge off the end rings (uv.v %s)" % vv)
+    n0, n1 = len(rings[0]), len(rings[1])
+    notes.append("boundary edges: ring V0 %d, ring V1 %d (total %d, mesh edges %d)" % (n0, n1, len(bnd), len(bm.edges)))
+    if n0 != n1 or n0 < 8:
+        fail("open ends: ring edge counts %d / %d" % (n0, n1))
+    # edge directions along the length: connect corresponding ring verts -> direction must be d
+    vmin, vmax = {}, {}
+    for v in bm.verts:
+        pu = pts[v.index]
+        vl = [l[uvl].uv[1] for l in v.link_loops]
+        vmin[v.index] = min(vl)
+    # section polygon segments (UE space, projected along d) from ring 0
+    e1 = Vector((1.0, 0.0, 0.0)) - d * d.x
+    e1.normalize()
+    e2 = d.cross(e1)
+    proj = lambda p: (p.dot(e1), p.dot(e2))
+    segs = []
+    for e in rings[0]:
+        a, b_ = pts[e.verts[0].index], pts[e.verts[1].index]
+        segs.append((proj(a), proj(b_)))
+    # the ring-1 points must be ring-0 points + L * d
+    r0 = sorted({tuple(round(c, 1) for c in pts[v.index]) for e in rings[0] for v in e.verts})
+    r1 = sorted({tuple(round(c, 1) for c in pts[v.index]) for e in rings[1] for v in e.verts})
+    r0d = sorted(tuple(round(c, 1) for c in (Vector(p) + d * L)) for p in r0)
+    off = max((Vector(a) - Vector(b)).length for a, b in zip(r0d, r1)) if len(r0d) == len(r1) else 1e9
+    notes.append("far ring = near ring + %g d: max deviation %.2f cm " % (L, off))
+    if off > 2.0:
+        fail("far ring is not the near ring swept along d (deviation %.2f cm)" % off)
+
+    def inside(q):
+        x, y = q
+        c = 0
+        for (a, b_) in segs:
+            if (a[1] > y) != (b_[1] > y):
+                t = (y - a[1]) / (b_[1] - a[1])
+                if a[0] + t * (b_[0] - a[0]) > x:
+                    c += 1
+        return c % 2 == 1
+
+    bad_par = bad_out = 0
+    for p in me.polygons:
+        wn = (ob.matrix_world.to_3x3() @ p.normal).normalized()
+        wc = ob.matrix_world @ p.center
+        nrm = Vector((wn.x, -wn.y, wn.z))                                    # file -> UE
+        c = Vector((wc.x, -wc.y, wc.z)) * sc
+        if abs(nrm.dot(d)) > 0.02:
+            bad_par += 1
+        if inside(proj(c + nrm * 0.05)):
+            bad_out += 1
+    notes.append("faces %d: not parallel to d %d, normals pointing inward %d" % (len(me.polygons), bad_par, bad_out))
+    if bad_par:
+        fail("%d faces are not parallel to d" % bad_par)
+    if bad_out:
+        fail("%d face normals point inward" % bad_out)
+    us = [dd.uv[0] for dd in me.uv_layers.active.data]
+    vs = [dd.uv[1] for dd in me.uv_layers.active.data]
+    notes.append("UV U %.3f..%.3f V %.3f..%.3f" % (min(us), max(us), min(vs), max(vs)))
+    if min(us) > 0.001 or max(us) < 0.999 or min(vs) > 0.001 or max(vs) < 0.999:
+        fail("UV does not span exactly 0..1: U %.3f..%.3f V %.3f..%.3f" % (min(us), max(us), min(vs), max(vs)))
+    # V = distance along d / L for every vertex
+    q0 = pts[rings[0][0].verts[0].index]                     # a point of the t = 0 ring; the ring plane has the Newell normal N
+    ring0 = [pts[v.index] for v in {v for e in rings[0] for v in e.verts}]
+    nN = Vector((0.0, 0.0, 0.0))
+    cc = sum(ring0, Vector()) / len(ring0)
+    for e in rings[0]:
+        nN += (pts[e.verts[0].index] - cc).cross(pts[e.verts[1].index] - cc)
+    nN.normalize()
+    worst = 0.0
+    for v in bm.verts:
+        for l in v.link_loops:
+            t = (pts[v.index] - q0).dot(nN) / d.dot(nN)
+            worst = max(worst, abs(l[uvl].uv[1] - t / L))
+    notes.append("V vs t/length max error %.4f" % worst)
+    if worst > 0.01:
+        fail("V is not t / length (max error %.3f)" % worst)
+    if len(me.materials) != 1:
+        fail("expected 1 material slot")
+    bm.free()
+    res['struct'] = notes
+
+
 def structural(short, spec, ob, ucx, fail, res):
     """Geometry checks that the bounds cannot show (arch brace, roof plane, seat height, altar core and hole...)."""
     kind = spec.get('struct')
     if not kind:
+        return
+    if kind == "shaft":
+        shaft_checks(spec, ob, fail, res)
         return
     bvh, bm = _bvh(ob)
     notes = []
@@ -217,7 +335,12 @@ def check(path, short, spec):
     res['bounds_min'] = [round(v, 2) for v in mn]
     res['tris'] = sum(len(p.vertices) - 2 for p in ob.data.polygons)
     # pivot: XY centre at 0, min Z at 0 (ivy cards: X centre at 0, back plane at Y 0)
-    if spec.get('wall_pivot'):
+    if spec.get('free_pivot'):
+        bm_ = spec['bmin']
+        for i, ax in enumerate("XYZ"):
+            if abs(mn[i] - bm_[i]) > TOL:
+                fail("bounds min %s %.2f vs expected %.2f (pivot placement)" % (ax, mn[i], bm_[i]))
+    elif spec.get('wall_pivot'):
         if abs((mn[0] + mx[0]) * 0.5) > TOL:
             fail("pivot: X centre %.2f (should be 0)" % ((mn[0] + mx[0]) * 0.5))
         if abs(mn.y) > TOL:
@@ -229,7 +352,7 @@ def check(path, short, spec):
             c = (mn[i] + mx[i]) * 0.5
             if abs(c) > TOL:
                 fail("pivot: %s centre %.2f (should be 0)" % (ax, c))
-    if abs(mn.z) > TOL:
+    if abs(mn.z) > TOL and not spec.get('free_pivot'):
         fail("pivot: min Z %.2f (should be 0)" % mn.z)
     if ob.matrix_world.translation.length > 1e-4:
         fail("node not at the origin")

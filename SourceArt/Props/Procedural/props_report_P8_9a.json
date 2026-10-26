@@ -1,0 +1,73 @@
+[
+ {
+  "name": "SM_LB_Prop_LightShaft_Lancet",
+  "min": [
+   -66.5,
+   0.0,
+   -1094.88
+  ],
+  "max": [
+   1228.4,
+   813.57,
+   545.31
+  ],
+  "dims": [
+   1294.9,
+   813.57,
+   1640.19
+  ],
+  "tris": 936,
+  "slots": [
+   "MAT_LightShaft"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 0,
+  "pivot_shift_applied": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "note": "C4: south lancet clear outline (140 x 560, shrunk 5 % toward its centroid) swept obliquely along the moon direction d=(0.6455, 0.4520, -0.6157) to t = 1800 (12 segments); open ends, single-sided, normals outward; UV U around / V 0 (window) -> 1; PIVOT = outline bottom-centre at the window plane; NoCollision",
+  "seconds": 0.7
+ },
+ {
+  "name": "SM_LB_Prop_LightShaft_RoofHole",
+  "min": [
+   -220.09,
+   -177.5,
+   -2058.52
+  ],
+  "max": [
+   2146.91,
+   1566.12,
+   250.47
+  ],
+  "dims": [
+   2367.0,
+   1743.62,
+   2308.99
+  ],
+  "tris": 512,
+  "slots": [
+   "MAT_LightShaft"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 0,
+  "pivot_shift_applied": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "note": "C4: RoofSlab_Broken hole aperture (boards cut and slate cut, 16 verts, shrunk 5 %) in WORLD orientation for Ch_Roof_S1 (loc (7000.0, 0.0, 2165.0), rot (0.0, 180.0, 50.0)), swept along d=(0.6455, 0.4520, -0.6157) to t = 3000 (16 segments); open ends, single-sided, normals outward; PIVOT = outline centroid = world (6496.44, -420.29, 1682.78), place with ZERO rotation; NoCollision",
+  "seconds": 0.4,
+  "pivot_world": [
+   6496.442,
+   -420.295,
+   1682.781
+  ]
+ }
+]

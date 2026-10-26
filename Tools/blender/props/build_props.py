@@ -309,7 +309,7 @@ class Piece:
         self.shift = (0.0, 0.0, 0.0)
         self.ucx = []
         self.keep_uv = False                      # custom UV0 (ivy atlas cells, tree bark): finalize must not overwrite it
-        self.seat_mode = "centre"                 # "centre" = bottom-centre; "wall" = X centre, back plane at Y 0, min Z 0
+        self.seat_mode = "centre"                 # "centre" = bottom-centre; "wall" = X centre, back plane at Y 0, min Z 0; "none" = as built
         self.smooth = 30.0
         self.subdir = ""
         self.textures = []                        # (ambientCG id, map name) copied next to the FBX
@@ -320,6 +320,8 @@ class Piece:
         s = (-(mn[0] + mx[0]) * 0.5, -(mn[1] + mx[1]) * 0.5, -mn[2])
         if self.seat_mode == "wall":
             s = (s[0], -mn[1], s[2])
+        elif self.seat_mode == "none":                  # the builder already put the pivot where it belongs (light shafts)
+            s = (0.0, 0.0, 0.0)
         shift(self.bm, *s)
         for u in self.ucx_design:
             shift(u, *s)
@@ -2077,6 +2079,207 @@ def build_candle_flame():
 
 
 # ==============================================================================================
+# P8-9a light-shaft cards (plan amendment C4).  Open tubes extruded OBLIQUELY along the moon direction d, from a window /
+# roof-hole outline shrunk 5 % toward its centroid.  Pivot is NOT bottom-centre (seat_mode "none"), see each builder.
+# UV0: U = 0..1 around the outline (arc length, seam duplicated by per-loop UVs), V = 0 at the opening -> 1 at the far end.
+# ==============================================================================================
+MAT_COLORS.update({"MAT_LightShaft": (0.75, 0.80, 0.95, 1.0)})
+
+MOON_PITCH, MOON_YAW = -38.0, 35.0           # /Game/LastBell/Maps/L_Monastery DirectionalLight_1 (read from the editor, P8-9a)
+ROOF_S1_LOC = (7000.0, 0.0, 2165.0)          # Ch_Roof_S1 (StaticMeshActor_766): world location ...
+ROOF_S1_ROT = (0.0, 180.0, 50.0)             # ... and (pitch, yaw, roll) as read from the editor
+ROOF_HOLE_SEED = 441                         # build_roof_slab default seed (hole_cutters(seed))
+ROOF_HOLE_Z = 12.0                           # slab-local Z of the outline plane (the through-hole is cut Z -1..13, the slate skin 11..21)
+SHAFT_SHRINK = 0.05
+
+
+def moon_dir():
+    p, y = math.radians(MOON_PITCH), math.radians(MOON_YAW)
+    return Vector((math.cos(p) * math.cos(y), math.cos(p) * math.sin(y), math.sin(p)))
+
+
+def ue_axes(pitch, yaw, roll):
+    """Unreal FRotationMatrix axes (local X, Y, Z in world) for a rotator in degrees."""
+    sp, cp = math.sin(math.radians(pitch)), math.cos(math.radians(pitch))
+    sy, cy = math.sin(math.radians(yaw)), math.cos(math.radians(yaw))
+    sr, cr = math.sin(math.radians(roll)), math.cos(math.radians(roll))
+    return (Vector((cp * cy, cp * sy, sp)),
+            Vector((sr * sp * cy - cr * sy, sr * sp * sy + cr * cy, -sr * cp)),
+            Vector((-(cr * sp * cy + sr * sy), cy * sr - cr * sp * sy, cr * cp)))
+
+
+def poly_centroid(p):
+    a = cx = cy = 0.0
+    for i in range(len(p)):
+        x0, y0 = p[i]
+        x1, y1 = p[(i + 1) % len(p)]
+        c = x0 * y1 - x1 * y0
+        a += c
+        cx += (x0 + x1) * c
+        cy += (y0 + y1) * c
+    return (cx / (3.0 * a), cy / (3.0 * a))
+
+
+def shrink_poly(p, f=SHAFT_SHRINK):
+    c = poly_centroid(p)
+    return [(c[0] + (x - c[0]) * (1.0 - f), c[1] + (y - c[1]) * (1.0 - f)) for (x, y) in p]
+
+
+def _dp_open(pts, tol):
+    if len(pts) < 3:
+        return pts[:]
+    a, b = pts[0], pts[-1]
+    dx, dy = b[0] - a[0], b[1] - a[1]
+    ln = math.hypot(dx, dy) or 1e-9
+    k, dm = 0, -1.0
+    for i in range(1, len(pts) - 1):
+        d = abs((pts[i][0] - a[0]) * dy - (pts[i][1] - a[1]) * dx) / ln
+        if d > dm:
+            k, dm = i, d
+    if dm <= tol:
+        return [a, b]
+    return _dp_open(pts[:k + 1], tol)[:-1] + _dp_open(pts[k:], tol)
+
+
+def simplify_closed(poly, max_verts=16, min_verts=10):
+    """Douglas-Peucker on a closed polygon; the tolerance is bisected to the largest vertex count <= max_verts."""
+    n = len(poly)
+    i0 = 0
+    i1 = max(range(n), key=lambda i: math.hypot(poly[i][0] - poly[i0][0], poly[i][1] - poly[i0][1]))
+    a, b = (i0, i1) if i0 < i1 else (i1, i0)
+
+    def run(tol):
+        h1 = _dp_open(poly[a:b + 1], tol)
+        h2 = _dp_open(poly[b:] + poly[:a + 1], tol)
+        return h1[:-1] + h2[:-1]
+
+    lo, hi = 0.0, 200.0
+    best = run(hi)
+    for _ in range(40):
+        mid = (lo + hi) * 0.5
+        r = run(mid)
+        if len(r) <= max_verts:
+            best, hi = r, mid
+        else:
+            lo = mid
+    assert min_verts <= len(best) <= max_verts, len(best)
+    return best
+
+
+def build_shaft(name, ring, d, length, segs, note):
+    """Open single-sided tube: ring (closed outline, list of 3D Vectors, the section at t = 0) swept along d to t = length.
+    Normals point away from the axis; UV0 as described above."""
+    n = len(ring)
+    nrm = Vector((0.0, 0.0, 0.0))
+    for i in range(n):
+        nrm += ring[i].cross(ring[(i + 1) % n])
+    flip = nrm.dot(d) < 0.0                                    # face (a_i, a_j, b_j, b_i) has normal ~ edge x d
+    per = [(ring[(i + 1) % n] - ring[i]).length for i in range(n)]
+    tot = sum(per)
+    ucum = [0.0]
+    for s in per:
+        ucum.append(ucum[-1] + s / tot)
+    ucum[-1] = 1.0
+    b = bmesh.new()
+    rows = [[b.verts.new(p + d * (length * j / segs)) for p in ring] for j in range(segs + 1)]
+    uv = b.loops.layers.uv.new("UVMap")
+    for j in range(segs):
+        v0, v1 = j / segs, (j + 1) / segs
+        for i in range(n):
+            k = (i + 1) % n
+            vs = [rows[j][i], rows[j][k], rows[j + 1][k], rows[j + 1][i]]
+            us = [(ucum[i], v0), (ucum[i + 1], v0), (ucum[i + 1], v1), (ucum[i], v1)]
+            if flip:
+                vs, us = vs[::-1], us[::-1]
+            f = b.faces.new(vs)
+            f.material_index = 0
+            for l, t in zip(f.loops, us):
+                l[uv].uv = t
+    bmesh.ops.triangulate(b, faces=b.faces[:], quad_method='BEAUTY')
+    pc = Piece(PREFIX + name, b, ["MAT_LightShaft"], note=note)
+    pc.keep_uv = True
+    pc.seat_mode = "none"
+    pc.smooth = 60.0
+    return pc
+
+
+def build_lightshaft_lancet():
+    d = moon_dir()
+    poly = shrink_poly(lancet_poly(140.0, 560.0))
+    ring = [Vector((x, 0.0, z)) for (x, z) in poly]            # window plane = local XZ at Y 0 (interior +Y), yaw 0 at the south windows
+    return build_shaft("LightShaft_Lancet", ring, d, 1800.0, 12,
+                       "C4: south lancet clear outline (140 x 560, shrunk 5 %% toward its centroid) swept obliquely along the moon direction d=(%.4f, %.4f, %.4f) "
+                       "to t = 1800 (12 segments); open ends, single-sided, normals outward; UV U around / V 0 (window) -> 1; PIVOT = outline bottom-centre at the window plane; NoCollision" % tuple(d))
+
+
+def roof_hole_outline():
+    """Aperture of RoofSlab_Broken's hole in slab-local (x, y): the through-hole (boards) intersected with the slate-skin cut, via an exact boolean."""
+    import build_kit as BK
+    cut = BK.hole_cutters(ROOF_HOLE_SEED)
+    p1 = [(v.co.x, v.co.y) for v in cut.verts if abs(v.co.z - 13.0) < 1e-4]
+    p2 = [(v.co.x, v.co.y) for v in cut.verts if abs(v.co.z - 11.0) < 1e-4]
+    cut.free()
+    a = K.prism(p1, 'z', 0.0, 2.0, 1)
+    c = K.prism(p2, 'z', 0.0, 2.0, 1)
+    res = bool_op(a, c, 'INTERSECT')
+    a.free()
+    c.free()
+    res.normal_update()
+    res.verts.index_update()
+    top = [f for f in res.faces if f.normal.z > 0.99 and abs(f.calc_center_median().z - 2.0) < 1e-3]
+    tset = set(top)
+    nxt = {}
+    for e in res.edges:
+        lf = [f for f in e.link_faces if f in tset]
+        if len(lf) == 1:
+            f = lf[0]
+            for l in f.loops:
+                if l.edge == e:
+                    nxt.setdefault(l.vert.index, []).append(l.link_loop_next.vert.index)
+    loops, used = [], set()
+    for s in list(nxt):
+        if s in used:
+            continue
+        loop, cur = [], s
+        while cur not in used:
+            used.add(cur)
+            loop.append(cur)
+            cur = nxt[cur][0]
+        loops.append(loop)
+    res.verts.ensure_lookup_table()
+    polys = [[(res.verts[i].co.x, res.verts[i].co.y) for i in lp] for lp in loops]
+    res.free()
+    best = max(polys, key=lambda p: abs(K.poly_area(p)))
+    if K.poly_area(best) < 0:
+        best = best[::-1]
+    return best, p1, p2
+
+
+def build_lightshaft_roofhole():
+    d = moon_dir()
+    full, p1, p2 = roof_hole_outline()
+    simp = simplify_closed(full, 16, 10)
+    shr = shrink_poly(simp)
+    cen = poly_centroid(simp)
+    xa, ya, za = ue_axes(*ROOF_S1_ROT)
+    loc = Vector(ROOF_S1_LOC)
+
+    def to_world(x, y):
+        return loc + xa * x + ya * y + za * ROOF_HOLE_Z
+
+    pivot = to_world(cen[0], cen[1])
+    ring = [to_world(x, y) - pivot for (x, y) in shr]
+    print("ROOFHOLE slab-local outline: full %d verts area %.0f, simplified %d verts area %.0f, centroid (%.2f, %.2f); pivot world (%.2f, %.2f, %.2f)"
+          % (len(full), abs(K.poly_area(full)), len(simp), abs(K.poly_area(simp)), cen[0], cen[1], pivot.x, pivot.y, pivot.z))
+    pc = build_shaft("LightShaft_RoofHole", ring, d, 3000.0, 16,
+                     "C4: RoofSlab_Broken hole aperture (boards cut and slate cut, %d verts, shrunk 5 %%) in WORLD orientation for Ch_Roof_S1 (loc %s, rot %s), swept along "
+                     "d=(%.4f, %.4f, %.4f) to t = 3000 (16 segments); open ends, single-sided, normals outward; PIVOT = outline centroid = world (%.2f, %.2f, %.2f), place with ZERO rotation; NoCollision"
+                     % (len(simp), ROOF_S1_LOC, ROOF_S1_ROT, d.x, d.y, d.z, pivot.x, pivot.y, pivot.z))
+    pc.pivot_world = tuple(pivot)
+    return pc
+
+
+# ==============================================================================================
 # table
 # ==============================================================================================
 def table():
@@ -2133,6 +2336,9 @@ def table():
         ("PricketStand_Small_10x30", build_pricket_small),
         ("PricketStand_150", build_pricket_150),
         ("CandleFlame_A", build_candle_flame),
+        # ---- P8-9a light-shaft cards ----
+        ("LightShaft_Lancet", build_lightshaft_lancet),
+        ("LightShaft_RoofHole", build_lightshaft_roofhole),
     ]
 
 
@@ -2185,6 +2391,8 @@ def run():
                    dims=[round(mx[i] - mn[i], 2) for i in range(3)], tris=K.tri_count(pc.bm), slots=pc.slots,
                    slots_used=used, ucx=len(pc.ucx), pivot_shift_applied=[round(v, 3) for v in pc.shift],
                    note=pc.note, seconds=round(time.time() - t, 1))
+        if hasattr(pc, 'pivot_world'):
+            rec['pivot_world'] = [round(v, 3) for v in pc.pivot_world]
         report.append(rec)
         print("PIECE", json.dumps(rec))
         pieces.append(pc)
