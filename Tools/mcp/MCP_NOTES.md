@@ -86,3 +86,10 @@ For C++ API names, read `Source/LastBell/`; for architecture, read `Docs/TECHNIC
 - Light functions (`lightFunctionMaterial` = `MI_LF_*`) do work on shadowless local lights (G6 flicker check: about 3 % luma change on the lit wall between two captures).
 - Luma measurement for lighting targets: Y = 0.2126 R + 0.7152 G + 0.0722 B on 8-bit sRGB ÷ 255, full frame, PIE Simulate, second of two captures; report mean, fraction < 0.02, p99 and max (FIX3 plan B2).
 - After an editor restart it may open on L_MainMenu: load L_Monastery before any query. The capture size can also change (766×824 vs 760×808), so crop coordinates shift slightly.
+
+## BP template edits (P8-6b)
+- Compiling a Blueprint that has placed instances marks the level dirty, and `SceneTools.load_level` then refuses ("Save the level before loading it"). Writing a component template with `set_properties` dirties the level too.
+- `AssetTools.duplicate` returns False while PIE or Simulate is running; stop PIE before duplicating or creating assets.
+- Placed instances keep their old component values (mesh, override materials, transform) after a template write and compile, even if they equalled the old template. Treat this as "template edits don't reach placed instances": use dressing actors or NoCollision shells (e.g. `Mech_Shell_*`), or change a shared material instance's default (it propagates to every user that does not override the parameter).
+- Never save the map while a template and its placed instance differ: the instance's old value would be serialized as an explicit override. Revert the template (write back, compile, save the BP) first.
+- A headless `UnrealEditor-Cmd -ExecCmds="py ..."` did not run the script in this project (the process hung); don't rely on it to inspect the on-disk map.
