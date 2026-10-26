@@ -201,6 +201,8 @@ Branch `claude/phase-08-chapel`. Full spec: `Docs/plans/P8_CHAPEL_ART.md`. Owner
 | P8-6 | Dressing: pews, ritual circle, statues, lectern, candles, collapse debris, cobwebs, sacristy, clue re-skin | environment-designer [EDITOR] | P8-5 |
 | P8-6b | Puzzle prop re-skin by BP template edits with verification and revert (clue frame, candle stand/wax, mechanism cylinder/marker); amendment C1 | unreal-blueprint-engineer [EDITOR] | P8-6 |
 | P8-7 | Lighting: greybox lights out, candle clusters, moon shafts, roof-hole shaft, coloured pools, glass emissive, nave mist; luma targets and readability gates | lighting-vfx [EDITOR] | P8-6 |
+| P8-9a/b | Owner feedback C4: moon-consistent shadowed window light, soft shaft cards, roof-hole shaft, doorway fog overlap fix | technical-artist, lighting-vfx [EDITOR] | P8-7b |
+| P8-10 | Owner note C5: grime pass (floor dust in joints, soot/damp/mould decals, leaves and debris, dust on surfaces, more cobwebs) | technical-artist + environment-designer [EDITOR] | P8-9b |
 | P8-8 | QA, docs, owner stat gpu + playtest; PHASE 8 READY FOR YOUR REVIEW | qa + lead + owner | all |
 
 Status 2026-10-26: P8-0…P8-7b done (latest c646e7e; suite 78/78 incl. ChapelNave, ChapelSacristy, SacristyToCrypt, RouteBot). P8-8: independent QA running; then owner `stat gpu` in the chapel and playtest.

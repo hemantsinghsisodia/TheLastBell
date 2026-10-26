@@ -731,3 +731,30 @@ Diagnosis (lead):
 7. **Recapture** `g8_02`, `g8_03`, `g8_04`, `g8_05`, `g8_10`, `g8_11`, plus a new `g8_14_window_shafts` from (7000, 300, 170) looking at (7300, −600, 600).
 8. Save, run the suite (78/78), commit.
 9. **The owner then re-measures `stat gpu` mid-nave.** Four shadowed spots add cost; budget 16.6 ms, last 11.79. Fallback if over: S2 and S3 spots shadowless with cards only.
+
+**C5 (2026-10-26, owner note, to implement after P8-9 when the owner says resume): grime pass.** The owner: "everything is looking so clean and dirt-free in the chapel; based on the scene it should look dirty". The chapel has been abandoned for decades, its roof has partly fallen in, and it has been used for a ritual. It should read as dusty, damp, sooty and littered. The lead will expand this into exact values (as for C1–C4) before it starts. Planned scope:
+
+1. **Floor dust and dirt in the joints.**
+   - Reuse `M_LB_Surface`'s growth layer (`bGapGrowth`) with a **dust/dirt tint** instead of moss, in a new `MI_Chapel_Floor_Dirty`.
+   - Dust gathers in the slab joints and at the edges; the aisle is less dirty (walked).
+   - Add a grime macro-noise darkening.
+   - Optionally the chapel walls go into `MPC_LB_GrowthObstacles` so the dust thickens along the wall bases (check the 48-box budget).
+2. **Grime decals.** Generated deterministic textures (as for the chalk) or ambientCG CC0, with a registry row:
+   - **soot plumes** above every candle cluster and the altar stands;
+   - **damp streaks** under each lancet and below the roof hole, using the existing `Leaking006` set;
+   - **mould and dark rising damp** along the wall bases;
+   - **water staining and moss** under the broken S1 lancet and the roof hole;
+   - **wax drips and pools** under candles;
+   - **dirt drag marks and footprints** around the ritual circle;
+   - **broken-glass glints** under S1.
+3. **Debris scatter.** Dead leaves blown in under the roof hole and the broken lancet (the `LeafSet030` dead-leaf atlas as small cards or decals), straw and twigs, stone grit and dust piles in the corners, plaster fragments, and a few more slate chips. All NoCollision, and kept out of the puzzle zone and the aisle-route lanes.
+4. **Surfaces.**
+   - Dust on horizontal surfaces: pew seats, the altar mensa, the sills, the lectern. This is a world-up dust blend, as a new static switch on `M_LB_Surface` or a dust MI variant. Measure the recompile cost.
+   - Darker, dirtier pew wood.
+   - The clue plaque, puzzle candles and puzzle BPs stay untouched (R-33).
+5. **More cobwebs** (the pack's `M_Cobweb`) on the trusses, window splays, pews and the lectern.
+6. **Checks:**
+   - lane check, suite, captures;
+   - darkness targets re-measured (grime darkens the floor; keep the means in range);
+   - readability gates (a) and (b) unchanged;
+   - the owner re-checks GPU if many decals are added.
