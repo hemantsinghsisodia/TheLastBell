@@ -86,3 +86,5 @@ Nearest P8-6 dressing blocker per route (separate measurement, BlockAll dressing
 Other P8-6 geometry checks (bounds read back):
 - Aisle rule (no BlockAll in Y -200..200, X 6060..8350): none; the nearest pew edges are at |Y| 200.1 (N2, N4) and 201.9 (S4).
 - Puzzle zone (no dressing actor in X 8550..8830, |Y| <= 260): none; the nearest are the altar stands (X 8859..8901) and the open shackles (|Y| >= 338).
+
+Update after the P8-6c fixes (`Sa_Chair` replaced by the tipped `Sa_Stool` at X 8409-8471, Y -1320..-1260, BlockAll): SacristyToCrypt (8500,-810)->(8500,-1100)->(7980,-1100) nearest dressing blockers are `Sa_Bench` 150.5 cm and `Sa_Stool` 159.5 cm; the route minimum is still 60.0 cm from the `Sa_Wall_W_Door` jambs (the P8-6 table above is unchanged).
