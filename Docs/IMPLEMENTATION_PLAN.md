@@ -207,6 +207,9 @@ Branch `claude/phase-08-chapel`. Full spec: `Docs/plans/P8_CHAPEL_ART.md`. Owner
 
 Status 2026-10-27: P8-0…P8-10d done (latest 01b29d9; suite 78/78 incl. ChapelNave, ChapelSacristy, SacristyToCrypt, RouteBot). QA (P8-8) passed with no blocking defects; owner playtest feedback handled (C4 window light + doorway exposure, statues facing front, C5 grime + aged altar/table); owner stat gpu 14.99 ms. Awaiting owner review.
 
+## Phase 9 — Crypt art: task breakdown
+Branch `claude/phase-09-crypt`. Spec: `Docs/plans/P9_CRYPT_ART.md` (D-067). P9-0 plan → P9-0b owner migrate → P9-1 CC0 downloads ∥ P9-2 relocation + survey → D1 amendment → P9-3 custom pieces → P9-4 materials/imports → P9-5 structure → P9-6 dressing → P9-7 lighting → P9-8 QA + owner review.
+
 ## Deferred to Phase 14–15 (Lighting, VFX: storm work)
 Items the owner asked to fold into the storm pass. Plan them in detail (Docs/plans/) when Phase 14–15 starts.
 
