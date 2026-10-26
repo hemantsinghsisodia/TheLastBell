@@ -660,3 +660,74 @@ The owner migrates the assets per `Docs/ArtTest/chapel/fab_picklist_p8.md`. **P8
 - **P8-7 additions:**
   - B1 floor puddles currently read as large black blobs (they reflect the dark roof). Tune `MI_Chapel_Floor_Puddled` (PuddleAmount 0.08–0.15, smaller NoiseScale) so standing water is confined to small pools mostly under the roof hole (X 6250–6750, Y −700…−100). No dark patch wider than about 1.5 m outside that area in `g8_02`. If that can't be reached, switch `Ch_Floor_B1` to `MI_Chapel_Floor` and note it.
   - The silhouette must read through the east glass (gate (e)): raise `MI_LB_MoonBackdrop` Color up to (0.25, 0.27, 0.32) and/or lower `MI_Glass_East` GlassOpacity down to 0.30.
+
+**C4 (2026-10-26, owner playtest feedback).** The owner reported three problems:
+1. "light sources not matching the windows";
+2. "dense fog at the chapel door that disappears when I step inside";
+3. "the light from the windows looks pixelated".
+
+Diagnosis (lead):
+- **(1)** The shafts are interior shadowless spots at (X, −700, 950) aimed at (X + 150, −120, 0), so they don't come *through* the windows. The S1 spot even sits above its broken glass (top Z 862).
+- **(2)** `LFV_ChapelFront` (courtyard, centre (5500, 0, 0), radius 636, reaching X 6136) and `LFV_Chapel_Nave` (centre (7400, 0, 0), radius 1500, reaching back to X 5900) overlap across the doorway, so the fog is doubled exactly at the threshold.
+- **(3)** Narrow, high-scattering beams inside the volumetric-fog voxel grid (High uses a 16 px grid, Z 64; D-054) render blocky.
+
+**Fix, two new tasks, P8-9a then P8-9b.**
+
+**P8-9a: light-shaft meshes and material (technical-artist).** Blender headless (props pipeline), then import [EDITOR].
+- **Moon direction:** read `DirectionalLight_1`'s rotation in the editor (expected pitch −38, yaw 35). Forward vector **d** ≈ (0.645, 0.452, −0.616). Use the read value everywhere below.
+- **`SM_LB_Prop_LightShaft_Lancet`:**
+  - The south lancet's clear outline (140 wide, sill Z 0 to apex Z 560, two-centred head as built in `NaveBay`), shrunk 5 % inward.
+  - Extruded **obliquely along d** expressed in the window's local frame: the window plane is local XZ, the interior is local +Y.
+  - Length t = 0…1800 cm along d. It may pass through the floor; depth fade hides that.
+  - Open ends, single-sided, normals outward.
+  - UV0: U = 0…1 around the outline, V = 0 at the window → 1 at t = 1800.
+  - Pivot: the outline's bottom-centre at the window plane.
+- **`SM_LB_Prop_LightShaft_RoofHole`:**
+  - The `RoofSlab_Broken` hole outline (from `build_kit.py`; about X 250…750 × slope 294…987, in the slab's local frame), placed in world orientation for `Ch_Roof_S1` (roll 50, yaw 180, origin per the P8-5 report), shrunk 5 %.
+  - Extruded along d to t = 3000.
+  - Same UV and normal rules.
+  - Pivot at the outline's centroid; record its world position.
+- **`M_LB_LightShaft`** (Translucent, Additive, Unlit, two-sided, no depth test change):
+  - Emissive = `Color` × `Intensity` × along-fade × edge-fade × DepthFade(`DepthFadeDist` 60) × CameraDepthFade(start 30, length 200) × (1 + `DustAmount` × (panning noise − 0.5)).
+  - Along-fade = (1 − V)^`FadePower`.
+  - Edge-fade = |dot(N, V_cam)|^`EdgePower`, so the beam is soft at its silhouette.
+  - Params: `Color` (0.75, 0.80, 0.95), `Intensity` 0.15, `FadePower` 1.6, `EdgePower` 1.5, `DustAmount` 0.25, `DustScale` 0.004, `DustSpeed` 0.02. Use an engine noise texture (`/Engine/EngineMaterials/...` perlin) for the panning noise; record which.
+  - MIs `MI_LightShaft_Window` and `MI_LightShaft_Roof`.
+- Nanite off, NoCollision, CastShadow off.
+- Renders, verify, import, commit.
+
+**P8-9b: shafts that match the windows, and the fog fix (lighting-vfx) [EDITOR].**
+1. **Delete** `Light_Chapel_Shaft_S1/S2/S3` and `Light_Chapel_Shaft_Roof` (the interior spots).
+2. **Moonlight through the windows** (real shadows, so the light enters only through the openings).
+   - For each south lancet S1/S2/S3 (window centre (X, −780, 730), X = 6500 / 7500 / 8500), place a SpotLight `Light_Chapel_Moon_S1/S2/S3` **outside**, at window centre − 1200·d (≈ (X − 774, −1322, 1469)), pointing along d.
+   - Settings:
+     - colour (190, 205, 235), Movable;
+     - **CastShadows true** and **Cast Volumetric Shadow true**;
+     - VolumetricScatteringIntensity **0.3**, low, to avoid blocky voxels; the beam look comes from the cards;
+     - outer cone just covering the window (≈ 18°), inner ≈ 12°;
+     - attenuation radius 3000;
+     - intensity tuned so the floor patch reads (start 4000 lm, range 1000–15000).
+   - **Every glass mesh** (`Ch_Glass_*`): CastShadow **false**, so the opaque glass doesn't block its own light. Read it back.
+   - The lit patch on the floor and dais must be the window's shape and fall where the geometry says. For S1 it falls around (X + 471…1058, −460…−49).
+   - **Move the 3 pool decals** onto those patches (rectangle about 720 × 160, yaw = heading of d ≈ 35°, centred on the patch) so the stained-glass colours sit on the real moonlight.
+3. **Roof hole.**
+   - `Light_Chapel_Moon_Roof`: a spot outside above `Ch_Roof_S1`'s hole, hole centroid − 2000·d, pointing along d, shadowed (+ volumetric shadow), scattering 0.3, cone covering the hole.
+   - Its patch falls on the north side (around X 8200, low on the north wall) per the geometry. Move `Ch_Pool_Roof` to that patch.
+4. **Shaft cards.**
+   - `SM_LB_Prop_LightShaft_Lancet` at each south lancet: pivot at the window's inner glass plane (Y −789), bottom-centre at the sill (X, Z 450). `MI_LightShaft_Window`.
+   - `SM_LB_Prop_LightShaft_RoofHole` at its recorded pivot, with `MI_LightShaft_Roof`.
+   - All NoCollision.
+   - Tune `Intensity` so the beams read softly (no hard edges, no blockiness) and the nave mean targets still hold.
+5. **Fog at the doorway.**
+   - `LFV_ChapelFront`: shrink and move it so it ends at least 50 cm outside the front wall: centre (5450, 0, 0), radius ≤ 500 (scale ≤ 1.0).
+   - `LFV_Chapel_Nave`: keep it entirely inside: centre (7500, 0, 0), radius ≤ 1440 (scale 2.88). Lower its density so the interior haze matches what the player sees from the doorway.
+   - **Measure the transition.** PIE Simulate captures looking +X from (5700, 0, 170), (5950, 0, 170), (6100, 0, 170), (6400, 0, 170) and (6800, 0, 170). For each, record mean luma and the luma of a 120 × 120 crop on the altar region.
+   - Adjacent steps must not jump by more than 30 % in "fogginess", meaning crop contrast between the altar and its surroundings. Report the table, before and after.
+   - If the jump persists, toggle each fog element (both LFVs, height-fog volumetric) to find the culprit and report.
+6. **Re-check:**
+   - the P8-7 luma targets (entrance, mid-nave, sacristy);
+   - gates (a) clue, (b) bands, (d) coverage, (e) silhouette;
+   - the courtyard regression (g6_04 / g6_14 means ±0.01).
+7. **Recapture** `g8_02`, `g8_03`, `g8_04`, `g8_05`, `g8_10`, `g8_11`, plus a new `g8_14_window_shafts` from (7000, 300, 170) looking at (7300, −600, 600).
+8. Save, run the suite (78/78), commit.
+9. **The owner then re-measures `stat gpu` mid-nave.** Four shadowed spots add cost; budget 16.6 ms, last 11.79. Fallback if over: S2 and S3 spots shadowless with cards only.
