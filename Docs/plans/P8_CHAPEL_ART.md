@@ -645,3 +645,18 @@ The owner migrates the assets per `Docs/ArtTest/chapel/fab_picklist_p8.md`. **P8
   - The glass slabs are 1 cm thick and centred in Y: place them in the groove at wall-local Y 39–42.
   - `PricketStand_150`'s shaft is 4.5 cm off the bbox centre.
   - `Cobweb_Corner_A`'s corner edge is at local (−60, −60).
+
+**C3 (2026-10-26, after the P8-6 review; commits d5443eb…e949875).**
+- **P8-6 accepted**, with these as-built choices:
+  - flame mesh `SM_LB_Prop_CandleFlame_A` (BP_Flame rejected: an ember column), 13 lit flames;
+  - `MI_Cobweb_Dungeon`;
+  - the stool instead of the scribe chair;
+  - `MI_Chapel_Rubble`, `MI_Sacristy_Table_Old`;
+  - the hanging body from the arch brace at Z 1376 (traced).
+- **Clue glass (amends C1-1):** in P8-6b, the plaque's `Glass` may also be re-skinned. It's additive lilac (0.35, 0.40, 0.60), which washes the saints out.
+  - Create `MI_LB_ClueGlass` (child of `MI_LB_StainedGlass`, Color (0.10, 0.12, 0.22)) and set it on the `Glass` template.
+  - Accept it only if readability improves. Measure the mean RGB of each saint body and of the glass background in a capture from (8750, 300, 170) facing +Y, before and after. The four saint hues must stay distinct, and the saint-vs-background luma contrast must rise. Otherwise revert.
+  - The saints' materials, colours and positions are still never changed.
+- **P8-7 additions:**
+  - B1 floor puddles currently read as large black blobs (they reflect the dark roof). Tune `MI_Chapel_Floor_Puddled` (PuddleAmount 0.08–0.15, smaller NoiseScale) so standing water is confined to small pools mostly under the roof hole (X 6250–6750, Y −700…−100). No dark patch wider than about 1.5 m outside that area in `g8_02`. If that can't be reached, switch `Ch_Floor_B1` to `MI_Chapel_Floor` and note it.
+  - The silhouette must read through the east glass (gate (e)): raise `MI_LB_MoonBackdrop` Color up to (0.25, 0.27, 0.32) and/or lower `MI_Glass_East` GlassOpacity down to 0.30.
