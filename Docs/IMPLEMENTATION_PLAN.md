@@ -205,7 +205,7 @@ Branch `claude/phase-08-chapel`. Full spec: `Docs/plans/P8_CHAPEL_ART.md`. Owner
 | P8-10 | Owner note C5: grime pass (floor dust in joints, soot/damp/mould decals, leaves and debris, dust on surfaces, more cobwebs) | technical-artist + environment-designer [EDITOR] | P8-9b |
 | P8-8 | QA, docs, owner stat gpu + playtest; PHASE 8 READY FOR YOUR REVIEW | qa + lead + owner | all |
 
-Status 2026-10-26: P8-0…P8-7b done (latest c646e7e; suite 78/78 incl. ChapelNave, ChapelSacristy, SacristyToCrypt, RouteBot). P8-8: independent QA running; then owner `stat gpu` in the chapel and playtest.
+Status 2026-10-27: P8-0…P8-10d done (latest 01b29d9; suite 78/78 incl. ChapelNave, ChapelSacristy, SacristyToCrypt, RouteBot). QA (P8-8) passed with no blocking defects; owner playtest feedback handled (C4 window light + doorway exposure, statues facing front, C5 grime + aged altar/table); owner stat gpu 14.99 ms. Awaiting owner review.
 
 ## Deferred to Phase 14–15 (Lighting, VFX: storm work)
 Items the owner asked to fold into the storm pass. Plan them in detail (Docs/plans/) when Phase 14–15 starts.

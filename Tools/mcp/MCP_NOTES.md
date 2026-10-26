@@ -102,3 +102,7 @@ For C++ API names, read `Source/LastBell/`; for architecture, read `Docs/TECHNIC
 - Light-pool decals (Translucent, Unlit, emissive) add light on the floor (verified by on/off captures); `Additive` is not allowed in the decal domain.
 - Lit-state captures of puzzle candles: in PIE Simulate the PIE-world instances' `Flame`/`FlameLight` visibility can be toggled for a capture (never in the editor world).
 - A wide even wash on a ceiling is easier with a RectLight facing up than with a spot (spots made hot ellipses).
+- Exposure: post-process volume boundaries change EV100 abruptly; give bounded PP volumes a `BlendRadius` (P8-9d: the 'doorway fog' was an EV jump at the chapel door).
+- Shadowless spot lights placed outside a wall light the interior through the wall; light coming through a window needs CastShadows (and Cast Volumetric Shadow) on, and the glass mesh CastShadow off.
+- `M_LB_Surface` roughness: use `RoughnessMin`/`RoughnessMax` in an MI to remove an unwanted sheen.
+- Grime decals (`M_LB_Decal_Grime`): wall decals rotation (0, yaw, 90) with size (depth, vertical, horizontal); floor decals (-90, yaw, 0) with size (depth, v, u). `MI_Decal_Leaking006_Wall` also needs roll 90.
