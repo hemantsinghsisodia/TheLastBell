@@ -12,6 +12,8 @@ Produces (PNG; RGBA where noted):
   T_LB_Decal_ChalkTally            512x256   RGBA 4 groups of five.
   T_LB_Cobweb_A                    1024x1024 RGBA radial web (fallback; C0 uses the Dungeon pack's cobweb material).
   T_LB_RoofSlates_diff / _nor_dx / _rough / _arm  2048x1024 (_rough is the source rough map = constant 1.0; _arm = AO/rough/metal): roof_slates_03 with the ridge-cap strip removed and whole slate courses kept so it tiles vertically.
+  T_LB_Decal_Soot_A / _B 512x1024, _Mould_Band 1024x256, _WaterStain 1024^2, _WaxDrips 512^2, _DragMarks 1024x512 (authored 600x120 cm, squeezed 2.5x in u),
+                                   _LeafLitter_A / _B 1024^2 (LeafSet030 leaf cells), _DustDrift 1024^2 (dense corner = texture top-left)   -- all RGBA, A = opacity (P8-10a grime)
 Previews: tex_*.png in the preview folder (2x2 tile preview for the slates).
 
 Seeds are in SEEDS below (every random number comes from numpy default_rng(seed); nothing else is random).  The chalk glyphs are invented
@@ -37,6 +39,16 @@ SEEDS = {
     "chalk_tally": 8707,
     "cobweb": 8808,
     "slates": 8909,
+    # P8-10a grime decals
+    "soot_a": 9101,
+    "soot_b": 9102,
+    "mould": 9203,
+    "waterstain": 9304,
+    "wax": 9405,
+    "drag": 9506,
+    "leaf_a": 9607,
+    "leaf_b": 9608,
+    "dust": 9709,
 }
 # muted palette (plan P8-3)
 BLUE = np.array((0.10, 0.16, 0.42), np.float32)
@@ -813,6 +825,449 @@ def slates_textures(seed, out_dir, prev_dir):
 
 
 # ----------------------------------------------------------------------------------------------
+# grime decals (P8-10a): soot, mould band, water stain, wax, drag marks, leaf litter, dust drift
+# ----------------------------------------------------------------------------------------------
+def rgba_const(rgb, a, jitter=None):
+    """RGBA with a (nearly) constant colour everywhere (so mips never bleed a wrong colour) and the given alpha."""
+    col = np.zeros(a.shape + (3,), np.float32) + np.asarray(rgb, np.float32)
+    if jitter is not None:
+        col = col * (1.0 + jitter)[..., None]
+    return np.dstack([np.clip(col, 0, 1), np.clip(a, 0, 1)[..., None]]).astype(np.float32)
+
+
+def soot_texture(seed, lean, width):
+    """512 x 1024 sooty plume above a flame: dense at the bottom (alpha 0.85), widening and thinning upward with billowing turbulent edges,
+    vertical deposit streaks and a fuzzy fringe.  lean = sideways drift of the plume centre (fraction of the width), width = plume width factor."""
+    rng = np.random.default_rng(seed)
+    W, H = 512, 1024
+    ys, xs = np.mgrid[0:H, 0:W].astype(np.float32)
+    t = 1.0 - (ys + 0.5) / H                                   # 0 bottom -> 1 top
+    u = (xs + 0.5) / W
+    wx = (fbm(H, W, 170, 4, rng) - 0.5) * 2.0                  # turbulence grows with height (laminar at the flame, billowing higher up)
+    turb = fbm(H, W, 90, 4, rng)
+    sway = (vnoise(1, H, 2, 300, rng)[0] - 0.5) * 2.0
+    cx = 0.5 + lean * t ** 1.2 + 0.06 * sway[:, None] * t
+    hw = (0.075 + 0.27 * t ** 0.55) * width
+    q = (u - cx + 0.13 * wx * t ** 0.7) / hw
+    prof = np.exp(-q * q * 1.5)
+    streak = vnoise(H, W, 340, 9, rng)                         # tall thin deposit streaks
+    fine = vnoise(H, W, 3, 3, rng)
+    f = prof * np.exp(-t * 2.1) * (0.50 + 0.95 * turb) * (0.78 + 0.45 * streak)
+    a = 0.85 * np.clip(f * 1.55, 0, 1) ** 0.95
+    a = a * (0.80 + 0.40 * fine) * (1 - smoothstep(0.80, 1.0, t))
+    a = a * np.clip(np.minimum(u, 1 - u) / 0.05, 0, 1)
+    return rgba_const((0.02, 0.02, 0.02), np.clip(a, 0, 0.85), (fine - 0.5) * 0.5)
+
+
+def mould_band_texture(seed):
+    """1024 x 256 rising-damp band: dark green-black at the bottom, wavering soft top edge with broad wicking bulges, blotchy alpha 0.4-0.8,
+    clusters of darker mould and a speckle of spores above the tide line."""
+    rng = np.random.default_rng(seed)
+    W, H = 1024, 256
+    ys, xs = np.mgrid[0:H, 0:W].astype(np.float32)
+    hgt = (H - (ys + 0.5))                                      # px above the bottom edge
+    e1 = vnoise(1, W, 2, 170, rng)[0]
+    e2 = vnoise(1, W, 2, 45, rng)[0]
+    e3 = vnoise(1, W, 2, 11, rng)[0]
+    edge = H * (0.50 + 0.26 * (e1 - 0.5) * 2 + 0.10 * (e2 - 0.5) * 2 + 0.025 * (e3 - 0.5) * 2)
+    wick = vnoise(1, W, 2, 50, rng)[0]                           # broad bulges where damp wicks higher
+    edge = edge + 26.0 * smoothstep(0.5, 1.0, wick) ** 1.5
+    below = edge[None, :] - hgt                                  # > 0 inside the band
+    blot = fbm(H, W, 80, 4, rng)
+    bandw = 30.0 + 40.0 * fbm(H, W, 110, 2, rng)                # a wide, uneven fade: damp thins out upward
+    inside = smoothstep(-0.15, 1.0, below / bandw) ** 1.3
+    dens = 0.50 + 0.30 * (blot - 0.5) * 2.0
+    dens = dens + 0.22 * (1 - smoothstep(0, 70.0, hgt))          # darker toward the ground
+    clusters = smoothstep(0.52, 0.80, fbm(H, W, 34, 3, rng))     # darker mould clusters
+    dens = dens + 0.25 * clusters
+    dens = dens * (0.86 + 0.28 * vnoise(H, W, 140, 8, rng))     # faint vertical streaks
+    a = inside * dens
+    above = np.clip(-below, 0, None)                              # spores above the tide line, thinning with height
+    sp = rng.random((H, W)).astype(np.float32)
+    spk = (sp > 0.955 - 0.045 * np.exp(-above / 22.0)) & (above < 70) & (blot > 0.45)
+    spk_a = Image.fromarray((spk * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(0.9))
+    a = np.maximum(a, as_mask(spk_a) * 1.6 * (0.6 + 0.4 * blot))
+    a = a * np.clip(np.minimum(xs, W - xs) / 24.0, 0, 1)         # fade the ends so adjacent decals blend
+    a = np.clip(a, 0, 0.8)
+    g = fbm(H, W, 40, 3, rng)
+    col = np.zeros((H, W, 3), np.float32)
+    col[..., 0] = 0.040 + 0.020 * g
+    col[..., 1] = 0.052 + 0.024 * g
+    col[..., 2] = 0.032 + 0.014 * g
+    return np.dstack([col, a[..., None]]).astype(np.float32)
+
+
+def water_stain_texture(seed):
+    """1024^2 stain: irregular, darker brown at the margin (0.10, 0.08, 0.06) and lighter toward the centre, three tide-mark rings (sharp outer
+    edge, soft feathering inward, broken here and there), alpha 0.3-0.7."""
+    rng = np.random.default_rng(seed)
+    N = 1024
+    ys, xs = np.mgrid[0:N, 0:N].astype(np.float32)
+    px, py = (xs + 0.5 - N / 2) / (N / 2), (ys + 0.5 - N / 2) / (N / 2)
+    wx = (fbm(N, N, 180, 4, rng) - 0.5) * 0.30
+    wy = (fbm(N, N, 180, 4, rng) - 0.5) * 0.30
+    qx, qy = px + wx, py * 1.10 + wy
+    d = np.hypot(qx, qy)
+    th = np.arctan2(qy, qx)
+
+    def radius(r0, amp, seed_off):
+        r = np.random.default_rng(seed + seed_off)
+        out = np.zeros_like(th) + r0
+        for k in range(2, 8):
+            out += (amp / k) * np.sin(k * th + r.uniform(0, 6.283)) * r.uniform(0.5, 1.0)
+        return out
+
+    ring_r = [radius(0.40, 0.14, 11), radius(0.60, 0.15, 12), radius(0.78, 0.13, 13)]
+    outer = ring_r[-1] + 0.05
+    inside = smoothstep(1.0, 0.0, (d - outer) / 0.035)
+    inside = inside * (1 - 0.35 * fbm(N, N, 14, 3, rng) * smoothstep(0.7, 1.15, d / np.maximum(outer, 0.2)))   # ragged feathered margin
+    s = np.clip(d / np.maximum(outer, 0.2), 0, 1.2)
+    zone = sum(smoothstep(-0.012, 0.012, d - rr) for rr in ring_r)     # 0 in the centre .. 2 past the middle ring: each tide zone a step darker
+    a = (0.20 + 0.075 * zone + 0.06 * smoothstep(0.3, 1.0, s)) * inside
+    brk = fbm(N, N, 90, 3, rng)
+    for k, rr in enumerate(ring_r):                               # tide marks: sharp outer edge, feathered inward, broken in places
+        dd = d - rr
+        band = smoothstep(0.007, -0.003, dd) * smoothstep(-0.055 - 0.02 * k, 0.0, dd) ** 1.5
+        gap = smoothstep(0.38, 0.55, brk + 0.04 * k)
+        a = np.maximum(a, band * gap * (0.60 + 0.07 * k) * (0.75 + 0.45 * fbm(N, N, 18, 3, rng)))
+    a = a * (0.88 + 0.24 * fbm(N, N, 40, 3, rng))
+    a = np.clip(a, 0.0, 0.7)
+    a = a * (a > 0.012)
+    tone = np.clip(s, 0, 1)
+    light = np.array((0.19, 0.155, 0.115), np.float32)
+    dark = np.array((0.10, 0.08, 0.06), np.float32)
+    col = light[None, None, :] * (1 - tone[..., None]) + dark[None, None, :] * tone[..., None]
+    for rr in ring_r:                                             # the tide marks are the darkest tone
+        col = col * (1.0 - 0.22 * np.exp(-((d - rr) / 0.02) ** 2)[..., None])
+    col = col * (0.92 + 0.16 * fbm(N, N, 30, 3, rng))[..., None]
+    return np.dstack([np.clip(col, 0, 1), a[..., None]]).astype(np.float32)
+
+
+def wax_texture(seed):
+    """512^2: 6 creamy wax splats, each an irregular pool with run-drip fingers (rounded bulb ends) and satellite droplets, bevel-shaded."""
+    rng = np.random.default_rng(seed)
+    SS = 2
+    N = 512 * SS
+    mask = Image.new('L', (N, N), 0)
+    dr = ImageDraw.Draw(mask)
+    centres = []
+    tries = 0
+    while len(centres) < 6 and tries < 500:
+        tries += 1
+        c = (rng.uniform(80, 432), rng.uniform(80, 432))
+        if all(math.hypot(c[0] - o[0], c[1] - o[1]) > 120 for o in centres):
+            centres.append(c)
+    for (cx, cy) in centres:
+        cx, cy = cx * SS, cy * SS
+        R = rng.uniform(14, 42) * SS
+        n = 64
+        th = np.linspace(0, 2 * math.pi, n, endpoint=False)
+        r = np.full(n, R)
+        for k in range(2, 6):
+            r = r + (R * 0.34 / k) * np.sin(k * th + rng.uniform(0, 6.283))
+        dr.polygon([(cx + ri * math.cos(a), cy + ri * math.sin(a)) for ri, a in zip(r, th)], fill=255)
+        for _ in range(int(rng.choice((0, 1, 1, 2, 3)))):          # run-drips: wavering rivulets that taper, sometimes ending in a small bead
+            ang = math.radians(90 + rng.uniform(-75, 75))
+            ln = R * rng.uniform(1.0, 3.0)
+            w0 = R * rng.uniform(0.18, 0.40)
+            wob = rng.uniform(0, 6.28)
+            for i in range(41):
+                tt = i / 40.0
+                lat = 0.10 * R * math.sin(wob + tt * 5.0)
+                p = (cx + math.cos(ang) * (R * 0.45 + ln * tt) - math.sin(ang) * lat, cy + math.sin(ang) * (R * 0.45 + ln * tt) + math.cos(ang) * lat)
+                wd = w0 * (1.0 - 0.75 * tt) * (0.85 + 0.3 * math.sin(tt * 9 + wob))
+                if rng.random() < 0.5:
+                    wd += w0 * 0.30 * math.exp(-((tt - 1.0) / 0.07) ** 2)
+                wd = max(wd, 0.9 * SS)
+                dr.ellipse([p[0] - wd, p[1] - wd, p[0] + wd, p[1] + wd], fill=255)
+        for _ in range(int(rng.integers(3, 8))):                   # satellite droplets
+            a = rng.uniform(0, 2 * math.pi)
+            rd = R * rng.uniform(1.3, 2.4)
+            rr = R * rng.uniform(0.07, 0.2)
+            x, y = cx + rd * math.cos(a), cy + rd * math.sin(a)
+            dr.ellipse([x - rr, y - rr, x + rr, y + rr], fill=255)
+    m = as_mask(mask.filter(ImageFilter.GaussianBlur(1.2 * SS)).resize((512, 512), Image.BOX))
+    hmap = as_mask(mask.filter(ImageFilter.GaussianBlur(5.0 * SS)).resize((512, 512), Image.BOX))
+    gy, gx = np.gradient(hmap)
+    light = np.clip(0.5 - (gx * 9.0 + gy * 9.0) * 1.3, 0, 1)           # light from the upper left
+    rim = np.clip((m - hmap) * 2.2 + 0.15, 0, 1)
+    n1 = fbm(512, 512, 24, 3, rng)
+    base = np.array((0.80, 0.74, 0.60), np.float32)
+    col = base[None, None, :] * (0.78 + 0.45 * light + 0.12 * (n1 - 0.5))[..., None]
+    col = col * (1.0 - 0.12 * rim[..., None])
+    return np.dstack([np.clip(col, 0, 1), np.clip(m * 0.9, 0, 0.9)[..., None]]).astype(np.float32)
+
+
+def boot_sole_polys(length=30.0, side=1):
+    """Invented boot-sole print facing +x (toe), local cm, origin = middle.  Returns (heel polygon, sole polygon, tread-notch polygons).
+    side = +1 left, -1 right (mirrors y)."""
+    x0 = -length / 2
+    heel = [(x0, -3.6), (x0 + 1.5, -4.2), (x0 + 7.0, -4.0), (x0 + 7.4, 0.0), (x0 + 7.0, 4.0), (x0 + 1.5, 4.2), (x0, 3.6)]
+    sole = [(x0 + 10.0, -3.4), (x0 + 15.0, -3.9), (x0 + 20.0, -5.2), (x0 + 25.0, -5.6), (x0 + 28.0, -4.2), (x0 + 30.0, -1.6), (x0 + 30.2, 0.8),
+            (x0 + 28.6, 3.8), (x0 + 25.0, 5.6), (x0 + 20.0, 5.4), (x0 + 15.0, 4.2), (x0 + 10.0, 3.4)]
+    notch = []
+    for xn in (14.5, 17.5, 20.5, 23.5, 26.5):                              # tread bars cut across the sole
+        notch.append([(x0 + xn, -4.2), (x0 + xn + 1.1, -4.4), (x0 + xn + 1.0, -0.8), (x0 + xn - 0.1, -0.8)])
+        notch.append([(x0 + xn, 0.8), (x0 + xn + 1.1, 0.8), (x0 + xn + 1.1, 4.4), (x0 + xn, 4.2)])
+    for xn in (2.2, 5.0):                                                  # heel tread
+        notch.append([(x0 + xn, -3.0), (x0 + xn + 1.0, -3.0), (x0 + xn + 1.0, 3.0), (x0 + xn, 3.0)])
+    if side < 0:
+        heel = [(x, -y) for x, y in heel]
+        sole = [(x, -y) for x, y in sole]
+        notch = [[(x, -y) for x, y in nn] for nn in notch]
+    return heel, sole, notch
+
+
+def drag_marks_texture(seed):
+    """1024 x 512.  Authored on a 2560 x 512 logical canvas (600 x 120 cm decal = half extents 300 x 60, 4.27 px/cm) and squeezed 2.5x in u, so the
+    decal (texture u along the 600 cm axis) reproduces the real shapes: two parallel scuffed drag trails plus invented boot-sole prints."""
+    rng = np.random.default_rng(seed)
+    LW, LH = 2560, 512
+    pxcm = 2560.0 / 600.0
+    ys, xs = np.mgrid[0:LH, 0:LW].astype(np.float32)
+    uc = (xs + 0.5) / pxcm                                                  # cm along the trail 0..600
+    vc = (ys + 0.5) / pxcm - 60.0                                           # cm across -60..60
+    alpha = np.zeros((LH, LW), np.float32)
+    shared = (vnoise(1, LW, 2, 700, rng)[0] - 0.5) * 2.0 * 6.0              # both trails wander together
+    for v0 in (-17.0, 17.0):
+        own = (vnoise(1, LW, 2, 380, rng)[0] - 0.5) * 2.0 * 2.5
+        centre = v0 + shared + own
+        hw = 6.2 + 1.8 * (vnoise(1, LW, 2, 300, rng)[0] - 0.5) * 2.0
+        dv = (vc - centre[None, :]) / hw[None, :]
+        rag = fbm(LH, LW, 40, 3, rng)
+        rag_l = vnoise(LH, LW, 8, 140, rng)                                   # streaks stretched along the trail
+        edge = np.abs(dv) + 0.45 * (rag - 0.5) + 0.30 * (rag_l - 0.5)
+        band = smoothstep(1.05, 0.55, edge)
+        contact = smoothstep(0.12, 0.35, vnoise(1, LW, 2, 260, rng)[0])[None, :]     # the drag lifts now and then
+        grain = 0.55 + 0.7 * vnoise(LH, LW, 3, 22, rng)
+        a = band * (0.35 + 0.65 * contact) * grain * (0.75 + 0.45 * vnoise(LH, LW, 6, 90, rng))
+        alpha = np.maximum(alpha, a)
+        cl = (rng.random((LH, LW)) > 0.9992)                                  # flicked dirt clumps near the trail
+        cl_img = Image.fromarray((cl * 255).astype(np.uint8)).filter(ImageFilter.MaxFilter(9)).filter(ImageFilter.GaussianBlur(2.0))
+        alpha = np.maximum(alpha, as_mask(cl_img) * np.exp(-(((vc - centre[None, :]) / 11.0) ** 2)) * 0.9)
+    prints = []
+    u, side = 28.0, 1
+    while u < 585:
+        prints.append((u + rng.uniform(-3, 3), side * rng.uniform(33, 40) + rng.uniform(-4, 4), side, rng.uniform(-9, 9) + side * 4.0, 1.0))
+        u += rng.uniform(48, 58)
+        side = -side
+    for (pu, pv, sd) in ((rng.uniform(200, 260), -46.0, 1), (rng.uniform(300, 380), 47.0, -1), (rng.uniform(430, 500), -44.0, 1)):   # a few going back, lighter
+        prints.append((pu, pv, sd, 180 + rng.uniform(-10, 10), 0.6))
+    layer = np.zeros((LH, LW), np.float32)
+    for (pu, pv, sd, yaw, pr) in prints:
+        sm = Image.new('L', (LW, LH), 0)
+        sdr = ImageDraw.Draw(sm)
+        heel, sole, notch = boot_sole_polys(30.0, sd)
+        ca, sa = math.cos(math.radians(yaw)), math.sin(math.radians(yaw))
+        tp = lambda pts: [((pu + x * ca - y * sa) * pxcm, (pv + 60.0 + x * sa + y * ca) * pxcm) for x, y in pts]
+        sdr.polygon(tp(heel), fill=255)
+        sdr.polygon(tp(sole), fill=255)
+        for nt in notch:
+            sdr.polygon(tp(nt), fill=0)
+        pm_ = as_mask(sm.filter(ImageFilter.GaussianBlur(1.6)))
+        press = 0.75 + 0.5 * vnoise(LH, LW, 30, 30, rng)                      # uneven pressure, wiped / lifted parts, grit
+        wipe = smoothstep(0.05, 0.4, vnoise(LH, LW, 90, 90, rng) + rng.uniform(-0.1, 0.15))
+        gr = 0.65 + 0.5 * rng.random((LH, LW)).astype(np.float32)
+        layer = np.maximum(layer, pm_ * press * wipe * gr * pr)
+    alpha = np.maximum(alpha, np.clip(layer * 1.5, 0, 1))
+    alpha = np.maximum(alpha, np.exp(-(((uc - 14.0) / 22.0) ** 2 + ((vc - 1.0) / 20.0) ** 2)) * 0.9 * (0.5 + 0.7 * fbm(LH, LW, 24, 3, rng)))   # smear where the load dropped
+    alpha = np.clip(alpha, 0, 1) * 0.5
+    alpha = alpha * np.clip(np.minimum(uc, 600 - uc) / 18.0, 0, 1) * np.clip((60.0 - np.abs(vc)) / 6.0, 0, 1)
+    a = np.asarray(Image.fromarray(alpha, mode='F').resize((1024, 512), Image.BOX), np.float32)
+    return rgba_const((0.12, 0.10, 0.08), a, (fbm(512, 1024, 20, 3, rng) - 0.5) * 0.3)
+
+
+def find_leaf_cells(opacity):
+    """Connected components of the leaf-atlas opacity map: 8-connected labelling on a 1/4-res mask opened (eroded) so the thin petioles that
+    touch neighbouring leaves are removed, then every label grown back into the opaque area.  Returns ([(x0, y0, x1, y1, id)], full-res id map)."""
+    m = Image.fromarray((opacity > 0.5).astype(np.uint8) * 255)
+    quarter = m.resize((512, 512), Image.BOX)
+    small = quarter.point(lambda v: 255 if v > 100 else 0).filter(ImageFilter.MinFilter(5))
+    a = np.asarray(small) > 0
+    lab = np.zeros(a.shape, np.int32)
+    n = 0
+    for y in range(a.shape[0]):
+        for x in range(a.shape[1]):
+            if a[y, x] and not lab[y, x]:
+                n += 1
+                lab[y, x] = n
+                st = [(y, x)]
+                while st:
+                    cy, cx = st.pop()
+                    for dy in (-1, 0, 1):
+                        for dx in (-1, 0, 1):
+                            ny, nx = cy + dy, cx + dx
+                            if 0 <= ny < 512 and 0 <= nx < 512 and a[ny, nx] and not lab[ny, nx]:
+                                lab[ny, nx] = n
+                                st.append((ny, nx))
+    sm_op = np.asarray(quarter) > 20
+    grown = lab.copy()
+    for _ in range(14):                                                       # grow labels back into the opaque area
+        nb = np.zeros_like(grown)
+        for dy, dx in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            sh = np.roll(np.roll(grown, dy, 0), dx, 1)
+            nb = np.where((nb == 0) & (sh > 0), sh, nb)
+        grown = np.where((grown == 0) & (nb > 0) & sm_op, nb, grown)
+    full = np.repeat(np.repeat(grown, 4, axis=0), 4, axis=1)
+    cells = []
+    for i in range(1, n + 1):
+        ys, xs = np.where(grown == i)
+        if len(ys) < 150:
+            continue
+        cells.append((int(xs.min()) * 4, int(ys.min()) * 4, int(xs.max()) * 4 + 4, int(ys.max()) * 4 + 4, i))
+    cells.sort(key=lambda c: (c[1] // 400, c[0]))
+    return cells, full
+
+
+_LEAVES = {}
+
+
+def load_leaves():
+    """Cut every leaf out of the LeafSet030 atlas (Color + Opacity): list of RGBA float32 crops."""
+    if 'v' in _LEAVES:
+        return _LEAVES['v']
+    base = os.path.join(ROOT, "ExternalAssets", "Incoming", "ambientcg-LeafSet030", "LeafSet030_2K-JPG", "LeafSet030_2K-JPG_")
+    col = np.asarray(Image.open(base + "Color.jpg").convert('RGB'), np.float32) / 255.0
+    op = np.asarray(Image.open(base + "Opacity.jpg").convert('L'), np.float32) / 255.0
+    cells, full = find_leaf_cells(op)
+    out = []
+    for (x0, y0, x1, y1, lid) in cells:
+        x0, y0, x1, y1 = max(0, x0 - 8), max(0, y0 - 8), min(2048, x1 + 8), min(2048, y1 + 8)
+        mk = Image.fromarray(((full[y0:y1, x0:x1] == lid) * 255).astype(np.uint8)).filter(ImageFilter.MaxFilter(15))
+        a = op[y0:y1, x0:x1] * as_mask(mk)
+        a = as_mask(Image.fromarray((a * 255).astype(np.uint8)).filter(ImageFilter.MinFilter(3)).filter(ImageFilter.GaussianBlur(0.8)))
+        out.append(np.dstack([col[y0:y1, x0:x1], a[..., None]]).astype(np.float32))
+    _LEAVES['v'] = out
+    return out
+
+
+def leaf_litter_texture(seed, n_leaves, spread):
+    """1024^2 scatter of dead oak leaves from LeafSet030 cells: random rotation, scale 0.6-1.2 of a 100 px base length, darkened x0.7, clumped
+    into drifts, a faint contact shadow under each leaf, some leaves broken / partly buried."""
+    rng = np.random.default_rng(seed)
+    leaves = load_leaves()
+    SS = 2
+    N = 1024 * SS
+    canvas = np.zeros((N, N, 4), np.float32)                                  # premultiplied
+    shadow = np.zeros((N, N), np.float32)
+    clumps = [(rng.uniform(250, 770), rng.uniform(250, 770), rng.uniform(150, 260) * spread) for _ in range(5)]
+    items = []
+    attempts = 0
+    while len(items) < n_leaves and attempts < 4000:
+        attempts += 1
+        if rng.random() < 0.8:
+            c = clumps[int(rng.integers(0, len(clumps)))]
+            x, y = rng.normal(c[0], c[2]), rng.normal(c[1], c[2])
+        else:
+            x, y = rng.uniform(40, 984), rng.uniform(40, 984)
+        if not (30 < x < 994 and 30 < y < 994):
+            continue
+        if rng.random() > smoothstep(30, 190, min(x, y, 1024 - x, 1024 - y)) ** 0.7:
+            continue
+        items.append((x, y, int(rng.integers(0, len(leaves))), rng.uniform(0, 360), rng.uniform(0.6, 1.2), rng.uniform(0.82, 1.12)))
+    for (x, y, li, rot, sc, bright) in items:
+        lf = leaves[li]
+        h, w = lf.shape[:2]
+        k = 100.0 * sc * SS / max(h, w)
+        im = Image.fromarray((np.clip(lf, 0, 1) * 255).astype(np.uint8), 'RGBA')
+        im = im.resize((max(2, int(w * k)), max(2, int(h * k))), Image.LANCZOS).rotate(rot, Image.BICUBIC, expand=True)
+        arr = np.asarray(im, np.float32) / 255.0
+        a = arr[..., 3]
+        rgb = arr[..., :3] * 0.7 * bright                                   # darkened x0.7
+        lum = rgb.mean(axis=2, keepdims=True)
+        rgb = lum + (rgb - lum) * 0.85
+        if rng.random() < 0.2:
+            rgb = rgb * 0.62                                                # a few rotted dark leaves
+        if rng.random() < 0.35:                                             # broken / partly buried edge
+            hh, ww = a.shape
+            yy, xx = np.mgrid[0:hh, 0:ww].astype(np.float32)
+            ang = rng.uniform(0, 6.283)
+            cut = (xx - ww / 2) * math.cos(ang) + (yy - hh / 2) * math.sin(ang)
+            a = a * (cut < rng.uniform(0.1, 0.3) * max(hh, ww)).astype(np.float32)
+        x0, y0 = int(x * SS - a.shape[1] / 2), int(y * SS - a.shape[0] / 2)
+        sx0, sy0, sx1, sy1 = max(0, x0), max(0, y0), min(N, x0 + a.shape[1]), min(N, y0 + a.shape[0])
+        if sx1 <= sx0 or sy1 <= sy0:
+            continue
+        ca = a[sy0 - y0:sy1 - y0, sx0 - x0:sx1 - x0]
+        cr = rgb[sy0 - y0:sy1 - y0, sx0 - x0:sx1 - x0]
+        o = 4 * SS
+        yy1, xx1 = min(N, sy1 + o), min(N, sx1 + o)
+        shadow[sy0 + o:yy1, sx0 + o:xx1] = np.maximum(shadow[sy0 + o:yy1, sx0 + o:xx1], ca[:yy1 - sy0 - o, :xx1 - sx0 - o])
+        dst = canvas[sy0:sy1, sx0:sx1]
+        oa = ca[..., None]
+        dst[..., :3] = cr * oa + dst[..., :3] * (1 - oa)
+        dst[..., 3:4] = oa + dst[..., 3:4] * (1 - oa)
+    shadow = as_mask(Image.fromarray((shadow * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(3.5 * SS))) * 0.45
+    la = canvas[..., 3]
+    sh_only = np.clip(shadow * (1 - la), 0, 1)
+    sh_col = np.array((0.03, 0.025, 0.02), np.float32)
+    out_a = la + sh_only * (1 - la)
+    prem = canvas[..., :3] + sh_col[None, None, :] * sh_only[..., None]
+    prem_d, a_d = down(prem, SS), down(out_a, SS)
+    rgb = np.where(a_d[..., None] > 1e-3, prem_d / np.maximum(a_d, 1e-4)[..., None], sh_col[None, None, :])
+    return np.dstack([np.clip(rgb, 0, 1), a_d[..., None]]).astype(np.float32)
+
+
+def dust_drift_texture(seed):
+    """1024^2 soft grey dust (0.38, 0.36, 0.33).  Dense corner = the top-left corner of the texture (u 0, v 0); alpha falls off radially with a
+    lumpy, faintly rippled edge, a little thicker along the two edges that meet at that corner (the walls)."""
+    rng = np.random.default_rng(seed)
+    N = 1024
+    ys, xs = np.mgrid[0:N, 0:N].astype(np.float32)
+    x, y = (xs + 0.5) / N, (ys + 0.5) / N
+    wx = (fbm(N, N, 200, 4, rng) - 0.5) * 0.22
+    wy = (fbm(N, N, 200, 4, rng) - 0.5) * 0.22
+    d = np.hypot(x + wx * 0.7, y + wy * 0.7)
+    ripple = 0.5 + 0.5 * np.cos(d * 38.0 + 3.0 * (fbm(N, N, 90, 3, rng) - 0.5))      # wind-sorted ripples
+    lump = fbm(N, N, 70, 4, rng)
+    prof = (1.0 - smoothstep(0.08, 1.0, d)) ** 1.15
+    wall = 0.18 * (np.exp(-x / 0.05) + np.exp(-y / 0.05))
+    a = (prof * (0.78 + 0.34 * lump) + wall * prof) * (0.93 + 0.14 * ripple)
+    a = a * (0.88 + 0.24 * rng.random((N, N)).astype(np.float32))
+    a = a * (1 - smoothstep(0.80, 1.0, np.maximum(x, y)))                      # the far edges must be 0
+    a = np.clip(a * 0.92, 0, 0.9)
+    return rgba_const((0.38, 0.36, 0.33), a, (fbm(N, N, 50, 3, rng) - 0.5) * 0.16)
+
+
+def stone_bg(h, w, seed=777):
+    """Mid-grey stone-like preview backdrop: mottled noise plus slab joints."""
+    rng = np.random.default_rng(seed)
+    n = 0.55 * fbm(h, w, 90, 4, rng) + 0.13 * rng.random((h, w)).astype(np.float32) + 0.25 * fbm(h, w, 12, 3, rng)
+    g = 0.27 + 0.13 * (n - 0.45)
+    ys, xs = np.mgrid[0:h, 0:w]
+    joint = ((ys % 256) < 3) | (((xs + (ys // 256 % 2) * 256) % 512) < 3)
+    g = np.where(joint, g * 0.6, g)
+    return np.dstack([g, g * 0.98, g * 0.94]).astype(np.float32)
+
+
+def grime_preview(rgba, path, max_w=1024, bg_scales=(1.0,)):
+    """Composite over the stone backdrop (several backdrop brightnesses side by side when bg_scales has more than one entry)."""
+    h, w = rgba.shape[:2]
+    a = rgba[..., 3:4]
+    panels = [rgba[..., :3] * a + stone_bg(h, w) * bs * (1 - a) for bs in bg_scales]
+    img = np.concatenate([p_ if i == 0 else np.concatenate([np.full((h, 8, 3), 0.9, np.float32), p_], axis=1) for i, p_ in enumerate(panels)], axis=1)
+    w = img.shape[1]
+    im = Image.fromarray((np.clip(img, 0, 1) * 255 + 0.5).astype(np.uint8))
+    if w > max_w:
+        im = im.resize((max_w, int(h * max_w / w)), Image.LANCZOS)
+    im.save(path)
+
+
+# name -> (seed key, generator call, preview file)
+GRIME = [
+    ("T_LB_Decal_Soot_A", "soot_a", lambda s: soot_texture(s, 0.03, 1.0)),
+    ("T_LB_Decal_Soot_B", "soot_b", lambda s: soot_texture(s, -0.07, 1.25)),
+    ("T_LB_Decal_Mould_Band", "mould", mould_band_texture),
+    ("T_LB_Decal_WaterStain", "waterstain", water_stain_texture),
+    ("T_LB_Decal_WaxDrips", "wax", wax_texture),
+    ("T_LB_Decal_DragMarks", "drag", drag_marks_texture),
+    ("T_LB_Decal_LeafLitter_A", "leaf_a", lambda s: leaf_litter_texture(s, 76, 1.0)),
+    ("T_LB_Decal_LeafLitter_B", "leaf_b", lambda s: leaf_litter_texture(s, 54, 1.3)),
+    ("T_LB_Decal_DustDrift", "dust", dust_drift_texture),
+]
+
+
+# ----------------------------------------------------------------------------------------------
 # previews
 # ----------------------------------------------------------------------------------------------
 def over(rgba, bg):
@@ -887,6 +1342,17 @@ def main():
         print("cobweb done")
     if want("slates"):
         slates_textures(SEEDS["slates"], out_dir, prev_dir)
+    if want("grime") or any(want(g[0]) for g in GRIME):
+        for (name, skey, fn) in GRIME:
+            if not (want("grime") or want(name)):
+                continue
+            tex = fn(SEEDS[skey])
+            save_img(tex, os.path.join(out_dir, name + ".png"))
+            pv = tex
+            if "DragMarks" in name:                                       # preview at the decal's true 600 x 120 cm aspect
+                pv = np.asarray(Image.fromarray((tex * 255 + 0.5).astype(np.uint8), 'RGBA').resize((2560, 512), Image.BICUBIC), np.float32) / 255.0
+            grime_preview(pv, os.path.join(prev_dir, "tex_grime_" + name.replace("T_LB_Decal_", "").lower() + ".png"), max_w=1536, bg_scales=((1.0, 0.4) if "Dust" in name else (1.0,)))
+            print("%s done (%dx%d, seed %d)" % (name, tex.shape[1], tex.shape[0], SEEDS[skey]))
 
 
 if __name__ == "__main__":
