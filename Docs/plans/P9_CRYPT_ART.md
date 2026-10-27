@@ -472,3 +472,97 @@ Poses are the P9-5 pose files; the after captures go to `Docs/ArtTest/crypt/p9r_
   - `place_crypt.py` refuses `dress`, `decal` and `light` today. Extend it for `dress` and `decal`, but not `light` (P9-7):
     - **`dress`:** same as the structure categories. Each record carries `collision` and `folder`; P9-3 pieces keep their asset slot MIs.
     - **`decal`:** spawn a DecalActor. Set `decal.mi` as the DecalMaterial and `decal.size` as the DecalSize (a half-extent: use the record values as given, they are already half-extents in depth, vertical, horizontal order) with the record rotation. Follow the MCP_NOTES decal conventions and the D1.6 step 3 orientation check.
+
+### D1.11 P9-6a outcome and fix set F1–F6 (lead review, 2026-10-28)
+- **Built** (8fa049a, e066901): R-fixes; 336 `dress` + 35 `decal` records placed (0 spawn failures); skull offsets +90 (all three meshes); `CD_PlaqueFrame` at scale 1 (text clears the opening by ≥ 17 cm); suite 78/78, the 3 crypt WalkPaths PASS, RouteBot Success, Warden crypt patrol PASS.
+- **Bug found and fixed:** `collisionProfileName=NoCollision` alone left `collisionEnabled=QueryAndPhysics`. `place_crypt.py` now sets and verifies both; `--fix-collision` re-applies them.
+- **Environment finding:** PIE Simulate captures time out because the editor throttles to ~3 fps in the background (`EditorPerformanceSettings.bThrottleCPUWhenNotForeground`). The P9-6a captures are editor-viewport captures (`capture_poses.py --editor --double`): helper icons show, no particles.
+- **Lead review:**
+  - R1 stone: accepted (damp stone, wall p99 −42 %).
+  - R2 floor lines: the pack cobble texture has a border band every repeat (`p9r_R2_zoom_floor_top.png`). It still reads as rails in p9d_04b/05b/06b. Fixed by F2.
+  - R3: accepted for now. It is the greybox lights overexposing the CC beam undersides; recheck in P9-7 (added to D1.7).
+  - R4: the slab-face linings are correct. The white strips are the railings `Rail_Sac_S/N` and `Rail_Up_W/E` (white greybox material, Z 0…100). Fixed by F1.
+  - R5: `Note_Ossuary`; no fix.
+  - Lane check: `CA_Pillar_Free_8000` to `Patrol_Crypt_01` is 124.8 cm (AABB), about 134 cm to the round hull; that leaves about 92 cm beyond the Warden capsule (r 42), and the Warden crypt loop passes with 0 stuck. **Accepted deviation** from the 150 cm rule; not moved.
+  - The RouteBot approach overlaps are this tool's approximation; the real RouteBot passes. No change.
+  - **New issues:**
+    - p9d_07/07b and p9d_11/11b are stale frames of poses 06 and 10 (mean pixel difference 0.6 and 1.2; 11 "saved in 2 s");
+    - the `Leaking006` streaks read as an opaque mustard band (`p9d_dec_wallPY_leak_SC_S.png`);
+    - the charcoal-pit brazier `CD_Charcoal` reads as grey plastic (p9d_09, p9d_09b);
+    - the clue plaque face is flat greybox grey inside the new frame (p9d_12).
+
+**Fix set F1–F6** (environment-designer, [EDITOR], before P9-6b; one agent; explicit saves; commit "P9-6a fix set F1–F6").
+
+**Captures for this fix set:**
+- Before PIE, set `bThrottleCPUWhenNotForeground=false` on the `EditorPerformanceSettings` CDO, in memory only (never saved), and restore it to `true` at the end.
+- Try one PIE Simulate capture. If it succeeds within 6 bounded retries, use PIE Simulate for this set; otherwise use `--editor --double` and say so.
+- Captures go to `Docs/ArtTest/crypt/p9f_<fix>_<pose>.png`, with a `_before` capture where stated.
+
+- **F1 Railing enclosures** (generator category `lining`, folder `Crypt/Art/Lining`; this is the one place art may rise above Z 0).
+  - For each rail `R` in `Rail_Sac_S`, `Rail_Sac_N`, `Rail_Up_W`, `Rail_Up_E`:
+    - Read R's world AABB and rotation. If the yaw is not a multiple of 90°, stop and report.
+    - Add a record `CA_Parapet_<R>`:
+      - mesh `SM_LB_Crypt_Block_100` (100³, pivot bottom-centre), `MI_Crypt_StoneWA`, NoCollision (profile and `collisionEnabled`), CastShadow on;
+      - location ((minX+maxX)/2, (minY+maxY)/2, minZ − 1), yaw 0;
+      - scale ((maxX−minX+4)/100, (maxY−minY+4)/100, (maxZ−minZ+3)/100).
+    - The block encloses the rail by 2 cm on each side and 2 cm above, and sinks 1 cm into the floor. Rails are never moved or changed.
+  - **Checks:**
+    - read-back AABB ±1 cm;
+    - `trace_world` through each rail still hits the `Rail_*` actor (collision intact);
+    - list any existing non-greybox art actor whose AABB intersects an enclosure (report only).
+  - **Captures:** `SS1_up`, `ES1_up` and P9-5 `01_stair_foot`, before and after. **Pass:** no white strip in either stair view.
+- **F2 Crypt floor material** (replaces the pack cobble on the floor tiles).
+  - Create `/Game/LastBell/Environments/Crypt/Materials/MI_Crypt_Floor` as a duplicate of `/Game/LastBell/Environments/Chapel/Materials/MI_Chapel_Floor_Puddled`; parent `M_LB_Surface`, `bWorldAlignedUV` true, `bPuddles` true (from the source).
+  - Set and read back:
+
+    | Parameter | Value |
+    |---|---|
+    | BrightnessMul | 0.35 |
+    | Desaturation | 0.5 |
+    | WorldTileSizeCm | 300 |
+    | Wetness | 0.45 |
+    | PuddleAmount | 0.12 |
+    | PuddleNoiseScaleCm | 300 |
+    | `bGapGrowth` | true |
+    | GrowthTint | (0.22, 0.24, 0.16) |
+    | GrowthLevel | 0.45 |
+    | GrowthNoiseAmount | 0.30 |
+
+    Everything else stays as in the source.
+  - Read `SM_Ground`'s material slots. In `place_crypt.py` `material_for`, return `("MI_Crypt_Floor", None)` for `cat == "tile"` on every slot, then `place_crypt.py --cats tile` and `--check` (179 tiles: 0 bounds, collision or material failures).
+  - Leave `MI_Tiles` as it is (Displacement 0).
+  - **Captures:** p9d `03b`, `04b`, `05b`, `06b` and the R2 top-down zoom pose, before and after (`p9f_F2_*`).
+  - **Pass:**
+    - no continuous dark band across the floor;
+    - no visible grid at the `SM_Ground` piece seams;
+    - the floor reads as worn, damp flagstones.
+    - If the seams show as a grid, report it with the capture and revert the tiles to the mesh's own material.
+- **F3 Leak decals:** in `gen_crypt_layout.py` `LEAKS`, change `WC_W`, `SC_S` and `NC_S` from `MI_Decal_Leaking006_Wall` to `MI_Decal_Leaking004_Wall` (same size and rotation).
+  - Regenerate (0 issues), then `place_crypt.py --cats decal --only CD_Decal_Leak_`.
+  - Never edit `MI_Decal_Leaking006_Wall`; the courtyard uses it.
+  - **Capture:** the `dec_wallPY_leak_SC_S` pose after. **Pass:** dark streaks, no mustard band.
+- **F4 Brazier:** read `SM_Charcoal_Pit`'s material slots.
+  - Give the `CD_Charcoal` record an `mi` override: `MI_Crypt_Iron` on the metal-basket slot(s). Keep the charcoal/ember slot's own MI; if there is only one slot, use `MI_Crypt_Iron` and say so.
+  - Extend `material_for` to honour a per-slot `mi_slots` map on `dress` records. Place with `--only CD_Charcoal`.
+  - **Capture:** p9d_09 before and after. **Pass:** dark rusty iron, no plastic sheen.
+- **F5 Recapture** p9d_07, 07b, 11 and 11b with `--force --double` (07b and 11b use the moved temp light, as before).
+  - **Pass:** the mean pixel difference against 06/06b and 10/10b is > 10.
+- **F6 Wrap-up:**
+  - save `L_Monastery` and `MI_Crypt_Floor` explicitly;
+  - run the suite (78/78; the 3 crypt WalkPaths PASS, RouteBot.Monastery Success, the Warden crypt patrol);
+  - check the editor is not dirty and no temp actors remain;
+  - restore the throttle setting;
+  - commit;
+  - report old → new values, pass/fail per fix, and the capture list.
+
+**P9-6b additions** (to D1.6 P9-6b; the unreal-blueprint-engineer does these after its step 1):
+- **1e. Plaque face:** read the `Clue_Diagram` (BP_EngravedDiagram) instance's plaque mesh component and whether its construction script sets the material.
+  - If it does not, set a level-instance override on slot 0 to `/Game/LastBell/Environments/Kit/Materials/MI_Kit_Slate`, then save and capture at 2 m (pose p9d_12).
+  - **Pass:** the text stays fully readable and contrast is no worse than p9d_12 (lead and owner judge). Otherwise revert and report.
+  - If the construction script sets the material, report it; never edit the parent.
+
+**D1.7 additions (P9-7):**
+- **Recheck R3:** the p9s_09 top corners, and the white flecks at the top corners of p9d_01, under the new lights.
+- **Decal strength:** soot T3 and the NC mould were not visible. If they are still invisible under the new lights, raise opacity on new crypt-only duplicates (`MI_Crypt_Decal_*`), never on the shared chapel MIs.
+- **Skull brightness:** if the niche skulls read as clean white under the candle proxy, darken them with a crypt-only MI.
+- **Captures:** set `bThrottleCPUWhenNotForeground=false` in memory for the PIE Simulate captures and restore it at the end. Fires, fog and drips only show in PIE.
