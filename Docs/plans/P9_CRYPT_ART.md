@@ -617,3 +617,14 @@ Poses are the P9-5 pose files; the after captures go to `Docs/ArtTest/crypt/p9r_
    - no map change is needed (the tiles already use `MI_Crypt_Floor`), so do not save `L_Monastery` unless it is dirty; if it is dirty, report why before saving;
    - no suite run is needed for a material-only change;
    - no temp actors left, throttle restored, commit, report (values old → new, luma per iteration, capture names).
+
+### D1.13 F2b outcome and P9-6b go (lead review, 2026-10-28)
+- **F2b accepted (a2bc978):** candidate B, the Cobblestone_Floor_08 cobbles.
+  - `MI_Crypt_Floor` `BrightnessMul` 0.1105, WorldTileSizeCm 150.
+  - 04b 0.228, 06b 0.192.
+  - Dark mould in the joints, no bands, no grid.
+  - The wet sheen stays for now; P9-7 judges it under the real lights. Knobs: `Wetness`, `PuddleAmount`, `PuddleRoughness`.
+  - Candidate C (blocks) is rejected: flat and featureless at gameplay distance.
+- **Editor state:** `L_Monastery` is dirty in the editor only from the temp-light add/remove (no content change). P9-6b confirms `find_actors TMP_` is empty, then its own explicit map saves cover it.
+- **P9-6b step 1e (plaque face):** MCP_NOTES warns that component edits on placed BP instances often don't persist. After the override and an explicit save, read the material back on the instance.
+  - If it did not stick, report it; do not create a child Blueprint for `Clue_Diagram` without lead approval.
