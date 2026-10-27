@@ -210,6 +210,23 @@ Status 2026-10-27: P8-0…P8-10d done (latest 01b29d9; suite 78/78 incl. ChapelN
 ## Phase 9 — Crypt art: task breakdown
 Branch `claude/phase-09-crypt`. Spec: `Docs/plans/P9_CRYPT_ART.md` (D-067). P9-0 plan → P9-0b owner migrate → P9-1 CC0 downloads ∥ P9-2 relocation + survey → D1 amendment → P9-3 custom pieces → P9-4 materials/imports → P9-5 structure → P9-6 dressing → P9-7 lighting → P9-8 QA + owner review.
 
+| Task | Scope | Owner | Depends on |
+|---|---|---|---|
+| P9-0 | Spec outline, pick list, D-067, risks | lead | — |
+| P9-0b | Migrate the Dungeon architecture pick list | owner | P9-0 |
+| P9-1 | CC0 downloads (roots, leak decals) | asset-curator | P9-0 |
+| P9-2 | Relocate + measure the Dungeon pieces, test assembly, crypt survey | technical-artist [EDITOR] | P9-0b |
+| D1 | Exact layout (generator `Tools/crypt/gen_crypt_layout.py`), D-068…D-071, R-36…R-38 | lead | P9-2 |
+| P9-3 | 17 custom Blender pieces + water ripple normal | technical-artist (no editor) | D1 |
+| P9-4 | Imports, darkened pack MIs, crypt MIs, M_LB_Water, Nanite on bones | technical-artist [EDITOR] | P9-3 |
+| P9-5 | Structure: hide greybox, backdrop, walls, portals, vaults, columns, ossuary bays, floor, stairs, ceilings, water; gap pass | environment-designer [EDITOR] | P9-4 |
+| P9-6a | Dressing + decals + plaque frame; lane check | environment-designer [EDITOR] | P9-5 |
+| P9-6b | Puzzle-prop child Blueprints (crank, gate, rubble, winch) | unreal-blueprint-engineer [EDITOR] | P9-4 |
+| P9-7 | Lighting: torches, candles, brazier, moon grates + shafts, LFV, PP_Crypt; luma targets | lighting-vfx [EDITOR] | P9-6a, P9-6b |
+| P9-8 | QA, docs, owner stat gpu + playtest; PHASE 9 READY FOR YOUR REVIEW | qa + lead + owner | all |
+
+Status 2026-10-27: P9-0…P9-2 done (6db5069); D1 written.
+
 ## Deferred to Phase 14–15 (Lighting, VFX: storm work)
 Items the owner asked to fold into the storm pass. Plan them in detail (Docs/plans/) when Phase 14–15 starts.
 
