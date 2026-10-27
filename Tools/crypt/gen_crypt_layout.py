@@ -417,9 +417,9 @@ for gid, (x, y) in (("G1", (8250, -2247.5)), ("G2", (9750, -2280))):
 
 # ---- water planes (engine Plane 100x100, pivot centre, UV 0..1) ----
 WATER = [
-    ("CA_Water_W", (8800, 9295, -2475, -2085), -593.0, "MI_Crypt_Water_Flood", {"EdgeFadeXMinCm": 200}),
-    ("CA_Water_Ledge", (9295, 9805, -2475, -2302), -593.0, "MI_Crypt_Water_Flood", {}),
-    ("CA_Water_E", (9805, 10200, -2475, -2085), -593.0, "MI_Crypt_Water_Flood", {"EdgeFadeXMaxCm": 200}),
+    ("CA_Water_W", (8800, 9295, -2475, -2085), -593.0, "MI_Crypt_Water_Flood_W", {"EdgeFadeXMinCm": 200}),
+    ("CA_Water_Ledge", (9295, 9805, -2475, -2302), -593.0, "MI_Crypt_Water_Flood_Ledge", {}),
+    ("CA_Water_E", (9805, 10200, -2475, -2085), -593.0, "MI_Crypt_Water_Flood_E", {"EdgeFadeXMaxCm": 200}),
     ("CA_Water_Pit", (9285, 9815, -2315, -2085), -650.0, "MI_Crypt_Water_Pit", {}),
 ]
 for wid, (x0, x1, y0, y1), z, mi, fades in WATER:

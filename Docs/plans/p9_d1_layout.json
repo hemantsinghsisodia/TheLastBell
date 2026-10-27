@@ -9842,8 +9842,8 @@
     -2085.0,
     -593.0
    ],
-   "note": "MI_Crypt_Water_Flood; SizeXCm 495, SizeYCm 390; fades {'EdgeFadeXMinCm': 200}",
-   "mi": "MI_Crypt_Water_Flood",
+   "note": "MI_Crypt_Water_Flood_W; SizeXCm 495, SizeYCm 390; fades {'EdgeFadeXMinCm': 200}",
+   "mi": "MI_Crypt_Water_Flood_W",
    "size_cm": [
     495,
     390
@@ -9883,8 +9883,8 @@
     -2302.0,
     -593.0
    ],
-   "note": "MI_Crypt_Water_Flood; SizeXCm 510, SizeYCm 173; fades none",
-   "mi": "MI_Crypt_Water_Flood",
+   "note": "MI_Crypt_Water_Flood_Ledge; SizeXCm 510, SizeYCm 173; fades none",
+   "mi": "MI_Crypt_Water_Flood_Ledge",
    "size_cm": [
     510,
     173
@@ -9922,8 +9922,8 @@
     -2085.0,
     -593.0
    ],
-   "note": "MI_Crypt_Water_Flood; SizeXCm 395, SizeYCm 390; fades {'EdgeFadeXMaxCm': 200}",
-   "mi": "MI_Crypt_Water_Flood",
+   "note": "MI_Crypt_Water_Flood_E; SizeXCm 395, SizeYCm 390; fades {'EdgeFadeXMaxCm': 200}",
+   "mi": "MI_Crypt_Water_Flood_E",
    "size_cm": [
     395,
     390

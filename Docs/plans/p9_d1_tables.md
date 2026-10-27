@@ -204,9 +204,9 @@ Counts: wall 42, pitwall 4, portal 22, vault 18, column 12, ossuary 6, tile 145,
 
 | Label | Mesh | Location | Rotation | Scale | AABB min .. max | Note |
 |---|---|---|---|---|---|---|
-| CA_Water_W | Plane | (9047.5, -2280, -593) | (0, 0, 0) | (4.95, 3.9, 1) | (8800, -2475, -593) .. (9295, -2085, -593) | MI_Crypt_Water_Flood; SizeXCm 495, SizeYCm 390; fades {'EdgeFadeXMinCm': 200} |
-| CA_Water_Ledge | Plane | (9550, -2388.5, -593) | (0, 0, 0) | (5.1, 1.73, 1) | (9295, -2475, -593) .. (9805, -2302, -593) | MI_Crypt_Water_Flood; SizeXCm 510, SizeYCm 173; fades none |
-| CA_Water_E | Plane | (10002.5, -2280, -593) | (0, 0, 0) | (3.95, 3.9, 1) | (9805, -2475, -593) .. (10200, -2085, -593) | MI_Crypt_Water_Flood; SizeXCm 395, SizeYCm 390; fades {'EdgeFadeXMaxCm': 200} |
+| CA_Water_W | Plane | (9047.5, -2280, -593) | (0, 0, 0) | (4.95, 3.9, 1) | (8800, -2475, -593) .. (9295, -2085, -593) | MI_Crypt_Water_Flood_W; SizeXCm 495, SizeYCm 390; fades {'EdgeFadeXMinCm': 200} |
+| CA_Water_Ledge | Plane | (9550, -2388.5, -593) | (0, 0, 0) | (5.1, 1.73, 1) | (9295, -2475, -593) .. (9805, -2302, -593) | MI_Crypt_Water_Flood_Ledge; SizeXCm 510, SizeYCm 173; fades none |
+| CA_Water_E | Plane | (10002.5, -2280, -593) | (0, 0, 0) | (3.95, 3.9, 1) | (9805, -2475, -593) .. (10200, -2085, -593) | MI_Crypt_Water_Flood_E; SizeXCm 395, SizeYCm 390; fades {'EdgeFadeXMaxCm': 200} |
 | CA_Water_Pit | Plane | (9550, -2200, -650) | (0, 0, 0) | (5.3, 2.3, 1) | (9285, -2315, -650) .. (9815, -2085, -650) | MI_Crypt_Water_Pit; SizeXCm 530, SizeYCm 230; fades none |
 
 ## Backdrop safety box (5)
