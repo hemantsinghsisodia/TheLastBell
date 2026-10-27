@@ -168,25 +168,25 @@ Counts: wall 42, pitwall 4, portal 22, vault 18, column 12, ossuary 6, tile 145,
 | CA_CC_Corbel_3 | SM_LB_Crypt_Corbel_A | (11200, -2500, -140) | (0, 0, 0) | (1, 1, 1) | (11175, -2500, -140) .. (11225, -2445, -95) | back plane on the face line, top Z -95 under the beam end |
 | CA_CC_Corbel_4 | SM_LB_Crypt_Corbel_A | (10600, -1500, -140) | (0, 180, 0) | (1, 1, 1) | (10575, -1555, -140) .. (10625, -1500, -95) | back plane on the face line, top Z -95 under the beam end |
 | CA_CC_Corbel_5 | SM_LB_Crypt_Corbel_A | (10900, -1500, -140) | (0, 180, 0) | (1, 1, 1) | (10875, -1555, -140) .. (10925, -1500, -95) | back plane on the face line, top Z -95 under the beam end |
-| CA_CC_Boards_00 | SM_LB_Crypt_Boards_300x250 | (10150, -2375, -50) | (0, 0, 0) | (1, 1, 1) | (10000, -2500, -50) .. (10300, -2250, -45) | boards run along X between beams; Z -50..-45 |
-| CA_CC_Boards_01 | SM_LB_Crypt_Boards_300x250 | (10150, -2125, -50) | (0, 0, 0) | (1, 1, 1) | (10000, -2250, -50) .. (10300, -2000, -45) | boards run along X between beams; Z -50..-45 |
-| CA_CC_Boards_02 | SM_LB_Crypt_Boards_300x250_Broken | (10150, -1875, -50) | (0, 0, 0) | (1, 1, 1) | (10000, -2000, -110) .. (10300, -1750, -45) | boards run along X between beams; Z -50..-45 |
-| CA_CC_Boards_03 | SM_LB_Crypt_Boards_300x250 | (10150, -1625, -50) | (0, 0, 0) | (1, 1, 1) | (10000, -1750, -50) .. (10300, -1500, -45) | boards run along X between beams; Z -50..-45 |
-| CA_CC_Boards_10 | SM_LB_Crypt_Boards_300x250_Broken | (10450, -2375, -50) | (0, 0, 0) | (1, 1, 1) | (10300, -2500, -110) .. (10600, -2250, -45) | boards run along X between beams; Z -50..-45 |
-| CA_CC_Boards_11 | SM_LB_Crypt_Boards_300x250 | (10450, -2125, -50) | (0, 0, 0) | (1, 1, 1) | (10300, -2250, -50) .. (10600, -2000, -45) | boards run along X between beams; Z -50..-45 |
-| CA_CC_Boards_12 | SM_LB_Crypt_Boards_300x250 | (10450, -1875, -50) | (0, 0, 0) | (1, 1, 1) | (10300, -2000, -50) .. (10600, -1750, -45) | boards run along X between beams; Z -50..-45 |
-| CA_CC_Boards_13 | SM_LB_Crypt_Boards_300x250 | (10450, -1625, -50) | (0, 0, 0) | (1, 1, 1) | (10300, -1750, -50) .. (10600, -1500, -45) | boards run along X between beams; Z -50..-45 |
-| CA_CC_Boards_20 | SM_LB_Crypt_Boards_300x250 | (10750, -2375, -50) | (0, 0, 0) | (1, 1, 1) | (10600, -2500, -50) .. (10900, -2250, -45) | boards run along X between beams; Z -50..-45 |
-| CA_CC_Boards_21 | SM_LB_Crypt_Boards_300x250 | (10750, -2125, -50) | (0, 0, 0) | (1, 1, 1) | (10600, -2250, -50) .. (10900, -2000, -45) | boards run along X between beams; Z -50..-45 |
-| CA_CC_Boards_22 | SM_LB_Crypt_Boards_300x250 | (10750, -1875, -50) | (0, 0, 0) | (1, 1, 1) | (10600, -2000, -50) .. (10900, -1750, -45) | boards run along X between beams; Z -50..-45 |
-| CA_CC_Boards_23 | SM_LB_Crypt_Boards_300x250 | (10750, -1625, -50) | (0, 0, 0) | (1, 1, 1) | (10600, -1750, -50) .. (10900, -1500, -45) | boards run along X between beams; Z -50..-45 |
-| CA_CC_Boards_30 | SM_LB_Crypt_Boards_300x250 | (11050, -2375, -50) | (0, 0, 0) | (1, 1, 1) | (10900, -2500, -50) .. (11200, -2250, -45) | boards run along X between beams; Z -50..-45 |
-| CA_CC_Boards_31 | SM_LB_Crypt_Boards_300x250_Broken | (11050, -2125, -50) | (0, 0, 0) | (1, 1, 1) | (10900, -2250, -110) .. (11200, -2000, -45) | boards run along X between beams; Z -50..-45 |
-| CA_CC_Boards_32 | SM_LB_Crypt_Boards_300x250 | (11050, -1875, -50) | (0, 0, 0) | (1, 1, 1) | (10900, -2000, -50) .. (11200, -1750, -45) | boards run along X between beams; Z -50..-45 |
-| CA_CC_Boards_40 | SM_LB_Crypt_Boards_300x250 | (11350, -2375, -50) | (0, 0, 0) | (1, 1, 1) | (11200, -2500, -50) .. (11500, -2250, -45) | boards run along X between beams; Z -50..-45 |
-| CA_CC_Boards_41 | SM_LB_Crypt_Boards_300x250 | (11350, -2125, -50) | (0, 0, 0) | (1, 1, 1) | (11200, -2250, -50) .. (11500, -2000, -45) | boards run along X between beams; Z -50..-45 |
-| CA_CC_Boards_42 | SM_LB_Crypt_Boards_300x250 | (11350, -1875, -50) | (0, 0, 0) | (1, 1, 1) | (11200, -2000, -50) .. (11500, -1750, -45) | boards run along X between beams; Z -50..-45 |
-| CA_CC_Boards_43 | SM_LB_Crypt_Boards_300x250 | (11350, -1625, -50) | (0, 0, 0) | (1, 1, 1) | (11200, -1750, -50) .. (11500, -1500, -45) | boards run along X between beams; Z -50..-45 |
+| CA_CC_Boards_00 | SM_LB_Crypt_Boards_300x250 | (10150, -2375, -50) | (0, 0, 0) | (1, 1, 1) | (10000, -2500, -50) .. (10300, -2250, -44.6) | boards run along X between beams; Z -50..-45 |
+| CA_CC_Boards_01 | SM_LB_Crypt_Boards_300x250 | (10150, -2125, -50) | (0, 0, 0) | (1, 1, 1) | (10000, -2250, -50) .. (10300, -2000, -44.6) | boards run along X between beams; Z -50..-45 |
+| CA_CC_Boards_02 | SM_LB_Crypt_Boards_300x250_Broken | (10150, -1875, -50) | (0, 0, 0) | (1, 1, 1) | (10000, -2000, -95.9) .. (10300, -1750, -44.6) | boards run along X between beams; Z -50..-45 |
+| CA_CC_Boards_03 | SM_LB_Crypt_Boards_300x250 | (10150, -1625, -50) | (0, 0, 0) | (1, 1, 1) | (10000, -1750, -50) .. (10300, -1500, -44.6) | boards run along X between beams; Z -50..-45 |
+| CA_CC_Boards_10 | SM_LB_Crypt_Boards_300x250_Broken | (10450, -2375, -50) | (0, 0, 0) | (1, 1, 1) | (10300, -2500, -95.9) .. (10600, -2250, -44.6) | boards run along X between beams; Z -50..-45 |
+| CA_CC_Boards_11 | SM_LB_Crypt_Boards_300x250 | (10450, -2125, -50) | (0, 0, 0) | (1, 1, 1) | (10300, -2250, -50) .. (10600, -2000, -44.6) | boards run along X between beams; Z -50..-45 |
+| CA_CC_Boards_12 | SM_LB_Crypt_Boards_300x250 | (10450, -1875, -50) | (0, 0, 0) | (1, 1, 1) | (10300, -2000, -50) .. (10600, -1750, -44.6) | boards run along X between beams; Z -50..-45 |
+| CA_CC_Boards_13 | SM_LB_Crypt_Boards_300x250 | (10450, -1625, -50) | (0, 0, 0) | (1, 1, 1) | (10300, -1750, -50) .. (10600, -1500, -44.6) | boards run along X between beams; Z -50..-45 |
+| CA_CC_Boards_20 | SM_LB_Crypt_Boards_300x250 | (10750, -2375, -50) | (0, 0, 0) | (1, 1, 1) | (10600, -2500, -50) .. (10900, -2250, -44.6) | boards run along X between beams; Z -50..-45 |
+| CA_CC_Boards_21 | SM_LB_Crypt_Boards_300x250 | (10750, -2125, -50) | (0, 0, 0) | (1, 1, 1) | (10600, -2250, -50) .. (10900, -2000, -44.6) | boards run along X between beams; Z -50..-45 |
+| CA_CC_Boards_22 | SM_LB_Crypt_Boards_300x250 | (10750, -1875, -50) | (0, 0, 0) | (1, 1, 1) | (10600, -2000, -50) .. (10900, -1750, -44.6) | boards run along X between beams; Z -50..-45 |
+| CA_CC_Boards_23 | SM_LB_Crypt_Boards_300x250 | (10750, -1625, -50) | (0, 0, 0) | (1, 1, 1) | (10600, -1750, -50) .. (10900, -1500, -44.6) | boards run along X between beams; Z -50..-45 |
+| CA_CC_Boards_30 | SM_LB_Crypt_Boards_300x250 | (11050, -2375, -50) | (0, 0, 0) | (1, 1, 1) | (10900, -2500, -50) .. (11200, -2250, -44.6) | boards run along X between beams; Z -50..-45 |
+| CA_CC_Boards_31 | SM_LB_Crypt_Boards_300x250_Broken | (11050, -2125, -50) | (0, 0, 0) | (1, 1, 1) | (10900, -2250, -95.9) .. (11200, -2000, -44.6) | boards run along X between beams; Z -50..-45 |
+| CA_CC_Boards_32 | SM_LB_Crypt_Boards_300x250 | (11050, -1875, -50) | (0, 0, 0) | (1, 1, 1) | (10900, -2000, -50) .. (11200, -1750, -44.6) | boards run along X between beams; Z -50..-45 |
+| CA_CC_Boards_40 | SM_LB_Crypt_Boards_300x250 | (11350, -2375, -50) | (0, 0, 0) | (1, 1, 1) | (11200, -2500, -50) .. (11500, -2250, -44.6) | boards run along X between beams; Z -50..-45 |
+| CA_CC_Boards_41 | SM_LB_Crypt_Boards_300x250 | (11350, -2125, -50) | (0, 0, 0) | (1, 1, 1) | (11200, -2250, -50) .. (11500, -2000, -44.6) | boards run along X between beams; Z -50..-45 |
+| CA_CC_Boards_42 | SM_LB_Crypt_Boards_300x250 | (11350, -1875, -50) | (0, 0, 0) | (1, 1, 1) | (11200, -2000, -50) .. (11500, -1750, -44.6) | boards run along X between beams; Z -50..-45 |
+| CA_CC_Boards_43 | SM_LB_Crypt_Boards_300x250 | (11350, -1625, -50) | (0, 0, 0) | (1, 1, 1) | (11200, -1750, -50) .. (11500, -1500, -44.6) | boards run along X between beams; Z -50..-45 |
 | CA_CC_Soil | Plane | (10750, -2000, -41) | (0, 0, 0) | (15.3, 10.3, 1) | (9985, -2515, -41) .. (11515, -1485, -41) | MI_Crypt_Soil; seen through board gaps and broken boards |
 
 ## Moon grates (6)

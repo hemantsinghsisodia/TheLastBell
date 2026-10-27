@@ -245,7 +245,7 @@ Portals: J1 WC↔L, J2 L↔SS, J3 WC↔SC, J4 SC↔OS, J5 OS↔FP, J6 FP↔CC, J
      - BaseColor = `WaterColor` (0.006, 0.008, 0.008);
      - Specular 0.5;
      - Roughness = `WaterRoughness` 0.04.
-   - **Normal:** lerp(flat, blend of two panning samples of `RippleNormal`, `RippleStrength` 0.35). The samples use UV = WorldPos.xy / `RippleTileCm` (140):
+   - **Normal:** lerp(flat, blend of two panning samples of `RippleNormal` with their XY multiplied by `RippleNormalScale` (default 3, tune 2–5) and renormalized, `RippleStrength` 1.0). The generated map is subtle (max tilt 0.18, a limit of the seam requirement; P9-3). The samples use UV = WorldPos.xy / `RippleTileCm` (140):
      - sample 1 pans (0.010, 0.006)/s;
      - sample 2 uses UV × 0.43 and pans (−0.006, 0.009)/s.
    - **Edge fade:**
@@ -402,3 +402,16 @@ Portals: J1 WC↔L, J2 L↔SS, J3 WC↔SC, J4 SC↔OS, J5 OS↔FP, J6 FP↔CC, J
 4. Then "PHASE 9 READY FOR YOUR REVIEW". Merge only on "approve and merge".
 
 **Task order** (one [EDITOR] task at a time): P9-3 (no editor) → P9-4 → P9-5 → P9-6a → P9-6b → P9-7 → P9-8.
+
+### D1.9 P9-3 outcome (lead review, 2026-10-27)
+- **Built:** 21 meshes (46583c5); verify 72/72; renders `Docs/ArtTest/crypt/p9_*.png`, lineup `p9_lineup.png`. Bounds in `SourceArt/Props/Procedural/Crypt/props_report_P9.json` are in UE space. The generator now loads them, so the JSON/tables use the measured bounds.
+- **Accepted deviations:**
+  - Sarcophagus B: lid 280 × 104, rotated 3°, shifted +7, to stay within the 300 × 120 footprint.
+  - Portcullis: rails at x ±146; four guide pins give the 60 cm depth while the lattice sits within y ±4.5.
+  - Boards run along X, stacked along Y.
+  - Crank: 43 × 8 × 14.3, with UCX 44 × 16 × 16 as specified.
+  - Capstan: body z −25…23 with the boss reaching 25.
+  - The capital is a plain flared bell (no cushion scallops).
+- **Water:** the ripple normal is subtle by construction, so `M_LB_Water` gets `RippleNormalScale` (D1.4).
+- **P9-4 import check:** after importing, read back every mesh's bounds and compare them with `props_report_P9.json` (±1 cm). Any Y-mirror or pivot difference is a stop-and-report.
+

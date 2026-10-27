@@ -1,6 +1,29 @@
 {
  "generator": "Tools/crypt/gen_crypt_layout.py",
  "units": "cm, UE world; rot = [pitch, yaw, roll]",
+ "measured_bounds_from_p93": [
+  "SM_LB_Crypt_Beam_35x45x1120",
+  "SM_LB_Crypt_Block_100",
+  "SM_LB_Crypt_Block_100_C",
+  "SM_LB_Crypt_Boards_300x250",
+  "SM_LB_Crypt_Boards_300x250_Broken",
+  "SM_LB_Crypt_BoneBin_200x100x60",
+  "SM_LB_Crypt_Capital_A",
+  "SM_LB_Crypt_CapstanDrum_80x50",
+  "SM_LB_Crypt_Corbel_A",
+  "SM_LB_Crypt_OssuaryBay_500x599",
+  "SM_LB_Crypt_PlaqueFrame_270x195",
+  "SM_LB_Crypt_Portcullis_300x60x560",
+  "SM_LB_Crypt_RootsHang_A",
+  "SM_LB_Crypt_RootsHang_B",
+  "SM_LB_Crypt_RootsHang_C",
+  "SM_LB_Crypt_RubbleFill_100x400x560",
+  "SM_LB_Crypt_Sarcophagus_A",
+  "SM_LB_Crypt_Sarcophagus_B",
+  "SM_LB_Crypt_Stair40_300",
+  "SM_LB_Crypt_WinchFrame",
+  "SM_LB_Prop_Crank_A"
+ ],
  "counts": {
   "wall": 42,
   "pitwall": 4,
@@ -8959,7 +8982,7 @@
    "aabb_max": [
     10300.0,
     -2250.0,
-    -45.0
+    -44.6
    ],
    "note": "boards run along X between beams; Z -50..-45"
   },
@@ -8992,7 +9015,7 @@
    "aabb_max": [
     10300.0,
     -2000.0,
-    -45.0
+    -44.6
    ],
    "note": "boards run along X between beams; Z -50..-45"
   },
@@ -9020,12 +9043,12 @@
    "aabb_min": [
     10000.0,
     -2000.0,
-    -110.0
+    -95.9
    ],
    "aabb_max": [
     10300.0,
     -1750.0,
-    -45.0
+    -44.6
    ],
    "note": "boards run along X between beams; Z -50..-45"
   },
@@ -9058,7 +9081,7 @@
    "aabb_max": [
     10300.0,
     -1500.0,
-    -45.0
+    -44.6
    ],
    "note": "boards run along X between beams; Z -50..-45"
   },
@@ -9086,12 +9109,12 @@
    "aabb_min": [
     10300.0,
     -2500.0,
-    -110.0
+    -95.9
    ],
    "aabb_max": [
     10600.0,
     -2250.0,
-    -45.0
+    -44.6
    ],
    "note": "boards run along X between beams; Z -50..-45"
   },
@@ -9124,7 +9147,7 @@
    "aabb_max": [
     10600.0,
     -2000.0,
-    -45.0
+    -44.6
    ],
    "note": "boards run along X between beams; Z -50..-45"
   },
@@ -9157,7 +9180,7 @@
    "aabb_max": [
     10600.0,
     -1750.0,
-    -45.0
+    -44.6
    ],
    "note": "boards run along X between beams; Z -50..-45"
   },
@@ -9190,7 +9213,7 @@
    "aabb_max": [
     10600.0,
     -1500.0,
-    -45.0
+    -44.6
    ],
    "note": "boards run along X between beams; Z -50..-45"
   },
@@ -9223,7 +9246,7 @@
    "aabb_max": [
     10900.0,
     -2250.0,
-    -45.0
+    -44.6
    ],
    "note": "boards run along X between beams; Z -50..-45"
   },
@@ -9256,7 +9279,7 @@
    "aabb_max": [
     10900.0,
     -2000.0,
-    -45.0
+    -44.6
    ],
    "note": "boards run along X between beams; Z -50..-45"
   },
@@ -9289,7 +9312,7 @@
    "aabb_max": [
     10900.0,
     -1750.0,
-    -45.0
+    -44.6
    ],
    "note": "boards run along X between beams; Z -50..-45"
   },
@@ -9322,7 +9345,7 @@
    "aabb_max": [
     10900.0,
     -1500.0,
-    -45.0
+    -44.6
    ],
    "note": "boards run along X between beams; Z -50..-45"
   },
@@ -9355,7 +9378,7 @@
    "aabb_max": [
     11200.0,
     -2250.0,
-    -45.0
+    -44.6
    ],
    "note": "boards run along X between beams; Z -50..-45"
   },
@@ -9383,12 +9406,12 @@
    "aabb_min": [
     10900.0,
     -2250.0,
-    -110.0
+    -95.9
    ],
    "aabb_max": [
     11200.0,
     -2000.0,
-    -45.0
+    -44.6
    ],
    "note": "boards run along X between beams; Z -50..-45"
   },
@@ -9421,7 +9444,7 @@
    "aabb_max": [
     11200.0,
     -1750.0,
-    -45.0
+    -44.6
    ],
    "note": "boards run along X between beams; Z -50..-45"
   },
@@ -9454,7 +9477,7 @@
    "aabb_max": [
     11500.0,
     -2250.0,
-    -45.0
+    -44.6
    ],
    "note": "boards run along X between beams; Z -50..-45"
   },
@@ -9487,7 +9510,7 @@
    "aabb_max": [
     11500.0,
     -2000.0,
-    -45.0
+    -44.6
    ],
    "note": "boards run along X between beams; Z -50..-45"
   },
@@ -9520,7 +9543,7 @@
    "aabb_max": [
     11500.0,
     -1750.0,
-    -45.0
+    -44.6
    ],
    "note": "boards run along X between beams; Z -50..-45"
   },
@@ -9553,7 +9576,7 @@
    "aabb_max": [
     11500.0,
     -1500.0,
-    -45.0
+    -44.6
    ],
    "note": "boards run along X between beams; Z -50..-45"
   },
@@ -18503,7 +18526,7 @@
    "aabb_max": [
     8850.0,
     -2690.0,
-    -528.0
+    -528.1
    ],
    "note": "Prop_Crypt_1 footprint"
   },
@@ -19124,13 +19147,13 @@
    "folder": "Crypt/Dressing/ChainChamber",
    "aabb_min": [
     10670.0,
-    -2165.0,
+    -2164.9,
     -600.0
    ],
    "aabb_max": [
     10930.0,
-    -2075.0,
-    -350.0
+    -2075.1,
+    -350.1
    ],
    "note": "south of Winch_Ritual2 (pedestal Y -2050..-1950); drum axis along X at Z -430"
   },
@@ -19486,13 +19509,13 @@
    "collision": "NoCollision",
    "folder": "Crypt/Dressing/Roots",
    "aabb_min": [
-    10105.4,
-    -1919.6,
+    10100.1,
+    -1918.3,
     -225.0
    ],
    "aabb_max": [
-    10194.6,
-    -1830.4,
+    10189.0,
+    -1831.6,
     -45.0
    ],
    "note": "through broken boards 02"
@@ -19519,13 +19542,13 @@
    "collision": "NoCollision",
    "folder": "Crypt/Dressing/Roots",
    "aabb_min": [
-    10391.5,
-    -2433.5,
+    10396.0,
+    -2427.2,
     -285.0
    ],
    "aabb_max": [
-    10508.5,
-    -2316.5,
+    10509.6,
+    -2317.0,
     -45.0
    ],
    "note": "through broken boards 10"
@@ -19552,13 +19575,13 @@
    "collision": "NoCollision",
    "folder": "Crypt/Dressing/Roots",
    "aabb_min": [
-    11001.9,
-    -2173.1,
+    11007.6,
+    -2171.4,
     -225.0
    ],
    "aabb_max": [
-    11098.1,
-    -2076.9,
+    11103.2,
+    -2077.6,
     -45.0
    ],
    "note": "through broken boards 31"
@@ -19585,13 +19608,13 @@
    "collision": "NoCollision",
    "folder": "Crypt/Dressing/Roots",
    "aabb_min": [
-    9562.7,
-    -2337.3,
+    9567.2,
+    -2331.1,
     -282.0
    ],
    "aabb_max": [
-    9677.3,
-    -2222.7,
+    9678.7,
+    -2223.3,
     -42.0
    ],
    "note": "from the vault crown over the pit"
@@ -19618,13 +19641,13 @@
    "collision": "NoCollision",
    "folder": "Crypt/Dressing/Roots",
    "aabb_min": [
-    9118.7,
-    -2311.3,
+    9116.6,
+    -2308.7,
     -162.0
    ],
    "aabb_max": [
-    9181.3,
-    -2248.7,
+    9180.7,
+    -2249.1,
     -42.0
    ],
    "note": "from the vault crown, west part"
@@ -19651,13 +19674,13 @@
    "collision": "NoCollision",
    "folder": "Crypt/Dressing/Roots",
    "aabb_min": [
-    6409.4,
-    -1998.1,
+    6407.7,
+    -1996.7,
     -162.0
    ],
    "aabb_max": [
-    6490.6,
-    -1916.9,
+    6488.9,
+    -1917.4,
     -42.0
    ],
    "note": "from the WC bay seam crown"

@@ -43,6 +43,20 @@ MESH_BOUNDS = {
     "SM_LB_Crypt_Boards_300x250_Broken": ((-150.0, -125.0, -60.0), (150.0, 125.0, 5.0)),
     "SM_LB_Crypt_Corbel_A": ((-25.0, 0.0, 0.0), (25.0, 55.0, 45.0)),
 }
+MEASURED_FROM_P93 = []   # filled below once the dressing bounds are registered
+
+
+def load_p93_bounds():
+    """Replace the design bounds of P9-3 pieces with the measured ones (UE space) from props_report_P9.json."""
+    path = os.path.join(ROOT, "SourceArt", "Props", "Procedural", "Crypt", "props_report_P9.json")
+    if not os.path.exists(path):
+        return
+    with open(path, encoding="utf-8") as f:
+        for rec in json.load(f):
+            MESH_BOUNDS[rec["name"]] = (tuple(rec["min"]), tuple(rec["max"]))
+            MEASURED_FROM_P93.append(rec["name"])
+
+
 WALL_LEN, WALL_HALF, WALL_TOP = 641.2, 320.6, 501.7
 PITCH, OVL = 626.0, 15.2          # seamless pitch and overlap (P9-2)
 D = 75.0                          # wall centre this far into the rock: stone face 0.5 proud .. 11 behind the collision face
@@ -179,6 +193,8 @@ def add(pid, cat, mesh, path, loc, rot, scale, collision, folder, note="", check
     placements.append(d)
     return d
 
+
+load_p93_bounds()
 
 # ---- walls ----
 def run_layout(run, zbase, zs, prefix):
@@ -358,7 +374,8 @@ add("CA_Soffit_Exit", "soffit", "SM_Wall_00", DUNGEON, (10860 - 1.3 * 420 / 503.
     note="covers Y -670..-100 (Ground_3 ends at -100; the shaft above Y -100..500 stays open), X 10440..10860", check=False)
 
 # stone lintels where the soffits meet the open stair shafts (hide the soffit's ragged end and the slab edge face)
-MESH_BOUNDS["SM_LB_Crypt_Block_100"] = ((-50.0, -50.0, 0.0), (50.0, 50.0, 100.0))
+if "SM_LB_Crypt_Block_100" not in MEASURED_FROM_P93:
+    MESH_BOUNDS["SM_LB_Crypt_Block_100"] = ((-50.0, -50.0, 0.0), (50.0, 50.0, 100.0))
 add("CA_Lintel_Sacristy", "soffit", "SM_LB_Crypt_Block_100", CRYPT, (7375, -1100, -45), (0.0, 0.0, 0.0), (0.5, 4.2, 0.44),
     "NoCollision", "Crypt/Art/Ceiling", note="X 7350..7400, Z -45..-1: frames the shaft end under Ground_0's edge", check=False)
 add("CA_Lintel_Exit", "soffit", "SM_LB_Crypt_Block_100", CRYPT, (10650, -125, -45), (0.0, 0.0, 0.0), (3.2, 0.5, 0.44),
@@ -458,6 +475,7 @@ MESH_BOUNDS["SM_Candle_Melted_08"] = ((-6.2, -6.0, 0.0), (6.2, 6.0, 8.3))
 MESH_BOUNDS["SM_Candle_Melted_06"] = ((-2.5, -2.5, 0.0), (2.5, 2.5, 2.0))
 MESH_BOUNDS["SM_LB_Prop_CandleFlame_A"] = ((-1.0, -1.0, 0.0), (1.0, 1.0, 4.0))
 MESH_BOUNDS["Point"] = ((0.0, 0.0, 0.0), (0.0, 0.0, 0.0))
+load_p93_bounds()   # measured P9-3 bounds override the design values registered above
 drng = random.Random(91)
 
 
@@ -736,6 +754,7 @@ summary = {}
 for d in placements:
     summary[d["cat"]] = summary.get(d["cat"], 0) + 1
 out = {"generator": "Tools/crypt/gen_crypt_layout.py", "units": "cm, UE world; rot = [pitch, yaw, roll]",
+       "measured_bounds_from_p93": sorted(set(MEASURED_FROM_P93)),
        "counts": summary, "issues": issues, "placements": placements}
 with open(os.path.join(ROOT, "Docs", "plans", "p9_d1_layout.json"), "w", encoding="utf-8") as f:
     json.dump(out, f, indent=1)
