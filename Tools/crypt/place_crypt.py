@@ -40,9 +40,10 @@ import math  # noqa: E402
 ORDER = ["backdrop", "wall", "pitwall", "portal", "vault", "column", "ossuary", "tile", "stair", "soffit",
          "ceiling", "grate", "water", "lining", "dress", "decal"]
 # yaw added to a skull's face_yaw (world yaw its face must look toward) = the mesh's measured facing offset (P9-6a step 2)
-SKULL_OFFSETS = {"SM_Skull_00": 0.0, "SM_Skull_01": 0.0, "SM_Skull_02": 0.0}
+SKULL_OFFSETS = {"SM_Skull_00": 90.0, "SM_Skull_01": 90.0, "SM_Skull_02": 90.0}   # measured (P9-6a step 2): at yaw 0 the face looks toward -Y (angle -90)
 DECAL_YAW_ADD = [0.0]   # P9-6a step 3: added to every wall decal's yaw when the orientation check demands it (--decal-yaw-add)
-DECAL_MI_DIRS = ["/Game/LastBell/Materials/Instances/", "/Game/LastBell/Environments/Crypt/Materials/"]
+DECAL_MI_DIRS = ["/Game/LastBell/Materials/Instances/", "/Game/LastBell/Environments/Crypt/Materials/",
+                 "/Game/LastBell/Environments/Courtyard/Materials/"]
 # label prefixes owned by each category (idempotent removal)
 PREFIXES = {
     "backdrop": ["CA_Backdrop_"],
@@ -113,6 +114,10 @@ def rot_rows(p, y, r):
             (-(CR * SP * CY + SR * SY), CY * SR - CR * SP * SY, CR * CP)]
 
 
+def is_axis_aligned(rot):
+    return abs(rot[0]) < 0.01 and abs(rot[2]) < 0.01 and abs(((rot[1] + 45.0) % 90.0) - 45.0) < 0.01
+
+
 def expected_aabb(rec):
     """World AABB from the record's mesh-local bounds ('mbounds') and the final rotation; None if unknown."""
     mb = rec.get("mbounds")
@@ -134,6 +139,7 @@ class Placer:
     def __init__(self):
         self.ue = UE()
         self._decal_mi = {}
+        self.fix_collision = False   # --fix-collision (with --check): re-apply NoCollision incl. collisionEnabled on existing actors
         self.measured = {}   # dress records without generator mesh bounds: id -> (min, max) read back
 
     def call(self, ts, tool, args=None, tries=4):
@@ -196,12 +202,12 @@ class Placer:
         p = self.props(comp, ["bUseDefaultCollision", "bodyInstance", "castShadow", "overrideMaterials", "bVisible"])
         prof = p["bodyInstance"]["collisionProfileName"]
         mats = [m["refPath"].split("/")[-1].split(".")[0] if isinstance(m, dict) else str(m) for m in p["overrideMaterials"]]
-        return {"profile": prof, "useDefault": p["bUseDefaultCollision"], "castShadow": p["castShadow"], "mats": mats}
+        return {"profile": prof, "enabled": p["bodyInstance"].get("collisionEnabled"), "useDefault": p["bUseDefaultCollision"], "castShadow": p["castShadow"], "mats": mats}
 
     def resolve_decal_mi(self, name):
         if name not in self._decal_mi:
             for d in DECAL_MI_DIRS:
-                if self.call("editor_toolset.toolsets.asset.AssetTools", "exists", {"asset_path": d + name}):
+                if self.call("editor_toolset.toolsets.asset.AssetTools", "exists", {"path": d + name}):
                     self._decal_mi[name] = d + name + "." + name
                     break
             else:
@@ -264,7 +270,9 @@ class Placer:
         vals = {}
         if rec["collision"] == "NoCollision":
             vals["bUseDefaultCollision"] = False
-            vals["bodyInstance"] = {"collisionProfileName": "NoCollision"}
+            # collisionEnabled must be set explicitly: with only the profile name the live body keeps QueryAndPhysics and
+            # blocks traces (found in P9-6a: CA_Lining_* blocked trace_world while its profile read NoCollision)
+            vals["bodyInstance"] = {"collisionProfileName": "NoCollision", "collisionEnabled": "NoCollision"}
         mi, shadow = material_for(rec)
         if mi:
             vals["overrideMaterials"] = [{"refPath": MATDIR + mi + "." + mi}]
@@ -286,6 +294,10 @@ class Placer:
         if exp is None:   # mesh bounds unknown to the generator: report the measured bounds, nothing to compare
             dev = 0.0
             self.measured[rec["id"]] = (got_min, got_max)
+        elif rec["cat"] in ("dress", "lining") and not is_axis_aligned(eff_rot(rec)):
+            # the expected box is the AABB of the rotated mesh-local box, which is a superset of the true mesh AABB when the
+            # piece is rotated off-axis: only an overhang beyond the expected box counts as a deviation
+            dev = max(max(e - g for g, e in zip(got_min, exp[0])), max(g - e for g, e in zip(got_max, exp[1])), 0.0)
         else:
             dev = max(max(abs(g - e) for g, e in zip(got_min, exp[0])),
                       max(abs(g - e) for g, e in zip(got_max, exp[1])))
@@ -294,9 +306,9 @@ class Placer:
         if not ok:
             issues.append("bounds dev %.1f (got %s..%s)" % (dev, [round(v, 1) for v in got_min], [round(v, 1) for v in got_max]))
         if rec["collision"] == "NoCollision":
-            if st["profile"] != "NoCollision" or st["useDefault"]:
+            if st["profile"] != "NoCollision" or st["useDefault"] or st["enabled"] != "NoCollision":
                 ok = False
-                issues.append("collision not NoCollision (%s, useDefault=%s)" % (st["profile"], st["useDefault"]))
+                issues.append("collision not NoCollision (%s, enabled=%s, useDefault=%s)" % (st["profile"], st["enabled"], st["useDefault"]))
         else:
             if st["profile"] == "NoCollision":
                 ok = False
@@ -330,6 +342,8 @@ class Placer:
                         continue
                     a = found[0]
                     comp = self.comp0(a)
+                    if self.fix_collision and r["collision"] == "NoCollision" and r["cat"] != "decal":
+                        self.set_props(comp, {"bodyInstance": {"collisionProfileName": "NoCollision", "collisionEnabled": "NoCollision"}})
                 else:
                     try:
                         a, comp = self.place_one(r)
@@ -370,18 +384,28 @@ class Placer:
                 print("  MISSING", lbl)
                 ok = False
                 continue
-            mn, mx = self.bounds(found[0])
+            bmn, bmx = self.bounds(found[0])
+            mn, mx = [bmn["x"], bmn["y"], bmn["z"]], [bmx["x"], bmx["y"], bmx["z"]]
             cx, cy = (mn[0] + mx[0]) / 2, (mn[1] + mx[1]) / 2
             z = mn[2] + min(60.0, (mx[2] - mn[2]) / 2)
             for ax, off in plist:
-                if ax == "x":   # trace along X through the piece centre line (Y = cy)
-                    a, b = (mn[0] - 40, cy, z), (mx[0] + 40, cy, z)
-                else:           # trace along Y at x = cx + off (posts / sole plates)
-                    a, b = (cx + off, mn[1] - 40, z), (cx + off, mx[1] + 40, z)
-                d = self.call(S, "trace_world", {"start": dict(zip("xyz", a)), "end": dict(zip("xyz", b))})
-                hit = d is not None
-                ok &= hit
-                print("  %-18s probe %s %+.0f z %.0f: %s" % (lbl, ax, off, z, "BLOCKS (distance %.1f)" % d if hit else "NO HIT"))
+                n_hit = n_tot = 0
+                first = None
+                for dz in (20.0, 60.0, 120.0):          # several lines through the piece: open frames (cage) pass the centre line
+                    for dl in (-30.0, -15.0, 0.0, 15.0, 30.0):
+                        zz = mn[2] + dz
+                        if ax == "x":   # along X at Y = cy + dl
+                            a, b = (mn[0] - 40, cy + dl, zz), (mx[0] + 40, cy + dl, zz)
+                        else:           # along Y at x = cx + off + dl (posts / sole plates)
+                            a, b = (cx + off + dl, mn[1] - 40, zz), (cx + off + dl, mx[1] + 40, zz)
+                        d = self.call(S, "trace_world", {"start": dict(zip("xyz", a)), "end": dict(zip("xyz", b))})
+                        n_tot += 1
+                        if d is not None:
+                            n_hit += 1
+                            first = first or d
+                ok &= n_hit > 0
+                print("  %-18s probe %s %+.0f: %d/%d lines blocked%s" % (lbl, ax, off, n_hit, n_tot,
+                                                                         " (first distance %.1f)" % first if first else " -- NO HIT"))
         print("blockers:", "all block" if ok else "SOME DO NOT BLOCK")
         return ok
 
@@ -434,6 +458,7 @@ def main():
     ap.add_argument("--hide-greybox", action="store_true")
     ap.add_argument("--verify-greybox", action="store_true")
     ap.add_argument("--skull-offset", nargs="*", default=[], help="SM_Skull_00=90 ...")
+    ap.add_argument("--fix-collision", action="store_true")
     ap.add_argument("--decal-yaw-add", type=float, default=0.0)
     ap.add_argument("--verify-blockers", action="store_true", help="trace_world through the BlockAll dress pieces")
     args = ap.parse_args()
@@ -445,6 +470,7 @@ def main():
         if c not in ORDER:
             sys.exit("category %r not allowed (allowed: %s; `light` is P9-7)" % (c, " ".join(ORDER)))
     p = Placer()
+    p.fix_collision = args.fix_collision
     lvl = p.call(S, "get_current_level")
     if not str(lvl).endswith("L_Monastery"):
         sys.exit("editor is not on L_Monastery: %s" % lvl)

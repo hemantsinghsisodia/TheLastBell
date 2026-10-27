@@ -558,8 +558,11 @@ for i, (x, y) in enumerate(((7900, -2150), (8600, -2150))):
     add(f"CD_BoneBin_{i}_Fill", "dress", "SM_Skeleton_Pile_03", SKEL, (x, y, -570), (0.0, 90.0 * i + 10, 0.0), (0.8, 0.8, 0.8),
         "NoCollision", "Crypt/Dressing/Props", note="fill inside the bin (bin floor at z 30)", check=False)
     for k in range(3):
+        sx_ = x - 60 + 60 * k
+        if i == 0 and k >= 1:   # P9-6a: Note_Ossuary (BP_Inspectable_Note, X 7885..7915, Y -2167..-2133, Z -540) lies on bin 0: keep it free
+            sx_ = (7940, 7975)[k - 1]
         add(f"CD_BoneBin_{i}_Skull{k}", "dress", ("SM_Skull_00", "SM_Skull_02", "SM_Skull_00")[k], SKEL,
-            (x - 60 + 60 * k, y + drng.uniform(-15, 15), -548), (0.0, round(drng.uniform(0, 360), 1), 0.0), (1, 1, 1),
+            (sx_, y + drng.uniform(-15, 15), -548), (0.0, round(drng.uniform(0, 360), 1), 0.0), (1, 1, 1),
             "NoCollision", "Crypt/Dressing/Props", note="on top of the fill", check=False)
 add("CD_Charcoal", "dress", "SM_Charcoal_Pit", DUNGEON, (11000, -2300, -510), (0.0, 0.0, 0.0), (2.0, 2.0, 2.0), "NoCollision",
     "Crypt/Dressing/ChainChamber", note="brazier on the block", check=False)
@@ -576,6 +579,13 @@ add("CD_CageOpen", "dress", "SM_Torture_Devices_Cage_Open", DUNGEON, (11200, -23
 add("CD_WinchFrame", "dress", "SM_LB_Crypt_WinchFrame", CRYPT, (10800, -2120, -600), (0.0, 0.0, 0.0), (1, 1, 1),
     "BlockAll (UCX posts + sole plates)", "Crypt/Dressing/ChainChamber",
     note="south of Winch_Ritual2 (pedestal Y -2050..-1950); drum axis along X at Z -430", check=False)
+
+# -- P9-6a step 4: stone frame around the clue plaque (BP_EngravedDiagram_C_0 "Clue_Diagram": cube 250 x 10 x 175 at (10920, -1505, -330),
+#    scale 2.5, yaw -90; Engraving TextRender worldSize 7 x 2.5, two lines, glyph block measured ~215 x 45 cm in p9s_09; the component's own
+#    bounds box reads 256 x 256 x 256). Back plane on the face line y -1500, yaw 180 so the frame projects 14 cm toward -Y. The opening of the
+#    unscaled frame (250 x 175) equals the plaque and clears the glyph block by >= 17 cm on every side, so the scale stays 1.
+add("CD_PlaqueFrame", "dress", "SM_LB_Crypt_PlaqueFrame_270x195", CRYPT, (10920, -1500, -330), (0.0, 180.0, 0.0), (1.0, 1.0, 1.0), "NoCollision",
+    "Crypt/Dressing/ChainChamber", note="frame around Clue_Diagram; NoCollision, back plane on the puzzle-wall face line", check=False)
 
 # -- chains (pivot at the top; 117.6 per segment) --
 CHAINS = [("Winch", (10880, -2120), 3, "from beam 2 down into the drum's east end (drum top Z -408)"), ("Cage", (11200, -2350), 2, "into the cage top ring"),

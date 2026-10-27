@@ -39,7 +39,7 @@
   "grate": 6,
   "water": 4,
   "backdrop": 5,
-  "dress": 335,
+  "dress": 336,
   "light": 16,
   "decal": 35
  },
@@ -23057,7 +23057,7 @@
    "cat": "dress",
    "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Skeletons/SM_Skull_02",
    "loc": [
-    7900,
+    7940,
     -2135.55,
     -548
    ],
@@ -23074,12 +23074,12 @@
    "collision": "NoCollision",
    "folder": "Crypt/Dressing/Props",
    "aabb_min": [
-    7886.0,
+    7926.0,
     -2151.1,
     -548.0
    ],
    "aabb_max": [
-    7914.0,
+    7954.0,
     -2120.0,
     -527.6
    ],
@@ -23102,7 +23102,7 @@
    "cat": "dress",
    "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Skeletons/SM_Skull_00",
    "loc": [
-    7960,
+    7975,
     -2156.01,
     -548
    ],
@@ -23119,12 +23119,12 @@
    "collision": "NoCollision",
    "folder": "Crypt/Dressing/Props",
    "aabb_min": [
-    7943.8,
+    7958.8,
     -2172.5,
     -547.9
    ],
    "aabb_max": [
-    7978.2,
+    7993.2,
     -2141.0,
     -525.4
    ],
@@ -23577,6 +23577,51 @@
      129.95,
      44.91,
      249.9
+    ]
+   ]
+  },
+  {
+   "id": "CD_PlaqueFrame",
+   "cat": "dress",
+   "mesh": "/Game/LastBell/Environments/Crypt/Meshes/SM_LB_Crypt_PlaqueFrame_270x195",
+   "loc": [
+    10920,
+    -1500,
+    -330
+   ],
+   "rot": [
+    0.0,
+    180.0,
+    0.0
+   ],
+   "scale": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "collision": "NoCollision",
+   "folder": "Crypt/Dressing/ChainChamber",
+   "aabb_min": [
+    10785.0,
+    -1514.0,
+    -427.5
+   ],
+   "aabb_max": [
+    11055.0,
+    -1500.0,
+    -232.5
+   ],
+   "note": "frame around Clue_Diagram; NoCollision, back plane on the puzzle-wall face line",
+   "mbounds": [
+    [
+     -135.0,
+     0.0,
+     -97.5
+    ],
+    [
+     135.0,
+     14.0,
+     97.5
     ]
    ]
   },
