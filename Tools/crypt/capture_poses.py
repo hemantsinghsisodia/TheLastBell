@@ -1,6 +1,10 @@
 """P9-5 capture helper (editor open, PIE Simulate running).
 
-    python capture_poses.py <poses.json> <out_dir> [--light] [--prefix p9s_] [--log file] [--force]
+    python capture_poses.py <poses.json> <out_dir> [--light] [--prefix p9s_] [--log file] [--force] [--editor] [--double]
+
+--editor: capture the editor viewport (no PIE needed; ~0.3 s per capture, reliable; editor helper icons/volume wireframes show).
+          PIE Simulate captures run at ~3 fps and mostly time out (P9-6a note below).
+--double: take two captures per pose and keep the second (stale occlusion after SetCameraTransform).
 
 poses.json: {"name": [x, y, z, pitch, yaw], ...}. Per pose: optional temp light moved to the camera (the light actor
 `TMP_CaptureLight` must exist in the editor world BEFORE StartPIE; it is found in the PIE copy), camera set,
@@ -93,6 +97,9 @@ def main():
             # CaptureViewport fails (reset after ~19.6 s) on 2 of every 3 calls; the failed calls still render the frame, so
             # the one that succeeds is never the stale first frame. Take that one.
             r = call(E, "CaptureViewport", {"captureTransform": None, "annotations": None})
+            if "--double" in sys.argv:
+                time.sleep(0.5)
+                r = call(E, "CaptureViewport", {"captureTransform": None, "annotations": None})
             with open(path, "wb") as f:
                 f.write(base64.b64decode(r["image"]["data"]))
             done += 1

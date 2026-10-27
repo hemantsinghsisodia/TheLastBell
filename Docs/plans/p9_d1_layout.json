@@ -34,6 +34,7 @@
   "tile": 179,
   "stair": 2,
   "soffit": 4,
+  "lining": 4,
   "ceiling": 30,
   "grate": 6,
   "water": 4,
@@ -3651,7 +3652,7 @@
    ],
    "rot": [
     0.0,
-    270.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -3684,7 +3685,7 @@
    ],
    "rot": [
     0.0,
-    270.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -3717,7 +3718,7 @@
    ],
    "rot": [
     0.0,
-    270.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -3750,7 +3751,7 @@
    ],
    "rot": [
     0.0,
-    90.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -3783,7 +3784,7 @@
    ],
    "rot": [
     0.0,
-    90.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -3816,7 +3817,7 @@
    ],
    "rot": [
     0.0,
-    90.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -3849,7 +3850,7 @@
    ],
    "rot": [
     0.0,
-    270.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -3882,7 +3883,7 @@
    ],
    "rot": [
     0.0,
-    270.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -3915,7 +3916,7 @@
    ],
    "rot": [
     0.0,
-    90.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -3948,7 +3949,7 @@
    ],
    "rot": [
     0.0,
-    270.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -3981,7 +3982,7 @@
    ],
    "rot": [
     0.0,
-    90.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -4014,7 +4015,7 @@
    ],
    "rot": [
     0.0,
-    270.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -4047,7 +4048,7 @@
    ],
    "rot": [
     0.0,
-    90.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -4080,7 +4081,7 @@
    ],
    "rot": [
     0.0,
-    270.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -4113,7 +4114,7 @@
    ],
    "rot": [
     0.0,
-    270.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -4146,7 +4147,7 @@
    ],
    "rot": [
     0.0,
-    90.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -4179,7 +4180,7 @@
    ],
    "rot": [
     0.0,
-    90.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -4212,7 +4213,7 @@
    ],
    "rot": [
     0.0,
-    90.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -4245,7 +4246,7 @@
    ],
    "rot": [
     0.0,
-    90.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -4278,7 +4279,7 @@
    ],
    "rot": [
     0.0,
-    90.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -4311,7 +4312,7 @@
    ],
    "rot": [
     0.0,
-    90.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -4344,7 +4345,7 @@
    ],
    "rot": [
     0.0,
-    90.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -4377,7 +4378,7 @@
    ],
    "rot": [
     0.0,
-    270.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -4410,7 +4411,7 @@
    ],
    "rot": [
     0.0,
-    90.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -4443,7 +4444,7 @@
    ],
    "rot": [
     0.0,
-    270.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -4476,7 +4477,7 @@
    ],
    "rot": [
     0.0,
-    90.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -4509,7 +4510,7 @@
    ],
    "rot": [
     0.0,
-    90.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -4542,7 +4543,7 @@
    ],
    "rot": [
     0.0,
-    270.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -4575,7 +4576,7 @@
    ],
    "rot": [
     0.0,
-    90.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -4608,7 +4609,7 @@
    ],
    "rot": [
     0.0,
-    270.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -4674,7 +4675,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -4707,7 +4708,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -4740,7 +4741,7 @@
    ],
    "rot": [
     0.0,
-    270.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -4773,7 +4774,7 @@
    ],
    "rot": [
     0.0,
-    90.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -4806,7 +4807,7 @@
    ],
    "rot": [
     0.0,
-    90.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -4839,7 +4840,7 @@
    ],
    "rot": [
     0.0,
-    90.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -4872,7 +4873,7 @@
    ],
    "rot": [
     0.0,
-    270.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -4938,7 +4939,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -4971,7 +4972,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -5103,7 +5104,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -5301,7 +5302,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -5499,7 +5500,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -5565,7 +5566,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -5631,7 +5632,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -5862,7 +5863,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -5928,7 +5929,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -6027,7 +6028,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -6159,7 +6160,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -6225,7 +6226,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -6291,7 +6292,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -6324,7 +6325,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -6390,7 +6391,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -6489,7 +6490,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -6522,7 +6523,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -6588,7 +6589,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -6720,7 +6721,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -6753,7 +6754,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -6786,7 +6787,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -6852,7 +6853,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -6885,7 +6886,7 @@
    ],
    "rot": [
     0.0,
-    270.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -6918,7 +6919,7 @@
    ],
    "rot": [
     0.0,
-    90.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -7017,7 +7018,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -7050,7 +7051,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -7083,7 +7084,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -7116,7 +7117,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -7215,7 +7216,7 @@
    ],
    "rot": [
     0.0,
-    270.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -7248,7 +7249,7 @@
    ],
    "rot": [
     0.0,
-    90.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -7314,7 +7315,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -7347,7 +7348,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -7380,7 +7381,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -7446,7 +7447,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -7512,7 +7513,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -7545,7 +7546,7 @@
    ],
    "rot": [
     0.0,
-    90.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -7578,7 +7579,7 @@
    ],
    "rot": [
     0.0,
-    90.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -7644,7 +7645,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -7875,7 +7876,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -7941,7 +7942,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -7974,7 +7975,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -8040,7 +8041,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -8073,7 +8074,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -8139,7 +8140,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -8172,7 +8173,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -8271,7 +8272,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -8370,7 +8371,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -8403,7 +8404,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -8469,7 +8470,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -8535,7 +8536,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -8568,7 +8569,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -8601,7 +8602,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -8700,7 +8701,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -8766,7 +8767,7 @@
    ],
    "rot": [
     0.0,
-    90.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -8799,7 +8800,7 @@
    ],
    "rot": [
     0.0,
-    90.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -8997,7 +8998,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -9030,7 +9031,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -9063,7 +9064,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -9096,7 +9097,7 @@
    ],
    "rot": [
     0.0,
-    90.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -9129,7 +9130,7 @@
    ],
    "rot": [
     0.0,
-    90.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -9162,7 +9163,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -9195,7 +9196,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -9294,7 +9295,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -9327,7 +9328,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -9393,7 +9394,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -9426,7 +9427,7 @@
    ],
    "rot": [
     0.0,
-    90.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -9459,7 +9460,7 @@
    ],
    "rot": [
     0.0,
-    90.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -9744,6 +9745,186 @@
     -1.0
    ],
    "note": "Y -150..-100, Z -45..-1: frames the shaft end under Ground_3's edge"
+  },
+  {
+   "id": "CA_Lining_Ground_5_Ym1300",
+   "cat": "lining",
+   "mesh": "/Game/LastBell/Environments/Crypt/Meshes/SM_LB_Crypt_Block_100",
+   "loc": [
+    7700.0,
+    -1298.5,
+    -42.5
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "scale": [
+    6.04,
+    0.03,
+    0.42
+   ],
+   "collision": "NoCollision",
+   "folder": "Crypt/Art/Lining",
+   "aabb_min": [
+    7398.0,
+    -1300.0,
+    -42.5
+   ],
+   "aabb_max": [
+    8002.0,
+    -1297.0,
+    -0.5
+   ],
+   "note": "Ground_5 face y -1300 (X 7400..8000), shaft on +Y; 3 cm lining, Z -42.5..-0.5",
+   "mbounds": [
+    [
+     -50.0,
+     -50.0,
+     0.0
+    ],
+    [
+     50.0,
+     50.0,
+     100.0
+    ]
+   ]
+  },
+  {
+   "id": "CA_Lining_Ground_6_Ym900",
+   "cat": "lining",
+   "mesh": "/Game/LastBell/Environments/Crypt/Meshes/SM_LB_Crypt_Block_100",
+   "loc": [
+    7700.0,
+    -901.5,
+    -42.5
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "scale": [
+    6.04,
+    0.03,
+    0.42
+   ],
+   "collision": "NoCollision",
+   "folder": "Crypt/Art/Lining",
+   "aabb_min": [
+    7398.0,
+    -903.0,
+    -42.5
+   ],
+   "aabb_max": [
+    8002.0,
+    -900.0,
+    -0.5
+   ],
+   "note": "Ground_6 face y -900 (X 7400..8000), shaft on -Y; 3 cm lining, Z -42.5..-0.5",
+   "mbounds": [
+    [
+     -50.0,
+     -50.0,
+     0.0
+    ],
+    [
+     50.0,
+     50.0,
+     100.0
+    ]
+   ]
+  },
+  {
+   "id": "CA_Lining_Ground_1_X10500",
+   "cat": "lining",
+   "mesh": "/Game/LastBell/Environments/Crypt/Meshes/SM_LB_Crypt_Block_100",
+   "loc": [
+    10501.5,
+    200.0,
+    -42.5
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "scale": [
+    0.03,
+    6.04,
+    0.42
+   ],
+   "collision": "NoCollision",
+   "folder": "Crypt/Art/Lining",
+   "aabb_min": [
+    10500.0,
+    -102.0,
+    -42.5
+   ],
+   "aabb_max": [
+    10503.0,
+    502.0,
+    -0.5
+   ],
+   "note": "Ground_1 face x 10500 (Y -100..500), shaft on +X; 3 cm lining, Z -42.5..-0.5",
+   "mbounds": [
+    [
+     -50.0,
+     -50.0,
+     0.0
+    ],
+    [
+     50.0,
+     50.0,
+     100.0
+    ]
+   ]
+  },
+  {
+   "id": "CA_Lining_Ground_2_X10800",
+   "cat": "lining",
+   "mesh": "/Game/LastBell/Environments/Crypt/Meshes/SM_LB_Crypt_Block_100",
+   "loc": [
+    10798.5,
+    200.0,
+    -42.5
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "scale": [
+    0.03,
+    6.04,
+    0.42
+   ],
+   "collision": "NoCollision",
+   "folder": "Crypt/Art/Lining",
+   "aabb_min": [
+    10797.0,
+    -102.0,
+    -42.5
+   ],
+   "aabb_max": [
+    10800.0,
+    502.0,
+    -0.5
+   ],
+   "note": "Ground_2 face x 10800 (Y -100..500), shaft on -X; 3 cm lining, Z -42.5..-0.5",
+   "mbounds": [
+    [
+     -50.0,
+     -50.0,
+     0.0
+    ],
+    [
+     50.0,
+     50.0,
+     100.0
+    ]
+   ]
   },
   {
    "id": "CA_CC_Beam_0",
@@ -11291,7 +11472,19 @@
    ],
    "note": "",
    "face_yaw": 81.9,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S0_T1_Skull01",
@@ -11326,7 +11519,19 @@
    ],
    "note": "",
    "face_yaw": 89.2,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -7.6,
+     -13.8,
+     0.1
+    ],
+    [
+     7.5,
+     1.5,
+     8.3
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S0_T1_Skull02",
@@ -11361,7 +11566,19 @@
    ],
    "note": "",
    "face_yaw": 86.9,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S0_T1_Skull03",
@@ -11396,7 +11613,19 @@
    ],
    "note": "",
    "face_yaw": 96.1,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S0_T1_Skull04",
@@ -11431,7 +11660,19 @@
    ],
    "note": "",
    "face_yaw": 88.8,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S0_T1_Skull05",
@@ -11466,7 +11707,19 @@
    ],
    "note": "",
    "face_yaw": 101.0,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S0_T1_Skull06",
@@ -11501,7 +11754,19 @@
    ],
    "note": "",
    "face_yaw": 98.8,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S0_T1_Skull07",
@@ -11536,7 +11801,19 @@
    ],
    "note": "",
    "face_yaw": 87.2,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S0_T1_Skull08",
@@ -11571,7 +11848,19 @@
    ],
    "note": "",
    "face_yaw": 83.1,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S0_T1_Skull09",
@@ -11606,7 +11895,19 @@
    ],
    "note": "",
    "face_yaw": 79.4,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S0_T1_Skull10",
@@ -11641,7 +11942,19 @@
    ],
    "note": "",
    "face_yaw": 100.6,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S0_T1_Skull11",
@@ -11676,7 +11989,19 @@
    ],
    "note": "",
    "face_yaw": 90.6,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S0_T1_Skull12",
@@ -11711,7 +12036,19 @@
    ],
    "note": "",
    "face_yaw": 91.5,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S0_T1_Skull13",
@@ -11746,7 +12083,19 @@
    ],
    "note": "",
    "face_yaw": 99.6,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -7.6,
+     -13.8,
+     0.1
+    ],
+    [
+     7.5,
+     1.5,
+     8.3
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S0_T1_Skull14",
@@ -11781,7 +12130,19 @@
    ],
    "note": "",
    "face_yaw": 88.7,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S0_T1_Skull15",
@@ -11816,7 +12177,19 @@
    ],
    "note": "",
    "face_yaw": 95.5,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S0_T1_Skull16",
@@ -11851,7 +12224,19 @@
    ],
    "note": "",
    "face_yaw": 91.9,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S0_T1_Pile0",
@@ -11884,7 +12269,19 @@
     -2910.0,
     -531.9
    ],
-   "note": "behind the skull row, in the niche back"
+   "note": "behind the skull row, in the niche back",
+   "mbounds": [
+    [
+     -42.5,
+     -49.1,
+     0.0
+    ],
+    [
+     42.5,
+     49.1,
+     46.2
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S0_T1_Pile1",
@@ -11917,7 +12314,19 @@
     -2907.4,
     -535.1
    ],
-   "note": "behind the skull row, in the niche back"
+   "note": "behind the skull row, in the niche back",
+   "mbounds": [
+    [
+     -53.3,
+     -42.0,
+     0.0
+    ],
+    [
+     53.3,
+     42.0,
+     39.7
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S0_T1_Pile2",
@@ -11950,7 +12359,19 @@
     -2915.5,
     -541.0
    ],
-   "note": "behind the skull row, in the niche back"
+   "note": "behind the skull row, in the niche back",
+   "mbounds": [
+    [
+     -22.8,
+     -43.5,
+     0.0
+    ],
+    [
+     22.8,
+     43.5,
+     27.9
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S0_T2_Skull00",
@@ -11985,7 +12406,19 @@
    ],
    "note": "",
    "face_yaw": 81.8,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S0_T2_Skull01",
@@ -12020,7 +12453,19 @@
    ],
    "note": "",
    "face_yaw": 93.3,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -7.6,
+     -13.8,
+     0.1
+    ],
+    [
+     7.5,
+     1.5,
+     8.3
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S0_T2_Skull02",
@@ -12055,7 +12500,19 @@
    ],
    "note": "",
    "face_yaw": 98.0,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S0_T2_Skull03",
@@ -12090,7 +12547,19 @@
    ],
    "note": "",
    "face_yaw": 88.1,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S0_T2_Skull04",
@@ -12125,7 +12594,19 @@
    ],
    "note": "",
    "face_yaw": 97.2,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -7.6,
+     -13.8,
+     0.1
+    ],
+    [
+     7.5,
+     1.5,
+     8.3
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S0_T2_Skull05",
@@ -12160,7 +12641,19 @@
    ],
    "note": "",
    "face_yaw": 82.3,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -7.6,
+     -13.8,
+     0.1
+    ],
+    [
+     7.5,
+     1.5,
+     8.3
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S0_T2_Skull06",
@@ -12195,7 +12688,19 @@
    ],
    "note": "",
    "face_yaw": 87.9,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S0_T2_Skull07",
@@ -12230,7 +12735,19 @@
    ],
    "note": "",
    "face_yaw": 98.9,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S0_T2_Skull08",
@@ -12265,7 +12782,19 @@
    ],
    "note": "",
    "face_yaw": 83.0,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S0_T2_Skull09",
@@ -12300,7 +12829,19 @@
    ],
    "note": "",
    "face_yaw": 93.7,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S0_T2_Skull10",
@@ -12335,7 +12876,19 @@
    ],
    "note": "",
    "face_yaw": 79.8,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S0_T2_Skull11",
@@ -12370,7 +12923,19 @@
    ],
    "note": "",
    "face_yaw": 99.6,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S0_T2_Skull12",
@@ -12405,7 +12970,19 @@
    ],
    "note": "",
    "face_yaw": 84.3,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S0_T2_Skull13",
@@ -12440,7 +13017,19 @@
    ],
    "note": "",
    "face_yaw": 80.5,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S0_T2_Skull14",
@@ -12475,7 +13064,19 @@
    ],
    "note": "",
    "face_yaw": 85.5,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S0_T2_Skull15",
@@ -12510,7 +13111,19 @@
    ],
    "note": "",
    "face_yaw": 93.4,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S0_T2_Skull16",
@@ -12545,7 +13158,19 @@
    ],
    "note": "",
    "face_yaw": 84.7,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S0_T2_Pile0",
@@ -12578,7 +13203,19 @@
     -2915.3,
     -391.9
    ],
-   "note": "behind the skull row, in the niche back"
+   "note": "behind the skull row, in the niche back",
+   "mbounds": [
+    [
+     -42.5,
+     -49.1,
+     0.0
+    ],
+    [
+     42.5,
+     49.1,
+     46.2
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S0_T2_Pile1",
@@ -12611,7 +13248,19 @@
     -2909.9,
     -395.1
    ],
-   "note": "behind the skull row, in the niche back"
+   "note": "behind the skull row, in the niche back",
+   "mbounds": [
+    [
+     -53.3,
+     -42.0,
+     0.0
+    ],
+    [
+     53.3,
+     42.0,
+     39.7
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S0_T2_Pile2",
@@ -12644,7 +13293,19 @@
     -2916.0,
     -401.1
    ],
-   "note": "behind the skull row, in the niche back"
+   "note": "behind the skull row, in the niche back",
+   "mbounds": [
+    [
+     -22.8,
+     -43.5,
+     0.0
+    ],
+    [
+     22.8,
+     43.5,
+     27.9
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S1_T1_Skull00",
@@ -12679,7 +13340,19 @@
    ],
    "note": "",
    "face_yaw": 78.9,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S1_T1_Skull01",
@@ -12714,7 +13387,19 @@
    ],
    "note": "",
    "face_yaw": 91.3,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S1_T1_Skull02",
@@ -12749,7 +13434,19 @@
    ],
    "note": "",
    "face_yaw": 82.7,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S1_T1_Skull03",
@@ -12784,7 +13481,19 @@
    ],
    "note": "",
    "face_yaw": 87.5,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S1_T1_Skull04",
@@ -12819,7 +13528,19 @@
    ],
    "note": "",
    "face_yaw": 88.7,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S1_T1_Skull05",
@@ -12854,7 +13575,19 @@
    ],
    "note": "",
    "face_yaw": 86.0,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S1_T1_Skull06",
@@ -12889,7 +13622,19 @@
    ],
    "note": "",
    "face_yaw": 100.9,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -7.6,
+     -13.8,
+     0.1
+    ],
+    [
+     7.5,
+     1.5,
+     8.3
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S1_T1_Skull07",
@@ -12924,7 +13669,19 @@
    ],
    "note": "",
    "face_yaw": 84.4,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -7.6,
+     -13.8,
+     0.1
+    ],
+    [
+     7.5,
+     1.5,
+     8.3
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S1_T1_Skull08",
@@ -12959,7 +13716,19 @@
    ],
    "note": "",
    "face_yaw": 84.6,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S1_T1_Skull09",
@@ -12994,7 +13763,19 @@
    ],
    "note": "",
    "face_yaw": 95.3,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -7.6,
+     -13.8,
+     0.1
+    ],
+    [
+     7.5,
+     1.5,
+     8.3
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S1_T1_Skull10",
@@ -13029,7 +13810,19 @@
    ],
    "note": "",
    "face_yaw": 85.7,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S1_T1_Skull11",
@@ -13064,7 +13857,19 @@
    ],
    "note": "",
    "face_yaw": 79.4,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S1_T1_Skull12",
@@ -13099,7 +13904,19 @@
    ],
    "note": "",
    "face_yaw": 81.5,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S1_T1_Skull13",
@@ -13134,7 +13951,19 @@
    ],
    "note": "",
    "face_yaw": 96.6,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S1_T1_Skull14",
@@ -13169,7 +13998,19 @@
    ],
    "note": "",
    "face_yaw": 81.3,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S1_T1_Skull15",
@@ -13204,7 +14045,19 @@
    ],
    "note": "",
    "face_yaw": 84.4,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S1_T1_Skull16",
@@ -13239,7 +14092,19 @@
    ],
    "note": "",
    "face_yaw": 78.8,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -7.6,
+     -13.8,
+     0.1
+    ],
+    [
+     7.5,
+     1.5,
+     8.3
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S1_T1_Pile0",
@@ -13272,7 +14137,19 @@
     -2911.4,
     -531.9
    ],
-   "note": "behind the skull row, in the niche back"
+   "note": "behind the skull row, in the niche back",
+   "mbounds": [
+    [
+     -42.5,
+     -49.1,
+     0.0
+    ],
+    [
+     42.5,
+     49.1,
+     46.2
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S1_T1_Pile1",
@@ -13305,7 +14182,19 @@
     -2906.3,
     -535.1
    ],
-   "note": "behind the skull row, in the niche back"
+   "note": "behind the skull row, in the niche back",
+   "mbounds": [
+    [
+     -53.3,
+     -42.0,
+     0.0
+    ],
+    [
+     53.3,
+     42.0,
+     39.7
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S1_T1_Pile2",
@@ -13338,7 +14227,19 @@
     -2924.2,
     -541.0
    ],
-   "note": "behind the skull row, in the niche back"
+   "note": "behind the skull row, in the niche back",
+   "mbounds": [
+    [
+     -22.8,
+     -43.5,
+     0.0
+    ],
+    [
+     22.8,
+     43.5,
+     27.9
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S1_T2_Skull00",
@@ -13373,7 +14274,19 @@
    ],
    "note": "",
    "face_yaw": 99.4,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S1_T2_Skull01",
@@ -13408,7 +14321,19 @@
    ],
    "note": "",
    "face_yaw": 91.3,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S1_T2_Skull02",
@@ -13443,7 +14368,19 @@
    ],
    "note": "",
    "face_yaw": 93.7,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S1_T2_Skull03",
@@ -13478,7 +14415,19 @@
    ],
    "note": "",
    "face_yaw": 80.0,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S1_T2_Skull04",
@@ -13513,7 +14462,19 @@
    ],
    "note": "",
    "face_yaw": 82.6,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -7.6,
+     -13.8,
+     0.1
+    ],
+    [
+     7.5,
+     1.5,
+     8.3
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S1_T2_Skull05",
@@ -13548,7 +14509,19 @@
    ],
    "note": "",
    "face_yaw": 99.9,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S1_T2_Skull06",
@@ -13583,7 +14556,19 @@
    ],
    "note": "",
    "face_yaw": 86.5,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S1_T2_Skull07",
@@ -13618,7 +14603,19 @@
    ],
    "note": "",
    "face_yaw": 93.8,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S1_T2_Skull08",
@@ -13653,7 +14650,19 @@
    ],
    "note": "",
    "face_yaw": 101.3,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S1_T2_Skull09",
@@ -13688,7 +14697,19 @@
    ],
    "note": "",
    "face_yaw": 78.9,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S1_T2_Skull10",
@@ -13723,7 +14744,19 @@
    ],
    "note": "",
    "face_yaw": 96.5,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S1_T2_Skull11",
@@ -13758,7 +14791,19 @@
    ],
    "note": "",
    "face_yaw": 83.3,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S1_T2_Skull12",
@@ -13793,7 +14838,19 @@
    ],
    "note": "",
    "face_yaw": 100.1,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S1_T2_Skull13",
@@ -13828,7 +14885,19 @@
    ],
    "note": "",
    "face_yaw": 92.9,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S1_T2_Skull14",
@@ -13863,7 +14932,19 @@
    ],
    "note": "",
    "face_yaw": 84.8,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S1_T2_Skull15",
@@ -13898,7 +14979,19 @@
    ],
    "note": "",
    "face_yaw": 82.2,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S1_T2_Skull16",
@@ -13933,7 +15026,19 @@
    ],
    "note": "",
    "face_yaw": 90.6,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -7.6,
+     -13.8,
+     0.1
+    ],
+    [
+     7.5,
+     1.5,
+     8.3
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S1_T2_Pile0",
@@ -13966,7 +15071,19 @@
     -2910.5,
     -391.9
    ],
-   "note": "behind the skull row, in the niche back"
+   "note": "behind the skull row, in the niche back",
+   "mbounds": [
+    [
+     -42.5,
+     -49.1,
+     0.0
+    ],
+    [
+     42.5,
+     49.1,
+     46.2
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S1_T2_Pile1",
@@ -13999,7 +15116,19 @@
     -2908.1,
     -395.1
    ],
-   "note": "behind the skull row, in the niche back"
+   "note": "behind the skull row, in the niche back",
+   "mbounds": [
+    [
+     -53.3,
+     -42.0,
+     0.0
+    ],
+    [
+     53.3,
+     42.0,
+     39.7
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S1_T2_Pile2",
@@ -14032,7 +15161,19 @@
     -2918.1,
     -401.1
    ],
-   "note": "behind the skull row, in the niche back"
+   "note": "behind the skull row, in the niche back",
+   "mbounds": [
+    [
+     -22.8,
+     -43.5,
+     0.0
+    ],
+    [
+     22.8,
+     43.5,
+     27.9
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S2_T1_Skull00",
@@ -14067,7 +15208,19 @@
    ],
    "note": "",
    "face_yaw": 89.7,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S2_T1_Skull01",
@@ -14102,7 +15255,19 @@
    ],
    "note": "",
    "face_yaw": 82.9,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S2_T1_Skull02",
@@ -14137,7 +15302,19 @@
    ],
    "note": "",
    "face_yaw": 88.8,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -7.6,
+     -13.8,
+     0.1
+    ],
+    [
+     7.5,
+     1.5,
+     8.3
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S2_T1_Skull03",
@@ -14172,7 +15349,19 @@
    ],
    "note": "",
    "face_yaw": 101.2,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S2_T1_Skull04",
@@ -14207,7 +15396,19 @@
    ],
    "note": "",
    "face_yaw": 98.1,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S2_T1_Skull05",
@@ -14242,7 +15443,19 @@
    ],
    "note": "",
    "face_yaw": 82.9,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S2_T1_Skull06",
@@ -14277,7 +15490,19 @@
    ],
    "note": "",
    "face_yaw": 93.5,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S2_T1_Skull07",
@@ -14312,7 +15537,19 @@
    ],
    "note": "",
    "face_yaw": 78.1,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S2_T1_Skull08",
@@ -14347,7 +15584,19 @@
    ],
    "note": "",
    "face_yaw": 90.6,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S2_T1_Skull09",
@@ -14382,7 +15631,19 @@
    ],
    "note": "",
    "face_yaw": 97.2,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -7.6,
+     -13.8,
+     0.1
+    ],
+    [
+     7.5,
+     1.5,
+     8.3
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S2_T1_Skull10",
@@ -14417,7 +15678,19 @@
    ],
    "note": "",
    "face_yaw": 99.6,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S2_T1_Skull11",
@@ -14452,7 +15725,19 @@
    ],
    "note": "",
    "face_yaw": 96.6,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S2_T1_Skull12",
@@ -14487,7 +15772,19 @@
    ],
    "note": "",
    "face_yaw": 99.7,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S2_T1_Skull13",
@@ -14522,7 +15819,19 @@
    ],
    "note": "",
    "face_yaw": 91.0,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -7.6,
+     -13.8,
+     0.1
+    ],
+    [
+     7.5,
+     1.5,
+     8.3
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S2_T1_Skull14",
@@ -14557,7 +15866,19 @@
    ],
    "note": "",
    "face_yaw": 84.9,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S2_T1_Skull15",
@@ -14592,7 +15913,19 @@
    ],
    "note": "",
    "face_yaw": 100.6,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S2_T1_Skull16",
@@ -14627,7 +15960,19 @@
    ],
    "note": "",
    "face_yaw": 96.6,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -7.6,
+     -13.8,
+     0.1
+    ],
+    [
+     7.5,
+     1.5,
+     8.3
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S2_T1_Pile0",
@@ -14660,7 +16005,19 @@
     -2907.6,
     -531.9
    ],
-   "note": "behind the skull row, in the niche back"
+   "note": "behind the skull row, in the niche back",
+   "mbounds": [
+    [
+     -42.5,
+     -49.1,
+     0.0
+    ],
+    [
+     42.5,
+     49.1,
+     46.2
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S2_T1_Pile1",
@@ -14693,7 +16050,19 @@
     -2910.0,
     -535.1
    ],
-   "note": "behind the skull row, in the niche back"
+   "note": "behind the skull row, in the niche back",
+   "mbounds": [
+    [
+     -53.3,
+     -42.0,
+     0.0
+    ],
+    [
+     53.3,
+     42.0,
+     39.7
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S2_T1_Pile2",
@@ -14726,7 +16095,19 @@
     -2916.5,
     -541.0
    ],
-   "note": "behind the skull row, in the niche back"
+   "note": "behind the skull row, in the niche back",
+   "mbounds": [
+    [
+     -22.8,
+     -43.5,
+     0.0
+    ],
+    [
+     22.8,
+     43.5,
+     27.9
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S2_T2_Skull00",
@@ -14761,7 +16142,19 @@
    ],
    "note": "",
    "face_yaw": 78.5,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S2_T2_Skull01",
@@ -14796,7 +16189,19 @@
    ],
    "note": "",
    "face_yaw": 79.1,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -7.6,
+     -13.8,
+     0.1
+    ],
+    [
+     7.5,
+     1.5,
+     8.3
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S2_T2_Skull02",
@@ -14831,7 +16236,19 @@
    ],
    "note": "",
    "face_yaw": 88.3,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S2_T2_Skull03",
@@ -14866,7 +16283,19 @@
    ],
    "note": "",
    "face_yaw": 94.4,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S2_T2_Skull04",
@@ -14901,7 +16330,19 @@
    ],
    "note": "",
    "face_yaw": 79.6,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S2_T2_Skull05",
@@ -14936,7 +16377,19 @@
    ],
    "note": "",
    "face_yaw": 101.5,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S2_T2_Skull06",
@@ -14971,7 +16424,19 @@
    ],
    "note": "",
    "face_yaw": 79.2,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S2_T2_Skull07",
@@ -15006,7 +16471,19 @@
    ],
    "note": "",
    "face_yaw": 80.2,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S2_T2_Skull08",
@@ -15041,7 +16518,19 @@
    ],
    "note": "",
    "face_yaw": 92.2,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S2_T2_Skull09",
@@ -15076,7 +16565,19 @@
    ],
    "note": "",
    "face_yaw": 96.1,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S2_T2_Skull10",
@@ -15111,7 +16612,19 @@
    ],
    "note": "",
    "face_yaw": 91.1,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S2_T2_Skull11",
@@ -15146,7 +16659,19 @@
    ],
    "note": "",
    "face_yaw": 99.9,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S2_T2_Skull12",
@@ -15181,7 +16706,19 @@
    ],
    "note": "",
    "face_yaw": 80.1,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -7.6,
+     -13.8,
+     0.1
+    ],
+    [
+     7.5,
+     1.5,
+     8.3
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S2_T2_Skull13",
@@ -15216,7 +16753,19 @@
    ],
    "note": "",
    "face_yaw": 101.2,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S2_T2_Skull14",
@@ -15251,7 +16800,19 @@
    ],
    "note": "",
    "face_yaw": 83.5,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S2_T2_Skull15",
@@ -15286,7 +16847,19 @@
    ],
    "note": "",
    "face_yaw": 94.0,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S2_T2_Skull16",
@@ -15321,7 +16894,19 @@
    ],
    "note": "",
    "face_yaw": 85.4,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S2_T2_Pile0",
@@ -15354,7 +16939,19 @@
     -2908.7,
     -391.9
    ],
-   "note": "behind the skull row, in the niche back"
+   "note": "behind the skull row, in the niche back",
+   "mbounds": [
+    [
+     -42.5,
+     -49.1,
+     0.0
+    ],
+    [
+     42.5,
+     49.1,
+     46.2
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S2_T2_Pile1",
@@ -15387,7 +16984,19 @@
     -2908.1,
     -395.1
    ],
-   "note": "behind the skull row, in the niche back"
+   "note": "behind the skull row, in the niche back",
+   "mbounds": [
+    [
+     -53.3,
+     -42.0,
+     0.0
+    ],
+    [
+     53.3,
+     42.0,
+     39.7
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_S2_T2_Pile2",
@@ -15420,7 +17029,19 @@
     -2915.7,
     -401.1
    ],
-   "note": "behind the skull row, in the niche back"
+   "note": "behind the skull row, in the niche back",
+   "mbounds": [
+    [
+     -22.8,
+     -43.5,
+     0.0
+    ],
+    [
+     22.8,
+     43.5,
+     27.9
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N0_T1_Skull00",
@@ -15455,7 +17076,19 @@
    ],
    "note": "",
    "face_yaw": 266.3,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N0_T1_Skull01",
@@ -15490,7 +17123,19 @@
    ],
    "note": "",
    "face_yaw": 263.2,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -7.6,
+     -13.8,
+     0.1
+    ],
+    [
+     7.5,
+     1.5,
+     8.3
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N0_T1_Skull02",
@@ -15525,7 +17170,19 @@
    ],
    "note": "",
    "face_yaw": 277.5,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N0_T1_Skull03",
@@ -15560,7 +17217,19 @@
    ],
    "note": "",
    "face_yaw": 267.2,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N0_T1_Skull04",
@@ -15595,7 +17264,19 @@
    ],
    "note": "",
    "face_yaw": 268.4,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -7.6,
+     -13.8,
+     0.1
+    ],
+    [
+     7.5,
+     1.5,
+     8.3
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N0_T1_Skull05",
@@ -15630,7 +17311,19 @@
    ],
    "note": "",
    "face_yaw": 263.4,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N0_T1_Skull06",
@@ -15665,7 +17358,19 @@
    ],
    "note": "",
    "face_yaw": 269.9,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N0_T1_Skull07",
@@ -15700,7 +17405,19 @@
    ],
    "note": "",
    "face_yaw": 264.6,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N0_T1_Skull08",
@@ -15735,7 +17452,19 @@
    ],
    "note": "",
    "face_yaw": 273.2,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N0_T1_Skull09",
@@ -15770,7 +17499,19 @@
    ],
    "note": "",
    "face_yaw": 269.4,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N0_T1_Skull10",
@@ -15805,7 +17546,19 @@
    ],
    "note": "",
    "face_yaw": 281.4,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N0_T1_Skull11",
@@ -15840,7 +17593,19 @@
    ],
    "note": "",
    "face_yaw": 271.1,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N0_T1_Skull12",
@@ -15875,7 +17640,19 @@
    ],
    "note": "",
    "face_yaw": 262.5,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N0_T1_Skull13",
@@ -15910,7 +17687,19 @@
    ],
    "note": "",
    "face_yaw": 259.7,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N0_T1_Skull14",
@@ -15945,7 +17734,19 @@
    ],
    "note": "",
    "face_yaw": 265.5,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N0_T1_Skull15",
@@ -15980,7 +17781,19 @@
    ],
    "note": "",
    "face_yaw": 263.0,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N0_T1_Skull16",
@@ -16015,7 +17828,19 @@
    ],
    "note": "",
    "face_yaw": 261.8,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N0_T1_Pile0",
@@ -16048,7 +17873,19 @@
     -1929.5,
     -531.9
    ],
-   "note": "behind the skull row, in the niche back"
+   "note": "behind the skull row, in the niche back",
+   "mbounds": [
+    [
+     -42.5,
+     -49.1,
+     0.0
+    ],
+    [
+     42.5,
+     49.1,
+     46.2
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N0_T1_Pile1",
@@ -16081,7 +17918,19 @@
     -1926.3,
     -535.1
    ],
-   "note": "behind the skull row, in the niche back"
+   "note": "behind the skull row, in the niche back",
+   "mbounds": [
+    [
+     -53.3,
+     -42.0,
+     0.0
+    ],
+    [
+     53.3,
+     42.0,
+     39.7
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N0_T1_Pile2",
@@ -16114,7 +17963,19 @@
     -1937.0,
     -541.0
    ],
-   "note": "behind the skull row, in the niche back"
+   "note": "behind the skull row, in the niche back",
+   "mbounds": [
+    [
+     -22.8,
+     -43.5,
+     0.0
+    ],
+    [
+     22.8,
+     43.5,
+     27.9
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N0_T2_Skull00",
@@ -16149,7 +18010,19 @@
    ],
    "note": "",
    "face_yaw": 261.1,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N0_T2_Skull01",
@@ -16184,7 +18057,19 @@
    ],
    "note": "",
    "face_yaw": 262.1,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N0_T2_Skull02",
@@ -16219,7 +18104,19 @@
    ],
    "note": "",
    "face_yaw": 277.3,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N0_T2_Skull03",
@@ -16254,7 +18151,19 @@
    ],
    "note": "",
    "face_yaw": 278.2,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N0_T2_Skull04",
@@ -16289,7 +18198,19 @@
    ],
    "note": "",
    "face_yaw": 272.8,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -7.6,
+     -13.8,
+     0.1
+    ],
+    [
+     7.5,
+     1.5,
+     8.3
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N0_T2_Skull05",
@@ -16324,7 +18245,19 @@
    ],
    "note": "",
    "face_yaw": 268.9,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N0_T2_Skull06",
@@ -16359,7 +18292,19 @@
    ],
    "note": "",
    "face_yaw": 275.4,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N0_T2_Skull07",
@@ -16394,7 +18339,19 @@
    ],
    "note": "",
    "face_yaw": 264.3,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N0_T2_Skull08",
@@ -16429,7 +18386,19 @@
    ],
    "note": "",
    "face_yaw": 278.1,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N0_T2_Skull09",
@@ -16464,7 +18433,19 @@
    ],
    "note": "",
    "face_yaw": 281.5,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N0_T2_Skull10",
@@ -16499,7 +18480,19 @@
    ],
    "note": "",
    "face_yaw": 276.2,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -7.6,
+     -13.8,
+     0.1
+    ],
+    [
+     7.5,
+     1.5,
+     8.3
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N0_T2_Skull11",
@@ -16534,7 +18527,19 @@
    ],
    "note": "",
    "face_yaw": 270.2,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N0_T2_Skull12",
@@ -16569,7 +18574,19 @@
    ],
    "note": "",
    "face_yaw": 260.6,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N0_T2_Skull13",
@@ -16604,7 +18621,19 @@
    ],
    "note": "",
    "face_yaw": 263.3,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N0_T2_Skull14",
@@ -16639,7 +18668,19 @@
    ],
    "note": "",
    "face_yaw": 265.9,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N0_T2_Skull15",
@@ -16674,7 +18715,19 @@
    ],
    "note": "",
    "face_yaw": 280.3,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -7.6,
+     -13.8,
+     0.1
+    ],
+    [
+     7.5,
+     1.5,
+     8.3
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N0_T2_Skull16",
@@ -16709,7 +18762,19 @@
    ],
    "note": "",
    "face_yaw": 272.9,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N0_T2_Pile0",
@@ -16742,7 +18807,19 @@
     -1931.7,
     -391.9
    ],
-   "note": "behind the skull row, in the niche back"
+   "note": "behind the skull row, in the niche back",
+   "mbounds": [
+    [
+     -42.5,
+     -49.1,
+     0.0
+    ],
+    [
+     42.5,
+     49.1,
+     46.2
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N0_T2_Pile1",
@@ -16775,7 +18852,19 @@
     -1927.2,
     -395.1
    ],
-   "note": "behind the skull row, in the niche back"
+   "note": "behind the skull row, in the niche back",
+   "mbounds": [
+    [
+     -53.3,
+     -42.0,
+     0.0
+    ],
+    [
+     53.3,
+     42.0,
+     39.7
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N0_T2_Pile2",
@@ -16808,7 +18897,19 @@
     -1940.3,
     -401.1
    ],
-   "note": "behind the skull row, in the niche back"
+   "note": "behind the skull row, in the niche back",
+   "mbounds": [
+    [
+     -22.8,
+     -43.5,
+     0.0
+    ],
+    [
+     22.8,
+     43.5,
+     27.9
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N1_T1_Skull00",
@@ -16843,7 +18944,19 @@
    ],
    "note": "",
    "face_yaw": 279.2,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N1_T1_Skull01",
@@ -16878,7 +18991,19 @@
    ],
    "note": "",
    "face_yaw": 279.3,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -7.6,
+     -13.8,
+     0.1
+    ],
+    [
+     7.5,
+     1.5,
+     8.3
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N1_T1_Skull02",
@@ -16913,7 +19038,19 @@
    ],
    "note": "",
    "face_yaw": 276.0,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N1_T1_Skull03",
@@ -16948,7 +19085,19 @@
    ],
    "note": "",
    "face_yaw": 265.4,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N1_T1_Skull04",
@@ -16983,7 +19132,19 @@
    ],
    "note": "",
    "face_yaw": 268.0,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N1_T1_Skull05",
@@ -17018,7 +19179,19 @@
    ],
    "note": "",
    "face_yaw": 272.3,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -7.6,
+     -13.8,
+     0.1
+    ],
+    [
+     7.5,
+     1.5,
+     8.3
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N1_T1_Skull06",
@@ -17053,7 +19226,19 @@
    ],
    "note": "",
    "face_yaw": 270.5,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N1_T1_Skull07",
@@ -17088,7 +19273,19 @@
    ],
    "note": "",
    "face_yaw": 262.0,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N1_T1_Skull08",
@@ -17123,7 +19320,19 @@
    ],
    "note": "",
    "face_yaw": 280.7,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N1_T1_Skull09",
@@ -17158,7 +19367,19 @@
    ],
    "note": "",
    "face_yaw": 279.0,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N1_T1_Skull10",
@@ -17193,7 +19414,19 @@
    ],
    "note": "",
    "face_yaw": 276.8,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N1_T1_Skull11",
@@ -17228,7 +19461,19 @@
    ],
    "note": "",
    "face_yaw": 280.7,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -7.6,
+     -13.8,
+     0.1
+    ],
+    [
+     7.5,
+     1.5,
+     8.3
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N1_T1_Skull12",
@@ -17263,7 +19508,19 @@
    ],
    "note": "",
    "face_yaw": 278.5,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N1_T1_Skull13",
@@ -17298,7 +19555,19 @@
    ],
    "note": "",
    "face_yaw": 271.9,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N1_T1_Skull14",
@@ -17333,7 +19602,19 @@
    ],
    "note": "",
    "face_yaw": 277.8,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -7.6,
+     -13.8,
+     0.1
+    ],
+    [
+     7.5,
+     1.5,
+     8.3
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N1_T1_Skull15",
@@ -17368,7 +19649,19 @@
    ],
    "note": "",
    "face_yaw": 273.8,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N1_T1_Skull16",
@@ -17403,7 +19696,19 @@
    ],
    "note": "",
    "face_yaw": 278.1,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N1_T1_Pile0",
@@ -17436,7 +19741,19 @@
     -1934.1,
     -531.9
    ],
-   "note": "behind the skull row, in the niche back"
+   "note": "behind the skull row, in the niche back",
+   "mbounds": [
+    [
+     -42.5,
+     -49.1,
+     0.0
+    ],
+    [
+     42.5,
+     49.1,
+     46.2
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N1_T1_Pile1",
@@ -17469,7 +19786,19 @@
     -1926.8,
     -535.1
    ],
-   "note": "behind the skull row, in the niche back"
+   "note": "behind the skull row, in the niche back",
+   "mbounds": [
+    [
+     -53.3,
+     -42.0,
+     0.0
+    ],
+    [
+     53.3,
+     42.0,
+     39.7
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N1_T1_Pile2",
@@ -17502,7 +19831,19 @@
     -1936.0,
     -541.0
    ],
-   "note": "behind the skull row, in the niche back"
+   "note": "behind the skull row, in the niche back",
+   "mbounds": [
+    [
+     -22.8,
+     -43.5,
+     0.0
+    ],
+    [
+     22.8,
+     43.5,
+     27.9
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N1_T2_Skull00",
@@ -17537,7 +19878,19 @@
    ],
    "note": "",
    "face_yaw": 269.1,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N1_T2_Skull01",
@@ -17572,7 +19925,19 @@
    ],
    "note": "",
    "face_yaw": 267.2,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -7.6,
+     -13.8,
+     0.1
+    ],
+    [
+     7.5,
+     1.5,
+     8.3
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N1_T2_Skull02",
@@ -17607,7 +19972,19 @@
    ],
    "note": "",
    "face_yaw": 277.2,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N1_T2_Skull03",
@@ -17642,7 +20019,19 @@
    ],
    "note": "",
    "face_yaw": 260.4,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N1_T2_Skull04",
@@ -17677,7 +20066,19 @@
    ],
    "note": "",
    "face_yaw": 272.2,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N1_T2_Skull05",
@@ -17712,7 +20113,19 @@
    ],
    "note": "",
    "face_yaw": 270.8,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N1_T2_Skull06",
@@ -17747,7 +20160,19 @@
    ],
    "note": "",
    "face_yaw": 279.4,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N1_T2_Skull07",
@@ -17782,7 +20207,19 @@
    ],
    "note": "",
    "face_yaw": 270.4,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N1_T2_Skull08",
@@ -17817,7 +20254,19 @@
    ],
    "note": "",
    "face_yaw": 259.0,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N1_T2_Skull09",
@@ -17852,7 +20301,19 @@
    ],
    "note": "",
    "face_yaw": 263.1,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N1_T2_Skull10",
@@ -17887,7 +20348,19 @@
    ],
    "note": "",
    "face_yaw": 267.6,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N1_T2_Skull11",
@@ -17922,7 +20395,19 @@
    ],
    "note": "",
    "face_yaw": 276.2,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N1_T2_Skull12",
@@ -17957,7 +20442,19 @@
    ],
    "note": "",
    "face_yaw": 267.7,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N1_T2_Skull13",
@@ -17992,7 +20489,19 @@
    ],
    "note": "",
    "face_yaw": 266.7,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N1_T2_Skull14",
@@ -18027,7 +20536,19 @@
    ],
    "note": "",
    "face_yaw": 258.9,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N1_T2_Skull15",
@@ -18062,7 +20583,19 @@
    ],
    "note": "",
    "face_yaw": 273.6,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N1_T2_Skull16",
@@ -18097,7 +20630,19 @@
    ],
    "note": "",
    "face_yaw": 280.8,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -7.6,
+     -13.8,
+     0.1
+    ],
+    [
+     7.5,
+     1.5,
+     8.3
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N1_T2_Pile0",
@@ -18130,7 +20675,19 @@
     -1928.3,
     -391.9
    ],
-   "note": "behind the skull row, in the niche back"
+   "note": "behind the skull row, in the niche back",
+   "mbounds": [
+    [
+     -42.5,
+     -49.1,
+     0.0
+    ],
+    [
+     42.5,
+     49.1,
+     46.2
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N1_T2_Pile1",
@@ -18163,7 +20720,19 @@
     -1930.4,
     -395.1
    ],
-   "note": "behind the skull row, in the niche back"
+   "note": "behind the skull row, in the niche back",
+   "mbounds": [
+    [
+     -53.3,
+     -42.0,
+     0.0
+    ],
+    [
+     53.3,
+     42.0,
+     39.7
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N1_T2_Pile2",
@@ -18196,7 +20765,19 @@
     -1936.2,
     -401.1
    ],
-   "note": "behind the skull row, in the niche back"
+   "note": "behind the skull row, in the niche back",
+   "mbounds": [
+    [
+     -22.8,
+     -43.5,
+     0.0
+    ],
+    [
+     22.8,
+     43.5,
+     27.9
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N2_T1_Skull00",
@@ -18231,7 +20812,19 @@
    ],
    "note": "",
    "face_yaw": 273.4,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N2_T1_Skull01",
@@ -18266,7 +20859,19 @@
    ],
    "note": "",
    "face_yaw": 276.2,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -7.6,
+     -13.8,
+     0.1
+    ],
+    [
+     7.5,
+     1.5,
+     8.3
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N2_T1_Skull02",
@@ -18301,7 +20906,19 @@
    ],
    "note": "",
    "face_yaw": 270.3,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N2_T1_Skull03",
@@ -18336,7 +20953,19 @@
    ],
    "note": "",
    "face_yaw": 263.9,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N2_T1_Skull04",
@@ -18371,7 +21000,19 @@
    ],
    "note": "",
    "face_yaw": 275.1,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -7.6,
+     -13.8,
+     0.1
+    ],
+    [
+     7.5,
+     1.5,
+     8.3
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N2_T1_Skull05",
@@ -18406,7 +21047,19 @@
    ],
    "note": "",
    "face_yaw": 265.6,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N2_T1_Skull06",
@@ -18441,7 +21094,19 @@
    ],
    "note": "",
    "face_yaw": 258.7,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -7.6,
+     -13.8,
+     0.1
+    ],
+    [
+     7.5,
+     1.5,
+     8.3
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N2_T1_Skull07",
@@ -18476,7 +21141,19 @@
    ],
    "note": "",
    "face_yaw": 278.3,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N2_T1_Skull08",
@@ -18511,7 +21188,19 @@
    ],
    "note": "",
    "face_yaw": 266.0,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N2_T1_Skull09",
@@ -18546,7 +21235,19 @@
    ],
    "note": "",
    "face_yaw": 260.1,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N2_T1_Skull10",
@@ -18581,7 +21282,19 @@
    ],
    "note": "",
    "face_yaw": 265.9,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N2_T1_Skull11",
@@ -18616,7 +21329,19 @@
    ],
    "note": "",
    "face_yaw": 261.3,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -7.6,
+     -13.8,
+     0.1
+    ],
+    [
+     7.5,
+     1.5,
+     8.3
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N2_T1_Skull12",
@@ -18651,7 +21376,19 @@
    ],
    "note": "",
    "face_yaw": 278.4,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N2_T1_Skull13",
@@ -18686,7 +21423,19 @@
    ],
    "note": "",
    "face_yaw": 281.0,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N2_T1_Skull14",
@@ -18721,7 +21470,19 @@
    ],
    "note": "",
    "face_yaw": 273.9,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N2_T1_Skull15",
@@ -18756,7 +21517,19 @@
    ],
    "note": "",
    "face_yaw": 280.2,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -7.6,
+     -13.8,
+     0.1
+    ],
+    [
+     7.5,
+     1.5,
+     8.3
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N2_T1_Skull16",
@@ -18791,7 +21564,19 @@
    ],
    "note": "",
    "face_yaw": 263.9,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N2_T1_Pile0",
@@ -18824,7 +21609,19 @@
     -1928.3,
     -531.9
    ],
-   "note": "behind the skull row, in the niche back"
+   "note": "behind the skull row, in the niche back",
+   "mbounds": [
+    [
+     -42.5,
+     -49.1,
+     0.0
+    ],
+    [
+     42.5,
+     49.1,
+     46.2
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N2_T1_Pile1",
@@ -18857,7 +21654,19 @@
     -1928.3,
     -535.1
    ],
-   "note": "behind the skull row, in the niche back"
+   "note": "behind the skull row, in the niche back",
+   "mbounds": [
+    [
+     -53.3,
+     -42.0,
+     0.0
+    ],
+    [
+     53.3,
+     42.0,
+     39.7
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N2_T1_Pile2",
@@ -18890,7 +21699,19 @@
     -1935.7,
     -541.0
    ],
-   "note": "behind the skull row, in the niche back"
+   "note": "behind the skull row, in the niche back",
+   "mbounds": [
+    [
+     -22.8,
+     -43.5,
+     0.0
+    ],
+    [
+     22.8,
+     43.5,
+     27.9
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N2_T2_Skull00",
@@ -18925,7 +21746,19 @@
    ],
    "note": "",
    "face_yaw": 268.1,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N2_T2_Skull01",
@@ -18960,7 +21793,19 @@
    ],
    "note": "",
    "face_yaw": 277.8,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N2_T2_Skull02",
@@ -18995,7 +21840,19 @@
    ],
    "note": "",
    "face_yaw": 259.0,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -7.6,
+     -13.8,
+     0.1
+    ],
+    [
+     7.5,
+     1.5,
+     8.3
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N2_T2_Skull03",
@@ -19030,7 +21887,19 @@
    ],
    "note": "",
    "face_yaw": 275.9,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N2_T2_Skull04",
@@ -19065,7 +21934,19 @@
    ],
    "note": "",
    "face_yaw": 275.1,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N2_T2_Skull05",
@@ -19100,7 +21981,19 @@
    ],
    "note": "",
    "face_yaw": 281.4,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N2_T2_Skull06",
@@ -19135,7 +22028,19 @@
    ],
    "note": "",
    "face_yaw": 262.7,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N2_T2_Skull07",
@@ -19170,7 +22075,19 @@
    ],
    "note": "",
    "face_yaw": 274.9,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -7.6,
+     -13.8,
+     0.1
+    ],
+    [
+     7.5,
+     1.5,
+     8.3
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N2_T2_Skull08",
@@ -19205,7 +22122,19 @@
    ],
    "note": "",
    "face_yaw": 276.2,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N2_T2_Skull09",
@@ -19240,7 +22169,19 @@
    ],
    "note": "",
    "face_yaw": 266.5,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N2_T2_Skull10",
@@ -19275,7 +22216,19 @@
    ],
    "note": "",
    "face_yaw": 262.9,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N2_T2_Skull11",
@@ -19310,7 +22263,19 @@
    ],
    "note": "",
    "face_yaw": 275.7,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N2_T2_Skull12",
@@ -19345,7 +22310,19 @@
    ],
    "note": "",
    "face_yaw": 272.3,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N2_T2_Skull13",
@@ -19380,7 +22357,19 @@
    ],
    "note": "",
    "face_yaw": 268.0,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N2_T2_Skull14",
@@ -19415,7 +22404,19 @@
    ],
    "note": "",
    "face_yaw": 280.8,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N2_T2_Skull15",
@@ -19450,7 +22451,19 @@
    ],
    "note": "",
    "face_yaw": 278.9,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N2_T2_Skull16",
@@ -19485,7 +22498,19 @@
    ],
    "note": "",
    "face_yaw": 276.1,
-   "note2": "front of the skull must look out of the niche (world yaw face_yaw)"
+   "note2": "front of the skull must look out of the niche (world yaw face_yaw)",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N2_T2_Pile0",
@@ -19518,7 +22543,19 @@
     -1928.1,
     -391.9
    ],
-   "note": "behind the skull row, in the niche back"
+   "note": "behind the skull row, in the niche back",
+   "mbounds": [
+    [
+     -42.5,
+     -49.1,
+     0.0
+    ],
+    [
+     42.5,
+     49.1,
+     46.2
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N2_T2_Pile1",
@@ -19551,7 +22588,19 @@
     -1926.1,
     -395.1
    ],
-   "note": "behind the skull row, in the niche back"
+   "note": "behind the skull row, in the niche back",
+   "mbounds": [
+    [
+     -53.3,
+     -42.0,
+     0.0
+    ],
+    [
+     53.3,
+     42.0,
+     39.7
+    ]
+   ]
   },
   {
    "id": "CD_Ossuary_N2_T2_Pile2",
@@ -19584,7 +22633,19 @@
     -1942.9,
     -401.1
    ],
-   "note": "behind the skull row, in the niche back"
+   "note": "behind the skull row, in the niche back",
+   "mbounds": [
+    [
+     -22.8,
+     -43.5,
+     0.0
+    ],
+    [
+     22.8,
+     43.5,
+     27.9
+    ]
+   ]
   },
   {
    "id": "CD_Sarcophagus_0",
@@ -19617,7 +22678,19 @@
     -2690.0,
     -528.0
    ],
-   "note": "Prop_Crypt_0 footprint 300x120x70"
+   "note": "Prop_Crypt_0 footprint 300x120x70",
+   "mbounds": [
+    [
+     -150.0,
+     -60.0,
+     0.0
+    ],
+    [
+     150.0,
+     60.0,
+     72.0
+    ]
+   ]
   },
   {
    "id": "CD_Sarcophagus_1",
@@ -19650,7 +22723,19 @@
     -2690.0,
     -528.1
    ],
-   "note": "Prop_Crypt_1 footprint"
+   "note": "Prop_Crypt_1 footprint",
+   "mbounds": [
+    [
+     -150.0,
+     -60.0,
+     0.0
+    ],
+    [
+     150.0,
+     60.0,
+     71.87
+    ]
+   ]
   },
   {
    "id": "CD_BoneBin_0",
@@ -19683,7 +22768,19 @@
     -2100.0,
     -540.0
    ],
-   "note": "Prop_Crypt_2 footprint 200x100x60"
+   "note": "Prop_Crypt_2 footprint 200x100x60",
+   "mbounds": [
+    [
+     -100.0,
+     -50.0,
+     0.0
+    ],
+    [
+     100.0,
+     50.0,
+     60.0
+    ]
+   ]
   },
   {
    "id": "CD_BoneBin_1",
@@ -19716,7 +22813,19 @@
     -2100.0,
     -540.0
    ],
-   "note": "Prop_Crypt_3 footprint"
+   "note": "Prop_Crypt_3 footprint",
+   "mbounds": [
+    [
+     -100.0,
+     -50.0,
+     0.0
+    ],
+    [
+     100.0,
+     50.0,
+     60.0
+    ]
+   ]
   },
   {
    "id": "CD_BrazierBlock",
@@ -19749,7 +22858,19 @@
     -2220.0,
     -510.0
    ],
-   "note": "Prop_Crypt_4 footprint 160x160x90"
+   "note": "Prop_Crypt_4 footprint 160x160x90",
+   "mbounds": [
+    [
+     -50.0,
+     -50.0,
+     0.0
+    ],
+    [
+     50.0,
+     50.0,
+     100.0
+    ]
+   ]
   },
   {
    "id": "CD_TortureSlab",
@@ -19782,7 +22903,19 @@
     -1550.0,
     -540.0
    ],
-   "note": "Prop_Crypt_5 footprint 100x300x60"
+   "note": "Prop_Crypt_5 footprint 100x300x60",
+   "mbounds": [
+    [
+     -50.0,
+     -50.0,
+     0.0
+    ],
+    [
+     50.0,
+     50.0,
+     100.0
+    ]
+   ]
   },
   {
    "id": "CD_CrankPlinth",
@@ -19815,7 +22948,19 @@
     -2675.0,
     -530.0
    ],
-   "note": "Plinth_Crank footprint 50x50x70"
+   "note": "Plinth_Crank footprint 50x50x70",
+   "mbounds": [
+    [
+     -50.0,
+     -50.0,
+     0.0
+    ],
+    [
+     50.0,
+     50.0,
+     100.0
+    ]
+   ]
   },
   {
    "id": "CD_BoneBin_0_Fill",
@@ -19848,7 +22993,19 @@
     -2109.5,
     -538.2
    ],
-   "note": "fill inside the bin (bin floor at z 30)"
+   "note": "fill inside the bin (bin floor at z 30)",
+   "mbounds": [
+    [
+     -53.3,
+     -42.0,
+     0.0
+    ],
+    [
+     53.3,
+     42.0,
+     39.7
+    ]
+   ]
   },
   {
    "id": "CD_BoneBin_0_Skull0",
@@ -19881,7 +23038,19 @@
     -2132.6,
     -525.4
    ],
-   "note": "on top of the fill"
+   "note": "on top of the fill",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_BoneBin_0_Skull1",
@@ -19914,7 +23083,19 @@
     -2120.0,
     -527.6
    ],
-   "note": "on top of the fill"
+   "note": "on top of the fill",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_BoneBin_0_Skull2",
@@ -19947,7 +23128,19 @@
     -2141.0,
     -525.4
    ],
-   "note": "on top of the fill"
+   "note": "on top of the fill",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_BoneBin_1_Fill",
@@ -19980,7 +23173,19 @@
     -2102.2,
     -538.2
    ],
-   "note": "fill inside the bin (bin floor at z 30)"
+   "note": "fill inside the bin (bin floor at z 30)",
+   "mbounds": [
+    [
+     -53.3,
+     -42.0,
+     0.0
+    ],
+    [
+     53.3,
+     42.0,
+     39.7
+    ]
+   ]
   },
   {
    "id": "CD_BoneBin_1_Skull0",
@@ -20013,7 +23218,19 @@
     -2149.9,
     -525.4
    ],
-   "note": "on top of the fill"
+   "note": "on top of the fill",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_BoneBin_1_Skull1",
@@ -20046,7 +23263,19 @@
     -2146.7,
     -527.6
    ],
-   "note": "on top of the fill"
+   "note": "on top of the fill",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_BoneBin_1_Skull2",
@@ -20079,7 +23308,19 @@
     -2127.9,
     -525.4
    ],
-   "note": "on top of the fill"
+   "note": "on top of the fill",
+   "mbounds": [
+    [
+     -8.6,
+     -13.8,
+     0.1
+    ],
+    [
+     8.6,
+     16.2,
+     22.6
+    ]
+   ]
   },
   {
    "id": "CD_Charcoal",
@@ -20112,7 +23353,19 @@
     -2270.6,
     -459.4
    ],
-   "note": "brazier on the block"
+   "note": "brazier on the block",
+   "mbounds": [
+    [
+     -13.8,
+     -13.8,
+     -0.2
+    ],
+    [
+     13.7,
+     14.7,
+     25.3
+    ]
+   ]
   },
   {
    "id": "CD_SlabShackles",
@@ -20178,7 +23431,19 @@
     -1721.8,
     -524.8
    ],
-   "note": ""
+   "note": "",
+   "mbounds": [
+    [
+     -31.3,
+     -39.9,
+     0.0
+    ],
+    [
+     31.3,
+     39.9,
+     15.2
+    ]
+   ]
   },
   {
    "id": "CD_SkeletonStake",
@@ -20211,7 +23476,19 @@
     -2757.1,
     -353.1
    ],
-   "note": "skeleton on a stake in the SW corner"
+   "note": "skeleton on a stake in the SW corner",
+   "mbounds": [
+    [
+     -56.1,
+     -59.8,
+     -4.9
+    ],
+    [
+     43.4,
+     70.7,
+     241.9
+    ]
+   ]
   },
   {
    "id": "CD_CageOpen",
@@ -20244,7 +23521,19 @@
     -2264.4,
     -292.4
    ],
-   "note": "hangs from beam 3; bottom 40 above the floor"
+   "note": "hangs from beam 3; bottom 40 above the floor",
+   "mbounds": [
+    [
+     -52.4,
+     -74.6,
+     0.0
+    ],
+    [
+     52.4,
+     74.6,
+     267.6
+    ]
+   ]
   },
   {
    "id": "CD_WinchFrame",
@@ -20277,7 +23566,19 @@
     -2075.1,
     -350.1
    ],
-   "note": "south of Winch_Ritual2 (pedestal Y -2050..-1950); drum axis along X at Z -430"
+   "note": "south of Winch_Ritual2 (pedestal Y -2050..-1950); drum axis along X at Z -430",
+   "mbounds": [
+    [
+     -129.95,
+     -44.91,
+     0.0
+    ],
+    [
+     129.95,
+     44.91,
+     249.9
+    ]
+   ]
   },
   {
    "id": "CD_Chain_Winch_0",
@@ -20310,7 +23611,19 @@
     -2114.5,
     -94.8
    ],
-   "note": "from beam 2 down into the drum's east end (drum top Z -408)"
+   "note": "from beam 2 down into the drum's east end (drum top Z -408)",
+   "mbounds": [
+    [
+     -4.6,
+     -5.5,
+     -117.4
+    ],
+    [
+     4.6,
+     5.5,
+     0.2
+    ]
+   ]
   },
   {
    "id": "CD_Chain_Winch_1",
@@ -20343,7 +23656,19 @@
     -2112.8,
     -212.4
    ],
-   "note": "from beam 2 down into the drum's east end (drum top Z -408)"
+   "note": "from beam 2 down into the drum's east end (drum top Z -408)",
+   "mbounds": [
+    [
+     -4.6,
+     -5.5,
+     -117.4
+    ],
+    [
+     4.6,
+     5.5,
+     0.2
+    ]
+   ]
   },
   {
    "id": "CD_Chain_Winch_2",
@@ -20376,7 +23701,19 @@
     -2114.1,
     -330.0
    ],
-   "note": "from beam 2 down into the drum's east end (drum top Z -408)"
+   "note": "from beam 2 down into the drum's east end (drum top Z -408)",
+   "mbounds": [
+    [
+     -4.6,
+     -5.5,
+     -117.4
+    ],
+    [
+     4.6,
+     5.5,
+     0.2
+    ]
+   ]
   },
   {
    "id": "CD_Chain_Cage_0",
@@ -20409,7 +23746,19 @@
     -2344.5,
     -94.8
    ],
-   "note": "into the cage top ring"
+   "note": "into the cage top ring",
+   "mbounds": [
+    [
+     -4.6,
+     -5.5,
+     -117.4
+    ],
+    [
+     4.6,
+     5.5,
+     0.2
+    ]
+   ]
   },
   {
    "id": "CD_Chain_Cage_1",
@@ -20442,7 +23791,19 @@
     -2342.8,
     -212.4
    ],
-   "note": "into the cage top ring"
+   "note": "into the cage top ring",
+   "mbounds": [
+    [
+     -4.6,
+     -5.5,
+     -117.4
+    ],
+    [
+     4.6,
+     5.5,
+     0.2
+    ]
+   ]
   },
   {
    "id": "CD_Chain_B0_0",
@@ -20475,7 +23836,19 @@
     -2294.5,
     -94.8
    ],
-   "note": "loose"
+   "note": "loose",
+   "mbounds": [
+    [
+     -4.6,
+     -5.5,
+     -117.4
+    ],
+    [
+     4.6,
+     5.5,
+     0.2
+    ]
+   ]
   },
   {
    "id": "CD_Chain_B0_1",
@@ -20508,7 +23881,19 @@
     -2292.8,
     -212.4
    ],
-   "note": "loose"
+   "note": "loose",
+   "mbounds": [
+    [
+     -4.6,
+     -5.5,
+     -117.4
+    ],
+    [
+     4.6,
+     5.5,
+     0.2
+    ]
+   ]
   },
   {
    "id": "CD_Chain_B1_0",
@@ -20541,7 +23926,19 @@
     -1794.5,
     -94.8
    ],
-   "note": "loose"
+   "note": "loose",
+   "mbounds": [
+    [
+     -4.6,
+     -5.5,
+     -117.4
+    ],
+    [
+     4.6,
+     5.5,
+     0.2
+    ]
+   ]
   },
   {
    "id": "CD_Chain_B3_0",
@@ -20574,7 +23971,19 @@
     -1894.5,
     -94.8
    ],
-   "note": "loose"
+   "note": "loose",
+   "mbounds": [
+    [
+     -4.6,
+     -5.5,
+     -117.4
+    ],
+    [
+     4.6,
+     5.5,
+     0.2
+    ]
+   ]
   },
   {
    "id": "CD_Chain_B3_1",
@@ -20607,7 +24016,19 @@
     -1892.8,
     -212.4
    ],
-   "note": "loose"
+   "note": "loose",
+   "mbounds": [
+    [
+     -4.6,
+     -5.5,
+     -117.4
+    ],
+    [
+     4.6,
+     5.5,
+     0.2
+    ]
+   ]
   },
   {
    "id": "CD_Roots_CC_0",
@@ -20640,7 +24061,19 @@
     -1831.6,
     -45.0
    ],
-   "note": "through broken boards 02"
+   "note": "through broken boards 02",
+   "mbounds": [
+    [
+     -39.51,
+     -45.4,
+     -180.0
+    ],
+    [
+     38.03,
+     34.58,
+     0.0
+    ]
+   ]
   },
   {
    "id": "CD_Roots_CC_1",
@@ -20673,7 +24106,19 @@
     -2317.0,
     -45.0
    ],
-   "note": "through broken boards 10"
+   "note": "through broken boards 10",
+   "mbounds": [
+    [
+     -39.81,
+     -48.28,
+     -240.0
+    ],
+    [
+     43.12,
+     40.88,
+     0.0
+    ]
+   ]
   },
   {
    "id": "CD_Roots_CC_2",
@@ -20706,7 +24151,19 @@
     -2077.6,
     -45.0
    ],
-   "note": "through broken boards 31"
+   "note": "through broken boards 31",
+   "mbounds": [
+    [
+     -39.51,
+     -45.4,
+     -180.0
+    ],
+    [
+     38.03,
+     34.58,
+     0.0
+    ]
+   ]
   },
   {
    "id": "CD_Roots_FP_0",
@@ -20739,7 +24196,19 @@
     -2223.3,
     -42.0
    ],
-   "note": "from the vault crown over the pit"
+   "note": "from the vault crown over the pit",
+   "mbounds": [
+    [
+     -39.81,
+     -48.28,
+     -240.0
+    ],
+    [
+     43.12,
+     40.88,
+     0.0
+    ]
+   ]
   },
   {
    "id": "CD_Roots_FP_1",
@@ -20772,7 +24241,19 @@
     -2249.1,
     -42.0
    ],
-   "note": "from the vault crown, west part"
+   "note": "from the vault crown, west part",
+   "mbounds": [
+    [
+     -29.52,
+     -29.63,
+     -120.0
+    ],
+    [
+     32.04,
+     27.26,
+     0.0
+    ]
+   ]
   },
   {
    "id": "CD_Roots_WC_0",
@@ -20805,7 +24286,19 @@
     -1917.4,
     -42.0
    ],
-   "note": "from the WC bay seam crown"
+   "note": "from the WC bay seam crown",
+   "mbounds": [
+    [
+     -29.52,
+     -29.63,
+     -120.0
+    ],
+    [
+     32.04,
+     27.26,
+     0.0
+    ]
+   ]
   },
   {
    "id": "CD_Torch_T1",
@@ -20838,7 +24331,19 @@
     -1092.5,
     -370.3
    ],
-   "note": "landing west wall, seen from the stair foot"
+   "note": "landing west wall, seen from the stair foot",
+   "mbounds": [
+    [
+     -7.5,
+     0.0,
+     -40.6
+    ],
+    [
+     7.9,
+     34.5,
+     29.7
+    ]
+   ]
   },
   {
    "id": "CD_Torch_T2",
@@ -20871,7 +24376,19 @@
     -2692.1,
     -370.3
    ],
-   "note": "ossuary east wall, south of J5: draws the player east"
+   "note": "ossuary east wall, south of J5: draws the player east",
+   "mbounds": [
+    [
+     -7.5,
+     0.0,
+     -40.6
+    ],
+    [
+     7.9,
+     34.5,
+     29.7
+    ]
+   ]
   },
   {
    "id": "CD_Torch_T3",
@@ -20904,7 +24421,19 @@
     -694.0,
     -370.3
    ],
-   "note": "north corridor north wall, by the exit gate"
+   "note": "north corridor north wall, by the exit gate",
+   "mbounds": [
+    [
+     -7.5,
+     0.0,
+     -40.6
+    ],
+    [
+     7.9,
+     34.5,
+     29.7
+    ]
+   ]
   },
   {
    "id": "CD_Candles_Niche_E_WC_0",
@@ -20937,7 +24466,19 @@
     -1842.7,
     -453.4
    ],
-   "note": "candle niche in CA_Wall_E_WC_0"
+   "note": "candle niche in CA_Wall_E_WC_0",
+   "mbounds": [
+    [
+     -3.3,
+     -3.5,
+     0.0
+    ],
+    [
+     3.3,
+     3.5,
+     15.3
+    ]
+   ]
   },
   {
    "id": "CD_Candles_Niche_E_WC_1",
@@ -20970,7 +24511,19 @@
     -1833.6,
     -460.6
    ],
-   "note": "candle niche in CA_Wall_E_WC_0"
+   "note": "candle niche in CA_Wall_E_WC_0",
+   "mbounds": [
+    [
+     -3.3,
+     -3.3,
+     0.0
+    ],
+    [
+     3.3,
+     3.3,
+     8.1
+    ]
+   ]
   },
   {
    "id": "CD_Candles_Niche_E_WC_2",
@@ -21003,7 +24556,19 @@
     -1847.5,
     -460.4
    ],
-   "note": "candle niche in CA_Wall_E_WC_0"
+   "note": "candle niche in CA_Wall_E_WC_0",
+   "mbounds": [
+    [
+     -6.2,
+     -6.0,
+     0.0
+    ],
+    [
+     6.2,
+     6.0,
+     8.3
+    ]
+   ]
   },
   {
    "id": "CD_Candles_Niche_E_WC_3",
@@ -21036,7 +24601,19 @@
     -1839.6,
     -466.7
    ],
-   "note": "candle niche in CA_Wall_E_WC_0"
+   "note": "candle niche in CA_Wall_E_WC_0",
+   "mbounds": [
+    [
+     -2.5,
+     -2.5,
+     0.0
+    ],
+    [
+     2.5,
+     2.5,
+     2.0
+    ]
+   ]
   },
   {
    "id": "CD_Candles_Niche_E_WC_Flame",
@@ -21069,7 +24646,19 @@
     -1846.1,
     -449.1
    ],
-   "note": "on SM_Candle_Melted_02's wick (copy the P8 flame offset if it differs)"
+   "note": "on SM_Candle_Melted_02's wick (copy the P8 flame offset if it differs)",
+   "mbounds": [
+    [
+     -1.0,
+     -1.0,
+     0.0
+    ],
+    [
+     1.0,
+     1.0,
+     4.0
+    ]
+   ]
   },
   {
    "id": "L_Crypt_Candle_Niche_E_WC",
@@ -21148,7 +24737,19 @@
     -2183.4,
     -453.4
    ],
-   "note": "candle niche in CA_Wall_N_SC_0"
+   "note": "candle niche in CA_Wall_N_SC_0",
+   "mbounds": [
+    [
+     -3.3,
+     -3.5,
+     0.0
+    ],
+    [
+     3.3,
+     3.5,
+     15.3
+    ]
+   ]
   },
   {
    "id": "CD_Candles_Niche_N_SC_1",
@@ -21181,7 +24782,19 @@
     -2187.5,
     -460.6
    ],
-   "note": "candle niche in CA_Wall_N_SC_0"
+   "note": "candle niche in CA_Wall_N_SC_0",
+   "mbounds": [
+    [
+     -3.3,
+     -3.3,
+     0.0
+    ],
+    [
+     3.3,
+     3.3,
+     8.1
+    ]
+   ]
   },
   {
    "id": "CD_Candles_Niche_N_SC_2",
@@ -21214,7 +24827,19 @@
     -2184.1,
     -460.4
    ],
-   "note": "candle niche in CA_Wall_N_SC_0"
+   "note": "candle niche in CA_Wall_N_SC_0",
+   "mbounds": [
+    [
+     -6.2,
+     -6.0,
+     0.0
+    ],
+    [
+     6.2,
+     6.0,
+     8.3
+    ]
+   ]
   },
   {
    "id": "CD_Candles_Niche_N_SC_3",
@@ -21247,7 +24872,19 @@
     -2179.3,
     -466.7
    ],
-   "note": "candle niche in CA_Wall_N_SC_0"
+   "note": "candle niche in CA_Wall_N_SC_0",
+   "mbounds": [
+    [
+     -2.5,
+     -2.5,
+     0.0
+    ],
+    [
+     2.5,
+     2.5,
+     2.0
+    ]
+   ]
   },
   {
    "id": "CD_Candles_Niche_N_SC_Flame",
@@ -21280,7 +24917,19 @@
     -2187.0,
     -449.1
    ],
-   "note": "on SM_Candle_Melted_02's wick (copy the P8 flame offset if it differs)"
+   "note": "on SM_Candle_Melted_02's wick (copy the P8 flame offset if it differs)",
+   "mbounds": [
+    [
+     -1.0,
+     -1.0,
+     0.0
+    ],
+    [
+     1.0,
+     1.0,
+     4.0
+    ]
+   ]
   },
   {
    "id": "L_Crypt_Candle_Niche_N_SC",
@@ -21359,7 +25008,19 @@
     -2467.4,
     -453.4
    ],
-   "note": "candle niche in CA_Wall_S_FP_1"
+   "note": "candle niche in CA_Wall_S_FP_1",
+   "mbounds": [
+    [
+     -3.3,
+     -3.5,
+     0.0
+    ],
+    [
+     3.3,
+     3.5,
+     15.3
+    ]
+   ]
   },
   {
    "id": "CD_Candles_Niche_S_FP_1",
@@ -21392,7 +25053,19 @@
     -2463.3,
     -460.6
    ],
-   "note": "candle niche in CA_Wall_S_FP_1"
+   "note": "candle niche in CA_Wall_S_FP_1",
+   "mbounds": [
+    [
+     -3.3,
+     -3.3,
+     0.0
+    ],
+    [
+     3.3,
+     3.3,
+     8.1
+    ]
+   ]
   },
   {
    "id": "CD_Candles_Niche_S_FP_2",
@@ -21425,7 +25098,19 @@
     -2460.7,
     -460.4
    ],
-   "note": "candle niche in CA_Wall_S_FP_1"
+   "note": "candle niche in CA_Wall_S_FP_1",
+   "mbounds": [
+    [
+     -6.2,
+     -6.0,
+     0.0
+    ],
+    [
+     6.2,
+     6.0,
+     8.3
+    ]
+   ]
   },
   {
    "id": "CD_Candles_Niche_S_FP_3",
@@ -21458,7 +25143,19 @@
     -2474.5,
     -466.7
    ],
-   "note": "candle niche in CA_Wall_S_FP_1"
+   "note": "candle niche in CA_Wall_S_FP_1",
+   "mbounds": [
+    [
+     -2.5,
+     -2.5,
+     0.0
+    ],
+    [
+     2.5,
+     2.5,
+     2.0
+    ]
+   ]
   },
   {
    "id": "CD_Candles_Niche_S_FP_Flame",
@@ -21491,7 +25188,19 @@
     -2471.0,
     -449.1
    ],
-   "note": "on SM_Candle_Melted_02's wick (copy the P8 flame offset if it differs)"
+   "note": "on SM_Candle_Melted_02's wick (copy the P8 flame offset if it differs)",
+   "mbounds": [
+    [
+     -1.0,
+     -1.0,
+     0.0
+    ],
+    [
+     1.0,
+     1.0,
+     4.0
+    ]
+   ]
   },
   {
    "id": "L_Crypt_Candle_Niche_S_FP",
@@ -21570,7 +25279,19 @@
     -1636.9,
     -453.4
    ],
-   "note": "candle niche in CA_Wall_E_CC_1"
+   "note": "candle niche in CA_Wall_E_CC_1",
+   "mbounds": [
+    [
+     -3.3,
+     -3.5,
+     0.0
+    ],
+    [
+     3.3,
+     3.5,
+     15.3
+    ]
+   ]
   },
   {
    "id": "CD_Candles_Niche_E_CC_1",
@@ -21603,7 +25324,19 @@
     -1628.4,
     -460.6
    ],
-   "note": "candle niche in CA_Wall_E_CC_1"
+   "note": "candle niche in CA_Wall_E_CC_1",
+   "mbounds": [
+    [
+     -3.3,
+     -3.3,
+     0.0
+    ],
+    [
+     3.3,
+     3.3,
+     8.1
+    ]
+   ]
   },
   {
    "id": "CD_Candles_Niche_E_CC_2",
@@ -21636,7 +25369,19 @@
     -1641.2,
     -460.4
    ],
-   "note": "candle niche in CA_Wall_E_CC_1"
+   "note": "candle niche in CA_Wall_E_CC_1",
+   "mbounds": [
+    [
+     -6.2,
+     -6.0,
+     0.0
+    ],
+    [
+     6.2,
+     6.0,
+     8.3
+    ]
+   ]
   },
   {
    "id": "CD_Candles_Niche_E_CC_3",
@@ -21669,7 +25414,19 @@
     -1633.6,
     -466.7
    ],
-   "note": "candle niche in CA_Wall_E_CC_1"
+   "note": "candle niche in CA_Wall_E_CC_1",
+   "mbounds": [
+    [
+     -2.5,
+     -2.5,
+     0.0
+    ],
+    [
+     2.5,
+     2.5,
+     2.0
+    ]
+   ]
   },
   {
    "id": "CD_Candles_Niche_E_CC_Flame",
@@ -21702,7 +25459,19 @@
     -1639.9,
     -449.1
    ],
-   "note": "on SM_Candle_Melted_02's wick (copy the P8 flame offset if it differs)"
+   "note": "on SM_Candle_Melted_02's wick (copy the P8 flame offset if it differs)",
+   "mbounds": [
+    [
+     -1.0,
+     -1.0,
+     0.0
+    ],
+    [
+     1.0,
+     1.0,
+     4.0
+    ]
+   ]
   },
   {
    "id": "L_Crypt_Candle_Niche_E_CC",
@@ -21781,7 +25550,19 @@
     -1107.9,
     -453.4
    ],
-   "note": "candle niche in CA_Wall_S_NC_0"
+   "note": "candle niche in CA_Wall_S_NC_0",
+   "mbounds": [
+    [
+     -3.3,
+     -3.5,
+     0.0
+    ],
+    [
+     3.3,
+     3.5,
+     15.3
+    ]
+   ]
   },
   {
    "id": "CD_Candles_Niche_S_NC_1",
@@ -21814,7 +25595,19 @@
     -1103.8,
     -460.6
    ],
-   "note": "candle niche in CA_Wall_S_NC_0"
+   "note": "candle niche in CA_Wall_S_NC_0",
+   "mbounds": [
+    [
+     -3.3,
+     -3.3,
+     0.0
+    ],
+    [
+     3.3,
+     3.3,
+     8.1
+    ]
+   ]
   },
   {
    "id": "CD_Candles_Niche_S_NC_2",
@@ -21847,7 +25640,19 @@
     -1100.8,
     -460.4
    ],
-   "note": "candle niche in CA_Wall_S_NC_0"
+   "note": "candle niche in CA_Wall_S_NC_0",
+   "mbounds": [
+    [
+     -6.2,
+     -6.0,
+     0.0
+    ],
+    [
+     6.2,
+     6.0,
+     8.3
+    ]
+   ]
   },
   {
    "id": "CD_Candles_Niche_S_NC_3",
@@ -21880,7 +25685,19 @@
     -1114.8,
     -466.7
    ],
-   "note": "candle niche in CA_Wall_S_NC_0"
+   "note": "candle niche in CA_Wall_S_NC_0",
+   "mbounds": [
+    [
+     -2.5,
+     -2.5,
+     0.0
+    ],
+    [
+     2.5,
+     2.5,
+     2.0
+    ]
+   ]
   },
   {
    "id": "CD_Candles_Niche_S_NC_Flame",
@@ -21913,7 +25730,19 @@
     -1111.0,
     -449.1
    ],
-   "note": "on SM_Candle_Melted_02's wick (copy the P8 flame offset if it differs)"
+   "note": "on SM_Candle_Melted_02's wick (copy the P8 flame offset if it differs)",
+   "mbounds": [
+    [
+     -1.0,
+     -1.0,
+     0.0
+    ],
+    [
+     1.0,
+     1.0,
+     4.0
+    ]
+   ]
   },
   {
    "id": "L_Crypt_Candle_Niche_S_NC",
@@ -21992,7 +25821,19 @@
     -2745.2,
     -514.7
    ],
-   "note": "on the sarcophagus lid, west end"
+   "note": "on the sarcophagus lid, west end",
+   "mbounds": [
+    [
+     -3.3,
+     -3.5,
+     0.0
+    ],
+    [
+     3.3,
+     3.5,
+     15.3
+    ]
+   ]
   },
   {
    "id": "CD_Candles_Sarc_0_1",
@@ -22025,7 +25866,19 @@
     -2742.0,
     -521.9
    ],
-   "note": "on the sarcophagus lid, west end"
+   "note": "on the sarcophagus lid, west end",
+   "mbounds": [
+    [
+     -3.3,
+     -3.3,
+     0.0
+    ],
+    [
+     3.3,
+     3.3,
+     8.1
+    ]
+   ]
   },
   {
    "id": "CD_Candles_Sarc_0_2",
@@ -22058,7 +25911,19 @@
     -2739.1,
     -521.7
    ],
-   "note": "on the sarcophagus lid, west end"
+   "note": "on the sarcophagus lid, west end",
+   "mbounds": [
+    [
+     -6.2,
+     -6.0,
+     0.0
+    ],
+    [
+     6.2,
+     6.0,
+     8.3
+    ]
+   ]
   },
   {
    "id": "CD_Candles_Sarc_0_3",
@@ -22091,7 +25956,19 @@
     -2752.6,
     -528.0
    ],
-   "note": "on the sarcophagus lid, west end"
+   "note": "on the sarcophagus lid, west end",
+   "mbounds": [
+    [
+     -2.5,
+     -2.5,
+     0.0
+    ],
+    [
+     2.5,
+     2.5,
+     2.0
+    ]
+   ]
   },
   {
    "id": "CD_Candles_Sarc_0_Flame",
@@ -22124,7 +26001,19 @@
     -2749.0,
     -510.4
    ],
-   "note": "on SM_Candle_Melted_02's wick (copy the P8 flame offset if it differs)"
+   "note": "on SM_Candle_Melted_02's wick (copy the P8 flame offset if it differs)",
+   "mbounds": [
+    [
+     -1.0,
+     -1.0,
+     0.0
+    ],
+    [
+     1.0,
+     1.0,
+     4.0
+    ]
+   ]
   },
   {
    "id": "L_Crypt_Candle_Sarc_0",
@@ -22203,7 +26092,19 @@
     -2745.4,
     -514.7
    ],
-   "note": "on the sarcophagus lid, east end"
+   "note": "on the sarcophagus lid, east end",
+   "mbounds": [
+    [
+     -3.3,
+     -3.5,
+     0.0
+    ],
+    [
+     3.3,
+     3.5,
+     15.3
+    ]
+   ]
   },
   {
    "id": "CD_Candles_Sarc_1_1",
@@ -22236,7 +26137,19 @@
     -2741.6,
     -521.9
    ],
-   "note": "on the sarcophagus lid, east end"
+   "note": "on the sarcophagus lid, east end",
+   "mbounds": [
+    [
+     -3.3,
+     -3.3,
+     0.0
+    ],
+    [
+     3.3,
+     3.3,
+     8.1
+    ]
+   ]
   },
   {
    "id": "CD_Candles_Sarc_1_2",
@@ -22269,7 +26182,19 @@
     -2739.1,
     -521.7
    ],
-   "note": "on the sarcophagus lid, east end"
+   "note": "on the sarcophagus lid, east end",
+   "mbounds": [
+    [
+     -6.2,
+     -6.0,
+     0.0
+    ],
+    [
+     6.2,
+     6.0,
+     8.3
+    ]
+   ]
   },
   {
    "id": "CD_Candles_Sarc_1_3",
@@ -22302,7 +26227,19 @@
     -2752.8,
     -528.0
    ],
-   "note": "on the sarcophagus lid, east end"
+   "note": "on the sarcophagus lid, east end",
+   "mbounds": [
+    [
+     -2.5,
+     -2.5,
+     0.0
+    ],
+    [
+     2.5,
+     2.5,
+     2.0
+    ]
+   ]
   },
   {
    "id": "CD_Candles_Sarc_1_Flame",
@@ -22335,7 +26272,19 @@
     -2749.0,
     -510.4
    ],
-   "note": "on SM_Candle_Melted_02's wick (copy the P8 flame offset if it differs)"
+   "note": "on SM_Candle_Melted_02's wick (copy the P8 flame offset if it differs)",
+   "mbounds": [
+    [
+     -1.0,
+     -1.0,
+     0.0
+    ],
+    [
+     1.0,
+     1.0,
+     4.0
+    ]
+   ]
   },
   {
    "id": "L_Crypt_Candle_Sarc_1",
@@ -22414,7 +26363,19 @@
     -1540.2,
     -584.7
    ],
-   "note": "floor, west of the lever row"
+   "note": "floor, west of the lever row",
+   "mbounds": [
+    [
+     -3.3,
+     -3.5,
+     0.0
+    ],
+    [
+     3.3,
+     3.5,
+     15.3
+    ]
+   ]
   },
   {
    "id": "CD_Candles_Puzzle_W_1",
@@ -22447,7 +26408,19 @@
     -1544.5,
     -591.9
    ],
-   "note": "floor, west of the lever row"
+   "note": "floor, west of the lever row",
+   "mbounds": [
+    [
+     -3.3,
+     -3.3,
+     0.0
+    ],
+    [
+     3.3,
+     3.3,
+     8.1
+    ]
+   ]
   },
   {
    "id": "CD_Candles_Puzzle_W_2",
@@ -22480,7 +26453,19 @@
     -1539.4,
     -591.7
    ],
-   "note": "floor, west of the lever row"
+   "note": "floor, west of the lever row",
+   "mbounds": [
+    [
+     -6.2,
+     -6.0,
+     0.0
+    ],
+    [
+     6.2,
+     6.0,
+     8.3
+    ]
+   ]
   },
   {
    "id": "CD_Candles_Puzzle_W_3",
@@ -22513,7 +26498,19 @@
     -1535.6,
     -598.0
    ],
-   "note": "floor, west of the lever row"
+   "note": "floor, west of the lever row",
+   "mbounds": [
+    [
+     -2.5,
+     -2.5,
+     0.0
+    ],
+    [
+     2.5,
+     2.5,
+     2.0
+    ]
+   ]
   },
   {
    "id": "CD_Candles_Puzzle_W_Flame",
@@ -22546,7 +26543,19 @@
     -1544.0,
     -580.4
    ],
-   "note": "on SM_Candle_Melted_02's wick (copy the P8 flame offset if it differs)"
+   "note": "on SM_Candle_Melted_02's wick (copy the P8 flame offset if it differs)",
+   "mbounds": [
+    [
+     -1.0,
+     -1.0,
+     0.0
+    ],
+    [
+     1.0,
+     1.0,
+     4.0
+    ]
+   ]
   },
   {
    "id": "L_Crypt_Candle_Puzzle_W",
@@ -22625,7 +26634,19 @@
     -1540.2,
     -584.7
    ],
-   "note": "floor, east of the lever row"
+   "note": "floor, east of the lever row",
+   "mbounds": [
+    [
+     -3.3,
+     -3.5,
+     0.0
+    ],
+    [
+     3.3,
+     3.5,
+     15.3
+    ]
+   ]
   },
   {
    "id": "CD_Candles_Puzzle_E_1",
@@ -22658,7 +26679,19 @@
     -1544.4,
     -591.9
    ],
-   "note": "floor, east of the lever row"
+   "note": "floor, east of the lever row",
+   "mbounds": [
+    [
+     -3.3,
+     -3.3,
+     0.0
+    ],
+    [
+     3.3,
+     3.3,
+     8.1
+    ]
+   ]
   },
   {
    "id": "CD_Candles_Puzzle_E_2",
@@ -22691,7 +26724,19 @@
     -1539.4,
     -591.7
    ],
-   "note": "floor, east of the lever row"
+   "note": "floor, east of the lever row",
+   "mbounds": [
+    [
+     -6.2,
+     -6.0,
+     0.0
+    ],
+    [
+     6.2,
+     6.0,
+     8.3
+    ]
+   ]
   },
   {
    "id": "CD_Candles_Puzzle_E_3",
@@ -22724,7 +26769,19 @@
     -1536.2,
     -598.0
    ],
-   "note": "floor, east of the lever row"
+   "note": "floor, east of the lever row",
+   "mbounds": [
+    [
+     -2.5,
+     -2.5,
+     0.0
+    ],
+    [
+     2.5,
+     2.5,
+     2.0
+    ]
+   ]
   },
   {
    "id": "CD_Candles_Puzzle_E_Flame",
@@ -22757,7 +26814,19 @@
     -1544.0,
     -580.4
    ],
-   "note": "on SM_Candle_Melted_02's wick (copy the P8 flame offset if it differs)"
+   "note": "on SM_Candle_Melted_02's wick (copy the P8 flame offset if it differs)",
+   "mbounds": [
+    [
+     -1.0,
+     -1.0,
+     0.0
+    ],
+    [
+     1.0,
+     1.0,
+     4.0
+    ]
+   ]
   },
   {
    "id": "L_Crypt_Candle_Puzzle_E",
@@ -22902,7 +26971,19 @@
     -2829.2,
     -580.5
    ],
-   "note": ""
+   "note": "",
+   "mbounds": [
+    [
+     -22.8,
+     -43.5,
+     0.0
+    ],
+    [
+     22.8,
+     43.5,
+     27.9
+    ]
+   ]
   },
   {
    "id": "CD_FloorBones_1",
@@ -22935,7 +27016,19 @@
     -2826.1,
     -591.5
    ],
-   "note": ""
+   "note": "",
+   "mbounds": [
+    [
+     -12.1,
+     -42.2,
+     0.0
+    ],
+    [
+     12.1,
+     42.2,
+     8.5
+    ]
+   ]
   },
   {
    "id": "CD_FloorBones_2",
@@ -22968,7 +27061,19 @@
     -2834.5,
     -576.6
    ],
-   "note": ""
+   "note": "",
+   "mbounds": [
+    [
+     -15.7,
+     -32.6,
+     0.0
+    ],
+    [
+     15.7,
+     32.6,
+     23.4
+    ]
+   ]
   },
   {
    "id": "CD_FloorBones_3",
@@ -23001,7 +27106,19 @@
     -2842.3,
     -577.8
    ],
-   "note": ""
+   "note": "",
+   "mbounds": [
+    [
+     -15.8,
+     -12.6,
+     0.0
+    ],
+    [
+     15.8,
+     12.6,
+     22.2
+    ]
+   ]
   },
   {
    "id": "CD_FloorBones_4",
@@ -23034,7 +27151,19 @@
     -2033.7,
     -579.6
    ],
-   "note": ""
+   "note": "",
+   "mbounds": [
+    [
+     -8.6,
+     -12.95,
+     0.0
+    ],
+    [
+     8.6,
+     12.95,
+     20.4
+    ]
+   ]
   },
   {
    "id": "CD_FloorBones_5",
@@ -23067,7 +27196,19 @@
     -1991.6,
     -584.8
    ],
-   "note": ""
+   "note": "",
+   "mbounds": [
+    [
+     -31.3,
+     -39.9,
+     0.0
+    ],
+    [
+     31.3,
+     39.9,
+     15.2
+    ]
+   ]
   },
   {
    "id": "CD_FloorBones_6",
@@ -23100,7 +27241,19 @@
     -1993.4,
     -586.1
    ],
-   "note": ""
+   "note": "",
+   "mbounds": [
+    [
+     -27.7,
+     -39.8,
+     0.0
+    ],
+    [
+     27.7,
+     39.8,
+     13.9
+    ]
+   ]
   },
   {
    "id": "CD_FloorBones_7",
@@ -23133,7 +27286,19 @@
     -2009.8,
     -577.0
    ],
-   "note": ""
+   "note": "",
+   "mbounds": [
+    [
+     -49.7,
+     -65.3,
+     0.0
+    ],
+    [
+     49.7,
+     65.3,
+     46.1
+    ]
+   ]
   },
   {
    "id": "L_Crypt_Torch_T1",

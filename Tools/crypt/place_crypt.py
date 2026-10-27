@@ -8,7 +8,11 @@ Usage (editor open on L_Monastery):
     python place_crypt.py --verify-greybox                # read back bVisible/collision and run the trace_world checks
 
 Placed categories (P9-5): backdrop wall pitwall portal vault column ossuary tile stair soffit ceiling grate water.
-`dress`, `decal`, `light` are later tasks and are refused here.
+P9-6a adds: lining (R4 greybox slab-face lining), dress (CD_* dressing), decal (CD_Decal_* DecalActors).
+`light` is a later task (P9-7) and is refused here.
+Dress skulls: actor yaw = record face_yaw + SKULL_OFFSETS[mesh] (override: --skull-offset SM_Skull_00=90 ...).
+Decals: DecalActor via add_to_scene_from_class; decal.mi -> NewDecalComponent.decalMaterial, decal.size -> decalSize
+(half-extents in depth, vertical, horizontal order, as given), record rotation as given (or + --decal-yaw-add degrees).
 Every placed actor: transform set in ONE call (location+rotation+scale), label = id, outliner folder = record folder,
 collision (NoCollision records: bUseDefaultCollision=false + bodyInstance.collisionProfileName=NoCollision, both read back;
 "BlockAll (mesh hull)" records keep the mesh default), materials per the P9-5 table, then a bounds read-back (tolerance 3 cm).
@@ -31,8 +35,14 @@ MAP = "/Game/LastBell/Maps/L_Monastery.L_Monastery"
 MATDIR = "/Game/LastBell/Environments/Crypt/Materials/"
 TOL = 3.0
 
+import math  # noqa: E402
+
 ORDER = ["backdrop", "wall", "pitwall", "portal", "vault", "column", "ossuary", "tile", "stair", "soffit",
-         "ceiling", "grate", "water"]
+         "ceiling", "grate", "water", "lining", "dress", "decal"]
+# yaw added to a skull's face_yaw (world yaw its face must look toward) = the mesh's measured facing offset (P9-6a step 2)
+SKULL_OFFSETS = {"SM_Skull_00": 0.0, "SM_Skull_01": 0.0, "SM_Skull_02": 0.0}
+DECAL_YAW_ADD = [0.0]   # P9-6a step 3: added to every wall decal's yaw when the orientation check demands it (--decal-yaw-add)
+DECAL_MI_DIRS = ["/Game/LastBell/Materials/Instances/", "/Game/LastBell/Environments/Crypt/Materials/"]
 # label prefixes owned by each category (idempotent removal)
 PREFIXES = {
     "backdrop": ["CA_Backdrop_"],
@@ -48,6 +58,9 @@ PREFIXES = {
     "ceiling": ["CA_CC_Beam_", "CA_CC_Corbel_", "CA_CC_Boards_", "CA_CC_Soil"],
     "grate": ["CA_CC_Grate", "CA_Grate_", "CA_GrateSky_"],
     "water": ["CA_Water_"],
+    "lining": ["CA_Lining_"],
+    "dress": ["CD_"],
+    "decal": ["CD_Decal_"],
 }
 GREYBOX_LABELS = (["Rock_%03d" % i for i in range(17)] + ["CryptFloor_%d" % i for i in range(4)] +
                   ["Pit_Floor", "Pit_W", "Pit_E", "Pit_N", "Pit_S"] + ["Prop_Crypt_%d" % i for i in range(6)] +
@@ -69,6 +82,8 @@ def material_for(rec):
         return "MI_Crypt_Backdrop", False
     if cat == "water":
         return rec["mi"], None
+    if cat == "lining":
+        return "MI_Crypt_StoneWA", None
     if i == "CA_CC_Soil":
         return "MI_Crypt_Soil", None
     if i in ("CA_CC_GrateSky",) or i.startswith("CA_GrateSky_"):
@@ -76,9 +91,50 @@ def material_for(rec):
     return None, None
 
 
+def ang_diff(a, b):
+    return (a - b + 180.0) % 360.0 - 180.0
+
+
+def eff_rot(rec):
+    """Final UE rotator [pitch, yaw, roll] of a record: skulls face_yaw + per-mesh offset; wall decals + DECAL_YAW_ADD."""
+    p, y, r = rec["rot"]
+    if "face_yaw" in rec:
+        y = rec["face_yaw"] + SKULL_OFFSETS.get(rec["mesh"].split("/")[-1], 0.0)
+    if rec["cat"] == "decal" and abs(r - 90.0) < 1e-6:
+        y += DECAL_YAW_ADD[0]
+    return [p, ((y + 180.0) % 360.0) - 180.0, r]
+
+
+def rot_rows(p, y, r):
+    P, Y, R = (math.radians(v) for v in (p, y, r))
+    SP, CP, SY, CY, SR, CR = math.sin(P), math.cos(P), math.sin(Y), math.cos(Y), math.sin(R), math.cos(R)
+    return [(CP * CY, CP * SY, SP),
+            (SR * SP * CY - CR * SY, SR * SP * SY + CR * CY, -SR * CP),
+            (-(CR * SP * CY + SR * SY), CY * SR - CR * SP * SY, CR * CP)]
+
+
+def expected_aabb(rec):
+    """World AABB from the record's mesh-local bounds ('mbounds') and the final rotation; None if unknown."""
+    mb = rec.get("mbounds")
+    if not mb:
+        return None
+    lo, hi = mb
+    rows = rot_rows(*eff_rot(rec))
+    sc = rec["scale"]
+    pts = []
+    for cx in (lo[0], hi[0]):
+        for cy in (lo[1], hi[1]):
+            for cz in (lo[2], hi[2]):
+                v = (cx * sc[0], cy * sc[1], cz * sc[2])
+                pts.append([rec["loc"][k] + v[0] * rows[0][k] + v[1] * rows[1][k] + v[2] * rows[2][k] for k in range(3)])
+    return [min(p[k] for p in pts) for k in range(3)], [max(p[k] for p in pts) for k in range(3)]
+
+
 class Placer:
     def __init__(self):
         self.ue = UE()
+        self._decal_mi = {}
+        self.measured = {}   # dress records without generator mesh bounds: id -> (min, max) read back
 
     def call(self, ts, tool, args=None, tries=4):
         for k in range(tries):
@@ -115,6 +171,8 @@ class Placer:
                     continue
                 if cat == "ceiling" and lbl.startswith("CA_CC_Grate"):
                     continue
+                if cat == "dress" and lbl.startswith("CD_Decal_"):
+                    continue
                 self.call(S, "remove_from_scene", {"actor": a})
                 n += 1
         return n
@@ -140,9 +198,58 @@ class Placer:
         mats = [m["refPath"].split("/")[-1].split(".")[0] if isinstance(m, dict) else str(m) for m in p["overrideMaterials"]]
         return {"profile": prof, "useDefault": p["bUseDefaultCollision"], "castShadow": p["castShadow"], "mats": mats}
 
-    def place_one(self, rec):
+    def resolve_decal_mi(self, name):
+        if name not in self._decal_mi:
+            for d in DECAL_MI_DIRS:
+                if self.call("editor_toolset.toolsets.asset.AssetTools", "exists", {"asset_path": d + name}):
+                    self._decal_mi[name] = d + name + "." + name
+                    break
+            else:
+                raise RuntimeError("decal MI not found: " + name)
+        return self._decal_mi[name]
+
+    def place_decal(self, rec):
         xf = {"location": dict(zip("xyz", rec["loc"])),
-              "rotation": {"pitch": rec["rot"][0], "yaw": rec["rot"][1], "roll": rec["rot"][2]},
+              "rotation": {"pitch": rec["rot"][0], "yaw": eff_rot(rec)[1], "roll": rec["rot"][2]},
+              "scale": {"x": 1, "y": 1, "z": 1}}
+        a = self.call(S, "add_to_scene_from_class", {"actor_type": {"refPath": "/Script/Engine.DecalActor"}, "name": rec["id"], "xform": xf})
+        if not a:
+            raise RuntimeError("decal spawn failed for " + rec["id"])
+        a = a if isinstance(a, dict) else {"refPath": a}
+        self.call(A, "set_actor_transform", {"actor": a, "xform": xf, "worldspace": True})
+        self.call(A, "set_label", {"actor": a, "label": rec["id"]})
+        self.call(S, "set_actor_folder", {"actor": a, "folder_path": rec["folder"]})
+        comp = {"refPath": a["refPath"] + ".NewDecalComponent"}
+        sz = rec["decal"]["size"]
+        self.set_props(comp, {"decalMaterial": {"refPath": self.resolve_decal_mi(rec["decal"]["mi"])},
+                              "decalSize": {"x": sz[0], "y": sz[1], "z": sz[2]}})
+        return a, comp
+
+    def verify_decal(self, rec, a, comp):
+        p = self.props(comp, ["decalMaterial", "decalSize"])
+        mat = (p["decalMaterial"] or {}).get("refPath", "").split("/")[-1].split(".")[0]
+        sz = p["decalSize"]
+        issues = []
+        if mat != rec["decal"]["mi"]:
+            issues.append("material %s != %s" % (mat, rec["decal"]["mi"]))
+        e = rec["decal"]["size"]
+        if max(abs(sz["x"] - e[0]), abs(sz["y"] - e[1]), abs(sz["z"] - e[2])) > 0.01:
+            issues.append("decalSize %s != %s" % (sz, e))
+        t = self.call(A, "get_actor_transform", {"actor": a, "worldspace": True})
+        loc, rot = t["location"], t["rotation"]
+        want = eff_rot(rec)
+        dl = max(abs(loc["x"] - rec["loc"][0]), abs(loc["y"] - rec["loc"][1]), abs(loc["z"] - rec["loc"][2]))
+        dr = max(abs(ang_diff(rot["pitch"], want[0])), abs(ang_diff(rot["yaw"], want[1])), abs(ang_diff(rot["roll"], want[2])))
+        if dl > 0.1 or dr > 0.1:
+            issues.append("transform dev loc %.2f rot %.2f" % (dl, dr))
+        return not issues, dl, "; ".join(issues), {"mat": mat}
+
+    def place_one(self, rec):
+        if rec["cat"] == "decal":
+            return self.place_decal(rec)
+        rot = eff_rot(rec)
+        xf = {"location": dict(zip("xyz", rec["loc"])),
+              "rotation": {"pitch": rot[0], "yaw": rot[1], "roll": rot[2]},
               "scale": dict(zip("xyz", rec["scale"]))}
         mesh = rec["mesh"]
         asset = mesh if "." in mesh.split("/")[-1] else mesh + "." + mesh.split("/")[-1]
@@ -169,16 +276,23 @@ class Placer:
 
     def verify(self, rec, a, comp):
         """returns (ok, message, state)"""
+        if rec["cat"] == "decal":
+            return self.verify_decal(rec, a, comp)
         mn, mx = self.bounds(a)
         got_min = [mn["x"], mn["y"], mn["z"]]
         got_max = [mx["x"], mx["y"], mx["z"]]
-        dev = max(max(abs(g - e) for g, e in zip(got_min, rec["aabb_min"])),
-                  max(abs(g - e) for g, e in zip(got_max, rec["aabb_max"])))
+        exp = expected_aabb(rec) if rec["cat"] in ("dress", "lining") else (rec["aabb_min"], rec["aabb_max"])
+        issues = []
+        if exp is None:   # mesh bounds unknown to the generator: report the measured bounds, nothing to compare
+            dev = 0.0
+            self.measured[rec["id"]] = (got_min, got_max)
+        else:
+            dev = max(max(abs(g - e) for g, e in zip(got_min, exp[0])),
+                      max(abs(g - e) for g, e in zip(got_max, exp[1])))
         st = self.read_state(a, comp, rec, None)
         ok = dev <= TOL
-        issues = []
         if not ok:
-            issues.append("bounds dev %.1f" % dev)
+            issues.append("bounds dev %.1f (got %s..%s)" % (dev, [round(v, 1) for v in got_min], [round(v, 1) for v in got_max]))
         if rec["collision"] == "NoCollision":
             if st["profile"] != "NoCollision" or st["useDefault"]:
                 ok = False
@@ -217,8 +331,16 @@ class Placer:
                     a = found[0]
                     comp = self.comp0(a)
                 else:
-                    a, comp = self.place_one(r)
-                ok, dev, msg, st = self.verify(r, a, comp)
+                    try:
+                        a, comp = self.place_one(r)
+                    except Exception as e:   # one failed record must not abort the run
+                        fails.append((r["id"], "place error: " + str(e)[:200]))
+                        print("  FAIL %s: place error %s" % (r["id"], str(e)[:200]), flush=True)
+                        continue
+                try:
+                    ok, dev, msg, st = self.verify(r, a, comp)
+                except Exception as e:
+                    ok, dev, msg = False, 0.0, "verify error: " + str(e)[:200]
                 maxdev = max(maxdev, dev)
                 if not ok:
                     fails.append((r["id"], msg))
@@ -231,7 +353,37 @@ class Placer:
         print("\nSUMMARY (cat, n, pass, fail, max dev cm)")
         for s in summary:
             print("  %-9s %4d %4d %3d  %.2f" % s)
+        if self.measured:
+            print("\nmeasured bounds (generator has no mesh bounds for these):")
+            for k, (mn, mx) in sorted(self.measured.items()):
+                print("  %s: %s .. %s" % (k, [round(v, 1) for v in mn], [round(v, 1) for v in mx]))
         return summary
+
+    # ---- BlockAll dressing: the collision must really exist (trace_world through each piece)
+    def verify_blockers(self):
+        """Stake, cage and winch frame must block a trace (BlockAll with real shapes); prints distance/hit per probe."""
+        ok = True
+        probes = {"CD_SkeletonStake": [("x", 0.0)], "CD_CageOpen": [("x", 0.0)], "CD_WinchFrame": [("y", -110.0), ("y", 110.0)]}
+        for lbl, plist in probes.items():
+            found = [a for a in self.find_prefix(lbl) if self.label(a) == lbl]
+            if not found:
+                print("  MISSING", lbl)
+                ok = False
+                continue
+            mn, mx = self.bounds(found[0])
+            cx, cy = (mn[0] + mx[0]) / 2, (mn[1] + mx[1]) / 2
+            z = mn[2] + min(60.0, (mx[2] - mn[2]) / 2)
+            for ax, off in plist:
+                if ax == "x":   # trace along X through the piece centre line (Y = cy)
+                    a, b = (mn[0] - 40, cy, z), (mx[0] + 40, cy, z)
+                else:           # trace along Y at x = cx + off (posts / sole plates)
+                    a, b = (cx + off, mn[1] - 40, z), (cx + off, mx[1] + 40, z)
+                d = self.call(S, "trace_world", {"start": dict(zip("xyz", a)), "end": dict(zip("xyz", b))})
+                hit = d is not None
+                ok &= hit
+                print("  %-18s probe %s %+.0f z %.0f: %s" % (lbl, ax, off, z, "BLOCKS (distance %.1f)" % d if hit else "NO HIT"))
+        print("blockers:", "all block" if ok else "SOME DO NOT BLOCK")
+        return ok
 
     # ---- greybox
     def greybox_actors(self):
@@ -281,10 +433,17 @@ def main():
     ap.add_argument("--check", action="store_true")
     ap.add_argument("--hide-greybox", action="store_true")
     ap.add_argument("--verify-greybox", action="store_true")
+    ap.add_argument("--skull-offset", nargs="*", default=[], help="SM_Skull_00=90 ...")
+    ap.add_argument("--decal-yaw-add", type=float, default=0.0)
+    ap.add_argument("--verify-blockers", action="store_true", help="trace_world through the BlockAll dress pieces")
     args = ap.parse_args()
+    for kv in args.skull_offset:
+        k, v = kv.split("=")
+        SKULL_OFFSETS[k] = float(v)
+    DECAL_YAW_ADD[0] = args.decal_yaw_add
     for c in args.cats:
         if c not in ORDER:
-            sys.exit("category %r not allowed in P9-5 (allowed: %s)" % (c, " ".join(ORDER)))
+            sys.exit("category %r not allowed (allowed: %s; `light` is P9-7)" % (c, " ".join(ORDER)))
     p = Placer()
     lvl = p.call(S, "get_current_level")
     if not str(lvl).endswith("L_Monastery"):
@@ -293,6 +452,8 @@ def main():
         p.hide_greybox()
     if args.verify_greybox:
         p.verify_greybox()
+    if args.verify_blockers:
+        p.verify_blockers()
     if args.cats:
         s = p.run_cats(args.cats, args.only, args.check)
         if any(x[3] for x in s):

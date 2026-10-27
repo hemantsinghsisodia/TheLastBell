@@ -192,6 +192,9 @@ def add(pid, cat, mesh, path, loc, rot, scale, collision, folder, note="", check
          "note": note}
     if extra:
         d.update(extra)
+    if cat in ("dress", "lining") and mesh in MESH_BOUNDS:
+        # mesh-local bounds: place_crypt.py recomputes the expected world AABB from them and the FINAL rotation (skull facing offsets)
+        d["mbounds"] = [list(MESH_BOUNDS[mesh][0]), list(MESH_BOUNDS[mesh][1])]
     placements.append(d)
     return d
 
@@ -349,8 +352,8 @@ for wall, yface, yaw in (("S", -2900, 0.0), ("N", -2000, 180.0)):
             note="front face on the collision face line; niches open into the room", check=False)
 
 # ---- floor tiles: global 200 grid, centres on odd hundreds, surface Z -600 ----
-TILE_SPACES = {"L": (90, 270), "WC": (90, 270), "SC": (0, 180), "OS": (0, 180), "CC": (0, 180),
-               "LW": (90, 270), "LE": (90, 270), "NC": (0, 180)}
+# P9-6a R2 step B: every tile yaw 0 (the "rail" lines persisted: they are the border strip of the cobble texture, one per texture repeat)
+TILE_SPACES = {"L": (0,), "WC": (0,), "SC": (0,), "OS": (0,), "CC": (0,), "LW": (0,), "LE": (0,), "NC": (0,)}
 rng = random.Random(9)
 tiles = {}
 TILE_MARGIN = 15.0   # P9-5 gap pass: tiles must reach under the recessed wall stone (0.5-11 cm behind the face line)
@@ -369,7 +372,7 @@ for sp, yaws in TILE_SPACES.items():
             if ox > 0.5 and oy > 0.5 and (cx, cy) not in tiles and not in_fp:
                 tiles[(cx, cy)] = (sp, yaws)
 for (cx, cy), (sp, yaws) in sorted(tiles.items()):
-    yaw = float(yaws[rng.randrange(2)])
+    yaw = float(yaws[rng.randrange(len(yaws))])
     add(f"CA_Tile_{sp}_{cx}_{cy}".replace("-", "m"), "tile", "SM_Ground", DUNGEON, (cx, cy, FLOOR), (0.0, yaw, 0.0),
         (1.0, 1.0, 1.0), "NoCollision", "Crypt/Art/Floor", check=False)
 
@@ -399,6 +402,23 @@ add("CA_Lintel_Sacristy", "soffit", "SM_LB_Crypt_Block_100", CRYPT, (7375, -1100
     "NoCollision", "Crypt/Art/Ceiling", note="X 7350..7400, Z -45..-1: frames the shaft end under Ground_0's edge", check=False)
 add("CA_Lintel_Exit", "soffit", "SM_LB_Crypt_Block_100", CRYPT, (10650, -125, -45), (0.0, 0.0, 0.0), (3.2, 0.5, 0.44),
     "NoCollision", "Crypt/Art/Ceiling", note="Y -150..-100, Z -45..-1: frames the shaft end under Ground_3's edge", check=False)
+
+# ---- P9-6a R4: lining of the greybox slab side faces at the stair-shaft openings ----
+# The 40 cm slab faces (Z -40..0) stand 0.5-11 cm proud of the recessed wall stone, so the lit white greybox faces cover the top 40 cm of the
+# walls above the open stair shafts (confirmed with ScreenCoordsToWorld from SS1 and ES1: planes y -1300 / y -900 / x 10500 / x 10800).
+# Block_100 (pivot bottom-centre): scale along the face = length/100 + 0.04, 0.03 across (3 cm, back on the slab face), Z = (40 + 2)/100;
+# top at Z -0.5 (pivot Z -42.5).
+LINING = [("Ground_5", "Ym1300", "x", 7700.0, -1300.0, +1, 600.0, "Ground_5 face y -1300 (X 7400..8000), shaft on +Y"),
+          ("Ground_6", "Ym900", "x", 7700.0, -900.0, -1, 600.0, "Ground_6 face y -900 (X 7400..8000), shaft on -Y"),
+          ("Ground_1", "X10500", "y", 200.0, 10500.0, +1, 600.0, "Ground_1 face x 10500 (Y -100..500), shaft on +X"),
+          ("Ground_2", "X10800", "y", 200.0, 10800.0, -1, 600.0, "Ground_2 face x 10800 (Y -100..500), shaft on -X")]
+for slab, fid, axis, along, face, s_open, length, note in LINING:
+    sc_along, sc_across, sc_z = length / 100.0 + 0.04, 0.03, (40.0 + 2.0) / 100.0
+    centre_across = face + s_open * 1.5
+    loc = (along, centre_across, -42.5) if axis == "x" else (centre_across, along, -42.5)
+    sc = (sc_along, sc_across, sc_z) if axis == "x" else (sc_across, sc_along, sc_z)
+    add(f"CA_Lining_{slab}_{fid}", "lining", "SM_LB_Crypt_Block_100", CRYPT, loc, (0.0, 0.0, 0.0), sc, "NoCollision",
+        "Crypt/Art/Lining", note=note + "; 3 cm lining, Z -42.5..-0.5", check=False)
 
 # ---- chain chamber timber ceiling ----
 BEAM_X = [10300, 10600, 10900, 11200]
