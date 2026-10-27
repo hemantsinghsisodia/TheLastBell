@@ -415,3 +415,60 @@ Portals: J1 WC↔L, J2 L↔SS, J3 WC↔SC, J4 SC↔OS, J5 OS↔FP, J6 FP↔CC, J
 - **Water:** the ripple normal is subtle by construction, so `M_LB_Water` gets `RippleNormalScale` (D1.4).
 - **P9-4 import check:** after importing, read back every mesh's bounds and compare them with `props_report_P9.json` (±1 cm). Any Y-mirror or pivot difference is a stop-and-report.
 
+
+### D1.10 P9-5 outcome and review fixes for P9-6a (lead review, 2026-10-27)
+- **Built** (325bec8, abc167f):
+  - 334 `CA_` actors, with 0 bounds/collision/material failures;
+  - 113 greybox actors set `bVisible=false` (collision unchanged, traces verified);
+  - review captures `p9s_01…10` and `p9s_01b…10b`.
+- **Gap pass fixes (in the generator):**
+  - vault bays overlap: ossuary 45 cm per shared edge, corridors 20 cm;
+  - the chain-chamber soil plane faces down;
+  - floor tiles reach 15 cm under the walls, none under the flood water;
+  - `MI_Stone_Wall_00` Displacement/Offset 0 (its WPO pushed the crowns into the ground slab).
+- **Tests:** 78/78; WalkPath.Monastery (SacristyToCrypt, FloodedLedge, CryptToCloister) PASS; RouteBot.Monastery Success; Warden crypt patrol 0 stuck.
+- **Known, handled later:** the grey checker in J11 is the `Gate_CryptExit` greybox (P9-6b swaps it). The pedestal and plaque greybox go in P9-6a step 4 and P9-6b.
+
+**Review fixes: P9-6a does these first, as R1–R5, before dressing.**
+Each fix has a capture before and after, in PIE Simulate with no temporary light, one capture per pose (CaptureViewport fails about 2 of 3 calls: up to 6 bounded retries, then list the pose as missing).
+Poses are the P9-5 pose files; the after captures go to `Docs/ArtTest/crypt/p9r_<fix>_<pose>.png`. Record old → new values in the report.
+
+- **R1 Walls read as crumpled foil** (p9s_02, p9s_03, p9s_07).
+  - **Cause:** `MI_Stone_00..03` Roughness is 0.381 / 0.579 / 0.427 / 0.389 after the P9-4 × 0.8.
+  - **Step 1:** read the pack master that these MIs use (its parent material) and record how `Roughness` and `Flatness (S)` enter the graph (read-only).
+  - **Step 2:** set `Roughness` = 0.85 on all four MIs. Capture p9s_02 and p9s_07.
+  - **Pass:**
+    - the 99th-percentile B2 luma of the wall area (left half of p9s_02) drops by ≥ 30 % against p9s_02;
+    - the stone reads as damp stone, not metal (the lead judges the captures).
+  - **If it fails:** try 1.0. If that still fails and the graph shows `Roughness` multiplies a texture channel, report the graph and stop R1 (leave 0.85).
+  - **Save:** each MI explicitly.
+- **R2 "Rail" lines on the floor** (p9s_02, p9s_05, p9s_08).
+  - **Step A:** set `MI_Tiles` `Displacement` 12 → 0. Capture p9s_02 and p9s_08. If the lines are gone, keep it and stop R2.
+  - **Step B, if the lines persist:**
+    - in `Tools/crypt/gen_crypt_layout.py`, set every tile yaw to 0 (`TILE_SPACES` yaw lists → `[0]`);
+    - regenerate (0 issues);
+    - `place_crypt.py --cats tile`;
+    - capture both poses again.
+  - **If they still persist:** they are in the texture. Zoom-capture one line, report it and leave it (restore Displacement only if Step A made the cobbles look worse).
+  - **Save:** `MI_Tiles` explicitly.
+- **R3 White slivers at the top corners of p9s_09** (about pixels (150, 12) and (1170, 12)).
+  - Recapture the pose and use `ScreenCoordsToWorld` at those pixels.
+  - **No hit (sky through a gap):** find the two pieces that bound the gap. Close it by the smallest generator change: extend the adjoining ceiling, board, beam or wall piece by ≤ 20 cm, or add one `SM_LB_Crypt_Block_100` filler (`MI_Crypt_StoneWA`, NoCollision, category `lining`). Regenerate (0 issues), place, recapture.
+  - **Hit on a greybox slab face:** treat it as R4.
+- **R4 Lit greybox slab edges seen from the crypt.**
+  - **Where:** SS1 and the top of the stair in p9s_01, the white strips. These are the 40 cm side faces of `Ground_5` (face Y −1300, X 7400…8000, Z −40…0) and `Ground_6` (face Y −900, same X and Z) at the sacristy-stair opening.
+  - **Confirm** with `ScreenCoordsToWorld` on each white strip and list every greybox face hit, including any at the exit-stair opening (check pose NC4/ES1 too).
+  - **Line every hit face:**
+    - mesh `SM_LB_Crypt_Block_100` (100³, pivot bottom-centre), `MI_Crypt_StoneWA`, NoCollision, CastShadow on;
+    - scale X = face length / 100 + 0.04, Y = 0.03, Z = (face height + 2) / 100;
+    - placed so its back face lies on the slab face and it projects 3 cm into the opening, with its top at Z −0.5 (never above the floor art);
+    - label `CA_Lining_<slab>_<face>`.
+  - Add these as generator records (category `lining`, folder `Crypt/Art/Lining`) so `place_crypt.py --cats lining` places them idempotently.
+  - **Pass:** no white strip in recaptured SS1 and p9s_01, and the SacristyToCrypt WalkPath still PASS (suite at the end).
+- **R5 Small white rectangles** (p9s_05 about (925, 530) on the floor; p9s_06 about (1100, 508) at the pier base). Use `ScreenCoordsToWorld` on each.
+  - **A floor tile:** it is a reflection. Identify its source by recapturing with the `CA_GrateSky_*` discs hidden on the PIE-world instances only. Report the source; no fix (P9-7 tunes `MI_Crypt_MoonSky`).
+  - **An actor:** report its label and class; no fix unless it is a leftover temp actor (then delete it and say so).
+- **Then** commit "P9-6a R-fixes" and continue with D1.6 P9-6a steps 1–6 (dressing).
+  - `place_crypt.py` refuses `dress`, `decal` and `light` today. Extend it for `dress` and `decal`, but not `light` (P9-7):
+    - **`dress`:** same as the structure categories. Each record carries `collision` and `folder`; P9-3 pieces keep their asset slot MIs.
+    - **`decal`:** spawn a DecalActor. Set `decal.mi` as the DecalMaterial and `decal.size` as the DecalSize (a half-extent: use the record values as given, they are already half-extents in depth, vertical, horizontal order) with the record rotation. Follow the MCP_NOTES decal conventions and the D1.6 step 3 orientation check.
