@@ -349,7 +349,8 @@ for sp, yaws in TILE_SPACES.items():
             cx, cy = 100 + 200 * i, 100 + 200 * j
             ox = min(cx + 100, x1) - max(cx - 100, x0)
             oy = min(cy + 100, y1) - max(cy - 100, y0)
-            in_fp = OPEN["FP"][0] < cx < OPEN["FP"][1] and OPEN["FP"][2] < cy < OPEN["FP"][3]   # displaced cobbles would pierce the water
+            fx0, fx1, fy0, fy1 = OPEN["FP"]   # no tiles under the flood water: displaced cobbles (MI_Tiles WPO, up to 12 cm) would pierce it
+            in_fp = (min(cx + 100, fx1) - max(cx - 100, fx0)) > 20 and (min(cy + 100, fy1) - max(cy - 100, fy0)) > 20
             if ox > 0.5 and oy > 0.5 and (cx, cy) not in tiles and not in_fp:
                 tiles[(cx, cy)] = (sp, yaws)
 for (cx, cy), (sp, yaws) in sorted(tiles.items()):
