@@ -566,3 +566,54 @@ Poses are the P9-5 pose files; the after captures go to `Docs/ArtTest/crypt/p9r_
 - **Decal strength:** soot T3 and the NC mould were not visible. If they are still invisible under the new lights, raise opacity on new crypt-only duplicates (`MI_Crypt_Decal_*`), never on the shared chapel MIs.
 - **Skull brightness:** if the niche skulls read as clean white under the candle proxy, darken them with a crypt-only MI.
 - **Captures:** set `bThrottleCPUWhenNotForeground=false` in memory for the PIE Simulate captures and restore it at the end. Fires, fog and drips only show in PIE.
+
+### D1.12 Fix set outcome and F2b (lead review, 2026-10-28)
+- **Built** (b7f63c4): suite 78/78, the 3 crypt WalkPaths PASS, RouteBot Success, Warden crypt loop 0 stuck; greybox 113/113 verified.
+  - F1, F3, F4 and F5 accepted.
+  - The `p9d_10b` replacement is kept (the old file showed the pose-11 view).
+  - The brazier's charcoal bed is gone, because the mesh has a single slot. The P9-7 brazier fire covers the pot interior.
+  - The white grid through the exit shaft is `Cl_S2`, the cloister greybox. It belongs to the Bell Tower/cloister art phase (Phase 10), so it gets no crypt lining.
+- **F2 not accepted:** `MI_Crypt_Floor` (Tiles139) reads as clean, modern square tiles with vivid green triangles.
+  - It is about 2.2× brighter than the old floor. B2 luma, bottom third with the middle 60 % of the width:
+
+    | Pose | Old floor | New floor |
+    |---|---|---|
+    | 04b | 0.217 | 0.469 |
+    | 06b | 0.188 | 0.331 |
+    | 05b | 0.192 | 0.379 |
+
+**F2b** (environment-designer, [EDITOR]; same capture and safety rules as D1.11; commit "P9-6a F2b: crypt floor cobbles").
+1. Read `/Game/LastBell/ArtTest/Materials/Cobblestone_Floor_08/MI_Cobblestone_Floor_08_WA` (parent, textures, WorldTileSizeCm, static switches). Record them in the report.
+2. **Retexture `MI_Crypt_Floor` (candidate B, cobbles).** Keep the asset, its parent chain and its placement; change only these values, then read back:
+   - **Textures:**
+     - `BaseColorTex` `T_Cobblestone_Floor_08_BC`
+     - `NormalTex` `T_Cobblestone_Floor_08_N`
+     - `ARMTex` `T_Cobblestone_Floor_08_ARM`, with `bUseARM` true
+     - `PuddleHeightTex` `T_Cobblestone_Floor_08_H` (all in the same folder)
+   - **Tiling:** `WorldTileSizeCm` = the value from `MI_Cobblestone_Floor_08_WA`, or 250 if it has none.
+   - **Colour:** `Desaturation` 0.55, `BaseColorTint` (1, 1, 1).
+   - **Growth:** `GrowthTint` (0.10, 0.11, 0.07), `GrowthLevel` 0.40, `GrowthNoiseAmount` 0.20, `bGapGrowth` true.
+   - **Puddles:** `Wetness` 0.45, `PuddleAmount` 0.12 (unchanged).
+   - **`BrightnessMul`:** start at 0.35, then iterate (at most 4 times) on capture 04b with `BrightnessMul_new = BrightnessMul_old × 0.21 / measured`.
+     - "Measured" is the mean B2 luma (Y = 0.2126R + 0.7152G + 0.0722B, on 0–1) of the box x 20–80 %, y 67–100 % of the image.
+     - Stop when 04b is in 0.18–0.24. Then 06b must be in 0.15–0.22; report it either way.
+3. **Captures B** (same method as the fix set; the b poses use the moved temp light), as `p9f_F2b_*`:
+   - 03b, 04b, 05b, 06b and the top-down zoom;
+   - plus 04 and 06 with no temp light.
+4. **Candidate C, comparison only** (the blocks texture).
+   - Temporarily set:
+     - `BaseColorTex` `T_Medieval_Blocks_03_BC`, `NormalTex` `T_Medieval_Blocks_03_N`, `ARMTex` `T_Medieval_Blocks_03_ARM`;
+     - `bGapGrowth` false;
+     - `WorldTileSizeCm` 220.
+   - Run the same `BrightnessMul` iteration.
+   - Capture 04b, 06b and the zoom as `p9f_F2c_*`.
+   - **Then restore candidate B exactly** (read it back) and save `MI_Crypt_Floor` and nothing else. B stays applied; the lead picks after viewing.
+5. **Pass for B:**
+   - 04b in 0.18–0.24;
+   - no continuous dark band and no tile grid;
+   - joints read as dark damp mould, not bright green.
+   - The lead judges the captures.
+6. **Wrap-up:**
+   - no map change is needed (the tiles already use `MI_Crypt_Floor`), so do not save `L_Monastery` unless it is dirty; if it is dirty, report why before saving;
+   - no suite run is needed for a material-only change;
+   - no temp actors left, throttle restored, commit, report (values old → new, luma per iteration, capture names).
