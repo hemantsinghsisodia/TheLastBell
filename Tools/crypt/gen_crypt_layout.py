@@ -338,8 +338,10 @@ TILE_SPACES = {"L": (90, 270), "WC": (90, 270), "SC": (0, 180), "OS": (0, 180), 
                "LW": (90, 270), "LE": (90, 270), "NC": (0, 180)}
 rng = random.Random(9)
 tiles = {}
+TILE_MARGIN = 15.0   # P9-5 gap pass: tiles must reach under the recessed wall stone (0.5-11 cm behind the face line)
 for sp, yaws in TILE_SPACES.items():
     x0, x1, y0, y1 = OPEN[sp]
+    x0, x1, y0, y1 = x0 - TILE_MARGIN, x1 + TILE_MARGIN, y0 - TILE_MARGIN, y1 + TILE_MARGIN
     xs = range(int(math.floor((x0 - 100) / 200.0)), int(math.ceil((x1 - 100) / 200.0)) + 1)
     ys = range(int(math.floor((y0 - 100) / 200.0)), int(math.ceil((y1 - 100) / 200.0)) + 1)
     for i in xs:
@@ -347,7 +349,8 @@ for sp, yaws in TILE_SPACES.items():
             cx, cy = 100 + 200 * i, 100 + 200 * j
             ox = min(cx + 100, x1) - max(cx - 100, x0)
             oy = min(cy + 100, y1) - max(cy - 100, y0)
-            if ox > 0.5 and oy > 0.5 and (cx, cy) not in tiles:
+            in_fp = OPEN["FP"][0] < cx < OPEN["FP"][1] and OPEN["FP"][2] < cy < OPEN["FP"][3]   # displaced cobbles would pierce the water
+            if ox > 0.5 and oy > 0.5 and (cx, cy) not in tiles and not in_fp:
                 tiles[(cx, cy)] = (sp, yaws)
 for (cx, cy), (sp, yaws) in sorted(tiles.items()):
     yaw = float(yaws[rng.randrange(2)])

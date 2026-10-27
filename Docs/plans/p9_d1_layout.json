@@ -31,7 +31,7 @@
   "vault": 18,
   "column": 12,
   "ossuary": 6,
-  "tile": 145,
+  "tile": 183,
   "stair": 2,
   "soffit": 4,
   "ceiling": 30,
@@ -3806,7 +3806,7 @@
    "note": ""
   },
   {
-   "id": "CA_Tile_WC_6300_m1500",
+   "id": "CA_Tile_L_6300_m1500",
    "cat": "tile",
    "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Ground",
    "loc": [
@@ -3938,6 +3938,39 @@
    "note": ""
   },
   {
+   "id": "CA_Tile_L_6300_m700",
+   "cat": "tile",
+   "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Ground",
+   "loc": [
+    6300,
+    -700,
+    -600.0
+   ],
+   "rot": [
+    0.0,
+    270.0,
+    0.0
+   ],
+   "scale": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "collision": "NoCollision",
+   "folder": "Crypt/Art/Floor",
+   "aabb_min": [
+    6180.0,
+    -820.0,
+    -620.0
+   ],
+   "aabb_max": [
+    6420.0,
+    -580.0,
+    -580.0
+   ],
+   "note": ""
+  },
+  {
    "id": "CA_Tile_WC_6500_m2500",
    "cat": "tile",
    "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Ground",
@@ -3948,7 +3981,7 @@
    ],
    "rot": [
     0.0,
-    270.0,
+    90.0,
     0.0
    ],
    "scale": [
@@ -3981,7 +4014,7 @@
    ],
    "rot": [
     0.0,
-    90.0,
+    270.0,
     0.0
    ],
    "scale": [
@@ -4014,7 +4047,7 @@
    ],
    "rot": [
     0.0,
-    270.0,
+    90.0,
     0.0
    ],
    "scale": [
@@ -4047,7 +4080,7 @@
    ],
    "rot": [
     0.0,
-    90.0,
+    270.0,
     0.0
    ],
    "scale": [
@@ -4103,7 +4136,7 @@
    "note": ""
   },
   {
-   "id": "CA_Tile_WC_6500_m1500",
+   "id": "CA_Tile_L_6500_m1500",
    "cat": "tile",
    "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Ground",
    "loc": [
@@ -4113,7 +4146,7 @@
    ],
    "rot": [
     0.0,
-    270.0,
+    90.0,
     0.0
    ],
    "scale": [
@@ -4235,7 +4268,40 @@
    "note": ""
   },
   {
-   "id": "CA_Tile_SC_6700_m2500",
+   "id": "CA_Tile_L_6500_m700",
+   "cat": "tile",
+   "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Ground",
+   "loc": [
+    6500,
+    -700,
+    -600.0
+   ],
+   "rot": [
+    0.0,
+    90.0,
+    0.0
+   ],
+   "scale": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "collision": "NoCollision",
+   "folder": "Crypt/Art/Floor",
+   "aabb_min": [
+    6380.0,
+    -820.0,
+    -620.0
+   ],
+   "aabb_max": [
+    6620.0,
+    -580.0,
+    -580.0
+   ],
+   "note": ""
+  },
+  {
+   "id": "CA_Tile_WC_6700_m2500",
    "cat": "tile",
    "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Ground",
    "loc": [
@@ -4245,7 +4311,7 @@
    ],
    "rot": [
     0.0,
-    0.0,
+    90.0,
     0.0
    ],
    "scale": [
@@ -4268,7 +4334,7 @@
    "note": ""
   },
   {
-   "id": "CA_Tile_SC_6700_m2300",
+   "id": "CA_Tile_WC_6700_m2300",
    "cat": "tile",
    "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Ground",
    "loc": [
@@ -4278,7 +4344,7 @@
    ],
    "rot": [
     0.0,
-    0.0,
+    90.0,
     0.0
    ],
    "scale": [
@@ -4296,6 +4362,138 @@
    "aabb_max": [
     6820.0,
     -2180.0,
+    -580.0
+   ],
+   "note": ""
+  },
+  {
+   "id": "CA_Tile_WC_6700_m2100",
+   "cat": "tile",
+   "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Ground",
+   "loc": [
+    6700,
+    -2100,
+    -600.0
+   ],
+   "rot": [
+    0.0,
+    270.0,
+    0.0
+   ],
+   "scale": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "collision": "NoCollision",
+   "folder": "Crypt/Art/Floor",
+   "aabb_min": [
+    6580.0,
+    -2220.0,
+    -620.0
+   ],
+   "aabb_max": [
+    6820.0,
+    -1980.0,
+    -580.0
+   ],
+   "note": ""
+  },
+  {
+   "id": "CA_Tile_WC_6700_m1900",
+   "cat": "tile",
+   "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Ground",
+   "loc": [
+    6700,
+    -1900,
+    -600.0
+   ],
+   "rot": [
+    0.0,
+    90.0,
+    0.0
+   ],
+   "scale": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "collision": "NoCollision",
+   "folder": "Crypt/Art/Floor",
+   "aabb_min": [
+    6580.0,
+    -2020.0,
+    -620.0
+   ],
+   "aabb_max": [
+    6820.0,
+    -1780.0,
+    -580.0
+   ],
+   "note": ""
+  },
+  {
+   "id": "CA_Tile_WC_6700_m1700",
+   "cat": "tile",
+   "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Ground",
+   "loc": [
+    6700,
+    -1700,
+    -600.0
+   ],
+   "rot": [
+    0.0,
+    270.0,
+    0.0
+   ],
+   "scale": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "collision": "NoCollision",
+   "folder": "Crypt/Art/Floor",
+   "aabb_min": [
+    6580.0,
+    -1820.0,
+    -620.0
+   ],
+   "aabb_max": [
+    6820.0,
+    -1580.0,
+    -580.0
+   ],
+   "note": ""
+  },
+  {
+   "id": "CA_Tile_L_6700_m1500",
+   "cat": "tile",
+   "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Ground",
+   "loc": [
+    6700,
+    -1500,
+    -600.0
+   ],
+   "rot": [
+    0.0,
+    90.0,
+    0.0
+   ],
+   "scale": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "collision": "NoCollision",
+   "folder": "Crypt/Art/Floor",
+   "aabb_min": [
+    6580.0,
+    -1620.0,
+    -620.0
+   ],
+   "aabb_max": [
+    6820.0,
+    -1380.0,
     -580.0
    ],
    "note": ""
@@ -4344,7 +4542,7 @@
    ],
    "rot": [
     0.0,
-    90.0,
+    270.0,
     0.0
    ],
    "scale": [
@@ -4377,7 +4575,7 @@
    ],
    "rot": [
     0.0,
-    270.0,
+    90.0,
     0.0
    ],
    "scale": [
@@ -4395,6 +4593,39 @@
    "aabb_max": [
     6820.0,
     -780.0,
+    -580.0
+   ],
+   "note": ""
+  },
+  {
+   "id": "CA_Tile_L_6700_m700",
+   "cat": "tile",
+   "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Ground",
+   "loc": [
+    6700,
+    -700,
+    -600.0
+   ],
+   "rot": [
+    0.0,
+    270.0,
+    0.0
+   ],
+   "scale": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "collision": "NoCollision",
+   "folder": "Crypt/Art/Floor",
+   "aabb_min": [
+    6580.0,
+    -820.0,
+    -620.0
+   ],
+   "aabb_max": [
+    6820.0,
+    -580.0,
     -580.0
    ],
    "note": ""
@@ -4466,6 +4697,204 @@
    "note": ""
   },
   {
+   "id": "CA_Tile_SC_6900_m2100",
+   "cat": "tile",
+   "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Ground",
+   "loc": [
+    6900,
+    -2100,
+    -600.0
+   ],
+   "rot": [
+    0.0,
+    180.0,
+    0.0
+   ],
+   "scale": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "collision": "NoCollision",
+   "folder": "Crypt/Art/Floor",
+   "aabb_min": [
+    6780.0,
+    -2220.0,
+    -620.0
+   ],
+   "aabb_max": [
+    7020.0,
+    -1980.0,
+    -580.0
+   ],
+   "note": ""
+  },
+  {
+   "id": "CA_Tile_L_6900_m1500",
+   "cat": "tile",
+   "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Ground",
+   "loc": [
+    6900,
+    -1500,
+    -600.0
+   ],
+   "rot": [
+    0.0,
+    270.0,
+    0.0
+   ],
+   "scale": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "collision": "NoCollision",
+   "folder": "Crypt/Art/Floor",
+   "aabb_min": [
+    6780.0,
+    -1620.0,
+    -620.0
+   ],
+   "aabb_max": [
+    7020.0,
+    -1380.0,
+    -580.0
+   ],
+   "note": ""
+  },
+  {
+   "id": "CA_Tile_L_6900_m1300",
+   "cat": "tile",
+   "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Ground",
+   "loc": [
+    6900,
+    -1300,
+    -600.0
+   ],
+   "rot": [
+    0.0,
+    90.0,
+    0.0
+   ],
+   "scale": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "collision": "NoCollision",
+   "folder": "Crypt/Art/Floor",
+   "aabb_min": [
+    6780.0,
+    -1420.0,
+    -620.0
+   ],
+   "aabb_max": [
+    7020.0,
+    -1180.0,
+    -580.0
+   ],
+   "note": ""
+  },
+  {
+   "id": "CA_Tile_L_6900_m1100",
+   "cat": "tile",
+   "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Ground",
+   "loc": [
+    6900,
+    -1100,
+    -600.0
+   ],
+   "rot": [
+    0.0,
+    90.0,
+    0.0
+   ],
+   "scale": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "collision": "NoCollision",
+   "folder": "Crypt/Art/Floor",
+   "aabb_min": [
+    6780.0,
+    -1220.0,
+    -620.0
+   ],
+   "aabb_max": [
+    7020.0,
+    -980.0,
+    -580.0
+   ],
+   "note": ""
+  },
+  {
+   "id": "CA_Tile_L_6900_m900",
+   "cat": "tile",
+   "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Ground",
+   "loc": [
+    6900,
+    -900,
+    -600.0
+   ],
+   "rot": [
+    0.0,
+    90.0,
+    0.0
+   ],
+   "scale": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "collision": "NoCollision",
+   "folder": "Crypt/Art/Floor",
+   "aabb_min": [
+    6780.0,
+    -1020.0,
+    -620.0
+   ],
+   "aabb_max": [
+    7020.0,
+    -780.0,
+    -580.0
+   ],
+   "note": ""
+  },
+  {
+   "id": "CA_Tile_L_6900_m700",
+   "cat": "tile",
+   "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Ground",
+   "loc": [
+    6900,
+    -700,
+    -600.0
+   ],
+   "rot": [
+    0.0,
+    270.0,
+    0.0
+   ],
+   "scale": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "collision": "NoCollision",
+   "folder": "Crypt/Art/Floor",
+   "aabb_min": [
+    6780.0,
+    -820.0,
+    -620.0
+   ],
+   "aabb_max": [
+    7020.0,
+    -580.0,
+    -580.0
+   ],
+   "note": ""
+  },
+  {
    "id": "CA_Tile_SC_7100_m2500",
    "cat": "tile",
    "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Ground",
@@ -4509,7 +4938,7 @@
    ],
    "rot": [
     0.0,
-    0.0,
+    180.0,
     0.0
    ],
    "scale": [
@@ -4532,6 +4961,39 @@
    "note": ""
   },
   {
+   "id": "CA_Tile_SC_7100_m2100",
+   "cat": "tile",
+   "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Ground",
+   "loc": [
+    7100,
+    -2100,
+    -600.0
+   ],
+   "rot": [
+    0.0,
+    180.0,
+    0.0
+   ],
+   "scale": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "collision": "NoCollision",
+   "folder": "Crypt/Art/Floor",
+   "aabb_min": [
+    6980.0,
+    -2220.0,
+    -620.0
+   ],
+   "aabb_max": [
+    7220.0,
+    -1980.0,
+    -580.0
+   ],
+   "note": ""
+  },
+  {
    "id": "CA_Tile_SC_7300_m2500",
    "cat": "tile",
    "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Ground",
@@ -4542,7 +5004,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -4593,6 +5055,39 @@
    "aabb_max": [
     7420.0,
     -2180.0,
+    -580.0
+   ],
+   "note": ""
+  },
+  {
+   "id": "CA_Tile_SC_7300_m2100",
+   "cat": "tile",
+   "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Ground",
+   "loc": [
+    7300,
+    -2100,
+    -600.0
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "scale": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "collision": "NoCollision",
+   "folder": "Crypt/Art/Floor",
+   "aabb_min": [
+    7180.0,
+    -2220.0,
+    -620.0
+   ],
+   "aabb_max": [
+    7420.0,
+    -1980.0,
     -580.0
    ],
    "note": ""
@@ -4674,7 +5169,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -4707,7 +5202,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -4730,7 +5225,7 @@
    "note": ""
   },
   {
-   "id": "CA_Tile_OS_7500_m2100",
+   "id": "CA_Tile_SC_7500_m2100",
    "cat": "tile",
    "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Ground",
    "loc": [
@@ -4740,7 +5235,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -4763,6 +5258,39 @@
    "note": ""
   },
   {
+   "id": "CA_Tile_OS_7500_m1900",
+   "cat": "tile",
+   "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Ground",
+   "loc": [
+    7500,
+    -1900,
+    -600.0
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "scale": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "collision": "NoCollision",
+   "folder": "Crypt/Art/Floor",
+   "aabb_min": [
+    7380.0,
+    -2020.0,
+    -620.0
+   ],
+   "aabb_max": [
+    7620.0,
+    -1780.0,
+    -580.0
+   ],
+   "note": ""
+  },
+  {
    "id": "CA_Tile_OS_7700_m2900",
    "cat": "tile",
    "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Ground",
@@ -4773,7 +5301,7 @@
    ],
    "rot": [
     0.0,
-    0.0,
+    180.0,
     0.0
    ],
    "scale": [
@@ -4872,7 +5400,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -4928,6 +5456,39 @@
    "note": ""
   },
   {
+   "id": "CA_Tile_OS_7700_m1900",
+   "cat": "tile",
+   "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Ground",
+   "loc": [
+    7700,
+    -1900,
+    -600.0
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "scale": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "collision": "NoCollision",
+   "folder": "Crypt/Art/Floor",
+   "aabb_min": [
+    7580.0,
+    -2020.0,
+    -620.0
+   ],
+   "aabb_max": [
+    7820.0,
+    -1780.0,
+    -580.0
+   ],
+   "note": ""
+  },
+  {
    "id": "CA_Tile_OS_7900_m2900",
    "cat": "tile",
    "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Ground",
@@ -4971,7 +5532,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -5004,7 +5565,7 @@
    ],
    "rot": [
     0.0,
-    0.0,
+    180.0,
     0.0
    ],
    "scale": [
@@ -5070,7 +5631,7 @@
    ],
    "rot": [
     0.0,
-    0.0,
+    180.0,
     0.0
    ],
    "scale": [
@@ -5093,6 +5654,39 @@
    "note": ""
   },
   {
+   "id": "CA_Tile_OS_7900_m1900",
+   "cat": "tile",
+   "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Ground",
+   "loc": [
+    7900,
+    -1900,
+    -600.0
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "scale": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "collision": "NoCollision",
+   "folder": "Crypt/Art/Floor",
+   "aabb_min": [
+    7780.0,
+    -2020.0,
+    -620.0
+   ],
+   "aabb_max": [
+    8020.0,
+    -1780.0,
+    -580.0
+   ],
+   "note": ""
+  },
+  {
    "id": "CA_Tile_OS_8100_m2900",
    "cat": "tile",
    "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Ground",
@@ -5103,7 +5697,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -5258,6 +5852,39 @@
    "note": ""
   },
   {
+   "id": "CA_Tile_OS_8100_m1900",
+   "cat": "tile",
+   "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Ground",
+   "loc": [
+    8100,
+    -1900,
+    -600.0
+   ],
+   "rot": [
+    0.0,
+    180.0,
+    0.0
+   ],
+   "scale": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "collision": "NoCollision",
+   "folder": "Crypt/Art/Floor",
+   "aabb_min": [
+    7980.0,
+    -2020.0,
+    -620.0
+   ],
+   "aabb_max": [
+    8220.0,
+    -1780.0,
+    -580.0
+   ],
+   "note": ""
+  },
+  {
    "id": "CA_Tile_OS_8300_m2900",
    "cat": "tile",
    "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Ground",
@@ -5400,7 +6027,7 @@
    ],
    "rot": [
     0.0,
-    0.0,
+    180.0,
     0.0
    ],
    "scale": [
@@ -5418,6 +6045,39 @@
    "aabb_max": [
     8420.0,
     -1980.0,
+    -580.0
+   ],
+   "note": ""
+  },
+  {
+   "id": "CA_Tile_OS_8300_m1900",
+   "cat": "tile",
+   "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Ground",
+   "loc": [
+    8300,
+    -1900,
+    -600.0
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "scale": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "collision": "NoCollision",
+   "folder": "Crypt/Art/Floor",
+   "aabb_min": [
+    8180.0,
+    -2020.0,
+    -620.0
+   ],
+   "aabb_max": [
+    8420.0,
+    -1780.0,
     -580.0
    ],
    "note": ""
@@ -5588,6 +6248,39 @@
    "note": ""
   },
   {
+   "id": "CA_Tile_OS_8500_m1900",
+   "cat": "tile",
+   "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Ground",
+   "loc": [
+    8500,
+    -1900,
+    -600.0
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "scale": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "collision": "NoCollision",
+   "folder": "Crypt/Art/Floor",
+   "aabb_min": [
+    8380.0,
+    -2020.0,
+    -620.0
+   ],
+   "aabb_max": [
+    8620.0,
+    -1780.0,
+    -580.0
+   ],
+   "note": ""
+  },
+  {
    "id": "CA_Tile_OS_8700_m2900",
    "cat": "tile",
    "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Ground",
@@ -5598,7 +6291,7 @@
    ],
    "rot": [
     0.0,
-    0.0,
+    180.0,
     0.0
    ],
    "scale": [
@@ -5697,7 +6390,7 @@
    ],
    "rot": [
     0.0,
-    0.0,
+    180.0,
     0.0
    ],
    "scale": [
@@ -5753,6 +6446,39 @@
    "note": ""
   },
   {
+   "id": "CA_Tile_OS_8700_m1900",
+   "cat": "tile",
+   "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Ground",
+   "loc": [
+    8700,
+    -1900,
+    -600.0
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "scale": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "collision": "NoCollision",
+   "folder": "Crypt/Art/Floor",
+   "aabb_min": [
+    8580.0,
+    -2020.0,
+    -620.0
+   ],
+   "aabb_max": [
+    8820.0,
+    -1780.0,
+    -580.0
+   ],
+   "note": ""
+  },
+  {
    "id": "CA_Tile_OS_8900_m2900",
    "cat": "tile",
    "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Ground",
@@ -5763,7 +6489,7 @@
    ],
    "rot": [
     0.0,
-    0.0,
+    180.0,
     0.0
    ],
    "scale": [
@@ -5796,7 +6522,7 @@
    ],
    "rot": [
     0.0,
-    0.0,
+    180.0,
     0.0
    ],
    "scale": [
@@ -5918,6 +6644,501 @@
    "note": ""
   },
   {
+   "id": "CA_Tile_OS_8900_m1900",
+   "cat": "tile",
+   "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Ground",
+   "loc": [
+    8900,
+    -1900,
+    -600.0
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "scale": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "collision": "NoCollision",
+   "folder": "Crypt/Art/Floor",
+   "aabb_min": [
+    8780.0,
+    -2020.0,
+    -620.0
+   ],
+   "aabb_max": [
+    9020.0,
+    -1780.0,
+    -580.0
+   ],
+   "note": ""
+  },
+  {
+   "id": "CA_Tile_OS_9100_m2900",
+   "cat": "tile",
+   "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Ground",
+   "loc": [
+    9100,
+    -2900,
+    -600.0
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "scale": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "collision": "NoCollision",
+   "folder": "Crypt/Art/Floor",
+   "aabb_min": [
+    8980.0,
+    -3020.0,
+    -620.0
+   ],
+   "aabb_max": [
+    9220.0,
+    -2780.0,
+    -580.0
+   ],
+   "note": ""
+  },
+  {
+   "id": "CA_Tile_OS_9100_m2700",
+   "cat": "tile",
+   "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Ground",
+   "loc": [
+    9100,
+    -2700,
+    -600.0
+   ],
+   "rot": [
+    0.0,
+    180.0,
+    0.0
+   ],
+   "scale": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "collision": "NoCollision",
+   "folder": "Crypt/Art/Floor",
+   "aabb_min": [
+    8980.0,
+    -2820.0,
+    -620.0
+   ],
+   "aabb_max": [
+    9220.0,
+    -2580.0,
+    -580.0
+   ],
+   "note": ""
+  },
+  {
+   "id": "CA_Tile_OS_9100_m2500",
+   "cat": "tile",
+   "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Ground",
+   "loc": [
+    9100,
+    -2500,
+    -600.0
+   ],
+   "rot": [
+    0.0,
+    180.0,
+    0.0
+   ],
+   "scale": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "collision": "NoCollision",
+   "folder": "Crypt/Art/Floor",
+   "aabb_min": [
+    8980.0,
+    -2620.0,
+    -620.0
+   ],
+   "aabb_max": [
+    9220.0,
+    -2380.0,
+    -580.0
+   ],
+   "note": ""
+  },
+  {
+   "id": "CA_Tile_OS_9100_m2100",
+   "cat": "tile",
+   "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Ground",
+   "loc": [
+    9100,
+    -2100,
+    -600.0
+   ],
+   "rot": [
+    0.0,
+    180.0,
+    0.0
+   ],
+   "scale": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "collision": "NoCollision",
+   "folder": "Crypt/Art/Floor",
+   "aabb_min": [
+    8980.0,
+    -2220.0,
+    -620.0
+   ],
+   "aabb_max": [
+    9220.0,
+    -1980.0,
+    -580.0
+   ],
+   "note": ""
+  },
+  {
+   "id": "CA_Tile_OS_9100_m1900",
+   "cat": "tile",
+   "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Ground",
+   "loc": [
+    9100,
+    -1900,
+    -600.0
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "scale": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "collision": "NoCollision",
+   "folder": "Crypt/Art/Floor",
+   "aabb_min": [
+    8980.0,
+    -2020.0,
+    -620.0
+   ],
+   "aabb_max": [
+    9220.0,
+    -1780.0,
+    -580.0
+   ],
+   "note": ""
+  },
+  {
+   "id": "CA_Tile_CC_9900_m2500",
+   "cat": "tile",
+   "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Ground",
+   "loc": [
+    9900,
+    -2500,
+    -600.0
+   ],
+   "rot": [
+    0.0,
+    180.0,
+    0.0
+   ],
+   "scale": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "collision": "NoCollision",
+   "folder": "Crypt/Art/Floor",
+   "aabb_min": [
+    9780.0,
+    -2620.0,
+    -620.0
+   ],
+   "aabb_max": [
+    10020.0,
+    -2380.0,
+    -580.0
+   ],
+   "note": ""
+  },
+  {
+   "id": "CA_Tile_CC_9900_m2100",
+   "cat": "tile",
+   "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Ground",
+   "loc": [
+    9900,
+    -2100,
+    -600.0
+   ],
+   "rot": [
+    0.0,
+    180.0,
+    0.0
+   ],
+   "scale": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "collision": "NoCollision",
+   "folder": "Crypt/Art/Floor",
+   "aabb_min": [
+    9780.0,
+    -2220.0,
+    -620.0
+   ],
+   "aabb_max": [
+    10020.0,
+    -1980.0,
+    -580.0
+   ],
+   "note": ""
+  },
+  {
+   "id": "CA_Tile_CC_9900_m1900",
+   "cat": "tile",
+   "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Ground",
+   "loc": [
+    9900,
+    -1900,
+    -600.0
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "scale": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "collision": "NoCollision",
+   "folder": "Crypt/Art/Floor",
+   "aabb_min": [
+    9780.0,
+    -2020.0,
+    -620.0
+   ],
+   "aabb_max": [
+    10020.0,
+    -1780.0,
+    -580.0
+   ],
+   "note": ""
+  },
+  {
+   "id": "CA_Tile_CC_9900_m1700",
+   "cat": "tile",
+   "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Ground",
+   "loc": [
+    9900,
+    -1700,
+    -600.0
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "scale": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "collision": "NoCollision",
+   "folder": "Crypt/Art/Floor",
+   "aabb_min": [
+    9780.0,
+    -1820.0,
+    -620.0
+   ],
+   "aabb_max": [
+    10020.0,
+    -1580.0,
+    -580.0
+   ],
+   "note": ""
+  },
+  {
+   "id": "CA_Tile_CC_9900_m1500",
+   "cat": "tile",
+   "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Ground",
+   "loc": [
+    9900,
+    -1500,
+    -600.0
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "scale": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "collision": "NoCollision",
+   "folder": "Crypt/Art/Floor",
+   "aabb_min": [
+    9780.0,
+    -1620.0,
+    -620.0
+   ],
+   "aabb_max": [
+    10020.0,
+    -1380.0,
+    -580.0
+   ],
+   "note": ""
+  },
+  {
+   "id": "CA_Tile_LW_9900_m1300",
+   "cat": "tile",
+   "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Ground",
+   "loc": [
+    9900,
+    -1300,
+    -600.0
+   ],
+   "rot": [
+    0.0,
+    270.0,
+    0.0
+   ],
+   "scale": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "collision": "NoCollision",
+   "folder": "Crypt/Art/Floor",
+   "aabb_min": [
+    9780.0,
+    -1420.0,
+    -620.0
+   ],
+   "aabb_max": [
+    10020.0,
+    -1180.0,
+    -580.0
+   ],
+   "note": ""
+  },
+  {
+   "id": "CA_Tile_LW_9900_m1100",
+   "cat": "tile",
+   "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Ground",
+   "loc": [
+    9900,
+    -1100,
+    -600.0
+   ],
+   "rot": [
+    0.0,
+    270.0,
+    0.0
+   ],
+   "scale": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "collision": "NoCollision",
+   "folder": "Crypt/Art/Floor",
+   "aabb_min": [
+    9780.0,
+    -1220.0,
+    -620.0
+   ],
+   "aabb_max": [
+    10020.0,
+    -980.0,
+    -580.0
+   ],
+   "note": ""
+  },
+  {
+   "id": "CA_Tile_NC_9900_m900",
+   "cat": "tile",
+   "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Ground",
+   "loc": [
+    9900,
+    -900,
+    -600.0
+   ],
+   "rot": [
+    0.0,
+    180.0,
+    0.0
+   ],
+   "scale": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "collision": "NoCollision",
+   "folder": "Crypt/Art/Floor",
+   "aabb_min": [
+    9780.0,
+    -1020.0,
+    -620.0
+   ],
+   "aabb_max": [
+    10020.0,
+    -780.0,
+    -580.0
+   ],
+   "note": ""
+  },
+  {
+   "id": "CA_Tile_NC_9900_m700",
+   "cat": "tile",
+   "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Ground",
+   "loc": [
+    9900,
+    -700,
+    -600.0
+   ],
+   "rot": [
+    0.0,
+    180.0,
+    0.0
+   ],
+   "scale": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "collision": "NoCollision",
+   "folder": "Crypt/Art/Floor",
+   "aabb_min": [
+    9780.0,
+    -820.0,
+    -620.0
+   ],
+   "aabb_max": [
+    10020.0,
+    -580.0,
+    -580.0
+   ],
+   "note": ""
+  },
+  {
    "id": "CA_Tile_CC_10100_m2500",
    "cat": "tile",
    "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Ground",
@@ -5928,7 +7149,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -5994,7 +7215,7 @@
    ],
    "rot": [
     0.0,
-    0.0,
+    180.0,
     0.0
    ],
    "scale": [
@@ -6027,7 +7248,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -6093,7 +7314,7 @@
    ],
    "rot": [
     0.0,
-    0.0,
+    180.0,
     0.0
    ],
    "scale": [
@@ -6126,7 +7347,7 @@
    ],
    "rot": [
     0.0,
-    90.0,
+    270.0,
     0.0
    ],
    "scale": [
@@ -6324,7 +7545,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -6390,7 +7611,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -6423,7 +7644,7 @@
    ],
    "rot": [
     0.0,
-    0.0,
+    180.0,
     0.0
    ],
    "scale": [
@@ -6489,7 +7710,7 @@
    ],
    "rot": [
     0.0,
-    270.0,
+    90.0,
     0.0
    ],
    "scale": [
@@ -6522,7 +7743,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -6588,7 +7809,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -6654,7 +7875,7 @@
    ],
    "rot": [
     0.0,
-    0.0,
+    180.0,
     0.0
    ],
    "scale": [
@@ -6786,7 +8007,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -6819,7 +8040,7 @@
    ],
    "rot": [
     0.0,
-    0.0,
+    180.0,
     0.0
    ],
    "scale": [
@@ -6885,7 +8106,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -6918,7 +8139,7 @@
    ],
    "rot": [
     0.0,
-    0.0,
+    180.0,
     0.0
    ],
    "scale": [
@@ -6951,7 +8172,7 @@
    ],
    "rot": [
     0.0,
-    0.0,
+    180.0,
     0.0
    ],
    "scale": [
@@ -7017,7 +8238,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -7083,7 +8304,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -7116,7 +8337,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -7149,7 +8370,7 @@
    ],
    "rot": [
     0.0,
-    0.0,
+    180.0,
     0.0
    ],
    "scale": [
@@ -7182,7 +8403,7 @@
    ],
    "rot": [
     0.0,
-    0.0,
+    180.0,
     0.0
    ],
    "scale": [
@@ -7215,7 +8436,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -7248,7 +8469,7 @@
    ],
    "rot": [
     0.0,
-    0.0,
+    180.0,
     0.0
    ],
    "scale": [
@@ -7446,7 +8667,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -7479,7 +8700,7 @@
    ],
    "rot": [
     0.0,
-    0.0,
+    180.0,
     0.0
    ],
    "scale": [
@@ -7512,7 +8733,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -7644,7 +8865,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -7667,7 +8888,40 @@
    "note": ""
   },
   {
-   "id": "CA_Tile_NC_11100_m1100",
+   "id": "CA_Tile_LE_11100_m1300",
+   "cat": "tile",
+   "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Ground",
+   "loc": [
+    11100,
+    -1300,
+    -600.0
+   ],
+   "rot": [
+    0.0,
+    90.0,
+    0.0
+   ],
+   "scale": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "collision": "NoCollision",
+   "folder": "Crypt/Art/Floor",
+   "aabb_min": [
+    10980.0,
+    -1420.0,
+    -620.0
+   ],
+   "aabb_max": [
+    11220.0,
+    -1180.0,
+    -580.0
+   ],
+   "note": ""
+  },
+  {
+   "id": "CA_Tile_LE_11100_m1100",
    "cat": "tile",
    "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Ground",
    "loc": [
@@ -7677,7 +8931,7 @@
    ],
    "rot": [
     0.0,
-    0.0,
+    90.0,
     0.0
    ],
    "scale": [
@@ -7743,7 +8997,7 @@
    ],
    "rot": [
     0.0,
-    0.0,
+    180.0,
     0.0
    ],
    "scale": [
@@ -7776,7 +9030,7 @@
    ],
    "rot": [
     0.0,
-    0.0,
+    180.0,
     0.0
    ],
    "scale": [
@@ -7809,7 +9063,7 @@
    ],
    "rot": [
     0.0,
-    0.0,
+    180.0,
     0.0
    ],
    "scale": [
@@ -7875,7 +9129,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -7908,7 +9162,7 @@
    ],
    "rot": [
     0.0,
-    0.0,
+    180.0,
     0.0
    ],
    "scale": [
@@ -7974,7 +9228,7 @@
    ],
    "rot": [
     0.0,
-    270.0,
+    90.0,
     0.0
    ],
    "scale": [
@@ -8172,7 +9426,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -8271,7 +9525,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
@@ -8337,7 +9591,7 @@
    ],
    "rot": [
     0.0,
-    90.0,
+    270.0,
     0.0
    ],
    "scale": [
@@ -8403,7 +9657,7 @@
    ],
    "rot": [
     0.0,
-    180.0,
+    0.0,
     0.0
    ],
    "scale": [
