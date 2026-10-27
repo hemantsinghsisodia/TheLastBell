@@ -420,8 +420,22 @@ for slab, fid, axis, along, face, s_open, length, note in LINING:
     add(f"CA_Lining_{slab}_{fid}", "lining", "SM_LB_Crypt_Block_100", CRYPT, loc, (0.0, 0.0, 0.0), sc, "NoCollision",
         "Crypt/Art/Lining", note=note + "; 3 cm lining, Z -42.5..-0.5", check=False)
 
+# ---- P9-6a F1: stone parapet enclosures around the white greybox railings at the stair-shaft openings ----
+# The Rail_* StaticMeshActors (gameplay-adjacent greybox: BlockAll, never moved or changed) show as white strips from the stairs.
+# Each enclosure is a NoCollision Block_100 (MI_Crypt_StoneWA, pivot bottom-centre) = the rail's world AABB + 2 cm on each side and on top,
+# sunk 1 cm: loc = (cx, cy, minZ - 1), scale = ((dx + 4)/100, (dy + 4)/100, (dz + 3)/100). AABBs read from the editor (all yaw 0).
+RAILS = {"Rail_Sac_S": ((7400.0, -1310.0, 0.0), (8000.0, -1300.0, 100.0)),
+         "Rail_Sac_N": ((7400.0, -900.0, 0.0), (8000.0, -890.0, 100.0)),
+         "Rail_Up_W": ((10490.0, -110.0, 0.0), (10500.0, 500.0, 100.0)),
+         "Rail_Up_E": ((10800.0, -110.0, 0.0), (10810.0, 500.0, 100.0))}
+for rname, (rmn, rmx) in RAILS.items():
+    add(f"CA_Parapet_{rname}", "lining", "SM_LB_Crypt_Block_100", CRYPT,
+        ((rmn[0] + rmx[0]) / 2, (rmn[1] + rmx[1]) / 2, rmn[2] - 1.0), (0.0, 0.0, 0.0),
+        ((rmx[0] - rmn[0] + 4) / 100.0, (rmx[1] - rmn[1] + 4) / 100.0, (rmx[2] - rmn[2] + 3) / 100.0), "NoCollision",
+        "Crypt/Art/Lining", note=f"stone enclosure of {rname}: AABB +2 cm each side and on top, sunk 1 cm (F1)", check=False)
+
 # ---- chain chamber timber ceiling ----
-BEAM_X = [10300, 10600, 10900, 11200]
+BEAM_X =[10300, 10600, 10900, 11200]
 for i, bx in enumerate(BEAM_X):
     add(f"CA_CC_Beam_{i}", "ceiling", "SM_LB_Crypt_Beam_35x45x1120", CRYPT, (bx, -2000, -95), (0.0, 0.0, 0.0),
         (1.0, 1.0, 1.0), "NoCollision", "Crypt/Art/Ceiling/ChainChamber", note="Y -2560..-1440, Z -95..-50", check=False)
@@ -565,7 +579,8 @@ for i, (x, y) in enumerate(((7900, -2150), (8600, -2150))):
             (sx_, y + drng.uniform(-15, 15), -548), (0.0, round(drng.uniform(0, 360), 1), 0.0), (1, 1, 1),
             "NoCollision", "Crypt/Dressing/Props", note="on top of the fill", check=False)
 add("CD_Charcoal", "dress", "SM_Charcoal_Pit", DUNGEON, (11000, -2300, -510), (0.0, 0.0, 0.0), (2.0, 2.0, 2.0), "NoCollision",
-    "Crypt/Dressing/ChainChamber", note="brazier on the block", check=False)
+    "Crypt/Dressing/ChainChamber", note="brazier on the block; F4: SM_Charcoal_Pit has ONE slot (MI_Torch) -> MI_Crypt_Iron on it",
+    check=False, extra={"mi_slots": {"0": "MI_Crypt_Iron"}})
 add("CD_SlabShackles", "dress", "SM_Torture_Devices_Shackles_01", DUNGEON, (11300, -1640, -540), (0.0, 0.0, 0.0), (1, 1, 1),
     "NoCollision", "Crypt/Dressing/ChainChamber", note="lies flat on the slab top (thin axis vertical: check bounds)", check=False)
 add("CD_SlabArm", "dress", "SM_Skeleton_Arm_01", SKEL, (11300, -1770, -540), (0.0, 20.0, 0.0), (1, 1, 1), "NoCollision",
@@ -704,8 +719,9 @@ for mid, run_id, along, half in MOULD:
 LEAKS = [("FP_S0", "MI_Decal_Leaking004_Wall", "S_FP", 9150), ("FP_S1", "MI_Decal_Leaking004_Wall", "S_FP", 9560),
          ("FP_N0", "MI_Decal_Leaking004_Wall", "N_FP", 9400), ("FP_N1", "MI_Decal_Leaking004_Wall", "N_FP", 9850),
          ("OS_E", "MI_Decal_Leaking004_Wall", "E_OS_S", -2650), ("CC_E", "MI_Decal_Leaking004_Wall", "E_CC", -2250),
-         ("WC_W", "MI_Decal_Leaking006_Wall", "W6300", -2000), ("SC_S", "MI_Decal_Leaking006_Wall", "S_WCSC", 7200),
-         ("NC_S", "MI_Decal_Leaking006_Wall", "S_NC", 11000)]
+         # P9-6a F3: Leaking006 read as an opaque mustard band in the crypt -> Leaking004 (same size and rotation); 006 is left to the courtyard
+         ("WC_W", "MI_Decal_Leaking004_Wall", "W6300", -2000), ("SC_S", "MI_Decal_Leaking004_Wall", "S_WCSC", 7200),
+         ("NC_S", "MI_Decal_Leaking004_Wall", "S_NC", 11000)]
 for lid, mi, run_id, along in LEAKS:
     wall_decal(f"CD_Decal_Leak_{lid}", mi, run_id, along, -220.0, 210.0, 85.0, note="streaks from Z -10 down to -430")
 for tid, loc, yaw, note in TORCHES:

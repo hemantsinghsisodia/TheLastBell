@@ -34,7 +34,7 @@
   "tile": 179,
   "stair": 2,
   "soffit": 4,
-  "lining": 4,
+  "lining": 8,
   "ceiling": 30,
   "grate": 6,
   "water": 4,
@@ -9913,6 +9913,186 @@
     -0.5
    ],
    "note": "Ground_2 face x 10800 (Y -100..500), shaft on -X; 3 cm lining, Z -42.5..-0.5",
+   "mbounds": [
+    [
+     -50.0,
+     -50.0,
+     0.0
+    ],
+    [
+     50.0,
+     50.0,
+     100.0
+    ]
+   ]
+  },
+  {
+   "id": "CA_Parapet_Rail_Sac_S",
+   "cat": "lining",
+   "mesh": "/Game/LastBell/Environments/Crypt/Meshes/SM_LB_Crypt_Block_100",
+   "loc": [
+    7700.0,
+    -1305.0,
+    -1.0
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "scale": [
+    6.04,
+    0.14,
+    1.03
+   ],
+   "collision": "NoCollision",
+   "folder": "Crypt/Art/Lining",
+   "aabb_min": [
+    7398.0,
+    -1312.0,
+    -1.0
+   ],
+   "aabb_max": [
+    8002.0,
+    -1298.0,
+    102.0
+   ],
+   "note": "stone enclosure of Rail_Sac_S: AABB +2 cm each side and on top, sunk 1 cm (F1)",
+   "mbounds": [
+    [
+     -50.0,
+     -50.0,
+     0.0
+    ],
+    [
+     50.0,
+     50.0,
+     100.0
+    ]
+   ]
+  },
+  {
+   "id": "CA_Parapet_Rail_Sac_N",
+   "cat": "lining",
+   "mesh": "/Game/LastBell/Environments/Crypt/Meshes/SM_LB_Crypt_Block_100",
+   "loc": [
+    7700.0,
+    -895.0,
+    -1.0
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "scale": [
+    6.04,
+    0.14,
+    1.03
+   ],
+   "collision": "NoCollision",
+   "folder": "Crypt/Art/Lining",
+   "aabb_min": [
+    7398.0,
+    -902.0,
+    -1.0
+   ],
+   "aabb_max": [
+    8002.0,
+    -888.0,
+    102.0
+   ],
+   "note": "stone enclosure of Rail_Sac_N: AABB +2 cm each side and on top, sunk 1 cm (F1)",
+   "mbounds": [
+    [
+     -50.0,
+     -50.0,
+     0.0
+    ],
+    [
+     50.0,
+     50.0,
+     100.0
+    ]
+   ]
+  },
+  {
+   "id": "CA_Parapet_Rail_Up_W",
+   "cat": "lining",
+   "mesh": "/Game/LastBell/Environments/Crypt/Meshes/SM_LB_Crypt_Block_100",
+   "loc": [
+    10495.0,
+    195.0,
+    -1.0
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "scale": [
+    0.14,
+    6.14,
+    1.03
+   ],
+   "collision": "NoCollision",
+   "folder": "Crypt/Art/Lining",
+   "aabb_min": [
+    10488.0,
+    -112.0,
+    -1.0
+   ],
+   "aabb_max": [
+    10502.0,
+    502.0,
+    102.0
+   ],
+   "note": "stone enclosure of Rail_Up_W: AABB +2 cm each side and on top, sunk 1 cm (F1)",
+   "mbounds": [
+    [
+     -50.0,
+     -50.0,
+     0.0
+    ],
+    [
+     50.0,
+     50.0,
+     100.0
+    ]
+   ]
+  },
+  {
+   "id": "CA_Parapet_Rail_Up_E",
+   "cat": "lining",
+   "mesh": "/Game/LastBell/Environments/Crypt/Meshes/SM_LB_Crypt_Block_100",
+   "loc": [
+    10805.0,
+    195.0,
+    -1.0
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "scale": [
+    0.14,
+    6.14,
+    1.03
+   ],
+   "collision": "NoCollision",
+   "folder": "Crypt/Art/Lining",
+   "aabb_min": [
+    10798.0,
+    -112.0,
+    -1.0
+   ],
+   "aabb_max": [
+    10812.0,
+    502.0,
+    102.0
+   ],
+   "note": "stone enclosure of Rail_Up_E: AABB +2 cm each side and on top, sunk 1 cm (F1)",
    "mbounds": [
     [
      -50.0,
@@ -23353,7 +23533,10 @@
     -2270.6,
     -459.4
    ],
-   "note": "brazier on the block",
+   "note": "brazier on the block; F4: SM_Charcoal_Pit has ONE slot (MI_Torch) -> MI_Crypt_Iron on it",
+   "mi_slots": {
+    "0": "MI_Crypt_Iron"
+   },
    "mbounds": [
     [
      -13.8,
@@ -28427,7 +28610,7 @@
    ],
    "note": "streaks from Z -10 down to -430",
    "decal": {
-    "mi": "MI_Decal_Leaking006_Wall",
+    "mi": "MI_Decal_Leaking004_Wall",
     "size": [
      12.0,
      210.0,
@@ -28469,7 +28652,7 @@
    ],
    "note": "streaks from Z -10 down to -430",
    "decal": {
-    "mi": "MI_Decal_Leaking006_Wall",
+    "mi": "MI_Decal_Leaking004_Wall",
     "size": [
      12.0,
      210.0,
@@ -28511,7 +28694,7 @@
    ],
    "note": "streaks from Z -10 down to -430",
    "decal": {
-    "mi": "MI_Decal_Leaking006_Wall",
+    "mi": "MI_Decal_Leaking004_Wall",
     "size": [
      12.0,
      210.0,

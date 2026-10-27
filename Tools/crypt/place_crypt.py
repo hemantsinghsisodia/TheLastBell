@@ -8,7 +8,7 @@ Usage (editor open on L_Monastery):
     python place_crypt.py --verify-greybox                # read back bVisible/collision and run the trace_world checks
 
 Placed categories (P9-5): backdrop wall pitwall portal vault column ossuary tile stair soffit ceiling grate water.
-P9-6a adds: lining (R4 greybox slab-face lining), dress (CD_* dressing), decal (CD_Decal_* DecalActors).
+P9-6a adds: lining (R4 greybox slab-face lining; F1 CA_Parapet_* rail enclosures), dress (CD_* dressing), decal (CD_Decal_* DecalActors).
 `light` is a later task (P9-7) and is refused here.
 Dress skulls: actor yaw = record face_yaw + SKULL_OFFSETS[mesh] (override: --skull-offset SM_Skull_00=90 ...).
 Decals: DecalActor via add_to_scene_from_class; decal.mi -> NewDecalComponent.decalMaterial, decal.size -> decalSize
@@ -59,7 +59,7 @@ PREFIXES = {
     "ceiling": ["CA_CC_Beam_", "CA_CC_Corbel_", "CA_CC_Boards_", "CA_CC_Soil"],
     "grate": ["CA_CC_Grate", "CA_Grate_", "CA_GrateSky_"],
     "water": ["CA_Water_"],
-    "lining": ["CA_Lining_"],
+    "lining": ["CA_Lining_", "CA_Parapet_"],
     "dress": ["CD_"],
     "decal": ["CD_Decal_"],
 }
@@ -85,11 +85,18 @@ def material_for(rec):
         return rec["mi"], None
     if cat == "lining":
         return "MI_Crypt_StoneWA", None
+    if cat == "tile":   # P9-6a F2: SM_Ground has one slot (MI_Tiles, the pack cobble); every tile gets the crypt floor MI
+        return "MI_Crypt_Floor", None
     if i == "CA_CC_Soil":
         return "MI_Crypt_Soil", None
     if i in ("CA_CC_GrateSky",) or i.startswith("CA_GrateSky_"):
         return "MI_Crypt_MoonSky", False
     return None, None
+
+
+def slot_mats(rec):
+    """P9-6a F4: per-slot MI overrides of a dress record, {slot index: MI name} (generator field `mi_slots`, keys = slot indices)."""
+    return {int(k): v for k, v in (rec.get("mi_slots") or {}).items()}
 
 
 def ang_diff(a, b):
@@ -274,8 +281,11 @@ class Placer:
             # blocks traces (found in P9-6a: CA_Lining_* blocked trace_world while its profile read NoCollision)
             vals["bodyInstance"] = {"collisionProfileName": "NoCollision", "collisionEnabled": "NoCollision"}
         mi, shadow = material_for(rec)
+        sm = slot_mats(rec)
         if mi:
             vals["overrideMaterials"] = [{"refPath": MATDIR + mi + "." + mi}]
+        elif sm:   # unlisted slots below the highest index keep the mesh's own material (null override)
+            vals["overrideMaterials"] = [({"refPath": MATDIR + sm[i] + "." + sm[i]} if i in sm else None) for i in range(max(sm) + 1)]
         if shadow is False:
             vals["castShadow"] = False
         if vals:
@@ -317,6 +327,10 @@ class Placer:
         if mi and (not st["mats"] or st["mats"][0] != mi):
             ok = False
             issues.append("material %s != %s" % (st["mats"], mi))
+        for si, smi in slot_mats(rec).items():
+            if len(st["mats"]) <= si or st["mats"][si] != smi:
+                ok = False
+                issues.append("slot %d material %s != %s" % (si, st["mats"], smi))
         if shadow is False and st["castShadow"]:
             ok = False
             issues.append("castShadow still on")

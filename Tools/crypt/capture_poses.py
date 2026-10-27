@@ -4,6 +4,7 @@
 
 --editor: capture the editor viewport (no PIE needed; ~0.3 s per capture, reliable; editor helper icons/volume wireframes show).
           PIE Simulate captures run at ~3 fps and mostly time out (P9-6a note below).
+--timeout N: socket timeout in seconds per MCP call (default 60); use ~4 to fail fast on the ~19 s CaptureViewport resets.
 --double: take two captures per pose and keep the second (stale occlusion after SetCameraTransform).
 
 poses.json: {"name": [x, y, z, pitch, yaw], ...}. Per pose: optional temp light moved to the camera (the light actor
@@ -26,8 +27,11 @@ from ue import UE  # noqa: E402
 _orig_urlopen = urllib.request.urlopen
 
 
+TIMEOUT = [60]   # --timeout N: socket timeout per MCP call (a successful capture returns in ~0.3 s, a failing one is closed by the server after ~19 s)
+
+
 def _urlopen(req, timeout=None):
-    return _orig_urlopen(req, timeout=60)
+    return _orig_urlopen(req, timeout=TIMEOUT[0])
 
 
 ue_mod.urllib.request.urlopen = _urlopen
@@ -67,6 +71,8 @@ def main():
     use_light = "--light" in sys.argv
     force = "--force" in sys.argv
     prefix = sys.argv[sys.argv.index("--prefix") + 1] if "--prefix" in sys.argv else ""
+    if "--timeout" in sys.argv:
+        TIMEOUT[0] = float(sys.argv[sys.argv.index("--timeout") + 1])
     if "--log" in sys.argv:
         LOG[0] = sys.argv[sys.argv.index("--log") + 1]
     os.makedirs(out, exist_ok=True)
