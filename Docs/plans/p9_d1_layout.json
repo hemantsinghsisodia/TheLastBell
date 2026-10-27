@@ -2458,7 +2458,7 @@
    "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Roof",
    "loc": [
     6450,
-    -2236.25,
+    -2226.25,
     -44.0
    ],
    "rot": [
@@ -2468,7 +2468,7 @@
    ],
    "scale": [
     0.9996,
-    1.1658,
+    1.2077,
     1.0
    ],
    "collision": "NoCollision",
@@ -2480,7 +2480,7 @@
    ],
    "aabb_max": [
     6689.0,
-    -1957.5,
+    -1937.5,
     -41.6
    ],
    "note": "corridor style"
@@ -2491,7 +2491,7 @@
    "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Roof",
    "loc": [
     6450,
-    -1678.75,
+    -1688.75,
     -44.0
    ],
    "rot": [
@@ -2501,14 +2501,14 @@
    ],
    "scale": [
     0.9996,
-    1.1658,
+    1.2077,
     1.0
    ],
    "collision": "NoCollision",
    "folder": "Crypt/Art/Vaults",
    "aabb_min": [
     6211.0,
-    -1957.5,
+    -1977.5,
     -339.8
    ],
    "aabb_max": [
@@ -2523,7 +2523,7 @@
    "cat": "vault",
    "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Roof",
    "loc": [
-    6825.0,
+    6835.0,
     -2350,
     -44.0
    ],
@@ -2533,7 +2533,7 @@
     0.0
    ],
    "scale": [
-    0.941,
+    0.9829,
     0.9996,
     1.0
    ],
@@ -2545,7 +2545,7 @@
     -339.8
    ],
    "aabb_max": [
-    7050.0,
+    7070.0,
     -2111.0,
     -41.6
    ],
@@ -2556,7 +2556,7 @@
    "cat": "vault",
    "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Roof",
    "loc": [
-    7275.0,
+    7265.0,
     -2350,
     -44.0
    ],
@@ -2566,14 +2566,14 @@
     0.0
    ],
    "scale": [
-    0.941,
+    0.9829,
     0.9996,
     1.0
    ],
    "collision": "NoCollision",
    "folder": "Crypt/Art/Vaults",
    "aabb_min": [
-    7050.0,
+    7030.0,
     -2589.0,
     -339.8
    ],
@@ -2589,7 +2589,7 @@
    "cat": "vault",
    "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Roof",
    "loc": [
-    9250.0,
+    9260.0,
     -2280,
     -44.0
    ],
@@ -2599,7 +2599,7 @@
     0.0
    ],
    "scale": [
-    1.0456,
+    1.0874,
     1.1251,
     1.0
    ],
@@ -2611,7 +2611,7 @@
     -339.8
    ],
    "aabb_max": [
-    9500.0,
+    9520.0,
     -2011.0,
     -41.6
    ],
@@ -2622,7 +2622,7 @@
    "cat": "vault",
    "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Roof",
    "loc": [
-    9750.0,
+    9740.0,
     -2280,
     -44.0
    ],
@@ -2632,14 +2632,14 @@
     0.0
    ],
    "scale": [
-    1.0456,
+    1.0874,
     1.1251,
     1.0
    ],
    "collision": "NoCollision",
    "folder": "Crypt/Art/Vaults",
    "aabb_min": [
-    9500.0,
+    9480.0,
     -2549.0,
     -339.8
    ],
@@ -2721,7 +2721,7 @@
    "cat": "vault",
    "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Roof",
    "loc": [
-    10240.0,
+    10250.0,
     -900,
     -44.0
    ],
@@ -2731,7 +2731,7 @@
     0.0
    ],
    "scale": [
-    1.0665,
+    1.1083,
     1.2087,
     1.0
    ],
@@ -2743,7 +2743,7 @@
     -339.8
    ],
    "aabb_max": [
-    10495.0,
+    10515.0,
     -611.0,
     -41.6
    ],
@@ -2764,19 +2764,19 @@
     0.0
    ],
    "scale": [
-    1.0665,
+    1.1501,
     1.2087,
     1.0
    ],
    "collision": "NoCollision",
    "folder": "Crypt/Art/Vaults",
    "aabb_min": [
-    10495.0,
+    10475.0,
     -1189.0,
     -339.8
    ],
    "aabb_max": [
-    11005.0,
+    11025.0,
     -611.0,
     -41.6
    ],
@@ -2787,7 +2787,7 @@
    "cat": "vault",
    "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Roof",
    "loc": [
-    11260.0,
+    11250.0,
     -900,
     -44.0
    ],
@@ -2797,14 +2797,14 @@
     0.0
    ],
    "scale": [
-    1.0665,
+    1.1083,
     1.2087,
     1.0
    ],
    "collision": "NoCollision",
    "folder": "Crypt/Art/Vaults",
    "aabb_min": [
-    11005.0,
+    10985.0,
     -1189.0,
     -339.8
    ],
@@ -2853,8 +2853,8 @@
    "cat": "vault",
    "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Roof",
    "loc": [
-    7742.5,
-    -2712.5,
+    7765.0,
+    -2690.0,
     -44.0
    ],
    "rot": [
@@ -2863,8 +2863,8 @@
     0.0
    ],
    "scale": [
-    1.077,
-    0.8469,
+    1.1711,
+    0.941,
     1.0
    ],
    "collision": "NoCollision",
@@ -2875,8 +2875,8 @@
     -339.8
    ],
    "aabb_max": [
-    8000.0,
-    -2510.0,
+    8045.0,
+    -2465.0,
     -41.6
    ],
    "note": "room style"
@@ -2887,7 +2887,7 @@
    "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Roof",
    "loc": [
     8250.0,
-    -2712.5,
+    -2690.0,
     -44.0
    ],
    "rot": [
@@ -2896,20 +2896,20 @@
     0.0
    ],
    "scale": [
-    1.0456,
-    0.8469,
+    1.2338,
+    0.941,
     1.0
    ],
    "collision": "NoCollision",
    "folder": "Crypt/Art/Vaults",
    "aabb_min": [
-    8000.0,
+    7955.0,
     -2915.0,
     -339.8
    ],
    "aabb_max": [
-    8500.0,
-    -2510.0,
+    8545.0,
+    -2465.0,
     -41.6
    ],
    "note": "room style"
@@ -2919,8 +2919,8 @@
    "cat": "vault",
    "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Roof",
    "loc": [
-    8757.5,
-    -2712.5,
+    8735.0,
+    -2690.0,
     -44.0
    ],
    "rot": [
@@ -2929,20 +2929,20 @@
     0.0
    ],
    "scale": [
-    1.077,
-    0.8469,
+    1.1711,
+    0.941,
     1.0
    ],
    "collision": "NoCollision",
    "folder": "Crypt/Art/Vaults",
    "aabb_min": [
-    8500.0,
+    8455.0,
     -2915.0,
     -339.8
    ],
    "aabb_max": [
     9015.0,
-    -2510.0,
+    -2465.0,
     -41.6
    ],
    "note": "room style"
@@ -2952,8 +2952,8 @@
    "cat": "vault",
    "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Roof",
    "loc": [
-    7742.5,
-    -2247.5,
+    7765.0,
+    -2270.0,
     -44.0
    ],
    "rot": [
@@ -2962,19 +2962,19 @@
     0.0
    ],
    "scale": [
-    1.077,
-    1.0979,
+    1.1711,
+    1.192,
     1.0
    ],
    "collision": "NoCollision",
    "folder": "Crypt/Art/Vaults",
    "aabb_min": [
     7485.0,
-    -2510.0,
+    -2555.0,
     -339.8
    ],
    "aabb_max": [
-    8000.0,
+    8045.0,
     -1985.0,
     -41.6
    ],
@@ -2986,7 +2986,7 @@
    "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Roof",
    "loc": [
     8250.0,
-    -2247.5,
+    -2270.0,
     -44.0
    ],
    "rot": [
@@ -2995,19 +2995,19 @@
     0.0
    ],
    "scale": [
-    1.0456,
-    1.0979,
+    1.2338,
+    1.192,
     1.0
    ],
    "collision": "NoCollision",
    "folder": "Crypt/Art/Vaults",
    "aabb_min": [
-    8000.0,
-    -2510.0,
+    7955.0,
+    -2555.0,
     -339.8
    ],
    "aabb_max": [
-    8500.0,
+    8545.0,
     -1985.0,
     -41.6
    ],
@@ -3018,8 +3018,8 @@
    "cat": "vault",
    "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Roof",
    "loc": [
-    8757.5,
-    -2247.5,
+    8735.0,
+    -2270.0,
     -44.0
    ],
    "rot": [
@@ -3028,15 +3028,15 @@
     0.0
    ],
    "scale": [
-    1.077,
-    1.0979,
+    1.1711,
+    1.192,
     1.0
    ],
    "collision": "NoCollision",
    "folder": "Crypt/Art/Vaults",
    "aabb_min": [
-    8500.0,
-    -2510.0,
+    8455.0,
+    -2555.0,
     -339.8
    ],
    "aabb_max": [
@@ -10714,7 +10714,7 @@
    "rot": [
     0.0,
     0.0,
-    0.0
+    180.0
    ],
    "scale": [
     15.3,
@@ -10733,7 +10733,7 @@
     -1485.0,
     -41.0
    ],
-   "note": "MI_Crypt_Soil; seen through board gaps and broken boards"
+   "note": "MI_Crypt_Soil; roll 180 so the visible face points down (the plane is one-sided); seen through board gaps and broken boards"
   },
   {
    "id": "CA_CC_Grate",

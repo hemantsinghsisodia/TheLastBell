@@ -68,6 +68,8 @@ ARCH_ZS = 1.19                    # arch top Z -1.5; crown clear 500 (Z -100); s
 ROOF_Z = -44.0                    # vault pivot (crown); shell top -41.6, under the slab (-40)
 ROOF = 478.2
 CORRIDOR_EXTRA = 178.0            # corridor-style vault: across scale = (width + 178) / 478.2 (P9-2 test geometry)
+BAY_PAD = 20.0                    # corridor bays sharing an edge overlap by this much (total)
+OS_PAD = 45.0                     # ossuary bays: overlap per side on every shared edge
 ROOM_OVERSIZE = 15.0              # room-style vault edges 15 cm into the walls (walls are recessed up to 11 cm)
 PILLAR_AXIS = (13.1, 2.5)
 CAPITAL_TOP = -330.0              # vault corners at -44 - 295.8 = -339.8 bury in the abacus (-352..-330)
@@ -291,10 +293,13 @@ def corridor(vid, axis, a, b, centre, width):
     p = L / n
     for i in range(n):
         c = a + p * (i + 0.5)
+        # P9-5 gap pass: bays that share an edge overlap by BAY_PAD (hairline slits at the crown seams)
+        pa = p + BAY_PAD * ((i > 0) + (i < n - 1))
+        c2 = c + BAY_PAD * 0.5 * ((i < n - 1) - (i > 0))
         if axis == "x":
-            VAULTS.append((f"{vid}_{i}", (c, centre), (p / ROOF, (width + CORRIDOR_EXTRA) / ROOF), "corridor"))
+            VAULTS.append((f"{vid}_{i}", (c2, centre), (pa / ROOF, (width + CORRIDOR_EXTRA) / ROOF), "corridor"))
         else:
-            VAULTS.append((f"{vid}_{i}", (centre, c), ((width + CORRIDOR_EXTRA) / ROOF, p / ROOF), "corridor"))
+            VAULTS.append((f"{vid}_{i}", (centre, c2), ((width + CORRIDOR_EXTRA) / ROOF, pa / ROOF), "corridor"))
 
 corridor("WC", "y", -2515, -1400, 6450, 300)
 corridor("SC", "x", 6600, 7500, -2350, 300)
@@ -309,6 +314,16 @@ OS_Y = [-2915, -2510, -1985]
 for j in range(2):
     for i in range(3):
         x0, x1, y0, y1 = OS_X[i], OS_X[i + 1], OS_Y[j], OS_Y[j + 1]
+        # P9-5 gap pass: the room bays' corners lean inward, leaving a wedge/disc hole over each pier and along the shared
+        # edges. Every shared edge overlaps by OS_PAD per side (the displaced corners at Z -339.8 stay inside the abacus).
+        if i > 0:
+            x0 -= OS_PAD
+        if i < 2:
+            x1 += OS_PAD
+        if j == 0:
+            y1 += OS_PAD
+        else:
+            y0 -= OS_PAD
         VAULTS.append((f"OS_{j}{i}", ((x0 + x1) / 2, (y0 + y1) / 2), ((x1 - x0) / ROOF, (y1 - y0) / ROOF), "room"))
 for vid, (x, y), (sx, sy), style in VAULTS:
     add(f"CA_Vault_{vid}", "vault", "SM_Roof", DUNGEON, (x, y, ROOF_Z), (0.0, 0.0, 0.0), (sx, sy, 1.0), "NoCollision",
@@ -404,8 +419,8 @@ for col in range(5):
         mesh = "SM_LB_Crypt_Boards_300x250_Broken" if (col, row) in BROKEN else "SM_LB_Crypt_Boards_300x250"
         add(f"CA_CC_Boards_{col}{row}", "ceiling", mesh, CRYPT, (cx, cy, -50), (0.0, 0.0, 0.0), (1.0, 1.0, 1.0),
             "NoCollision", "Crypt/Art/Ceiling/ChainChamber", note="boards run along X between beams; Z -50..-45", check=False)
-add("CA_CC_Soil", "ceiling", "Plane", "/Engine/BasicShapes/", (10750, -2000, -41), (0.0, 0.0, 0.0), (15.3, 10.3, 1.0),
-    "NoCollision", "Crypt/Art/Ceiling/ChainChamber", note="MI_Crypt_Soil; seen through board gaps and broken boards", check=False)
+add("CA_CC_Soil", "ceiling", "Plane", "/Engine/BasicShapes/", (10750, -2000, -41), (0.0, 0.0, 180.0), (15.3, 10.3, 1.0),
+    "NoCollision", "Crypt/Art/Ceiling/ChainChamber", note="MI_Crypt_Soil; roll 180 so the visible face points down (the plane is one-sided); seen through board gaps and broken boards", check=False)
 gx, gy = 10150 + 300 * GRATE_CELL[0], -2375 + 250 * GRATE_CELL[1]
 add("CA_CC_Grate", "grate", "SM_Bars", DUNGEON, (gx, gy - 121.5, -55), (0.0, 0.0, 90.0), (1.25, 1.0, 1.03), "NoCollision",
     "Crypt/Art/Ceiling/ChainChamber", note=f"moon grate G3 in cell {GRATE_CELL}: X {gx - 150}..{gx + 150}, Y {gy - 125}..{gy + 125}; laid flat (roll 90)", check=False)

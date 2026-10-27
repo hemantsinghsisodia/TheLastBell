@@ -54,7 +54,7 @@ def call(ts, tool, args=None, tries=6):
             log("  retry %d %s: %s" % (k + 1, tool, str(e)[:90]))
             if k == tries - 1:
                 raise
-            time.sleep(5)
+            time.sleep(1)
 
 
 def main():
@@ -90,10 +90,9 @@ def main():
             call(S, "get_current_level")  # cheap keep-alive
             call(E, "SetCameraTransform", {"transform": xf})
             time.sleep(0.8)
-            r = None
-            for _ in range(2):
-                r = call(E, "CaptureViewport", {"captureTransform": None, "annotations": None})
-                time.sleep(0.4)
+            # CaptureViewport fails (reset after ~19.6 s) on 2 of every 3 calls; the failed calls still render the frame, so
+            # the one that succeeds is never the stale first frame. Take that one.
+            r = call(E, "CaptureViewport", {"captureTransform": None, "annotations": None})
             with open(path, "wb") as f:
                 f.write(base64.b64decode(r["image"]["data"]))
             done += 1
