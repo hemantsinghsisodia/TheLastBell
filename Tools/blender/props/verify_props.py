@@ -88,6 +88,37 @@ for _shape, _w, _h in (("Climb", 300.0, 450.0), ("Patch", 200.0, 300.0), ("Hang"
         SPEC["Ivy_%s_%gx%g_%s" % (_shape, _w, _h, _kind)] = dict(dims=(_w, None, _h), ymax=25.0, slots=["MAT_Leaf", "MAT_Stem"], ucx=0,
                                                                  wall_pivot=True, open_mesh=True, subdir="Ivy")
 
+# ---- P9-3 crypt pieces (plan Docs/plans/P9_CRYPT_ART.md amendment D1.3) ----
+CP = "SM_LB_"
+_STONE = ["MAT_Stone"]
+SPEC.update({
+    "Crypt_OssuaryBay_500x599": dict(prefix=CP, dims=(500.0, 96.0, 599.0), slots=_STONE, ucx=0, pivot="bay", tris_max=12000, struct="bay"),
+    "Crypt_Capital_A": dict(prefix=CP, dims=(170.0, 170.0, 55.0), slots=_STONE, ucx=0, tris_max=3000),
+    "Crypt_Stair40_300": dict(prefix=CP, dims=(1200.0, 300.0, 600.0), slots=_STONE, ucx=0, pivot="riser", tris_max=25000, struct="stair"),
+    "Crypt_Sarcophagus_A": dict(prefix=CP, dims=(300.0, 120.0, 72.0), slots=_STONE, ucx=0, bounds_le=(150.0, 60.0, 72.0)),
+    "Crypt_Sarcophagus_B": dict(prefix=CP, dims=(300.0, 120.0, 72.0), slots=["MAT_Stone", "MAT_Charred"], ucx=0, bounds_le=(150.0, 60.0, 72.0), struct="sarco_b"),
+    "Crypt_BoneBin_200x100x60": dict(prefix=CP, dims=(200.0, 100.0, 60.0), slots=_STONE, ucx=0, struct="bonebin"),
+    "Crypt_Block_100": dict(prefix=CP, dims=(100.0, 100.0, 100.0), slots=_STONE, ucx=1, ucx_boxes=[(-50, 50, -50, 50, 0, 100)]),
+    "Crypt_Block_100_C": dict(prefix=CP, dims=(100.0, 100.0, 100.0), slots=_STONE, ucx=1, pivot="centre", ucx_boxes=[(-50, 50, -50, 50, -50, 50)]),
+    "Crypt_Corbel_A": dict(prefix=CP, dims=(50.0, 55.0, 45.0), slots=_STONE, ucx=0, wall_pivot=True, ymax=56.0, struct="corbel"),
+    "Crypt_Beam_35x45x1120": dict(prefix=CP, dims=(35.0, 1120.0, 45.0), slots=["MAT_Wood"], ucx=0),
+    "Crypt_Boards_300x250": dict(prefix=CP, dims=(300.0, 250.0, 5.0), tol=1.0, slots=["MAT_Wood"], ucx=0, struct="boards", n_boards=10),
+    "Crypt_Boards_300x250_Broken": dict(prefix=CP, dims=(300.0, 250.0, None), slots=["MAT_Wood"], ucx=0, pivot="xyfree", zmin_ge=-60.0, struct="boards", n_boards=8),
+    "Crypt_RootsHang_A": dict(prefix=CP, dims=(80.0, 80.0, 180.0), tol=12.0, ztol=1.0, slots=["MAT_Bark"], ucx=0, pivot="top", tris_min=6000, tris_max=12000, struct="roots"),
+    "Crypt_RootsHang_B": dict(prefix=CP, dims=(90.0, 90.0, 240.0), tol=12.0, ztol=1.0, slots=["MAT_Bark"], ucx=0, pivot="top", tris_min=6000, tris_max=12000, struct="roots"),
+    "Crypt_RootsHang_C": dict(prefix=CP, dims=(60.0, 60.0, 120.0), tol=12.0, ztol=1.0, slots=["MAT_Bark"], ucx=0, pivot="top", tris_min=6000, tris_max=12000, struct="roots"),
+    "Crypt_Portcullis_300x60x560": dict(prefix=CP, dims=(300.0, 60.0, 560.0), slots=["MAT_Iron"], ucx=1, tris_max=8000, ucx_boxes=[(-150, 150, -30, 30, 0, 560)], struct="portcullis"),
+    "Crypt_RubbleFill_100x400x560": dict(prefix=CP, dims=(110.0, 420.0, 560.0), slots=["MAT_Stone", "MAT_Wood"], ucx=1, tris_max=40000, ucx_boxes=[(-50, 50, -200, 200, 0, 560)], struct="rubble"),
+    "Crank_A": dict(dims=(42.0, 8.0, 14.5), tol=1.5, slots=["MAT_Iron", "MAT_Wood"], ucx=1, ucx_env=(44.0, 16.0, 16.0), struct="crank"),
+    "Crypt_CapstanDrum_80x50": dict(prefix=CP, dims=(110.0, 110.0, 50.0), slots=["MAT_Wood", "MAT_Iron"], ucx=1, pivot="centre", ucx_boxes=[(-35, 35, -35, 35, -25, 25)], struct="capstan"),
+    "Crypt_PlaqueFrame_270x195": dict(prefix=CP, dims=(270.0, 14.0, 195.0), slots=_STONE, ucx=0, pivot="backcentre", struct="plaque"),
+    "Crypt_WinchFrame": dict(prefix=CP, dims=(260.0, 90.0, 250.0), slots=["MAT_Wood", "MAT_Iron"], ucx=4, tris_max=25000, struct="winch",
+                             ucx_boxes=[(-120, -100, -10, 10, 0, 250), (100, 120, -10, 10, 0, 250), (-120, -100, -45, 45, 0, 10), (100, 120, -45, 45, 0, 10)]),
+})
+for _k in list(SPEC):
+    if _k.startswith("Crypt_") or _k == "Crank_A":
+        SPEC[_k]["subdir"] = "Crypt"
+
 
 def parse():
     argv = sys.argv
@@ -286,6 +317,143 @@ def structural(short, spec, ob, ucx, fail, res):
                 fail("%s reaches the centre (Y %.1f..%.1f)" % (u.name, min(ys), max(ys)))
             if min(ys) < 0 < max(ys):
                 fail("%s spans Y = 0" % u.name)
+    elif kind == "bay":
+        def rayhit(x, z, want, label, tol=1.6):
+            h = _ray(bvh, x, 60.0, z, (0, -1, 0))
+            notes.append("%s: %s (want %.1f)" % (label, ("%.2f" % h[1]) if h else None, want))
+            if h is None or abs(h[1] - want) > tol:
+                fail("%s hit y %s, expected %.1f" % (label, h and round(h[1], 2), want))
+        rayhit(0.0, 160.0, 0.0, "front face between the tiers (z 160)", 1.6)
+        rayhit(0.0, 400.0, 0.0, "front face above the niches (z 400)", 1.6)
+        rayhit(0.0, 90.0, -60.0, "tier 1 niche back", 1.6)
+        rayhit(150.0, 230.0, -60.0, "tier 2 niche back (x 150)", 1.6)
+        rayhit(-160.0, 90.0, -60.0, "tier 1 niche back (x -160)", 1.6)
+        rayhit(180.0, 90.0, 0.0, "wall beside the niche (x 180, z 90)", 1.6)
+        rayhit(0.0, 42.0, 6.0, "sill band 1 (z 42) proud 6", 1.4)
+        rayhit(0.0, 181.0, 6.0, "sill band 2 (z 181) proud 6", 1.4)
+        rayhit(0.0, 141.0, 6.0, "lintel band 1 proud 6", 1.4)
+        rayhit(0.0, 20.0, 4.0, "plinth band proud 4", 1.4)
+    elif kind == "stair":
+        worst = 0.0
+        for n in range(40):
+            h = _ray(bvh, 30.0 * n + 15.0, 0.0, 700.0, (0, 0, -1))
+            want = 15.0 * (n + 1)
+            if h is None or abs(h[2] - want) > 1.2:
+                fail("step %d ray hits %s, expected %.1f +-1.2" % (n, h and round(h[2], 2), want))
+            else:
+                worst = max(worst, abs(h[2] - want))
+        notes.append("40 downward rays at (30n+15, 0): max deviation from 15(n+1) = %.2f (limit 1.2)" % worst)
+        h = _ray(bvh, -50.0, 0.0, 7.0, (1, 0, 0))
+        notes.append("riser face of step 0 at x %s (0)" % (("%.2f" % h[0]) if h else None))
+        if h is None or abs(h[0]) > 1.0:
+            fail("riser face of step 0 at x %s expected 0" % (h and round(h[0], 2)))
+    elif kind == "sarco_b":
+        h = _ray(bvh, -134.0, 0.0, 120.0, (0, 0, -1))
+        notes.append("cavity visible at the -X end: floor hit z %s (20)" % (("%.1f" % h[2]) if h else None))
+        if h is None or abs(h[2] - 20.0) > 1.5:
+            fail("cavity floor at the -X end z %s expected 20 (lid must leave the end open)" % (h and round(h[2], 1)))
+        n_ch = sum(1 for p in ob.data.polygons if p.material_index == 1)
+        notes.append("Charred faces: %d" % n_ch)
+        if n_ch < 20:
+            fail("too few Charred faces (%d)" % n_ch)
+    elif kind == "bonebin":
+        h = _ray(bvh, 0.0, 0.0, 100.0, (0, 0, -1))
+        notes.append("inner floor z %s (30)" % (("%.1f" % h[2]) if h else None))
+        if h is None or abs(h[2] - 30.0) > 1.3:
+            fail("bone-bin inner floor %s expected 30" % (h and round(h[2], 1)))
+    elif kind == "corbel":
+        for z, want in ((7.0, 30.0), (22.0, 42.0), (38.0, 55.0)):
+            h = _ray(bvh, 0.0, 90.0, z, (0, -1, 0))
+            notes.append("course z %g projects to y %s (%g)" % (z, ("%.1f" % h[1]) if h else None, want))
+            if h is None or abs(h[1] - want) > 1.4:
+                fail("corbel course z %g projects to %s expected %g" % (z, h and round(h[1], 1), want))
+    elif kind == "boards":
+        cnt, prev = 0, False
+        for i in range(0, 501):
+            y = -125.0 + i * 0.5
+            hit = _ray(bvh, -100.0, y, 20.0, (0, 0, -1)) is not None
+            if hit and not prev:
+                cnt += 1
+            prev = hit
+        notes.append("boards crossed along Y at x -100: %d (expected %d)" % (cnt, spec['n_boards']))
+        if cnt != spec['n_boards']:
+            fail("%d boards at x -100, expected %d" % (cnt, spec['n_boards']))
+    elif kind == "roots":
+        notes.append("tris %d, bounds z %.1f..%.1f" % (res['tris'], ob.bound_box[0][2], ob.bound_box[6][2]))
+    elif kind == "portcullis":
+        def count(scan):
+            c, prev = 0, False
+            for h in scan:
+                if h and not prev:
+                    c += 1
+                prev = h
+            return c
+        n_x = count(_ray(bvh, -155.0 + i * 0.5, 40.0, 300.0, (0, -1, 0)) is not None for i in range(0, 621))
+        n_z = count(_ray(bvh, 16.0, 40.0, 20.0 + i * 0.5, (0, -1, 0)) is not None for i in range(0, 1041))
+        notes.append("vertical members crossed at z 300: %d (9 bars + 2 rails = 11); flat bars crossed at x 16: %d (7)" % (n_x, n_z))
+        if n_x != 11:
+            fail("%d vertical members at z 300, expected 11" % n_x)
+        if n_z != 7:
+            fail("%d flat bars at x 16, expected 7" % n_z)
+        tip = _ray(bvh, 0.0, 0.0, -5.0, (0, 0, 1))
+        notes.append("spike tip z %s (0)" % (("%.2f" % tip[2]) if tip else None))
+        if tip is None or abs(tip[2]) > 0.6:
+            fail("spike tip at z %s expected 0" % (tip and round(tip[2], 2)))
+    elif kind == "rubble":
+        miss = 0
+        tot = 0
+        xmin = 1e9
+        for y in (-180.0, -120.0, -60.0, 0.0, 60.0, 120.0, 180.0):
+            for z in (40.0, 120.0, 200.0, 280.0, 360.0, 440.0, 520.0):
+                h = _ray(bvh, -200.0, y, z, (1, 0, 0))
+                tot += 1
+                if h is None:
+                    miss += 1
+                else:
+                    xmin = min(xmin, h[0])
+        notes.append("%d/%d horizontal rays from -X hit the mass (no see-through), first hit x >= %.1f" % (tot - miss, tot, xmin))
+        if miss:
+            fail("%d of %d rays pass through the rubble" % (miss, tot))
+        if xmin < -55.5:
+            fail("a face reaches x %.1f (< -55)" % xmin)
+        n_w = sum(1 for p in ob.data.polygons if p.material_index == 1)
+        notes.append("Wood faces (beam): %d" % n_w)
+        if n_w < 50:
+            fail("broken beam (Wood slot) missing")
+    elif kind == "crank":
+        h = _ray(bvh, -17.5, 3.5, 40.0, (0, 0, -1))
+        notes.append("boss rim z %s (12)" % (("%.1f" % h[2]) if h else None))
+        if h is None or abs(h[2] - 12.0) > 1.2:
+            fail("boss rim z %s expected 12" % (h and round(h[2], 1)))
+        n_w = sum(1 for p in ob.data.polygons if p.material_index == 1)
+        if n_w < 10:
+            fail("wooden handle (slot 1) missing")
+    elif kind == "capstan":
+        for (x, y, z, want, lab) in ((0.0, 0.0, 60.0, 25.0, "top boss"), (50.0, 0.0, 60.0, 15.5, "bar X top"), (0.0, 50.0, 60.0, 15.5, "bar Y top"), (20.0, 20.0, 60.0, 23.0, "drum top")):
+            h = _ray(bvh, x, y, z, (0, 0, -1))
+            notes.append("%s z %s (%.1f)" % (lab, ("%.1f" % h[2]) if h else None, want))
+            if h is None or abs(h[2] - want) > 1.5:
+                fail("%s z %s expected %.1f" % (lab, h and round(h[2], 1), want))
+    elif kind == "plaque":
+        h = _ray(bvh, 0.0, 60.0, 0.0, (0, -1, 0))
+        notes.append("opening clear: %s" % ("blocked at y %.1f" % h[1] if h else "yes"))
+        if h is not None:
+            fail("the opening 250 x 175 is blocked (hit y %.1f)" % h[1])
+        for x, want in ((130.0, 10.0), (133.5, 6.0)):
+            h = _ray(bvh, x, 60.0, 0.0, (0, -1, 0))
+            notes.append("frame step at x %g: y %s (%g)" % (x, ("%.1f" % h[1]) if h else None, want))
+            if h is None or abs(h[1] - want) > 1.3:
+                fail("frame step at x %g y %s expected %g" % (x, h and round(h[1], 1), want))
+    elif kind == "winch":
+        for x, lab in ((0.0, "top beam top"), (110.0, "post/beam top")):
+            h = _ray(bvh, x, 0.0, 300.0, (0, 0, -1))
+            notes.append("%s z %s (250)" % (lab, ("%.1f" % h[2]) if h else None))
+            if h is None or abs(h[2] - 250.0) > 1.2:
+                fail("%s z %s expected 250" % (lab, h and round(h[2], 1)))
+        h = _ray(bvh, 0.0, -80.0, 170.0, (0, 1, 0))
+        notes.append("drum side at y %s (-22)" % (("%.1f" % h[1]) if h else None))
+        if h is None or abs(h[1] + 22.0) > 2.5:
+            fail("drum side y %s expected about -22" % (h and round(h[1], 1)))
     elif kind == "shell_cyl":
         h = _ray(bvh, 0.0, 0.0, -10.0, (0, 0, 1))                        # open bottom: first hit is the cap underside at Z 50
         notes.append("cap underside: %s" % (("%.1f" % h[2]) if h else None))
@@ -312,7 +480,7 @@ def uv_in_unit(ob, fail, res):
 
 
 def check(path, short, spec):
-    name = P + short
+    name = spec.get('prefix', P) + short
     res = dict(name=name, ok=True, fails=[])
 
     def fail(m):
@@ -334,8 +502,36 @@ def check(path, short, spec):
     res['dims'] = [round(v, 2) for v in dims]
     res['bounds_min'] = [round(v, 2) for v in mn]
     res['tris'] = sum(len(p.vertices) - 2 for p in ob.data.polygons)
-    # pivot: XY centre at 0, min Z at 0 (ivy cards: X centre at 0, back plane at Y 0)
-    if spec.get('free_pivot'):
+    # pivot: XY centre at 0, min Z at 0 (ivy cards: X centre at 0, back plane at Y 0); P9 variants via spec['pivot']
+    pv = spec.get('pivot')
+    if pv == "bay":                                   # x centre, y 0 = front face (body -90..0, bands to +6), z 0 bottom
+        if abs((mn.x + mx.x) * 0.5) > TOL:
+            fail("pivot: X centre %.2f" % ((mn.x + mx.x) * 0.5))
+        if abs(mn.y + 90.0) > TOL or abs(mx.y - 6.0) > TOL:
+            fail("pivot: y range %.2f..%.2f (expected -90..6)" % (mn.y, mx.y))
+    elif pv == "riser":                               # x 0 = riser face of step 0, y centre, z 0 floor
+        if abs(mn.x) > TOL:
+            fail("pivot: min X %.2f (riser face should be at 0)" % mn.x)
+        if abs((mn.y + mx.y) * 0.5) > TOL:
+            fail("pivot: Y centre %.2f" % ((mn.y + mx.y) * 0.5))
+    elif pv == "centre":                              # bounds centre at the origin on all three axes
+        for i, ax in enumerate("XYZ"):
+            if abs((mn[i] + mx[i]) * 0.5) > TOL:
+                fail("pivot: %s centre %.2f (should be 0)" % (ax, (mn[i] + mx[i]) * 0.5))
+    elif pv == "backcentre":                          # x centre, back plane y 0, z centre
+        if abs((mn.x + mx.x) * 0.5) > TOL or abs(mn.y) > TOL or abs((mn.z + mx.z) * 0.5) > TOL:
+            fail("pivot: back-centre expected (xc, ymin, zc) = 0, got (%.2f, %.2f, %.2f)" % ((mn.x + mx.x) * 0.5, mn.y, (mn.z + mx.z) * 0.5))
+    elif pv == "top":                                 # design axis on the origin (XY bounds centre within 8), z max = 0
+        if abs(mx.z) > TOL:
+            fail("pivot: max Z %.2f (attachment should be 0)" % mx.z)
+        for i, ax in enumerate("XY"):
+            if abs((mn[i] + mx[i]) * 0.5) > 8.0:
+                fail("pivot: %s centre %.2f (design axis should be within 8 of 0)" % (ax, (mn[i] + mx[i]) * 0.5))
+    elif pv == "xyfree":                              # XY bounds centre 0, z as built
+        for i, ax in enumerate("XY"):
+            if abs((mn[i] + mx[i]) * 0.5) > TOL:
+                fail("pivot: %s centre %.2f (should be 0)" % (ax, (mn[i] + mx[i]) * 0.5))
+    elif spec.get('free_pivot'):
         bm_ = spec['bmin']
         for i, ax in enumerate("XYZ"):
             if abs(mn[i] - bm_[i]) > TOL:
@@ -352,14 +548,25 @@ def check(path, short, spec):
             c = (mn[i] + mx[i]) * 0.5
             if abs(c) > TOL:
                 fail("pivot: %s centre %.2f (should be 0)" % (ax, c))
-    if abs(mn.z) > TOL and not spec.get('free_pivot'):
+    if abs(mn.z) > TOL and not (spec.get('free_pivot') or pv in ("centre", "backcentre", "top", "xyfree")):
         fail("pivot: min Z %.2f (should be 0)" % mn.z)
+    if 'zmin_ge' in spec and mn.z < spec['zmin_ge']:
+        fail("lowest point Z %.2f below the limit %.1f" % (mn.z, spec['zmin_ge']))
+    if 'bounds_le' in spec:
+        bl = spec['bounds_le']
+        if max(abs(mn.x), abs(mx.x)) > bl[0] + 0.01 or max(abs(mn.y), abs(mx.y)) > bl[1] + 0.01 or mx.z > bl[2] + 0.01:
+            fail("bounds exceed the limit x +-%g, y +-%g, z <= %g: %s..%s" % (bl[0], bl[1], bl[2], tuple(round(v, 2) for v in mn), tuple(round(v, 2) for v in mx)))
+    n_tr = res['tris']
+    if 'tris_max' in spec and n_tr > spec['tris_max']:
+        fail("tris %d > cap %d" % (n_tr, spec['tris_max']))
+    if 'tris_min' in spec and n_tr < spec['tris_min']:
+        fail("tris %d < minimum %d" % (n_tr, spec['tris_min']))
     if ob.matrix_world.translation.length > 1e-4:
         fail("node not at the origin")
     # dimensions
     tol = spec.get('tol', TOL)
     for i, v in enumerate(spec['dims']):
-        if v is not None and abs(dims[i] - v) > tol:
+        if v is not None and abs(dims[i] - v) > (spec.get('ztol', tol) if i == 2 else tol):
             fail("dim %s %.2f vs %.2f" % ("XYZ"[i], dims[i], v))
     if 'zmax' in spec and dims.z > spec['zmax']:
         fail("dim Z %.2f > %.2f" % (dims.z, spec['zmax']))
@@ -396,7 +603,9 @@ def check(path, short, spec):
             fail("%s not convex" % u.name)
         b0, b1 = VK.bounds(VK.ue_coords(u))
         env = spec.get('ucx_env')
-        if env:
+        if spec.get('ucx_boxes'):
+            pass                                                   # compared as a set after the loop
+        elif env:
             ex = (env[0] / 2, env[1] / 2)
             want0 = Vector((-ex[0], -ex[1], 0.0))
             want1 = Vector((ex[0], ex[1], env[2]))
@@ -406,6 +615,19 @@ def check(path, short, spec):
             for i in range(3):
                 if b0[i] < mn[i] - TOL or b1[i] > mx[i] + TOL:
                     fail("%s outside the visual bounds on %s" % (u.name, "XYZ"[i]))
+    if spec.get('ucx_boxes'):
+        want = list(spec['ucx_boxes'])
+        got = []
+        for u in ucx:
+            b0, b1 = VK.bounds(VK.ue_coords(u))
+            got.append((b0.x, b1.x, b0.y, b1.y, b0.z, b1.z))
+        res['ucx_boxes'] = [tuple(round(v, 2) for v in g) for g in got]
+        for w in want:
+            hit = next((g for g in got if all(abs(g[i] - w[i]) <= TOL for i in range(6))), None)
+            if hit is None:
+                fail("no UCX box matches the required %s (got %s)" % (w, res['ucx_boxes']))
+            else:
+                got.remove(hit)
     structural(short, spec, ob, ucx, fail, res)
     if spec.get('uv01'):
         uv_in_unit(ob, fail, res)
@@ -422,25 +644,26 @@ def main():
     fbx_dir, js = parse()
     rows = []
     for short, spec in SPEC.items():
-        path = os.path.join(fbx_dir, spec.get('subdir', ''), P + short + ".fbx")
+        path = os.path.join(fbx_dir, spec.get('subdir', ''), spec.get('prefix', P) + short + ".fbx")
         if not os.path.exists(path):
-            rows.append(dict(name=P + short, ok=False, fails=["missing FBX"]))
+            rows.append(dict(name=spec.get('prefix', P) + short, ok=False, fails=["missing FBX"]))
             continue
         rows.append(check(path, short, spec))
     print("\n==== VERIFY PROPS SUMMARY ====")
-    print("%-26s %-22s %-7s %-22s %-4s %s" % ("piece", "dims cm (UE)", "tris", "slots", "UCX", "result"))
+    nm = lambda n: n.replace("SM_LB_Prop_", "").replace("SM_LB_", "")
+    print("%-34s %-22s %-7s %-22s %-4s %s" % ("piece", "dims cm (UE)", "tris", "slots", "UCX", "result"))
     for r in rows:
         if 'dims' not in r:
-            print("%-26s %s" % (r['name'][len(P):], "; ".join(r['fails'])))
+            print("%-34s %s" % (nm(r['name']), "; ".join(r['fails'])))
             continue
-        print("%-26s %-22s %-7d %-22s %-4d %s" % (r['name'][len(P):], "x".join("%g" % d for d in r['dims']), r['tris'],
+        print("%-34s %-22s %-7d %-22s %-4d %s" % (nm(r['name']), "x".join("%g" % d for d in r['dims']), r['tris'],
                                                   ",".join(s.replace("MAT_", "") for s in r['slots']), r['ucx'],
                                                   "PASS" if r['ok'] else "FAIL: " + "; ".join(r['fails'])))
     ok = all(r['ok'] for r in rows)
     print("pieces: %d  passed: %d  failed: %d  => %s" % (len(rows), sum(1 for r in rows if r['ok']), sum(1 for r in rows if not r['ok']), "ALL PASS" if ok else "FAILURES"))
     for r in rows:
         if r.get('struct'):
-            print("  %s: %s" % (r['name'][len(P):], "; ".join(r['struct'])))
+            print("  %s: %s" % (nm(r['name']), "; ".join(r['struct'])))
     for r in rows:
         if 'flat_centre_z' in r:
             print("  key ledge flat centre Z range: %s" % r['flat_centre_z'])

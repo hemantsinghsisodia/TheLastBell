@@ -1,0 +1,705 @@
+[
+ {
+  "name": "SM_LB_Crypt_OssuaryBay_500x599",
+  "min": [
+   -250.0,
+   -90.0,
+   0.0
+  ],
+  "max": [
+   250.0,
+   6.0,
+   599.0
+  ],
+  "dims": [
+   500.0,
+   96.0,
+   599.0
+  ],
+  "tris": 11350,
+  "slots": [
+   "MAT_Stone"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 0,
+  "pivot_shift_applied": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "note": "x centre, y 0 = the wall's front face (local +Y into the room), z 0 bottom; body y -90..0, bands proud to +6; two niches x +-170 (tier 1 z 45..135, tier 2 z 185..275) recessed to y -60; chips 3-5 per niche rim",
+  "seconds": 5.3
+ },
+ {
+  "name": "SM_LB_Crypt_Capital_A",
+  "min": [
+   -85.0,
+   -85.0,
+   0.0
+  ],
+  "max": [
+   85.0,
+   85.0,
+   55.0
+  ],
+  "dims": [
+   170.0,
+   170.0,
+   55.0
+  ],
+  "tris": 2096,
+  "slots": [
+   "MAT_Stone"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 0,
+  "pivot_shift_applied": [
+   -0.0,
+   -0.0,
+   -0.0
+  ],
+  "note": "bottom-centre; octagonal bell (flats to +-X/+-Y, apothem 70 -> 84 over z 0..33, 4 rings, concave) under a 170 x 170 abacus z 33..55 (bottom chamfer 4, top 1.5); chips seed 9302",
+  "seconds": 0.5
+ },
+ {
+  "name": "SM_LB_Crypt_Stair40_300",
+  "min": [
+   0.0,
+   -150.0,
+   0.0
+  ],
+  "max": [
+   1200.0,
+   150.0,
+   600.0
+  ],
+  "dims": [
+   1200.0,
+   300.0,
+   600.0
+  ],
+  "tris": 16604,
+  "slots": [
+   "MAT_Stone"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 0,
+  "pivot_shift_applied": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "note": "x 0 = riser face of step 0 (+X up the flight), y centre, z 0 floor; step n tread x 30n..30n+30, top z 15(n+1); wear dip 0.7 max at the centre third (ray at x 30n+15 hits 15(n+1) - 0.5..1.1); nosing r 2.5; 10 of 40 nosings chipped (steps [0, 1, 6, 14, 15, 20, 21, 29, 30, 31])",
+  "seconds": 11.9
+ },
+ {
+  "name": "SM_LB_Crypt_Sarcophagus_A",
+  "min": [
+   -150.0,
+   -60.0,
+   0.0
+  ],
+  "max": [
+   150.0,
+   60.0,
+   72.0
+  ],
+  "dims": [
+   300.0,
+   120.0,
+   72.0
+  ],
+  "tris": 7768,
+  "slots": [
+   "MAT_Stone"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 0,
+  "pivot_shift_applied": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "note": "bottom-centre; plinth z 0..8 300 x 120, body z 8..58 290 x 110 with 14 recessed round-headed panels (5 per long side, 2 per short side), lid z 58..70 300 x 120 (top edges chamfer 3), raised cross z 70..72 (shaft 190 x 14 along X, arms 70 x 14 at x +50)",
+  "seconds": 0.3
+ },
+ {
+  "name": "SM_LB_Crypt_Sarcophagus_B",
+  "min": [
+   -150.0,
+   -60.0,
+   0.0
+  ],
+  "max": [
+   150.0,
+   60.0,
+   71.87
+  ],
+  "dims": [
+   300.0,
+   120.0,
+   71.87
+  ],
+  "tris": 7846,
+  "slots": [
+   "MAT_Stone",
+   "MAT_Charred"
+  ],
+  "slots_used": [
+   0,
+   1
+  ],
+  "ucx": 0,
+  "pivot_shift_applied": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "note": "bottom-centre; as _A but the lid is 280 x 104 (D1.3 says 280 x 120: a 3 deg rotation of 280 x 120 cannot stay inside y +-60), rotated 3 deg about Z and shifted +7 in X (D1.3 says +10: the rotated corner would exceed x 150); dark Charred cavity x +-135, y +-45, z 20..58 shows at the -X end; lid corners chipped (seed 9304)",
+  "seconds": 0.7
+ },
+ {
+  "name": "SM_LB_Crypt_BoneBin_200x100x60",
+  "min": [
+   -100.0,
+   -50.0,
+   0.0
+  ],
+  "max": [
+   100.0,
+   50.0,
+   60.0
+  ],
+  "dims": [
+   200.0,
+   100.0,
+   60.0
+  ],
+  "tris": 3674,
+  "slots": [
+   "MAT_Stone"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 0,
+  "pivot_shift_applied": [
+   -0.0,
+   -0.0,
+   -0.0
+  ],
+  "note": "bottom-centre; open-top chest, walls 8 thick, solid to the inner floor at z 30, top edge chamfer 1.5, 6 chips (seed 9305)",
+  "seconds": 1.5
+ },
+ {
+  "name": "SM_LB_Crypt_Block_100",
+  "min": [
+   -50.0,
+   -50.0,
+   0.0
+  ],
+  "max": [
+   50.0,
+   50.0,
+   100.0
+  ],
+  "dims": [
+   100.0,
+   100.0,
+   100.0
+  ],
+  "tris": 2756,
+  "slots": [
+   "MAT_Stone"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 1,
+  "pivot_shift_applied": [
+   -0.0,
+   -0.0,
+   50.0
+  ],
+  "note": "bottom-centre; weathered 100 cm block, edge chamfer 3, face noise <= 1.0 inward, chips on 3 edges (seed 9306); UCX 1 box 100^3",
+  "seconds": 0.5
+ },
+ {
+  "name": "SM_LB_Crypt_Block_100_C",
+  "min": [
+   -50.0,
+   -50.0,
+   -50.0
+  ],
+  "max": [
+   50.0,
+   50.0,
+   50.0
+  ],
+  "dims": [
+   100.0,
+   100.0,
+   100.0
+  ],
+  "tris": 2756,
+  "slots": [
+   "MAT_Stone"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 1,
+  "pivot_shift_applied": [
+   -0.0,
+   -0.0,
+   -0.0
+  ],
+  "note": "CENTRE pivot (bounds centre = origin); weathered 100 cm block, edge chamfer 3, face noise <= 1.0 inward, chips on 3 edges (seed 9306); UCX 1 box 100^3",
+  "seconds": 0.5
+ },
+ {
+  "name": "SM_LB_Crypt_Corbel_A",
+  "min": [
+   -25.0,
+   0.0,
+   0.0
+  ],
+  "max": [
+   25.0,
+   55.0,
+   45.0
+  ],
+  "dims": [
+   50.0,
+   55.0,
+   45.0
+  ],
+  "tris": 1590,
+  "slots": [
+   "MAT_Stone"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 0,
+  "pivot_shift_applied": [
+   -0.0,
+   -0.0,
+   -0.0
+  ],
+  "note": "back plane y 0, x centre, z 0 bottom, projects +Y; three stepped courses (z 0..15 depth 30, 15..30 depth 42, 30..45 depth 55), chamfer 1.5",
+  "seconds": 0.2
+ },
+ {
+  "name": "SM_LB_Crypt_Beam_35x45x1120",
+  "min": [
+   -17.5,
+   -560.0,
+   0.0
+  ],
+  "max": [
+   17.5,
+   560.0,
+   45.0
+  ],
+  "dims": [
+   35.0,
+   1120.0,
+   45.0
+  ],
+  "tris": 2108,
+  "slots": [
+   "MAT_Wood"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 0,
+  "pivot_shift_applied": [
+   -0.0,
+   -0.0,
+   -0.0
+  ],
+  "note": "bottom-centre, length along Y; adzed faces (0.6 cm waviness), 3 lengthwise checks (top, +X, -X; seed 9307)",
+  "seconds": 0.0
+ },
+ {
+  "name": "SM_LB_Crypt_Boards_300x250",
+  "min": [
+   -150.0,
+   -125.0,
+   0.0
+  ],
+  "max": [
+   150.0,
+   125.0,
+   5.43
+  ],
+  "dims": [
+   299.99,
+   250.0,
+   5.43
+  ],
+  "tris": 5232,
+  "slots": [
+   "MAT_Wood"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 0,
+  "pivot_shift_applied": [
+   0.001,
+   -0.0,
+   -0.0
+  ],
+  "note": "bottom-centre (z 0 = board undersides); 10 boards run along X (300 long) side by side along Y (widths 22-27, gaps 1-2, 250 total); warp lift 0..0.6, ragged ends 0..2",
+  "seconds": 0.0
+ },
+ {
+  "name": "SM_LB_Crypt_Boards_300x250_Broken",
+  "min": [
+   -150.0,
+   -125.0,
+   -45.89
+  ],
+  "max": [
+   150.0,
+   125.0,
+   5.43
+  ],
+  "dims": [
+   299.99,
+   250.0,
+   51.32
+  ],
+  "tris": 4006,
+  "slots": [
+   "MAT_Wood"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 0,
+  "pivot_shift_applied": [
+   0.001,
+   -0.0,
+   0.0
+  ],
+  "note": "bottom-centre (z 0 = board undersides); 10 boards run along X (300 long) side by side along Y (widths 22-27, gaps 1-2, 250 total); warp lift 0..0.6, ragged ends 0..2; boards 3 and 4 (1-based) missing, board 6 snapped at x +40 and its +X part hinged 25 deg down (lowest z about -47)",
+  "seconds": 0.0
+ },
+ {
+  "name": "SM_LB_Crypt_RootsHang_A",
+  "min": [
+   -39.51,
+   -45.4,
+   -180.0
+  ],
+  "max": [
+   38.03,
+   34.58,
+   0.0
+  ],
+  "dims": [
+   77.54,
+   79.97,
+   180.0
+  ],
+  "tris": 8256,
+  "slots": [
+   "MAT_Bark"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 0,
+  "pivot_shift_applied": [
+   0.0,
+   0.0,
+   -0.0
+  ],
+  "note": "TOP-centre: z 0 = the attachment (flat top of the 12 cm knot), design axis on the origin, hangs to -180; 4 strands, seed 9310 attempt 11 (scale 1.000); UV u 0..1 around, v 1 tile / 60 cm along the length",
+  "seconds": 0.7
+ },
+ {
+  "name": "SM_LB_Crypt_RootsHang_B",
+  "min": [
+   -39.81,
+   -48.28,
+   -240.0
+  ],
+  "max": [
+   43.12,
+   40.88,
+   0.0
+  ],
+  "dims": [
+   82.93,
+   89.17,
+   240.0
+  ],
+  "tris": 10768,
+  "slots": [
+   "MAT_Bark"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 0,
+  "pivot_shift_applied": [
+   0.0,
+   0.0,
+   -0.0
+  ],
+  "note": "TOP-centre: z 0 = the attachment (flat top of the 12 cm knot), design axis on the origin, hangs to -240; 6 strands, seed 9311 attempt 30 (scale 1.000); UV u 0..1 around, v 1 tile / 60 cm along the length",
+  "seconds": 0.5
+ },
+ {
+  "name": "SM_LB_Crypt_RootsHang_C",
+  "min": [
+   -29.52,
+   -29.63,
+   -120.0
+  ],
+  "max": [
+   32.04,
+   27.26,
+   0.0
+  ],
+  "dims": [
+   61.56,
+   56.89,
+   120.0
+  ],
+  "tris": 7936,
+  "slots": [
+   "MAT_Bark"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 0,
+  "pivot_shift_applied": [
+   0.0,
+   0.0,
+   -0.0
+  ],
+  "note": "TOP-centre: z 0 = the attachment (flat top of the 12 cm knot), design axis on the origin, hangs to -120; 3 strands, seed 9312 attempt 11 (scale 0.979); UV u 0..1 around, v 1 tile / 60 cm along the length",
+  "seconds": 0.2
+ },
+ {
+  "name": "SM_LB_Crypt_Portcullis_300x60x560",
+  "min": [
+   -149.94,
+   -29.95,
+   0.0
+  ],
+  "max": [
+   149.94,
+   29.95,
+   559.97
+  ],
+  "dims": [
+   299.88,
+   59.9,
+   559.97
+  ],
+  "tris": 7438,
+  "slots": [
+   "MAT_Iron"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 1,
+  "pivot_shift_applied": [
+   0.006,
+   -0.005,
+   -0.0
+  ],
+  "note": "bottom-centre; 9 square bars 6 x 6 at 32.5 spacing (x +-130) from 12 cm spike tips at z 0 to z 560, 7 flat bars 8 x 3 at z 60..480, 126 rivet domes, side rails 8 x 8 centred at x +-146 (outer faces +-150); lattice within y +-4.5; 4 guide pins 6 x 60 x 6 at x +-146 (z 70, 500) bring the visual to the 60 cm greybox depth (D1.3 gives 300 x 60 x 560); UCX 1 box x +-150, y +-30, z 0..560",
+  "seconds": 0.1
+ },
+ {
+  "name": "SM_LB_Crypt_RubbleFill_100x400x560",
+  "min": [
+   -55.0,
+   -210.0,
+   0.0
+  ],
+  "max": [
+   55.0,
+   210.0,
+   560.0
+  ],
+  "dims": [
+   110.0,
+   420.0,
+   560.0
+  ],
+  "tris": 24602,
+  "slots": [
+   "MAT_Stone",
+   "MAT_Wood"
+  ],
+  "slots_used": [
+   0,
+   1
+  ],
+  "ucx": 1,
+  "pivot_shift_applied": [
+   -0.0,
+   -0.0,
+   -0.0
+  ],
+  "note": "bottom-centre; 54 chipped blocks (48 face blocks 46-70 on a 6 x 8 staggered grid + 6 fragments 25-45) over a lumpy backing mass, visual x +-55, y +-210, z 0..560 (pre-fit bounds (-62, -218, -6)..(56, 218, 570)); broken beam 35 x 30 x 380 (splintered end) diagonally across the -X face; UCX 1 box x +-50, y +-200, z 0..560",
+  "seconds": 0.4
+ },
+ {
+  "name": "SM_LB_Prop_Crank_A",
+  "min": [
+   -21.5,
+   -4.0,
+   0.0
+  ],
+  "max": [
+   21.5,
+   4.0,
+   14.3
+  ],
+  "dims": [
+   43.0,
+   8.0,
+   14.3
+  ],
+  "tris": 276,
+  "slots": [
+   "MAT_Iron",
+   "MAT_Wood"
+  ],
+  "slots_used": [
+   0,
+   1
+  ],
+  "ucx": 1,
+  "pivot_shift_applied": [
+   -17.5,
+   -0.0,
+   -0.0
+  ],
+  "note": "bottom-centre, lies flat (arm on the plinth, socket boss and handle both pointing up): square socket boss 8 x 8 x 12 with a visible 5.6 x 5.6 socket, flat iron arm 38 x 4 x 2.5 at 90 deg to the socket axis, wooden handle r ~2.2 x 12 at the arm end; UCX 1 box 44 x 16 x 16 (bottom-centre)",
+  "seconds": 0.0
+ },
+ {
+  "name": "SM_LB_Crypt_CapstanDrum_80x50",
+  "min": [
+   -55.0,
+   -55.0,
+   -25.0
+  ],
+  "max": [
+   55.0,
+   55.0,
+   25.0
+  ],
+  "dims": [
+   110.0,
+   110.0,
+   50.0
+  ],
+  "tris": 3446,
+  "slots": [
+   "MAT_Wood",
+   "MAT_Iron"
+  ],
+  "slots_used": [
+   0,
+   1
+  ],
+  "ucx": 1,
+  "pivot_shift_applied": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "note": "CENTRE pivot (z -25..25): 16-sided drum r 34 (body z -25..23, bevelled), iron bands r 35 at z -21..-17 and 17..21, domed top boss r 10 (to z 25), two wooden bars 5 x 5 x 110 crosswise through 6.4 square holes at z 13; UCX 1 box x +-35, y +-35, z +-25",
+  "seconds": 0.1
+ },
+ {
+  "name": "SM_LB_Crypt_PlaqueFrame_270x195",
+  "min": [
+   -135.0,
+   0.0,
+   -97.5
+  ],
+  "max": [
+   135.0,
+   14.0,
+   97.5
+  ],
+  "dims": [
+   270.0,
+   14.0,
+   195.0
+  ],
+  "tris": 2708,
+  "slots": [
+   "MAT_Stone"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 0,
+  "pivot_shift_applied": [
+   -0.0,
+   -0.0,
+   -0.0
+  ],
+  "note": "back plane y 0, x centre, z centre; outer 270 x 195, opening 250 x 175, depth 14 (y 0..14), three steps toward the opening (y 6, 10, 14) with an ovolo on the innermost, chipped outer corners (seed 9314)",
+  "seconds": 1.0
+ },
+ {
+  "name": "SM_LB_Crypt_WinchFrame",
+  "min": [
+   -129.95,
+   -44.91,
+   0.0
+  ],
+  "max": [
+   129.95,
+   44.91,
+   249.9
+  ],
+  "dims": [
+   259.9,
+   89.81,
+   249.9
+  ],
+  "tris": 14284,
+  "slots": [
+   "MAT_Wood",
+   "MAT_Iron"
+  ],
+  "slots_used": [
+   0,
+   1
+  ],
+  "ucx": 4,
+  "pivot_shift_applied": [
+   -0.052,
+   -0.003,
+   -0.0
+  ],
+  "note": "bottom-centre; posts 20 x 20 x 240 at x +-110 on 20 x 90 x 10 sole plates, 4 braces 12 x 12 (z 140 to the plate ends), top beam 20 x 20 x 260 at z 230..250, wooden drum r 22 x 180 on an iron axle at z 170 with 6 iron bands, 5-turn chain coil on the +X half (torus links), iron crank arms 30 long at both ends; UCX 4 boxes (2 posts 20 x 20 x 250, 2 plates 20 x 90 x 10)",
+  "seconds": 0.1
+ }
+]

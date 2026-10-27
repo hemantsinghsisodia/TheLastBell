@@ -71,3 +71,21 @@ set B="C:\Program Files\Blender Foundation\Blender 5.2\blender.exe"
 python Tools/textures/gen_chapel_textures.py                                           # ExternalAssets/Generated/chapel/*.png + Docs/ArtTest/chapel/tex_*.png
 ```
 Pivot = bottom-centre of the bounds (props rule): `Cobweb_Hang_A` (Y sag 12) and `PricketStand_150` (tripod, shaft 4.5 cm off the bbox centre in Y) are the two pieces whose design axis is not the bbox centre; see the per-piece notes in `SourceArt/Props/Procedural/props_report_P8.json`.
+
+## P9-3 crypt pieces (21 meshes, plan `Docs/plans/P9_CRYPT_ART.md` amendment D1.3)
+```
+set B="C:\Program Files\Blender Foundation\Blender 5.2\blender.exe"
+%B% -b --factory-startup --python Tools/blender/props/build_props.py -- --only Crypt Crank --tag P9    # ~25 s -> SourceArt/Props/Procedural/Crypt/ (FBX + LB_Props_P9.blend + props_report_P9.json)
+%B% -b --factory-startup --python Tools/blender/props/verify_props.py                                  # 72/72: the 51 older pieces + the 21 new ones (exit 1 on failure)
+%B% -b --factory-startup --python Tools/blender/props/render_p9.py -- --set work                        # Workbench views of every piece -> Docs/ArtTest/crypt/p9_*.png
+%B% -b --factory-startup --python Tools/blender/props/render_p9.py -- --set cycles                      # Cycles: ossuary bay, portcullis, roots A (about 30 s)
+python Tools/blender/props/lineup_p9.py                                                                 # composite Docs/ArtTest/crypt/p9_lineup.png (Pillow)
+python Tools/textures/gen_crypt_textures.py                                                             # T_LB_Water_Ripple_N.png (seed 9320) -> ExternalAssets/Generated/crypt/ + preview Docs/ArtTest/crypt/tex_water_ripple.png
+```
+- Prefix `SM_LB_Crypt_` (the crank is `SM_LB_Prop_Crank_A`); FBX, the review blend and the report all sit in `Crypt/` when a run builds only crypt pieces. Slots: `MAT_Stone`, `MAT_Wood`, `MAT_Iron`, `MAT_Charred`, `MAT_Bark` (in the order stated per piece in the report / verify SPEC).
+- **Pivots are not all bottom-centre** (new `Piece.seat_mode` values `centre3`, `xy`, `backcentre`, `top`; `wall` and `none` already existed):
+  OssuaryBay = x centre, y 0 = the wall front face (body y -90..0, bands to +6, local +Y into the room), z 0; Stair40 = x 0 at the riser face of step 0, y centre, z 0; Corbel_A and PlaqueFrame = back plane y 0 (frame: z centre as well);
+  RootsHang = top-centre (the knot axis on the origin, z 0 = the flat attachment, hangs to -180/-240/-120); Block_100_C and CapstanDrum = bounds centre; Boards_Broken = XY centre, z as built (lowest point about -46).
+- Stone pieces are built on `gbox` (kit `lattice_box`, a regular quad grid) before booleans/weathering: never use `subdiv_long` for this (it makes strips, which shade as streaks) and never `densify` after a boolean (slivers explode the triangle count).
+- Collision (UCX boxes match D1.3 exactly, verified as a set): Block_100 and _C (100^3), Portcullis (x +-150, y +-30, z 0..560), RubbleFill (x +-50, y +-200, z 0..560), Crank (44 x 16 x 16, bottom-centre), CapstanDrum (x +-35, y +-35, z +-25), WinchFrame (2 posts 20 x 20 x 250, 2 plates 20 x 90 x 10).
+- Deviations from D1.3 (also in the per-piece notes): Sarcophagus_B lid 280 x 104 rotated 3 deg, shifted +7 (280 x 120 rotated 3 deg cannot stay inside y +-60 / x +-150); Portcullis rails centred at x +-146 and four 6 x 60 x 6 guide pins give the 60 cm depth the table lists (lattice itself is within y +-4.5); Crank is 43 x 8 x 14.3 (socket boss and handle both point up, arm flat on the plinth); Boards: 10 boards run along X (300 long) stacked along Y (250), which is the only reading under which widths 22-27 sum to 250.

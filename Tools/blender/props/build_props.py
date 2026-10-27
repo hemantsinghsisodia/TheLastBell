@@ -322,6 +322,14 @@ class Piece:
             s = (s[0], -mn[1], s[2])
         elif self.seat_mode == "none":                  # the builder already put the pivot where it belongs (light shafts)
             s = (0.0, 0.0, 0.0)
+        elif self.seat_mode == "centre3":               # P9: XYZ bounds centre at the origin (Block_100_C, CapstanDrum)
+            s = (s[0], s[1], -(mn[2] + mx[2]) * 0.5)
+        elif self.seat_mode == "xy":                    # P9: XY bounds centre at 0, Z as built (Boards_Broken: z 0 = board undersides)
+            s = (s[0], s[1], 0.0)
+        elif self.seat_mode == "backcentre":            # P9: X centre, back plane at Y 0, Z centre (PlaqueFrame)
+            s = (s[0], -mn[1], -(mn[2] + mx[2]) * 0.5)
+        elif self.seat_mode == "top":                   # P9: design axis stays on the origin, Z max = 0 (hanging roots)
+            s = (0.0, 0.0, -mx[2])
         shift(self.bm, *s)
         for u in self.ucx_design:
             shift(u, *s)
@@ -2280,6 +2288,936 @@ def build_lightshaft_roofhole():
 
 
 # ==============================================================================================
+# P9-3 crypt pieces (plan Docs/plans/P9_CRYPT_ART.md amendment D1.3).  Prefix SM_LB_Crypt_ (the crank: SM_LB_Prop_).
+# FBX go to <out>/Crypt/.  Pivots are stated per piece (see the notes in props_report_P9.json and the README).
+# ==============================================================================================
+CRYPT = "SM_LB_Crypt_"
+CRYPT_SUB = "Crypt"
+
+
+def crypt_piece(name, bm, slots, **kw):
+    pc = Piece(name, bm, slots, **kw)
+    pc.subdir = CRYPT_SUB
+    return pc
+
+
+def fit_box(bm, mn_t, mx_t):
+    """Affine per-axis fit of the current bounds onto the target box (small corrections only: weathering shrinks the bounds)."""
+    mn, mx = bounds(bm)
+    sc = [(mx_t[i] - mn_t[i]) / (mx[i] - mn[i]) if (mx[i] - mn[i]) > 1e-9 else 1.0 for i in range(3)]
+    for v in bm.verts:
+        for i in range(3):
+            v.co[i] = mn_t[i] + (v.co[i] - mn[i]) * sc[i]
+    return sc
+
+
+def top_edge(z_top, tol=0.01):
+    return lambda e: all(v.co.z > z_top - tol for v in e.verts)
+
+
+def bottom_edge(z_bot, tol=0.01):
+    return lambda e: all(v.co.z < z_bot + tol for v in e.verts)
+
+
+def chamfer(bm, edge_filter, off):
+    edges = [e for e in bm.edges if edge_filter(e)]
+    if edges:
+        bmesh.ops.bevel(bm, geom=edges, offset=off, offset_type='OFFSET', profile=0.5, segments=1, affect='EDGES',
+                        clamp_overlap=True, loop_slide=True)
+    return bm
+
+
+def rr_poly(x0, x1, z0, z1, r, n=3):
+    """Rounded-rectangle outline (counter-clockwise) with corner radius r."""
+    pts = []
+    for (cx, cz, a0) in ((x1 - r, z1 - r, 0.0), (x0 + r, z1 - r, 90.0), (x0 + r, z0 + r, 180.0), (x1 - r, z0 + r, 270.0)):
+        for k in range(n + 1):
+            a = math.radians(a0 + 90.0 * k / n)
+            pts.append((cx + r * math.cos(a), cz + r * math.sin(a)))
+    return pts
+
+
+def gbox(x0, x1, y0, y1, z0, z1, cell, mat=0):
+    """Closed box whose six faces are a regular quad lattice of about `cell` cm (kit_lib.lattice_box): clean, sliver-free geometry for booleans and weathering."""
+    nx, ny, nz = (max(1, int(round((hi - lo) / cell))) for lo, hi in ((x0, x1), (y0, y1), (z0, z1)))
+    b = K.lattice_box(x1 - x0, y1 - y0, z1 - z0, nx, ny, nz, mat)
+    shift(b, x0, y0, z0)
+    return b
+
+
+def dissolve_flat(bm, pred):
+    """Merge every face whose vertices all satisfy pred(co) into single n-gons per connected patch (hidden flat faces: back, bottom)."""
+    faces = [f for f in bm.faces if all(pred(v.co) for v in f.verts)]
+    if faces:
+        bmesh.ops.dissolve_faces(bm, faces=faces, use_verts=True)
+    return bm
+
+
+def stone_pass(bm, seed, dens, amp, wob, f1=1.0 / 18.0, f2=1.0 / 5.0, mask=bottom_mask, region=None):
+    if dens:
+        densify(bm, dens, region=region)
+    weather(bm, seed, amp, mask, f1=f1, f2=f2)
+    if wob > 0:
+        warp(bm, seed + 3, wob)
+    return bm
+
+
+# ---------------------------------------------------------------------------------------------- A: ossuary bay
+def build_c_bay():
+    rng = random.Random(9301)
+    body = gbox(-250.0, 250.0, -90.0, 0.0, 0.0, 599.0, 13.0)
+    dissolve_flat(body, lambda c: c.y < -89.99)                                  # hidden back
+    dissolve_flat(body, lambda c: c.z < 0.01)                                    # bottom
+    niches = ((45.0, 135.0), (185.0, 275.0))
+    cutters = []
+    for (z0, z1) in niches:                                      # niche cutters: gridded boxes, the 4 Y-parallel corner lines rounded r 2
+        c = gbox(-170.0, 170.0, -60.0, 10.0, z0, z1, 12.0)
+        corner = lambda e, z0=z0, z1=z1: all(abs(abs(v.co.x) - 170.0) < 1e-3 and (abs(v.co.z - z0) < 1e-3 or abs(v.co.z - z1) < 1e-3) for v in e.verts)
+        edges = [e for e in c.edges if corner(e)]
+        bmesh.ops.bevel(c, geom=edges, offset=2.0, offset_type='OFFSET', profile=0.5, segments=2, affect='EDGES', clamp_overlap=True)
+        cutters.append(c)
+    cuts = join(cutters)
+    body = bool_op(body, cuts, 'DIFFERENCE', 1)
+    cuts.free()
+    spots = []
+    for (z0, z1) in niches:                                      # 3-5 chips on each niche rim
+        for _ in range(rng.randint(3, 5)):
+            e = rng.randint(0, 3)
+            if e == 0:
+                p = (-170.0, rng.uniform(z0 + 6, z1 - 6))
+            elif e == 1:
+                p = (170.0, rng.uniform(z0 + 6, z1 - 6))
+            elif e == 2:
+                p = (rng.uniform(-160.0, 160.0), z1)
+            else:
+                p = (rng.uniform(-160.0, 160.0), z0)
+            spots.append(((p[0], 0.0, p[1]), rng.uniform(2.6, 4.6)))
+    body = cut_chips(body, rng, spots, 0)
+
+    def band(x0, x1, z0, z1, depth, off=1.5):
+        b = gbox(x0, x1, -3.0, depth, z0, z1, 12.0)
+        chamfer(b, top_edge(z1), off)
+        return b
+
+    parts = [body, band(-250.0, 250.0, 0.0, 40.0, 4.0)]                         # plinth band (proud 4)
+    for z0 in (39.0, 179.0):
+        parts.append(band(-185.0, 185.0, z0, z0 + 6.0, 6.0))                    # sill bands (proud 6)
+    for z0 in (135.0, 275.0):
+        parts.append(band(-190.0, 190.0, z0, z0 + 12.0, 6.0))                   # lintel bands (proud 6)
+    bm = join(parts)
+    for p in parts:
+        p.free()
+    bmesh.ops.triangulate(bm, faces=bm.faces[:])
+    weather(bm, 9301, 1.2, lambda co, n: 0.0 if (co.z < 0.02 or co.z > 598.9 or co.y < -89.0 or abs(co.x) > 249.9) else 1.0, f1=1 / 30.0, f2=1 / 13.0)
+    warp(bm, 9304, 0.5, f=1 / 60.0)
+    fit_box(bm, (-250.0, -90.0, 0.0), (250.0, 6.0, 599.0))
+    pc = crypt_piece(CRYPT + "OssuaryBay_500x599", bm, ["MAT_Stone"],
+                     note="x centre, y 0 = the wall's front face (local +Y into the room), z 0 bottom; body y -90..0, bands proud to +6; two niches x +-170 "
+                          "(tier 1 z 45..135, tier 2 z 185..275) recessed to y -60; chips 3-5 per niche rim")
+    pc.seat_mode = "none"
+    return pc
+
+
+# ---------------------------------------------------------------------------------------------- B: capital
+def build_c_capital():
+    rng = random.Random(9302)
+    zs = (0.0, 11.0, 22.0, 33.0)
+    aps = (70.0, 71.6, 76.2, 84.0)                                   # apothem: concave flare 70 -> 84
+    b = bmesh.new()
+    rings = []
+    for z, a in zip(zs, aps):
+        R = a / math.cos(math.radians(22.5))
+        rings.append([b.verts.new((R * math.cos(math.radians(22.5 + 45.0 * k)), R * math.sin(math.radians(22.5 + 45.0 * k)), z)) for k in range(8)])
+    b.faces.new(rings[0][::-1])
+    b.faces.new(rings[-1])
+    for i in range(3):
+        for k in range(8):
+            k2 = (k + 1) % 8
+            b.faces.new((rings[i][k], rings[i][k2], rings[i + 1][k2], rings[i + 1][k]))
+    bmesh.ops.recalc_face_normals(b, faces=b.faces)
+    K.bm_set_mat(b, 0)
+    aba = gbox(-85.0, 85.0, -85.0, 85.0, 33.0, 55.0, 21.0)
+    chamfer(aba, bottom_edge(33.0), 4.0)
+    chamfer(aba, top_edge(55.0), 1.5)
+    spots = [((85.0, 85.0, 55.0), 5.0), ((-85.0, 85.0, 55.0), 4.0), ((85.0, -85.0, 55.0), 4.5), ((-85.0, -85.0, 33.0), 4.5)]
+    spots += [((rng.uniform(-60, 60), 85.0, 55.0), 3.0), ((85.0, rng.uniform(-60, 60), 55.0), 3.2)]
+    aba = cut_chips(aba, rng, spots, 0)
+    bmesh.ops.triangulate(aba, faces=aba.faces[:])
+    densify(b, 24.0)
+    weather(aba, 9302, 0.9, lambda co, n: 0.0 if co.z < 0.02 else 1.0, f1=1 / 22.0, f2=1 / 9.0)
+    weather(b, 9303, 0.9, lambda co, n: 0.0 if co.z < 0.02 else 1.0, f1=1 / 22.0, f2=1 / 9.0)
+    bm = join([b, aba])
+    b.free()
+    aba.free()
+    fit_box(bm, (-85.0, -85.0, 0.0), (85.0, 85.0, 55.0))
+    return crypt_piece(CRYPT + "Capital_A", bm, ["MAT_Stone"],
+                       note="bottom-centre; octagonal bell (flats to +-X/+-Y, apothem 70 -> 84 over z 0..33, 4 rings, concave) under a 170 x 170 abacus z 33..55 "
+                            "(bottom chamfer 4, top 1.5); chips seed 9302")
+
+
+# ---------------------------------------------------------------------------------------------- C: stair
+def stair_profile():
+    """Closed XZ outline of the 40-step flight: list of (x, z, kind, dip_xrel) -- kind 'T' = tread point (gets the wear dip)."""
+    pts = [(0.0, 0.0, 'B', 0.0)]
+    tread = (6.0, 10.0, 13.0, 15.0, 17.0, 20.0, 25.0, 30.0)
+    for n in range(40):
+        x0, zt = 30.0 * n, 15.0 * (n + 1)
+        cx, cz = x0 + 2.5, zt - 2.5
+        for ang in (180.0, 150.0, 120.0, 90.0):
+            a = math.radians(ang)
+            pts.append((cx + 2.5 * math.cos(a), cz + 2.5 * math.sin(a), 'N', 0.0))
+        for t in tread:
+            pts.append((x0 + t, zt, 'T', t / 30.0))
+    pts.append((1200.0, 0.0, 'B', 0.0))
+    return pts
+
+
+def build_c_stair():
+    rng = random.Random(9303)
+    prof = stair_profile()
+    ys = [-150.0 + 300.0 * j / 16.0 for j in range(17)]
+    b = bmesh.new()
+    grid = []
+    for (x, z, kind, xr) in prof:
+        row = []
+        for y in ys:
+            zz = z
+            if kind == 'T':
+                u = (xr - 1.0 / 3.0) * 3.0
+                bump = math.sin(math.pi * u) ** 2 if 0.0 < u < 1.0 else 0.0
+                yb = 1.0 - K.smoothstep(50.0, 130.0, abs(y))
+                zz = z - 0.7 * bump * yb
+            row.append(b.verts.new((x, y, zz)))
+        grid.append(row)
+    m = len(prof)
+    for i in range(m):
+        i2 = (i + 1) % m
+        for j in range(16):
+            b.faces.new((grid[i][j], grid[i][j + 1], grid[i2][j + 1], grid[i2][j]))
+    b.faces.new([grid[i][0] for i in range(m)])
+    b.faces.new([grid[i][16] for i in range(m)][::-1])
+    bmesh.ops.recalc_face_normals(b, faces=b.faces)
+    K.bm_set_mat(b, 0)
+    # chipped nosings (25 % of 40 = 10): 6..14 wide, 2..3 deep; cut with small hulls at the nosing corner
+    chips = rng.sample(range(40), 10)
+    spots = []
+    for n in sorted(chips):
+        w = rng.uniform(6.0, 14.0)
+        d = rng.uniform(2.0, 3.0)
+        r = w / 2.0
+        yc = rng.uniform(-135.0, 135.0)
+        cx, cz = 30.0 * n + 0.7, 15.0 * (n + 1) - 0.7
+        off = (r - d) * 0.9
+        spots.append(((cx - 0.7071 * off, yc, cz + 0.7071 * off), r))
+    b = cut_chips(b, rng, spots, 0)
+    weather(b, 9303, 0.35, bottom_mask, f1=1 / 12.0, f2=1 / 4.0)
+    fit_box(b, (0.0, -150.0, 0.0), (1200.0, 150.0, 600.0))
+    return _stair_piece(b, sorted(chips))
+
+
+def _stair_piece(b, chips):
+    pc = crypt_piece(CRYPT + "Stair40_300", b, ["MAT_Stone"],
+                     note="x 0 = riser face of step 0 (+X up the flight), y centre, z 0 floor; step n tread x 30n..30n+30, top z 15(n+1); wear dip 0.7 max at the "
+                          "centre third (ray at x 30n+15 hits 15(n+1) - 0.5..1.1); nosing r 2.5; 10 of 40 nosings chipped (steps %s)" % chips)
+    pc.seat_mode = "none"
+    return pc
+
+
+# ---------------------------------------------------------------------------------------------- D: sarcophagi
+def sarco_panels():
+    """Cutters for the 2 cm recessed round-headed panels (44 x 32; 5 per long side, 2 per short side)."""
+    def head(w, h, z0, r):
+        pts = [(-w / 2, z0), (w / 2, z0), (w / 2, z0 + h - r)]
+        for k in range(1, 8):
+            a = math.pi * k / 8.0
+            pts.append(((w / 2) * math.cos(a), z0 + h - r + r * math.sin(a)))
+        pts.append((-w / 2, z0 + h - r))
+        return pts
+    out = []
+    pr = head(44.0, 32.0, 17.0, 22.0)
+    for s in (-1, 1):
+        for xc in (-116.0, -58.0, 0.0, 58.0, 116.0):
+            pl = K.prism([(xc + p, z) for p, z in pr], 'y', (55.0 - 2.0) if s > 0 else -56.0, 56.0 if s > 0 else -(55.0 - 2.0), 0)
+            out.append(pl)
+        for yc in (-27.5, 27.5):
+            pl = K.prism([(yc + p, z) for p, z in pr], 'x', (145.0 - 2.0) if s > 0 else -146.0, 146.0 if s > 0 else -(145.0 - 2.0), 0)
+            out.append(pl)
+    return join(out)
+
+
+def build_c_sarcophagus(variant):
+    rng = random.Random(9304)
+    ajar = variant == "B"
+    plinth = gbox(-150.0, 150.0, -60.0, 60.0, 0.0, 8.0, 12.0)
+    chamfer(plinth, top_edge(8.0), 1.5)
+    body = gbox(-145.0, 145.0, -55.0, 55.0, 6.0, 59.0, 12.0)
+    cut = sarco_panels()
+    body = bool_op(body, cut, 'DIFFERENCE', 2)
+    cut.free()
+    if ajar:
+        cav = gbox(-135.0, 135.0, -45.0, 45.0, 20.0, 61.0, 12.0, 1)             # open at the top, Charred inside
+        body = bool_op(body, cav, 'DIFFERENCE', 2)
+        cav.free()
+    # lid + raised cross
+    LW, LL = (104.0, 280.0) if ajar else (120.0, 300.0)
+    lid = gbox(-LL / 2, LL / 2, -LW / 2, LW / 2, 58.0, 70.0, 12.0)
+    chamfer(lid, top_edge(70.0), 3.0)
+    cross = [gbox(-95.0, 95.0, -7.0, 7.0, 69.0, 72.0, 10.0), gbox(43.0, 57.0, -35.0, 35.0, 69.0, 72.0, 10.0)]
+    if ajar:                                                             # one lid corner broken off (+X,-Y) -- keep it in the chipped end
+        lid = cut_chips(lid, rng, [((LL / 2, -LW / 2, 70.0), 6.0), ((-LL / 2, LW / 2, 70.0), 3.5)], 0)
+    cr = join(cross)
+    for c in cross:
+        c.free()
+    lidp = join([lid, cr])
+    lid.free()
+    cr.free()
+    # weather each solid
+    for bmx, sd in ((plinth, 9304), (body, 9314), (lidp, 9324)):
+        bmesh.ops.triangulate(bmx, faces=bmx.faces[:])
+        weather(bmx, sd, 0.9, bottom_mask, f1=1 / 24.0, f2=1 / 9.0)
+    if ajar:
+        sx, ang = 7.0, math.radians(3.0)
+        rot(lidp, 'Z', 3.0)
+        shift(lidp, sx, 0.0, 0.0)
+    bm = join([plinth, body, lidp])
+    for p in (plinth, body, lidp):
+        p.free()
+    if not ajar:
+        fit_box(bm, (-150.0, -60.0, 0.0), (150.0, 60.0, 72.0))
+    note = ("bottom-centre; plinth z 0..8 300 x 120, body z 8..58 290 x 110 with 14 recessed round-headed panels (5 per long side, 2 per short side), lid z 58..70 "
+            "300 x 120 (top edges chamfer 3), raised cross z 70..72 (shaft 190 x 14 along X, arms 70 x 14 at x +50)")
+    if ajar:
+        note = ("bottom-centre; as _A but the lid is 280 x 104 (D1.3 says 280 x 120: a 3 deg rotation of 280 x 120 cannot stay inside y +-60), rotated 3 deg about Z and "
+                "shifted +7 in X (D1.3 says +10: the rotated corner would exceed x 150); dark Charred cavity x +-135, y +-45, z 20..58 shows at the -X end; "
+                "lid corners chipped (seed 9304)")
+    pc = crypt_piece(CRYPT + "Sarcophagus_" + variant, bm, ["MAT_Stone", "MAT_Charred"] if ajar else ["MAT_Stone"], note=note)
+    pc.seat_mode = "none"
+    return pc
+
+
+# ---------------------------------------------------------------------------------------------- E: bone bin
+def build_c_bonebin():
+    rng = random.Random(9305)
+    b = gbox(-100.0, 100.0, -50.0, 50.0, 0.0, 60.0, 8.0)
+    cut = gbox(-92.0, 92.0, -42.0, 42.0, 30.0, 61.0, 8.0)
+    b = bool_op(b, cut, 'DIFFERENCE', 1)
+    cut.free()
+    chamfer(b, top_edge(60.0), 1.5)
+    spots = [((-100.0, -50.0, 60.0), 5.0), ((100.0, 50.0, 60.0), 4.5), ((rng.uniform(-60, 60), 50.0, 60.0), 3.5), ((100.0, rng.uniform(-30, 30), 60.0), 3.5),
+             ((-100.0, rng.uniform(-30, 30), 55.0), 3.0), ((rng.uniform(-60, 60), -50.0, 0.0), 4.0)]
+    b = cut_chips(b, rng, spots, 0)
+    bmesh.ops.triangulate(b, faces=b.faces[:])
+    weather(b, 9305, 0.9, bottom_mask, f1=1 / 24.0, f2=1 / 9.0)
+    warp(b, 9308, 0.5)
+    fit_box(b, (-100.0, -50.0, 0.0), (100.0, 50.0, 60.0))
+    return crypt_piece(CRYPT + "BoneBin_200x100x60", b, ["MAT_Stone"],
+                       note="bottom-centre; open-top chest, walls 8 thick, solid to the inner floor at z 30, top edge chamfer 1.5, 6 chips (seed 9305)")
+
+
+# ---------------------------------------------------------------------------------------------- F: block
+def build_c_block(centre):
+    rng = random.Random(9306)
+    b = gbox(-50.0, 50.0, -50.0, 50.0, -50.0, 50.0, 7.0)
+    chamfer(b, lambda e: e.calc_face_angle(0.0) > math.radians(60.0), 3.0)
+    spots = [((50.0, 50.0, rng.uniform(-30, 30)), rng.uniform(5.0, 8.0)), ((rng.uniform(-30, 30), -50.0, 50.0), rng.uniform(5.0, 7.5)),
+             ((-50.0, rng.uniform(-30, 30), -50.0), rng.uniform(5.0, 8.0))]
+    b = cut_chips(b, rng, spots, 0)
+    bmesh.ops.triangulate(b, faces=b.faces[:])
+    weather(b, 9306, 1.0, lambda co, n: 1.0, f1=1 / 24.0, f2=1 / 8.0)
+    fit_box(b, (-50.0, -50.0, -50.0), (50.0, 50.0, 50.0))
+    pc = crypt_piece(CRYPT + ("Block_100_C" if centre else "Block_100"), b, ["MAT_Stone"], ucx_design=[ucx_box(-50.0, 50.0, -50.0, 50.0, -50.0, 50.0)],
+                     note=("CENTRE pivot (bounds centre = origin)" if centre else "bottom-centre") + "; weathered 100 cm block, edge chamfer 3, face noise <= 1.0 inward, chips on 3 edges (seed 9306); UCX 1 box 100^3")
+    pc.seat_mode = "centre3" if centre else "centre"
+    return pc
+
+
+# ---------------------------------------------------------------------------------------------- G: corbel
+def build_c_corbel():
+    rng = random.Random(9307)
+
+    def course(z0, z1, depth):
+        return gbox(-25.0, 25.0, 0.0, depth, z0, z1, 5.0)
+
+    c1 = course(0.0, 16.5, 30.0)
+    c2 = course(15.0, 31.5, 42.0)
+    c3 = course(30.0, 45.0, 55.0)
+    bm = bool_op(bool_op(c1, c2, 'UNION', 1), c3, 'UNION', 1)
+    chamfer(bm, lambda e: not all(v.co.y < 0.01 for v in e.verts) and e.calc_face_angle(0.0) > math.radians(30), 1.5)
+    bmesh.ops.triangulate(bm, faces=bm.faces[:])
+    weather(bm, 9307, 0.7, lambda co, n: 0.0 if (co.z < 0.02 or co.y < 0.02) else 1.0, f1=1 / 14.0, f2=1 / 6.0)
+    fit_box(bm, (-25.0, 0.0, 0.0), (25.0, 55.0, 45.0))
+    pc = crypt_piece(CRYPT + "Corbel_A", bm, ["MAT_Stone"],
+                     note="back plane y 0, x centre, z 0 bottom, projects +Y; three stepped courses (z 0..15 depth 30, 15..30 depth 42, 30..45 depth 55), chamfer 1.5")
+    pc.seat_mode = "wall"
+    return pc
+
+
+# ---------------------------------------------------------------------------------------------- H: beam
+def build_c_beam():
+    rng = random.Random(9307)
+    b = K.box(-17.5, 17.5, -560.0, 560.0, 0.0, 45.0, 0, 0.8)
+    grooves = []
+    # 3 lengthwise checks (V grooves 1.4 wide, 2.4 deep): top face, +X face, -X face
+    grooves.append(K.prism([(-4.7, 45.5), (-3.3, 45.5), (-4.0, 42.6)], 'y', -330.0, -120.0, 0))
+    grooves.append(K.prism([(18.0, 24.3), (18.0, 25.7), (15.1, 25.0)], 'y', 60.0, 330.0, 0))
+    grooves.append(K.prism([(-18.0, 16.3), (-18.0, 17.7), (-15.1, 17.0)], 'y', -90.0, 250.0, 0))
+    g = join(grooves)
+    b = bool_op(b, g, 'DIFFERENCE', 1)
+    g.free()
+    subdiv_long(b, 13.0)
+    bmesh.ops.triangulate(b, faces=b.faces[:])
+    weather(b, 9307, 0.6, lambda co, n: 0.0 if co.z <= 0.02 else 1.0, f1=1 / 26.0, f2=1 / 9.0)
+    fit_box(b, (-17.5, -560.0, 0.0), (17.5, 560.0, 45.0))
+    return crypt_piece(CRYPT + "Beam_35x45x1120", b, ["MAT_Wood"],
+                       note="bottom-centre, length along Y; adzed faces (0.6 cm waviness), 3 lengthwise checks (top, +X, -X; seed 9307)")
+
+
+# ---------------------------------------------------------------------------------------------- I: boards
+def _board(xa, xb, y0, y1, rng, ragged_ends=(True, True), thick=5.0):
+    """One board: XY outline with ragged ends (inset 0..2 cm), z 0..thick.  xa<xb along X, y0<y1 across."""
+    n = 4
+    left, right = [], []
+    for k in range(n + 1):
+        yy = y0 + (y1 - y0) * k / n
+        left.append((xa + (rng.uniform(0.0, 2.0) if ragged_ends[0] else 0.0), yy))
+        right.append((xb - (rng.uniform(0.0, 2.0) if ragged_ends[1] else 0.0), yy))
+    poly = left + right[::-1]
+    return poly
+
+
+def build_c_boards(broken):
+    rng = random.Random(9308 if not broken else 9308)
+    n = 10
+    gaps = [rng.uniform(1.0, 2.0) for _ in range(n - 1)]
+    wsum = 250.0 - sum(gaps)
+    raw = [rng.uniform(22.0, 27.0) for _ in range(n)]
+    k = wsum / sum(raw)
+    widths = [w * k for w in raw]
+    bm = bmesh.new()
+    ycur = -125.0
+    boards = []
+    for i in range(n):
+        y0, y1 = ycur, ycur + widths[i]
+        ycur = y1 + (gaps[i] if i < n - 1 else 0.0)
+        boards.append((y0, y1))
+    parts = []
+    hinge_info = None
+    for i, (y0, y1) in enumerate(boards):
+        if broken and i in (2, 3):
+            continue                                                       # boards 3 and 4 (1-based) missing
+        sx0 = 1 if i == 0 or i == n - 1 else 0                              # outer boards reach the full +-150 / +-125
+        a_bow = rng.uniform(0.0, 0.4)
+        cup = rng.uniform(0.0, 0.2)
+        ym = (y0 + y1) * 0.5
+        hw = (y1 - y0) * 0.5
+
+        def lift(co, a_bow=a_bow, cup=cup, ym=ym, hw=hw):
+            return a_bow * (co.x / 150.0) ** 2 + cup * ((co.y - ym) / hw) ** 2
+
+        if broken and i == 5:
+            brk = 40.0
+            polyL = _board(-150.0, brk, y0, y1, rng, (True, False))
+            polyL = [(x, y) if j < 5 else (brk + rng.uniform(-2.0, 1.0), y) for j, (x, y) in enumerate(polyL)]
+            polyR = _board(brk, 150.0, y0, y1, rng, (False, True))
+            polyR = [(brk + rng.uniform(-1.0, 2.0), y) if j < 5 else (x, y) for j, (x, y) in enumerate(polyR)]
+            bl = K.prism(polyL, 'z', 0.0, 5.0, 0)
+            br = K.prism(polyR, 'z', 0.0, 5.0, 0)
+            for bb in (bl, br):
+                tri_ear(bb)
+                subdiv_long(bb, 25.0)
+                for v in bb.verts:
+                    v.co.z += lift(v.co)
+            rot_about(br, 'Y', 25.0, (brk, ym, 2.5))
+            parts += [bl, br]
+        else:
+            poly = _board(-150.0, 150.0, y0, y1, rng)
+            if i in (0, n - 1):                                           # make sure the full +-150 extent is reached
+                poly[0] = (-150.0, poly[0][1])
+                poly[-1] = (150.0, poly[-1][1])
+                poly[5] = (150.0, poly[5][1])
+                poly[4] = (-150.0, poly[4][1])
+            bd = K.prism(poly, 'z', 0.0, 5.0, 0)
+            tri_ear(bd)
+            subdiv_long(bd, 25.0)
+            for v in bd.verts:
+                v.co.z += lift(v.co)
+            K.bevel_all(bd, 0.35, 30.0)
+            parts.append(bd)
+    bm = join(parts)
+    for p in parts:
+        p.free()
+    pc = crypt_piece(CRYPT + ("Boards_300x250_Broken" if broken else "Boards_300x250"), bm, ["MAT_Wood"],
+                     note=("bottom-centre (z 0 = board undersides); 10 boards run along X (300 long) side by side along Y (widths 22-27, gaps 1-2, 250 total); "
+                           "warp lift 0..0.6, ragged ends 0..2" + ("; boards 3 and 4 (1-based) missing, board 6 snapped at x +40 and its +X part hinged 25 deg down (lowest z about -47)" if broken else "")))
+    pc.seat_mode = "xy" if broken else "centre"
+    return pc
+
+
+# ---------------------------------------------------------------------------------------------- J: hanging roots
+def _root_tube(bm, uvl, pts, radii, sides, v0=0.0, cap_start=True, cap_end=True, vscale=60.0):
+    """Tapered tube along a polyline; UV u = 0..1 around, v = arc length / 60 cm (1 bark tile per 60 cm)."""
+    rings = []
+    s_acc = [0.0]
+    for i in range(1, len(pts)):
+        s_acc.append(s_acc[-1] + (pts[i] - pts[i - 1]).length)
+    prev = None
+    for i, p in enumerate(pts):
+        d = pts[min(i + 1, len(pts) - 1)] - pts[max(i - 1, 0)]
+        if d.length < 1e-6:
+            d = Vector((0, 0, -1))
+        d.normalize()
+        ref = prev if prev is not None else (Vector((0, 1, 0)) if abs(d.y) < 0.9 else Vector((1, 0, 0)))
+        x = ref - d * ref.dot(d)
+        if x.length < 1e-6:
+            x = d.orthogonal()
+        x.normalize()
+        y = d.cross(x)
+        prev = x
+        rings.append([bm.verts.new(p + (x * math.cos(2 * math.pi * k / sides) + y * math.sin(2 * math.pi * k / sides)) * radii[i]) for k in range(sides)])
+    for i in range(len(pts) - 1):
+        for k in range(sides):
+            k2 = (k + 1) % sides
+            f = bm.faces.new((rings[i][k], rings[i][k2], rings[i + 1][k2], rings[i + 1][k]))
+            f.material_index = 0
+            uvs = ((k / sides, (v0 + s_acc[i]) / vscale), ((k + 1) / sides, (v0 + s_acc[i]) / vscale),
+                   ((k + 1) / sides, (v0 + s_acc[i + 1]) / vscale), (k / sides, (v0 + s_acc[i + 1]) / vscale))
+            for l, uv in zip(f.loops, uvs):
+                l[uvl].uv = uv
+    for flag, ring, rev, vv in ((cap_start, rings[0], True, v0), (cap_end, rings[-1], False, v0 + s_acc[-1])):
+        if flag:
+            f = bm.faces.new(ring[::-1] if rev else ring)
+            f.material_index = 0
+            for l in f.loops:
+                l[uvl].uv = (0.5, vv / vscale)
+    return s_acc
+
+
+def _walk(rng, p, d, length, step, jitter, grav):
+    pts = [p.copy()]
+    n = max(3, int(length / step))
+    cur = d.normalized()
+    for i in range(n):
+        cur = (cur + Vector((rng.gauss(0, jitter), rng.gauss(0, jitter), rng.gauss(0, jitter * 0.5))) + Vector((0, 0, -grav))).normalized()
+        pts.append(pts[-1] + cur * (length / n))
+    return pts
+
+
+def _gen_roots(seed, nstr, depth, drift_max, r0, sides, steps):
+    rng = random.Random(seed)
+    bm = bmesh.new()
+    uvl = bm.loops.layers.uv.verify()
+    st1, st2, st3 = steps
+    # knot: a 12 cm bulb hanging from z 0 (flat top = the attachment)
+    kp = [Vector((0, 0, 0.0)), Vector((0, 0, -2.5)), Vector((0, 0, -6.0)), Vector((0, 0, -10.0)), Vector((0, 0, -14.0))]
+    _root_tube(bm, uvl, kp, [6.4, 7.6, 7.4, 5.6, 3.4], max(14, sides), 0.0)
+    az0 = rng.uniform(0, 2 * math.pi)
+    for s in range(nstr):
+        az = az0 + 2 * math.pi * (s + rng.uniform(-0.2, 0.2)) / nstr
+        L = depth * (1.0 if s == 0 else rng.uniform(0.62, 0.96))
+        drift = rng.uniform(0.5, 1.0) * drift_max
+        sway = rng.uniform(3.0, 6.0)
+        ph1, ph2 = rng.uniform(0, 2 * math.pi), rng.uniform(0, 2 * math.pi)
+        fr = rng.uniform(0.8, 1.4)
+        ex = Vector((math.cos(az), math.sin(az), 0))
+        ey = Vector((-math.sin(az), math.cos(az), 0))
+        n = max(8, int(L / st1))
+        pts, radii = [], []
+        rs = r0 * rng.uniform(0.85, 1.0)
+        for i in range(n + 1):
+            t = i / n
+            lat = 3.2 * (1 - t) + drift * (t ** 1.15)
+            sw = sway * math.sin(2 * math.pi * fr * t + ph1) * min(1.0, t * 2.5)
+            sw2 = sway * 0.5 * math.sin(2 * math.pi * fr * 1.7 * t + ph2) * min(1.0, t * 2.5)
+            pts.append(ex * (lat + sw2) + ey * sw + Vector((0, 0, -10.0 - (L - 10.0) * t)))
+            radii.append(max(0.4, 0.4 + (rs - 0.4) * (1 - t) ** 1.25 * (1.0 + 0.1 * math.sin(11.0 * t + ph1))))
+        radii[0] = rs * 1.1
+        acc = _root_tube(bm, uvl, pts, radii, sides, rng.uniform(0, 1.0))
+        # level 2: 2-4 branches 30-60 long, r 1.5 -> 0.3
+        for b in range(rng.randint(2, 4)):
+            i = int(rng.uniform(0.18, 0.8) * n)
+            az2 = az + rng.uniform(-1.5, 1.5)
+            d0 = Vector((math.cos(az2) * 0.85, math.sin(az2) * 0.85, -0.5))
+            Lb = rng.uniform(30.0, 60.0)
+            bp = _walk(rng, pts[i], d0, Lb, st2, 0.10, 0.10)
+            m = len(bp) - 1
+            r1 = min(1.5, max(0.7, radii[i] * 0.8))
+            br = [max(0.3, 0.3 + (r1 - 0.3) * (1 - j / m) ** 1.1) for j in range(m + 1)]
+            _root_tube(bm, uvl, bp, br, max(6, sides // 2), rng.uniform(0, 1.0))
+            # level 3: rootlets 10-20 long, r 0.4 -> 0.15
+            for q in range(rng.randint(0, 2)):
+                j = int(rng.uniform(0.3, 0.9) * m)
+                az3 = rng.uniform(0, 2 * math.pi)
+                d3 = Vector((math.cos(az3) * 0.8, math.sin(az3) * 0.8, -0.6))
+                Lr = rng.uniform(10.0, 20.0)
+                rp = _walk(rng, bp[j], d3, Lr, st3, 0.08, 0.08)
+                mm = len(rp) - 1
+                rr_ = [0.15 + 0.25 * (1 - jj / mm) for jj in range(mm + 1)]
+                _root_tube(bm, uvl, rp, rr_, 5, rng.uniform(0, 1.0))
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    return bm
+
+
+def build_c_roots(letter, seed, nstr, depth, xy_target, drift_max, r0, sides, steps):
+    best = None
+    for att in range(60):
+        bm = _gen_roots(seed * 100 + att, nstr, depth, drift_max, r0, sides, steps)
+        mn, mx = bounds(bm)
+        sc = depth / (-mn[2])
+        dx, dy = (mx[0] - mn[0]) * sc, (mx[1] - mn[1]) * sc
+        off = math.hypot((mx[0] + mn[0]) * 0.5, (mx[1] + mn[1]) * 0.5) * sc
+        score = abs(dx - xy_target) + abs(dy - xy_target) + off * 2.0
+        if best is None or score < best[0]:
+            if best is not None:
+                best[1].free()
+            best = (score, bm, sc, att)
+        else:
+            bm.free()
+        if abs(dx - xy_target) < 8 and abs(dy - xy_target) < 8 and off < 5:
+            break
+    score, bm, sc, att = best
+    for v in bm.verts:
+        v.co *= sc
+    pc = crypt_piece(CRYPT + "RootsHang_" + letter, bm, ["MAT_Bark"],
+                     note="TOP-centre: z 0 = the attachment (flat top of the 12 cm knot), design axis on the origin, hangs to -%d; %d strands, seed %d attempt %d (scale %.3f); "
+                          "UV u 0..1 around, v 1 tile / 60 cm along the length" % (depth, nstr, seed, att, sc))
+    pc.seat_mode = "top"
+    pc.keep_uv = True
+    pc.smooth = 70.0
+    return pc
+
+
+# ---------------------------------------------------------------------------------------------- K: portcullis
+def _spike_bar(xc, z_top, seed):
+    b = bmesh.new()
+    apex = b.verts.new((xc, 0.0, 0.0))
+    r1 = [b.verts.new((xc + sx * 3.0, sy * 3.0, 12.0)) for sx, sy in ((-1, -1), (1, -1), (1, 1), (-1, 1))]
+    r2 = [b.verts.new((xc + sx * 3.0, sy * 3.0, z_top)) for sx, sy in ((-1, -1), (1, -1), (1, 1), (-1, 1))]
+    for i in range(4):
+        j = (i + 1) % 4
+        b.faces.new((apex, r1[j], r1[i]))
+        b.faces.new((r1[i], r1[j], r2[j], r2[i]))
+    b.faces.new(r2)
+    bmesh.ops.recalc_face_normals(b, faces=b.faces)
+    K.bm_set_mat(b, 0)
+    subdiv_long(b, 22.0)
+    bmesh.ops.triangulate(b, faces=b.faces[:])
+    weather(b, seed, 0.22, bottom_mask, f1=1 / 26.0, f2=1 / 8.0)
+    return b
+
+
+def build_c_portcullis():
+    parts = []
+    for s in (-1, 1):                                              # side rails 8 x 8 (outer faces at x +-150)
+        parts.append(lbeam(s * 146.0 - 4.0, s * 146.0 + 4.0, -4.0, 4.0, 0.0, 560.0, 9309 + s, 0, 0.7, 22.0, 0.22))
+    bar_x = [-130.0 + 32.5 * k for k in range(9)]
+    for k, xc in enumerate(bar_x):
+        parts.append(_spike_bar(xc, 560.0, 9320 + k))
+    flat_z = [60.0 + 70.0 * i for i in range(7)]
+    for i, zc in enumerate(flat_z):
+        parts.append(lbeam(-146.0, 146.0, -1.5, 1.5, zc - 4.0, zc + 4.0, 9340 + i, 0, 0.3, 22.0, 0.2))
+    for s in (-1, 1):                                              # transverse guide pins: put the leaf in the 60 cm greybox footprint (y +-30)
+        for zc in (70.0, 500.0):
+            parts.append(lbeam(s * 146.0 - 3.0, s * 146.0 + 3.0, -30.0, 30.0, zc - 3.0, zc + 3.0, 9360 + int(zc), 0, 0.6, 22.0, 0.15))
+    for xc in bar_x:                                               # rivet domes at the 63 crossings, front and back
+        for zc in flat_z:
+            for sgn in (1, -1):
+                d = K.lathe_z([(2.2, 0.0), (1.7, 0.8), (0.0, 1.3)], 6, 0)
+                rot(d, 'X', -90.0 if sgn > 0 else 90.0)
+                shift(d, xc, 2.85 * sgn, zc)
+                parts.append(d)
+    bm = join(parts)
+    for p in parts:
+        p.free()
+    pc = crypt_piece(CRYPT + "Portcullis_300x60x560", bm, ["MAT_Iron"], ucx_design=[ucx_box(-150.0, 150.0, -30.0, 30.0, 0.0, 560.0)],
+                     note="bottom-centre; 9 square bars 6 x 6 at 32.5 spacing (x +-130) from 12 cm spike tips at z 0 to z 560, 7 flat bars 8 x 3 at z 60..480, 126 rivet "
+                          "domes, side rails 8 x 8 centred at x +-146 (outer faces +-150); lattice within y +-4.5; 4 guide pins 6 x 60 x 6 at x +-146 (z 70, 500) bring "
+                          "the visual to the 60 cm greybox depth (D1.3 gives 300 x 60 x 560); UCX 1 box x +-150, y +-30, z 0..560")
+    return pc
+
+
+# ---------------------------------------------------------------------------------------------- L: rubble fill
+def _chip_block(rng, sx, sy, sz):
+    hx, hy, hz = sx / 2, sy / 2, sz / 2
+    corners = [(a, b, c) for a in (-1, 1) for b in (-1, 1) for c in (-1, 1)]
+    cuts = set(rng.sample(range(8), rng.randint(1, 3)))
+    pts = []
+    for i, (a, b, c) in enumerate(corners):
+        jx, jy, jz = (1.0 + rng.uniform(-0.1, 0.1) for _ in range(3))
+        px, py, pz = a * hx * jx, b * hy * jy, c * hz * jz
+        if i in cuts:
+            k = rng.uniform(0.35, 0.8)
+            pts += [Vector((px * (1 - k), py, pz)), Vector((px, py * (1 - k), pz)), Vector((px, py, pz * (1 - k)))]
+        else:
+            pts.append(Vector((px, py, pz)))
+    h = K.hull_from_points(pts, 0)
+    K.bevel_all(h, 1.3, 25.0)
+    return h
+
+
+def build_c_rubble():
+    rng = random.Random(9313)
+    blocks = []
+    beam_a = Vector((-175.0, 110.0))                     # beam start (y, z) and unit direction in the YZ plane (elevation 38 deg)
+    beam_d = Vector((math.cos(math.radians(38.0)), math.sin(math.radians(38.0))))
+
+    def beam_dist(yc, zc):
+        v = Vector((yc, zc)) - beam_a
+        t = max(0.0, min(380.0, v.dot(beam_d)))
+        return (v - beam_d * t).length
+
+    def place(sx, sy, sz, xf, yc, zc, tilt=1.0):
+        b = _chip_block(rng, sx, sy, sz)
+        rot(b, 'X', rng.uniform(-22.0, 22.0) * tilt)
+        rot(b, 'Y', rng.uniform(-14.0, 14.0) * tilt)
+        rot(b, 'Z', rng.uniform(-14.0, 14.0) * tilt)
+        hs = max(sy, sz) * 0.5 + 2.0
+        yc = max(-210.0 + hs, min(210.0 - hs, yc))
+        zc = max(hs, min(560.0 - hs, zc))
+        shift(b, xf + sx / 2.0, yc, zc)
+        blocks.append(b)
+        return b
+
+    cols, rows = 6, 8
+    for r in range(rows):
+        for c in range(cols):
+            sx = rng.uniform(46.0, 70.0)
+            sy, sz = rng.uniform(50.0, 70.0), rng.uniform(46.0, 70.0)
+            yc = -175.0 + 70.0 * c + (22.0 if r % 2 else -22.0) + rng.uniform(-10.0, 10.0)
+            zc = 35.0 + 70.0 * r + rng.uniform(-12.0, 12.0)
+            if r == rows - 1:
+                zc = 560.0 - sz / 2.0 - rng.uniform(0.0, 3.0)
+            xf = -55.0 + rng.uniform(0.0, 20.0)
+            if beam_dist(yc, zc) < 40.0:
+                xf = -36.0 + rng.uniform(0.0, 5.0)             # recessed behind the beam lying across the face
+            place(sx, sy, sz, xf, yc, zc)
+    for _ in range(6):                                          # six small jammed fragments (25..45) in front / between
+        s = [rng.uniform(25.0, 45.0) for _ in range(3)]
+        yc, zc = rng.uniform(-190.0, 190.0), rng.uniform(40.0, 520.0)
+        xf = -47.0 + rng.uniform(0.0, 6.0) if beam_dist(yc, zc) > 36.0 else -30.0
+        place(s[0], s[1], s[2], xf, yc, zc, 1.6)
+    for b in blocks:
+        densify(b, 24.0)
+        weather(b, 9313 + len(b.verts), 1.1, lambda co, n: 1.0, f1=1 / 15.0, f2=1 / 5.0)
+    # backing mass: closes every gap behind the blocks (lumpy, never reaches the -X plane)
+    core = K.box(-34.0, 52.0, -208.0, 208.0, 0.0, 558.0, 0, 0.0)
+    densify(core, 30.0)
+    for v in core.verts:
+        v.co.x += (fbm3(v.co.y / 40.0, v.co.z / 40.0, 3.0, 9313, 3) - 0.5) * 12.0
+    # the broken beam 35 x 30 x 380 (Wood): splintered upper end
+    shaft = lbeam(-17.5, 17.5, -15.0, 15.0, 0.0, 345.0, 9399, 1, 0.9, 20.0, 0.35)
+    parts = [shaft]
+    xs = (-17.5, -8.5, 0.5, 9.0, 17.5)
+    for i in range(4):
+        z0 = 340.0
+        ln = rng.uniform(14.0, 38.0) if i not in (1, 2) else rng.uniform(26.0, 38.0)
+        x0, x1 = xs[i], xs[i + 1]
+        pts = [Vector((x0, -15.0, z0)), Vector((x1, -15.0, z0)), Vector((x1, 15.0, z0)), Vector((x0, 15.0, z0)),
+               Vector(((x0 + x1) / 2 + rng.uniform(-1.5, 1.5), rng.uniform(-9.0, 9.0), z0 + ln)), Vector(((x0 + x1) / 2 + rng.uniform(-1.5, 1.5), rng.uniform(-9.0, 9.0) + 1.5, z0 + ln))]
+        sp = K.hull_from_points(pts, 1)
+        parts.append(sp)
+    bj = join(parts, None)
+    for p in parts:
+        p.free()
+    rot(bj, 'X', -52.0)                                          # local +Z -> (0, cos 38, sin 38) in YZ
+    shift(bj, -37.0, beam_a.x, beam_a.y)
+    allp = blocks + [core, bj]
+    bm = join(allp, None)
+    for p in allp:
+        p.free()
+    # keep the material of the beam (slot 1) -- join(None) preserves indices
+    mn, mx = bounds(bm)
+    fit_box(bm, (-55.0, -210.0, 0.0), (55.0, 210.0, 560.0))
+    pc = crypt_piece(CRYPT + "RubbleFill_100x400x560", bm, ["MAT_Stone", "MAT_Wood"], ucx_design=[ucx_box(-50.0, 50.0, -200.0, 200.0, 0.0, 560.0)],
+                     note="bottom-centre; 54 chipped blocks (48 face blocks 46-70 on a 6 x 8 staggered grid + 6 fragments 25-45) over a lumpy backing mass, visual x +-55, y +-210, "
+                          "z 0..560 (pre-fit bounds %s..%s); broken beam 35 x 30 x 380 (splintered end) diagonally across the -X face; UCX 1 box x +-50, y +-200, z 0..560"
+                          % (tuple(round(v) for v in mn), tuple(round(v) for v in mx)))
+    return pc
+
+
+# ---------------------------------------------------------------------------------------------- M: crank
+def build_c_crank():
+    IR, WD = 0, 1
+    boss = K.box(-4.0, 4.0, -4.0, 4.0, 0.0, 12.0, IR, 0.5)
+    sock = K.box(-2.8, 2.8, -2.8, 2.8, 4.0, 12.5, IR, 0.0)
+    boss = bool_op(boss, sock, 'DIFFERENCE', 2)
+    sock.free()
+    arm = K.box(0.0, 38.0, -2.0, 2.0, 0.0, 2.5, IR, 0.4)
+    prof = [(1.9, 0.0), (2.1, 1.5), (2.4, 4.0), (2.5, 6.5), (2.2, 9.5), (1.9, 11.6), (1.2, 12.0)]
+    hnd = K.lathe_z(prof, 10, WD)
+    shift(hnd, 36.0, 0.0, 2.3)
+    # the free end of the iron arm is rounded by the handle's boss: small collar
+    col = K.cylinder(3.0, 1.2, 10, IR)
+    shift(col, 36.0, 0.0, 2.3)
+    bm = join([boss, arm, hnd, col], None)
+    for p in (boss, arm, hnd, col):
+        p.free()
+    pc = crypt_piece("SM_LB_Prop_Crank_A", bm, ["MAT_Iron", "MAT_Wood"], ucx_fixed=(44.0, 16.0, 16.0),
+                     note="bottom-centre, lies flat (arm on the plinth, socket boss and handle both pointing up): square socket boss 8 x 8 x 12 with a visible 5.6 x 5.6 socket, "
+                          "flat iron arm 38 x 4 x 2.5 at 90 deg to the socket axis, wooden handle r ~2.2 x 12 at the arm end; UCX 1 box 44 x 16 x 16 (bottom-centre)")
+    return pc
+
+
+# ---------------------------------------------------------------------------------------------- N: capstan drum
+def build_c_capstan():
+    WD, IR = 0, 1
+    drum = K.cylinder(34.0, 48.0, 16, WD)
+    shift(drum, 0.0, 0.0, -25.0)
+    K.bevel_all(drum, 1.2, 20.0)
+    holes = join([K.box(-60.0, 60.0, -3.2, 3.2, 10.0, 16.4, WD, 0.0), K.box(-3.2, 3.2, -60.0, 60.0, 10.0, 16.4, WD, 0.0)])
+    drum = bool_op(drum, holes, 'DIFFERENCE', 2)
+    holes.free()
+    densify(drum, 9.0)
+    weather(drum, 9320, 0.5, lambda co, n: 1.0, f1=1 / 16.0, f2=1 / 5.0)
+    parts = [drum]
+    for zc in (-19.0, 19.0):                                            # iron bands r 35, z +-17..21
+        r = K.ring(35.0, 32.5, 4.0, 16, IR)
+        shift(r, 0.0, 0.0, zc - 2.0)
+        parts.append(r)
+    boss = K.lathe_z([(10.0, 0.0), (10.0, 0.8), (7.0, 1.9), (0.0, 2.4)], 12, IR)
+    shift(boss, 0.0, 0.0, 22.6)
+    parts.append(boss)
+    b1 = lbeam(-55.0, 55.0, -2.5, 2.5, 10.5, 15.5, 9321, WD, 0.5, 20.0, 0.3)   # capstan bars 5 x 5 x 110 through the square holes at z +13
+    b2 = lbeam(-2.5, 2.5, -55.0, 55.0, 10.5, 15.5, 9322, WD, 0.5, 20.0, 0.3)
+    parts += [b1, b2]
+    bm = join(parts, None)
+    for p in parts:
+        p.free()
+    fit_box(bm, (-55.0, -55.0, -25.0), (55.0, 55.0, 25.0))
+    pc = crypt_piece(CRYPT + "CapstanDrum_80x50", bm, ["MAT_Wood", "MAT_Iron"], ucx_design=[ucx_box(-35.0, 35.0, -35.0, 35.0, -25.0, 25.0)],
+                     note="CENTRE pivot (z -25..25): 16-sided drum r 34 (body z -25..23, bevelled), iron bands r 35 at z -21..-17 and 17..21, domed top boss r 10 (to z 25), "
+                          "two wooden bars 5 x 5 x 110 crosswise through 6.4 square holes at z 13; UCX 1 box x +-35, y +-35, z +-25")
+    pc.seat_mode = "none"
+    return pc
+
+
+# ---------------------------------------------------------------------------------------------- O: plaque frame
+def build_c_plaque():
+    rng = random.Random(9314)
+    hx, hz = 125.0, 87.5
+    prof = [(0.0, 0.0), (0.0, 11.0)]
+    for a in (22.5, 45.0, 67.5, 90.0):
+        t = math.radians(a)
+        prof.append((3.0 - 3.0 * math.cos(t), 11.0 + 3.0 * math.sin(t)))
+    prof += [(3.0, 10.0), (7.0, 10.0), (7.0, 6.0), (10.0, 6.0), (10.0, 0.0)]
+    b = bmesh.new()
+    nx, nz = 34, 24                                                  # points per side (about 8 cm)
+    loops = []
+    for (o, y) in prof:
+        X, Z = hx + o, hz + o
+        ring = []
+        for i in range(nx):
+            ring.append((-X + 2 * X * i / nx, -Z))
+        for i in range(nz):
+            ring.append((X, -Z + 2 * Z * i / nz))
+        for i in range(nx):
+            ring.append((X - 2 * X * i / nx, Z))
+        for i in range(nz):
+            ring.append((-X, Z - 2 * Z * i / nz))
+        loops.append([b.verts.new((px, y, pz)) for (px, pz) in ring])
+    m, nr = len(prof), 2 * (nx + nz)
+    for i in range(m):
+        i2 = (i + 1) % m
+        for s_ in range(nr):
+            s2 = (s_ + 1) % nr
+            b.faces.new((loops[i][s_], loops[i][s2], loops[i2][s2], loops[i2][s_]))
+    bmesh.ops.recalc_face_normals(b, faces=b.faces)
+    K.bm_set_mat(b, 0)
+    spots = []
+    for sx in (-1, 1):
+        for sz in (-1, 1):
+            spots.append(((sx * 133.0, 4.0, sz * 95.5), rng.uniform(5.5, 8.5)))
+    b = cut_chips(b, rng, spots, 0)
+    bmesh.ops.triangulate(b, faces=b.faces[:])
+    weather(b, 9314, 0.8, lambda co, n: 0.0 if co.y < 0.02 else 1.0, f1=1 / 16.0, f2=1 / 6.0)
+    fit_box(b, (-135.0, 0.0, -97.5), (135.0, 14.0, 97.5))
+    pc = crypt_piece(CRYPT + "PlaqueFrame_270x195", b, ["MAT_Stone"],
+                     note="back plane y 0, x centre, z centre; outer 270 x 195, opening 250 x 175, depth 14 (y 0..14), three steps toward the opening (y 6, 10, 14) with an "
+                          "ovolo on the innermost, chipped outer corners (seed 9314)")
+    pc.seat_mode = "backcentre"
+    return pc
+
+
+# ---------------------------------------------------------------------------------------------- P: winch frame
+def _orient(bm, direction, origin):
+    """Rotate a beam built along +Z onto `direction` and move it to `origin`."""
+    q = Vector((0, 0, 1)).rotation_difference(Vector(direction).normalized())
+    bm.transform(q.to_matrix().to_4x4())
+    shift(bm, *origin)
+    return bm
+
+
+def build_c_winch():
+    WD, IR = 0, 1
+    parts = []
+    for s in (-1, 1):
+        x = 110.0 * s
+        parts.append(lbeam(x - 10.0, x + 10.0, -10.0, 10.0, 10.0, 250.0, 9330 + s, WD, 0.8, 22.0, 0.3))        # post 20 x 20 x 240 on the plate
+        parts.append(lbeam(x - 10.0, x + 10.0, -45.0, 45.0, 0.0, 10.0, 9332 + s, WD, 0.8, 22.0, 0.25))          # sole plate 20 x 90 x 10 (along Y)
+        for sy in (-1, 1):                                                                                       # braces 12 x 12 from z 140 to the plate ends
+            A = Vector((x, 0.0, 140.0))
+            B = Vector((x, sy * 34.0, 11.0))
+            dvec = B - A
+            L = dvec.length
+            br = lbeam(-6.0, 6.0, -6.0, 6.0, -5.0, L + 5.0, 9340 + s * 3 + sy, WD, 0.7, 22.0, 0.25)
+            _orient(br, dvec, A)
+            parts.append(br)
+    parts.append(lbeam(-130.0, 130.0, -10.0, 10.0, 230.0, 250.0, 9350, WD, 0.8, 24.0, 0.3))                      # top beam 20 x 20 x 260
+    drum = beam_cyl(22.0, 180.0, 9351, WD, 16, 22.0)
+    rot(drum, 'Y', 90.0)
+    shift(drum, -90.0, 0.0, 170.0)
+    parts.append(drum)
+    axle = K.cylinder(3.2, 250.0, 10, IR)
+    rot(axle, 'Y', 90.0)
+    shift(axle, -125.0, 0.0, 170.0)
+    parts.append(axle)
+    for xc in (-85.0, -51.0, -17.0, 17.0, 51.0, 85.0):                                                            # 6 iron bands
+        r = K.ring(23.6, 20.5, 3.5, 16, IR)
+        rot(r, 'Y', 90.0)
+        shift(r, xc - 1.75, 0.0, 170.0)
+        parts.append(r)
+    # chain coil: torus links on a 5-turn helix over the +X half of the drum
+    turns, x_a, x_b, rh = 5.0, 8.0, 88.0, 24.2
+    pitch_ax = (x_b - x_a) / turns
+    ds = 5.2
+    helix_len_per_rad = math.hypot(rh, pitch_ax / (2 * math.pi))
+    nlinks = int(turns * 2 * math.pi * helix_len_per_rad / ds)
+    for i in range(nlinks):
+        ph = 2 * math.pi * turns * i / nlinks
+        xk = x_a + pitch_ax * ph / (2 * math.pi)
+        rad = Vector((0.0, math.cos(ph), math.sin(ph)))
+        cen = Vector((xk, rh * math.cos(ph), 170.0 + rh * math.sin(ph)))
+        tan = Vector((pitch_ax / (2 * math.pi), -rh * math.sin(ph), rh * math.cos(ph))).normalized()
+        axis = rad if i % 2 == 0 else tan.cross(rad).normalized()
+        t = torus(3.0, 0.85, 8, 5, IR)
+        t.transform(Vector((0, 0, 1)).rotation_difference(axis).to_matrix().to_4x4())
+        shift(t, *cen)
+        parts.append(t)
+    for s, ang in ((-1, 35.0), (1, -145.0)):                                                                      # crank arms 30 long at both ends
+        arm = K.box(-1.5, 1.5, -2.2, 2.2, -4.0, 30.0, IR, 0.4)
+        knob = K.cylinder(2.3, 6.0, 8, IR)
+        rot(knob, 'Y', 90.0)
+        shift(knob, 0.0, 0.0, 28.0)
+        kb = join([arm, knob], None)
+        arm.free()
+        knob.free()
+        rot(kb, 'X', ang)
+        shift(kb, s * 124.0, 0.0, 170.0)
+        parts.append(kb)
+    bm = join(parts, None)
+    for p in parts:
+        p.free()
+    ucx = []
+    for s in (-1, 1):
+        ucx.append(ucx_box(s * 110.0 - 10.0, s * 110.0 + 10.0, -10.0, 10.0, 0.0, 250.0))
+        ucx.append(ucx_box(s * 110.0 - 10.0, s * 110.0 + 10.0, -45.0, 45.0, 0.0, 10.0))
+    pc = crypt_piece(CRYPT + "WinchFrame", bm, ["MAT_Wood", "MAT_Iron"], ucx_design=ucx,
+                     note="bottom-centre; posts 20 x 20 x 240 at x +-110 on 20 x 90 x 10 sole plates, 4 braces 12 x 12 (z 140 to the plate ends), top beam 20 x 20 x 260 at z 230..250, "
+                          "wooden drum r 22 x 180 on an iron axle at z 170 with 6 iron bands, 5-turn chain coil on the +X half (torus links), iron crank arms 30 long at both ends; "
+                          "UCX 4 boxes (2 posts 20 x 20 x 250, 2 plates 20 x 90 x 10)")
+    return pc
+
+
+# ==============================================================================================
 # table
 # ==============================================================================================
 def table():
@@ -2339,6 +3277,28 @@ def table():
         # ---- P8-9a light-shaft cards ----
         ("LightShaft_Lancet", build_lightshaft_lancet),
         ("LightShaft_RoofHole", build_lightshaft_roofhole),
+        # ---- P9-3 crypt pieces ----
+        ("Crypt_OssuaryBay_500x599", build_c_bay),
+        ("Crypt_Capital_A", build_c_capital),
+        ("Crypt_Stair40_300", build_c_stair),
+        ("Crypt_Sarcophagus_A", lambda: build_c_sarcophagus("A")),
+        ("Crypt_Sarcophagus_B", lambda: build_c_sarcophagus("B")),
+        ("Crypt_BoneBin_200x100x60", build_c_bonebin),
+        ("Crypt_Block_100", lambda: build_c_block(False)),
+        ("Crypt_Block_100_C", lambda: build_c_block(True)),
+        ("Crypt_Corbel_A", build_c_corbel),
+        ("Crypt_Beam_35x45x1120", build_c_beam),
+        ("Crypt_Boards_300x250", lambda: build_c_boards(False)),
+        ("Crypt_Boards_300x250_Broken", lambda: build_c_boards(True)),
+        ("Crypt_RootsHang_A", lambda: build_c_roots("A", 9310, 4, 180, 80, 22.0, 4.5, 16, (4.5, 3.5, 3.0))),
+        ("Crypt_RootsHang_B", lambda: build_c_roots("B", 9311, 6, 240, 90, 24.0, 5.0, 14, (5.0, 4.0, 3.5))),
+        ("Crypt_RootsHang_C", lambda: build_c_roots("C", 9312, 3, 120, 60, 16.0, 3.0, 18, (2.8, 2.4, 2.2))),
+        ("Crypt_Portcullis_300x60x560", build_c_portcullis),
+        ("Crypt_RubbleFill_100x400x560", build_c_rubble),
+        ("Crank_A", build_c_crank),
+        ("Crypt_CapstanDrum_80x50", build_c_capstan),
+        ("Crypt_PlaqueFrame_270x195", build_c_plaque),
+        ("Crypt_WinchFrame", build_c_winch),
     ]
 
 
@@ -2403,11 +3363,13 @@ def run():
         w = mx[0] - mn[0]
         K.add_to_layout(pc.name, pc.bm, pc.ucx, (x + w / 2, 0.0, 0.0), prop_mats(pc.slots))
         x += w + 60.0
-    os.makedirs(out_dir, exist_ok=True)
+    subs = {pc.subdir for pc in pieces}
+    rep_dir = os.path.join(out_dir, CRYPT_SUB) if (only and subs == {CRYPT_SUB}) else out_dir        # P9: blend + report next to the Crypt FBX
+    os.makedirs(rep_dir, exist_ok=True)
     suffix = ("_" + tag) if tag else "_partial"
-    blend = os.path.join(out_dir, "LB_Props.blend" if not only else "LB_Props%s.blend" % suffix)
+    blend = os.path.join(rep_dir, "LB_Props.blend" if not only else "LB_Props%s.blend" % suffix)
     bpy.ops.wm.save_as_mainfile(filepath=blend)
-    with open(os.path.join(out_dir, "props_report.json" if not only else "props_report%s.json" % suffix), "w") as fh:
+    with open(os.path.join(rep_dir, "props_report.json" if not only else "props_report%s.json" % suffix), "w") as fh:
         json.dump(report, fh, indent=1)
     print("DONE %d props in %.1fs -> %s" % (len(pieces), time.time() - t0, out_dir))
 
