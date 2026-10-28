@@ -66,3 +66,16 @@ Placement for the child BP (all scale 1, **same relative locations and rotations
 - `rail` and the three `notch*` stops float 40 cm in front of the board (x 46, y 12) with nothing holding them, and the rail's bottom is 15 cm above the board's bottom. The greybox had the same layout; the child BP keeps it.
 - The weight sits on the arm's end (x 47 vs arm end 45), so the chain rises from the weight and its upper end is free; a hanging weight (chain going down) would put the weight below the floor at the low and mid poses (45 - 47 = -2), which is why the chain rises.
 - The arm swings in the actor XZ plane at y 0; the stops are 12 cm to the side (y 12).
+
+## R2-A2 rework (D1.26): final meshes and placement for R2-B
+The R2-A quadrant, weight and backplate above are superseded as follows (arm and notch geometry unchanged; `SM_LB_Prop_DialLever_NotchStop` is no longer used: the three `notch*` components are hidden).
+
+| mesh | final bounds (mesh-local) | pivot | placement in the child BP (scale 1) |
+|---|---|---|---|
+| `SM_LB_Prop_DialLever_Backplate` | X -3.35..12.0, Y +-15, Z -45..77.5 (15.35 x 30 x 122.5; actor Z 0..122.5) | board centre (unchanged) | `backplate` at (0, 0, 45), unchanged |
+| `SM_LB_Prop_DialLever_Quadrant` | X -6..47.98, Y -0.3..5.2, Z +-32.02 | **sector centre = the lever rotation axis** | `rail` at **(6, 4, 45)**, rotation 0 |
+| `SM_LB_Prop_DialLever_Weight` | X -5.8..5.62, Y +-5.53, Z +-4.95 (squat O11 ball + collar, no chain) | ball centre | `weight` at (47, 0, 0) under `handlePivot`, unchanged |
+
+- **Backplate additions:** iron cap over the board top, two cheek plates and an O10 grooved pulley wheel at mesh (x 7, z 50) (actor z 95), axle along Y; an 8-link static chain from the wheel up and back to an eyelet ring (x -0.9, z 75 = actor 120) on a plate flush with the back plane (x -3.0). The label plate (mesh z 26..44, text at z 37) is unchanged and still sits under the pulley.
+- **Quadrant:** sector R 48, -42..+42 deg about +X in the mesh XZ plane; plate at mesh y 1.7..3.2 (actual y 5.7..7.2 once placed at y 4: this offset clears the O11 weight ball swinging at y 0 +-5.5); raised rim 2 x 2 (R 46..48) on the +Y side; V-notches 2 deep through the rim at -35 / 0 / +35 deg; three bone-white pegs (MAT_Paint, O2.5 x 2) on the **-Y face (toward the arm)** at R 39, where the grip (R 33..45) passes, angles -35 / 0 / +35; mounting foot X -6..2 (actual x 0..8, reaching 3 cm into the board, whose face is at x 3).
+- **Deviation from D1.26:** the pegs protrude toward the arm (-Y) and the rim is raised on +Y, not the other way round: with the plate at y 4, pegs on +Y would point away from the swing plane.

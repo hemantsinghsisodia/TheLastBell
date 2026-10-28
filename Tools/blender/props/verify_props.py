@@ -122,10 +122,10 @@ for _k in list(SPEC):
 # ---- P9-R2A (plan amendment D1.25): bell wheel, dial-lever set (free pivot = centre of the engine primitive each part replaces; 'survey' = that primitive's AABB), roof-hole gobo ----
 SPEC.update({
     "BellWheel_A": dict(dims=(89.0, 89.0, 58.0), slots=["MAT_Iron", "MAT_Bronze"], ucx=1, ucx_boxes=[(-42, 42, -42, 42, 0, 58)], tris_max=12000, struct="bellwheel"),
-    "DialLever_Backplate": dict(dims=(6.8, 30.0, 90.0), bmin=(-3.0, -15.0, -45.0), survey=(6.0, 30.0, 90.0), slots=["MAT_Wood", "MAT_Iron"], ucx=0, free_pivot=True, struct="dl_backplate"),
-    "DialLever_Quadrant": dict(dims=(3.4, 4.0, 60.0), bmin=(-1.9, -2.0, -30.0), survey=(3.0, 4.0, 60.0), slots=["MAT_Iron"], ucx=0, free_pivot=True, struct="dl_quadrant"),
+    "DialLever_Backplate": dict(dims=(15.35, 30.0, 122.5), bmin=(-3.35, -15.0, -45.0), slots=["MAT_Wood", "MAT_Iron"], ucx=0, free_pivot=True, struct="dl_backplate"),   # R2-A2: + pulley bracket and eyelet chain, Z to 77.5
+    "DialLever_Quadrant": dict(dims=(53.98, 5.5, 64.04), bmin=(-6.0, -0.3, -32.02), slots=["MAT_Iron", "MAT_Paint"], ucx=0, free_pivot=True, struct="dl_quadrant"),   # R2-A2: sector plate R 48, pivot = sector centre
     "DialLever_Arm": dict(dims=(4.0, 3.9, 45.0), bmin=(-2.0, -1.95, -22.5), survey=(3.0, 3.0, 45.0), slots=["MAT_Iron", "MAT_Wood"], ucx=0, free_pivot=True, struct="dl_arm"),
-    "DialLever_Weight": dict(dims=(10.0, 10.0, 53.84), bmin=(-5.0, -5.0, -7.0), survey=(10.0, 10.0, None), slots=["MAT_Iron"], ucx=0, free_pivot=True, struct="dl_weight"),
+    "DialLever_Weight": dict(dims=(11.42, 11.07, 9.9), bmin=(-5.8, -5.53, -4.95), slots=["MAT_Iron"], ucx=0, free_pivot=True, struct="dl_weight"),   # R2-A2: squat O11 ball, collar, no chain
     "DialLever_NotchStop": dict(dims=(5.0, 4.5, 3.0), bmin=(-2.5, -2.25, -1.5), survey=(6.0, 5.0, 2.5), slots=["MAT_Iron", "MAT_Paint"], ucx=0, free_pivot=True, struct="dl_notchstop"),
     "Gobo_RoofHole": dict(prefix=CP, dims=(2.0, 110.0, 110.0), slots=["MAT_Iron"], ucx=0, pivot="centre", struct="gobo"),
 })
@@ -341,6 +341,17 @@ def chk_backplate(bvh, ob, spec, notes, fail):
         notes.append("rivet heads along the strap at z %g: %d (4)" % (zc, n))
         if n != 4:
             fail("%d rivets on the strap at z %g, expected 4" % (n, zc))
+    h = _ray(bvh, 7.0, 0.0, 30.0, (0, 0, 1))
+    _expect(notes, fail, "pulley wheel groove bottom z (O10 at z 50, groove r 4.1)", h and h[2], 45.9, 0.3)
+    h = _ray(bvh, -10.0, 1.5, 75.0, (1, 0, 0))
+    _expect(notes, fail, "eyelet base plate back face x (flush with the back plane)", h and h[0], -3.0, 0.15)
+    h = _ray(bvh, -10.0, 8.0, 0.0, (1, 0, 0))
+    _expect(notes, fail, "board back plane x", h and h[0], -3.0, 0.25)
+    sc = bpy.context.scene.unit_settings.scale_length * 100.0
+    n_up = sum(1 for q in ob.data.polygons if (ob.matrix_world @ q.center).z * sc > 52.0 and q.material_index == 1)
+    notes.append("iron faces above z 52 (wheel top, chain, eyelet): %d" % n_up)
+    if n_up < 500:
+        fail("chain / eyelet faces %d" % n_up)
     n_w = sum(1 for p in ob.data.polygons if p.material_index == 0)
     n_i = sum(1 for p in ob.data.polygons if p.material_index == 1)
     notes.append("Wood faces %d, Iron faces %d" % (n_w, n_i))
@@ -349,17 +360,37 @@ def chk_backplate(bvh, ob, spec, notes, fail):
 
 
 def chk_quadrant(bvh, ob, spec, notes, fail):
-    zs = [-29.5 + 0.1 * i for i in range(591)]
-    hits = [((_ray(bvh, 10.0, 0.0, z, (-1, 0, 0)) or (9.0,))[0] < 1.0) for z in zs]
+    """R2-A2 sector plate (pivot = sector centre, XZ plane, R 48, +-42 deg): 3 V-notches through the rim, 3 pegs on the -Y face at R 39, foot at x -6."""
+    n = 1641
+    angs = [-41.0 + 0.05 * i for i in range(n)]
+    hits = [_ray(bvh, 47.6 * math.cos(math.radians(a)), 10.0, 47.6 * math.sin(math.radians(a)), (0, -1, 0)) is None for a in angs]
     runs = _scan_runs(hits)
-    cen = [(zs[a] + zs[b]) / 2.0 for a, b in runs]
-    ht = [zs[b] - zs[a] + 0.1 for a, b in runs]
-    notes.append("slots on the +X face at z %s heights %s" % ([round(c, 2) for c in cen], [round(t, 2) for t in ht]))
-    want = [-22.94, 0.0, 22.94]
-    if len(runs) != 3 or any(abs(c - w) > 0.4 for c, w in zip(cen, want)) or any(abs(t - 6.0) > 0.6 for t in ht):
-        fail("notch slots %s heights %s, expected centres %s height 6" % (cen, ht, want))
-    h = _ray(bvh, 10.0, 0.0, 10.0, (-1, 0, 0))
-    _expect(notes, fail, "bar front between slots x", h and h[0], 1.5, 0.15)
+    cen = [(angs[a] + angs[b]) / 2.0 for a, b in runs]
+    notes.append("rim notches (R 47.6) at %s deg" % [round(c, 2) for c in cen])
+    if len(runs) != 3 or any(abs(c - w) > 0.4 for c, w in zip(cen, (-35.0, 0.0, 35.0))):
+        fail("notches found at %s deg, expected -35 / 0 / 35" % cen)
+    for deg in (-35.0, 0.0, 35.0):
+        a = math.radians(deg)
+        h = _ray(bvh, 39.0 * math.cos(a), -10.0, 39.0 * math.sin(a), (0, 1, 0))
+        _expect(notes, fail, "peg tip y at %g deg" % deg, h and h[1], -0.3, 0.2)
+    a = math.radians(-17.5)
+    h = _ray(bvh, 39.0 * math.cos(a), -10.0, 39.0 * math.sin(a), (0, 1, 0))
+    _expect(notes, fail, "plate -Y face between pegs y", h and h[1], 1.7, 0.2)
+    a = math.radians(-17.0)
+    h = _ray(bvh, 47.0 * math.cos(a), 10.0, 47.0 * math.sin(a), (0, -1, 0))
+    _expect(notes, fail, "rim top y", h and h[1], 5.2, 0.25)
+    h = _ray(bvh, -20.0, 2.4, 0.0, (1, 0, 0))
+    _expect(notes, fail, "mounting foot back x", h and h[0], -6.0, 0.2)
+    for deg, want in ((40.0, True), (44.0, False)):
+        a = math.radians(deg)
+        h = _ray(bvh, 30.0 * math.cos(a), 10.0, 30.0 * math.sin(a), (0, -1, 0))
+        notes.append("sector edge probe at %g deg R 30: %s" % (deg, "plate" if h else "empty"))
+        if (h is not None) != want:
+            fail("sector edge probe at %g deg: %s" % (deg, "plate" if h else "empty"))
+    n_p = sum(1 for q in ob.data.polygons if q.material_index == 1)
+    notes.append("Paint faces %d" % n_p)
+    if n_p < 3 * 12:
+        fail("paint (peg) faces %d" % n_p)
 
 
 def chk_arm(bvh, ob, spec, notes, fail):
@@ -384,20 +415,19 @@ def chk_arm(bvh, ob, spec, notes, fail):
 
 
 def chk_weight(bvh, ob, spec, notes, fail):
-    h = _ray(bvh, 0.0, 0.0, 80.0, (0, 0, -1))
-    _expect(notes, fail, "chain top (terminal ring) z", h and h[2], 46.84, 0.6)
-    h = _ray(bvh, 3.0, 0.0, 30.0, (0, 0, -1))
-    _expect(notes, fail, "body upper shoulder z at r 3", h and h[2], 4.8, 0.6)
-    h = _ray(bvh, 10.0, 0.0, -1.8, (-1, 0, 0))
-    _expect(notes, fail, "body max radius x (z -1.8)", h and h[0], 5.0, 0.15)
+    """R2-A2 squat cast-iron ball O11 (z 9.9), seam band, collar ring on the -X side, no chain."""
+    h = _ray(bvh, 15.0, 0.0, 0.0, (-1, 0, 0))
+    _expect(notes, fail, "ball + seam radius x (z 0)", h and h[0], 5.62, 0.15)
+    h = _ray(bvh, 15.0, 0.0, 2.0, (-1, 0, 0))
+    _expect(notes, fail, "ball radius x (z 2)", h and h[0], 5.03, 0.2)
     h = _ray(bvh, 0.0, 0.0, -20.0, (0, 0, 1))
-    _expect(notes, fail, "body bottom z", h and h[2], -7.0, 0.3)
-    # links: the chain is made of many separate torus shells above the body
-    sc = bpy.context.scene.unit_settings.scale_length * 100.0
-    n_up = sum(1 for p in ob.data.polygons if (ob.matrix_world @ p.center).z * sc > 12.0)
-    notes.append("faces above z 12 (chain): %d" % n_up)
-    if n_up < 400:
-        fail("chain has only %d faces" % n_up)
+    _expect(notes, fail, "ball bottom z (squat)", h and h[2], -4.95, 0.2)
+    h = _ray(bvh, 0.0, 0.0, 20.0, (0, 0, -1))
+    _expect(notes, fail, "ball top z (no chain)", h and h[2], 4.95, 0.2)
+    h = _ray(bvh, -15.0, 3.0, 0.0, (1, 0, 0))
+    _expect(notes, fail, "collar face x (y 3)", h and h[0], -5.8, 0.2)
+    h = _ray(bvh, -15.0, 0.0, 0.0, (1, 0, 0))
+    _expect(notes, fail, "through the collar bore to the ball x", h and h[0], -5.62, 0.25)
 
 
 def chk_notchstop(bvh, ob, spec, notes, fail):

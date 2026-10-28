@@ -46,19 +46,27 @@ VIEWS = [
 ]
 LEVER_VIEWS = [
     # name, pitch (UE degrees, + = arm up), azimuth, elevation, dist factor
-    ("r2_lever_mid_3q", 0.0, 58, 14, 0.95),
-    ("r2_lever_high_3q", 35.0, 58, 14, 0.95),
-    ("r2_lever_low_3q", -35.0, 58, 14, 0.95),
-    ("r2_lever_high_side", 35.0, 0, 0, 0.95),
-    ("r2_lever_mid_side", 0.0, 0, 0, 0.95),
-    ("r2_lever_low_side", -35.0, 0, 0, 0.95),
-    ("r2_lever_mid_front", 0.0, 90, 4, 0.95),
+    ("r2_lever_mid_3q", 0.0, 58, 14, 1.1),
+    ("r2_lever_high_3q", 35.0, 58, 14, 0.8),
+    ("r2_lever_low_3q", -35.0, 58, 14, 0.8),
+    ("r2_lever_high_side", 35.0, 0, 0, 0.8),
+    ("r2_lever_mid_side", 0.0, 0, 0, 0.8),
+    ("r2_lever_low_side", -35.0, 0, 0, 0.8),
+    ("r2_lever_mid_top", 0.0, 0, 82, 0.8),
+    ("r2_lever_high_back3q", 35.0, 125, 14, 0.8),
 ]
 CYCLES_VIEWS = [
     ("r2_cycles_bellwheel", "wheel", 28, 22, 1.1),
     ("r2_cycles_bellwheel_under", "wheel", 18, -30, 1.1),
-    ("r2_cycles_lever_mid", "lever0", 58, 14, 1.0),
-    ("r2_cycles_lever_high", "lever35", 58, 14, 1.0),
+    ("r2_cycles_lever_mid_3q", "lever0", 58, 14, 1.3),
+    ("r2_cycles_lever_high_3q", "lever35", 58, 14, 1.3),
+    ("r2_cycles_lever_low_3q", "lever-35", 58, 14, 1.3),
+    ("r2_cycles_lever_mid_side", "lever0", 0, 0, 1.3),
+    ("r2_cycles_lever_high_side", "lever35", 0, 0, 1.3),
+    ("r2_cycles_lever_low_side", "lever-35", 0, 0, 1.3),
+    ("r2_cycles_lever_chain_top", "lever0", 40, 20, 1.0),
+    ("r2_cycles_lever_chain_top_side", "lever0", 0, 0, 1.0),
+    ("r2_cycles_lever_high_back3q", "lever35", 125, 14, 1.3),
 ]
 
 
@@ -174,11 +182,24 @@ def assemble_lever(meshes, pitch, with_text=True):
     p = math.radians(pitch)
     pivot = Vector((6.0, 0.0, 45.0))
     put("DialLever_Backplate", (0.0, 0.0, 45.0), 0.0)
-    put("DialLever_Quadrant", (46.0, 12.0, 45.0), 0.0)
-    for z in (22.06, 45.0, 67.94):
-        put("DialLever_NotchStop", (46.0, 12.0, z), 0.0)
+    put("DialLever_Quadrant", (6.0, 4.0, 45.0), 0.0)                       # D1.26: rail at the handlePivot location + (0, 4, 0); notch stops hidden
     put("DialLever_Arm", tuple(pivot + Vector((22.5 * math.cos(p), 0.0, 22.5 * math.sin(p)))), -(pitch + 90.0))
     put("DialLever_Weight", tuple(pivot + Vector((47.0 * math.cos(p), 0.0, 47.0 * math.sin(p)))), -pitch)
+    bpy.ops.mesh.primitive_plane_add(size=1.0)                              # review-only wall behind the board (back plane x -3) so the chain can be seen entering it
+    wall = bpy.context.object
+    wall.name = "RV_wall"
+    wall.scale = (300.0, 300.0, 1.0)
+    wall.rotation_euler = (0.0, math.radians(90), 0.0)
+    wall.location = (-3.05, 0.0, 60.0)
+    wm = bpy.data.materials.get("rv_wall") or bpy.data.materials.new("rv_wall")
+    wm.diffuse_color = (0.42, 0.40, 0.38, 1.0)
+    wm.use_nodes = True
+    bs = next((n for n in wm.node_tree.nodes if n.type == 'BSDF_PRINCIPLED'), None)
+    if bs is not None:
+        bs.inputs['Base Color'].default_value = (0.30, 0.28, 0.26, 1.0)
+        bs.inputs['Roughness'].default_value = 0.95
+    wall.data.materials.append(wm)
+    objs.append(wall)
     if with_text:
         cu = bpy.data.curves.new("lbl", 'FONT')
         cu.body = "A"
@@ -212,7 +233,7 @@ def run_lever(meshes, only, out):
         objs = assemble_lever(meshes, pitch)
         for o in objs:
             o.hide_render = False
-        mn, mx = RK.world_bbox([o for o in objs if o.type == 'MESH'])
+        mn, mx = RK.world_bbox([o for o in objs if o.type == 'MESH' and o.name != 'RV_wall'])
         RK.frame(cam, sc, mn, mx, az, el, df)
         studio(sc, az)
         sc.render.filepath = os.path.join(out, name + ".png")
@@ -275,9 +296,11 @@ def run_cycles(meshes, only, out):
             objs = []
         else:
             objs = assemble_lever(meshes, float(what[5:]), with_text=False)
-            sel = [o for o in objs if o.type == 'MESH']
+            sel = [o for o in objs if o.type == 'MESH' and o.name != 'RV_wall']
         bpy.context.view_layer.update()
         mn, mx = RK.world_bbox(sel)
+        if name.endswith('chain_top') or name.endswith('chain_top_side'):
+            mn, mx = Vector((-6.0, -14.0, 95.0)), Vector((14.0, 14.0, 125.0))
         centre = (mn + mx) * 0.5
         size = max((mx - mn).length, 1.0)
         for l in [o for o in bpy.data.objects if o.type == 'LIGHT']:

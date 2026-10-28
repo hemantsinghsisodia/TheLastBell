@@ -37,21 +37,21 @@
  {
   "name": "SM_LB_Prop_DialLever_Backplate",
   "min": [
-   -3.0,
+   -3.35,
    -15.0,
    -45.0
   ],
   "max": [
-   3.8,
+   12.0,
    15.0,
-   45.0
+   77.5
   ],
   "dims": [
-   6.8,
+   15.35,
    30.0,
-   90.0
+   122.5
   ],
-  "tris": 2110,
+  "tris": 3850,
   "slots": [
    "MAT_Wood",
    "MAT_Iron"
@@ -66,32 +66,34 @@
    0.0,
    0.0
   ],
-  "note": "R2-A replaces Backplate (engine Cube scale 0.06 x 0.3 x 0.9 = X +-3, Y +-15, Z +-45), pivot = centre: oak board with a V seam, two iron straps (z -34, +17) with 4 rivets each, pivot washer plate at z 0, iron label plate 18 x 18 (y +-9, z 26..44 mesh-local = 71..89 actor) front face x 3.5 (text at 3.6); fronts proud to x 3.8",
+  "note": "R2-A replaces Backplate (engine Cube scale 0.06 x 0.3 x 0.9 = X +-3, Y +-15, Z +-45), pivot = centre: oak board with a V seam, two iron straps (z -34, +17) with 4 rivets each, pivot washer plate at z 0, iron label plate 18 x 18 (y +-9, z 26..44 mesh-local = 71..89 actor) front face x 3.5 (text at 3.6); fronts proud to x 3.8. R2-A2: iron cap + pulley bracket at the top (wheel O10 at x 7, z 50 = actor 95, axle along Y) and an 8-link static chain from the wheel up and back into an eyelet ring on a plate flush with the back plane (x -3) at z 75 (actor 120); taller than the primitive: Z -45..76.7",
   "seconds": 0.0
  },
  {
   "name": "SM_LB_Prop_DialLever_Quadrant",
   "min": [
-   -1.9,
-   -2.0,
-   -30.0
+   -6.0,
+   -0.3,
+   -32.02
   ],
   "max": [
-   1.5,
-   2.0,
-   30.0
+   47.98,
+   5.2,
+   32.02
   ],
   "dims": [
-   3.4,
-   4.0,
-   60.0
+   53.98,
+   5.5,
+   64.04
   ],
-  "tris": 302,
+  "tris": 1416,
   "slots": [
-   "MAT_Iron"
+   "MAT_Iron",
+   "MAT_Paint"
   ],
   "slots_used": [
-   0
+   0,
+   1
   ],
   "ucx": 0,
   "pivot_shift_applied": [
@@ -99,8 +101,8 @@
    0.0,
    0.0
   ],
-  "note": "R2-A replaces Rail (engine Cube scale 0.03 x 0.04 x 0.6 = X +-1.5, Y +-2, Z +-30), pivot = centre: iron bar with three 6 x 1.4 notch slots on the +X face at mesh-local z -22.94, 0, +22.94 (= 40 sin(notchPitch 35 deg): low / mid / high arm angle -35 / 0 / +35 deg) and a stud behind each",
-  "seconds": 0.1
+  "note": "R2-A2 replaces Rail: iron sector plate, pivot = sector centre (lever rotation axis) in the mesh XZ plane, R 48, -42..+42 deg about +X, 1.5 thick (mesh y 1.7..3.2), raised rim 2 x 2 (R 46..48, +Y side), three V-notches 2 deep at -35 / 0 / +35 deg, three bone-white pegs O2.5 x 2 (MAT_Paint) on the -Y face at R 39 (toward the arm), mounting foot x -6..2. Place at (6, 4, 45) relative to the actor, rotation 0, scale 1 (D1.26)",
+  "seconds": 0.2
  },
  {
   "name": "SM_LB_Prop_DialLever_Arm",
@@ -140,21 +142,21 @@
  {
   "name": "SM_LB_Prop_DialLever_Weight",
   "min": [
-   -5.0,
-   -5.0,
-   -7.0
+   -5.8,
+   -5.53,
+   -4.95
   ],
   "max": [
-   5.0,
-   5.0,
-   46.84
+   5.62,
+   5.53,
+   4.95
   ],
   "dims": [
-   10.0,
-   10.0,
-   53.84
+   11.42,
+   11.07,
+   9.9
   ],
-  "tris": 1840,
+  "tris": 796,
   "slots": [
    "MAT_Iron"
   ],
@@ -167,7 +169,7 @@
    0.0,
    0.0
   ],
-  "note": "R2-A replaces Weight (engine Sphere scale 0.1 = O10, centred on the arm tip), pivot = body centre: iron counterweight O10 x 14 (mesh z -7..7) with a top ring and 12 chain links rising from it to the terminal ring at mesh z about +47 (the old AABB extended upward). The chain's upper end is free: nothing in the greybox hierarchy holds it",
+  "note": "R2-A2 replaces Weight: squat cast-iron ball O11 x 9.9 centred on the arm tip (component placement unchanged), cast collar ring (x -5.8..-4.3, O7.8, bore O4.2 for the O4 grip) on the pivot side, seam band; no chain",
   "seconds": 0.0
  },
  {
@@ -222,7 +224,7 @@
    110.0,
    110.0
   ],
-  "tris": 504,
+  "tris": 572,
   "slots": [
    "MAT_Iron"
   ],
@@ -235,25 +237,25 @@
    0.0,
    0.0
   ],
-  "note": "R2-A aperture-mask plate 110 x 110 x 2 (pivot centre, local X = thickness along the spot's forward axis, local Y/Z = the spot's right/up). Cut-out = the RoofSlab_Broken hole outline (exact boolean of build_kit.hole_cutters(441), 49 verts) at slab-local Z 12, projected from Light_Chapel_Moon_Roof (loc (5205.4, -1324.3, 2914.1), rot (-38.0, 35.0, 0.0)) onto the plane D = 150; mean distance spot -> slab 1981 so scale 0.0757 (1 cm in the plane = 13.2 cm at the slab); outward offset 1.5 cm (true disc dilation); outline simplified to 122 verts. Cut-out bbox y -15.6..17.8 z -23.7..24.1",
+  "note": "R2-A aperture-mask plate 110 x 110 x 2 (pivot centre, local X = thickness along the spot's forward axis, local Y/Z = the spot's right/up). Cut-out = the RoofSlab_Broken hole outline (exact boolean of build_kit.hole_cutters(441), 49 verts) at slab-local Z 12, projected from Light_Chapel_Moon_Roof (loc (5205.4, -1324.3, 2914.1), rot (-38.0, 35.0, 0.0)) onto the plane D = 150; mean distance spot -> slab 1981 so scale 0.0757 (1 cm in the plane = 13.2 cm at the slab); outward offset 0.7 cm (true disc dilation); outline simplified to 139 verts. Cut-out bbox y -14.8..17.0 z -22.9..23.3",
   "seconds": 0.4,
   "extra": {
-   "outline_verts": 122,
+   "outline_verts": 139,
    "source_outline_verts": 49,
    "area_before_offset": 821.84,
-   "area_after_offset": 1015.37,
+   "area_after_offset": 907.51,
    "scale": 0.07573,
    "mean_distance": 1980.8,
    "bbox_y": [
-    -15.6,
-    17.8
+    -14.8,
+    17.0
    ],
    "bbox_z": [
-    -23.7,
-    24.1
+    -22.9,
+    23.3
    ],
    "plane_z": 12.0,
-   "offset_cm": 1.5
+   "offset_cm": 0.7
   }
  }
 ]

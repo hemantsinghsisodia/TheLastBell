@@ -3358,12 +3358,70 @@ def build_r2_backplate():
             rot(rv, 'Y', 90.0)
             shift(rv, 3.5, y, z)
             parts.append(rv)
+    # ---- R2-A2 (D1.26): pulley bracket at the board top, static chain up and back into a wall eyelet ----
+    cap = K.box(-3.35, 3.35, -6.0, 6.0, 43.5, 46.5, IR, 0.25)              # iron cap wrapping the top end of the board
+    parts.append(cap)
+    PC = (7.0, 50.0)                                                        # pulley centre (x, z): O10 wheel, 4 cm in front of the board face, axle at local Z 50
+    for sg in (-1, 1):                                                      # two cheek plates from the cap to the axle (hull of the base strip and a disc round the axle)
+        pts = []
+        for y in (sg * 2.6, sg * 3.3):
+            pts += [Vector((-1.5, y, 45.5)), Vector((3.5, y, 45.5))]
+            pts += [Vector((PC[0] + 2.3 * math.cos(2 * math.pi * i / 12), y, PC[1] + 2.3 * math.sin(2 * math.pi * i / 12))) for i in range(12)]
+        parts.append(K.hull_from_points(pts, IR))
+    axle = K.cylinder(0.9, 7.4, 10, IR)
+    rot(axle, 'X', 90.0)                                                    # axis Z -> -Y
+    shift(axle, PC[0], 3.7, PC[1])
+    parts.append(axle)
+    for sg in (-1, 1):
+        hd = K.cylinder(1.4, 0.5, 10, IR)
+        rot(hd, 'X', 90.0)
+        shift(hd, PC[0], 3.8 if sg > 0 else -3.3, PC[1])
+        parts.append(hd)
+    wheel = K.lathe_z([(0.0, -1.5), (5.0, -1.5), (5.0, -0.9), (4.1, -0.35), (4.1, 0.35), (5.0, 0.9), (5.0, 1.5), (0.0, 1.5)], 24, IR)   # grooved pulley wheel O10 x 3
+    rot(wheel, 'X', 90.0)
+    shift(wheel, PC[0], 0.0, PC[1])
+    parts.append(wheel)
+    E = Vector((-0.9, 75.0))                                                # eyelet ring centre (x, z): 30 cm above the board top (z 45), base plate flush with the back plane x -3
+    plate_e = K.box(-3.0, -2.4, -2.2, 2.2, 72.5, 77.5, IR, 0.12)
+    parts.append(plate_e)
+    ring_e = torus(1.2, 0.45, 12, 6, IR)
+    rot(ring_e, 'X', 90.0)
+    shift(ring_e, E.x, 0.0, E.y)
+    parts.append(ring_e)
+    for yy in (-1.4, 1.4):
+        for zz in (73.5, 76.5):
+            rv = dome_z(0.45, 0.2, 8, IR)
+            rot(rv, 'Y', 90.0)
+            shift(rv, -2.4, yy, zz)
+            parts.append(rv)
+    C = Vector(PC)                                                          # tangent from the eyelet to the groove circle (front side), chain centre-line radius 4.3
+    dv = C - E
+    dd = dv.length
+    base = math.atan2(dv.y, dv.x)
+    off = math.asin(4.3 / dd)
+    ang = base + off                                                        # rotate the direction toward +x side of the wheel: tangent point on the front-top
+    tl = math.sqrt(dd * dd - 4.3 * 4.3)
+    T = E + Vector((math.cos(ang), math.sin(ang))) * tl
+    ax = (T - E).normalized()
+    lc = (T - E).length
+    NL, r_w = 8, 0.42
+    pitch = (lc - 4.0) / (NL - 1)
+    stretch = (pitch / 2.0 + r_w) / 0.95
+    tilt = math.degrees(math.atan2(ax.x, ax.y))                             # rotation about Y that takes Z onto the chain axis (x, z)
+    for k in range(NL):
+        ctr = E + ax * (2.0 + k * pitch)
+        lk = chain_link(0.95, r_w, stretch, IR, 'yz' if k % 2 == 0 else 'xz')
+        rot(lk, 'Y', tilt)
+        shift(lk, ctr.x, 0.0, ctr.y)
+        parts.append(lk)
     bm = join(parts)
     for p in parts:
         p.free()
     return r2_piece(PREFIX + "DialLever_Backplate", bm, ["MAT_Wood", "MAT_Iron"], seat="none",
                     note="R2-A replaces Backplate (engine Cube scale 0.06 x 0.3 x 0.9 = X +-3, Y +-15, Z +-45), pivot = centre: oak board with a V seam, two iron straps (z -34, +17) with 4 rivets each, "
-                         "pivot washer plate at z 0, iron label plate 18 x 18 (y +-9, z 26..44 mesh-local = 71..89 actor) front face x 3.5 (text at 3.6); fronts proud to x 3.8")
+                         "pivot washer plate at z 0, iron label plate 18 x 18 (y +-9, z 26..44 mesh-local = 71..89 actor) front face x 3.5 (text at 3.6); fronts proud to x 3.8. "
+                         "R2-A2: iron cap + pulley bracket at the top (wheel O10 at x 7, z 50 = actor 95, axle along Y) and an 8-link static chain from the wheel up and back into an eyelet ring on a plate flush with the back plane "
+                         "(x -3) at z 75 (actor 120); taller than the primitive: Z -45..76.7")
 
 
 # ---------------------------------------------------------------------------------------------- 2b: quadrant (rail)
@@ -3371,21 +3429,51 @@ R2_NOTCH_Z = 40.0 * math.sin(math.radians(35.0))                          # 22.9
 
 
 def build_r2_quadrant():
-    IR = 0
-    bar = K.box(-1.5, 1.5, -2.0, 2.0, -30.0, 30.0, IR, 0.35)
-    for zc in (-R2_NOTCH_Z, 0.0, R2_NOTCH_Z):                              # three notch slots, 6 tall x 1.4 deep, across the full width of the front (+X) face
-        cut = K.box(0.1, 2.5, -2.5, 2.5, zc - 3.0, zc + 3.0, IR, 0.0)
-        bar = bool_op(bar, cut, 'DIFFERENCE', 1)
-        cut.free()
-    for zc in (-R2_NOTCH_Z, 0.0, R2_NOTCH_Z):                              # small studs on the back face mark the same three heights
-        sd = dome_z(0.7, 0.4, 8, IR)
-        rot(sd, 'Y', -90.0)                                                # +Z -> -X
-        shift(sd, -1.5, 0.0, zc)
-        K.bm_append(bar, sd)
-        sd.free()
-    return r2_piece(PREFIX + "DialLever_Quadrant", bar, ["MAT_Iron"], seat="none",
-                    note="R2-A replaces Rail (engine Cube scale 0.03 x 0.04 x 0.6 = X +-1.5, Y +-2, Z +-30), pivot = centre: iron bar with three 6 x 1.4 notch slots on the +X face at "
-                         "mesh-local z -22.94, 0, +22.94 (= 40 sin(notchPitch 35 deg): low / mid / high arm angle -35 / 0 / +35 deg) and a stud behind each")
+    """R2-A2 (D1.26): iron sector plate in the mesh XZ plane, pivot = the sector centre (the lever's rotation axis); radius 48, -42..+42 deg about +X.
+    The plate sits at mesh y 1.7..3.2 (the child BP places the mesh at (6, 4, 45), so actual y 5.7..7.2, clear of the O11 weight ball that swings at y 0 +-5.5);
+    the raised rim (2 x 2, R 46..48) is on the +Y side, the bone-white pegs on the -Y face (toward the arm), so they sit where the grip passes."""
+    IR, PT = 0, 1
+    R0, R1, Y0, Y1 = 46.0, 48.0, 1.7, 3.2
+    arc = [math.radians(a) for a in range(-42, 43, 2)]
+    plate = K.prism([(0.0, 0.0)] + [(R1 * math.cos(a), R1 * math.sin(a)) for a in arc], 'y', Y0, Y1, IR)
+    rim = K.prism([(R1 * math.cos(a), R1 * math.sin(a)) for a in arc] + [(R0 * math.cos(a), R0 * math.sin(a)) for a in arc[::-1]], 'y', Y1 - 0.2, Y1 + 2.0, IR)
+    K.bevel_all(plate, 0.15, 20.0)
+    K.bevel_all(rim, 0.15, 20.0)
+    for deg in (-35.0, 0.0, 35.0):                                         # V-notches 2 deep through the rim (apex at R 46, 2.8 wide at R 48)
+        a = math.radians(deg)
+        u, t = (math.cos(a), math.sin(a)), (-math.sin(a), math.cos(a))
+        tri = [(R0 * u[0], R0 * u[1]), (49.0 * u[0] + 2.1 * t[0], 49.0 * u[1] + 2.1 * t[1]), (49.0 * u[0] - 2.1 * t[0], 49.0 * u[1] - 2.1 * t[1])]
+        for nm in ("plate", "rim"):
+            cut = K.prism(tri, 'y', -1.0, 6.0, IR)
+            tgt = plate if nm == "plate" else rim
+            res = bool_op(tgt, cut, 'DIFFERENCE', 2)
+            cut.free()
+            tgt.free()
+            if nm == "plate":
+                plate = res
+            else:
+                rim = res
+    parts = [plate, rim]
+    for deg in (-35.0, 0.0, 35.0):                                         # bone-white pegs O2.5 x 2 on the arm side of the plate (y 1.7 down to -0.3), at R 39 = where the grip (R 33..45) passes
+        a = math.radians(deg)
+        pg = K.cylinder(1.25, 2.0, 12, PT)
+        rot(pg, 'X', 90.0)                                                 # axis Z -> -Y
+        shift(pg, 39.0 * math.cos(a), Y0, 39.0 * math.sin(a))
+        parts.append(pg)
+    foot = K.box(-6.0, 2.0, Y0, Y1, -3.5, 3.5, IR, 0.2)                   # mounting foot at the narrow end, back to the board face (actual x 0..8; board face at 3)
+    parts.append(foot)
+    for zz in (-2.0, 2.0):
+        rv = dome_z(0.6, 0.3, 8, IR)
+        rot(rv, 'X', -90.0)                                                # +Z -> +Y
+        shift(rv, -3.0, Y1, zz)
+        parts.append(rv)
+    bm = join(parts)
+    for q in parts:
+        q.free()
+    return r2_piece(PREFIX + "DialLever_Quadrant", bm, ["MAT_Iron", "MAT_Paint"], seat="none",
+                    note="R2-A2 replaces Rail: iron sector plate, pivot = sector centre (lever rotation axis) in the mesh XZ plane, R 48, -42..+42 deg about +X, 1.5 thick (mesh y 1.7..3.2), raised rim 2 x 2 (R 46..48, +Y side), "
+                         "three V-notches 2 deep at -35 / 0 / +35 deg, three bone-white pegs O2.5 x 2 (MAT_Paint) on the -Y face at R 39 (toward the arm), mounting foot x -6..2. "
+                         "Place at (6, 4, 45) relative to the actor, rotation 0, scale 1 (D1.26)")
 
 
 # ---------------------------------------------------------------------------------------------- 2c: arm
@@ -3418,38 +3506,21 @@ def build_r2_arm():
 
 # ---------------------------------------------------------------------------------------------- 2d: weight on a chain
 def build_r2_weight():
+    """R2-A2 (D1.26): squat cast-iron counterweight ball O11 (z scaled 0.9) centred on the arm tip, a cast collar ring on the pivot side where the arm enters, no chain."""
     IR = 0
-    parts = []
-    body = K.lathe_z([(0.0, -7.0), (1.8, -6.7), (3.3, -5.8), (4.5, -4.0), (5.0, -1.8), (4.9, 0.2), (4.2, 2.4), (3.2, 4.4), (2.5, 5.8), (2.2, 6.3), (2.7, 6.5), (2.7, 7.0), (0.0, 7.0)], 16, IR)       # plumb-bob counterweight O10 x 14, mesh z -7..7 (teardrop with a neck collar, so it does not read as a mallet head)
-    parts.append(body)
-    eye = torus(1.7, 0.55, 12, 6, IR)                                      # top ring (plane XZ)
-    rot(eye, 'X', 90.0)
-    shift(eye, 0.0, 0.0, 8.55)
-    parts.append(eye)
-    pitch, r_w, stretch = 2.77, 0.42, 1.85
-    semi = 0.95 * stretch
-    zc = 10.66
-    k = 0
-    while zc + semi + r_w + 2.9 < 47.0 + 0.01:                             # links interlock at a pitch equal to the inner length; the last one leaves room for the terminal ring
-        lk = chain_link(0.95, r_w, stretch, IR, 'yz' if k % 2 == 0 else 'xz')
-        shift(lk, 0.0, 0.0, zc)
-        parts.append(lk)
-        zc += pitch
-        k += 1
-    zlast = zc - pitch
-    zt = (zlast + semi - 0.6) + 2.0
-    term = torus(2.0, 0.55, 12, 6, IR)                                     # terminal ring, plane perpendicular to the last link's
-    rot(term, 'X', 90.0)
-    if (k - 1) % 2 != 0:                                                   # last link is 'xz' -> terminal 'yz'
-        rot(term, 'Z', 90.0)
-    shift(term, 0.0, 0.0, zt)
-    parts.append(term)
-    bm = join(parts)
-    for p in parts:
-        p.free()
+    ball = sphere_z(5.5, 18, 10, IR)
+    tf(ball, Matrix.Diagonal((1.0, 1.0, 0.9, 1.0)))
+    collar = K.ring(3.9, 2.1, 1.5, 18, IR)
+    K.bevel_all(collar, 0.2, 20.0)
+    rot(collar, 'Y', 90.0)                                                 # axis Z -> +X
+    shift(collar, -5.8, 0.0, 0.0)
+    seam = K.ring(5.62, 5.0, 0.5, 18, IR)                                  # cast seam band round the equator
+    shift(seam, 0.0, 0.0, -0.25)
+    bm = join([ball, collar, seam])
+    for q in (ball, collar, seam):
+        q.free()
     return r2_piece(PREFIX + "DialLever_Weight", bm, ["MAT_Iron"], seat="none",
-                    note="R2-A replaces Weight (engine Sphere scale 0.1 = O10, centred on the arm tip), pivot = body centre: iron counterweight O10 x 14 (mesh z -7..7) with a top ring and %d chain links "
-                         "rising from it to the terminal ring at mesh z about +47 (the old AABB extended upward). The chain's upper end is free: nothing in the greybox hierarchy holds it" % k)
+                    note="R2-A2 replaces Weight: squat cast-iron ball O11 x 9.9 centred on the arm tip (component placement unchanged), cast collar ring (x -5.8..-4.3, O7.8, bore O4.2 for the O4 grip) on the pivot side, seam band; no chain")
 
 
 # ---------------------------------------------------------------------------------------------- 2e: notch stop
@@ -3469,7 +3540,7 @@ def build_r2_notchstop():
 GOBO_SPOT_LOC = (5205.4, -1324.3, 2914.1)       # Light_Chapel_Moon_Roof (SpotLight_7), read from the editor in R2-A
 GOBO_SPOT_ROT = (-38.0, 35.0, 0.0)              # pitch, yaw, roll
 GOBO_D = 150.0                                  # gobo plane distance along the spot's forward axis
-GOBO_OFFSET = 1.5                               # outward offset of the cut-out, cm in the gobo plane
+GOBO_OFFSET = 0.7                               # outward offset of the cut-out, cm in the gobo plane
 GOBO_PLANE_Z = 12.0                             # slab-local Z of the outline plane (= ROOF_HOLE_Z, the middle of the 0..21 slab: halves the parallax of the oblique beam)
 GOBO_SIZE = 110.0
 GOBO_THICK = 2.0

@@ -105,3 +105,6 @@ set B="C:\Program Files\Blender Foundation\Blender 5.2\blender.exe"
   (`roof_hole_outline()`, the exact boolean of `build_kit.hole_cutters(441)`) at slab-local Z 12, projected from `Light_Chapel_Moon_Roof` onto the plane D = 150 with `p = L + v * D / (v.d)` (as `Tools/crypt/r1b/s3_gobos.py`, there on the bbox corners),
   dilated by a true 1.5 cm disc (raster at 0.1 cm, traced, Douglas-Peucker 0.1) and cut from the plate with an exact boolean. Constants (`GOBO_SPOT_LOC/ROT`, `GOBO_D`, `GOBO_OFFSET`, `GOBO_PLANE_Z`) are at the top of that section of `build_props.py`.
   The projection overlay is `Docs/ArtTest/props/r2_gobo_projection.png`.
+- **R2-A2 (D1.26)**: `DialLever_Quadrant` is a sector plate (R 48, -42..+42 deg, pivot = sector centre, placed at (6, 4, 45); slots Iron + Paint pegs), `DialLever_Weight` a squat O11 ball with a collar and no chain,
+  `DialLever_Backplate` gained a pulley bracket and an 8-link chain into a wall eyelet (Z to 77.5); `DialLever_NotchStop` is built but unused. Gobo `GOBO_OFFSET` is now 0.7 (open area 907 cm2). Placement and bounds: `Docs/ArtTest/crypt/survey_diallever.md`.
+  `render_r2.py --set cycles|lever` assembles the lever with the quadrant at (6, 4, 45) and a review wall at x -3.05.
