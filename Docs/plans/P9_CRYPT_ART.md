@@ -793,3 +793,74 @@ This section makes D1.7 (with the D1.11 "D1.7 additions" and the D1.14 "P9-7 add
     - no `TMP_` actors in either world, PIE stopped, throttle restored, editor not dirty;
     - commit in checkpoints `P9-7: …`;
     - report: old → new values; a luma table per pose (mean, % < 0.02, p99, floor p99); pass or fail per target; the capture list.
+
+### D1.16 P9-7 partial outcome and finish set F7 (lead review, 2026-10-28)
+- **Built** (c5bfc12, d8823cf, a25b9ef):
+  - greybox lights dumped and removed;
+  - 16 lights placed (`--check` 16/16);
+  - fires `FX_Crypt_Torch_T1..3` (`PS_Fire_00`, scale 0.7, copied from the current courtyard torch; the 0.22 in P7_FIX2 is outdated) and `FX_Crypt_Brazier` (`PS_Fire_01`, 0.5);
+  - shaft cards `SA_Crypt_G1..3` on `/Engine/BasicShapes/Cylinder` (the RoofHole mesh is chapel-specific: about 2370 × 1740 × 2300 cm, oblique);
+  - `LFV_Crypt_Flood`;
+  - `PP_Crypt` (priority 1, EV100 0.2);
+  - `MI_Crypt_PlaqueSlate`;
+  - tuned values saved.
+  - The run stopped at the capture circuit breaker: `02_landing`, `pool_G1` and `pool_G2` hang CaptureViewport again and again. The editor stayed responsive.
+- **Lead review:** the crypt now reads as intended (p9l_05, 06, 08, d11): very dark, warm torch and candle pools, cold moon shafts, the brazier glow through the chain chamber.
+- **Accepted values:**
+  - G1 560, G2 900, G3 100 lm (G3 is below the JSON range; the plaque pool is in range);
+  - torches 250 and brazier 200 (the −50 % floor);
+  - niche candles 90, sarcophagus candles 67.5, puzzle candles 40.
+- **Accepted deviations:**
+  - Pose 05 p99 0.278: the G1 shaft and the brazier are in view.
+  - Pose 06 mean 0.0351: rounding.
+  - The floor glints on wet cobbles (floor p99 up to 0.68) read as wet stone. The owner judges them in the playtest; `MI_Crypt_Floor` is unchanged.
+  - LFV height falloff 400 and offset 0.
+  - `pool_G1`/`pool_G2` are not recaptured: G1/G2 are unchanged since the tuning-run values (0.412 and 0.307, both in range).
+  - **Drips (D1.7 step 6, stretch): deferred out of Phase 9.** They are not attempted, because of the crash risk; they get done only if the owner asks.
+- **Not accepted:**
+  - **Plaque shadow:** G3 throws a hard diagonal shadow across the plaque, which cuts off "BALA" and "A - HIGH" in the 2 m view.
+  - **Plaque texture:** the roof-slate texture reads as shingles on a wall plaque.
+  - **Poses 10 and 02:** the torch-lit walls push the mean to 0.058 and 0.074.
+
+**Finish set F7** (lighting-vfx, [EDITOR]; same rules as D1.15. Do F7a–F7c, save explicitly and commit before any capture.)
+- **F7a G3 shadow:** on `L_Crypt_Moon_G3`, set `castShadows` false and `bCastVolumetricShadow` false, then read back.
+- **F7b Plaque stone** (`MI_Crypt_PlaqueSlate` only; never edit `MI_Kit_Slate` or `MI_Rock_064*`).
+  - **Candidate A** (the `MI_Rock_064_WA` texture set):
+    - textures: `BaseColorTex` `T_Rock_064_BC`, `NormalTex` `T_Rock_064_N`, `RoughnessTex` `T_Rock_064_R`, `AOTex` `T_Rock_064_AO`, all in `/Game/LastBell/ArtTest/Materials/Rock_064/`; `bUseARM` false;
+    - mapping: `bWorldAlignedUV` true, `WorldTileSizeCm` 250;
+    - colour: `Desaturation` 0.85 (removes the moss green), `BrightnessMul` 0.55;
+    - roughness: keep `RoughnessMin` 0.70 and `RoughnessMax` 0.95.
+  - **Candidate B** (fallback):
+    - textures: `BaseColorTex` `/Game/LastBell/Materials/Textures/T_LB_White_Gray`, `NormalTex` `T_Rock_064_N`;
+    - colour: `BaseColorTint` (0.16, 0.16, 0.17), `Desaturation` 0, `BrightnessMul` 1.0;
+    - `NormalStrength` 0.4; everything else as in A.
+  - Read back every value after each change.
+- **F7c Torch pools:** on `L_Crypt_Torch_T1` and `_T3`, change `attenuationRadius` 700 → 450, and read it back. Lumens stay at 250; T2 is unchanged.
+- **Captures** (fresh PIE Simulate session after the F7 save; `--double --raise`, with the breaker):
+  1. **Plaque:**
+     - `plaque_2m_A`, then switch to B in the PIE world only (or temporarily in the editor world, then restore) and capture `plaque_2m_B`.
+     - **Pass:**
+       - no hard shadow edge across the text;
+       - G3 pool luma on the plaque 0.25–0.45 (tune G3 within 60–200 lm);
+       - text contrast ≥ 2.0, measured as before;
+       - the face reads as one dressed stone slab: no shingles, no block or mortar grid, no green.
+     - Prefer A if it passes. Apply the chosen candidate in the editor world, save, read back, and report which one and why.
+     - If A's contrast is below 2.0, lower `BrightnessMul` in steps of 0.10, down to 0.35.
+  2. **Torch poses 02 and 10, no proxy.**
+     - **Accepted torch-pose target:** mean ≤ 0.045 and ≥ 50 % of pixels < 0.02. The torch is the landmark.
+     - If either still fails, set T1/T3 radius to 350 once, recapture, and report.
+     - If 02 still trips the breaker after its one rest-and-retry, capture it in the editor viewport as `p9l_02_landing_editor`. Measure it and state that fires and fog are missing in that capture.
+  3. **Recapture `06`, no proxy.** Pass: still within (a), since T2 is unchanged.
+  4. **Then the D1.15 resume steps:**
+     - the candle-proxy `_c` set: `01..10`, `w_WC`, `w_OS`, `w_NC`, `plaque_2m`, `d01`, `d03`. (b) passes when every wall pose's central-40 % mean is ≥ 0.10;
+     - the fog check (e) at pose 05;
+     - the rubble recheck (D1.14 0c);
+     - R3: the top corners of `09` and `d01`;
+     - skulls on `d03_c`;
+     - decals on `10_c` (soot T3, NC mould).
+     - Apply the D1.11 crypt-only MI rules if needed.
+  5. **Wrap up:**
+     - suite 78/78, with the 3 crypt WalkPaths, RouteBot.Monastery and the Warden crypt patrol;
+     - PIE stopped, no `TMP_`, throttle `true`, editor not dirty;
+     - commit `P9-7 F7: …`;
+     - report in the D1.15 format.
