@@ -1,0 +1,284 @@
+{
+ "Light_Chapel_Moon_S1": {
+  "actor": "PersistentLevel.SpotLight_4",
+  "class": "SpotLight",
+  "location": [
+   5725.4,
+   -1322.4,
+   1468.8
+  ],
+  "rotation_pitch_yaw_roll": [
+   -37.99999999999999,
+   35,
+   4.036181824811567e-15
+  ],
+  "scale": [
+   1,
+   1,
+   1
+  ],
+  "light_component": {
+   "intensity": 9100,
+   "intensityUnits": "Lumens",
+   "attenuationRadius": 2900,
+   "lightColor": {
+    "r": 0.7450980544090271,
+    "g": 0.803921639919281,
+    "b": 0.9215686917304993,
+    "a": 1
+   },
+   "castShadows": true,
+   "bCastVolumetricShadow": true,
+   "volumetricScatteringIntensity": 0.10000000149011612,
+   "innerConeAngle": 10,
+   "outerConeAngle": 14,
+   "sourceRadius": 0,
+   "sourceLength": 0,
+   "softSourceRadius": 0,
+   "mobility": "Movable",
+   "indirectLightingIntensity": 1,
+   "temperature": 6500,
+   "bUseTemperature": false,
+   "lightFunctionMaterial": "None",
+   "bUseInverseSquaredFalloff": true,
+   "bAffectsWorld": true,
+   "lightFunctionScale": {
+    "x": 1024,
+    "y": 1024,
+    "z": 1024
+   },
+   "lightFunctionFadeDistance": 100000,
+   "bAffectTranslucentLighting": false,
+   "specularScale": 1
+  },
+  "folder": null
+ },
+ "Light_Chapel_Moon_S2": {
+  "actor": "PersistentLevel.SpotLight_5",
+  "class": "SpotLight",
+  "location": [
+   6725.4,
+   -1322.4,
+   1468.8
+  ],
+  "rotation_pitch_yaw_roll": [
+   -37.99999999999999,
+   35,
+   4.036181824811567e-15
+  ],
+  "scale": [
+   1,
+   1,
+   1
+  ],
+  "light_component": {
+   "intensity": 9100,
+   "intensityUnits": "Lumens",
+   "attenuationRadius": 2900,
+   "lightColor": {
+    "r": 0.7450980544090271,
+    "g": 0.803921639919281,
+    "b": 0.9215686917304993,
+    "a": 1
+   },
+   "castShadows": true,
+   "bCastVolumetricShadow": true,
+   "volumetricScatteringIntensity": 0.10000000149011612,
+   "innerConeAngle": 10,
+   "outerConeAngle": 14,
+   "sourceRadius": 0,
+   "sourceLength": 0,
+   "softSourceRadius": 0,
+   "mobility": "Movable",
+   "indirectLightingIntensity": 1,
+   "temperature": 6500,
+   "bUseTemperature": false,
+   "lightFunctionMaterial": "None",
+   "bUseInverseSquaredFalloff": true,
+   "bAffectsWorld": true,
+   "lightFunctionScale": {
+    "x": 1024,
+    "y": 1024,
+    "z": 1024
+   },
+   "lightFunctionFadeDistance": 100000,
+   "bAffectTranslucentLighting": false,
+   "specularScale": 1
+  },
+  "folder": null
+ },
+ "Light_Chapel_Moon_S3": {
+  "actor": "PersistentLevel.SpotLight_6",
+  "class": "SpotLight",
+  "location": [
+   7725.4,
+   -1322.4,
+   1468.8
+  ],
+  "rotation_pitch_yaw_roll": [
+   -37.99999999999999,
+   35,
+   4.036181824811567e-15
+  ],
+  "scale": [
+   1,
+   1,
+   1
+  ],
+  "light_component": {
+   "intensity": 9100,
+   "intensityUnits": "Lumens",
+   "attenuationRadius": 2900,
+   "lightColor": {
+    "r": 0.7450980544090271,
+    "g": 0.803921639919281,
+    "b": 0.9215686917304993,
+    "a": 1
+   },
+   "castShadows": true,
+   "bCastVolumetricShadow": true,
+   "volumetricScatteringIntensity": 0.10000000149011612,
+   "innerConeAngle": 10,
+   "outerConeAngle": 14,
+   "sourceRadius": 0,
+   "sourceLength": 0,
+   "softSourceRadius": 0,
+   "mobility": "Movable",
+   "indirectLightingIntensity": 1,
+   "temperature": 6500,
+   "bUseTemperature": false,
+   "lightFunctionMaterial": "None",
+   "bUseInverseSquaredFalloff": true,
+   "bAffectsWorld": true,
+   "lightFunctionScale": {
+    "x": 1024,
+    "y": 1024,
+    "z": 1024
+   },
+   "lightFunctionFadeDistance": 100000,
+   "bAffectTranslucentLighting": false,
+   "specularScale": 1
+  },
+  "folder": null
+ },
+ "Light_Chapel_Moon_Roof": {
+  "actor": "PersistentLevel.SpotLight_7",
+  "class": "SpotLight",
+  "location": [
+   5205.4,
+   -1324.3,
+   2914.1
+  ],
+  "rotation_pitch_yaw_roll": [
+   -37.99999999999999,
+   35,
+   4.036181824811567e-15
+  ],
+  "scale": [
+   1,
+   1,
+   1
+  ],
+  "light_component": {
+   "intensity": 15000,
+   "intensityUnits": "Lumens",
+   "attenuationRadius": 4000,
+   "lightColor": {
+    "r": 0.7450980544090271,
+    "g": 0.803921639919281,
+    "b": 0.9215686917304993,
+    "a": 1
+   },
+   "castShadows": true,
+   "bCastVolumetricShadow": true,
+   "volumetricScatteringIntensity": 0.10000000149011612,
+   "innerConeAngle": 9,
+   "outerConeAngle": 14,
+   "sourceRadius": 0,
+   "sourceLength": 0,
+   "softSourceRadius": 0,
+   "mobility": "Movable",
+   "indirectLightingIntensity": 1,
+   "temperature": 6500,
+   "bUseTemperature": false,
+   "lightFunctionMaterial": "None",
+   "bUseInverseSquaredFalloff": true,
+   "bAffectsWorld": true,
+   "lightFunctionScale": {
+    "x": 1024,
+    "y": 1024,
+    "z": 1024
+   },
+   "lightFunctionFadeDistance": 100000,
+   "bAffectTranslucentLighting": false,
+   "specularScale": 1
+  },
+  "folder": null
+ },
+ "_context": {
+  "DirectionalLight_1_rotation": [
+   -38.0,
+   35.0,
+   0.0
+  ],
+  "Ch_Pool_S1": [
+   7265,
+   -255,
+   0.5
+  ],
+  "Ch_Pool_S2": [
+   8265,
+   -255,
+   0.5
+  ],
+  "Ch_Pool_S3": [
+   8760,
+   -300,
+   0.5
+  ],
+  "Ch_Pool_Roof": [
+   8167,
+   744,
+   110
+  ],
+  "Ch_Glass_S1_bounds": {
+   "min": {
+    "x": 6430,
+    "y": -791,
+    "z": 450
+   },
+   "max": {
+    "x": 6570,
+    "y": -790,
+    "z": 862
+   },
+   "isValid": true
+  },
+  "Ch_Glass_S2_bounds": {
+   "min": {
+    "x": 7430,
+    "y": -791,
+    "z": 450
+   },
+   "max": {
+    "x": 7570,
+    "y": -790,
+    "z": 1010
+   },
+   "isValid": true
+  },
+  "Ch_Glass_S3_bounds": {
+   "min": {
+    "x": 8430,
+    "y": -791,
+    "z": 450
+   },
+   "max": {
+    "x": 8570,
+    "y": -790,
+    "z": 1010
+   },
+   "isValid": true
+  }
+ }
+}
