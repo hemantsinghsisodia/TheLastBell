@@ -981,3 +981,113 @@ This section makes D1.7 (with the D1.11 "D1.7 additions" and the D1.14 "P9-7 add
    - fires and flicker in motion;
    - the checklist items above;
    - the open question on the hanging body's red stain.
+
+### D1.19 Owner review 1: fix set R1 (lead, 2026-10-28)
+**Owner findings** (screenshots from the playtest):
+1. A "searchlight" on the chapel exterior: a lit ellipse on the roof around the roof hole, a lit disc around a lancet window, and a visible cone in the fog over the sacristy stair head.
+2. The sacristy table and its props look clean and new.
+3. At the stair head ("Descend into the crypt") a white greybox box is in view.
+4. The clue plaque doesn't fit the scene. The owner asks to show the clue as a HUD message.
+
+**Causes (lead survey):**
+1. The four P8 moon spots, `Light_Chapel_Moon_S1/S2/S3` (Z 1469) and `Light_Chapel_Moon_Roof` (Z 2914), sit **outside** the chapel (pitch −38, yaw 35). They light the exterior around each opening, and their volumetric scattering shows the cone in the outdoor fog.
+2. The sacristy props use the Fab Medieval_Tavern_Props materials, which are clean and saturated, and the table grime decals are too faint to see. `Note_Sacristy` is bright white paper. `Light_Sacristy_Table` is 400 lm at 115 cm over the table.
+3. F1 enclosed only 4 of the 6 crypt rails. `Rail_Sac_W` (7395, −1100, 50) and `Rail_Up_S` (10650, −105, 50) are still white greybox.
+4. `Clue_Diagram` (BP_EngravedDiagram) and `CD_PlaqueFrame`.
+   - The game already shows text in the HUD through inspectable notes (`BP_Inspectable_Note`, with a per-instance `bodyText`; inspection displays it).
+   - **Decision (D-073, owner direction):** the crypt clue becomes a readable note. The engraved plaque is removed.
+
+**R1-A** (environment-designer, [EDITOR]; commit "P9-R1A: …")
+1. **Rails.**
+   - Add `Rail_Sac_W` and `Rail_Up_S` to `RAILS` in `gen_crypt_layout.py` with the F1 recipe:
+     - mesh `SM_LB_Crypt_Block_100`, `MI_Crypt_StoneWA`, NoCollision (profile + `collisionEnabled`);
+     - the rail AABB + 2 cm on each side and 2 cm on top, sunk 1 cm.
+   - Regenerate (0 issues), then `place_crypt.py --cats lining --only CA_Parapet_Rail_Sac_W,CA_Parapet_Rail_Up_S` and `--check`.
+   - `trace_world` through each rail must still hit the `Rail_*` actor.
+2. **Clue swap.**
+   1. Dump `Clue_Diagram` and `CD_PlaqueFrame` to `Docs/ArtTest/crypt/clue_swap_before.json`.
+   2. Delete both actors. Remove the `CD_PlaqueFrame` record from the generator and regenerate. `--check` must still pass. Keep the `BP_EngravedDiagram` asset; delete no assets.
+   3. Spawn `/Game/LastBell/Blueprints/Interactables/BP_Inspectable_Note` as `Note_Chains`, folder `Gameplay/Crypt`, pinned flat on the puzzle wall:
+      - paper centre at (10920, −1507, −430), with its face normal pointing −Y into the room and its long edge horizontal;
+      - its back 1–2 cm off the wall face (Y −1505);
+      - find the rotation from the paper mesh's axes, then verify it with a capture.
+   4. Set the instance `bodyText` to: "The chains must hang in balance before the winch will turn. A high. B low. C in the middle." Read it back after an explicit save.
+   5. **Interaction check:** `trace_world` from (10920, −1650, −435) to (10920, −1490, −430) must hit `Note_Chains`. If the note's collision isn't hit, report it.
+   6. The RouteBot and puzzle tests in the R1-B suite cover the puzzle; they don't need the clue.
+3. **Props aging** (never edit Fab MIs or shared decal MIs).
+   1. List every placed actor whose mesh is under `/Game/LastBell/ThirdParty/Fab/Dungeon/Medieval_Tavern_Props/`, plus `SM_Plate_00` and `SM_Dungeon_bench` (any area). Report the labels.
+   2. For each distinct material on those meshes, read its parent and its texture parameters. Create `/Game/LastBell/Materials/Instances/Aged/MI_Aged_<OriginalName>` as an MI of `M_LB_Surface` with:
+      - the original textures: base colour, normal, and roughness/AO/metal. Use `ARMTex` with `bUseARM` true only if the original is a packed R=AO, G=Rough, B=Metal; otherwise use the separate textures with `bUseARM` false;
+      - `bWorldAlignedUV` false;
+      - `BrightnessMul` 0.6, `Desaturation` 0.35, `BaseColorTint` (0.95, 0.92, 0.86);
+      - `RoughnessMin` 0.55;
+      - `bTopDust` true, `DustAmount` 0.55, `DustColor` (0.42, 0.40, 0.36).
+      - Skip materials that are translucent, masked or emissive, and report them.
+   3. Assign the aged MIs as instance overrides (`overrideMaterials` per slot) on every listed actor. Read them back after saving.
+   4. **`MI_Sacristy_Table_Old`:** read its parent.
+      - If it is `M_LB_Surface`: `BrightnessMul` × 0.75, `bTopDust` true, `DustAmount` 0.5.
+      - Otherwise report it.
+   5. **Table decals:**
+      - Duplicate the decal MIs used by `Sa_Grime_Table_Stain_1/2`, `Sa_Grime_Table_Dust_L/R` and `Sa_Grime_Wax_Table` to `MI_Sa_Decal_<name>_Strong`, with the opacity parameter × 2 (capped at 1.0).
+      - Assign them to those 5 decals only.
+   6. **Note paper:** find the paper mesh component's material in `BP_Inspectable_Note` (read only).
+      - If it is a project MI, tint it to aged parchment: `BaseColorTint` (0.80, 0.72, 0.56), or the closest available parameter. This ages all notes, which is intended.
+      - If it is an engine material, report it and do not change it.
+   7. **Disorder:**
+      - `Sa_Cup` lies on its side (roll 90, resting on the tabletop: its bounds' min Z equals the table-top Z).
+      - `Sa_BreadSlice` moves off the plate to (8330, −1470), on the tabletop.
+4. **Wrap up:**
+   - explicit saves;
+   - no temp actors;
+   - captures (editor viewport, `--raise`):
+     - `r1_table`: camera (8150, −1600, 170) looking at (8300, −1430, 80);
+     - `r1_stairhead`: (8050, −1100, 170) looking at (7395, −1100, 50);
+     - `r1_note`: the `plaque_2m` pose;
+   - commit and report.
+
+**R1-B** (lighting-vfx, [EDITOR], after R1-A; commit "P9-R1B: …")
+1. **Chapel moonlight moves inside** (D-074): replace each outside spot with an interior RectLight.
+   1. Dump the 4 spots to `Docs/ArtTest/chapel/moon_spots_before.json`.
+   2. For each lancet S1–S3:
+      - Read the glass actor's bounds `Ch_Glass_S#` (the opening centre c and its 4 corners) and the south wall's inner-face Y (`Y_in`).
+      - `d` = the spot's forward vector.
+      - **Placement:** RectLight `Light_Chapel_MoonRect_S#` at c + t·d, with t = (Y_in + 10 − c.y) / d.y; rotation = the spot's.
+      - **Size:**
+        - `SourceWidth` = 0.95 × the extent of the 4 corners projected on the light's local Y;
+        - `SourceHeight` = 0.95 × their extent on local Z.
+      - **Light settings:**
+        - `BarnDoorAngle` 15, `BarnDoorLength` 40;
+        - colour (190, 205, 235); Movable; `castShadows` true;
+        - `volumetricScatteringIntensity` 0.3; `attenuationRadius` 3000;
+        - intensity units Lumens, starting at the spot's value.
+   3. **Roof:** `Light_Chapel_MoonRect_Roof`, built the same way from the `Ch_Roof_S1` hole outline (the 4 bounding corners of the hole in the slab frame, taken to world space). It sits 10 cm below the slab's inner surface along d.
+   4. **Tune and swap:**
+      - Capture the P8 interior poses that show the S1–S3 and roof floor patches (the P8-9b pose list in `P8_CHAPEL_ART.md`), before and after.
+      - Tune each rect light's lumens until its patch's central luma is within ±15 % of the before value.
+      - The stained-glass pool decals must still sit on the patches; report any offset > 30 cm.
+      - Then delete the 4 outside spots.
+   5. **Pass:**
+      - `r1_ext_chapel`: camera (4300, −2300, 250) looking at (6500, −780, 900);
+      - `r1_stairhead`;
+      - no lit ellipse or disc on the chapel roof or walls, and no exterior beam cone.
+2. **G3 re-aim to the note:**
+   - `L_Crypt_Moon_G3` rotation pitch −65.3, yaw 137.3 (aims at (10920, −1507, −430)), `attenuationRadius` 550.
+   - Tune 60–250 lm until the note's pool luma is 0.25–0.45.
+   - Re-orient `SA_Crypt_G3` along the new axis, length = the trace distance from the grate.
+3. **Sacristy:**
+   - `Light_Sacristy_Table` 400 → 250 lm.
+   - Check the sacristy pose against the P8 sacristy luma target (`P8_CHAPEL_ART.md`); report it.
+4. **Captures and checks:**
+   - PIE Simulate, `--raise`, breaker armed:
+     - `r1_table` and `r1_table_c` (candle proxy);
+     - `r1_note` and `r1_note_c`;
+     - `r1_ext_chapel`, `r1_stairhead`;
+     - the P8 patch poses after;
+     - `w_OS_c` and `04_c` (missing from P9-7).
+   - Suite 78/78, with the named crypt lines and RouteBot.
+   - Throttle `true`, editor clean, commit, report.
+
+**Docs** (lead, in P9-8a):
+- D-073: the crypt clue is a readable note; the plaque is removed (owner).
+- D-074: chapel moonlight uses interior rect lights at the openings (supersedes the P8-9b outside spots).
+- Update TECHNICAL_DESIGN/AI notes if they mention the engraved diagram.
