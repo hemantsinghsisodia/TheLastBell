@@ -1162,3 +1162,64 @@ This section makes D1.7 (with the D1.11 "D1.7 additions" and the D1.14 "P9-7 add
    - report.
 
 **Docs** (P9-8a): D-075, "candle-order clue as stained-glass saints (owner)", supersedes the P8 C1 "saints never changed" rule for visuals only.
+
+### D1.21 R1-A outcome; additions to R1-C (lead, 2026-10-28)
+- **R1-A accepted** (db20f3f).
+  - Both rails are enclosed (`--check` 10/10).
+  - `Clue_Diagram` and `CD_PlaqueFrame` are removed.
+  - `Note_Chains`:
+    - **Placement deviation:** centre at y −1504 rather than −1507, so it sits 1.5 cm off the proudest wall stone.
+    - `bodyText` was read back.
+    - `displayName` is "The Balance of the Chains".
+    - The interaction trace hits the note.
+  - 13 sacristy props carry `MI_Aged_*`.
+  - **Table-dust deviation:** `DustAmount` was already 0.9 and is kept.
+  - **Decal deviation:** the three `MI_Sa_Decal_*_Strong` MIs use Opacity 2.0. The graph saturates it, which strengthens faint areas; dial it back if it reads heavy.
+  - `MI_LB_Paper` Color is now (0.80, 0.72, 0.56).
+  - The cup lies on its side; the bread is off the plate.
+- **Lead review of the captures:**
+  - `r1_table`: the ware now reads dark and aged. The tabletop and walls still read as clean, hot-lit warm stone and wood; R1-B lowers the table light, then we judge again.
+  - `r1_note_close`: the note reads as a flat lilac sticky-note rectangle, because `MI_LB_Paper` is a flat `BasicShapeMaterial` colour. Fixed in R1-C, step 7.
+  - `r1_rail_up_s`: a white greybox band remains under the `Rail_Up_S` parapet: `Ground_3`'s shaft-side end face (y −100). Fixed in R1-C, step 8.
+- **QA item, added to P9-8b:** `place_crypt.py --cats dress --check` reports 118 failures. Skulls and piles are 3.3–3.6 cm over the 3.0 tolerance; floor bones, bone-bin fills, `CD_SlabArm` and `CD_SkeletonStake` are off by up to 26.7 cm.
+  - Find out whether this predates R1-A: run `--check` against the layout JSON at 8fa049a/e066901.
+  - Compare actor transforms with the JSON (not only AABBs), and report whether anything actually moved.
+
+**R1-C additions** (run after D1.20 steps 1–6, in the same session; commit "P9-R1C: …")
+7. **Parchment for every note.**
+   1. **Generator:** add `parchment_texture(seed)` to `gen_chapel_textures.py`, seed `"parchment": 9811`, `--only parchment`. It produces `T_LB_Parchment`, 512 × 512 RGB:
+      - base (0.78, 0.70, 0.52), with fbm mottling of ±8 %;
+      - 8–14 foxing spots (radius 4–18 px, colour × 0.75, soft edges);
+      - edge darkening of 15 % within 30 px of the edges;
+      - 9–11 lines of faint illegible script inside 40 px margins, line pitch 34 px, ink (0.18, 0.13, 0.09) at 55 % (small `wobble_curve` / `glyph_strokes` style; invented marks, no real letters or symbols).
+      - Write a preview, `Docs/ArtTest/chapel/tex_parchment.png`.
+      - No other generated texture may change.
+   2. **Import** to `/Game/LastBell/Materials/Textures/T_LB_Parchment` (sRGB, default compression).
+   3. **Material:**
+      - **First try:** reparent `MI_LB_Paper` to `/Game/LastBell/Materials/Master/M_LB_Surface` via `ObjectTools.set_properties` on its `parent`. Then set:
+        - `BaseColorTex` `T_LB_Parchment`;
+        - `bWorldAlignedUV` false, `bUseARM` false;
+        - `RoughnessMin` 0.8, `BrightnessMul` 1.0, `Desaturation` 0.
+        - Read back, save explicitly, then confirm the parent in a fresh read.
+      - **If the reparent is refused or doesn't persist:**
+        - create `/Game/LastBell/Materials/Instances/MI_LB_Parchment` (parent `M_LB_Surface`, same values);
+        - set it as an instance override on the paper component of each `BP_Inspectable_Note` instance (6 notes: Gatehouse, Nave, Sacristy, Ossuary, Cloister, Chains);
+        - save, reload the level (`load_level`), and read back.
+        - If the overrides don't persist, report it and leave them as they are.
+   4. **Look:**
+      - The script lines should run along the paper's long edge. If they run vertically on `Note_Chains`, regenerate with the texture rotated 90° (`--rotate`).
+      - Check `MI_Chapel_PaperOld` (a child of `MI_LB_Paper`, used by `Ch_Paper_1..6`) still renders, with no default-grid or black. Its old `Color` override may be orphaned; report it.
+   5. **Captures:** `r1c_note_close` (the `r1_note_close` pose) and `r1c_chapel_papers` (camera (8150, 300, 170) looking at (8150, 600, 0)).
+8. **`Ground_3` end-face lining.**
+   1. Read the AABBs of `Ground_3` and `CA_Lintel_Exit`.
+   2. Add a `lining` record `CA_Lining_Ground3_End` to `gen_crypt_layout.py`:
+      - `SM_LB_Crypt_Block_100`, `MI_Crypt_StoneWA`, NoCollision (profile + `collisionEnabled`), CastShadow on;
+      - X from the shaft's X min to its X max (10500…10800, ±0; read them from `Ground_3`'s face extent);
+      - Y −100…−96 (4 cm proud, on the shaft side);
+      - Z from max(`Ground_3` min Z, `CA_Lintel_Exit` max Z) − 1 to `Ground_3` max Z + 1.
+   3. Regenerate (0 issues), place with `--only CA_Lining_Ground3_End`, then `--cats lining --check`.
+   4. Recapture `r1_rail_up_s`. **Pass:** no white band.
+9. **Aged-prop polish:**
+   - `MI_Aged_Cutlery` and `MI_Aged_Plate_00`: `Metallic` 1.0. First check in `M_LB_Surface` whether `Metallic` multiplies or replaces the ARM B channel; report it.
+   - `MI_Aged_Bread` and `MI_Aged_Bread_Slice`: `BrightnessMul` 0.45.
+   - Read back and save.
