@@ -864,3 +864,35 @@ This section makes D1.7 (with the D1.11 "D1.7 additions" and the D1.14 "P9-7 add
      - PIE stopped, no `TMP_`, throttle `true`, editor not dirty;
      - commit `P9-7 F7: …`;
      - report in the D1.15 format.
+
+### D1.17 F7 outcome and close-out set F8 (lead review, 2026-10-28)
+- **Accepted** (598fb61, a489a9b, 1a1aa8c, 3cb1e2e, ee90ff3):
+  - F7a: G3 has no shadow, so there is no hard edge across the text.
+  - **F7b deviation, plaque B2:** candidate B with `Desaturation` 1.0, giving a flat blue-grey slab with soft relief; contrast 2.87, pool 0.317.
+    - A read as a rubble wall with a mortar grid.
+    - B as written rendered magenta, because `T_LB_White_Gray` is a TC_Alpha mask; B2 fixes that with `Desaturation` 1.0.
+  - F7c: T1/T3 radius 350.
+  - **Accepted deviations:**
+    - **torch poses:** 02 mean 0.050 and 10 mean 0.049, with ≥ 50 % of pixels < 0.02. The torch is the landmark; the owner judges in the playtest.
+    - **06 and 09 means:** 0.039 and 0.040, within the session-to-session flicker noise of ±10 %.
+    - **Skulls:** they read warm cream-gold under the 1900 K candle (`d03_c`), so there is no skull MI.
+    - **Candle proxy:** a PIE-only retargeted copy of `Light_Approach_0`, because SceneTools refuses to spawn actors during PIE. The editor-world light was read back unchanged.
+- **Capture reliability:**
+  - `CaptureViewport` resets at 21.3 s when the editor window is minimized. Most of those failures stop once the window is merely restored, but about one pose in three still fails while ordinary windows cover the editor. `HWND_TOP` without activation cannot go above the foreground app.
+  - P9-8 adds this to MCP_NOTES: "keep the editor visible and uncovered during capture runs".
+- **G3 leak risk:**
+  - Shadowless, G3's cone (radius 750) continues about 400 cm past the plaque, into the wall mass toward NC.
+  - **Fix:** `attenuationRadius` 750 → 450, and raise the lumens so the plaque pool stays at 0.25–0.45. The window falloff halves at 334 cm, so start at 190 lm, within 60–200.
+
+**F8 close-out** (lighting-vfx, [EDITOR]; D1.15/D1.16 rules):
+1. **Run the suite first** (no captures needed): 78/78, the 3 crypt WalkPaths, RouteBot.Monastery and the Warden crypt patrol.
+2. **G3:** set `attenuationRadius` 450 and 190 lm, read both back, save, commit.
+3. **One capture pass**, in this order, with `--raise` and the breaker:
+   1. `plaque_2m`: pool 0.25–0.45, contrast ≥ 2.0;
+   2. `w_WC_c`, `w_OS_c`, `w_NC_c`: target (b);
+   3. `04_c`, `10_c`;
+   4. the fog check (e) at pose 05, all crypt lights, FX and shaft cards hidden (PIE only): once with `LFV_Crypt_Flood` and once without;
+   5. the rubble recheck.
+   - Use the PNGs you already have for R3 (the top corners of `09` and `d01`) and for decals (`10_c` if captured).
+4. **If the breaker trips:** do one 60 s rest and retry, then stop capturing. List the missing items; they go to the P9-8 owner playtest checklist. Do not loop.
+5. **Wrap up:** throttle `true`, PIE stopped, no `TMP_`, editor clean, commit `P9-7 F8: …`, report.
