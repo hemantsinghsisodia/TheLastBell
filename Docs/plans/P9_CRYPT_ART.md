@@ -1450,3 +1450,41 @@ Follow the props conventions in `Tools/blender/props/build_props.py`: seeded, MA
 5. **Wrap up:** suite 78/78, captures, commit.
 
 **Then P9-8** (docs + QA, D1.18), the owner playtest, and "PHASE 9 READY FOR YOUR REVIEW".
+
+### D1.26 R2-A review: lever rework R2-A2 (lead, 2026-10-28)
+- **Accepted** (0bf92d9, 76b443a):
+  - `SM_LB_Prop_BellWheel_A` reads as an iron wheel with 8 hanging bronze bells (`r2_cycles_bellwheel.png`). Its 89 cm visual width (the bell lips) is accepted.
+  - `MI_LB_PaintBone` is accepted, with roughness 0.65–0.85.
+  - The backplate and arm are accepted.
+- **Not accepted (lever):** the greybox layout carried over literally does not read as one mechanism (`r2_cycles_lever_high.png`, `r2_lever_mid_side.png`):
+  - the notch rail and stops float 40 cm in front of the board with nothing holding them;
+  - the weight's chain rises from the arm tip and ends in mid-air.
+- **Gobo:** a 1.5 cm offset in the plane is about 20 cm at the slab. Use **0.7** (about 9 cm at the slab, enough to cover the 0.6 cm parallax).
+
+**R2-A2** (same agent; Blender plus re-import over the same asset names, or new names if re-import over an existing asset is impossible; report which; commit "P9-R2A2: …"):
+1. **`SM_LB_Prop_DialLever_Quadrant` becomes a lever-frame sector plate:**
+   - an iron sector in the mesh XZ plane, with its pivot at the sector centre (the lever's rotation axis);
+   - radius 48, spanning −42°…+42° about +X; 1.5 cm thick in Y;
+   - a raised outer arc rim, 2 × 2 cm;
+   - three V-notches, 2 cm deep, cut into the rim at −35°, 0° and +35°;
+   - a bone-white painted peg (MAT_Paint, Ø 2.5 × 2 cm, protruding +Y) beside each notch;
+   - an iron mounting foot at the narrow end that reaches back to the board face, local X −6…0 (the pivot is 6 cm in front of the board);
+   - slots MAT_Iron and MAT_Paint.
+   - In R2-B the child BP puts `rail` at the `handlePivot` location (6, **+4**, 45), rotation 0, scale 1, so the sector sits just beside the arm's swing plane. All three `notch*` components are **hidden**; the pegs are now part of the quadrant.
+2. **`SM_LB_Prop_DialLever_Weight`:**
+   - remove the rising chain;
+   - make it a squat cast-iron counterweight ball, Ø 11, with a cast collar ring where it meets the arm;
+   - keep it rigid at the arm tip (same component placement).
+3. **`SM_LB_Prop_DialLever_Backplate`:**
+   - add an iron pulley bracket centred at the board top: a wheel Ø 10 at local Z +50, 4 cm in front of the board;
+   - add a static chain (6–8 links) running from the pulley up and back into an iron wall eyelet 30 cm above the board top, flush with the board's back plane (it reads as the chain going into the wall);
+   - the label plate stays below the pulley; check the `label` TextRender at (3.6, 0, 82) still sits on the plate, and move the plate if needed;
+   - record the new AABB (taller than 90).
+4. **Gobo:** set `GOBO_OFFSET` to 0.7, rebuild, re-import `SM_LB_Gobo_RoofHole`, and report the new open area.
+5. **Verify:**
+   - `verify_props` passes;
+   - renders of the assembled lever at −35, 0 and +35 (3/4 and side), with the quadrant placed at (6, 4, 45) relative to the pivot setup;
+   - **LOOK:** the stops sit at the notches where the arm's grip passes, nothing floats, and the chain visibly enters the wall.
+   - Commit and report.
+
+**R2-B update** (D1.25 R2-B step 2, levers): the child construction script also sets `rail` relative location (6, 4, 45), rotation (0, 0, 0), scale 1, and `SetVisibility(false)` on `notchHigh`, `notchMid` and `notchLow`.
