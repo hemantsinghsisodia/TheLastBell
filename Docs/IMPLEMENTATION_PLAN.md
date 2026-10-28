@@ -225,7 +225,7 @@ Branch `claude/phase-09-crypt`. Spec: `Docs/plans/P9_CRYPT_ART.md` (D-067). P9-0
 | P9-7 | Lighting: torches, candles, brazier, moon grates + shafts, LFV, PP_Crypt; luma targets | lighting-vfx [EDITOR] | P9-6a, P9-6b |
 | P9-8 | QA, docs, owner stat gpu + playtest; PHASE 9 READY FOR YOUR REVIEW | qa + lead + owner | all |
 
-Status 2026-10-28: P9-0…P9-6a done (325bec8, abc167f, 8fa049a, e066901; suite 78/78, crypt WalkPaths, RouteBot and Warden crypt patrol pass). Next: the P9-6a fix set F1–F6, then P9-6b (P9_CRYPT_ART D1.11).
+Status 2026-10-28: P9-0…P9-6b done (325bec8, abc167f, 8fa049a, e066901; fix set b7f63c4, a2bc978; P9-6b 621d02b, a50a573, 3a9b0de; suite 78/78, crypt WalkPaths, RouteBot, Puzzles/Save tests and Warden crypt patrol pass). Next: P9-7 lighting (P9_CRYPT_ART D1.7 with the D1.11 and D1.14 additions; the plaque face is redone there).
 
 ## Deferred to Phase 14–15 (Lighting, VFX: storm work)
 Items the owner asked to fold into the storm pass. Plan them in detail (Docs/plans/) when Phase 14–15 starts.

@@ -628,3 +628,82 @@ Poses are the P9-5 pose files; the after captures go to `Docs/ArtTest/crypt/p9r_
 - **Editor state:** `L_Monastery` is dirty in the editor only from the temp-light add/remove (no content change). P9-6b confirms `find_actors TMP_` is empty, then its own explicit map saves cover it.
 - **P9-6b step 1e (plaque face):** MCP_NOTES warns that component edits on placed BP instances often don't persist. After the override and an explicit save, read the material back on the instance.
   - If it did not stick, report it; do not create a child Blueprint for `Clue_Diagram` without lead approval.
+
+### D1.14 P9-6b outcome and P9-7 go notes (lead review, 2026-10-28)
+- **Built** (621d02b, a50a573, 3a9b0de):
+  - 4 child Blueprints in `/Game/LastBell/Blueprints/Interactables/`, compiled with warnings as errors.
+  - 4 swaps: same label, same folder `Gameplay/Crypt`.
+  - Before/after diffs show only the allowed differences. A re-dump after save and reload shows 0 differences.
+  - Gate and rubble UCX bounds match D1.6.
+  - Tests:
+    - suite 78/78, the 3 crypt WalkPaths PASS;
+    - RouteBot Success (it used the new crank and winch);
+    - `Puzzles.*` and `Save.*` Success;
+    - Warden crypt loop 67 s, 0 stuck.
+- **Accepted:**
+  - The closed gate, open gate, crank on its plinth and winch drum read correctly (`p9b_*`).
+  - **Deviation: no material overrides.** The meshes' own slot MIs are already the crypt MIs.
+  - **Deviation: `RequiredTags` variable on the winch child.**
+    - It is an instance-editable variable that the construction script feeds to `SetRequiredStateTags`.
+    - This is the only route that persists, because a child cannot override the InteractComp template.
+    - P9-8 records it in MCP_NOTES with the child-BP swap notes.
+  - **Deviation: the child construction scripts replace the parent's.**
+    - The DSL cannot author a parent construction-script call, so the Crank and Winch children copy the parent body.
+    - P9-8 adds a RISKS entry: if the construction script of `BP_TagInteractable` or `BP_RitualMechanism` changes, update the crypt children.
+  - No winch-after (turned Core) capture. The owner sees the turn in the P9-8 playtest.
+  - The retry cap was exceeded while the editor window was fully covered by other windows. The root cause is now known, and P9-7 step 0a fixes the capture method.
+- **Not accepted: 1e plaque face** (`p9b_1e_12_puzzle_wall_2m.png`).
+  - `MI_Kit_Slate` uses the roof-slate textures, UV-based, with UVScale 0.25, RoughnessMin 0 and RoughnessMax 1.
+  - On the plaque, no slate texture shows, and the face carries a blurred mirror image of the chamber. It reads as frosted glass, not stone.
+  - The darker face is right: contrast went from 1.81 to 2.34.
+  - Fixed in P9-7 step 0b.
+- **Watch: the rubble face** (`p9b_pie_rubble_after.png`) shows white slivers at chunk edges. Two possible causes:
+  - chunk tops overexposed by the greybox lights (like R3);
+  - the bright stair behind showing through gaps in the mesh.
+  - P9-7 step 0c rechecks it under the new lights.
+
+**P9-7 additions** (lighting-vfx; do 0a–0c before D1.7 step 1; then D1.7 with the D1.11 "D1.7 additions"):
+- **0a. Capture reliability.** Add a `--raise` flag to `Tools/crypt/capture_poses.py`; reference implementation: the P9-6b helper `one2.py`.
+  - **While each capture runs:**
+    - A daemon thread runs every 0.2 s over the visible top-level windows whose title ends with `Unreal Editor`.
+    - If a window is iconic, `ShowWindow(h, 4)` (`SW_SHOWNOACTIVATE`).
+    - Then `SetWindowPos(h, 0, 0, 0, 0, 0, 0x13)` (`HWND_TOP`, `SWP_NOSIZE|SWP_NOMOVE|SWP_NOACTIVATE`).
+    - Stop the thread when the pose finishes.
+  - **Never activate or focus the editor window.** The owner may be typing elsewhere.
+  - Use `--raise` for every P9-7 capture.
+  - **Retry cap:** at most 6 tries per pose, in one pass. A pose still missing after that is reported, not retried.
+  - Commit the script change with the first P9-7 commit.
+- **0b. Plaque face.**
+  - Create `/Game/LastBell/Environments/Crypt/Materials/MI_Crypt_PlaqueSlate` as a duplicate of `/Game/LastBell/Environments/Kit/Materials/MI_Kit_Slate`. Never edit `MI_Kit_Slate`; the chapel roof uses it.
+  - Set the following, then read them back:
+
+    | Parameter | Value |
+    |---|---|
+    | `RoughnessMin` | 0.70 |
+    | `RoughnessMax` | 0.95 |
+    | `bWorldAlignedUV` | true |
+    | `WorldTileSizeCm` | 120 |
+    | `BrightnessMul` | 0.55 |
+    | `Desaturation` | 0.30 |
+
+  - Set the `Clue_Diagram` instance's `Plaque` override, slot 0, to the new MI. Use the same instance-override path that persisted in P9-6b.
+  - Save explicitly, then read the material back on the instance.
+  - **Capture** `p9l_plaque_2m` at pose (10920, −1700, −330), pitch 0, yaw 90, under the final lights (after step 5), plus a second one with the candle proxy.
+  - **Pass:**
+    - no mirror image of the chamber on the face;
+    - the slate grain is visible;
+    - text contrast ≥ 2.0, where contrast is the text p98 luma divided by the median luma of the plaque band rows, measured as in the P9-6b 1e report.
+  - If contrast is below 2.0, lower `BrightnessMul` in steps of 0.10, down to 0.35 (at most 3 tries), and report each value.
+- **0c. Rubble recheck** (after step 5).
+  - In PIE Simulate, set `bHidden=false` on the PIE-world `Rubble_StairsBack` only; never touch the editor world.
+  - **Pose:**
+    - Y −1100, Z −430, pitch −3.
+    - Facing the rubble from its crypt side, which is the side where a down-trace 400 cm from the face hits the crypt floor (Z ≈ −600) and not the stair.
+    - The camera is 400 cm from the face.
+  - Capture `p9l_rubble_after`.
+  - **Pass:** no white slivers.
+  - If slivers remain, add a zoom capture `p9l_rubble_zoom` and report it. Do not change the mesh; the lead decides.
+- **Floor sheen** (D1.13): report the floor-box p99 luma (x 20–80 %, y 67–100 %) for every `p9l_*` pose.
+  - The lead judges the wet sheen.
+  - The knobs are `Wetness`, `PuddleAmount` and `PuddleRoughness` on `MI_Crypt_Floor`. Change them only if the lead asks.
+- **Known (do not fix):** the white `Cl_S2` cloister greybox seen at the top of the exit stair belongs to Phase 10.
