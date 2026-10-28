@@ -1099,3 +1099,4 @@ This section makes D1.7 (with the D1.11 "D1.7 additions" and the D1.14 "P9-7 add
   - On `PP_Crypt`, set `bOverride_BloomIntensity` true and `BloomIntensity` = the global post-process value × 0.4. Read the global value first.
   - The owner judges the result in the playtest; PIE Simulate has no player candle to capture.
 - **Open owner question:** the hanging body `Ch_HangingBody` (`SK_Dead_Man`, one material `M_Dead_man`) has a bright red blood stain at the head end of the shroud. Keep it, or darken it to an old brown stain with a chapel-only MI (D-063: no gore)?
+- **Owner decision (2026-10-28):** keep the hanging body's blood stain as it is. No change.
