@@ -1337,3 +1337,116 @@ The rest of R1-B is unchanged (D1.19 R1-B steps 2–4, the D1.19 addendum bloom 
 3. **Layout JSON:** update the G3 record (rotation, radius, lumens) in `gen_crypt_layout.py` and regenerate, so `place_crypt.py --cats light --check` passes.
 4. **Finish deleting `T_LB_Parchment`** (Content Browser delete, then confirm the file is gone).
 5. **P9-8:** docs (D-073 note clue, D-074 gobos, D-075 saints glass, MCP_NOTES additions) and QA (including the 118-failure dress `--check` investigation). Then the owner playtest and "approve and merge".
+
+### D1.25 Owner review 2: fix set R2 (lead, 2026-10-28)
+**Owner findings (playtest screenshots):**
+1. The first puzzle item (chapel Mechanism 1 on the altar) doesn't fit.
+2. The 3 crypt levers don't fit.
+3. The crypt lights show a strong staircase effect in the beams.
+4. The crypt door doesn't look right.
+5. The note at the start of the game can't be picked up.
+
+**Causes (lead survey):**
+1. The altar's orange cylinder with studs is the P8 cosmetic shell `Mech_Shell_Cyl` (`SM_LB_Prop_MechShell_Cyl`, `MI_LB_Bronze`) plus `Mech_Shell_Cube`, `_2`, `_3` and `_4` (`MI_LB_Iron`), around `Altar_Ritual1` (`BP_RitualMechanism_C_1`, at (8900, 0, 80); Core is an engine Cylinder 80 × 80 × 50 at relative (0, 0, 75)). The turning Core is hidden inside the shell.
+2. `Lever_A/B/C` (`BP_DialLever_C_0/1/2`, at (11040 / 10920 / 10800, −1503, −600), yaw −90) are the P4 greybox: components `backplate`, `rail`, `arm`, `handlePivot`, `weight`, `notchHigh/Mid/Low`, `label` (TextRender).
+3. Crypt moon spots G1/G2 (scattering 1.5, `bCastVolumetricShadow` true) cast voxel shadows of the grate bars into the volumetric fog, which steps the beam edges.
+4. `Door_Sacristy` (`BP_Door_Base_C_4`, the door from the sacristy to the crypt stair) has a `DoorMesh` that is an engine Cube (10 × 100 × 220, relative (0, 50, 110), actor scale (1, 1.18, 1.08)) with the default checker material. `Door_ChapelMain` (`C_3`) is the same cube with `MI_Weathered_Planks_WA`.
+5. `Note_Gatehouse`'s bounds are Z 45.10–45.40, but its crate `KP_Crate_Note` tops out at Z 45.42, so the crate's collision covers the note and blocks the interaction trace.
+
+**Owner choices (D-076):**
+- Mechanism 1 becomes a **bell wheel**: a horizontal iron wheel with 8 small bronze bells, on an axle in the altar, which turns a quarter turn.
+- **Both** doors get the Dungeon pack's iron-strapped wooden door (`SM_Dungeon_door`).
+
+**Order:** R2-A (meshes) → R2-B (Blueprints and swaps) → R2-C (lighting). The D1.24 items are folded in.
+
+#### R2-A (technical-artist; Blender headless, then [EDITOR] import; commit "P9-R2A: …")
+Follow the props conventions in `Tools/blender/props/build_props.py`: seeded, MAT_* slots, UCX, `verify_props`, renders. Pivot is bottom-centre unless stated.
+
+1. **`SM_LB_Prop_BellWheel_A`** (≤ 12k tris; Nanite on):
+   - **Axle:** iron, Ø 8, Z 0…50, with a ball finial Ø 8 at Z 50…58.
+   - **Hub:** Ø 16 × 8 at Z 34…42.
+   - **Rim:** a ring of major radius 40 with a 4 × 3 cm section, centred at Z 38 (outer Ø 84).
+   - **Spokes:** 6 iron spokes, 3 × 2 cm, at Z 38.
+   - **Bells:** 8 bronze bells every 45° at radius 40, each hanging from a 2 cm iron loop under the rim. Lathe profile: lip Ø 9, height 11, crown Ø 4; a clapper ball Ø 2. The bell mouth is at about Z 22.
+   - **Slots:** MAT_Iron, MAT_Bronze.
+   - **UCX:** one box 84 × 84 × 58.
+2. **Dial-lever set.**
+   1. **Survey first** (editor, read only):
+      - `BP_DialLever`'s template components: mesh, relative location/rotation/scale, and the resulting local-space AABB;
+      - `notchPitch`, `startPitch`, and how `arm` hangs under `handlePivot`.
+      - Write this to `Docs/ArtTest/crypt/survey_diallever.md`.
+   2. **Build** each mesh to the surveyed AABB of the component it replaces (±1 cm), with the pivot where that component's mesh pivot is (engine Cube or Cylinder = centre), so the child BP uses scale 1:
+      - **`SM_LB_Prop_DialLever_Backplate`:**
+        - an oak board with two iron straps and 4 rivets per strap;
+        - an iron label plate, 18 × 18 cm, riveted at the top centre where the `label` text sits, flush behind the text;
+        - MAT_Wood and MAT_Iron.
+      - **`SM_LB_Prop_DialLever_Quadrant`** (replaces `rail`): an iron quadrant plate with three notch slots at the high, mid and low arm angles derived from `notchPitch`. MAT_Iron.
+      - **`SM_LB_Prop_DialLever_Arm`:** an iron rod Ø 2.5 with a turned wooden grip (Ø 4.5 × 12) at the free end. MAT_Iron and MAT_Wood.
+      - **`SM_LB_Prop_DialLever_Weight`:** an iron counterweight (Ø 10 × 14) with a top ring, plus 40 cm of chain links rising from it. The chain sits inside the old `weight` AABB extended upward; record the final AABB. MAT_Iron.
+      - **`SM_LB_Prop_DialLever_NotchStop`:** an iron stop (4 × 4 × 3) with a bone-white painted face (MAT_Paint, (0.75, 0.72, 0.62)).
+3. **`SM_LB_Gobo_RoofHole`:**
+   - a 110 × 110 × 2 cm plate (pivot centre, local X = thickness), no UCX, Nanite off;
+   - its cut-out is the roof-hole outline polygon (`build_kit.hole_cutters(441)`, the same frame as `Tools/crypt/r1b/geom.json`), projected onto the `Light_Chapel_Moon_Roof` gobo plane at D = 150, as `s3_gobos.py` does with the bbox corners, plus a 1.5 cm outward offset;
+   - local Y and Z are the light's right and up.
+4. **Import:**
+   - destination `/Game/LastBell/Environments/Props/Procedural/Chapel/` (bell wheel, gobo) and `/Game/LastBell/Environments/Crypt/Meshes/` (lever set);
+   - MAT_Iron → `MI_LB_Iron`, MAT_Bronze → `MI_LB_Bronze`, MAT_Wood → `MI_Prop_Wood_Weathered`, MAT_Paint → a new `MI_LB_PaintBone` (child of `M_LB_Surface`, flat tint (0.75, 0.72, 0.62), Desaturation 0.2);
+   - the gobo gets `MI_LB_Iron`.
+   - `verify_props` all pass.
+   - Renders in `Docs/ArtTest/props/r2_*.png`. LOOK, and iterate until the wheel reads as an iron wheel with hanging bells and the lever as a forged iron lever on an oak board with a hanging counterweight.
+
+#### R2-B (unreal-blueprint-engineer, [EDITOR]; the P9-6b child-BP procedure; commit "P9-R2B: …")
+1. **Bell wheel:**
+   - **Child BP** `/Game/LastBell/Blueprints/Interactables/BP_RitualMechanism_ChapelBells`. Follow the `BP_RitualMechanism_CryptWinch` pattern (copy the parent construction body; a `RequiredTags` variable feeds `SetRequiredStateTags`).
+     - Core: `SM_LB_Prop_BellWheel_A`, relative (0, 0, 50), scale 1, with the Interaction channel set to Block.
+     - CoreMarker: hidden.
+     - Pedestal: hidden, collision unchanged.
+   - **Swap `Altar_Ritual1`:** dump before and after, copy every instance value (including the InteractComp tags), same label and folder.
+   - **Remove the shell:** dump and delete the 5 `Mech_Shell_*` actors.
+   - **Checks:**
+     - the wheel's base sits on the altar top within 1 cm (read the altar bounds);
+     - an interaction trace from the nave side at eye height hits the Core.
+2. **Levers:**
+   - **Child BP** `/Game/LastBell/Blueprints/Puzzles/BP_DialLever_Crypt`.
+     - First read the parent construction script. Copy its body, then set the R2-A meshes (scale 1) on `backplate`, `rail`, `arm`, `weight` and the three `notch*`.
+     - `label` TextRender colour (0.78, 0.74, 0.62); size unchanged.
+   - **Swap `Lever_A/B/C`:** copy `dialComp` settings, `labelText`, `lockTag` and tags; same labels and folder; dump and diff each.
+   - **Check:** in PIE, each lever's arm reaches the high, mid and low notch stops visually (one capture per lever at the high position).
+3. **Doors:**
+   - **Child BP** `/Game/LastBell/Blueprints/Interactables/BP_Door_Base_Dungeon`. The construction script sets `doorMesh` to `SM_Dungeon_door` (bounds X 2.4…15.8, Y −43.3…52.6, Z 0.45…182.7), with relative transform and scale chosen so its AABB fills the old slab's local extents: X −5…5 (thickness can stay 13.4, centred), Y 0…100, Z 0…220.
+   - **Hinge side:** if the mesh's iron hinges end up on the side away from the `hinge` pivot (Y 0), mirror with a negative Y scale and recompute.
+   - **Collision:** if `SM_Dungeon_door` has no simple collision, report it and add a box simple collision to the mesh (StaticMeshTools). Never use complex as simple on a moving door.
+   - **Swap `Door_Sacristy` and `Door_ChapelMain`:** copy `openStateTag`, `autoOpenTag`, `openYaw`, `openSign`, `bInteractable`, the InteractComp values and the actor scale (1, 1.18, 1.08); dump and diff.
+4. **Notes:**
+   - `Note_Gatehouse`: raise it so its min Z is the crate's max Z + 0.4 (about Z 45.72).
+   - **For all 6 notes:**
+     - a vertical trace from note centre +50 to −50 must first hit within 0.5 cm of the note's top;
+     - a trace from 120 cm away, at eye height 160 cm above the note's floor, toward the note centre must hit the note.
+     - Fix any failure by raising the note by ≤ 1 cm.
+   - `Note_Chains`: scale × 1.5 (42 × 30 cm), back still 1.5 cm off the proudest wall stone.
+5. **`T_LB_Parchment`:** finish the delete with an editor tool that removes the file. If none works, report it; never delete the file outside the editor.
+6. **Suite:** 78/78 (ChapelNave and ChapelSacristy pass through both doors; RouteBot uses the bell wheel and the levers), plus captures. Commit.
+
+#### R2-C (lighting-vfx, [EDITOR]; commit "P9-R2C: …")
+1. **Staircase fix:**
+   - `L_Crypt_Moon_G1/G2`: `bCastVolumetricShadow` false, `volumetricScatteringIntensity` 1.5 → 0.5.
+   - `L_Crypt_Torch_T1..3`: scattering 1.0 → 0.5.
+   - **Captures** (PIE): `05`, `07`, `08`, `d11`, plus the owner's flooded-passage view, about (9250, −2380, −440) looking +X.
+   - **Pass:**
+     - no stepped beam edges (lead and owner judge);
+     - the means of 05, 07 and 08 within ±15 % of the F7 values.
+2. **Roof gobo:**
+   - Replace the 4 `Gobo_Moon_Roof_*` cubes with one `SM_LB_Gobo_RoofHole` actor `Gobo_Moon_Roof`: centre at L + 150·d, the spot's rotation, the same flags and Channel1-only.
+   - **Pass** (`r1b_ext_chapel` pose):
+     - no lit roof slab beyond the hole edge;
+     - the roof patch within ±15 % (`r1b_patch_Roof`);
+     - the moon leak check < 1.0.
+3. **G3 re-aim** to the scaled `Note_Chains`: aim point 40 cm below the note centre (it compensates for the grazing angle).
+   - Note pool 0.30–0.45, with the note inside the brightest third of the pool. Tune 150–300 lm.
+   - Re-orient `SA_Crypt_G3`.
+4. **Layout JSON:**
+   - Update the G1/G2/G3/torch records in `gen_crypt_layout.py`: G3 rotation, radius and lumens; the scattering and volumetric-shadow flags. Extend `place_crypt.py --cats light --check` to read them.
+   - Regenerate, then run `--check` (16/16).
+5. **Wrap up:** suite 78/78, captures, commit.
+
+**Then P9-8** (docs + QA, D1.18), the owner playtest, and "PHASE 9 READY FOR YOUR REVIEW".
