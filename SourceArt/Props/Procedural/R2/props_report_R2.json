@@ -1,0 +1,259 @@
+[
+ {
+  "name": "SM_LB_Prop_BellWheel_A",
+  "min": [
+   -44.5,
+   -44.5,
+   0.0
+  ],
+  "max": [
+   44.5,
+   44.5,
+   58.0
+  ],
+  "dims": [
+   89.0,
+   89.0,
+   58.0
+  ],
+  "tris": 7164,
+  "slots": [
+   "MAT_Iron",
+   "MAT_Bronze"
+  ],
+  "slots_used": [
+   0,
+   1
+  ],
+  "ucx": 1,
+  "pivot_shift_applied": [
+   -0.0,
+   -0.0,
+   -0.0
+  ],
+  "note": "R2-A bottom-centre, vertical axle on Z: iron axle O8 Z 0..50 + ball finial O8 Z 50..58, hub O16 x 8 at Z 34..42, rim ring major r 40 (section 4 x 3, Z 36.5..39.5, outer O84), 6 spokes 3 x 2, 8 hollow bronze bells every 45 deg at r 40 (lip O9, height 11, crown O4, mouth at Z 22, clapper ball O2 on a wire) hung from iron loops; visual X/Y reach 44.5 because the bell lips stick out past the rim; UCX 1 box 84 x 84 x 58",
+  "seconds": 0.3
+ },
+ {
+  "name": "SM_LB_Prop_DialLever_Backplate",
+  "min": [
+   -3.0,
+   -15.0,
+   -45.0
+  ],
+  "max": [
+   3.8,
+   15.0,
+   45.0
+  ],
+  "dims": [
+   6.8,
+   30.0,
+   90.0
+  ],
+  "tris": 2110,
+  "slots": [
+   "MAT_Wood",
+   "MAT_Iron"
+  ],
+  "slots_used": [
+   0,
+   1
+  ],
+  "ucx": 0,
+  "pivot_shift_applied": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "note": "R2-A replaces Backplate (engine Cube scale 0.06 x 0.3 x 0.9 = X +-3, Y +-15, Z +-45), pivot = centre: oak board with a V seam, two iron straps (z -34, +17) with 4 rivets each, pivot washer plate at z 0, iron label plate 18 x 18 (y +-9, z 26..44 mesh-local = 71..89 actor) front face x 3.5 (text at 3.6); fronts proud to x 3.8",
+  "seconds": 0.0
+ },
+ {
+  "name": "SM_LB_Prop_DialLever_Quadrant",
+  "min": [
+   -1.9,
+   -2.0,
+   -30.0
+  ],
+  "max": [
+   1.5,
+   2.0,
+   30.0
+  ],
+  "dims": [
+   3.4,
+   4.0,
+   60.0
+  ],
+  "tris": 302,
+  "slots": [
+   "MAT_Iron"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 0,
+  "pivot_shift_applied": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "note": "R2-A replaces Rail (engine Cube scale 0.03 x 0.04 x 0.6 = X +-1.5, Y +-2, Z +-30), pivot = centre: iron bar with three 6 x 1.4 notch slots on the +X face at mesh-local z -22.94, 0, +22.94 (= 40 sin(notchPitch 35 deg): low / mid / high arm angle -35 / 0 / +35 deg) and a stud behind each",
+  "seconds": 0.1
+ },
+ {
+  "name": "SM_LB_Prop_DialLever_Arm",
+  "min": [
+   -2.0,
+   -1.95,
+   -22.5
+  ],
+  "max": [
+   2.0,
+   1.95,
+   22.5
+  ],
+  "dims": [
+   4.0,
+   3.9,
+   45.0
+  ],
+  "tris": 752,
+  "slots": [
+   "MAT_Iron",
+   "MAT_Wood"
+  ],
+  "slots_used": [
+   0,
+   1
+  ],
+  "ucx": 0,
+  "pivot_shift_applied": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "note": "R2-A replaces Arm (engine Cylinder scale 0.03 x 0.03 x 0.45 = X/Y +-1.5, Z +-22.5; the component is rotated pitch 90, so mesh -Z points away from the pivot), pivot = centre: iron rod O2.5, turned wooden grip max O4 x 12 at mesh z -22.5..-10.5 (free end), pivot knuckle with a Y pin at z +21, three collars. Grip O4 instead of the spec's O4.5 to stay within 1 cm of the surveyed O3",
+  "seconds": 0.0
+ },
+ {
+  "name": "SM_LB_Prop_DialLever_Weight",
+  "min": [
+   -5.0,
+   -5.0,
+   -7.0
+  ],
+  "max": [
+   5.0,
+   5.0,
+   46.84
+  ],
+  "dims": [
+   10.0,
+   10.0,
+   53.84
+  ],
+  "tris": 1840,
+  "slots": [
+   "MAT_Iron"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 0,
+  "pivot_shift_applied": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "note": "R2-A replaces Weight (engine Sphere scale 0.1 = O10, centred on the arm tip), pivot = body centre: iron counterweight O10 x 14 (mesh z -7..7) with a top ring and 12 chain links rising from it to the terminal ring at mesh z about +47 (the old AABB extended upward). The chain's upper end is free: nothing in the greybox hierarchy holds it",
+  "seconds": 0.0
+ },
+ {
+  "name": "SM_LB_Prop_DialLever_NotchStop",
+  "min": [
+   -2.5,
+   -2.25,
+   -1.5
+  ],
+  "max": [
+   2.5,
+   2.25,
+   1.5
+  ],
+  "dims": [
+   5.0,
+   4.5,
+   3.0
+  ],
+  "tris": 44,
+  "slots": [
+   "MAT_Iron",
+   "MAT_Paint"
+  ],
+  "slots_used": [
+   0,
+   1
+  ],
+  "ucx": 0,
+  "pivot_shift_applied": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "note": "R2-A replaces NotchLow/Mid/High (engine Cube scale 0.06 x 0.05 x 0.025 = 6 x 5 x 2.5), pivot = centre: iron stop 5 x 4.5 x 3 (spec 4 x 4 x 3, survey 6 x 5 x 2.5: 5 x 4.5 x 3 is within 1 cm of both), chamfered, +X and top faces MAT_Paint (bone white)",
+  "seconds": 0.0
+ },
+ {
+  "name": "SM_LB_Gobo_RoofHole",
+  "min": [
+   -1.0,
+   -55.0,
+   -55.0
+  ],
+  "max": [
+   1.0,
+   55.0,
+   55.0
+  ],
+  "dims": [
+   2.0,
+   110.0,
+   110.0
+  ],
+  "tris": 504,
+  "slots": [
+   "MAT_Iron"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 0,
+  "pivot_shift_applied": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "note": "R2-A aperture-mask plate 110 x 110 x 2 (pivot centre, local X = thickness along the spot's forward axis, local Y/Z = the spot's right/up). Cut-out = the RoofSlab_Broken hole outline (exact boolean of build_kit.hole_cutters(441), 49 verts) at slab-local Z 12, projected from Light_Chapel_Moon_Roof (loc (5205.4, -1324.3, 2914.1), rot (-38.0, 35.0, 0.0)) onto the plane D = 150; mean distance spot -> slab 1981 so scale 0.0757 (1 cm in the plane = 13.2 cm at the slab); outward offset 1.5 cm (true disc dilation); outline simplified to 122 verts. Cut-out bbox y -15.6..17.8 z -23.7..24.1",
+  "seconds": 0.4,
+  "extra": {
+   "outline_verts": 122,
+   "source_outline_verts": 49,
+   "area_before_offset": 821.84,
+   "area_after_offset": 1015.37,
+   "scale": 0.07573,
+   "mean_distance": 1980.8,
+   "bbox_y": [
+    -15.6,
+    17.8
+   ],
+   "bbox_z": [
+    -23.7,
+    24.1
+   ],
+   "plane_z": 12.0,
+   "offset_cm": 1.5
+  }
+ }
+]

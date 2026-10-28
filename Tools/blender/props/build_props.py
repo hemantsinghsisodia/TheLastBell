@@ -3218,6 +3218,433 @@ def build_c_winch():
 
 
 # ==============================================================================================
+# P9-R2A (plan Docs/plans/P9_CRYPT_ART.md amendment D1.25, R2-A): bell wheel, dial-lever set, roof-hole gobo plate.
+# FBX go to <out>/R2/.  Authoring space == Unreal space (Y is mirrored at export).  Names: SM_LB_Prop_BellWheel_A,
+# SM_LB_Prop_DialLever_{Backplate,Quadrant,Arm,Weight,NotchStop}, SM_LB_Gobo_RoofHole.
+# The lever parts replace the P4 greybox components of /Game/LastBell/Blueprints/Puzzles/BP_DialLever one for one:
+# each is built to the AABB of the engine primitive it replaces (mesh-local, pivot = primitive centre), so a child Blueprint can use scale 1.
+# Survey: Docs/ArtTest/crypt/survey_diallever.md.
+# ==============================================================================================
+R2_SUB = "R2"
+MAT_COLORS.update({"MAT_Bronze": (0.55, 0.36, 0.15, 1.0), "MAT_Paint": (0.75, 0.72, 0.62, 1.0)})
+
+
+def r2_piece(name, bm, slots, seat="centre", **kw):
+    pc = Piece(name, bm, slots, **kw)
+    pc.subdir = R2_SUB
+    pc.seat_mode = seat                       # lever parts: "none" = pivot stays where it was built (the engine primitive's centre)
+    return pc
+
+
+def sphere_z(r, segs=12, rings=8, mat=0):
+    prof = [(0.0, -r)] + [(r * math.sin(math.pi * k / rings), -r * math.cos(math.pi * k / rings)) for k in range(1, rings)] + [(0.0, r)]
+    return K.lathe_z(prof, segs, mat)
+
+
+def dome_z(r, h, segs=8, mat=0):
+    """Rivet head: flat base at z 0, domed top at z h."""
+    return K.lathe_z([(r, 0.0), (r * 0.94, h * 0.4), (r * 0.72, h * 0.78), (r * 0.32, h * 0.97), (0.0, h)], segs, mat)
+
+
+def chain_link(R, r, stretch, mat, plane):
+    """Stadium-ish chain link standing along Z: torus of major radius R stretched by `stretch`; plane 'xz' or 'yz'."""
+    t = torus(R, r, 10, 5, mat)
+    tf(t, Matrix.Diagonal((1.0, stretch, 1.0, 1.0)))
+    rot(t, 'X', 90.0)                                         # ring plane XY -> XZ, long axis Y -> Z
+    if plane == 'yz':
+        rot(t, 'Z', 90.0)
+    return t
+
+
+# ---------------------------------------------------------------------------------------------- 1: bell wheel
+def r2_bell(mat_bronze, mat_iron):
+    """One bell, mouth (lip) at local z 0, crown at z 11 (crown flat O4), lip O9, hollow, with a knob on the crown and a clapper ball O2 on a wire."""
+    outer = [(4.5, 0.0), (4.45, 0.6), (3.9, 1.6), (3.3, 3.2), (2.85, 5.0), (2.5, 7.0), (2.2, 9.0), (2.0, 10.5), (2.0, 11.0)]
+    inner = [(3.9, 0.0), (3.5, 1.6), (2.9, 3.2), (2.45, 5.0), (2.1, 7.0), (1.8, 9.0), (1.55, 10.2)]
+    prof = [(0.0, 10.2)] + inner[::-1] + outer + [(0.0, 11.0)]
+    body = K.lathe_z(prof, 14, mat_bronze)
+    knob = K.cylinder(0.8, 1.0, 8, mat_bronze)
+    shift(knob, 0.0, 0.0, 11.0)
+    wire = K.cylinder(0.18, 8.6, 6, mat_iron)
+    shift(wire, 0.0, 0.0, 1.8)
+    ball = sphere_z(1.0, 8, 4, mat_iron)
+    shift(ball, 0.0, 0.0, 1.25)
+    return [body, knob, wire, ball]
+
+
+def build_r2_bellwheel():
+    IR, BR = 0, 1
+    rng = random.Random(9400)
+    parts = []
+    axle = K.cylinder(4.0, 50.0, 12, IR)
+    K.bevel_all(axle, 0.3, 20.0)
+    parts.append(axle)
+    fin = sphere_z(4.0, 14, 8, IR)
+    shift(fin, 0.0, 0.0, 54.0)                                             # ball finial O8, Z 50..58
+    parts.append(fin)
+    for z0, ro, h in ((48.6, 4.9, 1.4), (42.0, 5.4, 1.3), (32.7, 5.4, 1.3)):                 # forged collars: under the ball, on and under the hub
+        c = K.ring(ro, 3.9, h, 12, IR)
+        shift(c, 0.0, 0.0, z0)
+        parts.append(c)
+    hub = K.cylinder(8.0, 8.0, 16, IR)                                     # hub O16 x 8, Z 34..42
+    K.bevel_all(hub, 0.4, 20.0)
+    shift(hub, 0.0, 0.0, 34.0)
+    parts.append(hub)
+    rim = K.ring(42.0, 38.0, 3.0, 48, IR)                                  # rim: major r 40, section 4 x 3, centred Z 38 (Z 36.5..39.5)
+    K.bevel_all(rim, 0.3, 20.0)
+    shift(rim, 0.0, 0.0, 36.5)
+    parts.append(rim)
+    for k in range(6):                                                     # 6 spokes 3 x 2 at Z 38
+        ang = 60.0 * k + rng.uniform(-1.2, 1.2)
+        sp = K.box(7.0, 39.2, -1.5, 1.5, 37.0, 39.0, IR, 0.25)
+        rot(sp, 'Z', ang)
+        parts.append(sp)
+        rv = K.cylinder(0.95, 0.55, 8, IR)                                 # rivet head where the spoke meets the rim
+        shift(rv, 40.0, 0.0, 39.5)
+        rot(rv, 'Z', ang)
+        parts.append(rv)
+    for k in range(8):                                                     # 8 bells every 45 deg at radius 40, hanging from an iron loop under the rim
+        ang = 45.0 * k
+        bell = r2_bell(BR, IR)
+        for p in bell:
+            shift(p, 40.0, 0.0, 22.0)                                      # bell mouth at Z 22
+            rot(p, 'Z', ang)
+            parts.append(p)
+        lk = chain_link(0.95, 0.42, 1.85, IR, 'xz')                        # 2.6 cm wide loop, between the crown knob (Z 34) and the rim underside (Z 36.5)
+        shift(lk, 40.0, 0.0, 35.0)
+        rot(lk, 'Z', ang)
+        parts.append(lk)
+    bm = join(parts)
+    for p in parts:
+        p.free()
+    return r2_piece(PREFIX + "BellWheel_A", bm, ["MAT_Iron", "MAT_Bronze"], ucx_design=[ucx_box(-42.0, 42.0, -42.0, 42.0, 0.0, 58.0)],
+                    note="R2-A bottom-centre, vertical axle on Z: iron axle O8 Z 0..50 + ball finial O8 Z 50..58, hub O16 x 8 at Z 34..42, rim ring major r 40 (section 4 x 3, Z 36.5..39.5, outer O84), "
+                         "6 spokes 3 x 2, 8 hollow bronze bells every 45 deg at r 40 (lip O9, height 11, crown O4, mouth at Z 22, clapper ball O2 on a wire) hung from iron loops; "
+                         "visual X/Y reach 44.5 because the bell lips stick out past the rim; UCX 1 box 84 x 84 x 58")
+
+
+# ---------------------------------------------------------------------------------------------- 2a: lever backplate
+def build_r2_backplate():
+    WD, IR = 0, 1
+    parts = []
+    for k, (y0, y1) in enumerate(((-15.0, -0.25), (0.25, 15.0))):         # oak board = two planks with a 0.5 seam down the middle (lattice boxes: clean quads, then chamfer + weathering)
+        pl = gbox(-3.0, 3.0, y0, y1, -45.0, 45.0, 5.0, WD)
+        K.bevel_all(pl, 0.3, 20.0)
+        weather(pl, 9411 + k, 0.2, lambda co, n: 1.0, f1=1.0 / 14.0, f2=1.0 / 4.0)
+        fit_box(pl, (-3.0, y0, -45.0), (3.0, y1, 45.0))
+        parts.append(pl)
+    for zc in (-34.0, 17.0):                                               # two iron straps across the width, 4 rivets each
+        st = K.box(2.9, 3.35, -15.0, 15.0, zc - 2.25, zc + 2.25, IR, 0.18)
+        parts.append(st)
+        for y in (-10.5, -3.5, 3.5, 10.5):
+            rv = dome_z(0.8, 0.45, 8, IR)
+            rot(rv, 'Y', 90.0)                                             # +Z -> +X
+            shift(rv, 3.35, y, zc)
+            parts.append(rv)
+    boss = K.cylinder(4.5, 0.6, 16, IR)                                    # pivot washer plate where handlePivot rides (actor x 6, z 45 = mesh z 0)
+    K.bevel_all(boss, 0.2, 20.0)
+    rot(boss, 'Y', 90.0)
+    shift(boss, 2.9, 0.0, 0.0)
+    parts.append(boss)
+    bolt = dome_z(1.5, 0.3, 10, IR)
+    rot(bolt, 'Y', 90.0)
+    shift(bolt, 3.5, 0.0, 0.0)
+    parts.append(bolt)
+    plate = K.box(2.9, 3.5, -9.0, 9.0, 26.0, 44.0, IR, 0.2)               # label plate 18 x 18; the TextRender sits at x 3.6, mesh z 37, just in front of its face
+    parts.append(plate)
+    for y in (-7.2, 7.2):
+        for z in (28.6, 41.4):
+            rv = dome_z(0.55, 0.25, 8, IR)
+            rot(rv, 'Y', 90.0)
+            shift(rv, 3.5, y, z)
+            parts.append(rv)
+    bm = join(parts)
+    for p in parts:
+        p.free()
+    return r2_piece(PREFIX + "DialLever_Backplate", bm, ["MAT_Wood", "MAT_Iron"], seat="none",
+                    note="R2-A replaces Backplate (engine Cube scale 0.06 x 0.3 x 0.9 = X +-3, Y +-15, Z +-45), pivot = centre: oak board with a V seam, two iron straps (z -34, +17) with 4 rivets each, "
+                         "pivot washer plate at z 0, iron label plate 18 x 18 (y +-9, z 26..44 mesh-local = 71..89 actor) front face x 3.5 (text at 3.6); fronts proud to x 3.8")
+
+
+# ---------------------------------------------------------------------------------------------- 2b: quadrant (rail)
+R2_NOTCH_Z = 40.0 * math.sin(math.radians(35.0))                          # 22.94: greybox notch height = 40 sin(notchPitch 35 deg)
+
+
+def build_r2_quadrant():
+    IR = 0
+    bar = K.box(-1.5, 1.5, -2.0, 2.0, -30.0, 30.0, IR, 0.35)
+    for zc in (-R2_NOTCH_Z, 0.0, R2_NOTCH_Z):                              # three notch slots, 6 tall x 1.4 deep, across the full width of the front (+X) face
+        cut = K.box(0.1, 2.5, -2.5, 2.5, zc - 3.0, zc + 3.0, IR, 0.0)
+        bar = bool_op(bar, cut, 'DIFFERENCE', 1)
+        cut.free()
+    for zc in (-R2_NOTCH_Z, 0.0, R2_NOTCH_Z):                              # small studs on the back face mark the same three heights
+        sd = dome_z(0.7, 0.4, 8, IR)
+        rot(sd, 'Y', -90.0)                                                # +Z -> -X
+        shift(sd, -1.5, 0.0, zc)
+        K.bm_append(bar, sd)
+        sd.free()
+    return r2_piece(PREFIX + "DialLever_Quadrant", bar, ["MAT_Iron"], seat="none",
+                    note="R2-A replaces Rail (engine Cube scale 0.03 x 0.04 x 0.6 = X +-1.5, Y +-2, Z +-30), pivot = centre: iron bar with three 6 x 1.4 notch slots on the +X face at "
+                         "mesh-local z -22.94, 0, +22.94 (= 40 sin(notchPitch 35 deg): low / mid / high arm angle -35 / 0 / +35 deg) and a stud behind each")
+
+
+# ---------------------------------------------------------------------------------------------- 2c: arm
+def build_r2_arm():
+    IR, WD = 0, 1
+    parts = []
+    rod = K.cylinder(1.25, 32.5, 10, IR)                                   # rod O2.5, mesh z -11..21.5 (the free end is mesh -Z: the component is rotated pitch 90)
+    shift(rod, 0.0, 0.0, -11.0)
+    parts.append(rod)
+    kn = K.cylinder(1.5, 3.0, 12, IR)                                      # pivot knuckle: pin axis along mesh Y (= the swing axis)
+    rot(kn, 'X', 90.0)
+    shift(kn, 0.0, 1.5, 21.0)
+    K.bevel_all(kn, 0.2, 20.0)
+    parts.append(kn)
+    for z0, ro in ((12.4, 1.75), (15.4, 1.75), (-10.7, 1.7)):             # forged collars, the last one is the ferrule under the grip
+        c = K.ring(ro, 1.0, 0.7, 12, IR)
+        shift(c, 0.0, 0.0, z0)
+        parts.append(c)
+    grip = K.lathe_z([(0.0, -22.5), (0.9, -22.4), (1.55, -21.7), (2.0, -20.5), (1.95, -19.8), (1.55, -18.6), (1.35, -17.0), (1.35, -15.8),
+                      (1.65, -14.4), (1.95, -13.0), (1.85, -11.8), (1.45, -10.9), (1.3, -10.5), (0.0, -10.5)], 14, WD)   # turned wooden grip O4 x 12 at the free end
+    parts.append(grip)
+    bm = join(parts)
+    for p in parts:
+        p.free()
+    return r2_piece(PREFIX + "DialLever_Arm", bm, ["MAT_Iron", "MAT_Wood"], seat="none",
+                    note="R2-A replaces Arm (engine Cylinder scale 0.03 x 0.03 x 0.45 = X/Y +-1.5, Z +-22.5; the component is rotated pitch 90, so mesh -Z points away from the pivot), pivot = centre: "
+                         "iron rod O2.5, turned wooden grip max O4 x 12 at mesh z -22.5..-10.5 (free end), pivot knuckle with a Y pin at z +21, three collars. "
+                         "Grip O4 instead of the spec's O4.5 to stay within 1 cm of the surveyed O3")
+
+
+# ---------------------------------------------------------------------------------------------- 2d: weight on a chain
+def build_r2_weight():
+    IR = 0
+    parts = []
+    body = K.lathe_z([(0.0, -7.0), (1.8, -6.7), (3.3, -5.8), (4.5, -4.0), (5.0, -1.8), (4.9, 0.2), (4.2, 2.4), (3.2, 4.4), (2.5, 5.8), (2.2, 6.3), (2.7, 6.5), (2.7, 7.0), (0.0, 7.0)], 16, IR)       # plumb-bob counterweight O10 x 14, mesh z -7..7 (teardrop with a neck collar, so it does not read as a mallet head)
+    parts.append(body)
+    eye = torus(1.7, 0.55, 12, 6, IR)                                      # top ring (plane XZ)
+    rot(eye, 'X', 90.0)
+    shift(eye, 0.0, 0.0, 8.55)
+    parts.append(eye)
+    pitch, r_w, stretch = 2.77, 0.42, 1.85
+    semi = 0.95 * stretch
+    zc = 10.66
+    k = 0
+    while zc + semi + r_w + 2.9 < 47.0 + 0.01:                             # links interlock at a pitch equal to the inner length; the last one leaves room for the terminal ring
+        lk = chain_link(0.95, r_w, stretch, IR, 'yz' if k % 2 == 0 else 'xz')
+        shift(lk, 0.0, 0.0, zc)
+        parts.append(lk)
+        zc += pitch
+        k += 1
+    zlast = zc - pitch
+    zt = (zlast + semi - 0.6) + 2.0
+    term = torus(2.0, 0.55, 12, 6, IR)                                     # terminal ring, plane perpendicular to the last link's
+    rot(term, 'X', 90.0)
+    if (k - 1) % 2 != 0:                                                   # last link is 'xz' -> terminal 'yz'
+        rot(term, 'Z', 90.0)
+    shift(term, 0.0, 0.0, zt)
+    parts.append(term)
+    bm = join(parts)
+    for p in parts:
+        p.free()
+    return r2_piece(PREFIX + "DialLever_Weight", bm, ["MAT_Iron"], seat="none",
+                    note="R2-A replaces Weight (engine Sphere scale 0.1 = O10, centred on the arm tip), pivot = body centre: iron counterweight O10 x 14 (mesh z -7..7) with a top ring and %d chain links "
+                         "rising from it to the terminal ring at mesh z about +47 (the old AABB extended upward). The chain's upper end is free: nothing in the greybox hierarchy holds it" % k)
+
+
+# ---------------------------------------------------------------------------------------------- 2e: notch stop
+def build_r2_notchstop():
+    IR, PT = 0, 1
+    b = K.box(-2.5, 2.5, -2.25, 2.25, -1.5, 1.5, IR, 0.3)
+    b.normal_update()
+    for f in b.faces:
+        if f.normal.x > 0.9 or f.normal.z > 0.9:                          # the front (+X, toward the player) and top faces are the bone-white painted ones
+            f.material_index = PT
+    return r2_piece(PREFIX + "DialLever_NotchStop", b, ["MAT_Iron", "MAT_Paint"], seat="none",
+                    note="R2-A replaces NotchLow/Mid/High (engine Cube scale 0.06 x 0.05 x 0.025 = 6 x 5 x 2.5), pivot = centre: iron stop 5 x 4.5 x 3 (spec 4 x 4 x 3, survey 6 x 5 x 2.5: "
+                         "5 x 4.5 x 3 is within 1 cm of both), chamfered, +X and top faces MAT_Paint (bone white)")
+
+
+# ---------------------------------------------------------------------------------------------- 3: roof-hole gobo plate
+GOBO_SPOT_LOC = (5205.4, -1324.3, 2914.1)       # Light_Chapel_Moon_Roof (SpotLight_7), read from the editor in R2-A
+GOBO_SPOT_ROT = (-38.0, 35.0, 0.0)              # pitch, yaw, roll
+GOBO_D = 150.0                                  # gobo plane distance along the spot's forward axis
+GOBO_OFFSET = 1.5                               # outward offset of the cut-out, cm in the gobo plane
+GOBO_PLANE_Z = 12.0                             # slab-local Z of the outline plane (= ROOF_HOLE_Z, the middle of the 0..21 slab: halves the parallax of the oblique beam)
+GOBO_SIZE = 110.0
+GOBO_THICK = 2.0
+GOBO_RES = 0.1
+
+
+def raster_poly(poly, half, res):
+    """Even-odd scanline fill of a polygon [(y, z)] on a square grid (rows = z, cols = y), pixel centres at -half + (i + .5) res."""
+    import numpy as np
+    n = int(round(2 * half / res))
+    m = np.zeros((n, n), dtype=bool)
+    P = np.array(poly, dtype=float)
+    a, b = P, np.roll(P, -1, axis=0)
+    zc = -half + (np.arange(n) + 0.5) * res
+    for i in range(n):
+        c = (a[:, 1] > zc[i]) != (b[:, 1] > zc[i])
+        if not c.any():
+            continue
+        a_, b_ = a[c], b[c]
+        t = (zc[i] - a_[:, 1]) / (b_[:, 1] - a_[:, 1])
+        xs = np.sort(a_[:, 0] + t * (b_[:, 0] - a_[:, 0]))
+        for x0, x1 in zip(xs[0::2], xs[1::2]):
+            j0 = int(math.ceil((x0 + half) / res - 0.5))
+            j1 = int(math.floor((x1 + half) / res - 0.5))
+            if j1 >= j0:
+                m[i, max(j0, 0):min(j1, n - 1) + 1] = True
+    return m
+
+
+def dilate_disc(mask, rpx):
+    """Binary dilation by a disc of radius rpx pixels (exact Minkowski sum on the grid)."""
+    import numpy as np
+    H, W = mask.shape
+    out = np.zeros_like(mask)
+    cache = {}
+    mi = mask.astype(np.int32)
+    for dy in range(-rpx, rpx + 1):
+        w = int(math.floor(math.sqrt(rpx * rpx - dy * dy)))
+        if w not in cache:
+            padded = np.pad(mi, ((0, 0), (w, w)))
+            cs = np.concatenate([np.zeros((H, 1), dtype=np.int32), np.cumsum(padded, axis=1)], axis=1)
+            cache[w] = (cs[:, 2 * w + 1:] - cs[:, :-(2 * w + 1)]) > 0
+        d = cache[w]
+        if dy >= 0:
+            out[dy:, :] |= d[:H - dy, :]
+        else:
+            out[:H + dy, :] |= d[-dy:, :]
+    return out
+
+
+def trace_outer(mask, half, res):
+    """Outer boundary of a binary raster as a CCW polygon [(y, z)] (lattice corners, inside on the left)."""
+    H, W = mask.shape
+    pad = [[False] * (W + 2) for _ in range(H + 2)]
+    ys, xs = mask.nonzero()
+    for i, j in zip(ys.tolist(), xs.tolist()):
+        pad[i + 1][j + 1] = True
+    nxt = {}
+    for i, j in zip(ys.tolist(), xs.tolist()):
+        if not pad[i][j + 1]:
+            nxt.setdefault((j, i), []).append((j + 1, i))
+        if not pad[i + 1][j + 2]:
+            nxt.setdefault((j + 1, i), []).append((j + 1, i + 1))
+        if not pad[i + 2][j + 1]:
+            nxt.setdefault((j + 1, i + 1), []).append((j, i + 1))
+        if not pad[i + 1][j]:
+            nxt.setdefault((j, i + 1), []).append((j, i))
+    loops, used = [], set()
+    for s in list(nxt):
+        for e in nxt[s]:
+            if (s, e) in used:
+                continue
+            loop, cur, prev = [], s, None
+            nx = e
+            while True:
+                used.add((cur, nx))
+                loop.append(cur)
+                prev, cur = cur, nx
+                if cur == s:
+                    break
+                outs = [o for o in nxt.get(cur, []) if (cur, o) not in used]
+                if not outs:
+                    break
+                if len(outs) > 1:                                          # touching corner: take the right-most turn so loops stay simple
+                    dx, dy = cur[0] - prev[0], cur[1] - prev[1]
+                    outs.sort(key=lambda o: dx * (o[1] - cur[1]) - dy * (o[0] - cur[0]))
+                nx = outs[0]
+            loops.append(loop)
+    best = max(loops, key=lambda lp: abs(K.poly_area(lp)))
+    if K.poly_area(best) < 0:
+        best = best[::-1]
+    return [(-half + x * res, -half + y * res) for (x, y) in best]
+
+
+def dp_closed(poly, tol):
+    n = len(poly)
+    i0 = 0
+    i1 = max(range(n), key=lambda i: math.hypot(poly[i][0] - poly[i0][0], poly[i][1] - poly[i0][1]))
+    a, b = (i0, i1) if i0 < i1 else (i1, i0)
+    h1 = _dp_open(poly[a:b + 1], tol)
+    h2 = _dp_open(poly[b:] + poly[:a + 1], tol)
+    return h1[:-1] + h2[:-1]
+
+
+def segs_intersect(p, q, r, s):
+    def o(a, b, c):
+        return (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0])
+    d1, d2, d3, d4 = o(p, q, r), o(p, q, s), o(r, s, p), o(r, s, q)
+    return (d1 * d2 < 0) and (d3 * d4 < 0)
+
+
+def poly_is_simple(poly):
+    n = len(poly)
+    for i in range(n):
+        for j in range(i + 2, n):
+            if i == 0 and j == n - 1:
+                continue
+            if segs_intersect(poly[i], poly[(i + 1) % n], poly[j], poly[(j + 1) % n]):
+                return False
+    return True
+
+
+def gobo_projection(plane_z=GOBO_PLANE_Z):
+    """Roof-hole outline (slab-local, exact boolean of the board cut and the slate cut) -> gobo-plane (y, z) cm.
+    World point C = slab loc + x*Xa + y*Ya + z*Za (Ch_Roof_S1: loc ROOF_S1_LOC, rot ROOF_S1_ROT); from the spot at L with forward d, right r, up u:
+    v = C - L, p = L + v * (D / (v . d)); plane coordinates (y, z) = ((p - L) . r, (p - L) . u).  Same formula as Tools/crypt/r1b/s3_gobos.py (there on the bbox corners)."""
+    full, _p1, _p2 = roof_hole_outline()
+    xa, ya, za = ue_axes(*ROOF_S1_ROT)
+    loc = Vector(ROOF_S1_LOC)
+    d, r, u = ue_axes(*GOBO_SPOT_ROT)
+    L = Vector(GOBO_SPOT_LOC)
+    pts, dists = [], []
+    for (x, y) in full:
+        C = loc + xa * x + ya * y + za * plane_z
+        v = C - L
+        q = v * (GOBO_D / v.dot(d))
+        pts.append((q.dot(r), q.dot(u)))
+        dists.append(v.dot(d))
+    return pts, len(full), sum(dists) / len(dists)
+
+
+def build_gobo_roofhole():
+    pts, nfull, dist = gobo_projection()
+    half = GOBO_SIZE / 2.0
+    m0 = raster_poly(pts, half, GOBO_RES)
+    rpx = int(round(GOBO_OFFSET / GOBO_RES))
+    m1 = dilate_disc(m0, rpx)
+    outline = trace_outer(m1, half, GOBO_RES)
+    outline = dp_closed(outline, 0.1)
+    assert poly_is_simple(outline), "gobo cut-out outline self-intersects"
+    ys = [p[0] for p in outline]
+    zs = [p[1] for p in outline]
+    area0 = float(m0.sum()) * GOBO_RES ** 2
+    area1 = abs(K.poly_area(outline))
+    plate = K.box(-GOBO_THICK / 2, GOBO_THICK / 2, -half, half, -half, half, 0, 0.0)
+    cutter = K.prism(outline, 'x', -GOBO_THICK, GOBO_THICK, 0)
+    bm = bool_op(plate, cutter, 'DIFFERENCE', 1)
+    plate.free()
+    cutter.free()
+    bmesh.ops.triangulate(bm, faces=bm.faces[:], quad_method='BEAUTY', ngon_method='EAR_CLIP')
+    scale = GOBO_D / dist
+    pc = Piece("SM_LB_Gobo_RoofHole", bm, ["MAT_Iron"],
+               note="R2-A aperture-mask plate 110 x 110 x 2 (pivot centre, local X = thickness along the spot's forward axis, local Y/Z = the spot's right/up). Cut-out = the RoofSlab_Broken hole outline "
+                    "(exact boolean of build_kit.hole_cutters(441), %d verts) at slab-local Z %.0f, projected from Light_Chapel_Moon_Roof (loc %s, rot %s) onto the plane D = %.0f; "
+                    "mean distance spot -> slab %.0f so scale %.4f (1 cm in the plane = %.1f cm at the slab); outward offset %.1f cm (true disc dilation); outline simplified to %d verts. "
+                    "Cut-out bbox y %.1f..%.1f z %.1f..%.1f"
+                    % (nfull, GOBO_PLANE_Z, GOBO_SPOT_LOC, GOBO_SPOT_ROT, GOBO_D, dist, scale, 1.0 / scale, GOBO_OFFSET, len(outline), min(ys), max(ys), min(zs), max(zs)))
+    pc.subdir = R2_SUB
+    pc.seat_mode = "none"
+    pc.extra = dict(outline_verts=len(outline), source_outline_verts=nfull, area_before_offset=round(area0, 2), area_after_offset=round(area1, 2), scale=round(scale, 5),
+                    mean_distance=round(dist, 1), bbox_y=[round(min(ys), 2), round(max(ys), 2)], bbox_z=[round(min(zs), 2), round(max(zs), 2)], plane_z=GOBO_PLANE_Z, offset_cm=GOBO_OFFSET)
+    return pc
+
+
+# ==============================================================================================
 # table
 # ==============================================================================================
 def table():
@@ -3299,6 +3726,14 @@ def table():
         ("Crypt_CapstanDrum_80x50", build_c_capstan),
         ("Crypt_PlaqueFrame_270x195", build_c_plaque),
         ("Crypt_WinchFrame", build_c_winch),
+        # ---- P9-R2A (D1.25) ----
+        ("BellWheel_A", build_r2_bellwheel),
+        ("DialLever_Backplate", build_r2_backplate),
+        ("DialLever_Quadrant", build_r2_quadrant),
+        ("DialLever_Arm", build_r2_arm),
+        ("DialLever_Weight", build_r2_weight),
+        ("DialLever_NotchStop", build_r2_notchstop),
+        ("Gobo_RoofHole", build_gobo_roofhole),
     ]
 
 
@@ -3353,6 +3788,8 @@ def run():
                    note=pc.note, seconds=round(time.time() - t, 1))
         if hasattr(pc, 'pivot_world'):
             rec['pivot_world'] = [round(v, 3) for v in pc.pivot_world]
+        if hasattr(pc, 'extra'):
+            rec['extra'] = pc.extra
         report.append(rec)
         print("PIECE", json.dumps(rec))
         pieces.append(pc)
@@ -3364,7 +3801,9 @@ def run():
         K.add_to_layout(pc.name, pc.bm, pc.ucx, (x + w / 2, 0.0, 0.0), prop_mats(pc.slots))
         x += w + 60.0
     subs = {pc.subdir for pc in pieces}
-    rep_dir = os.path.join(out_dir, CRYPT_SUB) if (only and subs == {CRYPT_SUB}) else out_dir        # P9: blend + report next to the Crypt FBX
+    rep_dir = out_dir                                                                                      # P9: blend + report next to the Crypt / R2 FBX
+    if only and len(subs) == 1 and next(iter(subs)) in (CRYPT_SUB, R2_SUB):
+        rep_dir = os.path.join(out_dir, next(iter(subs)))
     os.makedirs(rep_dir, exist_ok=True)
     suffix = ("_" + tag) if tag else "_partial"
     blend = os.path.join(rep_dir, "LB_Props.blend" if not only else "LB_Props%s.blend" % suffix)

@@ -89,3 +89,19 @@ python Tools/textures/gen_crypt_textures.py                                     
 - Stone pieces are built on `gbox` (kit `lattice_box`, a regular quad grid) before booleans/weathering: never use `subdiv_long` for this (it makes strips, which shade as streaks) and never `densify` after a boolean (slivers explode the triangle count).
 - Collision (UCX boxes match D1.3 exactly, verified as a set): Block_100 and _C (100^3), Portcullis (x +-150, y +-30, z 0..560), RubbleFill (x +-50, y +-200, z 0..560), Crank (44 x 16 x 16, bottom-centre), CapstanDrum (x +-35, y +-35, z +-25), WinchFrame (2 posts 20 x 20 x 250, 2 plates 20 x 90 x 10).
 - Deviations from D1.3 (also in the per-piece notes): Sarcophagus_B lid 280 x 104 rotated 3 deg, shifted +7 (280 x 120 rotated 3 deg cannot stay inside y +-60 / x +-150); Portcullis rails centred at x +-146 and four 6 x 60 x 6 guide pins give the 60 cm depth the table lists (lattice itself is within y +-4.5); Crank is 43 x 8 x 14.3 (socket boss and handle both point up, arm flat on the plinth); Boards: 10 boards run along X (300 long) stacked along Y (250), which is the only reading under which widths 22-27 sum to 250.
+
+## P9-R2A bell wheel, dial-lever set, roof-hole gobo (7 meshes, plan amendment D1.25)
+```
+set B="C:\Program Files\Blender Foundation\Blender 5.2\blender.exe"
+%B% -b --factory-startup --python Tools/blender/props/build_props.py -- --only BellWheel DialLever Gobo_RoofHole --tag R2   # ~1 s -> SourceArt/Props/Procedural/R2/ (FBX + LB_Props_R2.blend + props_report_R2.json)
+%B% -b --factory-startup --python Tools/blender/props/verify_props.py                                                       # 79/79: the 72 older pieces + the 7 new ones
+%B% -b --factory-startup --python Tools/blender/props/render_r2.py -- --set all                                              # Docs/ArtTest/props/r2_*.png (single pieces, the lever assembled at -35 / 0 / +35, Cycles views)
+```
+- Names: `SM_LB_Prop_BellWheel_A`, `SM_LB_Prop_DialLever_{Backplate,Quadrant,Arm,Weight,NotchStop}`, `SM_LB_Gobo_RoofHole`. New slots: `MAT_Bronze`, `MAT_Paint` (bone white, NotchStop faces).
+- **BellWheel_A**: bottom-centre, axle on Z; visual 89 x 89 x 58 (bell lips reach r 44.5), UCX 1 box 84 x 84 x 58; 7.2k tris.
+- **Lever parts** replace the P4 greybox engine-primitive components of `BP_DialLever` one for one: **pivot = the primitive's centre** (`seat_mode "none"`), each built to that primitive's AABB (+-1 cm), so a child Blueprint uses scale 1.
+  Survey, AABBs and the arm/notch geometry: `Docs/ArtTest/crypt/survey_diallever.md`. The arm's free end (grip) is mesh -Z (the component is rotated pitch 90).
+- **Gobo_RoofHole**: 110 x 110 x 2, pivot centre, local X = thickness, local Y / Z = the moon spot's right / up (place with the spot's rotation, at L + 150 d). The cut-out is the RoofSlab_Broken hole outline
+  (`roof_hole_outline()`, the exact boolean of `build_kit.hole_cutters(441)`) at slab-local Z 12, projected from `Light_Chapel_Moon_Roof` onto the plane D = 150 with `p = L + v * D / (v.d)` (as `Tools/crypt/r1b/s3_gobos.py`, there on the bbox corners),
+  dilated by a true 1.5 cm disc (raster at 0.1 cm, traced, Douglas-Peucker 0.1) and cut from the plate with an exact boolean. Constants (`GOBO_SPOT_LOC/ROT`, `GOBO_D`, `GOBO_OFFSET`, `GOBO_PLANE_Z`) are at the top of that section of `build_props.py`.
+  The projection overlay is `Docs/ArtTest/props/r2_gobo_projection.png`.

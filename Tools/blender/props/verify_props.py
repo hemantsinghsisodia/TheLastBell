@@ -119,6 +119,19 @@ for _k in list(SPEC):
     if _k.startswith("Crypt_") or _k == "Crank_A":
         SPEC[_k]["subdir"] = "Crypt"
 
+# ---- P9-R2A (plan amendment D1.25): bell wheel, dial-lever set (free pivot = centre of the engine primitive each part replaces; 'survey' = that primitive's AABB), roof-hole gobo ----
+SPEC.update({
+    "BellWheel_A": dict(dims=(89.0, 89.0, 58.0), slots=["MAT_Iron", "MAT_Bronze"], ucx=1, ucx_boxes=[(-42, 42, -42, 42, 0, 58)], tris_max=12000, struct="bellwheel"),
+    "DialLever_Backplate": dict(dims=(6.8, 30.0, 90.0), bmin=(-3.0, -15.0, -45.0), survey=(6.0, 30.0, 90.0), slots=["MAT_Wood", "MAT_Iron"], ucx=0, free_pivot=True, struct="dl_backplate"),
+    "DialLever_Quadrant": dict(dims=(3.4, 4.0, 60.0), bmin=(-1.9, -2.0, -30.0), survey=(3.0, 4.0, 60.0), slots=["MAT_Iron"], ucx=0, free_pivot=True, struct="dl_quadrant"),
+    "DialLever_Arm": dict(dims=(4.0, 3.9, 45.0), bmin=(-2.0, -1.95, -22.5), survey=(3.0, 3.0, 45.0), slots=["MAT_Iron", "MAT_Wood"], ucx=0, free_pivot=True, struct="dl_arm"),
+    "DialLever_Weight": dict(dims=(10.0, 10.0, 53.84), bmin=(-5.0, -5.0, -7.0), survey=(10.0, 10.0, None), slots=["MAT_Iron"], ucx=0, free_pivot=True, struct="dl_weight"),
+    "DialLever_NotchStop": dict(dims=(5.0, 4.5, 3.0), bmin=(-2.5, -2.25, -1.5), survey=(6.0, 5.0, 2.5), slots=["MAT_Iron", "MAT_Paint"], ucx=0, free_pivot=True, struct="dl_notchstop"),
+    "Gobo_RoofHole": dict(prefix=CP, dims=(2.0, 110.0, 110.0), slots=["MAT_Iron"], ucx=0, pivot="centre", struct="gobo"),
+})
+for _k in ("BellWheel_A", "DialLever_Backplate", "DialLever_Quadrant", "DialLever_Arm", "DialLever_Weight", "DialLever_NotchStop", "Gobo_RoofHole"):
+    SPEC[_k]["subdir"] = "R2"
+
 
 def parse():
     argv = sys.argv
@@ -253,6 +266,189 @@ def shaft_checks(spec, ob, fail, res):
         fail("expected 1 material slot")
     bm.free()
     res['struct'] = notes
+
+
+def _scan_runs(vals):
+    """[(start_index, end_index)] of consecutive True entries."""
+    runs, st = [], None
+    for i, v in enumerate(vals):
+        if v and st is None:
+            st = i
+        if not v and st is not None:
+            runs.append((st, i - 1))
+            st = None
+    if st is not None:
+        runs.append((st, len(vals) - 1))
+    return runs
+
+
+def _expect(notes, fail, label, got, want, tol):
+    notes.append("%s: %s (want %s +-%g)" % (label, "None" if got is None else "%.2f" % got, want, tol))
+    if got is None or abs(got - want) > tol:
+        fail("%s: got %s, expected %s +-%g" % (label, got, want, tol))
+
+
+def chk_bellwheel(bvh, ob, spec, notes, fail):
+    h = _ray(bvh, 0.0, 0.0, 80.0, (0, 0, -1))
+    _expect(notes, fail, "finial top z", h and h[2], 58.0, 0.6)
+    h = _ray(bvh, 0.0, 0.0, -10.0, (0, 0, 1))
+    _expect(notes, fail, "axle bottom z", h and h[2], 0.0, 0.3)
+    h = _ray(bvh, 6.0, 0.0, 80.0, (0, 0, -1))
+    _expect(notes, fail, "hub top z (x 6)", h and h[2], 42.0, 0.6)
+    h = _ray(bvh, 0.0, 40.0, 80.0, (0, 0, -1))
+    _expect(notes, fail, "rim top z (angle 90)", h and h[2], 39.5, 0.6)
+    h = _ray(bvh, 20.0, 0.0, 80.0, (0, 0, -1))
+    _expect(notes, fail, "spoke top z (angle 0, r 20)", h and h[2], 39.0, 0.6)
+    nb = 0
+    for k in range(8):                                                     # 8 bells every 45 deg at r 40: lip bottom (r 3.9..4.5) at z 22
+        a = math.radians(45.0 * k)
+        rr = 40.0 + 4.2
+        h = _ray(bvh, rr * math.cos(a), rr * math.sin(a), -10.0, (0, 0, 1))
+        if h is not None and abs(h[2] - 22.0) < 0.6:
+            nb += 1
+    notes.append("bell lips found at z 22: %d of 8" % nb)
+    if nb != 8:
+        fail("%d of 8 bell lips at z 22" % nb)
+    for k in range(8):                                                     # between the bells: nothing under the rim (first hit = rim underside 36.5)
+        a = math.radians(45.0 * k + 22.5)
+        h = _ray(bvh, 40.0 * math.cos(a), 40.0 * math.sin(a), 10.0, (0, 0, 1))
+        if h is None or abs(h[2] - 36.5) > 0.6:
+            fail("between bells at %g deg: first hit %s (rim underside 36.5)" % (45.0 * k + 22.5, h and round(h[2], 2)))
+    n_br = sum(1 for p in ob.data.polygons if p.material_index == 1)
+    notes.append("Bronze faces %d" % n_br)
+    if n_br < 8 * 60:
+        fail("too few Bronze faces (%d)" % n_br)
+
+
+def chk_backplate(bvh, ob, spec, notes, fail):
+    def front(y, z):
+        return _ray(bvh, 10.0, y, z, (-1, 0, 0))
+    h = front(8.0, 5.0)
+    _expect(notes, fail, "board front x (y 8, z 5)", h and h[0], 2.9, 0.2)
+    h = front(8.0, -34.0)
+    _expect(notes, fail, "lower strap x (z -34)", h and h[0], 3.35, 0.2)
+    h = front(3.0, 35.0)
+    _expect(notes, fail, "label plate x (z 35)", h and h[0], 3.5, 0.2)
+    h = front(0.0, 0.0)
+    _expect(notes, fail, "pivot bolt x (y 0, z 0)", h and h[0], 3.8, 0.2)
+    h = front(0.0, -10.0)
+    notes.append("seam gap (y 0, z -10): %s" % ("open" if h is None else "blocked at x %.2f" % h[0]))
+    if h is not None:
+        fail("the 0.5 seam is closed at z -10 (hit x %.2f)" % h[0])
+    for zc in (-34.0, 17.0):
+        hits = [(_ray(bvh, 10.0, -14.0 + 0.1 * i, zc, (-1, 0, 0)) or (0.0,))[0] >= 3.6 for i in range(281)]
+        n = len(_scan_runs(hits))
+        notes.append("rivet heads along the strap at z %g: %d (4)" % (zc, n))
+        if n != 4:
+            fail("%d rivets on the strap at z %g, expected 4" % (n, zc))
+    n_w = sum(1 for p in ob.data.polygons if p.material_index == 0)
+    n_i = sum(1 for p in ob.data.polygons if p.material_index == 1)
+    notes.append("Wood faces %d, Iron faces %d" % (n_w, n_i))
+    if n_w < 100 or n_i < 100:
+        fail("Wood / Iron face counts %d / %d too low" % (n_w, n_i))
+
+
+def chk_quadrant(bvh, ob, spec, notes, fail):
+    zs = [-29.5 + 0.1 * i for i in range(591)]
+    hits = [((_ray(bvh, 10.0, 0.0, z, (-1, 0, 0)) or (9.0,))[0] < 1.0) for z in zs]
+    runs = _scan_runs(hits)
+    cen = [(zs[a] + zs[b]) / 2.0 for a, b in runs]
+    ht = [zs[b] - zs[a] + 0.1 for a, b in runs]
+    notes.append("slots on the +X face at z %s heights %s" % ([round(c, 2) for c in cen], [round(t, 2) for t in ht]))
+    want = [-22.94, 0.0, 22.94]
+    if len(runs) != 3 or any(abs(c - w) > 0.4 for c, w in zip(cen, want)) or any(abs(t - 6.0) > 0.6 for t in ht):
+        fail("notch slots %s heights %s, expected centres %s height 6" % (cen, ht, want))
+    h = _ray(bvh, 10.0, 0.0, 10.0, (-1, 0, 0))
+    _expect(notes, fail, "bar front between slots x", h and h[0], 1.5, 0.15)
+
+
+def chk_arm(bvh, ob, spec, notes, fail):
+    def side(z):
+        return _ray(bvh, 10.0, 0.0, z, (-1, 0, 0))
+    _expect(notes, fail, "rod radius (z 5)", (side(5.0) or (None,))[0], 1.25, 0.12)
+    _expect(notes, fail, "grip bulb radius (z -20.5)", (side(-20.5) or (None,))[0], 2.0, 0.15)
+    _expect(notes, fail, "grip waist radius (z -16.4)", (side(-16.4) or (None,))[0], 1.35, 0.15)
+    h = _ray(bvh, 0.0, -10.0, 21.0, (0, 1, 0))
+    _expect(notes, fail, "pivot knuckle face y (z 21)", h and h[1], -1.5, 0.15)
+    n_w = sum(1 for p in ob.data.polygons if p.material_index == 1)
+    notes.append("Wood (grip) faces %d" % n_w)
+    if n_w < 60:
+        fail("grip faces %d" % n_w)
+    zw = [(ob.matrix_world @ p.center).z for p in ob.data.polygons if p.material_index == 1]
+    # the grip is at mesh -Z (the arm component is rotated pitch 90, so -Z is the free end): all wood below the iron rod's centre height
+    sc = bpy.context.scene.unit_settings.scale_length * 100.0
+    zw_ue = [c * sc for c in zw]
+    notes.append("wooden grip z range %.1f..%.1f" % (min(zw_ue), max(zw_ue)))
+    if max(zw_ue) > -10.0 or min(zw_ue) < -22.6:
+        fail("the grip must sit at mesh z -22.5..-10.5, found %.1f..%.1f" % (min(zw_ue), max(zw_ue)))
+
+
+def chk_weight(bvh, ob, spec, notes, fail):
+    h = _ray(bvh, 0.0, 0.0, 80.0, (0, 0, -1))
+    _expect(notes, fail, "chain top (terminal ring) z", h and h[2], 46.84, 0.6)
+    h = _ray(bvh, 3.0, 0.0, 30.0, (0, 0, -1))
+    _expect(notes, fail, "body upper shoulder z at r 3", h and h[2], 4.8, 0.6)
+    h = _ray(bvh, 10.0, 0.0, -1.8, (-1, 0, 0))
+    _expect(notes, fail, "body max radius x (z -1.8)", h and h[0], 5.0, 0.15)
+    h = _ray(bvh, 0.0, 0.0, -20.0, (0, 0, 1))
+    _expect(notes, fail, "body bottom z", h and h[2], -7.0, 0.3)
+    # links: the chain is made of many separate torus shells above the body
+    sc = bpy.context.scene.unit_settings.scale_length * 100.0
+    n_up = sum(1 for p in ob.data.polygons if (ob.matrix_world @ p.center).z * sc > 12.0)
+    notes.append("faces above z 12 (chain): %d" % n_up)
+    if n_up < 400:
+        fail("chain has only %d faces" % n_up)
+
+
+def chk_notchstop(bvh, ob, spec, notes, fail):
+    n_p = [p for p in ob.data.polygons if p.material_index == 1]
+    nrm = [(ob.matrix_world.to_3x3() @ p.normal).normalized() for p in n_p]
+    notes.append("Paint faces: %d" % len(n_p))
+    if len(n_p) < 2:
+        fail("paint faces missing")
+    # file x = UE x, file y mirrored: paint faces must point +X (front) or +Z (top) only
+    if any(not (n.x > 0.9 or n.z > 0.9) for n in nrm):
+        fail("a paint face does not point +X / +Z")
+    if not any(n.x > 0.9 for n in nrm):
+        fail("no paint face on the +X (front) side")
+
+
+def chk_gobo(bvh, ob, spec, notes, fail):
+    rp = os.path.join(HERE, "..", "..", "..", "SourceArt", "Props", "Procedural", "R2", "props_report_R2.json")
+    want_area = None
+    bb = None
+    try:
+        for r in json.load(open(rp)):
+            if r["name"] == "SM_LB_Gobo_RoofHole":
+                want_area = r["extra"]["area_after_offset"]
+                bb = (r["extra"]["bbox_y"], r["extra"]["bbox_z"])
+    except Exception as e:                                                  # report missing: size checks only
+        notes.append("no report (%s)" % e)
+    step = 0.5
+    n = 0
+    open_pts = []
+    for iy in range(-108, 109):
+        for iz in range(-108, 109):
+            y, z = iy * step, iz * step
+            if _ray(bvh, 5.0, y, z, (-1, 0, 0)) is None:
+                open_pts.append((y, z))
+    area = len(open_pts) * step * step
+    notes.append("open area %.1f cm2 (report %s)" % (area, want_area))
+    if want_area is not None and abs(area - want_area) > 0.03 * want_area:
+        fail("open area %.1f differs from the outline area %.1f by more than 3 %%" % (area, want_area))
+    if not 600.0 < area < 2000.0:
+        fail("open area %.1f outside 600..2000" % area)
+    ys = [p[0] for p in open_pts]
+    zs = [p[1] for p in open_pts]
+    notes.append("open bbox y %.1f..%.1f z %.1f..%.1f" % (min(ys), max(ys), min(zs), max(zs)))
+    if bb is not None and (abs(min(ys) - bb[0][0]) > 0.6 or abs(max(ys) - bb[0][1]) > 0.6 or abs(min(zs) - bb[1][0]) > 0.6 or abs(max(zs) - bb[1][1]) > 0.6):
+        fail("open bbox differs from the report bbox")
+    h = _ray(bvh, 5.0, 50.0, 50.0, (-1, 0, 0))
+    _expect(notes, fail, "plate face x (corner)", h and h[0], 1.0, 0.05)
+
+
+R2_CHECKS = {"bellwheel": chk_bellwheel, "dl_backplate": chk_backplate, "dl_quadrant": chk_quadrant, "dl_arm": chk_arm, "dl_weight": chk_weight,
+             "dl_notchstop": chk_notchstop, "gobo": chk_gobo}
 
 
 def structural(short, spec, ob, ucx, fail, res):
@@ -454,6 +650,8 @@ def structural(short, spec, ob, ucx, fail, res):
         notes.append("drum side at y %s (-22)" % (("%.1f" % h[1]) if h else None))
         if h is None or abs(h[1] + 22.0) > 2.5:
             fail("drum side y %s expected about -22" % (h and round(h[1], 1)))
+    elif kind in R2_CHECKS:
+        R2_CHECKS[kind](bvh, ob, spec, notes, fail)
     elif kind == "shell_cyl":
         h = _ray(bvh, 0.0, 0.0, -10.0, (0, 0, 1))                        # open bottom: first hit is the cap underside at Z 50
         notes.append("cap underside: %s" % (("%.1f" % h[2]) if h else None))
@@ -568,6 +766,10 @@ def check(path, short, spec):
     for i, v in enumerate(spec['dims']):
         if v is not None and abs(dims[i] - v) > (spec.get('ztol', tol) if i == 2 else tol):
             fail("dim %s %.2f vs %.2f" % ("XYZ"[i], dims[i], v))
+    if 'survey' in spec:                                    # R2-A: within 1 cm of the AABB of the engine primitive the part replaces
+        for i, v in enumerate(spec['survey']):
+            if v is not None and abs(dims[i] - v) > 1.001:
+                fail("dim %s %.2f differs from the surveyed primitive AABB %.2f by more than 1 cm" % ("XYZ"[i], dims[i], v))
     if 'zmax' in spec and dims.z > spec['zmax']:
         fail("dim Z %.2f > %.2f" % (dims.z, spec['zmax']))
     # slots
