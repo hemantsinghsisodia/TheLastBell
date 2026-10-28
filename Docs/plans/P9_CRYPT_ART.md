@@ -1423,7 +1423,7 @@ Follow the props conventions in `Tools/blender/props/build_props.py`: seeded, MA
      - a vertical trace from note centre +50 to −50 must first hit within 0.5 cm of the note's top;
      - a trace from 120 cm away, at eye height 160 cm above the note's floor, toward the note centre must hit the note.
      - Fix any failure by raising the note by ≤ 1 cm.
-   - `Note_Chains`: scale × 1.5 (42 × 30 cm), back still 1.5 cm off the proudest wall stone.
+   - `Note_Chains`: scale × 2 (56 × 40 cm; owner, 2026-10-28), back still 1.5 cm off the proudest wall stone. Keep the centre at Z −430 unless the bottom edge would go below Z −455; if so, raise it so the bottom is at Z −455.
 5. **`T_LB_Parchment`:** finish the delete with an editor tool that removes the file. If none works, report it; never delete the file outside the editor.
 6. **Suite:** 78/78 (ChapelNave and ChapelSacristy pass through both doors; RouteBot uses the bell wheel and the levers), plus captures. Commit.
 
