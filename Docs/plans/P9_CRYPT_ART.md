@@ -707,3 +707,89 @@ Poses are the P9-5 pose files; the after captures go to `Docs/ArtTest/crypt/p9r_
   - The lead judges the wet sheen.
   - The knobs are `Wetness`, `PuddleAmount` and `PuddleRoughness` on `MI_Crypt_Floor`. Change them only if the lead asks.
 - **Known (do not fix):** the white `Cl_S2` cloister greybox seen at the top of the exit stair belongs to Phase 10.
+
+### D1.15 P9-7 execution spec (lead, 2026-10-28)
+This section makes D1.7 (with the D1.11 "D1.7 additions" and the D1.14 "P9-7 additions") executable. If it conflicts with them, D1.15 wins.
+
+**Poses:** `Tools/crypt/poses/p9l_poses.json`, written as [x, y, z, pitch, yaw]. It holds:
+- `01…10`, the P9-5 `p9s` poses;
+- `d01`, `d03`, `d09` and `d11`, the matching `p9d` poses;
+- `plaque_2m`.
+
+**Capture method (all P9-7 captures):**
+- PIE Simulate with `EditorPerformanceSettings.bThrottleCPUWhenNotForeground=false`, in memory only; restore it to `true` at the end.
+- `capture_poses.py --double --raise`.
+- File names are `Docs/ArtTest/crypt/p9l_<pose>.png`. Use `_c` for the candle-proxy variant and `_before` for the step-1 baseline.
+- **Luma:** B2 (Y = 0.2126R + 0.7152G + 0.0722B) on the PNG's 8-bit values / 255, with no linearisation, as in every earlier P9 measurement.
+- **Candle proxy:** `TMP_CaptureLight`, spawned in the **PIE world only**.
+  - PointLight, intensity units Candelas, intensity 10, attenuation radius 600, `bUseTemperature` true, temperature 1900 K, no shadows.
+  - These are `DA_PlayerTuning`'s `CandleIntensity`, `CandleAttenuationRadius` and `CandleTemperature`. Read them first; if they differ, use the asset's values and report.
+  - Add `--light-offset F R U` to `capture_poses.py`: the light goes to camera + F·forward + R·right + U·up, using the camera's yaw and pitch. Use `--light-offset 36 14 -10`.
+
+**Tuning workflow:**
+- Iterate on the PIE-world copies only, for measuring.
+- Then write the final values to the editor-world actors, stop PIE, save `L_Monastery` explicitly, and take the final capture set from a **fresh** PIE Simulate session.
+- Values that exist only in PIE are lost, so never report them as done.
+
+**Steps**
+1. **Baseline:** capture `01…10` as `p9l_<pose>_before` with the greybox lights, no proxy.
+2. **Greybox lights:**
+   - dump `Light_Crypt_0..13` (label, class, transform, intensity, units, radius, colour, shadows) to `Docs/ArtTest/crypt/greybox_lights_before.json`;
+   - delete them in the editor world;
+   - confirm `find_actors Light_Crypt_` is empty.
+3. **Place the 16 lights.** Extend `place_crypt.py` to accept `--cats light`; it currently refuses that category. Each `light` record becomes one actor:
+   - class `/Script/Engine.PointLight` or `/Script/Engine.SpotLight` (from `light.type`), label = `id`, folder `Lighting/Crypt`, Mobility Movable;
+   - location from `loc`; rotation from `rot`, which is [pitch, yaw, roll];
+   - `intensityUnits` Lumens; `intensity`, `attenuationRadius`, `lightColor` (sRGB, from `color`), `castShadows`, `sourceRadius`;
+   - `volumetricScatteringIntensity` if present, else leave the default;
+   - SpotLight: `innerConeAngle` and `outerConeAngle`;
+   - `lightFunctionMaterial` = `/Game/LastBell/Materials/Instances/<light_function>` if present;
+   - moon spots: `bCastVolumetricShadow` true.
+   - **G1/G2 yaw:** read `DirectionalLight_1`'s world yaw and use it for `L_Crypt_Moon_G1` and `_G2`, with pitch −78. G3 keeps the JSON rotation, which aims it at the plaque centre.
+   - `--check` reads back every field (±0.5 %, angles ±0.1°).
+4. **Fires:**
+   - Read `KX_Torch` and `FX_Torch_Fire` in the courtyard. Record the fire's offset from the torch's world-bounds top and +X end, and its scale (P7 used 0.22).
+   - **Torch fires:** for each `CD_Torch_T1..3`, spawn `/Game/LastBell/ThirdParty/Fab/Dungeon/Fire/Particle_Systems/PS_Fire_00` (an Emitter actor) as `FX_Crypt_Torch_T1..3`, folder `Lighting/Crypt`, with the same offset turned by the torch's yaw and the same scale.
+   - **Brazier fire:** spawn `PS_Fire_01` as `FX_Crypt_Brazier`, centred on `CD_Charcoal`'s bounds top. Pick a scale so the flame base is ≤ 55 cm wide and the flame sits in the pot; report the scale.
+   - Fires show only in PIE, so judge them on PIE captures `p9l_01` (T1), `p9l_06` (T2), `p9l_10` (T3) and `p9l_d09` (brazier).
+   - **Pass:** each flame sits on its torch head or in the pot, not floating or buried.
+5. **Shaft cards:** one per grate (G1, G2 and G3, the CC grate), `SA_Crypt_G1..3`, NoCollision, CastShadow off, `MI_LightShaft_Crypt`, folder `Lighting/Crypt`.
+   - Try `SM_LB_Prop_LightShaft_RoofHole` first. Its extrusion is oblique in its own frame, so first read its bounds and check whether a rotation can make its axis run along the spot axis.
+   - **If it can't, use `/Engine/BasicShapes/Cylinder`:**
+     - pivot at the centre, axis = local Z;
+     - rotate it so its axis lies along the spot direction;
+     - scale (W/100, W/100, L/100), with W = 70 for G1/G2 and 200 for G3, and L = the distance from the grate to the floor or wall hit along the spot axis (`trace_world`);
+     - centre it at grate + 0.5·L·dir.
+     - If the bright end ends up at the floor, rotate it 180° about a horizontal axis.
+   - Report which mesh was used. **Pass:** soft beam, no hard card edges, brightest at the grate.
+6. **`LFV_Crypt_Flood`** and **`PP_Crypt`:** as D1.7 steps 3 and 4.
+   - Read `PostProcess_Exposure`'s priority and set `PP_Crypt` to that + 1.
+   - Exposure: method Manual or Histogram with `MinEV100 = MaxEV100`; start at 1.0. Higher EV100 makes the image darker.
+7. **Plaque (D1.14 0b):** do the MI and override now. Its capture comes in step 8.
+8. **Targets** (D1.7 step 5) on the fresh-session capture set:
+   - **(a) No proxy:** `01…10`. Per pose: mean 0.012–0.035, ≥ 55 % of pixels < 0.02, p99 ≥ 0.30.
+     - Tune in this order:
+       1. `PP_Crypt` EV100 (0.0–2.0);
+       2. moon spot intensity, so the pool centre luma is 0.25–0.45 (G1/G2 on the floor, G3 on the plaque);
+       3. torch, brazier and candle intensities, within ±50 % of the JSON values.
+     - Do not add, remove or move lights. A pose that still fails after this order is reported with its numbers, and the lead decides.
+   - **(b) Candle proxy:**
+     - `01…10` as `_c` (report the mean).
+     - Three wall poses. For each of WC, the ossuary and NC, pick a camera at Z −430 facing a wall so that `trace_world` straight ahead hits the wall at 150 ± 10 cm. Record the poses in `p9l_poses.json` as `w_WC`, `w_OS` and `w_NC`, and capture them `_c`.
+     - **Pass:** the central-40 % mean of each wall pose is ≥ 0.10.
+   - **(c)** `plaque_2m` and `plaque_2m_c`: the D1.14 0b pass.
+   - **(d)** `d11` (ledge from the FP west side): the lead judges.
+   - **(e)** Pose 05 with every crypt light hidden (PIE world only): mean ≤ 0.010.
+   - **D1.11 rechecks:**
+     - R3 at the `p9s_09` top corners and the `d01` top corners;
+     - skulls on `d03_c` (if they read clean white, make a crypt-only darker MI and report it);
+     - decals (soot T3 and the NC mould) on the `_c` captures (if they are invisible, make crypt-only `MI_Crypt_Decal_*` duplicates with higher opacity; never edit the shared chapel MIs).
+   - **D1.14 0c:** the rubble recheck.
+   - Report the floor-box p99 luma for every pose.
+9. **Drips** (D1.7 step 6; stretch): skip after 2 failed attempts and say so.
+10. **Wrap up:**
+    - explicit saves (the map and every new asset; never save-all);
+    - suite 78/78, with the 3 crypt WalkPaths PASS, RouteBot.Monastery Success and the Warden crypt patrol;
+    - no `TMP_` actors in either world, PIE stopped, throttle restored, editor not dirty;
+    - commit in checkpoints `P9-7: …`;
+    - report: old → new values; a luma table per pose (mean, % < 0.02, p99, floor p99); pass or fail per target; the capture list.
