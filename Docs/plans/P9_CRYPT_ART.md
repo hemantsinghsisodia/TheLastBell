@@ -1591,3 +1591,20 @@ Start only after the editor is restarted and `L_Monastery` is loaded clean.
   - `import_file` refuses an existing path, and `AssetTools.delete` nulls in-memory references.
   - Replace a mesh referenced by a BP like this: point the BP's `SetStaticMesh` pin at a placeholder and compile, delete, import at the same path, point the pin back and compile.
 - **Housekeeping:** `BP_DialLever_Crypt` is dirty in memory; its content equals disk after the pin round trip. R2-B2 step 0 saves it on its own call so editor and disk agree.
+
+### D1.29 R2-B2 review (lead, 2026-10-29)
+- **Accepted** (a0e5f34).
+- **Suite:** 78/78.
+- **Reload re-dump against the R2-B `_after.json`:** `Altar_Ritual1` and `Lever_A/B/C` 0 diffs. The two doors differ only by the 2 new components and their 2 actor refs.
+- **End state:** parents not dirty; map clean; throttle true. Saves were one package per call, with no hang.
+- **Doors** (`r2b2_door_sacristy_E.png`, `r2b2_door_chapelmain_outside_W.png`): the plank gaps now show wood from both sides; the straps and handle are visible again.
+  - **Deviation accepted:** the backing sits at relative X −5.4, scale X 0.01, inside the plank layer. At X 0 it covered the straps on the E face.
+  - **Deviation accepted:** `backingTop` is Y 15…85, Z 188…201. Larger versions showed a block above the sloped outer planks.
+  - **Residual accepted:** thin slivers between the plank tops above Z ≈ 201 (top 10–20 cm of the pointed head). They read as plank-end gaps.
+- **Altar** (`r2b2_bellwheel_close_pie.png`): the pit is gone and the axle rises from a plate. In the low chapel light the `MI_LB_Iron` disc reads as a near-black plate.
+  - **Owner check:** if it reads as a hole in play, the one-property fix is material → `MI_LB_Bronze` (warm, matching the bells).
+- **Lessons for MCP_NOTES (P9-8):**
+  - Components added to a child BP need their values set in the construction script; placed instances do not pick up template values.
+  - Instance `set_properties` on `relativeLocation`/`relativeScale3D` applies only one axis when the other two match the template, so set one axis per call.
+- **Owner playtest:** open both doors and confirm the backing swings with them and does not clip the jamb.
+- **Next: R2-C** (D1.25, unchanged; `Note_Chains` is 2×, centre (10920, −1504.15, −430), 56 × 40 cm).
