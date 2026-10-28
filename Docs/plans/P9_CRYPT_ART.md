@@ -896,3 +896,88 @@ This section makes D1.7 (with the D1.11 "D1.7 additions" and the D1.14 "P9-7 add
    - Use the PNGs you already have for R3 (the top corners of `09` and `d01`) and for decals (`10_c` if captured).
 4. **If the breaker trips:** do one 60 s rest and retry, then stop capturing. List the missing items; they go to the P9-8 owner playtest checklist. Do not loop.
 5. **Wrap up:** throttle `true`, PIE stopped, no `TMP_`, editor clean, commit `P9-7 F8: …`, report.
+
+### D1.18 P9-7 accepted; P9-8 plan (lead, 2026-10-28)
+- **P9-7 accepted** (c5bfc12 … fe82dca).
+  - Suite 78/78: SacristyToCrypt, FloodedLedge and CryptToCloister PASS; RouteBot.Monastery Success; Warden crypt loop 67 s, 0 stuck.
+  - Plaque B2: contrast 2.81, pool 0.328.
+  - G3 450 cm / 190 lm, shadowless.
+  - (b) passes on `w_WC_c` 0.411 and `w_NC_c` 0.406.
+  - (e) fog check: 0.0014 with and without the LFV.
+  - R3 is clear.
+  - F7 deviations stand (D1.17). Drips are deferred.
+- **Moved to the P9-8 owner playtest checklist** (not captured, because of capture tooling):
+  - the candle on the ossuary wall (`w_OS`);
+  - the stair-chamber view (`04`) with the candle;
+  - the rubble face under the candle (the only rubble capture is unlit);
+  - the decals (soot near T3, NC mould).
+
+**P9-8a: docs** (general-purpose, no editor; commit "P9-8a: Phase 9 docs").
+1. **`Tools/mcp/MCP_NOTES.md`:** add a section "Crypt (P9) lessons". Each item states one fact and how to apply it; pull the details from P9_CRYPT_ART D1.9–D1.17 and the commit messages:
+   1. **Visible-false shell (D-068).** Greybox actors are `bVisible=false` with their collision kept. Verify with `place_crypt.py --hide-greybox` / `--verify-greybox`.
+   2. **`Tools/crypt` scripts.**
+      - `place_crypt.py`: `--cats`, `--only`, `--check`, `--fix-collision`, the per-slot `mi_slots`, `--cats light`.
+      - `place_lighting.py`, `luma_report.py`.
+      - `capture_poses.py` flags: `--editor`, `--double`, `--raise`, `--light-offset`, `--suffix`, `--only`, `--settle`, `--timeout`, the breaker.
+      - The pose file `Tools/crypt/poses/p9l_poses.json`.
+   3. **NoCollision:** set both `collisionProfileName` and `bodyInstance.collisionEnabled`.
+   4. **Water edge fade:** from the P9-4 report or commit.
+   5. **Child-BP swaps (D-071):**
+      - the construction script sets the mesh and the Interaction Block;
+      - the DSL cannot call the parent construction script, so the children copy the parent body;
+      - InteractComp defaults can't be overridden in a child, so values go through an instance-editable variable that the construction script feeds (the winch `RequiredTags`);
+      - dump before and after, and keep the label and folder.
+   6. **Captures:**
+      - `CaptureViewport` resets at 21.3 s when the editor window is minimized, and fails often when ordinary windows cover it. Keep the editor visible and uncovered; use `--raise` and the breaker.
+      - The PIE throttle is set in memory only.
+      - Use `--double` against stale frames.
+   7. **PIE:**
+      - SceneTools refuses to spawn actors during PIE; retarget a PIE copy of an existing light instead.
+      - `bHidden`/`bVisible` writes don't update the render state of lights in PIE; zero the intensity or move the actor.
+      - Asset saves fail during PIE; save after `StopPIE`.
+   8. **`T_LB_White_Gray`** is a TC_Alpha mask and renders magenta as a base colour. Use a tinted base colour with `Desaturation` 1.0 (plaque B2).
+   9. **Material-instance toolset:** `editor_toolset.toolsets.material_instance.MaterialInstanceTools`, which needs full object paths (`/Game/...Name.Name`).
+2. **`Docs/PERFORMANCE_BUDGET.md`:** add a Phase 9 crypt row.
+   - Counts from `Docs/plans/p9_d1_layout.json` per category.
+   - 16 lights: G1/G2 shadowed spots, G3 shadowless, 13 shadowless point lights with light functions.
+   - 4 Cascade fires, 1 LFV, `PP_Crypt` EV100 0.2.
+   - The GPU figures stay "owner measurement pending (P9-8c)".
+3. **`Docs/ASSET_REGISTRY.md`:**
+   - List every external asset referenced by `p9_d1_layout.json` and by the crypt MIs (`MI_Crypt_*`: Cobblestone_Floor_08, Rock_064, the Fab Dungeon pack, Poly Haven / ambientCG sets).
+   - Check that each has a row, and add "used in crypt (P9)" to its usage column.
+   - Report anything missing. Add a row only with the facts from `ExternalAssets/Incoming/` and the original download record; never invent a licence.
+4. **`Docs/RISKS.md`:**
+   - R-36 Closed (the P9-5 gap pass, captures).
+   - R-37 Closed (P9-6b diffs, suite, RouteBot, puzzle and save tests).
+   - R-38 stays Open until the owner's stat gpu.
+   - Add R-39, "capture tooling reliability" (Tooling, likelihood M, impact L; the mitigations above).
+   - Add R-40, "crypt child BPs duplicate parent construction scripts" (M, M; update the children when a parent changes).
+5. **`Docs/DECISIONS.md`:** add D-072, "Crypt lighting outcome". It records:
+   - the final light values (from D1.16–D1.18);
+   - `PP_Crypt` EV100 0.2;
+   - the accepted deviations (torch poses 02/10, plaque B2, skull MI not needed);
+   - drips deferred.
+   Also add an index line, matching the existing format.
+6. **`Docs/IMPLEMENTATION_PLAN.md`:** Phase 9 status line: P9-0…P9-7 done with commits; P9-8 in progress.
+
+**P9-8b: QA** (qa-reviewer, read-only plus the test script; runs in parallel with 8a).
+1. **Suite:** `Tools\mirror_build_and_test.ps1`. Report 78/78 and the named crypt lines.
+2. **Editor log:** `EditorToolset.LogsToolset.GetLogEntries`, always filtered. Report Error and Warning entries since the editor started, grouped by category, leaving out the known benign `LogCrowdFollowing` RecastNavMesh warning.
+3. **Lane re-check:** run `Tools/crypt/lane_check_crypt.py` against the current level. The crank mesh grew in P9-6b. Report the WalkPath-segment and AI-point clearances, and whether any value is new versus `lane_check_p9.md`.
+4. **Git state:** report `git status` and that `main..claude/phase-09-crypt` holds only P9 commits.
+5. **Report only.** No fixes, no editor mutations, no saves.
+
+**P9-8c: owner** (in the review; checklist given in the "PHASE 9 READY FOR YOUR REVIEW" report).
+1. **Performance:** PIE in a new window, `scalability 2`, `r.SetRes 1920x1080w`, `stat unit` + `stat gpu`.
+   - Measure in the ossuary (about X 8250, Y −2450) and the chain chamber (about X 10800, Y −2000). The budget is ≤ 16.6 ms.
+   - If over, cut in this order:
+     1. G1/G2 shadows off;
+     2. half the skull rows;
+     3. torch volumetric scattering off.
+2. **Playtest:** walk the 3 crypt routes, solve the puzzle, watch the gate open and the rubble appear.
+3. **Judge:**
+   - darkness, torch views and floor glints;
+   - plaque look;
+   - fires and flicker in motion;
+   - the checklist items above;
+   - the open question on the hanging body's red stain.
