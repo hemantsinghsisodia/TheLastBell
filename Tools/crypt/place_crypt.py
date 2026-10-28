@@ -9,7 +9,8 @@ Usage (editor open on L_Monastery):
 
 Placed categories (P9-5): backdrop wall pitwall portal vault column ossuary tile stair soffit ceiling grate water.
 P9-6a adds: lining (R4 greybox slab-face lining; F1 CA_Parapet_* rail enclosures), dress (CD_* dressing), decal (CD_Decal_* DecalActors).
-`light` is a later task (P9-7) and is refused here.
+P9-7 adds `light` (16 records, PointLight/SpotLight, label = id, folder Lighting/Crypt; G1/G2 yaw = DirectionalLight_1 yaw, pitch -78).
+Fires, shaft cards, LFV and PP_Crypt are in place_lighting.py. Never run --cats light while PIE is running (it would spawn in the PIE world).
 Dress skulls: actor yaw = record face_yaw + SKULL_OFFSETS[mesh] (override: --skull-offset SM_Skull_00=90 ...).
 Decals: DecalActor via add_to_scene_from_class; decal.mi -> NewDecalComponent.decalMaterial, decal.size -> decalSize
 (half-extents in depth, vertical, horizontal order, as given), record rotation as given (or + --decal-yaw-add degrees).
@@ -38,7 +39,8 @@ TOL = 3.0
 import math  # noqa: E402
 
 ORDER = ["backdrop", "wall", "pitwall", "portal", "vault", "column", "ossuary", "tile", "stair", "soffit",
-         "ceiling", "grate", "water", "lining", "dress", "decal"]
+         "ceiling", "grate", "water", "lining", "dress", "decal", "light"]
+LF_DIR = "/Game/LastBell/Materials/Instances/"   # light function MIs (MI_LF_*)
 # yaw added to a skull's face_yaw (world yaw its face must look toward) = the mesh's measured facing offset (P9-6a step 2)
 SKULL_OFFSETS = {"SM_Skull_00": 90.0, "SM_Skull_01": 90.0, "SM_Skull_02": 90.0}   # measured (P9-6a step 2): at yaw 0 the face looks toward -Y (angle -90)
 DECAL_YAW_ADD = [0.0]   # P9-6a step 3: added to every wall decal's yaw when the orientation check demands it (--decal-yaw-add)
@@ -62,6 +64,7 @@ PREFIXES = {
     "lining": ["CA_Lining_", "CA_Parapet_"],
     "dress": ["CD_"],
     "decal": ["CD_Decal_"],
+    "light": ["L_Crypt_"],
 }
 GREYBOX_LABELS = (["Rock_%03d" % i for i in range(17)] + ["CryptFloor_%d" % i for i in range(4)] +
                   ["Pit_Floor", "Pit_W", "Pit_E", "Pit_N", "Pit_S"] + ["Prop_Crypt_%d" % i for i in range(6)] +
@@ -148,6 +151,7 @@ class Placer:
         self._decal_mi = {}
         self.fix_collision = False   # --fix-collision (with --check): re-apply NoCollision incl. collisionEnabled on existing actors
         self.measured = {}   # dress records without generator mesh bounds: id -> (min, max) read back
+        self._moon_yaw = None
 
     def call(self, ts, tool, args=None, tries=4):
         for k in range(tries):
@@ -257,7 +261,98 @@ class Placer:
             issues.append("transform dev loc %.2f rot %.2f" % (dl, dr))
         return not issues, dl, "; ".join(issues), {"mat": mat}
 
+    # ---- P9-7 lights (cat "light")
+    def moon_yaw(self):
+        """World yaw of DirectionalLight_1 (the moon azimuth), read from the level (D1.15 step 3)."""
+        if self._moon_yaw is None:
+            dl = [a for a in (self.call(S, "find_actors", {"name": "DirectionalLight", "tag": "", "collision_channels": []}) or [])
+                  if self.label(a) == "DirectionalLight"]
+            if not dl:
+                raise RuntimeError("DirectionalLight not found")
+            self._moon_yaw = self.call(A, "get_actor_transform", {"actor": dl[0], "worldspace": True})["rotation"]["yaw"]
+        return self._moon_yaw
+
+    def light_rot(self, rec):
+        p, y, r = rec["rot"]
+        if rec["id"] in ("L_Crypt_Moon_G1", "L_Crypt_Moon_G2"):
+            p, y, r = -78.0, self.moon_yaw(), 0.0
+        return [p, y, r]
+
+    def light_vals(self, rec):
+        L = rec["light"]
+        v = {"mobility": "Movable", "intensityUnits": "Lumens", "intensity": L["lumens"], "attenuationRadius": L["radius"],
+             "lightColor": {"r": L["color"][0] / 255.0, "g": L["color"][1] / 255.0, "b": L["color"][2] / 255.0, "a": 1.0},
+             "castShadows": bool(L["shadows"])}
+        if "source_radius" in L:
+            v["sourceRadius"] = L["source_radius"]
+        if "volumetric_scattering" in L:
+            v["volumetricScatteringIntensity"] = L["volumetric_scattering"]
+        if "light_function" in L:
+            n = L["light_function"]
+            v["lightFunctionMaterial"] = {"refPath": LF_DIR + n + "." + n}
+        if rec["id"].startswith("L_Crypt_Moon_"):
+            v["bCastVolumetricShadow"] = True
+        return v
+
+    def place_light(self, rec):
+        L = rec["light"]
+        rot = self.light_rot(rec)
+        xf = {"location": dict(zip("xyz", rec["loc"])), "rotation": {"pitch": rot[0], "yaw": rot[1], "roll": rot[2]},
+              "scale": {"x": 1, "y": 1, "z": 1}}
+        a = self.call(S, "add_to_scene_from_class", {"actor_type": {"refPath": "/Script/Engine." + L["type"]}, "name": rec["id"], "xform": xf})
+        if not a:
+            raise RuntimeError("light spawn failed for " + rec["id"])
+        a = a if isinstance(a, dict) else {"refPath": a}
+        self.call(A, "set_actor_transform", {"actor": a, "xform": xf, "worldspace": True})
+        self.call(A, "set_label", {"actor": a, "label": rec["id"]})
+        self.call(S, "set_actor_folder", {"actor": a, "folder_path": rec["folder"]})
+        comp = {"refPath": a["refPath"] + ".LightComponent0"}
+        vals = self.light_vals(rec)
+        if L["type"] == "SpotLight":
+            vals["innerConeAngle"] = L["inner_cone"]
+            vals["outerConeAngle"] = L["outer_cone"]
+        self.set_props(comp, vals)
+        return a, comp
+
+    def verify_light(self, rec, a, comp):
+        """read back every field (+-0.5 % values, +-0.1 deg angles, loc +-0.1 cm)"""
+        L = rec["light"]
+        want = self.light_vals(rec)
+        names = list(want) + (["innerConeAngle", "outerConeAngle"] if L["type"] == "SpotLight" else [])
+        got = self.props(comp, names)
+        issues = []
+
+        def close(g, e):
+            return abs(g - e) <= max(0.005 * abs(e), 1e-6)
+
+        for k, e in want.items():
+            g = got.get(k)
+            if k == "lightColor":
+                if max(abs(g[c] - e[c]) for c in "rgb") > 1.0 / 255 + 1e-4:
+                    issues.append("lightColor %s != %s" % (g, e))
+            elif k == "lightFunctionMaterial":
+                if (g or {}).get("refPath", "").split("/")[-1].split(".")[0] != L["light_function"]:
+                    issues.append("lightFunctionMaterial %s" % g)
+            elif isinstance(e, bool) or isinstance(e, str):
+                if g != e:
+                    issues.append("%s %s != %s" % (k, g, e))
+            elif not close(g, e):
+                issues.append("%s %s != %s" % (k, g, e))
+        if L["type"] == "SpotLight":
+            for k, e in (("innerConeAngle", L["inner_cone"]), ("outerConeAngle", L["outer_cone"])):
+                if abs(got[k] - e) > 0.1:
+                    issues.append("%s %s != %s" % (k, got[k], e))
+        t = self.call(A, "get_actor_transform", {"actor": a, "worldspace": True})
+        loc, rot, want_rot = t["location"], t["rotation"], self.light_rot(rec)
+        dl = max(abs(loc[k] - rec["loc"]["xyz".index(k)]) for k in "xyz")
+        dr = max(abs(ang_diff(rot["pitch"], want_rot[0])), abs(ang_diff(rot["yaw"], want_rot[1])), abs(ang_diff(rot["roll"], want_rot[2])))
+        if dl > 0.1 or dr > 0.1:
+            issues.append("transform dev loc %.2f rot %.2f" % (dl, dr))
+        return not issues, dl, "; ".join(issues), {}
+
     def place_one(self, rec):
+        if rec["cat"] == "light":
+            return self.place_light(rec)
         if rec["cat"] == "decal":
             return self.place_decal(rec)
         rot = eff_rot(rec)
@@ -294,6 +389,8 @@ class Placer:
 
     def verify(self, rec, a, comp):
         """returns (ok, message, state)"""
+        if rec["cat"] == "light":
+            return self.verify_light(rec, a, comp)
         if rec["cat"] == "decal":
             return self.verify_decal(rec, a, comp)
         mn, mx = self.bounds(a)
@@ -356,7 +453,9 @@ class Placer:
                         continue
                     a = found[0]
                     comp = self.comp0(a)
-                    if self.fix_collision and r["collision"] == "NoCollision" and r["cat"] != "decal":
+                    if r["cat"] == "light":
+                        comp = {"refPath": a["refPath"] + ".LightComponent0"}
+                    if self.fix_collision and r["collision"] == "NoCollision" and r["cat"] not in ("decal", "light"):
                         self.set_props(comp, {"bodyInstance": {"collisionProfileName": "NoCollision", "collisionEnabled": "NoCollision"}})
                 else:
                     try:
@@ -482,7 +581,7 @@ def main():
     DECAL_YAW_ADD[0] = args.decal_yaw_add
     for c in args.cats:
         if c not in ORDER:
-            sys.exit("category %r not allowed (allowed: %s; `light` is P9-7)" % (c, " ".join(ORDER)))
+            sys.exit("category %r not allowed (allowed: %s)" % (c, " ".join(ORDER)))
     p = Placer()
     p.fix_collision = args.fix_collision
     lvl = p.call(S, "get_current_level")

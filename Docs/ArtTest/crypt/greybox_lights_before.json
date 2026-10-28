@@ -1,0 +1,534 @@
+[
+ {
+  "label": "Light_Crypt_0",
+  "actor": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.PointLight_29",
+  "xform": {
+   "location": {
+    "x": 6550,
+    "y": -1100,
+    "z": -250
+   },
+   "rotation": {
+    "pitch": 0,
+    "yaw": 0,
+    "roll": 0
+   },
+   "scale": {
+    "x": 1,
+    "y": 1,
+    "z": 1
+   }
+  },
+  "props": {
+   "intensity": 3000,
+   "intensityUnits": "Lumens",
+   "attenuationRadius": 800,
+   "lightColor": {
+    "r": 1,
+    "g": 1,
+    "b": 1,
+    "a": 1
+   },
+   "castShadows": false,
+   "temperature": 6500,
+   "bUseTemperature": false,
+   "mobility": "Movable",
+   "sourceRadius": 0,
+   "volumetricScatteringIntensity": 0
+  }
+ },
+ {
+  "label": "Light_Crypt_1",
+  "actor": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.PointLight_30",
+  "xform": {
+   "location": {
+    "x": 6450,
+    "y": -1900,
+    "z": -250
+   },
+   "rotation": {
+    "pitch": 0,
+    "yaw": 0,
+    "roll": 0
+   },
+   "scale": {
+    "x": 1,
+    "y": 1,
+    "z": 1
+   }
+  },
+  "props": {
+   "intensity": 3000,
+   "intensityUnits": "Lumens",
+   "attenuationRadius": 800,
+   "lightColor": {
+    "r": 1,
+    "g": 1,
+    "b": 1,
+    "a": 1
+   },
+   "castShadows": false,
+   "temperature": 6500,
+   "bUseTemperature": false,
+   "mobility": "Movable",
+   "sourceRadius": 0,
+   "volumetricScatteringIntensity": 0
+  }
+ },
+ {
+  "label": "Light_Crypt_2",
+  "actor": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.PointLight_31",
+  "xform": {
+   "location": {
+    "x": 7050,
+    "y": -2350,
+    "z": -250
+   },
+   "rotation": {
+    "pitch": 0,
+    "yaw": 0,
+    "roll": 0
+   },
+   "scale": {
+    "x": 1,
+    "y": 1,
+    "z": 1
+   }
+  },
+  "props": {
+   "intensity": 3000,
+   "intensityUnits": "Lumens",
+   "attenuationRadius": 800,
+   "lightColor": {
+    "r": 1,
+    "g": 1,
+    "b": 1,
+    "a": 1
+   },
+   "castShadows": false,
+   "temperature": 6500,
+   "bUseTemperature": false,
+   "mobility": "Movable",
+   "sourceRadius": 0,
+   "volumetricScatteringIntensity": 0
+  }
+ },
+ {
+  "label": "Light_Crypt_3",
+  "actor": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.PointLight_32",
+  "xform": {
+   "location": {
+    "x": 7400,
+    "y": -1100,
+    "z": -250
+   },
+   "rotation": {
+    "pitch": 0,
+    "yaw": 0,
+    "roll": 0
+   },
+   "scale": {
+    "x": 1,
+    "y": 1,
+    "z": 1
+   }
+  },
+  "props": {
+   "intensity": 3000,
+   "intensityUnits": "Lumens",
+   "attenuationRadius": 800,
+   "lightColor": {
+    "r": 1,
+    "g": 1,
+    "b": 1,
+    "a": 1
+   },
+   "castShadows": false,
+   "temperature": 6500,
+   "bUseTemperature": false,
+   "mobility": "Movable",
+   "sourceRadius": 0,
+   "volumetricScatteringIntensity": 0
+  }
+ },
+ {
+  "label": "Light_Crypt_4",
+  "actor": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.PointLight_33",
+  "xform": {
+   "location": {
+    "x": 7800,
+    "y": -2450,
+    "z": -250
+   },
+   "rotation": {
+    "pitch": 0,
+    "yaw": 0,
+    "roll": 0
+   },
+   "scale": {
+    "x": 1,
+    "y": 1,
+    "z": 1
+   }
+  },
+  "props": {
+   "intensity": 3000,
+   "intensityUnits": "Lumens",
+   "attenuationRadius": 800,
+   "lightColor": {
+    "r": 1,
+    "g": 1,
+    "b": 1,
+    "a": 1
+   },
+   "castShadows": false,
+   "temperature": 6500,
+   "bUseTemperature": false,
+   "mobility": "Movable",
+   "sourceRadius": 0,
+   "volumetricScatteringIntensity": 0
+  }
+ },
+ {
+  "label": "Light_Crypt_5",
+  "actor": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.PointLight_34",
+  "xform": {
+   "location": {
+    "x": 8700,
+    "y": -2450,
+    "z": -250
+   },
+   "rotation": {
+    "pitch": 0,
+    "yaw": 0,
+    "roll": 0
+   },
+   "scale": {
+    "x": 1,
+    "y": 1,
+    "z": 1
+   }
+  },
+  "props": {
+   "intensity": 3000,
+   "intensityUnits": "Lumens",
+   "attenuationRadius": 800,
+   "lightColor": {
+    "r": 1,
+    "g": 1,
+    "b": 1,
+    "a": 1
+   },
+   "castShadows": false,
+   "temperature": 6500,
+   "bUseTemperature": false,
+   "mobility": "Movable",
+   "sourceRadius": 0,
+   "volumetricScatteringIntensity": 0
+  }
+ },
+ {
+  "label": "Light_Crypt_6",
+  "actor": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.PointLight_35",
+  "xform": {
+   "location": {
+    "x": 9500,
+    "y": -2250,
+    "z": -300
+   },
+   "rotation": {
+    "pitch": 0,
+    "yaw": 0,
+    "roll": 0
+   },
+   "scale": {
+    "x": 1,
+    "y": 1,
+    "z": 1
+   }
+  },
+  "props": {
+   "intensity": 3000,
+   "intensityUnits": "Lumens",
+   "attenuationRadius": 800,
+   "lightColor": {
+    "r": 1,
+    "g": 1,
+    "b": 1,
+    "a": 1
+   },
+   "castShadows": false,
+   "temperature": 6500,
+   "bUseTemperature": false,
+   "mobility": "Movable",
+   "sourceRadius": 0,
+   "volumetricScatteringIntensity": 0
+  }
+ },
+ {
+  "label": "Light_Crypt_7",
+  "actor": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.PointLight_36",
+  "xform": {
+   "location": {
+    "x": 10300,
+    "y": -2000,
+    "z": -250
+   },
+   "rotation": {
+    "pitch": 0,
+    "yaw": 0,
+    "roll": 0
+   },
+   "scale": {
+    "x": 1,
+    "y": 1,
+    "z": 1
+   }
+  },
+  "props": {
+   "intensity": 3000,
+   "intensityUnits": "Lumens",
+   "attenuationRadius": 800,
+   "lightColor": {
+    "r": 1,
+    "g": 1,
+    "b": 1,
+    "a": 1
+   },
+   "castShadows": false,
+   "temperature": 6500,
+   "bUseTemperature": false,
+   "mobility": "Movable",
+   "sourceRadius": 0,
+   "volumetricScatteringIntensity": 0
+  }
+ },
+ {
+  "label": "Light_Crypt_8",
+  "actor": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.PointLight_37",
+  "xform": {
+   "location": {
+    "x": 11000,
+    "y": -2000,
+    "z": -250
+   },
+   "rotation": {
+    "pitch": 0,
+    "yaw": 0,
+    "roll": 0
+   },
+   "scale": {
+    "x": 1,
+    "y": 1,
+    "z": 1
+   }
+  },
+  "props": {
+   "intensity": 3000,
+   "intensityUnits": "Lumens",
+   "attenuationRadius": 800,
+   "lightColor": {
+    "r": 1,
+    "g": 1,
+    "b": 1,
+    "a": 1
+   },
+   "castShadows": false,
+   "temperature": 6500,
+   "bUseTemperature": false,
+   "mobility": "Movable",
+   "sourceRadius": 0,
+   "volumetricScatteringIntensity": 0
+  }
+ },
+ {
+  "label": "Light_Crypt_9",
+  "actor": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.PointLight_38",
+  "xform": {
+   "location": {
+    "x": 10150,
+    "y": -1300,
+    "z": -250
+   },
+   "rotation": {
+    "pitch": 0,
+    "yaw": 0,
+    "roll": 0
+   },
+   "scale": {
+    "x": 1,
+    "y": 1,
+    "z": 1
+   }
+  },
+  "props": {
+   "intensity": 3000,
+   "intensityUnits": "Lumens",
+   "attenuationRadius": 800,
+   "lightColor": {
+    "r": 1,
+    "g": 1,
+    "b": 1,
+    "a": 1
+   },
+   "castShadows": false,
+   "temperature": 6500,
+   "bUseTemperature": false,
+   "mobility": "Movable",
+   "sourceRadius": 0,
+   "volumetricScatteringIntensity": 0
+  }
+ },
+ {
+  "label": "Light_Crypt_10",
+  "actor": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.PointLight_39",
+  "xform": {
+   "location": {
+    "x": 11350,
+    "y": -1300,
+    "z": -250
+   },
+   "rotation": {
+    "pitch": 0,
+    "yaw": 0,
+    "roll": 0
+   },
+   "scale": {
+    "x": 1,
+    "y": 1,
+    "z": 1
+   }
+  },
+  "props": {
+   "intensity": 3000,
+   "intensityUnits": "Lumens",
+   "attenuationRadius": 800,
+   "lightColor": {
+    "r": 1,
+    "g": 1,
+    "b": 1,
+    "a": 1
+   },
+   "castShadows": false,
+   "temperature": 6500,
+   "bUseTemperature": false,
+   "mobility": "Movable",
+   "sourceRadius": 0,
+   "volumetricScatteringIntensity": 0
+  }
+ },
+ {
+  "label": "Light_Crypt_11",
+  "actor": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.PointLight_40",
+  "xform": {
+   "location": {
+    "x": 10300,
+    "y": -900,
+    "z": -250
+   },
+   "rotation": {
+    "pitch": 0,
+    "yaw": 0,
+    "roll": 0
+   },
+   "scale": {
+    "x": 1,
+    "y": 1,
+    "z": 1
+   }
+  },
+  "props": {
+   "intensity": 3000,
+   "intensityUnits": "Lumens",
+   "attenuationRadius": 800,
+   "lightColor": {
+    "r": 1,
+    "g": 1,
+    "b": 1,
+    "a": 1
+   },
+   "castShadows": false,
+   "temperature": 6500,
+   "bUseTemperature": false,
+   "mobility": "Movable",
+   "sourceRadius": 0,
+   "volumetricScatteringIntensity": 0
+  }
+ },
+ {
+  "label": "Light_Crypt_12",
+  "actor": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.PointLight_41",
+  "xform": {
+   "location": {
+    "x": 11000,
+    "y": -900,
+    "z": -250
+   },
+   "rotation": {
+    "pitch": 0,
+    "yaw": 0,
+    "roll": 0
+   },
+   "scale": {
+    "x": 1,
+    "y": 1,
+    "z": 1
+   }
+  },
+  "props": {
+   "intensity": 3000,
+   "intensityUnits": "Lumens",
+   "attenuationRadius": 800,
+   "lightColor": {
+    "r": 1,
+    "g": 1,
+    "b": 1,
+    "a": 1
+   },
+   "castShadows": false,
+   "temperature": 6500,
+   "bUseTemperature": false,
+   "mobility": "Movable",
+   "sourceRadius": 0,
+   "volumetricScatteringIntensity": 0
+  }
+ },
+ {
+  "label": "Light_Crypt_13",
+  "actor": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.PointLight_42",
+  "xform": {
+   "location": {
+    "x": 10650,
+    "y": -350,
+    "z": -200
+   },
+   "rotation": {
+    "pitch": 0,
+    "yaw": 0,
+    "roll": 0
+   },
+   "scale": {
+    "x": 1,
+    "y": 1,
+    "z": 1
+   }
+  },
+  "props": {
+   "intensity": 3000,
+   "intensityUnits": "Lumens",
+   "attenuationRadius": 800,
+   "lightColor": {
+    "r": 1,
+    "g": 1,
+    "b": 1,
+    "a": 1
+   },
+   "castShadows": false,
+   "temperature": 6500,
+   "bUseTemperature": false,
+   "mobility": "Movable",
+   "sourceRadius": 0,
+   "volumetricScatteringIntensity": 0
+  }
+ }
+]

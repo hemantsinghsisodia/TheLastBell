@@ -1,24 +1,42 @@
-"""P9-5 capture helper (editor open, PIE Simulate running).
+"""P9-5 / P9-7 capture helper (editor open, PIE Simulate running).
 
-    python capture_poses.py <poses.json> <out_dir> [--light] [--prefix p9s_] [--log file] [--force] [--editor] [--double]
+    python capture_poses.py <poses.json> <out_dir> [--light] [--light-offset F R U] [--prefix p9s_] [--suffix _c]
+                            [--only a,b] [--log file] [--force] [--editor] [--double] [--raise] [--timeout N]
 
 --editor: capture the editor viewport (no PIE needed; ~0.3 s per capture, reliable; editor helper icons/volume wireframes show).
-          PIE Simulate captures run at ~3 fps and mostly time out (P9-6a note below).
+          PIE Simulate captures run at ~3 fps and mostly time out unless EditorPerformanceSettings.bThrottleCPUWhenNotForeground
+          is false (in memory only) AND the editor window is not minimised/covered (see --raise).
 --timeout N: socket timeout in seconds per MCP call (default 60); use ~4 to fail fast on the ~19 s CaptureViewport resets.
 --double: take two captures per pose and keep the second (stale occlusion after SetCameraTransform).
+--raise (P9-7 D1.14 0a): while a pose is captured, a daemon thread runs every 0.2 s over the visible top-level windows whose
+          title ends with "Unreal Editor": an iconic window gets ShowWindow(SW_SHOWNOACTIVATE = 4), then
+          SetWindowPos(h, HWND_TOP, 0,0,0,0, SWP_NOSIZE|SWP_NOMOVE|SWP_NOACTIVATE = 0x13). It never activates/focuses the editor.
+--light: move the temp light `TMP_CaptureLight` (PIE world only) with the camera. Without --light-offset it sits at the camera.
+--light-offset F R U: the light goes to camera + F*forward + R*right + U*up (camera yaw/pitch; UE axes: forward = (cp cy, cp sy, sp),
+          right = (-sy, cy, 0), up = (-sp cy, -sp sy, cp)). The P9-7 candle proxy uses `--light-offset 36 14 -10`.
+--suffix S: appended to the file name (before .png), e.g. _c for the candle proxy variant.
+--only a,b: capture only these pose names.
+--settle S: seconds to wait after SetCameraTransform before the first capture (default 0.8).
+Circuit breaker (P9-7, after the PC crash): if 2 consecutive poses fail all their tries the whole run aborts (exit code 3) after a
+cheap editor check (get_current_level, IsPIERunning, window iconic/visible). Do not continue; wait 60 s and make at most ONE more
+single-pose test; if that fails too, stop and report with the log.
+Retry cap (P9-7): at most MAX_TRIES (6) failed attempts per pose, in one pass. A pose that is still missing is logged as MISSING
+and not retried. The temp light is searched in the PIE world only (a refPath containing "UEDPIE"); the script never spawns it.
 
-poses.json: {"name": [x, y, z, pitch, yaw], ...}. Per pose: optional temp light moved to the camera (the light actor
-`TMP_CaptureLight` must exist in the editor world BEFORE StartPIE; it is found in the PIE copy), camera set,
-two captures taken (second kept), PNG written to <out_dir>/<prefix><name>.png. Poses whose PNG already exists are skipped
-(unless --force). Every MCP call has a 60 s socket timeout and up to 3 retries (5 s wait, new session); a pose that still
-fails is logged and skipped. One progress line per pose goes to the log file.
+poses.json: {"name": [x, y, z, pitch, yaw], ...}. Per pose: optional temp light moved, camera set, one or two captures taken (second
+kept), PNG written to <out_dir>/<prefix><name><suffix>.png. Poses whose PNG already exists are skipped (unless --force).
+One progress line per pose goes to the log file.
 """
 import base64
+import ctypes
 import json
+import math
 import os
 import sys
+import threading
 import time
 import urllib.request
+from ctypes import wintypes
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "mcp"))
 import ue as ue_mod  # noqa: E402
@@ -28,6 +46,7 @@ _orig_urlopen = urllib.request.urlopen
 
 
 TIMEOUT = [60]   # --timeout N: socket timeout per MCP call (a successful capture returns in ~0.3 s, a failing one is closed by the server after ~19 s)
+MAX_TRIES = 6    # P9-7 D1.14 0a: failed attempts allowed per pose in one pass
 
 
 def _urlopen(req, timeout=None):
@@ -51,7 +70,51 @@ def log(msg):
             f.write(line + "\n")
 
 
-def call(ts, tool, args=None, tries=6):
+class Raiser:
+    """Keeps the (non-activating) editor window(s) un-minimised and on top while a pose is captured (D1.14 0a)."""
+
+    def __init__(self):
+        self.stop = threading.Event()
+        self.th = None
+        self.u32 = ctypes.windll.user32
+
+    def _windows(self):
+        u32, hw = self.u32, []
+
+        @ctypes.WINFUNCTYPE(wintypes.BOOL, wintypes.HWND, wintypes.LPARAM)
+        def cb(h, _l):
+            n = u32.GetWindowTextLengthW(h)
+            if n and u32.IsWindowVisible(h):
+                b = ctypes.create_unicode_buffer(n + 1)
+                u32.GetWindowTextW(h, b, n + 1)
+                if b.value.endswith("Unreal Editor"):
+                    hw.append(h)
+            return True
+
+        u32.EnumWindows(cb, 0)
+        return hw
+
+    def _run(self):
+        hw = self._windows()
+        while not self.stop.is_set():
+            for h in hw:
+                if self.u32.IsIconic(h):
+                    self.u32.ShowWindow(h, 4)                       # SW_SHOWNOACTIVATE
+                self.u32.SetWindowPos(h, 0, 0, 0, 0, 0, 0x13)       # HWND_TOP, NOSIZE|NOMOVE|NOACTIVATE
+            self.stop.wait(0.2)
+
+    def start(self):
+        self.stop.clear()
+        self.th = threading.Thread(target=self._run, daemon=True)
+        self.th.start()
+
+    def end(self):
+        self.stop.set()
+        if self.th:
+            self.th.join(1.0)
+
+
+def call(ts, tool, args=None, tries=3):
     for k in range(tries):
         try:
             if _UE[0] is None:
@@ -65,55 +128,115 @@ def call(ts, tool, args=None, tries=6):
             time.sleep(1)
 
 
+def light_pos(x, y, z, pitch, yaw, off):
+    f, r, u = off
+    cp, sp, cy, sy = math.cos(math.radians(pitch)), math.sin(math.radians(pitch)), math.cos(math.radians(yaw)), math.sin(math.radians(yaw))
+    fwd = (cp * cy, cp * sy, sp)
+    right = (-sy, cy, 0.0)
+    up = (-sp * cy, -sp * sy, cp)
+    return {"x": x + f * fwd[0] + r * right[0] + u * up[0],
+            "y": y + f * fwd[1] + r * right[1] + u * up[1],
+            "z": z + f * fwd[2] + r * right[2] + u * up[2]}
+
+
+def find_pie_light():
+    found = call(S, "find_actors", {"name": "TMP_CaptureLight", "tag": "", "collision_channels": []}) or []
+    pie = [a for a in found if "UEDPIE" in a.get("refPath", "")]
+    return pie[0] if pie else None
+
+
+def editor_check(raiser):
+    try:
+        _UE[0] = None
+        log("  check: level %s, PIE running %s" % (call(S, "get_current_level", tries=1), call(E, "IsPIERunning", tries=1)))
+    except Exception as e:
+        log("  check: MCP calls failing: %s" % str(e)[:100])
+    try:
+        for h in (raiser or Raiser())._windows():
+            u32 = ctypes.windll.user32
+            log("  check: editor window %s iconic=%s" % (h, bool(u32.IsIconic(h))))
+    except Exception as e:
+        log("  check: window query failed %s" % e)
+
+
 def main():
-    poses = json.load(open(sys.argv[1]))
-    out = sys.argv[2]
-    use_light = "--light" in sys.argv
-    force = "--force" in sys.argv
-    prefix = sys.argv[sys.argv.index("--prefix") + 1] if "--prefix" in sys.argv else ""
-    if "--timeout" in sys.argv:
-        TIMEOUT[0] = float(sys.argv[sys.argv.index("--timeout") + 1])
-    if "--log" in sys.argv:
-        LOG[0] = sys.argv[sys.argv.index("--log") + 1]
+    argv = sys.argv
+    poses = json.load(open(argv[1]))
+    out = argv[2]
+    use_light = "--light" in argv or "--light-offset" in argv
+    force = "--force" in argv
+    prefix = argv[argv.index("--prefix") + 1] if "--prefix" in argv else ""
+    suffix = argv[argv.index("--suffix") + 1] if "--suffix" in argv else ""
+    off = (0.0, 0.0, 0.0)
+    if "--light-offset" in argv:
+        i = argv.index("--light-offset")
+        off = tuple(float(v) for v in argv[i + 1:i + 4])
+    if "--only" in argv:
+        keep = set(argv[argv.index("--only") + 1].split(","))
+        poses = {k: v for k, v in poses.items() if k in keep}
+    if "--timeout" in argv:
+        TIMEOUT[0] = float(argv[argv.index("--timeout") + 1])
+    if "--log" in argv:
+        LOG[0] = argv[argv.index("--log") + 1]
+    raiser = Raiser() if "--raise" in argv else None
     os.makedirs(out, exist_ok=True)
-    if "--editor" not in sys.argv and not call(E, "IsPIERunning"):
+    if "--editor" not in argv and not call(E, "IsPIERunning"):
         sys.exit("PIE Simulate is not running")
     light = None
     if use_light:
-        found = call(S, "find_actors", {"name": "TMP_CaptureLight", "tag": "", "collision_channels": []})
-        if not found:
-            sys.exit("TMP_CaptureLight not found in the PIE world")
-        light = found[0]
+        light = find_pie_light()
+        if not light:
+            sys.exit("TMP_CaptureLight not found in the PIE world (refPath must contain UEDPIE)")
+    settle = float(argv[argv.index("--settle") + 1]) if "--settle" in argv else 0.8
     done = failed = 0
+    consec = 0
     for name, (x, y, z, pitch, yaw) in poses.items():
-        path = os.path.join(out, prefix + name + ".png")
+        path = os.path.join(out, prefix + name + suffix + ".png")
         if os.path.exists(path) and not force:
             log("skip %s (exists)" % name)
             continue
         t0 = time.time()
+        fails = 0
+        r = None
+        want = 2 if "--double" in argv else 1
+        got = 0
+        xf = {"location": {"x": x, "y": y, "z": z}, "rotation": {"pitch": pitch, "yaw": yaw, "roll": 0},
+              "scale": {"x": 1, "y": 1, "z": 1}}
+        if raiser:
+            raiser.start()
         try:
-            xf = {"location": {"x": x, "y": y, "z": z}, "rotation": {"pitch": pitch, "yaw": yaw, "roll": 0},
-                  "scale": {"x": 1, "y": 1, "z": 1}}
-            if light:
-                call(A, "set_actor_transform", {"actor": light, "xform": {"location": xf["location"],
-                     "rotation": {"pitch": 0, "yaw": 0, "roll": 0}, "scale": {"x": 1, "y": 1, "z": 1}}, "worldspace": True})
-            call(S, "get_current_level")  # cheap keep-alive
-            call(E, "SetCameraTransform", {"transform": xf})
-            time.sleep(0.8)
-            # CaptureViewport fails (reset after ~19.6 s) on 2 of every 3 calls; the failed calls still render the frame, so
-            # the one that succeeds is never the stale first frame. Take that one.
-            r = call(E, "CaptureViewport", {"captureTransform": None, "annotations": None})
-            if "--double" in sys.argv:
-                time.sleep(0.5)
-                r = call(E, "CaptureViewport", {"captureTransform": None, "annotations": None})
-            with open(path, "wb") as f:
-                f.write(base64.b64decode(r["image"]["data"]))
-            done += 1
-            log("saved %s (%.0fs)" % (name, time.time() - t0))
-        except Exception as e:
-            failed += 1
-            log("FAILED %s: %s" % (name, str(e)[:120]))
-    log("finished: %d saved, %d failed" % (done, failed))
+            while got < want and fails < MAX_TRIES:
+                try:
+                    if light:
+                        call(A, "set_actor_transform", {"actor": light, "xform": {"location": light_pos(x, y, z, pitch, yaw, off),
+                             "rotation": {"pitch": 0, "yaw": 0, "roll": 0}, "scale": {"x": 1, "y": 1, "z": 1}}, "worldspace": True}, tries=1)
+                    call(E, "SetCameraTransform", {"transform": xf}, tries=1)
+                    time.sleep(settle if got == 0 else 0.5)
+                    r = call(E, "CaptureViewport", {"captureTransform": None, "annotations": None}, tries=1)
+                    got += 1
+                except Exception as e:
+                    fails += 1
+                    _UE[0] = None
+                    log("  attempt failed %d/%d %s: %s" % (fails, MAX_TRIES, name, str(e)[:100]))
+                    time.sleep(1)
+            if got >= want and r is not None:
+                with open(path, "wb") as f:
+                    f.write(base64.b64decode(r["image"]["data"]))
+                done += 1
+                consec = 0
+                log("saved %s (%.0fs, %d failed attempts)" % (name, time.time() - t0, fails))
+            else:
+                failed += 1
+                consec += 1
+                log("MISSING %s: %d failed attempts (cap %d), not retried" % (name, fails, MAX_TRIES))
+                if consec >= 2:
+                    log("CIRCUIT BREAKER: 2 consecutive poses failed all tries; aborting the run")
+                    editor_check(raiser)
+                    sys.exit(3)
+        finally:
+            if raiser:
+                raiser.end()
+    log("finished: %d saved, %d missing" % (done, failed))
 
 
 if __name__ == "__main__":
