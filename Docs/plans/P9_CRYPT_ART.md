@@ -1573,3 +1573,21 @@ Start only after the editor is restarted and `L_Monastery` is loaded clean.
 5. Suite 78/78. Commit.
 
 **Then R2-C** (D1.25, unchanged).
+
+### D1.28 R2-A3 review (lead, 2026-10-29)
+- **Accepted** (fe11ba4). The skeletal quadrant reads as an open iron lever quadrant: arc band with rim, three pegged notches, struts and hub. The wall and board show through the frame, and the fan/shield silhouette is gone (`r2a3_pie_lever_A_high_sector_side.png`, `r2a3_lever_B_2m_mid_all_levers.png`, `Docs/ArtTest/props/r2a3_cycles_lever_high_3q.png`).
+- **Numbers:**
+  - Quadrant AABB X −6…47.93, Y −0.3…5.2, Z ±32.12; within 0.1 cm of R2-A2.
+  - 1239 tris (R2-A2: 1416).
+  - `verify_props` 79/79.
+  - Suite 78/78; RouteBot pulls Lever_A, B and C.
+- **Deviations accepted:**
+  - pegs on the −Y face, beside the arm, because +Y would break the ±1 cm AABB rule;
+  - edge struts flush with the band ends;
+  - no bevel (tri budget);
+  - foot X −6…2, as built in R2-A2.
+- **Collision:** 1-hull convex on Quadrant, Arm and Weight, each saved on its own call with no hang. Backplate's convex survived the restart. This closes the D1.27 lost-work item.
+- **Lesson for MCP_NOTES (P9-8):**
+  - `import_file` refuses an existing path, and `AssetTools.delete` nulls in-memory references.
+  - Replace a mesh referenced by a BP like this: point the BP's `SetStaticMesh` pin at a placeholder and compile, delete, import at the same path, point the pin back and compile.
+- **Housekeeping:** `BP_DialLever_Crypt` is dirty in memory; its content equals disk after the pin round trip. R2-B2 step 0 saves it on its own call so editor and disk agree.
