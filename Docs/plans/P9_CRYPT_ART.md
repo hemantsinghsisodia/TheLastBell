@@ -1091,3 +1091,11 @@ This section makes D1.7 (with the D1.11 "D1.7 additions" and the D1.14 "P9-7 add
 - D-073: the crypt clue is a readable note; the plaque is removed (owner).
 - D-074: chapel moonlight uses interior rect lights at the openings (supersedes the P8-9b outside spots).
 - Update TECHNICAL_DESIGN/AI notes if they mention the engraved diagram.
+
+**D1.19 addendum (owner GPU check, 2026-10-28):**
+- **Ossuary, PIE new window, scalability 2:** GPU 14.72 ms, frame 16.67 ms (60 fps cap), game thread 11.38 ms, VRAM 3.79 / 5.03 GB, render resolution 87 % (1671 × 865).
+  - That is within the 16.6 ms budget, with about 1.9 ms of headroom. R-38 stays open until the chain chamber is measured in the next playtest.
+- **Added to R1-B: crypt candle bloom.** In the same screenshot, the player candle flame blooms into a large yellow ball. PP_Crypt EV100 0.2 overexposes the emissive flame.
+  - On `PP_Crypt`, set `bOverride_BloomIntensity` true and `BloomIntensity` = the global post-process value × 0.4. Read the global value first.
+  - The owner judges the result in the playtest; PIE Simulate has no player candle to capture.
+- **Open owner question:** the hanging body `Ch_HangingBody` (`SK_Dead_Man`, one material `M_Dead_man`) has a bright red blood stain at the head end of the shroud. Keep it, or darken it to an old brown stain with a chapel-only MI (D-063: no gore)?
