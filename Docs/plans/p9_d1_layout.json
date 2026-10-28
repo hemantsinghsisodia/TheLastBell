@@ -34,7 +34,7 @@
   "tile": 179,
   "stair": 2,
   "soffit": 4,
-  "lining": 10,
+  "lining": 11,
   "ceiling": 30,
   "grate": 6,
   "water": 4,
@@ -10183,6 +10183,51 @@
     102.0
    ],
    "note": "stone enclosure of Rail_Up_S: AABB +2 cm each side and on top, sunk 1 cm (F1)",
+   "mbounds": [
+    [
+     -50.0,
+     -50.0,
+     0.0
+    ],
+    [
+     50.0,
+     50.0,
+     100.0
+    ]
+   ]
+  },
+  {
+   "id": "CA_Lining_Ground3_End",
+   "cat": "lining",
+   "mesh": "/Game/LastBell/Environments/Crypt/Meshes/SM_LB_Crypt_Block_100",
+   "loc": [
+    10650.0,
+    -98.0,
+    -41.0
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "scale": [
+    3.0,
+    0.04,
+    0.42
+   ],
+   "collision": "NoCollision",
+   "folder": "Crypt/Art/Lining",
+   "aabb_min": [
+    10500.0,
+    -100.0,
+    -41.0
+   ],
+   "aabb_max": [
+    10800.0,
+    -96.0,
+    1.0
+   ],
+   "note": "Ground_3 end face y -100 (X 10500..10800, Z -40..0), shaft on +Y; 4 cm lining Y -100..-96, Z -41..1 (R1-C step 8)",
    "mbounds": [
     [
      -50.0,

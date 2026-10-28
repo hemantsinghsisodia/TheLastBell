@@ -437,6 +437,13 @@ for rname, (rmn, rmx) in RAILS.items():
         ((rmx[0] - rmn[0] + 4) / 100.0, (rmx[1] - rmn[1] + 4) / 100.0, (rmx[2] - rmn[2] + 3) / 100.0), "NoCollision",
         "Crypt/Art/Lining", note=f"stone enclosure of {rname}: AABB +2 cm each side and on top, sunk 1 cm (F1)", check=False)
 
+# ---- P9-R1C step 8: lining of Ground_3's shaft-side end face (white greybox band under the Rail_Up_S parapet, seen in r1_rail_up_s) ----
+# Ground_3 AABB (read from the editor): X 10500..10800, Y -3600..-100, Z -40..0; the end face y -100 faces the open shaft (+Y).
+# CA_Lintel_Exit (X 10490..10810, Y -150..-100, Z -45..-1) is on the crypt side of that plane, so it does not cover the face.
+# 4 cm proud on the shaft side (Y -100..-96), X exactly the slab's (10500..10800), Z from 1 cm below the slab to 1 cm above its top.
+add("CA_Lining_Ground3_End", "lining", "SM_LB_Crypt_Block_100", CRYPT, (10650.0, -98.0, -41.0), (0.0, 0.0, 0.0), (3.0, 0.04, 0.42), "NoCollision",
+    "Crypt/Art/Lining", note="Ground_3 end face y -100 (X 10500..10800, Z -40..0), shaft on +Y; 4 cm lining Y -100..-96, Z -41..1 (R1-C step 8)", check=False)
+
 # ---- chain chamber timber ceiling ----
 BEAM_X =[10300, 10600, 10900, 11200]
 for i, bx in enumerate(BEAM_X):

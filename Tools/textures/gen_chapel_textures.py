@@ -14,6 +14,9 @@ Produces (PNG; RGBA where noted):
   T_LB_RoofSlates_diff / _nor_dx / _rough / _arm  2048x1024 (_rough is the source rough map = constant 1.0; _arm = AO/rough/metal): roof_slates_03 with the ridge-cap strip removed and whole slate courses kept so it tiles vertically.
   T_LB_Decal_Soot_A / _B 512x1024, _Mould_Band 1024x256, _WaterStain 1024^2, _WaxDrips 512^2, _DragMarks 1024x512 (authored 600x120 cm, squeezed 2.5x in u),
                                    _LeafLitter_A / _B 1024^2 (LeafSet030 leaf cells), _DustDrift 1024^2 (dense corner = texture top-left)   -- all RGBA, A = opacity (P8-10a grime)
+  T_LB_StainedGlass_Clue           512x1024 RGBA A = lead mask (P9-R1C, D1.20): the crypt-clue panel (112 x 232 cm) with four robed saints holding candles,
+                                   left to right green, red, amber, blue as seen from the nave (--only clue [--mirror] flips u).  No faces.
+  T_LB_Parchment                   512x512 RGB    aged parchment with foxing, darkened edges and faint invented script (P9-R1C, D1.21; --only parchment [--rotate]).
 Previews: tex_*.png in the preview folder (2x2 tile preview for the slates).
 
 Seeds are in SEEDS below (every random number comes from numpy default_rng(seed); nothing else is random).  The chalk glyphs are invented
@@ -49,6 +52,9 @@ SEEDS = {
     "leaf_a": 9607,
     "leaf_b": 9608,
     "dust": 9709,
+    # P9-R1C (D1.20 / D1.21)
+    "clue": 8999,
+    "parchment": 9811,
 }
 # muted palette (plan P8-3)
 BLUE = np.array((0.10, 0.16, 0.42), np.float32)
@@ -1253,6 +1259,236 @@ def grime_preview(rgba, path, max_w=1024, bg_scales=(1.0,)):
     im.save(path)
 
 
+# ----------------------------------------------------------------------------------------------
+# P9-R1C: crypt clue panel (stained-glass saints)
+# ----------------------------------------------------------------------------------------------
+CLUE_COLOURS = [("green", (0.07, 0.65, 0.12)), ("red", (0.90, 0.05, 0.04)), ("amber", (0.95, 0.62, 0.05)), ("blue", (0.06, 0.18, 0.95))]
+
+
+def clue_texture(seed, mirror=False):
+    """512 x 1024 RGBA (A = lead): the 112 x 232 cm crypt clue panel; u = 0 at the left edge as seen from the nave, z = 0 at the bottom.
+    Four robed saints (columns 1-4 = green, red, amber, blue) each holding a candle with a clue-coloured halo; no faces.
+    The figure drawing (robe, hood, dark void face, lead folds) follows east_light; no existing texture is touched."""
+    rng = np.random.default_rng(seed)
+    SS = 2
+    W, H = 512 * SS, 1024 * SS
+    PXU, PXV = 512.0 / 112.0 * SS, 1024.0 / 232.0 * SS              # supersampled px per cm (u, z)
+    ys, xs = np.mgrid[0:H, 0:W].astype(np.float32)
+    uc = (xs + 0.5) / PXU
+    zc = 232.0 - (ys + 0.5) / PXV
+    fx, fy = xs / SS, ys / SS
+    streak = vnoise(H, W, 220 * SS, 9 * SS, rng)                     # vertical glass streaks
+    streak2 = fbm(H, W, 40 * SS, 3, rng)
+    gtex = (1.0 + (streak - 0.5) * 0.16 + (streak2 - 0.5) * 0.10)
+    col, bright, lead_q = diamond_field(fx, fy, 60.0, 96.0, 5.0, seed,
+                                        [(0.6, BLUEGREY * 0.7), (0.9, PALE * 0.55), (1.01, VIOLET * 0.6)])
+    glass = col * (bright * gtex)[..., None]
+    lead = lead_q.astype(np.float32)
+    inner = (uc >= 6.0) & (uc <= 106.0) & (zc >= 6.0) & (zc <= 226.0)
+
+    # ---- border: 6 cm, alternating PALE / BLUEGREY segments about 18 cm long, lead between ----
+    dl, dr_, db, dt = uc, 112.0 - uc, zc, 232.0 - zc
+    dedge = np.minimum(np.minimum(dl, dr_), np.minimum(db, dt))
+    border = dedge <= 6.0
+    dh, dv = np.minimum(db, dt), np.minimum(dl, dr_)                  # distance to the top/bottom edges, to the left/right edges
+    horiz = dh < dv                                                   # mitred corners
+    seglen = np.where(horiz, 112.0 / 6.0, 232.0 / 13.0)
+    t = np.where(horiz, uc, zc)
+    sidx = np.floor(t / seglen)
+    fs = t / seglen - sidx
+    bcol = np.where((sidx % 2 == 0)[..., None], PALE, BLUEGREY).astype(np.float32)
+    bb = 1.0 + (hash01(sidx, horiz.astype(np.float32), seed + 3) - 0.5) * 0.16
+    glass[border] = (bcol * (bb * gtex)[..., None])[border]
+    lead[border] = ((np.minimum(fs, 1 - fs) * seglen < 0.6) | (np.abs(dh - dv) < 0.6))[border]
+    lead[border & (np.abs(dedge - 6.0) < 0.6)] = 1.0                  # inner border line
+    lead[dedge < 1.0] = 1.0                                           # outer edge
+
+    # ---- canopy: depressed pointed arch (two arcs) over the saints, a transom below it, the bell in the apex ----
+    cx0 = 130.0
+    cz = (cx0 - 6.0) ** 2 + 192.0 ** 2 - (cx0 - 56.0) ** 2 - 224.0 ** 2
+    cz = cz / (2.0 * (192.0 - 224.0))                                 # arc centre height, from spring (6, 192) and apex (56, 224)
+    Rarc = math.hypot(cx0 - 6.0, 192.0 - cz)
+    uu = np.where(uc <= 56.0, uc, 112.0 - uc)
+    z_arch = cz + np.sqrt(np.maximum(Rarc ** 2 - (uu - cx0) ** 2, 0.0))
+    span = (uc >= 6.0) & (uc <= 106.0) & (zc >= 191.0) & (zc <= 226.0)
+    sp = span & (zc > z_arch)
+    glass[sp] = (VIOLET * 0.45 * gtex[..., None])[sp]                 # plain dark spandrel glass
+    lead[sp] = 0.0
+    lead[span & (np.abs(zc - z_arch) < 0.6)] = 1.0                    # the arch line
+    lead[inner & (zc >= 190.8) & (zc <= 192.0)] = 1.0                 # transom
+    lead[inner & (zc > 226.0 - 0.6)] = 1.0
+
+    def px(u, z):
+        return (u * PXU, (232.0 - z) * PXV)
+
+    def box(u0, z0, u1, z1, pad=1.6):
+        x0, x1 = int(max(0, math.floor((u0 - pad) * PXU))), int(min(W, math.ceil((u1 + pad) * PXU)))
+        y0, y1 = int(max(0, math.floor((232.0 - z1 - pad) * PXV))), int(min(H, math.ceil((232.0 - z0 + pad) * PXV)))
+        return x0, y0, x1, y1
+
+    def render(draw_fn, bb_):
+        x0, y0, x1, y1 = bb_
+        im = Image.new('L', (x1 - x0, y1 - y0), 0)
+        d = ImageDraw.Draw(im)
+        draw_fn(d, lambda u, z: (px(u, z)[0] - x0, px(u, z)[1] - y0))
+        return im
+
+    def fill(draw_fn, bb_, colour, lead_cm=1.2, wobble=0.0, clip=None):
+        """Fill a shape with glass and a lead outline (centred on its edge); returns a full-size boolean mask of the shape."""
+        x0, y0, x1, y1 = bb_
+        im = render(draw_fn, bb_)
+        m = as_mask(im) > 0.5
+        if clip is not None:
+            m &= clip[y0:y1, x0:x1]
+        ol = outline(im, int(lead_cm * PXU) | 1)
+        c = np.asarray(colour, np.float32)
+        sub = glass[y0:y1, x0:x1]
+        sub[m] = (c[None, None, :] * (1.0 + (streak2[y0:y1, x0:x1] - 0.5) * wobble)[..., None])[m]
+        ld = lead[y0:y1, x0:x1]
+        ld[m] = 0.0
+        ld[ol] = 1.0
+        full = np.zeros((H, W), bool)
+        full[y0:y1, x0:x1] = m
+        return full
+
+    def lead_lines(draw_fn, bb_, clip):
+        x0, y0, x1, y1 = bb_
+        m = (as_mask(render(draw_fn, bb_)) > 0.5) & clip[y0:y1, x0:x1]
+        lead[y0:y1, x0:x1][m] = 1.0
+
+    # bell motif: PALE x 1.2, about 22 cm tall, centred at u = 56 in the apex of the canopy
+    prof = [(1.0, 0.0), (0.96, 0.06), (0.82, 0.14), (0.64, 0.26), (0.58, 0.45), (0.5, 0.62), (0.36, 0.8), (0.16, 0.94), (0.0, 1.0)]
+    bz0, bh, bw = 196.0, 22.0, 8.4
+    bell_pts = [(56.0 + bw * a, bz0 + bh * b) for a, b in prof] + [(56.0 - bw * a, bz0 + bh * b) for a, b in prof[::-1]]
+    fill(lambda d, T: d.polygon([T(*p) for p in bell_pts], fill=255), box(56 - bw, bz0, 56 + bw, bz0 + bh), PALE * 1.2, 1.0, 0.2)
+    fill(lambda d, T: d.rectangle([T(56 - bw - 0.8, bz0 + 2.4), T(56 + bw + 0.8, bz0)], fill=255), box(56 - bw - 1, bz0, 56 + bw + 1, bz0 + 2.6), PALE * 0.8, 0.9)
+
+    # ---- four saints ----
+    for k, (cname, clue) in enumerate(CLUE_COLOURS):
+        cx = 6.0 + 12.5 + 25.0 * k
+        clue = np.array(clue, np.float32)
+        robe_c, hood_c = clue * 0.85, clue * 0.85 * 0.6
+        robe_pts = [(cx - 5, 158), (cx + 5, 158), (cx + 10, 146), (cx + 10.6, 130), (cx + 9.6, 100), (cx + 10.4, 60), (cx + 11.2, 14),
+                    (cx - 11.2, 14), (cx - 10.4, 60), (cx - 9.6, 100), (cx - 10.6, 130), (cx - 10, 146)]
+        robe_m = fill(lambda d, T: d.polygon([T(*p) for p in robe_pts], fill=255), box(cx - 12, 14, cx + 12, 158), robe_c, 1.2, 0.24)
+        # lead fold lines (3-4) and two sleeve lines
+        def folds(d, T, cx=cx):
+            for o in (-7.0, -2.4, 2.4, 7.0):
+                d.line([T(cx + o * 0.5, 112), T(cx + o * 0.85, 64), T(cx + o * 1.45, 16)], fill=255, width=int(1.1 * PXU))
+            for sgn in (-1, 1):
+                d.line([T(cx + sgn * 9.0, 142), T(cx + sgn * 7.0, 128), T(cx + sgn * 4.2, 120)], fill=255, width=int(1.1 * PXU))
+        lead_lines(folds, box(cx - 12, 14, cx + 12, 158), robe_m)
+        # hem band
+        hem_m = fill(lambda d, T: d.polygon([T(cx - 11.2, 14), T(cx + 11.2, 14), T(cx + 11.0, 21), T(cx - 11.0, 21)], fill=255),
+                     box(cx - 12, 14, cx + 12, 22), clue * 0.85 * 0.7, 1.0, 0.1, clip=robe_m)
+        # hood (robe x 0.6) with the dark void face
+        fill(lambda d, T: d.ellipse([T(cx - 8.5, 178), T(cx + 8.5, 154)], fill=255), box(cx - 9, 154, cx + 9, 178), hood_c, 1.2, 0.1)
+        fill(lambda d, T: d.ellipse([T(cx - 4.8, 172), T(cx + 4.8, 158)], fill=255), box(cx - 5, 158, cx + 5, 172),
+             np.array((0.02, 0.025, 0.06), np.float32), 1.0, 0.0)
+        # cuffs (hands holding the candle), halo, candle, flame
+        fill(lambda d, T: d.ellipse([T(cx - 6.0, 121.5), T(cx + 6.0, 116.5)], fill=255), box(cx - 6, 116.5, cx + 6, 121.5), hood_c, 0.9, 0.1)
+        fill(lambda d, T: d.ellipse([T(cx - 7.0, 142.0), T(cx + 7.0, 128.0)], fill=255), box(cx - 7, 128, cx + 7, 142),
+             np.minimum(clue * 1.3, 1.0), 1.0, 0.1)
+        fill(lambda d, T: d.rectangle([T(cx - 1.5, 133.0), T(cx + 1.5, 119.0)], fill=255), box(cx - 1.5, 119, cx + 1.5, 133),
+             np.array((0.85, 0.80, 0.68), np.float32), 0.9, 0.0)
+        fill(lambda d, T: d.ellipse([T(cx - 1.5, 139.0), T(cx + 1.5, 133.0)], fill=255), box(cx - 1.5, 133, cx + 1.5, 139),
+             np.array((1.0, 0.95, 0.80), np.float32), 0.8, 0.0)
+
+    lead[~((uc >= 0) & (uc <= 112))] = 1.0
+    out = np.where(lead[..., None] > 0.5, LEAD, glass).astype(np.float32)
+    res = np.dstack([down(out, SS), down(lead, SS)[..., None]])
+    if mirror:
+        res = res[:, ::-1, :].copy()
+    return res
+
+
+# ----------------------------------------------------------------------------------------------
+# P9-R1C: aged parchment for the inspectable notes
+# ----------------------------------------------------------------------------------------------
+PARCH_BASE = np.array((0.78, 0.70, 0.52), np.float32)
+PARCH_INK = np.array((0.18, 0.13, 0.09), np.float32)
+
+
+def script_glyph(rng, x, yb, xh):
+    """One invented mark of a line of illegible script, returned as polylines in final-resolution px (no letters; slanted ticks only, no crossings).
+    Returns (polylines, advance)."""
+    kind = rng.choice(['arc', 'hook', 'tick', 'loop', 'wave', 'curl', 'stem'])
+    if kind == 'arc':
+        r = rng.uniform(0.35, 0.5) * xh
+        a0 = rng.uniform(0, 360)
+        return [arc_pts(x + r, yb - r, r, a0, a0 + rng.uniform(140, 230), 10)], 2 * r + rng.uniform(2, 3.5)
+    if kind == 'hook':
+        r = rng.uniform(0.3, 0.42) * xh
+        a0 = rng.uniform(0, 360)
+        pts = arc_pts(x + r, yb - r, r, a0, a0 + 240, 10)
+        ex, ey = pts[-1]
+        return [pts + [(ex + 0.5 * xh * math.cos(math.radians(a0 + 300)), ey + 0.5 * xh * math.sin(math.radians(a0 + 300)))]], 2 * r + rng.uniform(3, 4.5)
+    if kind == 'tick':
+        sl = rng.uniform(0.2, 0.55) * rng.choice((-1, 1))
+        return [[(x, yb), (x + sl * xh, yb - xh * rng.uniform(0.8, 1.0))]], abs(sl) * xh + rng.uniform(2.5, 4.0)
+    if kind == 'stem':
+        sl = rng.uniform(0.1, 0.3) * rng.choice((-1, 1))
+        return [[(x, yb + 0.15 * xh), (x + sl * xh, yb - xh * rng.uniform(1.5, 1.9))]], abs(sl) * xh + rng.uniform(2.5, 4.0)
+    if kind == 'loop':
+        r = rng.uniform(0.25, 0.35) * xh
+        return [arc_pts(x + r, yb - xh + r, r, 0, 360, 14), [(x + r, yb - xh + 2 * r), (x + r + rng.uniform(-0.2, 0.2) * xh, yb + 0.1 * xh)]], 2 * r + rng.uniform(2, 3.5)
+    if kind == 'wave':
+        w = rng.uniform(0.7, 1.2) * xh
+        return [wave_pts(x, yb - xh * 0.45, x + w, yb - xh * 0.45 + rng.uniform(-0.15, 0.15) * xh, 0.22 * xh, rng.choice((1.5, 2.0)))], w + rng.uniform(2, 3.5)
+    r = 0.22 * xh                                                    # curl: S shape
+    return [arc_pts(x + r, yb - xh + r, r, 90, 270, 8) + arc_pts(x + r, yb - r, r, 270, 450, 8)[1:]], 2 * r + rng.uniform(2.5, 4)
+
+
+def parchment_texture(seed, rotate=False):
+    """512 x 512 RGB aged parchment: base (0.78, 0.70, 0.52) with +-8 % fbm mottling, 8-14 foxing spots (x 0.75), 15 % edge darkening within 30 px,
+    9-11 lines of faint illegible script (pitch 34 px, ink (0.18, 0.13, 0.09) at 55 %, 40 px margins).  Lines run along u (the long edge once rotated)."""
+    rng = np.random.default_rng(seed)
+    N, SS = 512, 2
+    f = fbm(N, N, 90, 4, rng)
+    f = (f - f.min()) / (f.max() - f.min()) * 2.0 - 1.0              # [-1, 1]
+    rgb = PARCH_BASE[None, None, :] * (1.0 + 0.08 * f)[..., None]
+    ys, xs = np.mgrid[0:N, 0:N].astype(np.float32)
+    # foxing
+    wob = fbm(N, N, 14, 3, rng)
+    fox = np.zeros((N, N), np.float32)
+    for _ in range(int(rng.integers(8, 15))):
+        cx_, cy_, r_ = rng.uniform(20, N - 20), rng.uniform(20, N - 20), rng.uniform(4, 18)
+        d = np.hypot(xs - cx_, ys - cy_) * (1.0 + (wob - 0.5) * 0.5)
+        fox = np.maximum(fox, 1.0 - smoothstep(0.35 * r_, r_, d))
+    rgb = rgb * (1.0 - 0.25 * fox)[..., None]                        # colour x 0.75 at the centre of a spot
+    # edge darkening
+    de = np.minimum(np.minimum(xs + 0.5, N - xs - 0.5), np.minimum(ys + 0.5, N - ys - 0.5))
+    rgb = rgb * (1.0 - 0.15 * (1.0 - smoothstep(0.0, 30.0, de)))[..., None]
+    # faint script
+    mask = Image.new('L', (N * SS, N * SS), 0)
+    dr = ImageDraw.Draw(mask)
+    nl = int(rng.integers(9, 12))
+    ytop = (N - (nl - 1) * 34.0) / 2.0 + 8.0
+    xmin, xmax = 40.0, N - 40.0
+    for li in range(nl):
+        yb = ytop + li * 34.0
+        last = li == nl - 1
+        x_end = xmin + (xmax - xmin) * (rng.uniform(0.3, 0.55) if last else rng.uniform(0.82, 1.0))
+        x = xmin + (rng.uniform(14, 34) if (li == 0 or rng.random() < 0.15) else 0.0)
+        xh = rng.uniform(11.0, 14.0)
+        while x < x_end - 10:
+            for _g in range(int(rng.integers(3, 8))):
+                polys, adv = script_glyph(rng, x, yb + rng.normal(0, 0.8), xh)
+                for pl in polys:
+                    pts = [((px_ + rng.normal(0, 0.25)) * SS, (py_ + rng.normal(0, 0.25)) * SS) for px_, py_ in pl]
+                    poly_stroke(dr, pts, [rng.uniform(1.9, 2.7) * SS] * len(pts))
+                x += adv
+                if x >= x_end:
+                    break
+            x += rng.uniform(12, 17)
+    ink = as_mask(mask.filter(ImageFilter.GaussianBlur(0.6 * SS)).resize((N, N), Image.BOX))
+    a = ink * 0.55 * (0.70 + 0.30 * fbm(N, N, 40, 3, rng))
+    rgb = rgb * (1.0 - a[..., None]) + PARCH_INK[None, None, :] * a[..., None]
+    if rotate:
+        rgb = np.rot90(rgb).copy()
+    return np.clip(rgb, 0.0, 1.0).astype(np.float32)
+
+
 # name -> (seed key, generator call, preview file)
 GRIME = [
     ("T_LB_Decal_Soot_A", "soot_a", lambda s: soot_texture(s, 0.03, 1.0)),
@@ -1342,6 +1578,16 @@ def main():
         print("cobweb done")
     if want("slates"):
         slates_textures(SEEDS["slates"], out_dir, prev_dir)
+    if want("clue"):
+        cl = clue_texture(SEEDS["clue"], mirror=("--mirror" in argv))
+        save_img(cl, os.path.join(out_dir, "T_LB_StainedGlass_Clue.png"))
+        Image.fromarray((lit(cl) * 255 + 0.5).astype(np.uint8)).save(os.path.join(prev_dir, "tex_stainedglass_clue.png"))
+        print("clue done%s (seed %d)" % (" (mirrored)" if "--mirror" in argv else "", SEEDS["clue"]))
+    if want("parchment"):
+        pt = parchment_texture(SEEDS["parchment"], rotate=("--rotate" in argv))
+        save_img(pt, os.path.join(out_dir, "T_LB_Parchment.png"))
+        Image.fromarray((pt * 255 + 0.5).astype(np.uint8)).save(os.path.join(prev_dir, "tex_parchment.png"))
+        print("parchment done%s (seed %d)" % (" (rotated)" if "--rotate" in argv else "", SEEDS["parchment"]))
     if want("grime") or any(want(g[0]) for g in GRIME):
         for (name, skey, fn) in GRIME:
             if not (want("grime") or want(name)):
