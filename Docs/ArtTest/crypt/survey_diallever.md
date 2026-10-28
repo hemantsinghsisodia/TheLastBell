@@ -79,3 +79,16 @@ The R2-A quadrant, weight and backplate above are superseded as follows (arm and
 - **Backplate additions:** iron cap over the board top, two cheek plates and an O10 grooved pulley wheel at mesh (x 7, z 50) (actor z 95), axle along Y; an 8-link static chain from the wheel up and back to an eyelet ring (x -0.9, z 75 = actor 120) on a plate flush with the back plane (x -3.0). The label plate (mesh z 26..44, text at z 37) is unchanged and still sits under the pulley.
 - **Quadrant:** sector R 48, -42..+42 deg about +X in the mesh XZ plane; plate at mesh y 1.7..3.2 (actual y 5.7..7.2 once placed at y 4: this offset clears the O11 weight ball swinging at y 0 +-5.5); raised rim 2 x 2 (R 46..48) on the +Y side; V-notches 2 deep through the rim at -35 / 0 / +35 deg; three bone-white pegs (MAT_Paint, O2.5 x 2) on the **-Y face (toward the arm)** at R 39, where the grip (R 33..45) passes, angles -35 / 0 / +35; mounting foot X -6..2 (actual x 0..8, reaching 3 cm into the board, whose face is at x 3).
 - **Deviation from D1.26:** the pegs protrude toward the arm (-Y) and the rim is raised on +Y, not the other way round: with the plate at y 4, pegs on +Y would point away from the swing plane.
+
+## R2-A3 (D1.27): skeletal quadrant
+`SM_LB_Prop_DialLever_Quadrant` is now an open iron frame instead of the solid R48 sector plate (the plate read as a black fan sticking 48 cm out of the wall). Same pivot (sector centre = lever rotation axis), orientation, Y slab (mesh y 1.7..3.2), slots (MAT_Iron, MAT_Paint) and placement (`rail` at (6, 4, 45), rotation 0, scale 1; no BP change).
+
+| | R2-A2 (solid plate) | R2-A3 (skeletal) |
+|---|---|---|
+| UE bounds (read from the imported asset) | X -6..47.976, Y -0.3..5.2, Z +-32.018 | X -6..47.929, Y -0.3..5.2, Z +-32.118 |
+| Triangles (UE LOD0) | 1416 | 1239 |
+| Collision | 1 convex hull | 1 convex hull (30 verts, fills the open frame) |
+
+- Parts: arc band R 42..48 x 1.5 with a raised 2 x 2 rim (R 46..48), three V-notches 2 deep through rim and band at -35 / 0 / +35 deg, two 3-wide edge struts along +-42 deg (R 5..42.6; their outer face is flush with the band end so no ear sticks out past it), one 2-wide centre strut along 0 deg, hub ring O12 / O4 with the bore kept open through the mounting foot (foot x -6..2 unchanged), three bone-white pegs O2.5 x 2.
+- **Deviation from the D1.27 text:** the pegs stay on the **-Y face** (toward the arm) as in R2-A2, not +Y: with pegs on +Y the Y min would move from -0.3 to 1.7 and break the +-1 cm AABB rule. They sit at R 43.8 (on the band, under the notch apex at R 46) because the old R 39 position is now inside the open frame.
+- Arc facets are 6 deg (sagitta 0.07 cm at R 48), no bevel on the frame (a 0.15 chamfer brought the mesh to 1834 tris, over the 1416 budget).

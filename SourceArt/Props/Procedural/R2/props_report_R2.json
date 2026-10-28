@@ -32,7 +32,7 @@
    -0.0
   ],
   "note": "R2-A bottom-centre, vertical axle on Z: iron axle O8 Z 0..50 + ball finial O8 Z 50..58, hub O16 x 8 at Z 34..42, rim ring major r 40 (section 4 x 3, Z 36.5..39.5, outer O84), 6 spokes 3 x 2, 8 hollow bronze bells every 45 deg at r 40 (lip O9, height 11, crown O4, mouth at Z 22, clapper ball O2 on a wire) hung from iron loops; visual X/Y reach 44.5 because the bell lips stick out past the rim; UCX 1 box 84 x 84 x 58",
-  "seconds": 0.3
+  "seconds": 0.4
  },
  {
   "name": "SM_LB_Prop_DialLever_Backplate",
@@ -74,19 +74,19 @@
   "min": [
    -6.0,
    -0.3,
-   -32.02
+   -32.12
   ],
   "max": [
-   47.98,
+   47.93,
    5.2,
-   32.02
+   32.12
   ],
   "dims": [
-   53.98,
+   53.93,
    5.5,
-   64.04
+   64.24
   ],
-  "tris": 1416,
+  "tris": 1278,
   "slots": [
    "MAT_Iron",
    "MAT_Paint"
@@ -101,8 +101,8 @@
    0.0,
    0.0
   ],
-  "note": "R2-A2 replaces Rail: iron sector plate, pivot = sector centre (lever rotation axis) in the mesh XZ plane, R 48, -42..+42 deg about +X, 1.5 thick (mesh y 1.7..3.2), raised rim 2 x 2 (R 46..48, +Y side), three V-notches 2 deep at -35 / 0 / +35 deg, three bone-white pegs O2.5 x 2 (MAT_Paint) on the -Y face at R 39 (toward the arm), mounting foot x -6..2. Place at (6, 4, 45) relative to the actor, rotation 0, scale 1 (D1.26)",
-  "seconds": 0.2
+  "note": "R2-A3 skeletal quadrant (replaces the R2-A2 solid sector plate): pivot = sector centre (lever rotation axis) in the mesh XZ plane, -42..+42 deg about +X; arc band R 42..48 x 1.5 (mesh y 1.7..3.2), raised rim 2 x 2 (R 46..48, +Y side), three V-notches 2 deep at -35 / 0 / +35 deg through rim and band, edge struts +-42 deg (3 wide, R 6..42, outer face flush with the band end), centre strut 0 deg (2 wide), hub ring O12 / O4, mounting foot x -6..2, three bone-white pegs O2.5 x 2 (MAT_Paint) on the -Y face at R 43.8 (toward the arm). Place at (6, 4, 45) relative to the actor, rotation 0, scale 1 (D1.26 / D1.27)",
+  "seconds": 1.2
  },
  {
   "name": "SM_LB_Prop_DialLever_Arm",
@@ -238,7 +238,7 @@
    0.0
   ],
   "note": "R2-A aperture-mask plate 110 x 110 x 2 (pivot centre, local X = thickness along the spot's forward axis, local Y/Z = the spot's right/up). Cut-out = the RoofSlab_Broken hole outline (exact boolean of build_kit.hole_cutters(441), 49 verts) at slab-local Z 12, projected from Light_Chapel_Moon_Roof (loc (5205.4, -1324.3, 2914.1), rot (-38.0, 35.0, 0.0)) onto the plane D = 150; mean distance spot -> slab 1981 so scale 0.0757 (1 cm in the plane = 13.2 cm at the slab); outward offset 0.7 cm (true disc dilation); outline simplified to 139 verts. Cut-out bbox y -14.8..17.0 z -22.9..23.3",
-  "seconds": 0.4,
+  "seconds": 0.7,
   "extra": {
    "outline_verts": 139,
    "source_outline_verts": 49,

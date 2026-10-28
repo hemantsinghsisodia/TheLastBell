@@ -3429,51 +3429,74 @@ R2_NOTCH_Z = 40.0 * math.sin(math.radians(35.0))                          # 22.9
 
 
 def build_r2_quadrant():
-    """R2-A2 (D1.26): iron sector plate in the mesh XZ plane, pivot = the sector centre (the lever's rotation axis); radius 48, -42..+42 deg about +X.
-    The plate sits at mesh y 1.7..3.2 (the child BP places the mesh at (6, 4, 45), so actual y 5.7..7.2, clear of the O11 weight ball that swings at y 0 +-5.5);
-    the raised rim (2 x 2, R 46..48) is on the +Y side, the bone-white pegs on the -Y face (toward the arm), so they sit where the grip passes."""
+    """R2-A3 (D1.27): SKELETAL quadrant, pivot = the sector centre (the lever's rotation axis), mesh XZ plane, -42..+42 deg about +X (R2-A2 pivot, orientation and Y slab kept).
+    Open iron frame instead of the solid R48 sector plate: arc band R 42..48 (1.5 thick, mesh y 1.7..3.2) with a raised 2 x 2 rim (R 46..48, +Y side), three V-notches 2 deep through
+    rim and band at -35 / 0 / +35 deg, two 3-wide edge struts along +-42 deg and a 2-wide centre strut along 0 deg (R 6..42), a hub ring O12 / O4 at the pivot, the mounting foot (x -6..2)
+    behind it, and three bone-white pegs O2.5 x 2 on the -Y face (toward the arm) under the notches.  The child BP places the mesh at (6, 4, 45), rotation 0, scale 1."""
     IR, PT = 0, 1
-    R0, R1, Y0, Y1 = 46.0, 48.0, 1.7, 3.2
-    arc = [math.radians(a) for a in range(-42, 43, 2)]
-    plate = K.prism([(0.0, 0.0)] + [(R1 * math.cos(a), R1 * math.sin(a)) for a in arc], 'y', Y0, Y1, IR)
-    rim = K.prism([(R1 * math.cos(a), R1 * math.sin(a)) for a in arc] + [(R0 * math.cos(a), R0 * math.sin(a)) for a in arc[::-1]], 'y', Y1 - 0.2, Y1 + 2.0, IR)
-    K.bevel_all(plate, 0.15, 20.0)
-    K.bevel_all(rim, 0.15, 20.0)
-    for deg in (-35.0, 0.0, 35.0):                                         # V-notches 2 deep through the rim (apex at R 46, 2.8 wide at R 48)
+    R_IN, R0, R1, Y0, Y1 = 42.0, 46.0, 48.0, 1.7, 3.2
+    arc = [math.radians(a) for a in range(-42, 43, 6)]
+
+    def pol(r, a):
+        return (r * math.cos(a), r * math.sin(a))
+
+    band = K.prism([pol(R1, a) for a in arc] + [pol(R_IN, a) for a in arc[::-1]], 'y', Y0, Y1, IR)
+    rim = K.prism([pol(R1, a) for a in arc] + [pol(R0, a) for a in arc[::-1]], 'y', Y1 - 0.2, Y1 + 2.0, IR)
+
+    def strut(deg, off0, off1, r0=5.0, r1=42.6):
+        """Rectangle along the ray `deg` (mesh x/z plane), radial r0..r1, perpendicular offsets off0..off1 (t = +angle direction)."""
+        a = math.radians(deg)
+        u, t = (math.cos(a), math.sin(a)), (-math.sin(a), math.cos(a))
+        pts = [(r * u[0] + o * t[0], r * u[1] + o * t[1]) for r, o in ((r0, off0), (r1, off0), (r1, off1), (r0, off1))]
+        return K.prism(pts, 'y', Y0, Y1, IR)
+
+    s_lo = strut(-42.0, 0.0, 3.0)                                          # edge struts: outer face flush with the +-42 deg band end (no ear sticking out past the band)
+    s_hi = strut(42.0, -3.0, 0.0)
+    s_mid = strut(0.0, -1.0, 1.0)
+    hub = K.ring(6.0, 2.0, Y1 - Y0, 20, IR)                                # hub ring O12 / O4, axis Z -> -Y, y 1.7..3.2
+    rot(hub, 'X', 90.0)
+    shift(hub, 0.0, Y1, 0.0)
+    foot = K.box(-6.0, 2.0, Y0, Y1, -3.5, 3.5, IR, 0.0)                    # mounting foot at the narrow end, back to the board face (actual x 0..8; board face at 3)
+    frame = union([band, s_lo, s_hi, s_mid, hub, foot, rim])
+    for q in (band, s_lo, s_hi, s_mid, hub, foot, rim):
+        if q is not frame:
+            q.free()
+    for deg in (-35.0, 0.0, 35.0):                                         # V-notches 2 deep through rim and band (apex at R 46, 4.2 wide at R 49)
         a = math.radians(deg)
         u, t = (math.cos(a), math.sin(a)), (-math.sin(a), math.cos(a))
         tri = [(R0 * u[0], R0 * u[1]), (49.0 * u[0] + 2.1 * t[0], 49.0 * u[1] + 2.1 * t[1]), (49.0 * u[0] - 2.1 * t[0], 49.0 * u[1] - 2.1 * t[1])]
-        for nm in ("plate", "rim"):
-            cut = K.prism(tri, 'y', -1.0, 6.0, IR)
-            tgt = plate if nm == "plate" else rim
-            res = bool_op(tgt, cut, 'DIFFERENCE', 2)
-            cut.free()
-            tgt.free()
-            if nm == "plate":
-                plate = res
-            else:
-                rim = res
-    parts = [plate, rim]
-    for deg in (-35.0, 0.0, 35.0):                                         # bone-white pegs O2.5 x 2 on the arm side of the plate (y 1.7 down to -0.3), at R 39 = where the grip (R 33..45) passes
+        cut = K.prism(tri, 'y', -1.0, 6.0, IR)
+        res = bool_op(frame, cut, 'DIFFERENCE', 2)
+        cut.free()
+        frame.free()
+        frame = res
+    bore = K.cylinder(2.0, 8.0, 20, IR)                                    # keep the hub hole open through the foot behind it
+    rot(bore, 'X', 90.0)
+    shift(bore, 0.0, 5.0, 0.0)
+    res = bool_op(frame, bore, 'DIFFERENCE', 2)
+    bore.free()
+    frame.free()
+    frame = res
+    parts = [frame]
+    for deg in (-35.0, 0.0, 35.0):                                         # bone-white pegs O2.5 x 2 on the arm side of the band (y 1.7 down to -0.3), under the notch apex at R 43.8
         a = math.radians(deg)
         pg = K.cylinder(1.25, 2.0, 12, PT)
         rot(pg, 'X', 90.0)                                                 # axis Z -> -Y
-        shift(pg, 39.0 * math.cos(a), Y0, 39.0 * math.sin(a))
+        shift(pg, 43.8 * math.cos(a), Y0, 43.8 * math.sin(a))
         parts.append(pg)
-    foot = K.box(-6.0, 2.0, Y0, Y1, -3.5, 3.5, IR, 0.2)                   # mounting foot at the narrow end, back to the board face (actual x 0..8; board face at 3)
-    parts.append(foot)
-    for zz in (-2.0, 2.0):
+    for zz in (-2.0, 2.0):                                                 # two rivet heads on the hub ring behind the pivot
         rv = dome_z(0.6, 0.3, 8, IR)
         rot(rv, 'X', -90.0)                                                # +Z -> +Y
-        shift(rv, -3.0, Y1, zz)
+        shift(rv, -4.0, Y1, zz * 1.2)
         parts.append(rv)
     bm = join(parts)
     for q in parts:
         q.free()
     return r2_piece(PREFIX + "DialLever_Quadrant", bm, ["MAT_Iron", "MAT_Paint"], seat="none",
-                    note="R2-A2 replaces Rail: iron sector plate, pivot = sector centre (lever rotation axis) in the mesh XZ plane, R 48, -42..+42 deg about +X, 1.5 thick (mesh y 1.7..3.2), raised rim 2 x 2 (R 46..48, +Y side), "
-                         "three V-notches 2 deep at -35 / 0 / +35 deg, three bone-white pegs O2.5 x 2 (MAT_Paint) on the -Y face at R 39 (toward the arm), mounting foot x -6..2. "
-                         "Place at (6, 4, 45) relative to the actor, rotation 0, scale 1 (D1.26)")
+                    note="R2-A3 skeletal quadrant (replaces the R2-A2 solid sector plate): pivot = sector centre (lever rotation axis) in the mesh XZ plane, -42..+42 deg about +X; arc band R 42..48 x 1.5 (mesh y 1.7..3.2), "
+                         "raised rim 2 x 2 (R 46..48, +Y side), three V-notches 2 deep at -35 / 0 / +35 deg through rim and band, edge struts +-42 deg (3 wide, R 6..42, outer face flush with the band end), "
+                         "centre strut 0 deg (2 wide), hub ring O12 / O4, mounting foot x -6..2, three bone-white pegs O2.5 x 2 (MAT_Paint) on the -Y face at R 43.8 (toward the arm). "
+                         "Place at (6, 4, 45) relative to the actor, rotation 0, scale 1 (D1.26 / D1.27)")
 
 
 # ---------------------------------------------------------------------------------------------- 2c: arm

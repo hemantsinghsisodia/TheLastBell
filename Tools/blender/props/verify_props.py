@@ -123,7 +123,7 @@ for _k in list(SPEC):
 SPEC.update({
     "BellWheel_A": dict(dims=(89.0, 89.0, 58.0), slots=["MAT_Iron", "MAT_Bronze"], ucx=1, ucx_boxes=[(-42, 42, -42, 42, 0, 58)], tris_max=12000, struct="bellwheel"),
     "DialLever_Backplate": dict(dims=(15.35, 30.0, 122.5), bmin=(-3.35, -15.0, -45.0), slots=["MAT_Wood", "MAT_Iron"], ucx=0, free_pivot=True, struct="dl_backplate"),   # R2-A2: + pulley bracket and eyelet chain, Z to 77.5
-    "DialLever_Quadrant": dict(dims=(53.98, 5.5, 64.04), bmin=(-6.0, -0.3, -32.02), slots=["MAT_Iron", "MAT_Paint"], ucx=0, free_pivot=True, struct="dl_quadrant"),   # R2-A2: sector plate R 48, pivot = sector centre
+    "DialLever_Quadrant": dict(dims=(53.98, 5.5, 64.04), bmin=(-6.0, -0.3, -32.02), slots=["MAT_Iron", "MAT_Paint"], ucx=0, free_pivot=True, struct="dl_quadrant", tris_max=1416),   # R2-A3: skeletal frame, AABB = the R2-A2 sector plate within 1 cm, tris <= R2-A2 (1416)
     "DialLever_Arm": dict(dims=(4.0, 3.9, 45.0), bmin=(-2.0, -1.95, -22.5), survey=(3.0, 3.0, 45.0), slots=["MAT_Iron", "MAT_Wood"], ucx=0, free_pivot=True, struct="dl_arm"),
     "DialLever_Weight": dict(dims=(11.42, 11.07, 9.9), bmin=(-5.8, -5.53, -4.95), slots=["MAT_Iron"], ucx=0, free_pivot=True, struct="dl_weight"),   # R2-A2: squat O11 ball, collar, no chain
     "DialLever_NotchStop": dict(dims=(5.0, 4.5, 3.0), bmin=(-2.5, -2.25, -1.5), survey=(6.0, 5.0, 2.5), slots=["MAT_Iron", "MAT_Paint"], ucx=0, free_pivot=True, struct="dl_notchstop"),
@@ -360,7 +360,8 @@ def chk_backplate(bvh, ob, spec, notes, fail):
 
 
 def chk_quadrant(bvh, ob, spec, notes, fail):
-    """R2-A2 sector plate (pivot = sector centre, XZ plane, R 48, +-42 deg): 3 V-notches through the rim, 3 pegs on the -Y face at R 39, foot at x -6."""
+    """R2-A3 skeletal quadrant (pivot = sector centre, XZ plane, arc band R 42..48, +-42 deg): 3 V-notches through rim and band, 3 pegs on the -Y face at R 43.8, foot at x -6,
+    OPEN frame (rays along Y between the struts miss), struts hit, hub bore open."""
     n = 1641
     angs = [-41.0 + 0.05 * i for i in range(n)]
     hits = [_ray(bvh, 47.6 * math.cos(math.radians(a)), 10.0, 47.6 * math.sin(math.radians(a)), (0, -1, 0)) is None for a in angs]
@@ -371,25 +372,28 @@ def chk_quadrant(bvh, ob, spec, notes, fail):
         fail("notches found at %s deg, expected -35 / 0 / 35" % cen)
     for deg in (-35.0, 0.0, 35.0):
         a = math.radians(deg)
-        h = _ray(bvh, 39.0 * math.cos(a), -10.0, 39.0 * math.sin(a), (0, 1, 0))
+        h = _ray(bvh, 43.8 * math.cos(a), -10.0, 43.8 * math.sin(a), (0, 1, 0))
         _expect(notes, fail, "peg tip y at %g deg" % deg, h and h[1], -0.3, 0.2)
     a = math.radians(-17.5)
-    h = _ray(bvh, 39.0 * math.cos(a), -10.0, 39.0 * math.sin(a), (0, 1, 0))
-    _expect(notes, fail, "plate -Y face between pegs y", h and h[1], 1.7, 0.2)
+    h = _ray(bvh, 44.0 * math.cos(a), -10.0, 44.0 * math.sin(a), (0, 1, 0))
+    _expect(notes, fail, "band -Y face between pegs y", h and h[1], 1.7, 0.2)
     a = math.radians(-17.0)
     h = _ray(bvh, 47.0 * math.cos(a), 10.0, 47.0 * math.sin(a), (0, -1, 0))
     _expect(notes, fail, "rim top y", h and h[1], 5.2, 0.25)
     h = _ray(bvh, -20.0, 2.4, 0.0, (1, 0, 0))
     _expect(notes, fail, "mounting foot back x", h and h[0], -6.0, 0.2)
-    for deg, want in ((40.0, True), (44.0, False)):
+    probes = [("centre strut (0 deg, R 30)", 0.0, 30.0, True), ("+edge strut (40 deg, R 30)", 40.0, 30.0, True), ("-edge strut (-40 deg, R 30)", -40.0, 30.0, True),
+              ("open frame (20 deg, R 30)", 20.0, 30.0, False), ("open frame (-20 deg, R 30)", -20.0, 30.0, False), ("open frame (20 deg, R 20)", 20.0, 20.0, False),
+              ("band (10 deg, R 44)", 10.0, 44.0, True), ("past the band end (44 deg, R 30)", 44.0, 30.0, False), ("hub bore (0, 0)", 0.0, 0.0, False)]
+    for label, deg, R, want in probes:
         a = math.radians(deg)
-        h = _ray(bvh, 30.0 * math.cos(a), 10.0, 30.0 * math.sin(a), (0, -1, 0))
-        notes.append("sector edge probe at %g deg R 30: %s" % (deg, "plate" if h else "empty"))
+        h = _ray(bvh, R * math.cos(a), 10.0, R * math.sin(a), (0, -1, 0))
+        notes.append("%s: %s" % (label, "solid" if h else "open"))
         if (h is not None) != want:
-            fail("sector edge probe at %g deg: %s" % (deg, "plate" if h else "empty"))
+            fail("%s: %s, expected %s" % (label, "solid" if h else "open", "solid" if want else "open"))
     n_p = sum(1 for q in ob.data.polygons if q.material_index == 1)
     notes.append("Paint faces %d" % n_p)
-    if n_p < 3 * 12:
+    if n_p < 3 * 10:
         fail("paint (peg) faces %d" % n_p)
 
 

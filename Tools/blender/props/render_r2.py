@@ -54,6 +54,7 @@ LEVER_VIEWS = [
     ("r2_lever_low_side", -35.0, 0, 0, 0.8),
     ("r2_lever_mid_top", 0.0, 0, 82, 0.8),
     ("r2_lever_high_back3q", 35.0, 125, 14, 0.8),
+    ("r2_lever_side", 35.0, 0, 0, 0.8),                                      # R2-A3: face-on to the sector (camera at -Y), arm at the high notch
 ]
 CYCLES_VIEWS = [
     ("r2_cycles_bellwheel", "wheel", 28, 22, 1.1),
@@ -70,7 +71,15 @@ CYCLES_VIEWS = [
 ]
 
 
+PREFIX = "r2"                                                                # --prefix r2a3 renames every output r2_* -> r2a3_*
+
+
+def outname(name):
+    return PREFIX + name[2:] if name.startswith("r2") else name
+
+
 def args():
+    global PREFIX
     argv = sys.argv
     argv = argv[argv.index("--") + 1:] if "--" in argv else []
     blend, which, only, out = BLEND, "work", [], OUT
@@ -84,6 +93,9 @@ def args():
             i += 2
         elif argv[i] == "--set":
             which = argv[i + 1]
+            i += 2
+        elif argv[i] == "--prefix":
+            PREFIX = argv[i + 1]
             i += 2
         elif argv[i] == "--only":
             i += 1
@@ -150,7 +162,7 @@ def run_work(meshes, only, out):
         cam.data.lens = lens
         RK.frame(cam, sc, mn, mx, az, el, df)
         studio(sc, az)
-        sc.render.filepath = os.path.join(out, name + ".png")
+        sc.render.filepath = os.path.join(out, outname(name) + ".png")
         bpy.ops.render.render(write_still=True)
         print("RENDERED", sc.render.filepath)
     if back is not None:
@@ -236,7 +248,7 @@ def run_lever(meshes, only, out):
         mn, mx = RK.world_bbox([o for o in objs if o.type == 'MESH' and o.name != 'RV_wall'])
         RK.frame(cam, sc, mn, mx, az, el, df)
         studio(sc, az)
-        sc.render.filepath = os.path.join(out, name + ".png")
+        sc.render.filepath = os.path.join(out, outname(name) + ".png")
         bpy.ops.render.render(write_still=True)
         print("RENDERED", sc.render.filepath)
         for o in objs:
@@ -326,7 +338,7 @@ def run_cycles(meshes, only, out):
         fo.location = centre + view_dir * size * 0.8 - side * size * 0.9 + Vector((0, 0, size * 0.1))
         fo.rotation_euler = (centre - fo.location).to_track_quat('-Z', 'Y').to_euler()
         RK.frame(cam, sc, mn, mx, az, el, df)
-        sc.render.filepath = os.path.join(out, name + ".png")
+        sc.render.filepath = os.path.join(out, outname(name) + ".png")
         bpy.ops.render.render(write_still=True)
         print("RENDERED", sc.render.filepath)
         for o in objs:
