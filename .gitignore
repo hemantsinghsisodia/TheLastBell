@@ -30,3 +30,6 @@ Thumbs.db
 
 # Python bytecode (Tools/mcp helper)
 __pycache__/
+
+# Blender auto-backups
+*.blend1
