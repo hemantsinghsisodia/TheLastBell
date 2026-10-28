@@ -1100,3 +1100,65 @@ This section makes D1.7 (with the D1.11 "D1.7 additions" and the D1.14 "P9-7 add
   - The owner judges the result in the playtest; PIE Simulate has no player candle to capture.
 - **Open owner question:** the hanging body `Ch_HangingBody` (`SK_Dead_Man`, one material `M_Dead_man`) has a bright red blood stain at the head end of the shroud. Keep it, or darken it to an old brown stain with a chapel-only MI (D-063: no gore)?
 - **Owner decision (2026-10-28):** keep the hanging body's blood stain as it is. No change.
+
+### D1.20 Owner review 1, item 5: candle-order clue as stained-glass saints, fix set R1-C (lead, 2026-10-28)
+**Finding (owner):** the chapel's candle-order clue (`Clue_StainedGlass`, `BP_StainedGlassClue`) doesn't fit the scene. It is a flat panel of 12 engine primitives (cone body, sphere head and cone flame per saint) that reads as an infographic.
+
+**Owner choice (D-075):** a real stained-glass panel: four robed saints, each holding a candle whose robe and flame halo carry the clue colour.
+- The order, left to right as seen from the nave (looking +Y), stays **green, red, amber, blue** (Saint1..4; puzzle steps 3, 1, 4, 2).
+- The puzzle candles, their BandRing colours, `BP_SequencePuzzle` and the Frame collision are unchanged.
+
+**Task order:** R1-A (running) → **R1-C** → R1-B. R1-B's suite covers everything.
+
+**R1-C** (technical-artist, [EDITOR] for steps 3–6; commit "P9-R1C: …")
+1. **Texture `T_LB_StainedGlass_Clue`**, 512 × 1024 RGBA (A = lead mask, 1 = lead).
+   - **Code:** add `clue_texture(seed)` to `Tools/textures/gen_chapel_textures.py`, with seed `"clue": 8999` in `SEEDS` and a `--only clue` target.
+     - Copy the figure-drawing code from `east_light` into the new function rather than refactoring, so **no existing texture changes**.
+     - Proof: run `--only clue`, and confirm `git status` shows no other generated file changed.
+   - **Panel frame:** 112 × 232 cm (u = 0 at the left edge as seen from the nave, until step 4 says otherwise); 1 cm ≈ 4.5 px.
+   - **Border:** 6 cm wide, alternating `PALE` and `BLUEGREY` segments, about 18 cm long, separated by lead.
+     - No ruby, amber, green or blue in the border or background: those hues are reserved for the clue.
+   - **Background:** diamond quarries (`diamond_field`, 60 × 96 px cells), with the table [(0.6, BLUEGREY × 0.7), (0.9, PALE × 0.55), (1.01, VIOLET × 0.6)], plus the same streak and fbm glass texture as the lancets.
+   - **Top 40 cm:** a pointed-arch canopy line in lead, and a small bell motif (`PALE` × 1.2, about 22 cm tall) centred.
+   - **Saints:** four columns, each 25 cm wide, inside the border (u from 6 cm to 106 cm). Each figure stands from z 14 cm to z 178 cm and has:
+     - a robe in the clue colour × 0.85 (green (0.07, 0.65, 0.12), red (0.90, 0.05, 0.04), amber (0.95, 0.62, 0.05), blue (0.06, 0.18, 0.95)), with 3–4 lead fold lines;
+     - a hood at robe × 0.6;
+     - a **dark void face**, as in `east_light` (no faces);
+     - a held candle at chest height: an ivory shaft (0.85, 0.80, 0.68), 3 × 14 cm;
+     - a flame: a warm-white core (1.0, 0.95, 0.80), 3 × 6 cm;
+     - a **halo disc** of radius 7 cm behind the flame, in the clue colour × 1.3, capped at 1.0.
+   - **Lead lines:** 1.0–1.3 cm between every glass piece.
+   - **Order:** columns 1–4 left to right are green, red, amber, blue.
+   - Save a preview to `Docs/ArtTest/chapel/tex_stainedglass_clue.png`.
+2. **Import:** `/Game/LastBell/Environments/Chapel/Textures/T_LB_StainedGlass_Clue`, with the same import settings as `T_LB_StainedGlass_Lancet_A`. Read those first and copy them (sRGB, compression, mips).
+3. **Material:**
+   - Read `MI_Glass_Lancet_A`: its parent and parameters.
+   - Create `/Game/LastBell/Environments/Chapel/Materials/MI_Glass_Clue_Saints` with the same parent, the lancet values, and the texture parameter set to `T_LB_StainedGlass_Clue`.
+   - Never edit `MI_Glass_Lancet_*`, `MI_LB_StainedGlass` or `MI_LB_ClueGlass`.
+4. **Child Blueprint `/Game/LastBell/Blueprints/Puzzles/BP_StainedGlassClue_Saints`** (D-071 procedure, as P9-6b; never edit the parent).
+   - The construction script sets `Glass` to `MI_Glass_Clue_Saints`, and `SetVisibility(false)` on `Saint1..4Body`, `Head` and `Flame` (12 components).
+   - Don't call `ApplyOrder`.
+   - Compile with warnings as errors.
+   - **Swap:**
+     - dump `Clue_StainedGlass` to `Docs/ArtTest/chapel/Clue_StainedGlass_before.json`;
+     - spawn the child at the same transform (8750, 747, 300), yaw −90, and copy the instance `Order` and `Palette` values;
+     - delete the old actor, apply the same label `Clue_StainedGlass` and the same folder;
+     - dump `_after.json`, and diff it. Allowed differences: the class, the Glass material, and the 12 saint visibilities.
+   - Save the map explicitly.
+   - **UV orientation:** capture from (8750, 300, 170), pitch 29, yaw 90 (editor viewport, `--raise`).
+     - If the order reads mirrored (blue on the left), regenerate with u flipped (a `--mirror` option on `clue_texture`), re-import, and recapture.
+5. **Checks** (captures in `Docs/ArtTest/chapel/r1c_*`):
+   - **(a) Order and hue**, on `r1c_clue_nave` from the pose above:
+     - Split the glass rectangle into 4 vertical strips. Take the mean hue of the pixels with saturation > 0.35 in each strip.
+     - Left to right they must read green, red, amber, blue, with adjacent hues ≥ 40° apart.
+     - Each robe's mean luma must be ≥ 0.20.
+   - **(b) From the puzzle:** capture `r1c_clue_candles` from the centroid of the 4 `BP_PuzzleCandle` actors at Z 170, looking at the panel centre (8750, 744, 422). The same order check must pass.
+   - **(c) Look**, for the lead to judge: it reads as stained glass (lead lines, quarries, glow), the figures read as robed saints holding candles, there are no faces, and no flat cone shapes are left.
+   - **(d)** `r1c_clue_close`, a 2 m view, for the owner.
+6. **Wrap up:**
+   - explicit saves;
+   - editor clean, no temp actors;
+   - commit with the generator change, the preview, the dumps and the captures;
+   - report.
+
+**Docs** (P9-8a): D-075, "candle-order clue as stained-glass saints (owner)", supersedes the P8 C1 "saints never changed" rule for visuals only.
