@@ -1,0 +1,16 @@
+Note_Gatehouse vertical: hit z 46.12 top 46.12 delta 0.0
+   approach(ang, hitdist-expected): [(0, -0.22), (45, -0.22), (90, -0.22), (135, -165.54), (180, -165.54), (225, -107.3), (270, -0.22), (315, -164.36)]
+Note_Nave vertical: hit z 45.35 top 45.35 delta 0.0
+   approach(ang, hitdist-expected): [(0, -0.22), (45, -0.22), (90, -0.22), (135, -53.51), (180, -37.79), (225, -53.67), (270, -51.49), (315, -0.22)]
+Note_Sacristy vertical: hit z 80.85 top 80.85 delta 0.0
+   approach(ang, hitdist-expected): [(0, -0.27), (45, -0.27), (90, -0.27), (135, -0.27), (180, -0.27), (225, -0.27), (270, -131.81), (315, -135.95)]
+Note_Ossuary vertical: hit z -539.6 top -539.6 delta 0.0
+   approach(ang, hitdist-expected): [(0, -0.23), (45, -0.23), (90, -0.23), (135, -0.23), (180, -0.23), (225, -0.23), (270, -0.23), (315, -0.23)]
+Note_Cloister vertical: hit z 100.4 top 100.4 delta 0.0
+   approach(ang, hitdist-expected): [(0, -0.34), (45, -0.34), (90, -0.34), (135, -0.34), (180, -0.34), (225, -0.34), (270, -0.34), (315, -0.34)]
+Note_Chains horizontal: hit y -1504.45 front -1504.45 delta -0.0
+Note_Chains from 120cm at eye (floor -600+160): 0.0 (0 = hit at the note centre line)
+   corner 10894 -448 hit y -1504.45
+   corner 10946 -448 hit y -1504.45
+   corner 10894 -412 hit y -1504.45
+   corner 10946 -412 hit y -1504.45
