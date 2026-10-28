@@ -1302,3 +1302,38 @@ This section makes D1.7 (with the D1.11 "D1.7 additions" and the D1.14 "P9-7 add
    - the lead decides.
 
 The rest of R1-B is unchanged (D1.19 R1-B steps 2–4, the D1.19 addendum bloom item, D1.22 H1–H4), now that the redesigned step 1 is done.
+
+### D1.24 R1-B outcome; proposed follow-up set R2 (lead, 2026-10-28)
+- **R1-B accepted** (88092f8, 2c9bcb1, 0aae5e9, 02a2e13, fa95078).
+- **Suite:** 78/78; crypt WalkPaths SacristyToCrypt, FloodedLedge and CryptToCloister PASS; chapel WalkPaths PASS; RouteBot.Monastery Success; Warden crypt loop 67.1 s, 0 stuck.
+- **Chapel moon (D1.23, gobos):** 16 hidden shadow-only cubes on Channel1; the 4 spots use channels 0+1 with scattering 0.
+  - Interior patches are within 3 %: S1 0.973, S2 0.992, S3 1.024, Roof 1.000.
+  - The moon-shadow leak check is 0.43 (pass).
+  - The window disc and the stair-head lit wall are gone.
+  - **Residual:** a lit parallelogram on the roof slab around the hole, because the aperture is the hole's bounding box.
+  - Poses 04, 05 and 14 are 13–17 % darker without the spot scattering haze. The owner judges this in the playtest.
+  - The stair-head haze is the global moon's scattering. Not changed.
+  - **Owner check:** in PIE *Simulate* the gobos render as two bright blobs in the sky, because Simulate ignores `bHiddenInGame`. The owner checks that they are invisible in a normal Play session.
+- **G3:** aimed at `Note_Chains`, 250 lm, radius 550, `SA_Crypt_G3` re-oriented.
+  - The note is lit (pool median 0.357), but it sits at the lower edge of the pool, because the beam grazes the wall. The note is small (28 × 20 cm).
+- **Sacristy:** table light 250 lm, P8 pose mean 0.0505 (target 0.03–0.08). The props read dark and aged; the table still reads warm under its candle. The owner judges.
+- **Crypt:** `PP_Crypt` bloom 0.27.
+- **Paper:** `MI_Chapel_PaperOld` `BrightnessMul` 0.6.
+- **`r1c_clue_candles`:** order holds; red/amber gap 45.6°.
+- **Candle views:** `w_OS_c` central-40 % is 0.394 (target (b) passes on all three walls). `04_c` captured.
+- **Housekeeping:**
+  - `T_LB_Parchment` was deleted in the editor (0 referencers), but the file is still on disk and the package is dirty. When closing the editor, choose **Don't Save**. Finish the deletion in the Content Browser in R2.
+  - The layout JSON still has the old G3 rotation.
+  - The stray empty `C:\c\…` folders from a capture run were removed by the lead.
+
+**Proposed R2** (only with the owner's go):
+1. **Roof gobo.** Replace the 4 `Gobo_Moon_Roof_*` cubes with one Blender-built plate `SM_LB_Gobo_RoofHole` (110 × 110 × 2 cm).
+   - Its hole is the roof-hole outline polygon (`build_kit.hole_cutters`) projected onto the gobo plane, with a 1.5 cm margin.
+   - Same flags (hidden, shadow-only, Channel1). Pass: no lit roof slab beyond the hole edge; the roof patch stays within ±15 %.
+2. **Note readability.**
+   - Scale `Note_Chains` × 1.5 (42 × 30 cm), keeping it on the wall.
+   - Re-aim G3 so the note sits at the pool centre: the aim point is 40 cm below the note centre, to compensate for the grazing angle.
+   - Pool on the note 0.30–0.45.
+3. **Layout JSON:** update the G3 record (rotation, radius, lumens) in `gen_crypt_layout.py` and regenerate, so `place_crypt.py --cats light --check` passes.
+4. **Finish deleting `T_LB_Parchment`** (Content Browser delete, then confirm the file is gone).
+5. **P9-8:** docs (D-073 note clue, D-074 gobos, D-075 saints glass, MCP_NOTES additions) and QA (including the 118-failure dress `--check` investigation). Then the owner playtest and "approve and merge".
