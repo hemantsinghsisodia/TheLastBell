@@ -1488,3 +1488,88 @@ Follow the props conventions in `Tools/blender/props/build_props.py`: seeded, MA
    - Commit and report.
 
 **R2-B update** (D1.25 R2-B step 2, levers): the child construction script also sets `rail` relative location (6, 4, 45), rotation (0, 0, 0), scale 1, and `SetVisibility(false)` on `notchHigh`, `notchMid` and `notchLow`.
+
+### D1.27 R2-B review; editor hang; proposed R2-A3 + R2-B2 (lead, 2026-10-29)
+**R2-B gameplay work is accepted** (73e1f16, f2b3a20):
+- Suite 78/78. WalkPaths pass (ChapelNave, ChapelSacristy, SacristyToCrypt, FloodedLedge, CryptToCloister). RouteBot.Monastery uses the bell wheel, both doors and the levers. Warden crypt loop 67.0 s, 0 stuck.
+- Before/after dumps of the 6 swapped actors differ only where the spec allows. `InteractComp` has 0 differences on every swap.
+- Notes:
+  - `Note_Gatehouse` raised 0.719 cm; its vertical trace hits the note top.
+  - All 6 notes pass the vertical trace and the 120 cm eye-height trace from every clear direction.
+  - `Note_Chains` is 2× (56 × 40 cm) and reads well at 2 m (`r2b_note_chains_2m_pie.png`).
+- `T_LB_Parchment` is fully deleted (file gone, git `D`).
+- Real bug found and fixed: the R2-A lever meshes had no simple collision, so the interaction trace missed them. A 1-hull convex was added.
+
+**Editor hang (open):**
+- The editor's game thread deadlocked inside `save_assets` for `SM_LB_Prop_DialLever_Arm`. The log stops at `InternalPromptForCheckoutAndSave started...` (19:22 UTC); CPU is idle and both editor windows report hung. The file is not read-only.
+- On disk: Backplate and Quadrant have their convex collision. **Arm and Weight do not** (their collision exists only in the hung editor's memory).
+- Nothing else in editor memory is wanted. The map is saved. The parent BPs `BP_RitualMechanism`, `BP_Door_Base` and `BP_DialLever` are dirty in memory and must NOT be saved.
+- The R2-B agent was stopped. Its queued save client is gone.
+- **Recovery (owner):** end the editor (Task Manager → UnrealEditor → End task; equivalent to Don't Save). On the next start, skip any autosave restore. The first step of the next run re-does the Arm/Weight collision (R2-A3 step 5).
+
+**Visual review of the R2-B captures:**
+1. **Bell wheel: accepted** (`r2b_bellwheel_close_pie.png`, `r2b_bellwheel_nave_pie.png`). It reads as an iron wheel with hanging bronze bells.
+   - **Defect:** `Ch_Altar` has a Ø≈84 cm opening in its top. The removed shell used to hide it, so the wheel now stands in a dark round pit. → R2-B2 step 1.
+2. **Levers: not accepted as they stand** (`r2b_pie_lever_A_high_sector_side.png`, `r2b_lever_B_2m_mid_all_levers.png`).
+   - The arm swings in the actor's XZ plane, at right angles to the wall, so the solid R48 sector plate sticks 48 cm out of the wall.
+   - From any oblique view each lever reads as a large flat black fan or shield, and the three fans dominate the wall.
+   - Nothing is wrong with the mechanism logic; the problem is the solid plate's visual mass. → R2-A3.
+3. **Doors: the mirror is accepted** (handle on the free edge). Hinge sense is confirmed in the owner playtest by opening each door.
+   - **Defect:** `SM_Dungeon_door` has 1–2 cm gaps between its planks. The sky (sacristy door) or the lit interior (chapel main door from outside) shows through, so the doors read as fence gates. → R2-B2 step 2.
+   - The chapel main door's outside face has no straps. That is the mesh's back face (battens); accepted.
+4. **Notes: accepted.**
+
+#### R2-A3 (technical-artist; Blender headless, then [EDITOR] re-import; commit "P9-R2A3: …")
+Start only after the editor is restarted and `L_Monastery` is loaded clean.
+1. **`SM_LB_Prop_DialLever_Quadrant` becomes a skeletal quadrant.** Rebuild in `Tools/blender/props/build_props.py` (same function, same seed, same pivot and orientation as R2-A2: sector in the mesh XZ plane, pivot at the sector centre, span −42°…+42° about +X).
+   - Remove the filled sector plate and replace it with:
+     - **Arc band:** radial R 42…48 (6 cm deep), 1.5 cm thick in Y (same Y position as the old plate), spanning −42°…+42°.
+     - **Rim:** the raised outer rim on the band, 2 × 2 cm, as in R2-A2.
+     - **Notches:** three V-notches, 2 cm deep, through rim and band at −35°, 0° and +35°, as in R2-A2.
+     - **Pegs:** three bone-white pegs (MAT_Paint, Ø 2.5 × 2 cm, protruding +Y) beside the notches, at the same places as R2-A2.
+     - **Two edge struts:** along −42° and +42°, from R 6 to R 42, 3 cm wide, 1.5 cm thick in Y.
+     - **One centre strut:** along 0°, from R 6 to R 42, 2 cm wide, 1.5 cm thick.
+     - **Hub ring:** at the pivot, outer Ø 12, inner Ø 4, 1.5 cm thick in Y.
+     - **Mounting foot:** unchanged (local X −6…0, from the hub back to the board face).
+   - Slots MAT_Iron and MAT_Paint. Triangle count ≤ the R2-A2 quadrant's.
+   - AABB must equal R2-A2's within ±1 cm, so `rail` at (6, 4, 45) in `BP_DialLever_Crypt` needs no change.
+2. **Re-import** over the same asset `/Game/LastBell/Environments/Crypt/Meshes/SM_LB_Prop_DialLever_Quadrant`, with the same material slots (`MI_LB_Iron`, `MI_LB_PaintBone`).
+3. **Collision:** add one 1-hull convex simple collision to the quadrant (StaticMeshTools, as R2-B did). It may fill the open frame, which is fine.
+4. **`verify_props`:** all pass.
+   - Blender renders `Docs/ArtTest/props/r2a3_lever_{high,mid,low}_3q.png` and `_side.png`, with the assembly placed as in R2-A2.
+   - **LOOK:** the quadrant reads as an open iron arc with three pegged notches; through the open frame the board and the wall behind can be seen. Iterate until it does.
+5. **Arm and Weight collision (re-do lost work):** add one 1-hull convex simple collision to `SM_LB_Prop_DialLever_Arm` and `SM_LB_Prop_DialLever_Weight`.
+   - Save each mesh package on its own `save_assets` call (one package per call) and check `is_dirty` = false after each.
+   - Check that Backplate's collision survived the restart (read the body setup: 1 convex element).
+6. **Editor captures** (PIE, `capture_poses.py --raise`, the R2-B poses): `r2a3_pie_lever_A_high_sector_side.png`, `r2a3_lever_B_2m_mid_all_levers.png`.
+   - **LOOK:** no fan or shield silhouette; the arm reads as moving along a notched arc.
+7. Suite 78/78. Commit.
+
+#### R2-B2 (unreal-blueprint-engineer, [EDITOR]; after R2-A3; commit "P9-R2B2: …")
+1. **Altar bearing plate.** New StaticMeshActor `Ch_Altar_BearingPlate`, folder `Gameplay/Chapel`, covering the altar-top opening:
+   - mesh `/Engine/BasicShapes/Cylinder` (100 × 100 × 100, pivot centre); scale (0.94, 0.94, 0.04) → Ø 94 × 4 cm;
+   - location (8900, 0, 132) → Z 130…134, so it rests on the altar top (Z 131) and covers the Ø 84 opening with 5 cm overlap; rotation 0;
+   - material `MI_LB_Iron`; collision profile `NoCollision` (the interaction trace must still reach the Core); cast shadow on.
+   - **Check:**
+     - the vertical trace on the wheel top still hits Z 188.5;
+     - the eye-height trace from the nave still hits the Core;
+     - capture `r2b2_bellwheel_close_pie.png` (the R2-B pose). **LOOK:** no dark pit; the axle rises from an iron plate.
+2. **Door backing** in `BP_Door_Base_Dungeon` (child only; never edit `BP_Door_Base`).
+   - First read the parent component tree and note the parent of `doorMesh` (the hinge component).
+   - Add two StaticMeshComponents to the child, both attached to that same parent (not to `doorMesh`, whose scale is non-uniform and mirrored):
+     - **`backing`:** `/Engine/BasicShapes/Cube`, relative location (0, 50, 95), rotation 0, scale (0.02, 0.96, 1.86) → local X −1…1, Y 2…98, Z 2…188.
+     - **`backingTop`:** `/Engine/BasicShapes/Cube`, relative location (0, 50, 200), scale (0.02, 0.5, 0.24) → Y 25…75, Z 188…212.
+     - Both: material `MI_Prop_Wood_Weathered`, collision `NoCollision`, cast shadow on.
+   - **Fit check:** neither piece may show outside the plank silhouette from either side.
+     - Capture `Door_Sacristy` from E and W and `Door_ChapelMain` from outside W and inside E (the R2-B poses).
+     - If a piece shows beyond the planks (most likely `backingTop` at the pointed head), shrink its Y or Z extent in 5 cm steps until it does not, and record the final values.
+   - **LOOK:** no sky or interior visible through the planks.
+   - Compile with warnings as errors; before/after dumps of `Door_Sacristy` and `Door_ChapelMain` (only the two new components may differ).
+3. **Reload re-dump.** `load_level` `L_Monastery`, then dump the 6 R2-B actors (`Altar_Ritual1`, `Lever_A/B/C`, `Door_Sacristy`, `Door_ChapelMain`) and diff against the R2-B `*_after.json`. The only allowed differences are the 2 door components.
+4. **End state:**
+   - `bThrottleCPUWhenNotForeground` read back true;
+   - map not dirty; no `TMP_` actors;
+   - parent BPs `BP_RitualMechanism`, `BP_Door_Base` and `BP_DialLever` not dirty and unchanged in git.
+5. Suite 78/78. Commit.
+
+**Then R2-C** (D1.25, unchanged).
