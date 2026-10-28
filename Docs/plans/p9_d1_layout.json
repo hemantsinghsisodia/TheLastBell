@@ -34,12 +34,12 @@
   "tile": 179,
   "stair": 2,
   "soffit": 4,
-  "lining": 8,
+  "lining": 10,
   "ceiling": 30,
   "grate": 6,
   "water": 4,
   "backdrop": 5,
-  "dress": 336,
+  "dress": 335,
   "light": 16,
   "decal": 35
  },
@@ -10093,6 +10093,96 @@
     102.0
    ],
    "note": "stone enclosure of Rail_Up_E: AABB +2 cm each side and on top, sunk 1 cm (F1)",
+   "mbounds": [
+    [
+     -50.0,
+     -50.0,
+     0.0
+    ],
+    [
+     50.0,
+     50.0,
+     100.0
+    ]
+   ]
+  },
+  {
+   "id": "CA_Parapet_Rail_Sac_W",
+   "cat": "lining",
+   "mesh": "/Game/LastBell/Environments/Crypt/Meshes/SM_LB_Crypt_Block_100",
+   "loc": [
+    7395.0,
+    -1100.0,
+    -1.0
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "scale": [
+    0.14,
+    4.24,
+    1.03
+   ],
+   "collision": "NoCollision",
+   "folder": "Crypt/Art/Lining",
+   "aabb_min": [
+    7388.0,
+    -1312.0,
+    -1.0
+   ],
+   "aabb_max": [
+    7402.0,
+    -888.0,
+    102.0
+   ],
+   "note": "stone enclosure of Rail_Sac_W: AABB +2 cm each side and on top, sunk 1 cm (F1)",
+   "mbounds": [
+    [
+     -50.0,
+     -50.0,
+     0.0
+    ],
+    [
+     50.0,
+     50.0,
+     100.0
+    ]
+   ]
+  },
+  {
+   "id": "CA_Parapet_Rail_Up_S",
+   "cat": "lining",
+   "mesh": "/Game/LastBell/Environments/Crypt/Meshes/SM_LB_Crypt_Block_100",
+   "loc": [
+    10650.0,
+    -105.0,
+    -1.0
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "scale": [
+    3.04,
+    0.14,
+    1.03
+   ],
+   "collision": "NoCollision",
+   "folder": "Crypt/Art/Lining",
+   "aabb_min": [
+    10498.0,
+    -112.0,
+    -1.0
+   ],
+   "aabb_max": [
+    10802.0,
+    -98.0,
+    102.0
+   ],
+   "note": "stone enclosure of Rail_Up_S: AABB +2 cm each side and on top, sunk 1 cm (F1)",
    "mbounds": [
     [
      -50.0,
@@ -23760,51 +23850,6 @@
      129.95,
      44.91,
      249.9
-    ]
-   ]
-  },
-  {
-   "id": "CD_PlaqueFrame",
-   "cat": "dress",
-   "mesh": "/Game/LastBell/Environments/Crypt/Meshes/SM_LB_Crypt_PlaqueFrame_270x195",
-   "loc": [
-    10920,
-    -1500,
-    -330
-   ],
-   "rot": [
-    0.0,
-    180.0,
-    0.0
-   ],
-   "scale": [
-    1.0,
-    1.0,
-    1.0
-   ],
-   "collision": "NoCollision",
-   "folder": "Crypt/Dressing/ChainChamber",
-   "aabb_min": [
-    10785.0,
-    -1514.0,
-    -427.5
-   ],
-   "aabb_max": [
-    11055.0,
-    -1500.0,
-    -232.5
-   ],
-   "note": "frame around Clue_Diagram; NoCollision, back plane on the puzzle-wall face line",
-   "mbounds": [
-    [
-     -135.0,
-     0.0,
-     -97.5
-    ],
-    [
-     135.0,
-     14.0,
-     97.5
     ]
    ]
   },

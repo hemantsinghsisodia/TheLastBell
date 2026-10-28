@@ -427,7 +427,10 @@ for slab, fid, axis, along, face, s_open, length, note in LINING:
 RAILS = {"Rail_Sac_S": ((7400.0, -1310.0, 0.0), (8000.0, -1300.0, 100.0)),
          "Rail_Sac_N": ((7400.0, -900.0, 0.0), (8000.0, -890.0, 100.0)),
          "Rail_Up_W": ((10490.0, -110.0, 0.0), (10500.0, 500.0, 100.0)),
-         "Rail_Up_E": ((10800.0, -110.0, 0.0), (10810.0, 500.0, 100.0))}
+         "Rail_Up_E": ((10800.0, -110.0, 0.0), (10810.0, 500.0, 100.0)),
+         # P9-R1A step 1: the two rails F1 missed (AABBs read from the editor, yaw 0)
+         "Rail_Sac_W": ((7390.0, -1310.0, 0.0), (7400.0, -890.0, 100.0)),
+         "Rail_Up_S": ((10500.0, -110.0, 0.0), (10800.0, -100.0, 100.0))}
 for rname, (rmn, rmx) in RAILS.items():
     add(f"CA_Parapet_{rname}", "lining", "SM_LB_Crypt_Block_100", CRYPT,
         ((rmn[0] + rmx[0]) / 2, (rmn[1] + rmx[1]) / 2, rmn[2] - 1.0), (0.0, 0.0, 0.0),
@@ -595,12 +598,7 @@ add("CD_WinchFrame", "dress", "SM_LB_Crypt_WinchFrame", CRYPT, (10800, -2120, -6
     "BlockAll (UCX posts + sole plates)", "Crypt/Dressing/ChainChamber",
     note="south of Winch_Ritual2 (pedestal Y -2050..-1950); drum axis along X at Z -430", check=False)
 
-# -- P9-6a step 4: stone frame around the clue plaque (BP_EngravedDiagram_C_0 "Clue_Diagram": cube 250 x 10 x 175 at (10920, -1505, -330),
-#    scale 2.5, yaw -90; Engraving TextRender worldSize 7 x 2.5, two lines, glyph block measured ~215 x 45 cm in p9s_09; the component's own
-#    bounds box reads 256 x 256 x 256). Back plane on the face line y -1500, yaw 180 so the frame projects 14 cm toward -Y. The opening of the
-#    unscaled frame (250 x 175) equals the plaque and clears the glyph block by >= 17 cm on every side, so the scale stays 1.
-add("CD_PlaqueFrame", "dress", "SM_LB_Crypt_PlaqueFrame_270x195", CRYPT, (10920, -1500, -330), (0.0, 180.0, 0.0), (1.0, 1.0, 1.0), "NoCollision",
-    "Crypt/Dressing/ChainChamber", note="frame around Clue_Diagram; NoCollision, back plane on the puzzle-wall face line", check=False)
+# -- P9-R1A: the CD_PlaqueFrame record (stone frame around Clue_Diagram) is removed; the clue is now the readable note Note_Chains (D-073)
 
 # -- chains (pivot at the top; 117.6 per segment) --
 CHAINS = [("Winch", (10880, -2120), 3, "from beam 2 down into the drum's east end (drum top Z -408)"), ("Cage", (11200, -2350), 2, "into the cage top ring"),
