@@ -1245,3 +1245,60 @@ This section makes D1.7 (with the D1.11 "D1.7 additions" and the D1.14 "P9-7 add
 - **H4. Captures:** the notes read dim on the wall (crypt) and hot on the table (sacristy). The R1-B G3 re-aim and the table-light change address both, so capture `r1_note` and `r1_table` after those changes.
   - For `r1_table`, use the R1-A replacement pose: (8190, −1290, 150), pitch −20.9, yaw −51.84.
   - For the stair head, use (7960, −1100, 170) looking at (7395, −1100, 50). The D1.19 pose sits inside the door wall.
+
+### D1.23 R1-B step 1 redesigned: aperture masks (gobos) on the outside moon spots (lead, 2026-10-28)
+**Why:** the interior RectLights (D1.19 R1-B step 1) flood the nave. With no opening to clip them, there are no window-shaped patches.
+- At the matched lumens, the frame mean is 0.60 against the P8 target of 0.04–0.08.
+- The barn doors made no visible difference.
+- That approach is dropped (88092f8 WIP). **D-074 is revised:** keep the P8 outside spots, unchanged, and add a hidden, shadow-only aperture mask in front of each spot.
+
+**What the mask does:** the spot's light passes only through a rectangle matching the projection of its window or roof hole. So:
+- outside, only the opening itself is lit;
+- inside, the window-shaped patches stay as they are.
+- Volumetric scattering on these 4 spots goes to 0, which removes the beam in the outdoor fog. The interior shaft cards carry the beam look.
+
+**R1-B step 1 (replaces D1.19 R1-B steps 1.2–1.5).** Lighting-vfx, [EDITOR]:
+1. **Delete the 4 untuned `Light_Chapel_MoonRect_*`.** They were added in this fix set and are at intensity 0. Keep their `geom.json` and scripts for the record.
+2. **Geometry**, for each spot `Light_Chapel_Moon_<K>` (K = S1, S2, S3, Roof):
+   - L = the spot location; d, r, u = the spot's forward, right and up unit vectors (from its rotation).
+   - **Opening corners** C1..C4, in world space:
+     - lancets: the 4 corners of the `Ch_Glass_S#` opening face (from its bounds on the window plane);
+     - roof: the 4 corners of the hole-aperture bounding box already computed in `Tools/crypt/r1b/geom.json`, in world space.
+   - **Gobo plane:** distance D = 150 cm along d. For each corner, v = C − L and p = L + v·(D / (v·d)); its plane coordinates are (y, z) = ((p − L)·r, (p − L)·u).
+   - **Aperture:** y from (min y − 1.5) to (max y + 1.5), z from (min z − 1.5) to (max z + 1.5), in cm.
+   - **Outer frame:** half-size H = D·tan(outer cone) + 15 (14° gives H ≈ 52.4); round H up to the nearest 5 cm.
+3. **Gobo pieces.** Four `StaticMeshActor`s per spot, `Gobo_Moon_<K>_T/B/L/R` in folder `Lighting/Chapel/Gobos`:
+   - **Mesh:** `/Engine/BasicShapes/Cube` (100 cm, pivot centre); rotation = the spot's rotation, so local X is along d; thickness 2 cm along local X (scale X 0.02).
+   - **Coverage:**
+     - T covers y −H…H, z from the aperture's max z to H;
+     - B covers y −H…H, z from −H to the aperture's min z;
+     - L covers y from −H to the aperture's min y, z from the aperture's min z to its max z;
+     - R covers y from the aperture's max y to H, z from the aperture's min z to its max z.
+     - Each piece's centre is L + D·d + y_c·r + z_c·u. Scale its local Y and Z by its extent / 100.
+   - **Render/shadow flags:**
+     - `bHiddenInGame` true;
+     - `CastShadow` true, `bCastHiddenShadow` true;
+     - `bAffectDistanceFieldLighting` false, `bAffectDynamicIndirectLighting` false;
+     - `bVisibleInRayTracing` false (if exposed);
+     - NoCollision (profile + `collisionEnabled`).
+   - **Lighting channels:** Channel0 false, Channel1 true. The gobo then shadows only lights on Channel1, so it never casts a moon or directional shadow on the world.
+4. **The 4 spots:**
+   - lighting channels Channel0 true **and** Channel1 true;
+   - `volumetricScatteringIntensity` 0.1 → **0**;
+   - everything else unchanged (location, rotation, lumens 9100/15000, cones, shadows, colour).
+   - Read back all values. Save explicitly. Commit "P9-R1B: chapel moon gobos …".
+5. **Verify** (PIE Simulate, fresh session, `--raise`, breaker):
+   1. **Exterior:** `r1_ext_chapel`, camera (4300, −2300, 250) looking at (6500, −780, 900); `r1_stairhead`, (7960, −1100, 170) looking at (7395, −1100, 50).
+      - **Pass:** no lit ellipse or disc on the roof or walls around the openings beyond the opening and its reveal; no beam cone in the outdoor fog; no new square or dark shadow anywhere in these views.
+   2. **Interior:** the P8 patch poses (`r1b_patch_S1/S2/S3/Roof`) and `r1b_p8_*` against the committed `_before` captures.
+      - **Pass:** each patch's central luma is within ±15 % of before; the patches stay window-shaped; the pool decals stay on them.
+      - If an aperture clips a patch edge, widen that aperture by 2 cm per side, at most twice, and report it.
+   3. **Shadow leak check:** with the gobos present, capture `r1b_courtyard_moon`, camera (5500, −2400, 400) looking at (5500, −1500, 0), and compare it with a capture taken with the gobos temporarily moved +10000 Z, in the PIE world only.
+      - **Pass:** mean absolute pixel difference < 1.0, meaning the gobos cast no directional/moon shadow.
+      - **If it fails:** lighting channels don't gate shadows in this setup. Report it, and set the gobo `CastShadow` false on the B piece first to locate the shadow. Don't touch `DirectionalLight_1`.
+6. **If gobo shadows don't work at all** (the exterior patches are still lit; hidden-shadow casting not supported with this shadow method):
+   - report it with captures, and leave the gobos placed but `CastShadow` false;
+   - keep only the scattering-0 change, which still removes the outdoor beam;
+   - the lead decides.
+
+The rest of R1-B is unchanged (D1.19 R1-B steps 2–4, the D1.19 addendum bloom item, D1.22 H1–H4), now that the redesigned step 1 is done.
