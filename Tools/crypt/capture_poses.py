@@ -77,6 +77,7 @@ class Raiser:
         self.stop = threading.Event()
         self.th = None
         self.u32 = ctypes.windll.user32
+        self.was_iconic = set()   # editor windows that were minimised when the run started: re-minimised at the end (SW_SHOWMINNOACTIVE = 7)
 
     def _windows(self):
         u32, hw = self.u32, []
@@ -104,14 +105,22 @@ class Raiser:
             self.stop.wait(0.2)
 
     def start(self):
+        if self.th and self.th.is_alive():
+            return
+        self.was_iconic = {h for h in self._windows() if self.u32.IsIconic(h)}
         self.stop.clear()
         self.th = threading.Thread(target=self._run, daemon=True)
         self.th.start()
 
-    def end(self):
+    def end(self, final=False):
+        """final=True: stop and re-minimise the windows that were minimised at the start (owner's desktop left as it was)."""
         self.stop.set()
         if self.th:
             self.th.join(1.0)
+            self.th = None
+        if final:
+            for h in self.was_iconic:
+                self.u32.ShowWindow(h, 7)
 
 
 def call(ts, tool, args=None, tries=3):
@@ -152,9 +161,35 @@ def editor_check(raiser):
     except Exception as e:
         log("  check: MCP calls failing: %s" % str(e)[:100])
     try:
-        for h in (raiser or Raiser())._windows():
-            u32 = ctypes.windll.user32
-            log("  check: editor window %s iconic=%s" % (h, bool(u32.IsIconic(h))))
+        u32 = ctypes.windll.user32
+        r = raiser or Raiser()
+        rects = {}
+        for h in r._windows():
+            rc = wintypes.RECT()
+            u32.GetWindowRect(h, ctypes.byref(rc))
+            rects[h] = (rc.left, rc.top, rc.right, rc.bottom)
+            log("  check: editor window %s iconic=%s rect=%s" % (h, bool(u32.IsIconic(h)), rects[h]))
+        # any visible WS_EX_TOPMOST window (not the editor) overlapping an editor rect?
+        found = []
+
+        @ctypes.WINFUNCTYPE(wintypes.BOOL, wintypes.HWND, wintypes.LPARAM)
+        def cb(h, _l):
+            if h in rects or not u32.IsWindowVisible(h) or u32.IsIconic(h):
+                return True
+            if u32.GetWindowLongW(h, -20) & 0x8:   # GWL_EXSTYLE & WS_EX_TOPMOST
+                rc = wintypes.RECT()
+                u32.GetWindowRect(h, ctypes.byref(rc))
+                for e in rects.values():
+                    if rc.left < e[2] and rc.right > e[0] and rc.top < e[3] and rc.bottom > e[1] and (rc.right - rc.left) > 50 and (rc.bottom - rc.top) > 50:
+                        n = u32.GetWindowTextLengthW(h)
+                        b = ctypes.create_unicode_buffer(n + 1)
+                        u32.GetWindowTextW(h, b, n + 1)
+                        found.append("%s '%s' %s" % (h, b.value, (rc.left, rc.top, rc.right, rc.bottom)))
+                        break
+            return True
+
+        u32.EnumWindows(cb, 0)
+        log("  check: topmost windows over the editor rect: %s" % (found or "none"))
     except Exception as e:
         log("  check: window query failed %s" % e)
 
@@ -190,6 +225,8 @@ def main():
     settle = float(argv[argv.index("--settle") + 1]) if "--settle" in argv else 0.8
     done = failed = 0
     consec = 0
+    if raiser:
+        raiser.start()   # runs for the WHOLE run (every capture call and every retry), stopped and re-minimised at the end
     for name, (x, y, z, pitch, yaw) in poses.items():
         path = os.path.join(out, prefix + name + suffix + ".png")
         if os.path.exists(path) and not force:
@@ -202,8 +239,6 @@ def main():
         got = 0
         xf = {"location": {"x": x, "y": y, "z": z}, "rotation": {"pitch": pitch, "yaw": yaw, "roll": 0},
               "scale": {"x": 1, "y": 1, "z": 1}}
-        if raiser:
-            raiser.start()
         try:
             while got < want and fails < MAX_TRIES:
                 try:
@@ -232,10 +267,13 @@ def main():
                 if consec >= 2:
                     log("CIRCUIT BREAKER: 2 consecutive poses failed all tries; aborting the run")
                     editor_check(raiser)
+                    if raiser:
+                        raiser.end(final=True)
                     sys.exit(3)
         finally:
-            if raiser:
-                raiser.end()
+            pass
+    if raiser:
+        raiser.end(final=True)
     log("finished: %d saved, %d missing" % (done, failed))
 
 
