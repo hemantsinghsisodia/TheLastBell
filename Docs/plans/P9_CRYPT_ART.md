@@ -1223,3 +1223,25 @@ This section makes D1.7 (with the D1.11 "D1.7 additions" and the D1.14 "P9-7 add
    - `MI_Aged_Cutlery` and `MI_Aged_Plate_00`: `Metallic` 1.0. First check in `M_LB_Surface` whether `Metallic` multiplies or replaces the ARM B channel; report it.
    - `MI_Aged_Bread` and `MI_Aged_Bread_Slice`: `BrightnessMul` 0.45.
    - Read back and save.
+
+### D1.22 R1-C outcome; R1-B go (lead, 2026-10-28)
+- **R1-C accepted** (5fbef54).
+- **Stained-glass saints:** `T_LB_StainedGlass_Clue` → `MI_Glass_Clue_Saints` (EmissiveIntensity 5.5) on the child `BP_StainedGlassClue_Saints`. The swap diff is clean, and `Order`/`Palette` were kept.
+  - From the nave the panel reads green, red, amber, blue. Robe hues are ≥ 44° apart and robe luma ≥ 0.249.
+  - **Lead review:** it reads clearly as stained glass, with robed saints holding candles and no faces. The owner judges whether it is too bright or clean for the ruined chapel; an aging pass (grime, a cracked pane, lower emissive) is available if asked.
+  - **Still unmeasured:** check (b), the pose from the puzzle candles. It moves to R1-B.
+- **Parchment notes:** `MI_LB_Paper` was reparented to `M_LB_Surface`, and persists after reload.
+  - **Asset-name deviation:** the shipped texture is `T_LB_Parchment_Rot90` (rotated so the script runs along the long edge). The unrotated `T_LB_Parchment` is unused.
+  - `MI_Chapel_PaperOld` now renders brighter, because its `Color` override is orphaned.
+- **`CA_Lining_Ground3_End`:** placed at Z −41…1. **Lead-approved deviation:** the formula assumed the lintel covered the face; it doesn't. The white band is gone.
+- **Aged metal:** `Metallic` is ignored when `bUseARM` is true, and the Fab `AO_R_MT` B channel drives metal. **Accepted:** the cutlery and plate keep the Fab metal mask.
+
+**R1-B additions** (lighting-vfx; run with D1.19 R1-B and the D1.19 addendum bloom item):
+- **H1. Old-paper brightness:** `MI_Chapel_PaperOld`, set `BrightnessMul` 0.6 and read it back.
+- **H2. Unused texture:** check `get_referencers` on `/Game/LastBell/Materials/Textures/T_LB_Parchment`.
+  - If there are zero referencers, delete it with the editor's asset delete, and report the tool used.
+  - Otherwise leave it and report.
+- **H3. Puzzle-candle view of the clue:** capture `r1c_clue_candles` at (8810, 0, 170), pitch 18.66, yaw 94.61, and run the D1.20 step 5(a) strip-hue order check on it (green, red, amber, blue, adjacent hues ≥ 40°, robe luma ≥ 0.20).
+- **H4. Captures:** the notes read dim on the wall (crypt) and hot on the table (sacristy). The R1-B G3 re-aim and the table-light change address both, so capture `r1_note` and `r1_table` after those changes.
+  - For `r1_table`, use the R1-A replacement pose: (8190, −1290, 150), pitch −20.9, yaw −51.84.
+  - For the stair head, use (7960, −1100, 170) looking at (7395, −1100, 50). The D1.19 pose sits inside the door wall.
