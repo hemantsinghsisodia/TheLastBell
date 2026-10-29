@@ -1,7 +1,6 @@
 {
  "generator": "Tools/belltower/gen_tower_layout.py",
  "units": "cm, UE world; rot = [pitch, yaw, roll]; mbounds = mesh-local [min, max]",
- "errata": "D1.11 applied",
  "all_checks_pass": true,
  "counts": {
   "tower": 32,
@@ -162,7 +161,7 @@
   },
   {
    "group": "4 rails",
-   "name": "11 rail bands on the greybox rail planes",
+   "name": "11 rail bands on the greybox rail planes (built rail 8 wide inside the 10 cm plane, core-side face on the plane)",
    "ok": true,
    "detail": "worst deviation 0.000 cm (TWA_FlightRail_F01); limit 0.5"
   },
@@ -266,7 +265,7 @@
    "group": "7 derived",
    "name": "great bell world bounds = X 12315-12525, Y 1895-2105, Z 2640-2860",
    "ok": true,
-   "detail": "sum of deviations 0.000 cm"
+   "detail": "sum of deviations 0.240 cm"
   },
   {
    "group": "7 derived",
@@ -333,6 +332,30 @@
    "name": "L_Tw_Bell outside the SW frame post (X 12267.5-12292.5)",
    "ok": true,
    "detail": "light at [12255.0, 1865.0, 2690.0]"
+  },
+  {
+   "group": "7 derived",
+   "name": "roof panels: local +z (slate normal) world Z > 0.5 and local x runs -X (S), +X (N), +Y (W), -Y (E)",
+   "ok": true,
+   "detail": "min normal Z 0.742"
+  },
+  {
+   "group": "7 derived",
+   "name": "every new-folder mesh named in a record exists in the built-mesh reports (tower 33, cloister 40)",
+   "ok": true,
+   "detail": "all 68 record meshes found"
+  },
+  {
+   "group": "7 derived",
+   "name": "D1.12: all 10 vault bays spring at Z 540 and every corbel top is Z 540",
+   "ok": true,
+   "detail": "vault Z 540..540, corbel tops [540.0]"
+  },
+  {
+   "group": "7 derived",
+   "name": "D1.12: cell leaf back at local y -3 (world Y 2997 on the N wall)",
+   "ok": true,
+   "detail": "leaf back Y 2996.98; frame AABB Y 2992.0..3002.0"
   }
  ],
  "warnings": [
@@ -413,16 +436,56 @@
    ],
    "slots": [
     "MAT_Masonry",
-    "MAT_Trim"
+    "MAT_Trim",
+    "MAT_Rubble"
    ],
    "seed": 1001,
    "pivot": "local (0,0,0) = inner face start, z 0 = stage base; local x along the face, y 0 = inner face / 40 = outer face",
    "ucx": "none",
-   "note": "face W, stage S1 z 0-800; Door Y 1948-2052 (x 448-552), jambs z 0-194 (8 cm chamfers), gabled head apex z 228 at x 500, hood mould 8 proud 15 tall 20 above the head"
+   "note": "face W, stage S1 z 0-800; Door Y 1948-2052 (x 448-552), jambs z 0-194 (8 cm chamfers), gabled head apex z 228 at x 500, hood mould 8 proud 15 tall 20 above the head",
+   "d1_mbounds": [
+    [
+     -10.0,
+     0.0,
+     0.0
+    ],
+    [
+     1010.0,
+     50.0,
+     800.0
+    ]
+   ],
+   "d1_slots": [
+    "MAT_Masonry",
+    "MAT_Trim"
+   ],
+   "built_tris": 7451,
+   "built_ucx": 0
   },
   "SM_LB_Tw_S1_N": {
    "path": "/Game/LastBell/Environments/BellTower/Meshes/SM_LB_Tw_S1_N.SM_LB_Tw_S1_N",
    "mbounds": [
+    [
+     -40.0,
+     0.0,
+     0.0
+    ],
+    [
+     960.0,
+     50.0,
+     800.0
+    ]
+   ],
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble"
+   ],
+   "seed": 1002,
+   "pivot": "local (0,0,0) = inner face start, z 0 = stage base; local x along the face, y 0 = inner face / 40 = outer face",
+   "ucx": "none",
+   "note": "face N, stage S1 z 0-800; Slit F01 at x 460, z 263.6",
+   "d1_mbounds": [
     [
      -10.0,
      0.0,
@@ -434,14 +497,12 @@
      800.0
     ]
    ],
-   "slots": [
+   "d1_slots": [
     "MAT_Masonry",
     "MAT_Trim"
    ],
-   "seed": 1002,
-   "pivot": "local (0,0,0) = inner face start, z 0 = stage base; local x along the face, y 0 = inner face / 40 = outer face",
-   "ucx": "none",
-   "note": "face N, stage S1 z 0-800; Slit F01 at x 460, z 263.6"
+   "built_tris": 4825,
+   "built_ucx": 0
   },
   "SM_LB_Tw_S1_E": {
    "path": "/Game/LastBell/Environments/BellTower/Meshes/SM_LB_Tw_S1_E.SM_LB_Tw_S1_E",
@@ -459,16 +520,56 @@
    ],
    "slots": [
     "MAT_Masonry",
-    "MAT_Trim"
+    "MAT_Trim",
+    "MAT_Rubble"
    ],
    "seed": 1003,
    "pivot": "local (0,0,0) = inner face start, z 0 = stage base; local x along the face, y 0 = inner face / 40 = outer face",
    "ucx": "none",
-   "note": "face E, stage S1 z 0-800; Slit F02 at x 500, z 490.9"
+   "note": "face E, stage S1 z 0-800; Slit F02 at x 500, z 490.9",
+   "d1_mbounds": [
+    [
+     -10.0,
+     0.0,
+     0.0
+    ],
+    [
+     1010.0,
+     50.0,
+     800.0
+    ]
+   ],
+   "d1_slots": [
+    "MAT_Masonry",
+    "MAT_Trim"
+   ],
+   "built_tris": 7016,
+   "built_ucx": 0
   },
   "SM_LB_Tw_S1_S": {
    "path": "/Game/LastBell/Environments/BellTower/Meshes/SM_LB_Tw_S1_S.SM_LB_Tw_S1_S",
    "mbounds": [
+    [
+     -40.0,
+     0.0,
+     0.0
+    ],
+    [
+     960.0,
+     50.0,
+     800.0
+    ]
+   ],
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble"
+   ],
+   "seed": 1004,
+   "pivot": "local (0,0,0) = inner face start, z 0 = stage base; local x along the face, y 0 = inner face / 40 = outer face",
+   "ucx": "none",
+   "note": "face S, stage S1 z 0-800; Slit F03 at x 460, z 718.1",
+   "d1_mbounds": [
     [
      -10.0,
      0.0,
@@ -480,14 +581,12 @@
      800.0
     ]
    ],
-   "slots": [
+   "d1_slots": [
     "MAT_Masonry",
     "MAT_Trim"
    ],
-   "seed": 1004,
-   "pivot": "local (0,0,0) = inner face start, z 0 = stage base; local x along the face, y 0 = inner face / 40 = outer face",
-   "ucx": "none",
-   "note": "face S, stage S1 z 0-800; Slit F03 at x 460, z 718.1"
+   "built_tris": 4789,
+   "built_ucx": 0
   },
   "SM_LB_Tw_S2_W": {
    "path": "/Game/LastBell/Environments/BellTower/Meshes/SM_LB_Tw_S2_W.SM_LB_Tw_S2_W",
@@ -505,16 +604,56 @@
    ],
    "slots": [
     "MAT_Masonry",
-    "MAT_Trim"
+    "MAT_Trim",
+    "MAT_Rubble"
    ],
    "seed": 1005,
    "pivot": "local (0,0,0) = inner face start, z 0 = stage base; local x along the face, y 0 = inner face / 40 = outer face",
    "ucx": "none",
-   "note": "face W, stage S2 z 800-2500; Slit F08 at x 500, z 1054.0 (world 1854)"
+   "note": "face W, stage S2 z 800-2500; Slit F08 at x 500, z 1054.0 (world 1854)",
+   "d1_mbounds": [
+    [
+     -10.0,
+     0.0,
+     0.0
+    ],
+    [
+     1010.0,
+     50.0,
+     1700.0
+    ]
+   ],
+   "d1_slots": [
+    "MAT_Masonry",
+    "MAT_Trim"
+   ],
+   "built_tris": 15729,
+   "built_ucx": 0
   },
   "SM_LB_Tw_S2_N": {
    "path": "/Game/LastBell/Environments/BellTower/Meshes/SM_LB_Tw_S2_N.SM_LB_Tw_S2_N",
    "mbounds": [
+    [
+     -40.0,
+     0.0,
+     0.0
+    ],
+    [
+     960.0,
+     50.0,
+     1700.0
+    ]
+   ],
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble"
+   ],
+   "seed": 1006,
+   "pivot": "local (0,0,0) = inner face start, z 0 = stage base; local x along the face, y 0 = inner face / 40 = outer face",
+   "ucx": "none",
+   "note": "face N, stage S2 z 800-2500; Slits F05 / F09 at x 460, z 372.7 / 1281.8",
+   "d1_mbounds": [
     [
      -10.0,
      0.0,
@@ -526,14 +665,12 @@
      1700.0
     ]
    ],
-   "slots": [
+   "d1_slots": [
     "MAT_Masonry",
     "MAT_Trim"
    ],
-   "seed": 1006,
-   "pivot": "local (0,0,0) = inner face start, z 0 = stage base; local x along the face, y 0 = inner face / 40 = outer face",
-   "ucx": "none",
-   "note": "face N, stage S2 z 800-2500; Slits F05 / F09 at x 460, z 372.7 / 1281.8"
+   "built_tris": 12298,
+   "built_ucx": 0
   },
   "SM_LB_Tw_S2_E": {
    "path": "/Game/LastBell/Environments/BellTower/Meshes/SM_LB_Tw_S2_E.SM_LB_Tw_S2_E",
@@ -551,16 +688,56 @@
    ],
    "slots": [
     "MAT_Masonry",
-    "MAT_Trim"
+    "MAT_Trim",
+    "MAT_Rubble"
    ],
    "seed": 1007,
    "pivot": "local (0,0,0) = inner face start, z 0 = stage base; local x along the face, y 0 = inner face / 40 = outer face",
    "ucx": "none",
-   "note": "face E, stage S2 z 800-2500; Slits F06 / F10 at x 500, z 600.0 / 1509.1"
+   "note": "face E, stage S2 z 800-2500; Slits F06 / F10 at x 500, z 600.0 / 1509.1",
+   "d1_mbounds": [
+    [
+     -10.0,
+     0.0,
+     0.0
+    ],
+    [
+     1010.0,
+     50.0,
+     1700.0
+    ]
+   ],
+   "d1_slots": [
+    "MAT_Masonry",
+    "MAT_Trim"
+   ],
+   "built_tris": 16165,
+   "built_ucx": 0
   },
   "SM_LB_Tw_S2_S": {
    "path": "/Game/LastBell/Environments/BellTower/Meshes/SM_LB_Tw_S2_S.SM_LB_Tw_S2_S",
    "mbounds": [
+    [
+     -40.0,
+     0.0,
+     0.0
+    ],
+    [
+     960.0,
+     50.0,
+     1700.0
+    ]
+   ],
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble"
+   ],
+   "seed": 1008,
+   "pivot": "local (0,0,0) = inner face start, z 0 = stage base; local x along the face, y 0 = inner face / 40 = outer face",
+   "ucx": "none",
+   "note": "face S, stage S2 z 800-2500; Slit F07 at x 460, z 827.3",
+   "d1_mbounds": [
     [
      -10.0,
      0.0,
@@ -572,20 +749,18 @@
      1700.0
     ]
    ],
-   "slots": [
+   "d1_slots": [
     "MAT_Masonry",
     "MAT_Trim"
    ],
-   "seed": 1008,
-   "pivot": "local (0,0,0) = inner face start, z 0 = stage base; local x along the face, y 0 = inner face / 40 = outer face",
-   "ucx": "none",
-   "note": "face S, stage S2 z 800-2500; Slit F07 at x 460, z 827.3"
+   "built_tris": 11552,
+   "built_ucx": 0
   },
   "SM_LB_Tw_S3_W_BrokenSW": {
    "path": "/Game/LastBell/Environments/BellTower/Meshes/SM_LB_Tw_S3_W_BrokenSW.SM_LB_Tw_S3_W_BrokenSW",
    "mbounds": [
     [
-     -15.0,
+     0.0,
      0.0,
      0.0
     ],
@@ -603,11 +778,51 @@
    "seed": 1009,
    "pivot": "local (0,0,0) = inner face start, z 0 = stage base; local x along the face, y 0 = inner face / 40 = outer face",
    "ucx": "none",
-   "note": "face W, stage S3 z 2500-3540; two belfry lancets (130 clear, sill z 200, apex z 762.6); wall top is a jagged stepped break (stepped_profile seed 1003, 6-9 steps)"
+   "note": "face W, stage S3 z 2500-3540; two belfry lancets (130 clear, sill z 200, apex z 762.6); wall top is a jagged stepped break (stepped_profile seed 1003, 6-9 steps)",
+   "d1_mbounds": [
+    [
+     -15.0,
+     0.0,
+     0.0
+    ],
+    [
+     1015.0,
+     55.0,
+     1040.0
+    ]
+   ],
+   "d1_slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble"
+   ],
+   "built_tris": 11274,
+   "built_ucx": 0
   },
   "SM_LB_Tw_S3_N": {
    "path": "/Game/LastBell/Environments/BellTower/Meshes/SM_LB_Tw_S3_N.SM_LB_Tw_S3_N",
    "mbounds": [
+    [
+     -40.0,
+     0.0,
+     0.0
+    ],
+    [
+     960.0,
+     55.0,
+     1040.0
+    ]
+   ],
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble"
+   ],
+   "seed": 1010,
+   "pivot": "local (0,0,0) = inner face start, z 0 = stage base; local x along the face, y 0 = inner face / 40 = outer face",
+   "ucx": "none",
+   "note": "face N, stage S3 z 2500-3540; two belfry lancets (130 clear, sill z 200, apex z 762.6)",
+   "d1_mbounds": [
     [
      -15.0,
      0.0,
@@ -619,14 +834,12 @@
      1040.0
     ]
    ],
-   "slots": [
+   "d1_slots": [
     "MAT_Masonry",
     "MAT_Trim"
    ],
-   "seed": 1010,
-   "pivot": "local (0,0,0) = inner face start, z 0 = stage base; local x along the face, y 0 = inner face / 40 = outer face",
-   "ucx": "none",
-   "note": "face N, stage S3 z 2500-3540; two belfry lancets (130 clear, sill z 200, apex z 762.6)"
+   "built_tris": 7319,
+   "built_ucx": 0
   },
   "SM_LB_Tw_S3_E": {
    "path": "/Game/LastBell/Environments/BellTower/Meshes/SM_LB_Tw_S3_E.SM_LB_Tw_S3_E",
@@ -644,23 +857,42 @@
    ],
    "slots": [
     "MAT_Masonry",
-    "MAT_Trim"
+    "MAT_Trim",
+    "MAT_Rubble"
    ],
    "seed": 1011,
    "pivot": "local (0,0,0) = inner face start, z 0 = stage base; local x along the face, y 0 = inner face / 40 = outer face",
    "ucx": "none",
-   "note": "face E, stage S3 z 2500-3540; two belfry lancets (130 clear, sill z 200, apex z 762.6)"
-  },
-  "SM_LB_Tw_S3_S_BrokenSW": {
-   "path": "/Game/LastBell/Environments/BellTower/Meshes/SM_LB_Tw_S3_S_BrokenSW.SM_LB_Tw_S3_S_BrokenSW",
-   "mbounds": [
+   "note": "face E, stage S3 z 2500-3540; two belfry lancets (130 clear, sill z 200, apex z 762.6)",
+   "d1_mbounds": [
     [
      -15.0,
      0.0,
      0.0
     ],
     [
-     935.0,
+     1015.0,
+     55.0,
+     1040.0
+    ]
+   ],
+   "d1_slots": [
+    "MAT_Masonry",
+    "MAT_Trim"
+   ],
+   "built_tris": 10970,
+   "built_ucx": 0
+  },
+  "SM_LB_Tw_S3_S_BrokenSW": {
+   "path": "/Game/LastBell/Environments/BellTower/Meshes/SM_LB_Tw_S3_S_BrokenSW.SM_LB_Tw_S3_S_BrokenSW",
+   "mbounds": [
+    [
+     -40.0,
+     0.0,
+     0.0
+    ],
+    [
+     920.0,
      55.0,
      1040.0
     ]
@@ -673,11 +905,50 @@
    "seed": 1012,
    "pivot": "local (0,0,0) = inner face start, z 0 = stage base; local x along the face, y 0 = inner face / 40 = outer face",
    "ucx": "none",
-   "note": "face S, stage S3 z 2500-3540; two belfry lancets (130 clear, sill z 200, apex z 762.6); wall top is a jagged stepped break (stepped_profile seed 1004, 6-9 steps)"
+   "note": "face S, stage S3 z 2500-3540; two belfry lancets (130 clear, sill z 200, apex z 762.6); wall top is a jagged stepped break (stepped_profile seed 1004, 6-9 steps)",
+   "d1_mbounds": [
+    [
+     -15.0,
+     0.0,
+     0.0
+    ],
+    [
+     935.0,
+     55.0,
+     1040.0
+    ]
+   ],
+   "d1_slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble"
+   ],
+   "built_tris": 8444,
+   "built_ucx": 0
   },
   "SM_LB_Tw_StairFlight_250x420": {
    "path": "/Game/LastBell/Environments/BellTower/Meshes/SM_LB_Tw_StairFlight_250x420.SM_LB_Tw_StairFlight_250x420",
    "mbounds": [
+    [
+     -10.0,
+     0.0,
+     -8.94
+    ],
+    [
+     430.0,
+     258.0,
+     256.68
+    ]
+   ],
+   "slots": [
+    "MAT_Wood",
+    "MAT_Iron"
+   ],
+   "seed": 1101,
+   "pivot": "flight frame: x along the climb 0-420 (tread i at 30i..30i+30), y core side 0 -> wall side 250, z 0 = flight base",
+   "ucx": "none",
+   "note": "14 oak treads 6 thick (tops 16.2338(i+1)), open risers, 2 stringers, 3 wall brackets",
+   "d1_mbounds": [
     [
      -10.0,
      0.0,
@@ -689,14 +960,12 @@
      257.0
     ]
    ],
-   "slots": [
+   "d1_slots": [
     "MAT_Wood",
     "MAT_Iron"
    ],
-   "seed": 1101,
-   "pivot": "flight frame: x along the climb 0-420 (tread i at 30i..30i+30), y core side 0 -> wall side 250, z 0 = flight base",
-   "ucx": "none",
-   "note": "14 oak treads 6 thick (tops 16.2338(i+1)), open risers, 2 stringers, 3 wall brackets"
+   "built_tris": 968,
+   "built_ucx": 0
   },
   "SM_LB_Tw_StairFlight_250x420_Closed": {
    "path": "/Game/LastBell/Environments/BellTower/Meshes/SM_LB_Tw_StairFlight_250x420_Closed.SM_LB_Tw_StairFlight_250x420_Closed",
@@ -708,8 +977,8 @@
     ],
     [
      430.0,
-     258.0,
-     257.0
+     250.0,
+     256.68
     ]
    ],
    "slots": [
@@ -719,7 +988,25 @@
    "seed": 1101,
    "pivot": "flight frame",
    "ucx": "none",
-   "note": "T1 plus riser boards and side panels down to z 0 (F01 only)"
+   "note": "T1 plus riser boards and side panels down to z 0 (F01 only)",
+   "d1_mbounds": [
+    [
+     -10.0,
+     0.0,
+     0.0
+    ],
+    [
+     430.0,
+     258.0,
+     257.0
+    ]
+   ],
+   "d1_slots": [
+    "MAT_Wood",
+    "MAT_Iron"
+   ],
+   "built_tris": 1320,
+   "built_ucx": 0
   },
   "SM_LB_Tw_StairFlight_250x420_BrokenA": {
    "path": "/Game/LastBell/Environments/BellTower/Meshes/SM_LB_Tw_StairFlight_250x420_BrokenA.SM_LB_Tw_StairFlight_250x420_BrokenA",
@@ -727,12 +1014,12 @@
     [
      -10.0,
      0.0,
-     -10.0
+     -8.94
     ],
     [
      430.0,
      258.0,
-     257.0
+     256.68
     ]
    ],
    "slots": [
@@ -742,11 +1029,8 @@
    "seed": 1102,
    "pivot": "flight frame",
    "ucx": "none",
-   "note": "tread 6 lacks y 210-250, tread 10 split at y 120 (F03, F09)"
-  },
-  "SM_LB_Tw_StairFlight_250x420_BrokenB": {
-   "path": "/Game/LastBell/Environments/BellTower/Meshes/SM_LB_Tw_StairFlight_250x420_BrokenB.SM_LB_Tw_StairFlight_250x420_BrokenB",
-   "mbounds": [
+   "note": "tread 6 lacks y 210-250, tread 10 split at y 120 (F03, F09)",
+   "d1_mbounds": [
     [
      -10.0,
      0.0,
@@ -758,6 +1042,27 @@
      257.0
     ]
    ],
+   "d1_slots": [
+    "MAT_Wood",
+    "MAT_Iron"
+   ],
+   "built_tris": 1196,
+   "built_ucx": 0
+  },
+  "SM_LB_Tw_StairFlight_250x420_BrokenB": {
+   "path": "/Game/LastBell/Environments/BellTower/Meshes/SM_LB_Tw_StairFlight_250x420_BrokenB.SM_LB_Tw_StairFlight_250x420_BrokenB",
+   "mbounds": [
+    [
+     -10.0,
+     0.0,
+     -8.94
+    ],
+    [
+     430.0,
+     258.0,
+     256.68
+    ]
+   ],
    "slots": [
     "MAT_Wood",
     "MAT_Iron"
@@ -765,11 +1070,48 @@
    "seed": 1103,
    "pivot": "flight frame",
    "ucx": "none",
-   "note": "tread 3 lacks y 210-250, tread 9 cracked at y 80 (F06)"
+   "note": "tread 3 lacks y 210-250, tread 9 cracked at y 80 (F06)",
+   "d1_mbounds": [
+    [
+     -10.0,
+     0.0,
+     -10.0
+    ],
+    [
+     430.0,
+     258.0,
+     257.0
+    ]
+   ],
+   "d1_slots": [
+    "MAT_Wood",
+    "MAT_Iron"
+   ],
+   "built_tris": 1196,
+   "built_ucx": 0
   },
   "SM_LB_Tw_FlightRail_420": {
    "path": "/Game/LastBell/Environments/BellTower/Meshes/SM_LB_Tw_FlightRail_420.SM_LB_Tw_FlightRail_420",
    "mbounds": [
+    [
+     0.0,
+     0.0,
+     59.42
+    ],
+    [
+     420.0,
+     8.0,
+     341.32
+    ]
+   ],
+   "slots": [
+    "MAT_Wood"
+   ],
+   "seed": 1104,
+   "pivot": "flight frame; rail band y 0-10 (envelope of the 8-wide posts and handrail)",
+   "ucx": "none",
+   "note": "posts 8x8 at x 140 and 280, handrail top z = 16.2338(x/30+1)+98, mid-rail 50 lower",
+   "d1_mbounds": [
     [
      0.0,
      0.0,
@@ -781,13 +1123,11 @@
      341.5
     ]
    ],
-   "slots": [
+   "d1_slots": [
     "MAT_Wood"
    ],
-   "seed": 1104,
-   "pivot": "flight frame; rail band y 0-10 (envelope of the 8-wide posts and handrail)",
-   "ucx": "none",
-   "note": "posts 8x8 at x 140 and 280, handrail top z = 16.2338(x/30+1)+98, mid-rail 50 lower"
+   "built_tris": 176,
+   "built_ucx": 0
   },
   "SM_LB_Tw_Landing_250": {
    "path": "/Game/LastBell/Environments/BellTower/Meshes/SM_LB_Tw_Landing_250.SM_LB_Tw_Landing_250",
@@ -795,7 +1135,7 @@
     [
      0.0,
      0.0,
-     -60.0
+     -59.76
     ],
     [
      250.0,
@@ -810,7 +1150,25 @@
    "seed": 1105,
    "pivot": "top-surface min corner (top z = 0); x 0-250, y 0-250; x = 250 and y = 250 are the wall sides",
    "ucx": "none",
-   "note": "boards 5 thick, 4 joists, 2+2 stone corbels (z -60..-25) at the wall sides"
+   "note": "boards 5 thick, 4 joists, 2+2 stone corbels (z -60..-25) at the wall sides",
+   "d1_mbounds": [
+    [
+     0.0,
+     0.0,
+     -60.0
+    ],
+    [
+     250.0,
+     250.0,
+     0.0
+    ]
+   ],
+   "d1_slots": [
+    "MAT_Wood",
+    "MAT_Masonry"
+   ],
+   "built_tris": 856,
+   "built_ucx": 0
   },
   "SM_LB_Tw_ShaftBase_420x420x450": {
    "path": "/Game/LastBell/Environments/BellTower/Meshes/SM_LB_Tw_ShaftBase_420x420x450.SM_LB_Tw_ShaftBase_420x420x450",
@@ -835,7 +1193,27 @@
    "seed": 1106,
    "pivot": "bottom centre",
    "ucx": "none (the invisible Tw_Core collides)",
-   "note": "hollow square 420 outer, 35 thick walls, Z 0-450, coping z 430-450 projecting 3 inward only, rubble floor z 0-40"
+   "note": "hollow square 420 outer, 35 thick walls, Z 0-450, coping z 430-450 projecting 3 inward only, rubble floor z 0-40",
+   "d1_mbounds": [
+    [
+     -210.0,
+     -210.0,
+     0.0
+    ],
+    [
+     210.0,
+     210.0,
+     450.0
+    ]
+   ],
+   "d1_slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble",
+    "MAT_Wood"
+   ],
+   "built_tris": 6934,
+   "built_ucx": 0
   },
   "SM_LB_Tw_ShaftPost_20x20x2015": {
    "path": "/Game/LastBell/Environments/BellTower/Meshes/SM_LB_Tw_ShaftPost_20x20x2015.SM_LB_Tw_ShaftPost_20x20x2015",
@@ -858,7 +1236,25 @@
    "seed": 1107,
    "pivot": "bottom centre",
    "ucx": "none",
-   "note": "oak post with iron splice plates at z 670 and 1340 and a cap plate"
+   "note": "oak post with iron splice plates at z 670 and 1340 and a cap plate",
+   "d1_mbounds": [
+    [
+     -10.0,
+     -10.0,
+     0.0
+    ],
+    [
+     10.0,
+     10.0,
+     2015.0
+    ]
+   ],
+   "d1_slots": [
+    "MAT_Wood",
+    "MAT_Iron"
+   ],
+   "built_tris": 184,
+   "built_ucx": 0
   },
   "SM_LB_Tw_BelfryFloor": {
    "path": "/Game/LastBell/Environments/BellTower/Meshes/SM_LB_Tw_BelfryFloor.SM_LB_Tw_BelfryFloor",
@@ -866,7 +1262,7 @@
     [
      0.0,
      0.0,
-     -35.0
+     -35.4
     ],
     [
      680.0,
@@ -881,7 +1277,25 @@
    "seed": 1108,
    "pivot": "local (0,0,0) = world (12040, 1540, 2500), top at z 0",
    "ucx": "none",
-   "note": "W slab x0-250 y0-920, N slab x250-670 y670-920, core top x250-670 y250-670, rope hole x490-520 y280-310, beams to x 680"
+   "note": "W slab x0-250 y0-920, N slab x250-670 y670-920, core top x250-670 y250-670, rope hole x490-520 y280-310, beams to x 680",
+   "d1_mbounds": [
+    [
+     0.0,
+     0.0,
+     -35.0
+    ],
+    [
+     680.0,
+     920.0,
+     0.0
+    ]
+   ],
+   "d1_slots": [
+    "MAT_Wood",
+    "MAT_Iron"
+   ],
+   "built_tris": 4048,
+   "built_ucx": 0
   },
   "SM_LB_Tw_TopRail_670": {
    "path": "/Game/LastBell/Environments/BellTower/Meshes/SM_LB_Tw_TopRail_670.SM_LB_Tw_TopRail_670",
@@ -903,7 +1317,24 @@
    "seed": null,
    "pivot": "rail start on its centre line at floor level; x along the rail",
    "ucx": "none",
-   "note": "posts 10x10 every <= 120, handrail top 98, mid-rail top 50"
+   "note": "posts 10x10 every <= 120, handrail top 98, mid-rail top 50",
+   "d1_mbounds": [
+    [
+     0.0,
+     -5.0,
+     0.0
+    ],
+    [
+     670.0,
+     5.0,
+     98.0
+    ]
+   ],
+   "d1_slots": [
+    "MAT_Wood"
+   ],
+   "built_tris": 396,
+   "built_ucx": 0
   },
   "SM_LB_Tw_TopRail_420": {
    "path": "/Game/LastBell/Environments/BellTower/Meshes/SM_LB_Tw_TopRail_420.SM_LB_Tw_TopRail_420",
@@ -925,14 +1356,31 @@
    "seed": null,
    "pivot": "rail start on its centre line at floor level; x along the rail",
    "ucx": "none",
-   "note": "as _670"
+   "note": "as _670",
+   "d1_mbounds": [
+    [
+     0.0,
+     -5.0,
+     0.0
+    ],
+    [
+     420.0,
+     5.0,
+     98.0
+    ]
+   ],
+   "d1_slots": [
+    "MAT_Wood"
+   ],
+   "built_tris": 308,
+   "built_ucx": 0
   },
   "SM_LB_Tw_Partition_250x455": {
    "path": "/Game/LastBell/Environments/BellTower/Meshes/SM_LB_Tw_Partition_250x455.SM_LB_Tw_Partition_250x455",
    "mbounds": [
     [
      0.0,
-     0.0,
+     -0.0,
      0.0
     ],
     [
@@ -948,7 +1396,25 @@
    "seed": 1109,
    "pivot": "min corner; x 250 wide, y thickness 0-4, z 455",
    "ucx": "none",
-   "note": "vertical boards, 2 rails, one board missing at x 150-170"
+   "note": "vertical boards, 2 rails, one board missing at x 150-170",
+   "d1_mbounds": [
+    [
+     0.0,
+     0.0,
+     0.0
+    ],
+    [
+     250.0,
+     4.0,
+     455.0
+    ]
+   ],
+   "d1_slots": [
+    "MAT_Wood",
+    "MAT_Iron"
+   ],
+   "built_tris": 2344,
+   "built_ucx": 0
   },
   "SM_LB_Tw_Louvre_130x450": {
    "path": "/Game/LastBell/Environments/BellTower/Meshes/SM_LB_Tw_Louvre_130x450.SM_LB_Tw_Louvre_130x450",
@@ -970,7 +1436,24 @@
    "seed": null,
    "pivot": "bottom centre of the opening on the inner face (local y 0)",
    "ucx": "none",
-   "note": "nine 130x30x3 boards sloping 40 deg, spaced 50 from z 25, two side cleats"
+   "note": "nine 130x30x3 boards sloping 40 deg, spaced 50 from z 25, two side cleats",
+   "d1_mbounds": [
+    [
+     -65.0,
+     0.0,
+     0.0
+    ],
+    [
+     65.0,
+     30.0,
+     450.0
+    ]
+   ],
+   "d1_slots": [
+    "MAT_Wood"
+   ],
+   "built_tris": 484,
+   "built_ucx": 0
   },
   "SM_LB_Tw_Louvre_130x450_Broken": {
    "path": "/Game/LastBell/Environments/BellTower/Meshes/SM_LB_Tw_Louvre_130x450_Broken.SM_LB_Tw_Louvre_130x450_Broken",
@@ -992,11 +1475,48 @@
    "seed": null,
    "pivot": "as the intact louvre",
    "ucx": "none",
-   "note": "boards 3 and 4 missing, board 5 hangs at 70 deg"
+   "note": "boards 3 and 4 missing, board 5 hangs at 70 deg",
+   "d1_mbounds": [
+    [
+     -65.0,
+     0.0,
+     0.0
+    ],
+    [
+     65.0,
+     30.0,
+     450.0
+    ]
+   ],
+   "d1_slots": [
+    "MAT_Wood"
+   ],
+   "built_tris": 396,
+   "built_ucx": 0
   },
   "SM_LB_Tw_BellFrame_A": {
    "path": "/Game/LastBell/Environments/BellTower/Meshes/SM_LB_Tw_BellFrame_A.SM_LB_Tw_BellFrame_A",
    "mbounds": [
+    [
+     -165.0,
+     -150.0,
+     0.0
+    ],
+    [
+     165.0,
+     150.0,
+     380.0
+    ]
+   ],
+   "slots": [
+    "MAT_Wood",
+    "MAT_Iron"
+   ],
+   "seed": 1110,
+   "pivot": "floor point under the bell axis",
+   "ucx": "4 boxes (the posts only)",
+   "note": "4 oak posts 25x25 z 0-365 at (+-140, +-135); sills x -165..165; head sills z 335-365; cross-ties; braces; bearing blocks to z 380",
+   "d1_mbounds": [
     [
      -165.0,
      -147.5,
@@ -1008,18 +1528,36 @@
      380.0
     ]
    ],
-   "slots": [
+   "d1_slots": [
     "MAT_Wood",
     "MAT_Iron"
    ],
-   "seed": 1110,
-   "pivot": "floor point under the bell axis",
-   "ucx": "4 boxes (the posts only)",
-   "note": "4 oak posts 25x25 z 0-365 at (+-140, +-135); sills x -165..165; head sills z 335-365; cross-ties; braces; bearing blocks to z 380"
+   "built_tris": 1104,
+   "built_ucx": 4
   },
   "SM_LB_Tw_BellHeadstock_A": {
    "path": "/Game/LastBell/Environments/BellTower/Meshes/SM_LB_Tw_BellHeadstock_A.SM_LB_Tw_BellHeadstock_A",
    "mbounds": [
+    [
+     -130.0,
+     -178.0,
+     -134.46
+    ],
+    [
+     134.0,
+     170.0,
+     130.0
+    ]
+   ],
+   "slots": [
+    "MAT_Wood",
+    "MAT_Iron"
+   ],
+   "seed": 1111,
+   "pivot": "axle centre",
+   "ucx": "none",
+   "note": "headstock 35x35 along y -150..150, gudgeons, straps, bell wheel O 260 in the plane y -170 (6 spokes)",
+   "d1_mbounds": [
     [
      -130.0,
      -175.0,
@@ -1031,18 +1569,36 @@
      130.0
     ]
    ],
-   "slots": [
+   "d1_slots": [
     "MAT_Wood",
     "MAT_Iron"
    ],
-   "seed": 1111,
-   "pivot": "axle centre",
-   "ucx": "none",
-   "note": "headstock 35x35 along y -150..150, gudgeons, straps, bell wheel O 260 in the plane y -170 (6 spokes)"
+   "built_tris": 3920,
+   "built_ucx": 0
   },
   "SM_LB_Prop_GreatBell_A": {
    "path": "/Game/LastBell/Environments/BellTower/Meshes/SM_LB_Prop_GreatBell_A.SM_LB_Prop_GreatBell_A",
    "mbounds": [
+    [
+     -104.76,
+     -105.0,
+     -220.0
+    ],
+    [
+     105.0,
+     105.0,
+     -0.0
+    ]
+   ],
+   "slots": [
+    "MAT_Bronze",
+    "MAT_Iron"
+   ],
+   "seed": 1112,
+   "pivot": "crown top centre, the bell hangs along -z",
+   "ucx": "1 convex hull of the outer profile",
+   "note": "lathe: canons z 0..-20, crown O110 at -20, shoulder O130 at -35, waist O150 at -120, sound bow O196 at -200, lip O210 at -220; crack on -x, V-chip",
+   "d1_mbounds": [
     [
      -105.0,
      -105.0,
@@ -1054,18 +1610,36 @@
      0.0
     ]
    ],
-   "slots": [
+   "d1_slots": [
     "MAT_Bronze",
     "MAT_Iron"
    ],
-   "seed": 1112,
-   "pivot": "crown top centre, the bell hangs along -z",
-   "ucx": "1 convex hull of the outer profile",
-   "note": "lathe: canons z 0..-20, crown O110 at -20, shoulder O130 at -35, waist O150 at -120, sound bow O196 at -200, lip O210 at -220; crack on -x, V-chip"
+   "built_tris": 13931,
+   "built_ucx": 1
   },
   "SM_LB_Prop_BellRope_2610": {
    "path": "/Game/LastBell/Environments/BellTower/Meshes/SM_LB_Prop_BellRope_2610.SM_LB_Prop_BellRope_2610",
    "mbounds": [
+    [
+     -4.39,
+     -4.63,
+     -2610.0
+    ],
+    [
+     5.11,
+     4.63,
+     0.0
+    ]
+   ],
+   "slots": [
+    "MAT_Rope",
+    "MAT_Sally"
+   ],
+   "seed": null,
+   "pivot": "top",
+   "ucx": "none",
+   "note": "O 3.5 rope z 0..-2610 with 2 cm sway, sally O 9 x 100 at z -2410..-2510",
+   "d1_mbounds": [
     [
      -6.5,
      -6.5,
@@ -1077,18 +1651,37 @@
      0.0
     ]
    ],
-   "slots": [
+   "d1_slots": [
     "MAT_Rope",
     "MAT_Sally"
    ],
-   "seed": null,
-   "pivot": "top",
-   "ucx": "none",
-   "note": "O 3.5 rope z 0..-2610 with 2 cm sway, sally O 9 x 100 at z -2410..-2510"
+   "built_tris": 3384,
+   "built_ucx": 0
   },
   "SM_LB_Tw_Roof_BrokenSW": {
    "path": "/Game/LastBell/Environments/BellTower/Meshes/SM_LB_Tw_Roof_BrokenSW.SM_LB_Tw_Roof_BrokenSW",
    "mbounds": [
+    [
+     -525.56,
+     -525.61,
+     -294.03
+    ],
+    [
+     525.41,
+     525.33,
+     1284.76
+    ]
+   ],
+   "slots": [
+    "MAT_Slate",
+    "MAT_Wood",
+    "MAT_Iron"
+   ],
+   "seed": 1113,
+   "pivot": "bottom centre at the wall top: world (12500, 2000, 3540)",
+   "ucx": "none",
+   "note": "pyramid eaves +-525 at z -10 to apex z 1200, cross finial 90 tall bent 20 deg toward +x; SW quarter missing (-x face y -525..-100, -y face x -525..-100, up to z 860); hanging rafter to z -300",
+   "d1_mbounds": [
     [
      -525.0,
      -525.0,
@@ -1100,15 +1693,13 @@
      1292.0
     ]
    ],
-   "slots": [
+   "d1_slots": [
     "MAT_Slate",
     "MAT_Wood",
     "MAT_Iron"
    ],
-   "seed": 1113,
-   "pivot": "bottom centre at the wall top: world (12500, 2000, 3540)",
-   "ucx": "none",
-   "note": "pyramid eaves +-525 at z -10 to apex z 1200, cross finial 90 tall bent 20 deg toward +x; SW quarter missing (-x face y -525..-100, -y face x -525..-100, up to z 860); hanging rafter to z -300"
+   "built_tris": 50516,
+   "built_ucx": 0
   },
   "SM_LB_Cl_Wall40_400x1300_A": {
    "path": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_Wall40_400x1300_A.SM_LB_Cl_Wall40_400x1300_A",
@@ -1126,12 +1717,31 @@
    ],
    "slots": [
     "MAT_Masonry",
-    "MAT_Trim"
+    "MAT_Trim",
+    "MAT_Rubble"
    ],
    "seed": 1201,
    "pivot": "bottom-left-back; local x along the face, y 0 = inner face, 40 = outer; drip course z 1210-1230 proj 6 on the inner face",
    "ucx": "none",
-   "note": "C1"
+   "note": "C1",
+   "d1_mbounds": [
+    [
+     0.0,
+     -6.0,
+     0.0
+    ],
+    [
+     400.0,
+     40.0,
+     1300.0
+    ]
+   ],
+   "d1_slots": [
+    "MAT_Masonry",
+    "MAT_Trim"
+   ],
+   "built_tris": 3880,
+   "built_ucx": 0
   },
   "SM_LB_Cl_Wall40_400x1300_B": {
    "path": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_Wall40_400x1300_B.SM_LB_Cl_Wall40_400x1300_B",
@@ -1149,12 +1759,31 @@
    ],
    "slots": [
     "MAT_Masonry",
-    "MAT_Trim"
+    "MAT_Trim",
+    "MAT_Rubble"
    ],
    "seed": 1202,
    "pivot": "bottom-left-back; local x along the face, y 0 = inner face, 40 = outer; drip course z 1210-1230 proj 6 on the inner face",
    "ucx": "none",
-   "note": "C1"
+   "note": "C1",
+   "d1_mbounds": [
+    [
+     0.0,
+     -6.0,
+     0.0
+    ],
+    [
+     400.0,
+     40.0,
+     1300.0
+    ]
+   ],
+   "d1_slots": [
+    "MAT_Masonry",
+    "MAT_Trim"
+   ],
+   "built_tris": 3706,
+   "built_ucx": 0
   },
   "SM_LB_Cl_Wall40_100x1300": {
    "path": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_Wall40_100x1300.SM_LB_Cl_Wall40_100x1300",
@@ -1172,12 +1801,31 @@
    ],
    "slots": [
     "MAT_Masonry",
-    "MAT_Trim"
+    "MAT_Trim",
+    "MAT_Rubble"
    ],
    "seed": 1203,
    "pivot": "as C1",
    "ucx": "none",
-   "note": "C1 (used only when a run is < 300 long)"
+   "note": "C1 (used only when a run is < 300 long)",
+   "d1_mbounds": [
+    [
+     0.0,
+     -6.0,
+     0.0
+    ],
+    [
+     100.0,
+     40.0,
+     1300.0
+    ]
+   ],
+   "d1_slots": [
+    "MAT_Masonry",
+    "MAT_Trim"
+   ],
+   "built_tris": 918,
+   "built_ucx": 0
   },
   "SM_LB_Cl_Wall40_400x800_A": {
    "path": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_Wall40_400x800_A.SM_LB_Cl_Wall40_400x800_A",
@@ -1195,12 +1843,31 @@
    ],
    "slots": [
     "MAT_Masonry",
-    "MAT_Trim"
+    "MAT_Trim",
+    "MAT_Rubble"
    ],
    "seed": 1204,
    "pivot": "as C1",
    "ucx": "none",
-   "note": "C2 passage, no drip course"
+   "note": "C2 passage, no drip course",
+   "d1_mbounds": [
+    [
+     0.0,
+     0.0,
+     0.0
+    ],
+    [
+     400.0,
+     40.0,
+     800.0
+    ]
+   ],
+   "d1_slots": [
+    "MAT_Masonry",
+    "MAT_Trim"
+   ],
+   "built_tris": 2478,
+   "built_ucx": 0
   },
   "SM_LB_Cl_Wall40_400x800_B": {
    "path": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_Wall40_400x800_B.SM_LB_Cl_Wall40_400x800_B",
@@ -1218,12 +1885,31 @@
    ],
    "slots": [
     "MAT_Masonry",
-    "MAT_Trim"
+    "MAT_Trim",
+    "MAT_Rubble"
    ],
    "seed": 1205,
    "pivot": "as C1",
    "ucx": "none",
-   "note": "C2 passage, no drip course"
+   "note": "C2 passage, no drip course",
+   "d1_mbounds": [
+    [
+     0.0,
+     0.0,
+     0.0
+    ],
+    [
+     400.0,
+     40.0,
+     800.0
+    ]
+   ],
+   "d1_slots": [
+    "MAT_Masonry",
+    "MAT_Trim"
+   ],
+   "built_tris": 2444,
+   "built_ucx": 0
   },
   "SM_LB_Cl_Wall40_100x800": {
    "path": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_Wall40_100x800.SM_LB_Cl_Wall40_100x800",
@@ -1241,12 +1927,31 @@
    ],
    "slots": [
     "MAT_Masonry",
-    "MAT_Trim"
+    "MAT_Trim",
+    "MAT_Rubble"
    ],
    "seed": 1206,
    "pivot": "as C1",
    "ucx": "none",
-   "note": "C2"
+   "note": "C2",
+   "d1_mbounds": [
+    [
+     0.0,
+     0.0,
+     0.0
+    ],
+    [
+     100.0,
+     40.0,
+     800.0
+    ]
+   ],
+   "d1_slots": [
+    "MAT_Masonry",
+    "MAT_Trim"
+   ],
+   "built_tris": 512,
+   "built_ucx": 0
   },
   "SM_LB_Cl_Wall40_400x450": {
    "path": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_Wall40_400x450.SM_LB_Cl_Wall40_400x450",
@@ -1264,12 +1969,31 @@
    ],
    "slots": [
     "MAT_Masonry",
-    "MAT_Trim"
+    "MAT_Trim",
+    "MAT_Rubble"
    ],
    "seed": 1207,
    "pivot": "as C1",
    "ucx": "none",
-   "note": "C3 stair-house"
+   "note": "C3 stair-house",
+   "d1_mbounds": [
+    [
+     0.0,
+     0.0,
+     0.0
+    ],
+    [
+     400.0,
+     40.0,
+     450.0
+    ]
+   ],
+   "d1_slots": [
+    "MAT_Masonry",
+    "MAT_Trim"
+   ],
+   "built_tris": 1476,
+   "built_ucx": 0
   },
   "SM_LB_Cl_Wall40_100x450": {
    "path": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_Wall40_100x450.SM_LB_Cl_Wall40_100x450",
@@ -1287,16 +2011,56 @@
    ],
    "slots": [
     "MAT_Masonry",
-    "MAT_Trim"
+    "MAT_Trim",
+    "MAT_Rubble"
    ],
    "seed": 1208,
    "pivot": "as C1",
    "ucx": "none",
-   "note": "C3"
+   "note": "C3",
+   "d1_mbounds": [
+    [
+     0.0,
+     0.0,
+     0.0
+    ],
+    [
+     100.0,
+     40.0,
+     450.0
+    ]
+   ],
+   "d1_slots": [
+    "MAT_Masonry",
+    "MAT_Trim"
+   ],
+   "built_tris": 280,
+   "built_ucx": 0
   },
   "SM_LB_Cl_Archway_500x40x1300": {
    "path": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_Archway_500x40x1300.SM_LB_Cl_Archway_500x40x1300",
    "mbounds": [
+    [
+     0.0,
+     -6.0,
+     300.0
+    ],
+    [
+     500.0,
+     40.0,
+     1300.0
+    ]
+   ],
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble"
+   ],
+   "seed": 1209,
+   "pivot": "bottom-left-back; local y 0 on the cloister side",
+   "ucx": "none",
+   "note": "C4 four-centred arch, springing z 300 at x 0 and 500, apex z 420, voussoir ring MAT_Trim, drip course on the cloister face",
+   "d1_mbounds": [
     [
      0.0,
      -6.0,
@@ -1308,18 +2072,37 @@
      1300.0
     ]
    ],
-   "slots": [
+   "d1_slots": [
     "MAT_Masonry",
     "MAT_Trim"
    ],
-   "seed": 1209,
-   "pivot": "bottom-left-back; local y 0 on the cloister side",
-   "ucx": "none",
-   "note": "C4 four-centred arch, springing z 300 at x 0 and 500, apex z 420, voussoir ring MAT_Trim, drip course on the cloister face"
+   "built_tris": 5156,
+   "built_ucx": 0
   },
   "SM_LB_Cl_Archway_300x40x1300": {
    "path": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_Archway_300x40x1300.SM_LB_Cl_Archway_300x40x1300",
    "mbounds": [
+    [
+     0.0,
+     -6.0,
+     330.0
+    ],
+    [
+     300.0,
+     40.0,
+     1300.0
+    ]
+   ],
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble"
+   ],
+   "seed": 1210,
+   "pivot": "as C4",
+   "ucx": "none",
+   "note": "C5 springing z 330, apex z 450",
+   "d1_mbounds": [
     [
      0.0,
      -6.0,
@@ -1331,14 +2114,12 @@
      1300.0
     ]
    ],
-   "slots": [
+   "d1_slots": [
     "MAT_Masonry",
     "MAT_Trim"
    ],
-   "seed": 1210,
-   "pivot": "as C4",
-   "ucx": "none",
-   "note": "C5 springing z 330, apex z 450"
+   "built_tris": 3479,
+   "built_ucx": 0
   },
   "SM_LB_Cl_Pier_80x80x640": {
    "path": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_Pier_80x80x640.SM_LB_Cl_Pier_80x80x640",
@@ -1356,12 +2137,31 @@
    ],
    "slots": [
     "MAT_Masonry",
-    "MAT_Trim"
+    "MAT_Trim",
+    "MAT_Rubble"
    ],
    "seed": 1211,
    "pivot": "bottom centre",
    "ucx": "none",
-   "note": "C6: shaft z 25-300, base moulding z 0-25 (+4), bell capital z 300-330 (+8), wall block to z 600, coping z 600-620 (+5); the table gives the top at z 620 although the name says 640"
+   "note": "C6: shaft z 25-300, base moulding z 0-25 (+4), bell capital z 300-330 (+8), wall block to z 600, coping z 600-620 (+5); the table gives the top at z 620 although the name says 640",
+   "d1_mbounds": [
+    [
+     -48.0,
+     -48.0,
+     0.0
+    ],
+    [
+     48.0,
+     48.0,
+     620.0
+    ]
+   ],
+   "d1_slots": [
+    "MAT_Masonry",
+    "MAT_Trim"
+   ],
+   "built_tris": 788,
+   "built_ucx": 0
   },
   "SM_LB_Cl_PierCorner_130x80x640": {
    "path": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_PierCorner_130x80x640.SM_LB_Cl_PierCorner_130x80x640",
@@ -1379,12 +2179,31 @@
    ],
    "slots": [
     "MAT_Masonry",
-    "MAT_Trim"
+    "MAT_Trim",
+    "MAT_Rubble"
    ],
    "seed": 1212,
    "pivot": "bottom centre of the 130x80 plan",
    "ucx": "none",
-   "note": "C7"
+   "note": "C7",
+   "d1_mbounds": [
+    [
+     -73.0,
+     -48.0,
+     0.0
+    ],
+    [
+     73.0,
+     48.0,
+     620.0
+    ]
+   ],
+   "d1_slots": [
+    "MAT_Masonry",
+    "MAT_Trim"
+   ],
+   "built_tris": 898,
+   "built_ucx": 0
   },
   "SM_LB_Cl_ArcadeArch_120x80": {
    "path": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_ArcadeArch_120x80.SM_LB_Cl_ArcadeArch_120x80",
@@ -1402,12 +2221,31 @@
    ],
    "slots": [
     "MAT_Masonry",
-    "MAT_Trim"
+    "MAT_Trim",
+    "MAT_Rubble"
    ],
    "seed": 1213,
    "pivot": "local (0,0,0) = left springing point on the pier line; x 0..span, y -40..40 (+5 coping), z 0..290 (world 330-620)",
    "ucx": "none",
-   "note": "C8 two-centred pointed arch, radius 0.8 span, voussoir ring MAT_Trim, spandrel to z 270, coping z 270-290 (+5)"
+   "note": "C8 two-centred pointed arch, radius 0.8 span, voussoir ring MAT_Trim, spandrel to z 270, coping z 270-290 (+5)",
+   "d1_mbounds": [
+    [
+     0.0,
+     -45.0,
+     0.0
+    ],
+    [
+     120.0,
+     45.0,
+     290.0
+    ]
+   ],
+   "d1_slots": [
+    "MAT_Masonry",
+    "MAT_Trim"
+   ],
+   "built_tris": 898,
+   "built_ucx": 0
   },
   "SM_LB_Cl_ArcadeArch_170x80": {
    "path": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_ArcadeArch_170x80.SM_LB_Cl_ArcadeArch_170x80",
@@ -1425,12 +2263,31 @@
    ],
    "slots": [
     "MAT_Masonry",
-    "MAT_Trim"
+    "MAT_Trim",
+    "MAT_Rubble"
    ],
    "seed": 1214,
    "pivot": "local (0,0,0) = left springing point on the pier line; x 0..span, y -40..40 (+5 coping), z 0..290 (world 330-620)",
    "ucx": "none",
-   "note": "C8 two-centred pointed arch, radius 0.8 span, voussoir ring MAT_Trim, spandrel to z 270, coping z 270-290 (+5)"
+   "note": "C8 two-centred pointed arch, radius 0.8 span, voussoir ring MAT_Trim, spandrel to z 270, coping z 270-290 (+5)",
+   "d1_mbounds": [
+    [
+     0.0,
+     -45.0,
+     0.0
+    ],
+    [
+     170.0,
+     45.0,
+     290.0
+    ]
+   ],
+   "d1_slots": [
+    "MAT_Masonry",
+    "MAT_Trim"
+   ],
+   "built_tris": 1146,
+   "built_ucx": 0
   },
   "SM_LB_Cl_ArcadeArch_220x80": {
    "path": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_ArcadeArch_220x80.SM_LB_Cl_ArcadeArch_220x80",
@@ -1448,12 +2305,31 @@
    ],
    "slots": [
     "MAT_Masonry",
-    "MAT_Trim"
+    "MAT_Trim",
+    "MAT_Rubble"
    ],
    "seed": 1215,
    "pivot": "local (0,0,0) = left springing point on the pier line; x 0..span, y -40..40 (+5 coping), z 0..290 (world 330-620)",
    "ucx": "none",
-   "note": "C8 two-centred pointed arch, radius 0.8 span, voussoir ring MAT_Trim, spandrel to z 270, coping z 270-290 (+5)"
+   "note": "C8 two-centred pointed arch, radius 0.8 span, voussoir ring MAT_Trim, spandrel to z 270, coping z 270-290 (+5)",
+   "d1_mbounds": [
+    [
+     0.0,
+     -45.0,
+     0.0
+    ],
+    [
+     220.0,
+     45.0,
+     290.0
+    ]
+   ],
+   "d1_slots": [
+    "MAT_Masonry",
+    "MAT_Trim"
+   ],
+   "built_tris": 1370,
+   "built_ucx": 0
   },
   "SM_LB_Cl_ArcadeArch_270x80": {
    "path": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_ArcadeArch_270x80.SM_LB_Cl_ArcadeArch_270x80",
@@ -1471,12 +2347,31 @@
    ],
    "slots": [
     "MAT_Masonry",
-    "MAT_Trim"
+    "MAT_Trim",
+    "MAT_Rubble"
    ],
    "seed": 1216,
    "pivot": "local (0,0,0) = left springing point on the pier line; x 0..span, y -40..40 (+5 coping), z 0..290 (world 330-620)",
    "ucx": "none",
-   "note": "C8 two-centred pointed arch, radius 0.8 span, voussoir ring MAT_Trim, spandrel to z 270, coping z 270-290 (+5)"
+   "note": "C8 two-centred pointed arch, radius 0.8 span, voussoir ring MAT_Trim, spandrel to z 270, coping z 270-290 (+5)",
+   "d1_mbounds": [
+    [
+     0.0,
+     -45.0,
+     0.0
+    ],
+    [
+     270.0,
+     45.0,
+     290.0
+    ]
+   ],
+   "d1_slots": [
+    "MAT_Masonry",
+    "MAT_Trim"
+   ],
+   "built_tris": 1672,
+   "built_ucx": 0
   },
   "SM_LB_Cl_GarthWall_1100x100": {
    "path": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_GarthWall_1100x100.SM_LB_Cl_GarthWall_1100x100",
@@ -1494,12 +2389,31 @@
    ],
    "slots": [
     "MAT_Masonry",
-    "MAT_Trim"
+    "MAT_Trim",
+    "MAT_Rubble"
    ],
    "seed": 1217,
    "pivot": "local y 0 = face toward the walk; body to y +15 (garth side); coping z 88-100 spans y -4..+30",
    "ucx": "none",
-   "note": "C9"
+   "note": "C9",
+   "d1_mbounds": [
+    [
+     0.0,
+     -4.0,
+     0.0
+    ],
+    [
+     1100.0,
+     30.0,
+     100.0
+    ]
+   ],
+   "d1_slots": [
+    "MAT_Masonry",
+    "MAT_Trim"
+   ],
+   "built_tris": 878,
+   "built_ucx": 0
   },
   "SM_LB_Cl_GarthWall_800x100": {
    "path": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_GarthWall_800x100.SM_LB_Cl_GarthWall_800x100",
@@ -1517,16 +2431,54 @@
    ],
    "slots": [
     "MAT_Masonry",
-    "MAT_Trim"
+    "MAT_Trim",
+    "MAT_Rubble"
    ],
    "seed": 1218,
    "pivot": "as C9",
    "ucx": "none",
-   "note": "C9"
+   "note": "C9",
+   "d1_mbounds": [
+    [
+     0.0,
+     -4.0,
+     0.0
+    ],
+    [
+     800.0,
+     30.0,
+     100.0
+    ]
+   ],
+   "d1_slots": [
+    "MAT_Masonry",
+    "MAT_Trim"
+   ],
+   "built_tris": 678,
+   "built_ucx": 0
   },
   "SM_LB_Cl_GarthBed_1100x800": {
    "path": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_GarthBed_1100x800.SM_LB_Cl_GarthBed_1100x800",
    "mbounds": [
+    [
+     0.0,
+     0.0,
+     -8.0
+    ],
+    [
+     1100.0,
+     800.0,
+     9.8
+    ]
+   ],
+   "slots": [
+    "MAT_Earth"
+   ],
+   "seed": 1219,
+   "pivot": "min corner, z 0 = garth top",
+   "ucx": "none",
+   "note": "C10 earth surface with 2-10 cm mounds and six shallow grave hollows (bed-local centres in extras.hollows)",
+   "d1_mbounds": [
     [
      0.0,
      0.0,
@@ -1538,13 +2490,11 @@
      10.0
     ]
    ],
-   "slots": [
+   "d1_slots": [
     "MAT_Earth"
    ],
-   "seed": 1219,
-   "pivot": "min corner, z 0 = garth top",
-   "ucx": "none",
-   "note": "C10 earth surface with 2-10 cm mounds and six shallow grave hollows (bed-local centres in extras.hollows)"
+   "built_tris": 13280,
+   "built_ucx": 0
   },
   "SM_LB_Cl_GraveSlab_200x80": {
    "path": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_GraveSlab_200x80.SM_LB_Cl_GraveSlab_200x80",
@@ -1561,16 +2511,56 @@
     ]
    ],
    "slots": [
-    "MAT_Masonry"
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble"
    ],
    "seed": 1220,
    "pivot": "bottom centre (ASSUMED: C11 gives no pivot, D1 convention for props)",
    "ucx": "none",
-   "note": "C11 slab 200x80x8 with chamfers and a worn cross relief"
+   "note": "C11 slab 200x80x8 with chamfers and a worn cross relief",
+   "d1_mbounds": [
+    [
+     -100.0,
+     -40.0,
+     0.0
+    ],
+    [
+     100.0,
+     40.0,
+     8.0
+    ]
+   ],
+   "d1_slots": [
+    "MAT_Masonry"
+   ],
+   "built_tris": 152,
+   "built_ucx": 0
   },
   "SM_LB_Cl_GraveCross_60": {
    "path": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_GraveCross_60.SM_LB_Cl_GraveCross_60",
    "mbounds": [
+    [
+     -17.0,
+     -4.0,
+     0.0
+    ],
+    [
+     17.0,
+     4.0,
+     60.0
+    ]
+   ],
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble"
+   ],
+   "seed": 1221,
+   "pivot": "bottom centre (ASSUMED)",
+   "ucx": "none",
+   "note": "C11 small stone cross 60 tall, 8 thick (arm span assumed 36)",
+   "d1_mbounds": [
     [
      -18.0,
      -4.0,
@@ -1582,13 +2572,11 @@
      60.0
     ]
    ],
-   "slots": [
+   "d1_slots": [
     "MAT_Masonry"
    ],
-   "seed": 1221,
-   "pivot": "bottom centre (ASSUMED)",
-   "ucx": "none",
-   "note": "C11 small stone cross 60 tall, 8 thick (arm span assumed 36)"
+   "built_tris": 70,
+   "built_ucx": 0
   },
   "SM_LB_Cl_GarthCross_350": {
    "path": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_GarthCross_350.SM_LB_Cl_GarthCross_350",
@@ -1605,12 +2593,31 @@
     ]
    ],
    "slots": [
-    "MAT_Masonry"
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble"
    ],
    "seed": 1222,
    "pivot": "bottom centre (ASSUMED)",
    "ucx": "none",
-   "note": "C11 stepped base 120x120x20 + 90x90x20, chamfered shaft 24x24 to z 290, cross head 90 wide"
+   "note": "C11 stepped base 120x120x20 + 90x90x20, chamfered shaft 24x24 to z 290, cross head 90 wide",
+   "d1_mbounds": [
+    [
+     -60.0,
+     -60.0,
+     0.0
+    ],
+    [
+     60.0,
+     60.0,
+     350.0
+    ]
+   ],
+   "d1_slots": [
+    "MAT_Masonry"
+   ],
+   "built_tris": 248,
+   "built_ucx": 0
   },
   "SM_LB_Cl_Vault_Barrel_830x640": {
    "path": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_Vault_Barrel_830x640.SM_LB_Cl_Vault_Barrel_830x640",
@@ -1623,17 +2630,36 @@
     [
      640.0,
      830.0,
-     365.0
+     340.0
     ]
    ],
    "slots": [
     "MAT_Masonry",
-    "MAT_Trim"
+    "MAT_Trim",
+    "MAT_Rubble"
    ],
    "seed": 1225,
    "pivot": "min corner at the springing level; name = span x length; local x along the walk (length), y across (span)",
    "ucx": "none",
-   "note": "C12 four-centred barrel, soffit rise 340 (+25 shell), transverse ribs at x 0, L/2, L"
+   "note": "C12 four-centred barrel, soffit rise 340 (+25 shell), transverse ribs at x 0, L/2, L",
+   "d1_mbounds": [
+    [
+     0.0,
+     0.0,
+     0.0
+    ],
+    [
+     640.0,
+     830.0,
+     365.0
+    ]
+   ],
+   "d1_slots": [
+    "MAT_Masonry",
+    "MAT_Trim"
+   ],
+   "built_tris": 3012,
+   "built_ucx": 0
   },
   "SM_LB_Cl_Vault_Barrel_770x640": {
    "path": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_Vault_Barrel_770x640.SM_LB_Cl_Vault_Barrel_770x640",
@@ -1646,17 +2672,36 @@
     [
      640.0,
      770.0,
-     365.0
+     340.0
     ]
    ],
    "slots": [
     "MAT_Masonry",
-    "MAT_Trim"
+    "MAT_Trim",
+    "MAT_Rubble"
    ],
    "seed": 1226,
    "pivot": "min corner at the springing level; name = span x length; local x along the walk (length), y across (span)",
    "ucx": "none",
-   "note": "C12 four-centred barrel, soffit rise 340 (+25 shell), transverse ribs at x 0, L/2, L"
+   "note": "C12 four-centred barrel, soffit rise 340 (+25 shell), transverse ribs at x 0, L/2, L",
+   "d1_mbounds": [
+    [
+     0.0,
+     0.0,
+     0.0
+    ],
+    [
+     640.0,
+     770.0,
+     365.0
+    ]
+   ],
+   "d1_slots": [
+    "MAT_Masonry",
+    "MAT_Trim"
+   ],
+   "built_tris": 3012,
+   "built_ucx": 0
   },
   "SM_LB_Cl_Vault_Barrel_770x640_Broken": {
    "path": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_Vault_Barrel_770x640_Broken.SM_LB_Cl_Vault_Barrel_770x640_Broken",
@@ -1669,17 +2714,36 @@
     [
      640.0,
      770.0,
-     365.0
+     340.0
     ]
    ],
    "slots": [
     "MAT_Masonry",
-    "MAT_Trim"
+    "MAT_Trim",
+    "MAT_Rubble"
    ],
    "seed": 1227,
    "pivot": "min corner at the springing level; name = span x length; local x along the walk (length), y across (span)",
    "ucx": "none",
-   "note": "C12 four-centred barrel, soffit rise 340 (+25 shell), transverse ribs at x 0, L/2, L; hole x 50-600 and snapped mid rib"
+   "note": "C12 four-centred barrel, soffit rise 340 (+25 shell), transverse ribs at x 0, L/2, L; hole x 50-600 and snapped mid rib",
+   "d1_mbounds": [
+    [
+     0.0,
+     0.0,
+     0.0
+    ],
+    [
+     640.0,
+     770.0,
+     365.0
+    ]
+   ],
+   "d1_slots": [
+    "MAT_Masonry",
+    "MAT_Trim"
+   ],
+   "built_tris": 3304,
+   "built_ucx": 0
   },
   "SM_LB_Cl_Vault_Barrel_770x980": {
    "path": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_Vault_Barrel_770x980.SM_LB_Cl_Vault_Barrel_770x980",
@@ -1692,17 +2756,36 @@
     [
      980.0,
      770.0,
-     365.0
+     340.0
     ]
    ],
    "slots": [
     "MAT_Masonry",
-    "MAT_Trim"
+    "MAT_Trim",
+    "MAT_Rubble"
    ],
    "seed": 1228,
    "pivot": "min corner at the springing level; name = span x length; local x along the walk (length), y across (span)",
    "ucx": "none",
-   "note": "C12 four-centred barrel, soffit rise 340 (+25 shell), transverse ribs at x 0, L/2, L"
+   "note": "C12 four-centred barrel, soffit rise 340 (+25 shell), transverse ribs at x 0, L/2, L",
+   "d1_mbounds": [
+    [
+     0.0,
+     0.0,
+     0.0
+    ],
+    [
+     980.0,
+     770.0,
+     365.0
+    ]
+   ],
+   "d1_slots": [
+    "MAT_Masonry",
+    "MAT_Trim"
+   ],
+   "built_tris": 3012,
+   "built_ucx": 0
   },
   "SM_LB_Cl_Vault_Barrel_570x980": {
    "path": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_Vault_Barrel_570x980.SM_LB_Cl_Vault_Barrel_570x980",
@@ -1715,17 +2798,36 @@
     [
      980.0,
      570.0,
-     365.0
+     340.0
     ]
    ],
    "slots": [
     "MAT_Masonry",
-    "MAT_Trim"
+    "MAT_Trim",
+    "MAT_Rubble"
    ],
    "seed": 1229,
    "pivot": "min corner at the springing level; name = span x length; local x along the walk (length), y across (span)",
    "ucx": "none",
-   "note": "C12 four-centred barrel, soffit rise 340 (+25 shell), transverse ribs at x 0, L/2, L"
+   "note": "C12 four-centred barrel, soffit rise 340 (+25 shell), transverse ribs at x 0, L/2, L",
+   "d1_mbounds": [
+    [
+     0.0,
+     0.0,
+     0.0
+    ],
+    [
+     980.0,
+     570.0,
+     365.0
+    ]
+   ],
+   "d1_slots": [
+    "MAT_Masonry",
+    "MAT_Trim"
+   ],
+   "built_tris": 3012,
+   "built_ucx": 0
   },
   "SM_LB_Cl_Vault_Groin_770x830": {
    "path": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_Vault_Groin_770x830.SM_LB_Cl_Vault_Groin_770x830",
@@ -1738,17 +2840,36 @@
     [
      770.0,
      830.0,
-     365.0
+     340.0
     ]
    ],
    "slots": [
     "MAT_Masonry",
-    "MAT_Trim"
+    "MAT_Trim",
+    "MAT_Rubble"
    ],
    "seed": 1232,
    "pivot": "min corner at the springing level; local x span x, y span y",
    "ucx": "none",
-   "note": "C13 groin = two perpendicular barrels clipped to the square, diagonal and wall ribs"
+   "note": "C13 groin = two perpendicular barrels clipped to the square, diagonal and wall ribs",
+   "d1_mbounds": [
+    [
+     0.0,
+     0.0,
+     0.0
+    ],
+    [
+     770.0,
+     830.0,
+     365.0
+    ]
+   ],
+   "d1_slots": [
+    "MAT_Masonry",
+    "MAT_Trim"
+   ],
+   "built_tris": 17816,
+   "built_ucx": 0
   },
   "SM_LB_Cl_Vault_Groin_570x830": {
    "path": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_Vault_Groin_570x830.SM_LB_Cl_Vault_Groin_570x830",
@@ -1761,17 +2882,36 @@
     [
      570.0,
      830.0,
-     365.0
+     340.0
     ]
    ],
    "slots": [
     "MAT_Masonry",
-    "MAT_Trim"
+    "MAT_Trim",
+    "MAT_Rubble"
    ],
    "seed": 1233,
    "pivot": "min corner at the springing level; local x span x, y span y",
    "ucx": "none",
-   "note": "C13 groin = two perpendicular barrels clipped to the square, diagonal and wall ribs"
+   "note": "C13 groin = two perpendicular barrels clipped to the square, diagonal and wall ribs",
+   "d1_mbounds": [
+    [
+     0.0,
+     0.0,
+     0.0
+    ],
+    [
+     570.0,
+     830.0,
+     365.0
+    ]
+   ],
+   "d1_slots": [
+    "MAT_Masonry",
+    "MAT_Trim"
+   ],
+   "built_tris": 18288,
+   "built_ucx": 0
   },
   "SM_LB_Cl_Vault_Groin_770x770": {
    "path": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_Vault_Groin_770x770.SM_LB_Cl_Vault_Groin_770x770",
@@ -1784,17 +2924,36 @@
     [
      770.0,
      770.0,
-     365.0
+     340.0
     ]
    ],
    "slots": [
     "MAT_Masonry",
-    "MAT_Trim"
+    "MAT_Trim",
+    "MAT_Rubble"
    ],
    "seed": 1234,
    "pivot": "min corner at the springing level; local x span x, y span y",
    "ucx": "none",
-   "note": "C13 groin = two perpendicular barrels clipped to the square, diagonal and wall ribs"
+   "note": "C13 groin = two perpendicular barrels clipped to the square, diagonal and wall ribs",
+   "d1_mbounds": [
+    [
+     0.0,
+     0.0,
+     0.0
+    ],
+    [
+     770.0,
+     770.0,
+     365.0
+    ]
+   ],
+   "d1_slots": [
+    "MAT_Masonry",
+    "MAT_Trim"
+   ],
+   "built_tris": 16516,
+   "built_ucx": 0
   },
   "SM_LB_Cl_Vault_Groin_570x770": {
    "path": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_Vault_Groin_570x770.SM_LB_Cl_Vault_Groin_570x770",
@@ -1807,17 +2966,36 @@
     [
      570.0,
      770.0,
-     365.0
+     340.0
     ]
    ],
    "slots": [
     "MAT_Masonry",
-    "MAT_Trim"
+    "MAT_Trim",
+    "MAT_Rubble"
    ],
    "seed": 1235,
    "pivot": "min corner at the springing level; local x span x, y span y",
    "ucx": "none",
-   "note": "C13 groin = two perpendicular barrels clipped to the square, diagonal and wall ribs"
+   "note": "C13 groin = two perpendicular barrels clipped to the square, diagonal and wall ribs",
+   "d1_mbounds": [
+    [
+     0.0,
+     0.0,
+     0.0
+    ],
+    [
+     570.0,
+     770.0,
+     365.0
+    ]
+   ],
+   "d1_slots": [
+    "MAT_Masonry",
+    "MAT_Trim"
+   ],
+   "built_tris": 17864,
+   "built_ucx": 0
   },
   "SM_LB_Cl_LeanTo_1000x1050": {
    "path": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_LeanTo_1000x1050.SM_LB_Cl_LeanTo_1000x1050",
@@ -1830,7 +3008,7 @@
     [
      1000.0,
      1050.0,
-     9.0
+     9.3
     ]
    ],
    "slots": [
@@ -1840,11 +3018,49 @@
    "seed": 1236,
    "pivot": "eaves-line start; local x along the eaves, y up the slope in the panel plane, z the panel normal",
    "ucx": "none",
-   "note": "C14 slates 6 on battens, rafters 12x15 at 60 c/c below"
+   "note": "C14 slates 6 on battens, rafters 12x15 at 60 c/c below",
+   "d1_mbounds": [
+    [
+     0.0,
+     0.0,
+     -15.0
+    ],
+    [
+     1000.0,
+     1050.0,
+     9.0
+    ]
+   ],
+   "d1_slots": [
+    "MAT_Slate",
+    "MAT_Wood"
+   ],
+   "built_tris": 21516,
+   "built_ucx": 0
   },
   "SM_LB_Cl_LeanTo_1000x1050_Hole": {
    "path": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_LeanTo_1000x1050_Hole.SM_LB_Cl_LeanTo_1000x1050_Hole",
    "mbounds": [
+    [
+     0.0,
+     0.0,
+     -93.52
+    ],
+    [
+     1000.0,
+     1050.0,
+     9.3
+    ]
+   ],
+   "slots": [
+    "MAT_Slate",
+    "MAT_Wood"
+   ],
+   "seed": 1237,
+   "pivot": "as C14",
+   "ucx": "none",
+   "note": "C14 hole over x 150-850, y 0-800, broken battens, 3 snapped rafters (two stubs hanging 40-80)",
+   "d1_mbounds": [
     [
      0.0,
      0.0,
@@ -1856,18 +3072,37 @@
      9.0
     ]
    ],
-   "slots": [
+   "d1_slots": [
     "MAT_Slate",
     "MAT_Wood"
    ],
-   "seed": 1237,
-   "pivot": "as C14",
-   "ucx": "none",
-   "note": "C14 hole over x 150-850, y 0-800, broken battens, 3 snapped rafters (two stubs hanging 40-80)"
+   "built_tris": 12324,
+   "built_ucx": 0
   },
   "SM_LB_Cl_CellDoorFrame_150x270": {
    "path": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_CellDoorFrame_150x270.SM_LB_Cl_CellDoorFrame_150x270",
    "mbounds": [
+    [
+     -75.0,
+     -8.0,
+     0.0
+    ],
+    [
+     75.0,
+     2.0,
+     270.0
+    ]
+   ],
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble"
+   ],
+   "seed": 1238,
+   "pivot": "bottom-left; local y 0 = wall face, frame projects to y -8",
+   "ucx": "none",
+   "note": "C15 surround 150x270, 20 jambs, straight-sided pointed head (shoulders z 220, apex 250), 110x250 opening, back panel at y +2",
+   "d1_mbounds": [
     [
      0.0,
      -8.0,
@@ -1879,14 +3114,12 @@
      270.0
     ]
    ],
-   "slots": [
+   "d1_slots": [
     "MAT_Masonry",
     "MAT_Rubble"
    ],
-   "seed": 1238,
-   "pivot": "bottom-left; local y 0 = wall face, frame projects to y -8",
-   "ucx": "none",
-   "note": "C15 surround 150x270, 20 jambs, straight-sided pointed head (shoulders z 220, apex 250), 110x250 opening, back panel at y +2"
+   "built_tris": 656,
+   "built_ucx": 0
   },
   "SM_LB_Cl_StairHouseGable_380x40x650": {
    "path": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_StairHouseGable_380x40x650.SM_LB_Cl_StairHouseGable_380x40x650",
@@ -1904,16 +3137,55 @@
    ],
    "slots": [
     "MAT_Masonry",
-    "MAT_Trim"
+    "MAT_Trim",
+    "MAT_Rubble"
    ],
    "seed": 1239,
    "pivot": "as the wall pieces (inner face at local y 0)",
    "ucx": "none",
-   "note": "C16 triangular top from z 450 at the ends to 650 at the centre"
+   "note": "C16 triangular top from z 450 at the ends to 650 at the centre",
+   "d1_mbounds": [
+    [
+     0.0,
+     0.0,
+     0.0
+    ],
+    [
+     380.0,
+     40.0,
+     650.0
+    ]
+   ],
+   "d1_slots": [
+    "MAT_Masonry",
+    "MAT_Trim"
+   ],
+   "built_tris": 1896,
+   "built_ucx": 0
   },
   "SM_LB_Cl_StairHouseRoof_420x640": {
    "path": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_StairHouseRoof_420x640.SM_LB_Cl_StairHouseRoof_420x640",
    "mbounds": [
+    [
+     -0.27,
+     0.0,
+     -17.4
+    ],
+    [
+     420.32,
+     640.0,
+     200.0
+    ]
+   ],
+   "slots": [
+    "MAT_Slate",
+    "MAT_Wood"
+   ],
+   "seed": 1240,
+   "pivot": "min corner at the eaves level",
+   "ucx": "none",
+   "note": "C17 pitched roof, ridge along local y at x 210 z 200, 20 overhangs",
+   "d1_mbounds": [
     [
      0.0,
      0.0,
@@ -1925,14 +3197,12 @@
      208.0
     ]
    ],
-   "slots": [
+   "d1_slots": [
     "MAT_Slate",
     "MAT_Wood"
    ],
-   "seed": 1240,
-   "pivot": "min corner at the eaves level",
-   "ucx": "none",
-   "note": "C17 pitched roof, ridge along local y at x 210 z 200, 20 overhangs"
+   "built_tris": 8336,
+   "built_ucx": 0
   },
   "SM_LB_Prop_SmallBell_A": {
    "path": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Prop_SmallBell_A.SM_LB_Prop_SmallBell_A",
@@ -1956,11 +3226,50 @@
    "seed": 1301,
    "pivot": "crown top, hangs along -z",
    "ucx": "1 convex hull",
-   "note": "M1 lathe: lip O24 at -28, sound bow O22 at -25, waist O16 at -14, crown O10 at -3; loop z 0..4; painted band z -8..-5 (MAT_Band)"
+   "note": "M1 lathe: lip O24 at -28, sound bow O22 at -25, waist O16 at -14, crown O10 at -3; loop z 0..4; painted band z -8..-5 (MAT_Band)",
+   "d1_mbounds": [
+    [
+     -12.0,
+     -12.0,
+     -28.0
+    ],
+    [
+     12.0,
+     12.0,
+     4.0
+    ]
+   ],
+   "d1_slots": [
+    "MAT_Bronze",
+    "MAT_Iron",
+    "MAT_Band"
+   ],
+   "built_tris": 1628,
+   "built_ucx": 1
   },
   "SM_LB_Prop_SmallBellBracket_A": {
    "path": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Prop_SmallBellBracket_A.SM_LB_Prop_SmallBellBracket_A",
    "mbounds": [
+    [
+     0.0,
+     -11.0,
+     -25.0
+    ],
+    [
+     34.0,
+     11.0,
+     22.0
+    ]
+   ],
+   "slots": [
+    "MAT_Iron",
+    "MAT_Wood"
+   ],
+   "seed": 1302,
+   "pivot": "back face of the wall plate at the arm axis height, local +x out of the wall",
+   "ucx": "none",
+   "note": "M2",
+   "d1_mbounds": [
     [
      0.0,
      -10.0,
@@ -1972,14 +3281,12 @@
      22.0
     ]
    ],
-   "slots": [
+   "d1_slots": [
     "MAT_Iron",
     "MAT_Wood"
    ],
-   "seed": 1302,
-   "pivot": "back face of the wall plate at the arm axis height, local +x out of the wall",
-   "ucx": "none",
-   "note": "M2"
+   "built_tris": 892,
+   "built_ucx": 0
   },
   "SM_LB_Prop_BellPlaque_A": {
    "path": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Prop_BellPlaque_A.SM_LB_Prop_BellPlaque_A",
@@ -2001,7 +3308,24 @@
    "seed": 1303,
    "pivot": "back centre, front faces +x",
    "ucx": "none",
-   "note": "M3 plaque 4x34x34"
+   "note": "M3 plaque 4x34x34",
+   "d1_mbounds": [
+    [
+     0.0,
+     -17.0,
+     -17.0
+    ],
+    [
+     4.0,
+     17.0,
+     17.0
+    ]
+   ],
+   "d1_slots": [
+    "MAT_Trim"
+   ],
+   "built_tris": 220,
+   "built_ucx": 0
   },
   "SM_LB_Prop_InscriptionTablet_A": {
    "path": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Prop_InscriptionTablet_A.SM_LB_Prop_InscriptionTablet_A",
@@ -2023,9 +3347,31 @@
    "seed": 1304,
    "pivot": "back centre, front faces +x",
    "ucx": "none",
-   "note": "M4 tablet 4x120x30 (x 2.5 root scale = 10x300x75)"
+   "note": "M4 tablet 4x120x30 (x 2.5 root scale = 10x300x75)",
+   "d1_mbounds": [
+    [
+     0.0,
+     -60.0,
+     -15.0
+    ],
+    [
+     4.0,
+     60.0,
+     15.0
+    ]
+   ],
+   "d1_slots": [
+    "MAT_Trim"
+   ],
+   "built_tris": 220,
+   "built_ucx": 0
   }
  },
+ "built_but_unplaced": [
+  "SM_LB_Tw_S3_S",
+  "SM_LB_Tw_S3_W"
+ ],
+ "errata": "D1.11 + D1.12 applied",
  "existing_meshes": {
   "/Engine/BasicShapes/Cube.Cube": {
    "mbounds": [
@@ -3125,7 +4471,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "stage": "S1",
@@ -3166,29 +4513,30 @@
    "folder": "BellTower/Art/Shell",
    "mbounds": [
     [
-     -10.0,
+     -40.0,
      0.0,
      0.0
     ],
     [
-     930.0,
+     960.0,
      50.0,
      800.0
     ]
    ],
    "aabb_min": [
-    12030.0,
+    12000.0,
     2460.0,
     0.0
    ],
    "aabb_max": [
-    12970.0,
+    13000.0,
     2510.0,
     800.0
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "stage": "S1",
@@ -3251,7 +4599,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "stage": "S1",
@@ -3292,29 +4641,30 @@
    "folder": "BellTower/Art/Shell",
    "mbounds": [
     [
-     -10.0,
+     -40.0,
      0.0,
      0.0
     ],
     [
-     930.0,
+     960.0,
      50.0,
      800.0
     ]
    ],
    "aabb_min": [
-    12030.0,
+    12000.0,
     1490.0,
     0.0
    ],
    "aabb_max": [
-    12970.0,
+    13000.0,
     1540.0,
     800.0
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "stage": "S1",
@@ -3377,7 +4727,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "stage": "S2",
@@ -3418,29 +4769,30 @@
    "folder": "BellTower/Art/Shell",
    "mbounds": [
     [
-     -10.0,
+     -40.0,
      0.0,
      0.0
     ],
     [
-     930.0,
+     960.0,
      50.0,
      1700.0
     ]
    ],
    "aabb_min": [
-    12030.0,
+    12000.0,
     2460.0,
     800.0
    ],
    "aabb_max": [
-    12970.0,
+    13000.0,
     2510.0,
     2500.0
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "stage": "S2",
@@ -3503,7 +4855,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "stage": "S2",
@@ -3544,29 +4897,30 @@
    "folder": "BellTower/Art/Shell",
    "mbounds": [
     [
-     -10.0,
+     -40.0,
      0.0,
      0.0
     ],
     [
-     930.0,
+     960.0,
      50.0,
      1700.0
     ]
    ],
    "aabb_min": [
-    12030.0,
+    12000.0,
     1490.0,
     800.0
    ],
    "aabb_max": [
-    12970.0,
+    13000.0,
     1540.0,
     2500.0
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "stage": "S2",
@@ -3607,7 +4961,7 @@
    "folder": "BellTower/Art/Shell",
    "mbounds": [
     [
-     -15.0,
+     0.0,
      0.0,
      0.0
     ],
@@ -3619,7 +4973,7 @@
    ],
    "aabb_min": [
     11985.0,
-    1485.0,
+    1500.0,
     2500.0
    ],
    "aabb_max": [
@@ -3674,29 +5028,30 @@
    "folder": "BellTower/Art/Shell",
    "mbounds": [
     [
-     -15.0,
+     -40.0,
      0.0,
      0.0
     ],
     [
-     935.0,
+     960.0,
      55.0,
      1040.0
     ]
    ],
    "aabb_min": [
-    12025.0,
+    12000.0,
     2460.0,
     2500.0
    ],
    "aabb_max": [
-    12975.0,
+    13000.0,
     2515.0,
     3540.0
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "stage": "S3",
@@ -3762,7 +5117,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "stage": "S3",
@@ -3806,23 +5162,23 @@
    "folder": "BellTower/Art/Shell",
    "mbounds": [
     [
-     -15.0,
+     -40.0,
      0.0,
      0.0
     ],
     [
-     935.0,
+     920.0,
      55.0,
      1040.0
     ]
    ],
    "aabb_min": [
-    12025.0,
+    12040.0,
     1485.0,
     2500.0
    ],
    "aabb_max": [
-    12975.0,
+    13000.0,
     1540.0,
     3540.0
    ],
@@ -3929,8 +5285,8 @@
     ],
     [
      430.0,
-     258.0,
-     257.0
+     250.0,
+     256.68
     ]
    ],
    "aabb_min": [
@@ -3940,8 +5296,8 @@
    ],
    "aabb_max": [
     12720.0,
-    2468.0,
-    257.0
+    2460.0,
+    256.68
    ],
    "mi_slots": {
     "MAT_Wood": "MI_Chapel_Wood_Old",
@@ -3980,23 +5336,23 @@
     [
      0.0,
      0.0,
-     58.2
+     59.42
     ],
     [
      420.0,
-     10.0,
-     341.5
+     8.0,
+     341.32
     ]
    ],
    "aabb_min": [
     12290.0,
     2210.0,
-    58.2
+    59.42
    ],
    "aabb_max": [
     12710.0,
-    2220.0,
-    341.5
+    2218.0,
+    341.32
    ],
    "mi_slots": {
     "MAT_Wood": "MI_Chapel_Wood_Old"
@@ -4032,23 +5388,23 @@
     [
      -10.0,
      0.0,
-     -10.0
+     -8.94
     ],
     [
      430.0,
      258.0,
-     257.0
+     256.68
     ]
    ],
    "aabb_min": [
     12710.0,
     1780.0,
-    217.27
+    218.33
    ],
    "aabb_max": [
     12968.0,
     2220.0,
-    484.27
+    483.95
    ],
    "mi_slots": {
     "MAT_Wood": "MI_Chapel_Wood_Old",
@@ -4087,23 +5443,23 @@
     [
      0.0,
      0.0,
-     58.2
+     59.42
     ],
     [
      420.0,
-     10.0,
-     341.5
+     8.0,
+     341.32
     ]
    ],
    "aabb_min": [
     12710.0,
     1790.0,
-    285.47
+    286.69
    ],
    "aabb_max": [
-    12720.0,
+    12718.0,
     2210.0,
-    568.77
+    568.59
    ],
    "mi_slots": {
     "MAT_Wood": "MI_Chapel_Wood_Old"
@@ -4139,23 +5495,23 @@
     [
      -10.0,
      0.0,
-     -10.0
+     -8.94
     ],
     [
      430.0,
      258.0,
-     257.0
+     256.68
     ]
    ],
    "aabb_min": [
     12280.0,
     1532.0,
-    444.55
+    445.61
    ],
    "aabb_max": [
     12720.0,
     1790.0,
-    711.55
+    711.23
    ],
    "mi_slots": {
     "MAT_Wood": "MI_Chapel_Wood_Old",
@@ -4194,23 +5550,23 @@
     [
      0.0,
      0.0,
-     58.2
+     59.42
     ],
     [
      420.0,
-     10.0,
-     341.5
+     8.0,
+     341.32
     ]
    ],
    "aabb_min": [
     12290.0,
-    1780.0,
-    512.75
+    1782.0,
+    513.97
    ],
    "aabb_max": [
     12710.0,
     1790.0,
-    796.05
+    795.87
    ],
    "mi_slots": {
     "MAT_Wood": "MI_Chapel_Wood_Old"
@@ -4246,23 +5602,23 @@
     [
      -10.0,
      0.0,
-     -10.0
+     -8.94
     ],
     [
      430.0,
      258.0,
-     257.0
+     256.68
     ]
    ],
    "aabb_min": [
     12032.0,
     1780.0,
-    671.82
+    672.88
    ],
    "aabb_max": [
     12290.0,
     2220.0,
-    938.82
+    938.5
    ],
    "mi_slots": {
     "MAT_Wood": "MI_Chapel_Wood_Old",
@@ -4301,23 +5657,23 @@
     [
      0.0,
      0.0,
-     58.2
+     59.42
     ],
     [
      420.0,
-     10.0,
-     341.5
+     8.0,
+     341.32
     ]
    ],
    "aabb_min": [
-    12280.0,
+    12282.0,
     1790.0,
-    740.02
+    741.24
    ],
    "aabb_max": [
     12290.0,
     2210.0,
-    1023.32
+    1023.14
    ],
    "mi_slots": {
     "MAT_Wood": "MI_Chapel_Wood_Old"
@@ -4353,23 +5709,23 @@
     [
      -10.0,
      0.0,
-     -10.0
+     -8.94
     ],
     [
      430.0,
      258.0,
-     257.0
+     256.68
     ]
    ],
    "aabb_min": [
     12280.0,
     2210.0,
-    899.09
+    900.15
    ],
    "aabb_max": [
     12720.0,
     2468.0,
-    1166.09
+    1165.77
    ],
    "mi_slots": {
     "MAT_Wood": "MI_Chapel_Wood_Old",
@@ -4408,23 +5764,23 @@
     [
      0.0,
      0.0,
-     58.2
+     59.42
     ],
     [
      420.0,
-     10.0,
-     341.5
+     8.0,
+     341.32
     ]
    ],
    "aabb_min": [
     12290.0,
     2210.0,
-    967.29
+    968.51
    ],
    "aabb_max": [
     12710.0,
-    2220.0,
-    1250.59
+    2218.0,
+    1250.41
    ],
    "mi_slots": {
     "MAT_Wood": "MI_Chapel_Wood_Old"
@@ -4460,23 +5816,23 @@
     [
      -10.0,
      0.0,
-     -10.0
+     -8.94
     ],
     [
      430.0,
      258.0,
-     257.0
+     256.68
     ]
    ],
    "aabb_min": [
     12710.0,
     1780.0,
-    1126.36
+    1127.42
    ],
    "aabb_max": [
     12968.0,
     2220.0,
-    1393.36
+    1393.04
    ],
    "mi_slots": {
     "MAT_Wood": "MI_Chapel_Wood_Old",
@@ -4515,23 +5871,23 @@
     [
      0.0,
      0.0,
-     58.2
+     59.42
     ],
     [
      420.0,
-     10.0,
-     341.5
+     8.0,
+     341.32
     ]
    ],
    "aabb_min": [
     12710.0,
     1790.0,
-    1194.56
+    1195.78
    ],
    "aabb_max": [
-    12720.0,
+    12718.0,
     2210.0,
-    1477.86
+    1477.68
    ],
    "mi_slots": {
     "MAT_Wood": "MI_Chapel_Wood_Old"
@@ -4567,23 +5923,23 @@
     [
      -10.0,
      0.0,
-     -10.0
+     -8.94
     ],
     [
      430.0,
      258.0,
-     257.0
+     256.68
     ]
    ],
    "aabb_min": [
     12280.0,
     1532.0,
-    1353.64
+    1354.7
    ],
    "aabb_max": [
     12720.0,
     1790.0,
-    1620.64
+    1620.32
    ],
    "mi_slots": {
     "MAT_Wood": "MI_Chapel_Wood_Old",
@@ -4622,23 +5978,23 @@
     [
      0.0,
      0.0,
-     58.2
+     59.42
     ],
     [
      420.0,
-     10.0,
-     341.5
+     8.0,
+     341.32
     ]
    ],
    "aabb_min": [
     12290.0,
-    1780.0,
-    1421.84
+    1782.0,
+    1423.06
    ],
    "aabb_max": [
     12710.0,
     1790.0,
-    1705.14
+    1704.96
    ],
    "mi_slots": {
     "MAT_Wood": "MI_Chapel_Wood_Old"
@@ -4674,23 +6030,23 @@
     [
      -10.0,
      0.0,
-     -10.0
+     -8.94
     ],
     [
      430.0,
      258.0,
-     257.0
+     256.68
     ]
    ],
    "aabb_min": [
     12032.0,
     1780.0,
-    1580.91
+    1581.97
    ],
    "aabb_max": [
     12290.0,
     2220.0,
-    1847.91
+    1847.59
    ],
    "mi_slots": {
     "MAT_Wood": "MI_Chapel_Wood_Old",
@@ -4729,23 +6085,23 @@
     [
      0.0,
      0.0,
-     58.2
+     59.42
     ],
     [
      420.0,
-     10.0,
-     341.5
+     8.0,
+     341.32
     ]
    ],
    "aabb_min": [
-    12280.0,
+    12282.0,
     1790.0,
-    1649.11
+    1650.33
    ],
    "aabb_max": [
     12290.0,
     2210.0,
-    1932.41
+    1932.23
    ],
    "mi_slots": {
     "MAT_Wood": "MI_Chapel_Wood_Old"
@@ -4781,23 +6137,23 @@
     [
      -10.0,
      0.0,
-     -10.0
+     -8.94
     ],
     [
      430.0,
      258.0,
-     257.0
+     256.68
     ]
    ],
    "aabb_min": [
     12280.0,
     2210.0,
-    1808.18
+    1809.24
    ],
    "aabb_max": [
     12720.0,
     2468.0,
-    2075.18
+    2074.86
    ],
    "mi_slots": {
     "MAT_Wood": "MI_Chapel_Wood_Old",
@@ -4836,23 +6192,23 @@
     [
      0.0,
      0.0,
-     58.2
+     59.42
     ],
     [
      420.0,
-     10.0,
-     341.5
+     8.0,
+     341.32
     ]
    ],
    "aabb_min": [
     12290.0,
     2210.0,
-    1876.38
+    1877.6
    ],
    "aabb_max": [
     12710.0,
-    2220.0,
-    2159.68
+    2218.0,
+    2159.5
    ],
    "mi_slots": {
     "MAT_Wood": "MI_Chapel_Wood_Old"
@@ -4888,23 +6244,23 @@
     [
      -10.0,
      0.0,
-     -10.0
+     -8.94
     ],
     [
      430.0,
      258.0,
-     257.0
+     256.68
     ]
    ],
    "aabb_min": [
     12710.0,
     1780.0,
-    2035.45
+    2036.51
    ],
    "aabb_max": [
     12968.0,
     2220.0,
-    2302.45
+    2302.13
    ],
    "mi_slots": {
     "MAT_Wood": "MI_Chapel_Wood_Old",
@@ -4943,23 +6299,23 @@
     [
      0.0,
      0.0,
-     58.2
+     59.42
     ],
     [
      420.0,
-     10.0,
-     341.5
+     8.0,
+     341.32
     ]
    ],
    "aabb_min": [
     12710.0,
     1790.0,
-    2103.65
+    2104.87
    ],
    "aabb_max": [
-    12720.0,
+    12718.0,
     2210.0,
-    2386.95
+    2386.77
    ],
    "mi_slots": {
     "MAT_Wood": "MI_Chapel_Wood_Old"
@@ -4995,23 +6351,23 @@
     [
      -10.0,
      0.0,
-     -10.0
+     -8.94
     ],
     [
      430.0,
      258.0,
-     257.0
+     256.68
     ]
    ],
    "aabb_min": [
     12280.0,
     1532.0,
-    2262.73
+    2263.79
    ],
    "aabb_max": [
     12720.0,
     1790.0,
-    2529.73
+    2529.41
    ],
    "mi_slots": {
     "MAT_Wood": "MI_Chapel_Wood_Old",
@@ -5050,23 +6406,23 @@
     [
      0.0,
      0.0,
-     58.2
+     59.42
     ],
     [
      420.0,
-     10.0,
-     341.5
+     8.0,
+     341.32
     ]
    ],
    "aabb_min": [
     12290.0,
-    1780.0,
-    2330.93
+    1782.0,
+    2332.15
    ],
    "aabb_max": [
     12710.0,
     1790.0,
-    2614.23
+    2614.05
    ],
    "mi_slots": {
     "MAT_Wood": "MI_Chapel_Wood_Old"
@@ -5102,7 +6458,7 @@
     [
      0.0,
      0.0,
-     -60.0
+     -59.76
     ],
     [
      250.0,
@@ -5113,7 +6469,7 @@
    "aabb_min": [
     12710.0,
     2210.0,
-    167.27
+    167.51
    ],
    "aabb_max": [
     12960.0,
@@ -5155,7 +6511,7 @@
     [
      0.0,
      0.0,
-     -60.0
+     -59.76
     ],
     [
      250.0,
@@ -5166,7 +6522,7 @@
    "aabb_min": [
     12710.0,
     1540.0,
-    394.55
+    394.79
    ],
    "aabb_max": [
     12960.0,
@@ -5208,7 +6564,7 @@
     [
      0.0,
      0.0,
-     -60.0
+     -59.76
     ],
     [
      250.0,
@@ -5219,7 +6575,7 @@
    "aabb_min": [
     12040.0,
     1540.0,
-    621.82
+    622.06
    ],
    "aabb_max": [
     12290.0,
@@ -5261,7 +6617,7 @@
     [
      0.0,
      0.0,
-     -60.0
+     -59.76
     ],
     [
      250.0,
@@ -5272,7 +6628,7 @@
    "aabb_min": [
     12040.0,
     2210.0,
-    849.09
+    849.33
    ],
    "aabb_max": [
     12290.0,
@@ -5314,7 +6670,7 @@
     [
      0.0,
      0.0,
-     -60.0
+     -59.76
     ],
     [
      250.0,
@@ -5325,7 +6681,7 @@
    "aabb_min": [
     12710.0,
     2210.0,
-    1076.36
+    1076.6
    ],
    "aabb_max": [
     12960.0,
@@ -5367,7 +6723,7 @@
     [
      0.0,
      0.0,
-     -60.0
+     -59.76
     ],
     [
      250.0,
@@ -5378,7 +6734,7 @@
    "aabb_min": [
     12710.0,
     1540.0,
-    1303.64
+    1303.88
    ],
    "aabb_max": [
     12960.0,
@@ -5420,7 +6776,7 @@
     [
      0.0,
      0.0,
-     -60.0
+     -59.76
     ],
     [
      250.0,
@@ -5431,7 +6787,7 @@
    "aabb_min": [
     12040.0,
     1540.0,
-    1530.91
+    1531.15
    ],
    "aabb_max": [
     12290.0,
@@ -5473,7 +6829,7 @@
     [
      0.0,
      0.0,
-     -60.0
+     -59.76
     ],
     [
      250.0,
@@ -5484,7 +6840,7 @@
    "aabb_min": [
     12040.0,
     2210.0,
-    1758.18
+    1758.42
    ],
    "aabb_max": [
     12290.0,
@@ -5526,7 +6882,7 @@
     [
      0.0,
      0.0,
-     -60.0
+     -59.76
     ],
     [
      250.0,
@@ -5537,7 +6893,7 @@
    "aabb_min": [
     12710.0,
     2210.0,
-    1985.45
+    1985.69
    ],
    "aabb_max": [
     12960.0,
@@ -5579,7 +6935,7 @@
     [
      0.0,
      0.0,
-     -60.0
+     -59.76
     ],
     [
      250.0,
@@ -5590,7 +6946,7 @@
    "aabb_min": [
     12710.0,
     1540.0,
-    2212.73
+    2212.97
    ],
    "aabb_max": [
     12960.0,
@@ -5889,7 +7245,7 @@
     [
      0.0,
      0.0,
-     -35.0
+     -35.4
     ],
     [
      680.0,
@@ -5900,7 +7256,7 @@
    "aabb_min": [
     12040.0,
     1540.0,
-    2465.0
+    2464.6
    ],
    "aabb_max": [
     12720.0,
@@ -6039,7 +7395,7 @@
    "mbounds": [
     [
      0.0,
-     0.0,
+     -0.0,
      0.0
     ],
     [
@@ -6514,23 +7870,23 @@
    "mbounds": [
     [
      -165.0,
-     -147.5,
+     -150.0,
      0.0
     ],
     [
      165.0,
-     147.5,
+     150.0,
      380.0
     ]
    ],
    "aabb_min": [
     12255.0,
-    1852.5,
+    1850.0,
     2500.0
    ],
    "aabb_max": [
     12585.0,
-    2147.5,
+    2150.0,
     2880.0
    ],
    "mi_slots": {
@@ -6565,23 +7921,23 @@
    "mbounds": [
     [
      -130.0,
-     -175.0,
-     -130.0
+     -178.0,
+     -134.46
     ],
     [
-     130.0,
-     165.0,
+     134.0,
+     170.0,
      130.0
     ]
    ],
    "aabb_min": [
     12290.0,
-    1825.0,
-    2750.0
+    1822.0,
+    2745.54
    ],
    "aabb_max": [
-    12550.0,
-    2165.0,
+    12554.0,
+    2170.0,
     3010.0
    ],
    "mi_slots": {
@@ -6615,18 +7971,18 @@
    "folder": "Gameplay/BellTower",
    "mbounds": [
     [
-     -105.0,
+     -104.76,
      -105.0,
      -220.0
     ],
     [
      105.0,
      105.0,
-     0.0
+     -0.0
     ]
    ],
    "aabb_min": [
-    12315.0,
+    12315.24,
     1895.0,
     2640.0
    ],
@@ -6669,24 +8025,24 @@
    "folder": "BellTower/Art/Belfry",
    "mbounds": [
     [
-     -6.5,
-     -6.5,
+     -4.39,
+     -4.63,
      -2610.0
     ],
     [
-     6.5,
-     6.5,
+     5.11,
+     4.63,
      0.0
     ]
    ],
    "aabb_min": [
-    12543.5,
-    1828.5,
+    12545.61,
+    1830.37,
     140.0
    ],
    "aabb_max": [
-    12556.5,
-    1841.5,
+    12555.11,
+    1839.63,
     2750.0
    ],
    "mi_slots": {
@@ -6720,25 +8076,25 @@
    "folder": "BellTower/Art/Roof",
    "mbounds": [
     [
-     -525.0,
-     -525.0,
-     -300.0
+     -525.56,
+     -525.61,
+     -294.03
     ],
     [
-     525.0,
-     525.0,
-     1292.0
+     525.41,
+     525.33,
+     1284.76
     ]
    ],
    "aabb_min": [
-    11975.0,
-    1475.0,
-    3240.0
+    11974.44,
+    1474.39,
+    3245.97
    ],
    "aabb_max": [
-    13025.0,
-    2525.0,
-    4832.0
+    13025.41,
+    2525.33,
+    4824.76
    ],
    "mi_slots": {
     "MAT_Slate": "MI_Kit_Slate",
@@ -7274,7 +8630,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "run": "S_W",
@@ -7338,7 +8695,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "run": "S_W",
@@ -7402,7 +8760,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "run": "S_W",
@@ -7466,7 +8825,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "run": "S_E",
@@ -7530,7 +8890,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "run": "S_E",
@@ -7594,7 +8955,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "run": "S_E",
@@ -7658,7 +9020,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "run": "N",
@@ -7722,7 +9085,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "run": "N",
@@ -7786,7 +9150,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "run": "N",
@@ -7850,7 +9215,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "run": "N",
@@ -7914,7 +9280,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "run": "N",
@@ -7978,7 +9345,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "run": "N",
@@ -8042,7 +9410,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "run": "W_S",
@@ -8106,7 +9475,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "run": "W_S",
@@ -8170,7 +9540,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "run": "W_S",
@@ -8234,7 +9605,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "run": "W_N",
@@ -8298,7 +9670,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "run": "W_N",
@@ -8362,7 +9735,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "run": "E_S",
@@ -8426,7 +9800,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "run": "E_S",
@@ -8490,7 +9865,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "run": "E_N",
@@ -8554,7 +9930,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "run": "PS",
@@ -8618,7 +9995,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "run": "PS",
@@ -8682,7 +10060,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "run": "PS",
@@ -8746,7 +10125,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "run": "PS",
@@ -8810,7 +10190,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "run": "PS",
@@ -8874,7 +10255,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "run": "PS",
@@ -8938,7 +10320,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "run": "PS",
@@ -9002,7 +10385,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "run": "PS",
@@ -9066,7 +10450,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "run": "PS",
@@ -9130,7 +10515,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "run": "PN",
@@ -9194,7 +10580,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "run": "PN",
@@ -9258,7 +10645,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "run": "PN",
@@ -9322,7 +10710,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "run": "PN",
@@ -9386,7 +10775,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "run": "PN",
@@ -9450,7 +10840,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "run": "PN",
@@ -9514,7 +10905,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "run": "PN",
@@ -9578,7 +10970,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "run": "PN",
@@ -9642,7 +11035,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "run": "PN",
@@ -9706,7 +11100,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "run": "SH_W",
@@ -9770,7 +11165,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "run": "SH_W",
@@ -9834,7 +11230,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "run": "SH_E",
@@ -9898,7 +11295,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "run": "SH_E",
@@ -9942,7 +11340,7 @@
     [
      0.0,
      -6.0,
-     0.0
+     300.0
     ],
     [
      500.0,
@@ -9953,7 +11351,7 @@
    "aabb_min": [
     9460.0,
     1750.0,
-    0.0
+    300.0
    ],
    "aabb_max": [
     9506.0,
@@ -9962,7 +11360,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "run": "W_ARCH",
@@ -10002,7 +11401,7 @@
     [
      0.0,
      -6.0,
-     0.0
+     330.0
     ],
     [
      300.0,
@@ -10013,7 +11412,7 @@
    "aabb_min": [
     10500.0,
     500.0,
-    0.0
+    330.0
    ],
    "aabb_max": [
     10800.0,
@@ -10022,7 +11421,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "run": "S_ARCH",
@@ -10082,7 +11482,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "run": "SH_GABLE",
@@ -10119,25 +11520,25 @@
    "folder": "Cloister/Art/StairHouse",
    "mbounds": [
     [
+     -0.27,
      0.0,
-     0.0,
-     0.0
+     -17.4
     ],
     [
-     420.0,
+     420.32,
      640.0,
-     208.0
+     200.0
     ]
    ],
    "aabb_min": [
-    10440.0,
+    10439.73,
     -140.0,
-    450.0
+    432.6
    ],
    "aabb_max": [
-    10860.0,
+    10860.32,
     500.0,
-    658.0
+    650.0
    ],
    "mi_slots": {
     "MAT_Slate": "MI_Kit_Slate",
@@ -10192,7 +11593,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "greybox": "Arc_S1"
@@ -10245,7 +11647,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "greybox": "Arc_S2"
@@ -10298,7 +11701,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "greybox": "Arc_S3"
@@ -10351,7 +11755,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "greybox": "Arc_N1"
@@ -10404,7 +11809,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "greybox": "Arc_N2"
@@ -10457,7 +11863,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "greybox": "Arc_N3"
@@ -10510,7 +11917,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "greybox": "Arc_W0"
@@ -10563,7 +11971,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "greybox": "Arc_W1"
@@ -10616,7 +12025,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "greybox": "Arc_E0"
@@ -10669,7 +12079,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "greybox": "Arc_E1"
@@ -10722,7 +12133,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {},
    "note": "corner compound pier over Arc_S0 + Cl_Block_PierSW"
@@ -10773,7 +12185,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {},
    "note": "corner compound pier over Arc_S4 + Cl_Block_PierSE"
@@ -10824,7 +12237,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {},
    "note": "corner compound pier over Arc_N0 + Cl_Block_PierNW"
@@ -10875,7 +12289,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {},
    "note": "corner compound pier over Arc_N4 + Cl_Block_PierNE"
@@ -10926,7 +12341,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {},
    "note": "S row, left springing X 10340, span 220"
@@ -10977,7 +12393,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {},
    "note": "S row, left springing X 10640, span 220"
@@ -11028,7 +12445,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {},
    "note": "S row, left springing X 10940, span 220"
@@ -11079,7 +12497,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {},
    "note": "S row, left springing X 11240, span 120"
@@ -11130,7 +12549,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {},
    "note": "N row, left springing X 10340, span 220"
@@ -11181,7 +12601,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {},
    "note": "N row, left springing X 10640, span 220"
@@ -11232,7 +12653,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {},
    "note": "N row, left springing X 10940, span 220"
@@ -11283,7 +12705,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {},
    "note": "N row, left springing X 11240, span 120"
@@ -11334,7 +12757,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {},
    "note": "W column, left springing Y 1390, span 270"
@@ -11385,7 +12809,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {},
    "note": "W column, left springing Y 1740, span 220"
@@ -11436,7 +12861,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {},
    "note": "W column, left springing Y 2040, span 170"
@@ -11487,7 +12913,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {},
    "note": "E column, left springing Y 1390, span 270"
@@ -11538,7 +12965,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {},
    "note": "E column, left springing Y 1740, span 220"
@@ -11589,7 +13017,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {},
    "note": "E column, left springing Y 2040, span 170"
@@ -11640,7 +13069,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {},
    "note": "retaining wall flush with the Garth block, top exactly Z 100 (Note_Cloister rests on the S coping)"
@@ -11691,7 +13121,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {},
    "note": "retaining wall flush with the Garth block, top exactly Z 100 (Note_Cloister rests on the S coping)"
@@ -11742,7 +13173,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {},
    "note": "retaining wall flush with the Garth block, top exactly Z 100 (Note_Cloister rests on the S coping)"
@@ -11793,7 +13225,8 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {},
    "note": "retaining wall flush with the Garth block, top exactly Z 100 (Note_Cloister rests on the S coping)"
@@ -11824,23 +13257,23 @@
     [
      0.0,
      0.0,
-     -4.0
+     -8.0
     ],
     [
      1100.0,
      800.0,
-     10.0
+     9.8
     ]
    ],
    "aabb_min": [
     10300.0,
     1400.0,
-    96.0
+    92.0
    ],
    "aabb_max": [
     11400.0,
     2200.0,
-    110.0
+    109.8
    ],
    "mi_slots": {
     "MAT_Earth": "MI_Prop_Earth"
@@ -11920,7 +13353,9 @@
     109.41
    ],
    "mi_slots": {
-    "MAT_Masonry": "MI_Kit_Masonry"
+    "MAT_Masonry": "MI_Kit_Masonry",
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {},
    "note": "grave slab, yaw 0 +-4 deg and 1-3 deg roll (seed 1223)"
@@ -11970,7 +13405,9 @@
     109.7
    ],
    "mi_slots": {
-    "MAT_Masonry": "MI_Kit_Masonry"
+    "MAT_Masonry": "MI_Kit_Masonry",
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {},
    "note": "grave slab, yaw 0 +-4 deg and 1-3 deg roll (seed 1223)"
@@ -12020,7 +13457,9 @@
     109.69
    ],
    "mi_slots": {
-    "MAT_Masonry": "MI_Kit_Masonry"
+    "MAT_Masonry": "MI_Kit_Masonry",
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {},
    "note": "grave slab, yaw 0 +-4 deg and 1-3 deg roll (seed 1223)"
@@ -12070,7 +13509,9 @@
     109.47
    ],
    "mi_slots": {
-    "MAT_Masonry": "MI_Kit_Masonry"
+    "MAT_Masonry": "MI_Kit_Masonry",
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {},
    "note": "grave slab, yaw 0 +-4 deg and 1-3 deg roll (seed 1223)"
@@ -12120,7 +13561,9 @@
     108.99
    ],
    "mi_slots": {
-    "MAT_Masonry": "MI_Kit_Masonry"
+    "MAT_Masonry": "MI_Kit_Masonry",
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {},
    "note": "grave slab, yaw 0 +-4 deg and 1-3 deg roll (seed 1223)"
@@ -12170,7 +13613,9 @@
     110.01
    ],
    "mi_slots": {
-    "MAT_Masonry": "MI_Kit_Masonry"
+    "MAT_Masonry": "MI_Kit_Masonry",
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {},
    "note": "grave slab, yaw 0 +-4 deg and 1-3 deg roll (seed 1223)"
@@ -12199,28 +13644,30 @@
    "folder": "Cloister/Art/Garth",
    "mbounds": [
     [
-     -18.0,
+     -17.0,
      -4.0,
      0.0
     ],
     [
-     18.0,
+     17.0,
      4.0,
      60.0
     ]
    ],
    "aabb_min": [
-    10432.0,
+    10433.0,
     1496.0,
     100.0
    ],
    "aabb_max": [
-    10468.0,
+    10467.0,
     1504.0,
     160.0
    ],
    "mi_slots": {
-    "MAT_Masonry": "MI_Kit_Masonry"
+    "MAT_Masonry": "MI_Kit_Masonry",
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {},
    "note": "small stone cross"
@@ -12249,28 +13696,30 @@
    "folder": "Cloister/Art/Garth",
    "mbounds": [
     [
-     -18.0,
+     -17.0,
      -4.0,
      0.0
     ],
     [
-     18.0,
+     17.0,
      4.0,
      60.0
     ]
    ],
    "aabb_min": [
-    11232.0,
+    11233.0,
     1496.0,
     100.0
    ],
    "aabb_max": [
-    11268.0,
+    11267.0,
     1504.0,
     160.0
    ],
    "mi_slots": {
-    "MAT_Masonry": "MI_Kit_Masonry"
+    "MAT_Masonry": "MI_Kit_Masonry",
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {},
    "note": "small stone cross"
@@ -12299,28 +13748,30 @@
    "folder": "Cloister/Art/Garth",
    "mbounds": [
     [
-     -18.0,
+     -17.0,
      -4.0,
      0.0
     ],
     [
-     18.0,
+     17.0,
      4.0,
      60.0
     ]
    ],
    "aabb_min": [
-    10432.0,
+    10433.0,
     2096.0,
     100.0
    ],
    "aabb_max": [
-    10468.0,
+    10467.0,
     2104.0,
     160.0
    ],
    "mi_slots": {
-    "MAT_Masonry": "MI_Kit_Masonry"
+    "MAT_Masonry": "MI_Kit_Masonry",
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {},
    "note": "small stone cross"
@@ -12349,28 +13800,30 @@
    "folder": "Cloister/Art/Garth",
    "mbounds": [
     [
-     -18.0,
+     -17.0,
      -4.0,
      0.0
     ],
     [
-     18.0,
+     17.0,
      4.0,
      60.0
     ]
    ],
    "aabb_min": [
-    11232.0,
+    11233.0,
     2096.0,
     100.0
    ],
    "aabb_max": [
-    11268.0,
+    11267.0,
     2104.0,
     160.0
    ],
    "mi_slots": {
-    "MAT_Masonry": "MI_Kit_Masonry"
+    "MAT_Masonry": "MI_Kit_Masonry",
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {},
    "note": "small stone cross"
@@ -12420,7 +13873,9 @@
     450.0
    ],
    "mi_slots": {
-    "MAT_Masonry": "MI_Kit_Masonry"
+    "MAT_Masonry": "MI_Kit_Masonry",
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {},
    "note": "3.5 m stone cross, yaw 15"
@@ -12433,7 +13888,7 @@
    "loc": [
     10210.0,
     510.0,
-    560.0
+    540.0
    ],
    "rot": [
     0.0,
@@ -12456,27 +13911,28 @@
     [
      640.0,
      830.0,
-     365.0
+     340.0
     ]
    ],
    "aabb_min": [
     10210.0,
     510.0,
-    560.0
+    540.0
    ],
    "aabb_max": [
     10850.0,
     1340.0,
-    925.0
+    880.0
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "kind": "barrel"
    },
-   "note": "S walk west; springing Z 560, crown Z 900"
+   "note": "S walk west; springing Z 540 (D1.12), extrados crown Z 880"
   },
   {
    "id": "CLA_Vault_S_E",
@@ -12486,7 +13942,7 @@
    "loc": [
     10850.0,
     510.0,
-    560.0
+    540.0
    ],
    "rot": [
     0.0,
@@ -12509,27 +13965,28 @@
     [
      640.0,
      830.0,
-     365.0
+     340.0
     ]
    ],
    "aabb_min": [
     10850.0,
     510.0,
-    560.0
+    540.0
    ],
    "aabb_max": [
     11490.0,
     1340.0,
-    925.0
+    880.0
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "kind": "barrel"
    },
-   "note": "S walk east; springing Z 560, crown Z 900"
+   "note": "S walk east; springing Z 540 (D1.12), extrados crown Z 880"
   },
   {
    "id": "CLA_Vault_N_W",
@@ -12539,7 +13996,7 @@
    "loc": [
     10210.0,
     2260.0,
-    560.0
+    540.0
    ],
    "rot": [
     0.0,
@@ -12562,27 +14019,28 @@
     [
      640.0,
      770.0,
-     365.0
+     340.0
     ]
    ],
    "aabb_min": [
     10210.0,
     2260.0,
-    560.0
+    540.0
    ],
    "aabb_max": [
     10850.0,
     3030.0,
-    925.0
+    880.0
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "kind": "barrel"
    },
-   "note": "N walk west; springing Z 560, crown Z 900"
+   "note": "N walk west; springing Z 540 (D1.12), extrados crown Z 880"
   },
   {
    "id": "CLA_Vault_N_E",
@@ -12592,7 +14050,7 @@
    "loc": [
     10850.0,
     2260.0,
-    560.0
+    540.0
    ],
    "rot": [
     0.0,
@@ -12615,27 +14073,28 @@
     [
      640.0,
      770.0,
-     365.0
+     340.0
     ]
    ],
    "aabb_min": [
     10850.0,
     2260.0,
-    560.0
+    540.0
    ],
    "aabb_max": [
     11490.0,
     3030.0,
-    925.0
+    880.0
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "kind": "barrel"
    },
-   "note": "N walk east: the collapse; springing Z 560, crown Z 900"
+   "note": "N walk east: the collapse; springing Z 540 (D1.12), extrados crown Z 880"
   },
   {
    "id": "CLA_Vault_W",
@@ -12645,7 +14104,7 @@
    "loc": [
     10240.0,
     1310.0,
-    560.0
+    540.0
    ],
    "rot": [
     0.0,
@@ -12668,27 +14127,28 @@
     [
      980.0,
      770.0,
-     365.0
+     340.0
     ]
    ],
    "aabb_min": [
     9470.0,
     1310.0,
-    560.0
+    540.0
    ],
    "aabb_max": [
     10240.0,
     2290.0,
-    925.0
+    880.0
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "kind": "barrel"
    },
-   "note": "W walk: local x -> +Y (1310-2290), local y -> -X (10240 -> 9470); springing Z 560, crown Z 900"
+   "note": "W walk: local x -> +Y (1310-2290), local y -> -X (10240 -> 9470); springing Z 540 (D1.12), extrados crown Z 880"
   },
   {
    "id": "CLA_Vault_E",
@@ -12698,7 +14158,7 @@
    "loc": [
     12030.0,
     1310.0,
-    560.0
+    540.0
    ],
    "rot": [
     0.0,
@@ -12721,27 +14181,28 @@
     [
      980.0,
      570.0,
-     365.0
+     340.0
     ]
    ],
    "aabb_min": [
     11460.0,
     1310.0,
-    560.0
+    540.0
    ],
    "aabb_max": [
     12030.0,
     2290.0,
-    925.0
+    880.0
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "kind": "barrel"
    },
-   "note": "E walk: local y -> -X (12030 -> 11460); springing Z 560, crown Z 900"
+   "note": "E walk: local y -> -X (12030 -> 11460); springing Z 540 (D1.12), extrados crown Z 880"
   },
   {
    "id": "CLA_Vault_SW",
@@ -12751,7 +14212,7 @@
    "loc": [
     9470.0,
     510.0,
-    560.0
+    540.0
    ],
    "rot": [
     0.0,
@@ -12774,27 +14235,28 @@
     [
      770.0,
      830.0,
-     365.0
+     340.0
     ]
    ],
    "aabb_min": [
     9470.0,
     510.0,
-    560.0
+    540.0
    ],
    "aabb_max": [
     10240.0,
     1340.0,
-    925.0
+    880.0
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "kind": "groin"
    },
-   "note": "SW corner; springing Z 560, crown Z 900"
+   "note": "SW corner; springing Z 540 (D1.12), extrados crown Z 880"
   },
   {
    "id": "CLA_Vault_SE",
@@ -12804,7 +14266,7 @@
    "loc": [
     11460.0,
     510.0,
-    560.0
+    540.0
    ],
    "rot": [
     0.0,
@@ -12827,27 +14289,28 @@
     [
      570.0,
      830.0,
-     365.0
+     340.0
     ]
    ],
    "aabb_min": [
     11460.0,
     510.0,
-    560.0
+    540.0
    ],
    "aabb_max": [
     12030.0,
     1340.0,
-    925.0
+    880.0
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "kind": "groin"
    },
-   "note": "SE corner; springing Z 560, crown Z 900"
+   "note": "SE corner; springing Z 540 (D1.12), extrados crown Z 880"
   },
   {
    "id": "CLA_Vault_NW",
@@ -12857,7 +14320,7 @@
    "loc": [
     9470.0,
     2260.0,
-    560.0
+    540.0
    ],
    "rot": [
     0.0,
@@ -12880,27 +14343,28 @@
     [
      770.0,
      770.0,
-     365.0
+     340.0
     ]
    ],
    "aabb_min": [
     9470.0,
     2260.0,
-    560.0
+    540.0
    ],
    "aabb_max": [
     10240.0,
     3030.0,
-    925.0
+    880.0
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "kind": "groin"
    },
-   "note": "NW corner; springing Z 560, crown Z 900"
+   "note": "NW corner; springing Z 540 (D1.12), extrados crown Z 880"
   },
   {
    "id": "CLA_Vault_NE",
@@ -12910,7 +14374,7 @@
    "loc": [
     11460.0,
     2260.0,
-    560.0
+    540.0
    ],
    "rot": [
     0.0,
@@ -12933,27 +14397,28 @@
     [
      570.0,
      770.0,
-     365.0
+     340.0
     ]
    ],
    "aabb_min": [
     11460.0,
     2260.0,
-    560.0
+    540.0
    ],
    "aabb_max": [
     12030.0,
     3030.0,
-    925.0
+    880.0
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
-    "MAT_Trim": "MI_Kit_Trim"
+    "MAT_Trim": "MI_Kit_Trim",
+    "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {
     "kind": "groin"
    },
-   "note": "NE corner; springing Z 560, crown Z 900"
+   "note": "NE corner; springing Z 540 (D1.12), extrados crown Z 880"
   },
   {
    "id": "CLA_Corbel_S_0",
@@ -12963,7 +14428,7 @@
    "loc": [
     10230.0,
     600.0,
-    500.0
+    480.0
    ],
    "rot": [
     0.0,
@@ -12992,18 +14457,18 @@
    "aabb_min": [
     10190.0,
     540.0,
-    500.0
+    480.0
    ],
    "aabb_max": [
     10230.0,
     600.0,
-    560.0
+    540.0
    ],
    "mi_slots": {
     "MAT_Trim": "MI_Kit_Trim"
    },
    "extras": {},
-   "note": "under the rib end at X 10210 on the S wall, top Z 560 (kit corbel: free end local y 0, back local y 60)"
+   "note": "under the rib end at X 10210 on the S wall, top Z 540 (kit corbel: free end local y 0, back local y 60)"
   },
   {
    "id": "CLA_Corbel_S_1",
@@ -13013,7 +14478,7 @@
    "loc": [
     10550.0,
     600.0,
-    500.0
+    480.0
    ],
    "rot": [
     0.0,
@@ -13042,18 +14507,18 @@
    "aabb_min": [
     10510.0,
     540.0,
-    500.0
+    480.0
    ],
    "aabb_max": [
     10550.0,
     600.0,
-    560.0
+    540.0
    ],
    "mi_slots": {
     "MAT_Trim": "MI_Kit_Trim"
    },
    "extras": {},
-   "note": "under the rib end at X 10530 on the S wall, top Z 560 (kit corbel: free end local y 0, back local y 60)"
+   "note": "under the rib end at X 10530 on the S wall, top Z 540 (kit corbel: free end local y 0, back local y 60)"
   },
   {
    "id": "CLA_Corbel_S_2",
@@ -13063,7 +14528,7 @@
    "loc": [
     10870.0,
     600.0,
-    500.0
+    480.0
    ],
    "rot": [
     0.0,
@@ -13092,18 +14557,18 @@
    "aabb_min": [
     10830.0,
     540.0,
-    500.0
+    480.0
    ],
    "aabb_max": [
     10870.0,
     600.0,
-    560.0
+    540.0
    ],
    "mi_slots": {
     "MAT_Trim": "MI_Kit_Trim"
    },
    "extras": {},
-   "note": "under the rib end at X 10850 on the S wall, top Z 560 (kit corbel: free end local y 0, back local y 60)"
+   "note": "under the rib end at X 10850 on the S wall, top Z 540 (kit corbel: free end local y 0, back local y 60)"
   },
   {
    "id": "CLA_Corbel_S_3",
@@ -13113,7 +14578,7 @@
    "loc": [
     11190.0,
     600.0,
-    500.0
+    480.0
    ],
    "rot": [
     0.0,
@@ -13142,18 +14607,18 @@
    "aabb_min": [
     11150.0,
     540.0,
-    500.0
+    480.0
    ],
    "aabb_max": [
     11190.0,
     600.0,
-    560.0
+    540.0
    ],
    "mi_slots": {
     "MAT_Trim": "MI_Kit_Trim"
    },
    "extras": {},
-   "note": "under the rib end at X 11170 on the S wall, top Z 560 (kit corbel: free end local y 0, back local y 60)"
+   "note": "under the rib end at X 11170 on the S wall, top Z 540 (kit corbel: free end local y 0, back local y 60)"
   },
   {
    "id": "CLA_Corbel_S_4",
@@ -13163,7 +14628,7 @@
    "loc": [
     11510.0,
     600.0,
-    500.0
+    480.0
    ],
    "rot": [
     0.0,
@@ -13192,18 +14657,18 @@
    "aabb_min": [
     11470.0,
     540.0,
-    500.0
+    480.0
    ],
    "aabb_max": [
     11510.0,
     600.0,
-    560.0
+    540.0
    ],
    "mi_slots": {
     "MAT_Trim": "MI_Kit_Trim"
    },
    "extras": {},
-   "note": "under the rib end at X 11490 on the S wall, top Z 560 (kit corbel: free end local y 0, back local y 60)"
+   "note": "under the rib end at X 11490 on the S wall, top Z 540 (kit corbel: free end local y 0, back local y 60)"
   },
   {
    "id": "CLA_Corbel_N_0",
@@ -13213,7 +14678,7 @@
    "loc": [
     10190.0,
     2940.0,
-    500.0
+    480.0
    ],
    "rot": [
     0.0,
@@ -13242,18 +14707,18 @@
    "aabb_min": [
     10190.0,
     2940.0,
-    500.0
+    480.0
    ],
    "aabb_max": [
     10230.0,
     3000.0,
-    560.0
+    540.0
    ],
    "mi_slots": {
     "MAT_Trim": "MI_Kit_Trim"
    },
    "extras": {},
-   "note": "under the rib end at X 10210 on the N wall, top Z 560 (kit corbel: free end local y 0, back local y 60)"
+   "note": "under the rib end at X 10210 on the N wall, top Z 540 (kit corbel: free end local y 0, back local y 60)"
   },
   {
    "id": "CLA_Corbel_N_1",
@@ -13263,7 +14728,7 @@
    "loc": [
     10510.0,
     2940.0,
-    500.0
+    480.0
    ],
    "rot": [
     0.0,
@@ -13292,18 +14757,18 @@
    "aabb_min": [
     10510.0,
     2940.0,
-    500.0
+    480.0
    ],
    "aabb_max": [
     10550.0,
     3000.0,
-    560.0
+    540.0
    ],
    "mi_slots": {
     "MAT_Trim": "MI_Kit_Trim"
    },
    "extras": {},
-   "note": "under the rib end at X 10530 on the N wall, top Z 560 (kit corbel: free end local y 0, back local y 60)"
+   "note": "under the rib end at X 10530 on the N wall, top Z 540 (kit corbel: free end local y 0, back local y 60)"
   },
   {
    "id": "CLA_Corbel_N_2",
@@ -13313,7 +14778,7 @@
    "loc": [
     10830.0,
     2940.0,
-    500.0
+    480.0
    ],
    "rot": [
     0.0,
@@ -13342,18 +14807,18 @@
    "aabb_min": [
     10830.0,
     2940.0,
-    500.0
+    480.0
    ],
    "aabb_max": [
     10870.0,
     3000.0,
-    560.0
+    540.0
    ],
    "mi_slots": {
     "MAT_Trim": "MI_Kit_Trim"
    },
    "extras": {},
-   "note": "under the rib end at X 10850 on the N wall, top Z 560 (kit corbel: free end local y 0, back local y 60)"
+   "note": "under the rib end at X 10850 on the N wall, top Z 540 (kit corbel: free end local y 0, back local y 60)"
   },
   {
    "id": "CLA_Corbel_N_3",
@@ -13363,7 +14828,7 @@
    "loc": [
     11150.0,
     2940.0,
-    500.0
+    480.0
    ],
    "rot": [
     0.0,
@@ -13392,18 +14857,18 @@
    "aabb_min": [
     11150.0,
     2940.0,
-    500.0
+    480.0
    ],
    "aabb_max": [
     11190.0,
     3000.0,
-    560.0
+    540.0
    ],
    "mi_slots": {
     "MAT_Trim": "MI_Kit_Trim"
    },
    "extras": {},
-   "note": "under the rib end at X 11170 on the N wall, top Z 560 (kit corbel: free end local y 0, back local y 60)"
+   "note": "under the rib end at X 11170 on the N wall, top Z 540 (kit corbel: free end local y 0, back local y 60)"
   },
   {
    "id": "CLA_Corbel_N_4",
@@ -13413,7 +14878,7 @@
    "loc": [
     11470.0,
     2940.0,
-    500.0
+    480.0
    ],
    "rot": [
     0.0,
@@ -13442,18 +14907,18 @@
    "aabb_min": [
     11470.0,
     2940.0,
-    500.0
+    480.0
    ],
    "aabb_max": [
     11510.0,
     3000.0,
-    560.0
+    540.0
    ],
    "mi_slots": {
     "MAT_Trim": "MI_Kit_Trim"
    },
    "extras": {},
-   "note": "under the rib end at X 11490 on the N wall, top Z 560 (kit corbel: free end local y 0, back local y 60)"
+   "note": "under the rib end at X 11490 on the N wall, top Z 540 (kit corbel: free end local y 0, back local y 60)"
   },
   {
    "id": "CLA_Corbel_W_0",
@@ -13463,7 +14928,7 @@
    "loc": [
     9560.0,
     1290.0,
-    500.0
+    480.0
    ],
    "rot": [
     0.0,
@@ -13492,18 +14957,18 @@
    "aabb_min": [
     9500.0,
     1290.0,
-    500.0
+    480.0
    ],
    "aabb_max": [
     9560.0,
     1330.0,
-    560.0
+    540.0
    ],
    "mi_slots": {
     "MAT_Trim": "MI_Kit_Trim"
    },
    "extras": {},
-   "note": "under the rib end at Y 1310 on the W wall, top Z 560 (kit corbel: free end local y 0, back local y 60)"
+   "note": "under the rib end at Y 1310 on the W wall, top Z 540 (kit corbel: free end local y 0, back local y 60)"
   },
   {
    "id": "CLA_Corbel_W_1",
@@ -13513,7 +14978,7 @@
    "loc": [
     9560.0,
     1780.0,
-    500.0
+    480.0
    ],
    "rot": [
     0.0,
@@ -13542,18 +15007,18 @@
    "aabb_min": [
     9500.0,
     1780.0,
-    500.0
+    480.0
    ],
    "aabb_max": [
     9560.0,
     1820.0,
-    560.0
+    540.0
    ],
    "mi_slots": {
     "MAT_Trim": "MI_Kit_Trim"
    },
    "extras": {},
-   "note": "under the rib end at Y 1800 on the W wall, top Z 560 (kit corbel: free end local y 0, back local y 60)"
+   "note": "under the rib end at Y 1800 on the W wall, top Z 540 (kit corbel: free end local y 0, back local y 60)"
   },
   {
    "id": "CLA_Corbel_W_2",
@@ -13563,7 +15028,7 @@
    "loc": [
     9560.0,
     2270.0,
-    500.0
+    480.0
    ],
    "rot": [
     0.0,
@@ -13592,18 +15057,18 @@
    "aabb_min": [
     9500.0,
     2270.0,
-    500.0
+    480.0
    ],
    "aabb_max": [
     9560.0,
     2310.0,
-    560.0
+    540.0
    ],
    "mi_slots": {
     "MAT_Trim": "MI_Kit_Trim"
    },
    "extras": {},
-   "note": "under the rib end at Y 2290 on the W wall, top Z 560 (kit corbel: free end local y 0, back local y 60)"
+   "note": "under the rib end at Y 2290 on the W wall, top Z 540 (kit corbel: free end local y 0, back local y 60)"
   },
   {
    "id": "CLA_Corbel_E_0",
@@ -13613,7 +15078,7 @@
    "loc": [
     11940.0,
     1330.0,
-    500.0
+    480.0
    ],
    "rot": [
     0.0,
@@ -13642,18 +15107,18 @@
    "aabb_min": [
     11940.0,
     1290.0,
-    500.0
+    480.0
    ],
    "aabb_max": [
     12000.0,
     1330.0,
-    560.0
+    540.0
    ],
    "mi_slots": {
     "MAT_Trim": "MI_Kit_Trim"
    },
    "extras": {},
-   "note": "under the rib end at Y 1310 on the E wall, top Z 560 (kit corbel: free end local y 0, back local y 60)"
+   "note": "under the rib end at Y 1310 on the E wall, top Z 540 (kit corbel: free end local y 0, back local y 60)"
   },
   {
    "id": "CLA_Corbel_E_1",
@@ -13663,7 +15128,7 @@
    "loc": [
     11940.0,
     1820.0,
-    500.0
+    480.0
    ],
    "rot": [
     0.0,
@@ -13692,18 +15157,18 @@
    "aabb_min": [
     11940.0,
     1780.0,
-    500.0
+    480.0
    ],
    "aabb_max": [
     12000.0,
     1820.0,
-    560.0
+    540.0
    ],
    "mi_slots": {
     "MAT_Trim": "MI_Kit_Trim"
    },
    "extras": {},
-   "note": "under the rib end at Y 1800 on the E wall, top Z 560 (kit corbel: free end local y 0, back local y 60)"
+   "note": "under the rib end at Y 1800 on the E wall, top Z 540 (kit corbel: free end local y 0, back local y 60)"
   },
   {
    "id": "CLA_Corbel_E_2",
@@ -13713,7 +15178,7 @@
    "loc": [
     11940.0,
     2310.0,
-    500.0
+    480.0
    ],
    "rot": [
     0.0,
@@ -13742,18 +15207,18 @@
    "aabb_min": [
     11940.0,
     2270.0,
-    500.0
+    480.0
    ],
    "aabb_max": [
     12000.0,
     2310.0,
-    560.0
+    540.0
    ],
    "mi_slots": {
     "MAT_Trim": "MI_Kit_Trim"
    },
    "extras": {},
-   "note": "under the rib end at Y 2290 on the E wall, top Z 560 (kit corbel: free end local y 0, back local y 60)"
+   "note": "under the rib end at Y 2290 on the E wall, top Z 540 (kit corbel: free end local y 0, back local y 60)"
   },
   {
    "id": "CLA_Corbel_SW",
@@ -13763,7 +15228,7 @@
    "loc": [
     9556.569,
     568.284,
-    500.0
+    480.0
    ],
    "rot": [
     0.0,
@@ -13792,18 +15257,18 @@
    "aabb_min": [
     9485.86,
     525.86,
-    500.0
+    480.0
    ],
    "aabb_max": [
     9556.57,
     596.57,
-    560.0
+    540.0
    ],
    "mi_slots": {
     "MAT_Trim": "MI_Kit_Trim"
    },
    "extras": {},
-   "note": "diagonal rib springer in the SW inner corner, top Z 560"
+   "note": "diagonal rib springer in the SW inner corner, top Z 540"
   },
   {
    "id": "CLA_Corbel_SE",
@@ -13813,7 +15278,7 @@
    "loc": [
     11971.716,
     596.569,
-    500.0
+    480.0
    ],
    "rot": [
     0.0,
@@ -13842,18 +15307,18 @@
    "aabb_min": [
     11943.43,
     525.86,
-    500.0
+    480.0
    ],
    "aabb_max": [
     12014.14,
     596.57,
-    560.0
+    540.0
    ],
    "mi_slots": {
     "MAT_Trim": "MI_Kit_Trim"
    },
    "extras": {},
-   "note": "diagonal rib springer in the SE inner corner, top Z 560"
+   "note": "diagonal rib springer in the SE inner corner, top Z 540"
   },
   {
    "id": "CLA_Corbel_NW",
@@ -13863,7 +15328,7 @@
    "loc": [
     9528.284,
     2943.431,
-    500.0
+    480.0
    ],
    "rot": [
     0.0,
@@ -13892,18 +15357,18 @@
    "aabb_min": [
     9485.86,
     2943.43,
-    500.0
+    480.0
    ],
    "aabb_max": [
     9556.57,
     3014.14,
-    560.0
+    540.0
    ],
    "mi_slots": {
     "MAT_Trim": "MI_Kit_Trim"
    },
    "extras": {},
-   "note": "diagonal rib springer in the NW inner corner, top Z 560"
+   "note": "diagonal rib springer in the NW inner corner, top Z 540"
   },
   {
    "id": "CLA_Corbel_NE",
@@ -13913,7 +15378,7 @@
    "loc": [
     11943.431,
     2971.716,
-    500.0
+    480.0
    ],
    "rot": [
     0.0,
@@ -13942,18 +15407,18 @@
    "aabb_min": [
     11943.43,
     2943.43,
-    500.0
+    480.0
    ],
    "aabb_max": [
     12014.14,
     3014.14,
-    560.0
+    540.0
    ],
    "mi_slots": {
     "MAT_Trim": "MI_Kit_Trim"
    },
    "extras": {},
-   "note": "diagonal rib springer in the NE inner corner, top Z 560"
+   "note": "diagonal rib springer in the NE inner corner, top Z 540"
   },
   {
    "id": "CLA_Roof_S_0",
@@ -13986,7 +15451,7 @@
     [
      1000.0,
      1050.0,
-     9.0
+     9.3
     ]
    ],
    "aabb_min": [
@@ -13996,8 +15461,8 @@
    ],
    "aabb_max": [
     12000.0,
-    1424.83,
-    1207.59
+    1424.99,
+    1207.85
    ],
    "mi_slots": {
     "MAT_Slate": "MI_Kit_Slate",
@@ -14056,7 +15521,7 @@
     [
      1000.0,
      1050.0,
-     9.0
+     9.3
     ]
    ],
    "aabb_min": [
@@ -14066,8 +15531,8 @@
    ],
    "aabb_max": [
     11166.67,
-    1424.83,
-    1207.59
+    1424.99,
+    1207.85
    ],
    "mi_slots": {
     "MAT_Slate": "MI_Kit_Slate",
@@ -14126,7 +15591,7 @@
     [
      1000.0,
      1050.0,
-     9.0
+     9.3
     ]
    ],
    "aabb_min": [
@@ -14136,8 +15601,8 @@
    ],
    "aabb_max": [
     10333.33,
-    1424.83,
-    1207.59
+    1424.99,
+    1207.85
    ],
    "mi_slots": {
     "MAT_Slate": "MI_Kit_Slate",
@@ -14196,18 +15661,18 @@
     [
      1000.0,
      1050.0,
-     9.0
+     9.3
     ]
    ],
    "aabb_min": [
     9500.0,
-    2174.92,
+    2174.76,
     627.61
    ],
    "aabb_max": [
     10650.0,
     3008.46,
-    1207.43
+    1207.68
    ],
    "mi_slots": {
     "MAT_Slate": "MI_Kit_Slate",
@@ -14261,23 +15726,23 @@
     [
      0.0,
      0.0,
-     -95.0
+     -93.52
     ],
     [
      1000.0,
      1050.0,
-     9.0
+     9.3
     ]
    ],
    "aabb_min": [
     10650.0,
-    2174.92,
-    561.55
+    2174.76,
+    562.77
    ],
    "aabb_max": [
     11650.0,
-    3053.58,
-    1207.43
+    3052.74,
+    1207.68
    ],
    "mi_slots": {
     "MAT_Slate": "MI_Kit_Slate",
@@ -14336,18 +15801,18 @@
     [
      1000.0,
      1050.0,
-     9.0
+     9.3
     ]
    ],
    "aabb_min": [
     11650.0,
-    2174.92,
+    2174.76,
     627.61
    ],
    "aabb_max": [
     12000.0,
     3008.46,
-    1207.43
+    1207.68
    ],
    "mi_slots": {
     "MAT_Slate": "MI_Kit_Slate",
@@ -14406,7 +15871,7 @@
     [
      1000.0,
      1050.0,
-     9.0
+     9.3
     ]
    ],
    "aabb_min": [
@@ -14415,9 +15880,9 @@
     627.61
    ],
    "aabb_max": [
-    10325.08,
+    10325.24,
     1360.0,
-    1207.43
+    1207.68
    ],
    "mi_slots": {
     "MAT_Slate": "MI_Kit_Slate",
@@ -14476,7 +15941,7 @@
     [
      1000.0,
      1050.0,
-     9.0
+     9.3
     ]
    ],
    "aabb_min": [
@@ -14485,9 +15950,9 @@
     627.61
    ],
    "aabb_max": [
-    10325.08,
+    10325.24,
     2180.0,
-    1207.43
+    1207.68
    ],
    "mi_slots": {
     "MAT_Slate": "MI_Kit_Slate",
@@ -14546,7 +16011,7 @@
     [
      1000.0,
      1050.0,
-     9.0
+     9.3
     ]
    ],
    "aabb_min": [
@@ -14555,9 +16020,9 @@
     627.61
    ],
    "aabb_max": [
-    10325.08,
+    10325.24,
     3000.0,
-    1207.43
+    1207.68
    ],
    "mi_slots": {
     "MAT_Slate": "MI_Kit_Slate",
@@ -14616,18 +16081,18 @@
     [
      1000.0,
      1050.0,
-     9.0
+     9.3
     ]
    ],
    "aabb_min": [
-    11373.97,
+    11373.77,
     2180.0,
     628.87
    ],
    "aabb_max": [
     12010.05,
     3000.0,
-    1206.68
+    1206.9
    ],
    "mi_slots": {
     "MAT_Slate": "MI_Kit_Slate",
@@ -14686,18 +16151,18 @@
     [
      1000.0,
      1050.0,
-     9.0
+     9.3
     ]
    ],
    "aabb_min": [
-    11373.97,
+    11373.77,
     1360.0,
     628.87
    ],
    "aabb_max": [
     12010.05,
     2180.0,
-    1206.68
+    1206.9
    ],
    "mi_slots": {
     "MAT_Slate": "MI_Kit_Slate",
@@ -14756,18 +16221,18 @@
     [
      1000.0,
      1050.0,
-     9.0
+     9.3
     ]
    ],
    "aabb_min": [
-    11373.97,
+    11373.77,
     540.0,
     628.87
    ],
    "aabb_max": [
     12010.05,
     1360.0,
-    1206.68
+    1206.9
    ],
    "mi_slots": {
     "MAT_Slate": "MI_Kit_Slate",
@@ -15101,7 +16566,7 @@
    "group": "celldoor",
    "mesh": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_CellDoorFrame_150x270.SM_LB_Cl_CellDoorFrame_150x270",
    "loc": [
-    9825.0,
+    9900.0,
     3000.0,
     0.0
    ],
@@ -15119,13 +16584,13 @@
    "folder": "Cloister/Art/CellDoors",
    "mbounds": [
     [
-     0.0,
+     -75.0,
      -8.0,
      0.0
     ],
     [
-     150.0,
-     4.0,
+     75.0,
+     2.0,
      270.0
     ]
    ],
@@ -15136,11 +16601,12 @@
    ],
    "aabb_max": [
     9975.0,
-    3004.0,
+    3002.0,
     270.0
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
+    "MAT_Trim": "MI_Kit_Trim",
     "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {},
@@ -15153,7 +16619,7 @@
    "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Dungeon_door.SM_Dungeon_door",
    "loc": [
     9894.653,
-    3002.2,
+    2998.2,
     -0.685
    ],
    "rot": [
@@ -15182,12 +16648,12 @@
    ],
    "aabb_min": [
     9844.82,
-    2994.28,
+    2990.28,
     -0.06
    ],
    "aabb_max": [
     9955.09,
-    3000.98,
+    2996.98,
     249.56
    ],
    "mi_slots": {},
@@ -15202,7 +16668,7 @@
    "group": "celldoor",
    "mesh": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_CellDoorFrame_150x270.SM_LB_Cl_CellDoorFrame_150x270",
    "loc": [
-    10425.0,
+    10500.0,
     3000.0,
     0.0
    ],
@@ -15220,13 +16686,13 @@
    "folder": "Cloister/Art/CellDoors",
    "mbounds": [
     [
-     0.0,
+     -75.0,
      -8.0,
      0.0
     ],
     [
-     150.0,
-     4.0,
+     75.0,
+     2.0,
      270.0
     ]
    ],
@@ -15237,11 +16703,12 @@
    ],
    "aabb_max": [
     10575.0,
-    3004.0,
+    3002.0,
     270.0
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
+    "MAT_Trim": "MI_Kit_Trim",
     "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {},
@@ -15254,7 +16721,7 @@
    "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Dungeon_door.SM_Dungeon_door",
    "loc": [
     10494.653,
-    3002.2,
+    2998.2,
     -0.685
    ],
    "rot": [
@@ -15283,12 +16750,12 @@
    ],
    "aabb_min": [
     10444.82,
-    2994.28,
+    2990.28,
     -0.06
    ],
    "aabb_max": [
     10555.09,
-    3000.98,
+    2996.98,
     249.56
    ],
    "mi_slots": {},
@@ -15303,7 +16770,7 @@
    "group": "celldoor",
    "mesh": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_CellDoorFrame_150x270.SM_LB_Cl_CellDoorFrame_150x270",
    "loc": [
-    11025.0,
+    11100.0,
     3000.0,
     0.0
    ],
@@ -15321,13 +16788,13 @@
    "folder": "Cloister/Art/CellDoors",
    "mbounds": [
     [
-     0.0,
+     -75.0,
      -8.0,
      0.0
     ],
     [
-     150.0,
-     4.0,
+     75.0,
+     2.0,
      270.0
     ]
    ],
@@ -15338,11 +16805,12 @@
    ],
    "aabb_max": [
     11175.0,
-    3004.0,
+    3002.0,
     270.0
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
+    "MAT_Trim": "MI_Kit_Trim",
     "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {},
@@ -15355,7 +16823,7 @@
    "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Dungeon_door.SM_Dungeon_door",
    "loc": [
     11094.653,
-    3002.2,
+    2998.2,
     -0.685
    ],
    "rot": [
@@ -15384,12 +16852,12 @@
    ],
    "aabb_min": [
     11045.64,
-    2987.44,
+    2983.44,
     -4.28
    ],
    "aabb_max": [
     11172.74,
-    3011.81,
+    3007.81,
     252.42
    ],
    "mi_slots": {},
@@ -15405,7 +16873,7 @@
    "mesh": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_CellDoorFrame_150x270.SM_LB_Cl_CellDoorFrame_150x270",
    "loc": [
     9500.0,
-    825.0,
+    900.0,
     0.0
    ],
    "rot": [
@@ -15422,18 +16890,18 @@
    "folder": "Cloister/Art/CellDoors",
    "mbounds": [
     [
-     0.0,
+     -75.0,
      -8.0,
      0.0
     ],
     [
-     150.0,
-     4.0,
+     75.0,
+     2.0,
      270.0
     ]
    ],
    "aabb_min": [
-    9496.0,
+    9498.0,
     825.0,
     0.0
    ],
@@ -15444,6 +16912,7 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
+    "MAT_Trim": "MI_Kit_Trim",
     "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {},
@@ -15455,7 +16924,7 @@
    "group": "cellleaf",
    "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Dungeon_door.SM_Dungeon_door",
    "loc": [
-    9497.8,
+    9501.8,
     894.653,
     -0.685
    ],
@@ -15484,12 +16953,12 @@
     ]
    ],
    "aabb_min": [
-    9499.02,
+    9503.02,
     844.82,
     -0.06
    ],
    "aabb_max": [
-    9505.72,
+    9509.72,
     955.09,
     249.56
    ],
@@ -15506,7 +16975,7 @@
    "mesh": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_CellDoorFrame_150x270.SM_LB_Cl_CellDoorFrame_150x270",
    "loc": [
     9500.0,
-    2625.0,
+    2700.0,
     0.0
    ],
    "rot": [
@@ -15523,18 +16992,18 @@
    "folder": "Cloister/Art/CellDoors",
    "mbounds": [
     [
-     0.0,
+     -75.0,
      -8.0,
      0.0
     ],
     [
-     150.0,
-     4.0,
+     75.0,
+     2.0,
      270.0
     ]
    ],
    "aabb_min": [
-    9496.0,
+    9498.0,
     2625.0,
     0.0
    ],
@@ -15545,6 +17014,7 @@
    ],
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
+    "MAT_Trim": "MI_Kit_Trim",
     "MAT_Rubble": "MI_Kit_Rubble"
    },
    "extras": {},
@@ -15556,7 +17026,7 @@
    "group": "cellleaf",
    "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Dungeon_door.SM_Dungeon_door",
    "loc": [
-    9497.8,
+    9501.8,
     2694.653,
     -0.685
    ],
@@ -15585,12 +17055,12 @@
     ]
    ],
    "aabb_min": [
-    9499.02,
+    9503.02,
     2644.82,
     -0.06
    ],
    "aabb_max": [
-    9505.72,
+    9509.72,
     2755.09,
     249.56
    ],
@@ -15740,23 +17210,23 @@
    "mbounds": [
     [
      0.0,
-     -10.0,
+     -11.0,
      -25.0
     ],
     [
      34.0,
-     10.0,
+     11.0,
      22.0
     ]
    ],
    "aabb_min": [
     11966.0,
-    2190.0,
+    2189.0,
     120.0
    ],
    "aabb_max": [
     12000.0,
-    2210.0,
+    2211.0,
     167.0
    ],
    "mi_slots": {
@@ -15902,23 +17372,23 @@
    "mbounds": [
     [
      0.0,
-     -10.0,
+     -11.0,
      -25.0
     ],
     [
      34.0,
-     10.0,
+     11.0,
      22.0
     ]
    ],
    "aabb_min": [
     11966.0,
-    2310.0,
+    2309.0,
     120.0
    ],
    "aabb_max": [
     12000.0,
-    2330.0,
+    2331.0,
     167.0
    ],
    "mi_slots": {
@@ -16064,23 +17534,23 @@
    "mbounds": [
     [
      0.0,
-     -10.0,
+     -11.0,
      -25.0
     ],
     [
      34.0,
-     10.0,
+     11.0,
      22.0
     ]
    ],
    "aabb_min": [
     11966.0,
-    2430.0,
+    2429.0,
     120.0
    ],
    "aabb_max": [
     12000.0,
-    2450.0,
+    2451.0,
     167.0
    ],
    "mi_slots": {
@@ -16226,23 +17696,23 @@
    "mbounds": [
     [
      0.0,
-     -10.0,
+     -11.0,
      -25.0
     ],
     [
      34.0,
-     10.0,
+     11.0,
      22.0
     ]
    ],
    "aabb_min": [
     11966.0,
-    2550.0,
+    2549.0,
     120.0
    ],
    "aabb_max": [
     12000.0,
-    2570.0,
+    2571.0,
     167.0
    ],
    "mi_slots": {

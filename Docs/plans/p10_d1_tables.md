@@ -25,7 +25,7 @@ Counts by category: arcade 28, block 8, door 5, doorleaf 5, dress 150, floor 7, 
 | 2 lanes | BlockAll rubble heap vs Patrol_Cloister_03->04 (>= 102) | PASS | distance 186.1 cm (clearance 144.1) |
 | 3 faces | 57 wall-piece inner faces vs greybox faces | PASS | worst deviation 0.000 cm (TWA_S1_W); limit 0.5 |
 | 3 faces | tower pieces inside the shell AABB (X 12000-13000, Y 1500-2500, Z <= 3540) except courses and the roof | PASS | all inside |
-| 4 rails | 11 rail bands on the greybox rail planes | PASS | worst deviation 0.000 cm (TWA_FlightRail_F01); limit 0.5 |
+| 4 rails | 11 rail bands on the greybox rail planes (built rail 8 wide inside the 10 cm plane, core-side face on the plane) | PASS | worst deviation 0.000 cm (TWA_FlightRail_F01); limit 0.5 |
 | 4 rails | 4 shaft posts inside the 10 cm rail band + core | PASS | all inside |
 | 5 vaults | no two vault bays overlap by more than their 30 cm tuck | PASS | 12 overlapping pairs, worst min-dimension 30.0 cm CLA_Vault_S_W/CLA_Vault_W (30 x 30); limit 30 |
 | 6 counts | Flights | PASS | 11 (expected 11) |
@@ -42,7 +42,7 @@ Counts by category: arcade 28, block 8, door 5, doorleaf 5, dress 150, floor 7, 
 | 7 derived | rubble heap AABB = target X 11050-11370, Y 2295-2505, Z 0-65 | PASS | sum of deviations 0.000 cm |
 | 7 derived | chamber rafter AABB = target X 12045-12060, Y 2190-2450, Z 2500-2515 | PASS | sum of deviations 0.000 cm; scale [1.0, 1.5, 1.0] |
 | 7 derived | 8 hidden blocks equal their D1.0 extents | PASS | ok |
-| 7 derived | great bell world bounds = X 12315-12525, Y 1895-2105, Z 2640-2860 | PASS | sum of deviations 0.000 cm |
+| 7 derived | great bell world bounds = X 12315-12525, Y 1895-2105, Z 2640-2860 | PASS | sum of deviations 0.240 cm |
 | 7 derived | inscription tablet 10 x 300 x 75, flush on X 12000 (with the Plaque shifted -2 local, see D1 note) | PASS | deviation 0.000 cm |
 | 7 derived | 12 roof panels: transformed corners on the eaves (Z 640) and top (Z 1200) lines | PASS | worst corner deviation 0.0021 cm (CLA_Roof_S_0); limit 1.0 |
 | 7 derived | roof panels tile each walk's run (3 per walk) | PASS | ok |
@@ -54,6 +54,10 @@ Counts by category: arcade 28, block 8, door 5, doorleaf 5, dress 150, floor 7, 
 | 7 derived | every warm light except L_Cl_Cell and L_Tw_BellFill has a lantern | PASS | 10 lanterns for 10 warm lights |
 | 7 derived | cell-door leaf 250 tall (scale z 1.37) | PASS | height 249.6 |
 | 7 derived | L_Tw_Bell outside the SW frame post (X 12267.5-12292.5) | PASS | light at [12255.0, 1865.0, 2690.0] |
+| 7 derived | roof panels: local +z (slate normal) world Z > 0.5 and local x runs -X (S), +X (N), +Y (W), -Y (E) | PASS | min normal Z 0.742 |
+| 7 derived | every new-folder mesh named in a record exists in the built-mesh reports (tower 33, cloister 40) | PASS | all 68 record meshes found |
+| 7 derived | D1.12: all 10 vault bays spring at Z 540 and every corbel top is Z 540 | PASS | vault Z 540..540, corbel tops [540.0] |
+| 7 derived | D1.12: cell leaf back at local y -3 (world Y 2997 on the N wall) | PASS | leaf back Y 2996.98; frame AABB Y 2992.0..3002.0 |
 
 **Overall: PASS**
 
@@ -97,25 +101,25 @@ Clearance = distance from the sampled walk line (or the routed Warden path) to t
 | WP_TowerStairs_23->WP_TowerStairs_24 | WalkPath TowerStairs | 125.0 | TWA_S3_W |
 | WP_CryptToCloister_09->WP_CryptToCloister_10 | WalkPath CryptToCloister | 150.0 | SHA_Wall_SH_W_1 |
 | (the other 0 TowerStairs segments have > 200) | | | |
-| Patrol_Cloister_01->Patrol_Cloister_02 | Patrol (straight 750) | 237.0 | CLA_Lantern_West |
-| Patrol_Cloister_02->Patrol_Cloister_03 | Patrol (straight 1000) | 257.2 | CLA_Cell_Stool |
+| Patrol_Cloister_01->Patrol_Cloister_02 | Patrol (straight 750) | 198.3 | CLA_CellLeaf_N9900 |
+| Patrol_Cloister_02->Patrol_Cloister_03 | Patrol (straight 1000) | 198.3 | CLA_CellLeaf_N9900 |
 | Patrol_Cloister_03->Patrol_Cloister_04 | Patrol (straight 906) | 144.1 | CLA_Collapse_Heap |
 | Patrol_Cloister_04->Patrol_Cloister_05 | Patrol (straight 962) | 63.6 | GP_Mech_Ritual3 |
 | Patrol_Cloister_05->Patrol_Cloister_06 | Patrol (straight 912) | 82.1 | GP_Mech_Ritual3 |
 | Patrol_Cloister_06->Patrol_Cloister_07 | Patrol (straight 806) | 372.8 | SHA_Wall_SH_E_0 |
 | Patrol_Cloister_07->Patrol_Cloister_01 | Patrol (straight 1556, routed 1730) | 86.6 | Cl_Block_PierSW |
-| Search_Cloister_01 | AI point | 750.0 | Cl_Block_PierSW |
+| Search_Cloister_01 | AI point | 127.3 | CLA_CellLeaf_W900 |
 | Search_Cloister_02 | AI point | 90.4 | CLA_Cell_Bucket |
-| Search_Cloister_03 | AI point | 197.1 | CLA_CellLeaf_N11100 |
-| Search_Cloister_04 | AI point | 260.4 | GP_Bell_4 |
+| Search_Cloister_03 | AI point | 194.8 | CLA_CellLeaf_N11100 |
+| Search_Cloister_04 | AI point | 260.2 | GP_Bell_4_Bracket |
 | Search_Cloister_05 | AI point | 119.3 | GP_Bell_2 |
 | Search_Cloister_06 | AI point | 65.9 | GP_Mech_Ritual3 |
 | Search_Cloister_07 | AI point | 623.7 | Cl_Block_PierSE |
 | Search_Cloister_08 | AI point | 483.0 | SHA_Wall_SH_E_0 |
-| Search_Cloister_09 | AI point | 502.7 | CLA_Lantern_West |
+| Search_Cloister_09 | AI point | 472.4 | CLA_CellLeaf_W900 |
 | Search_Cloister_10 | AI point | 152.3 | CLA_Cell_Stool |
-| Search_Cloister_11 | AI point | 518.0 | Cl_Block_PierNW |
-| Search_Cloister_12 | AI point | 182.3 | CLA_CellLeaf_N11100 |
+| Search_Cloister_11 | AI point | 198.1 | CLA_CellLeaf_N10500 |
+| Search_Cloister_12 | AI point | 179.9 | CLA_CellLeaf_N11100 |
 | Search_Cloister_13 | AI point | 342.8 | SHA_Wall_SH_W_1 |
 | Search_Cloister_14 | AI point | 156.7 | CLA_Collapse_Rubble_5 |
 | WSpawn_Cloister | AI point | 392.2 | PSA_Lantern |
@@ -136,81 +140,145 @@ Straight-line distance of the patrol segments to the new colliders (blocks, heap
 
 Ground slabs `Ground_1`, `Ground_2`, `Ground_4`, `Ground_6` get `MI_Kit_Floor` (`ground_materials`).
 
-## Pieces (new Blender pieces; mbounds from the D1 tables)
+## Pieces (built Blender pieces; mbounds and slots are the MEASURED values from tower_report.json / cloister_report.json, D1.12)
 
-| Piece | Folder | mbounds min | mbounds max | Slots | Seed | UCX | Pivot / note |
+| Piece | Folder | mbounds min | mbounds max | Slots | Seed | UCX (built) | Pivot / note |
 |---|---|---|---|---|---|---|---|
-| SM_LB_Tw_S1_W | BellTower/Meshes | (-10, 0, 0) | (1010, 50, 800) | MAT_Masonry, MAT_Trim | 1001 | none | local (0,0,0) = inner face start, z 0 = stage base; local x along the face, y 0 = inner face / 40 = outer face; face W, stage S1 z 0-800; Door Y 1948-2052 (x 448-552), jambs z 0-194 (8 cm chamfers), gabled head apex z 228 at x 500, hood mould 8 proud 15 tall 20 above the head |
-| SM_LB_Tw_S1_N | BellTower/Meshes | (-10, 0, 0) | (930, 50, 800) | MAT_Masonry, MAT_Trim | 1002 | none | local (0,0,0) = inner face start, z 0 = stage base; local x along the face, y 0 = inner face / 40 = outer face; face N, stage S1 z 0-800; Slit F01 at x 460, z 263.6 |
-| SM_LB_Tw_S1_E | BellTower/Meshes | (-10, 0, 0) | (1010, 50, 800) | MAT_Masonry, MAT_Trim | 1003 | none | local (0,0,0) = inner face start, z 0 = stage base; local x along the face, y 0 = inner face / 40 = outer face; face E, stage S1 z 0-800; Slit F02 at x 500, z 490.9 |
-| SM_LB_Tw_S1_S | BellTower/Meshes | (-10, 0, 0) | (930, 50, 800) | MAT_Masonry, MAT_Trim | 1004 | none | local (0,0,0) = inner face start, z 0 = stage base; local x along the face, y 0 = inner face / 40 = outer face; face S, stage S1 z 0-800; Slit F03 at x 460, z 718.1 |
-| SM_LB_Tw_S2_W | BellTower/Meshes | (-10, 0, 0) | (1010, 50, 1700) | MAT_Masonry, MAT_Trim | 1005 | none | local (0,0,0) = inner face start, z 0 = stage base; local x along the face, y 0 = inner face / 40 = outer face; face W, stage S2 z 800-2500; Slit F08 at x 500, z 1054.0 (world 1854) |
-| SM_LB_Tw_S2_N | BellTower/Meshes | (-10, 0, 0) | (930, 50, 1700) | MAT_Masonry, MAT_Trim | 1006 | none | local (0,0,0) = inner face start, z 0 = stage base; local x along the face, y 0 = inner face / 40 = outer face; face N, stage S2 z 800-2500; Slits F05 / F09 at x 460, z 372.7 / 1281.8 |
-| SM_LB_Tw_S2_E | BellTower/Meshes | (-10, 0, 0) | (1010, 50, 1700) | MAT_Masonry, MAT_Trim | 1007 | none | local (0,0,0) = inner face start, z 0 = stage base; local x along the face, y 0 = inner face / 40 = outer face; face E, stage S2 z 800-2500; Slits F06 / F10 at x 500, z 600.0 / 1509.1 |
-| SM_LB_Tw_S2_S | BellTower/Meshes | (-10, 0, 0) | (930, 50, 1700) | MAT_Masonry, MAT_Trim | 1008 | none | local (0,0,0) = inner face start, z 0 = stage base; local x along the face, y 0 = inner face / 40 = outer face; face S, stage S2 z 800-2500; Slit F07 at x 460, z 827.3 |
-| SM_LB_Tw_S3_W_BrokenSW | BellTower/Meshes | (-15, 0, 0) | (1015, 55, 1040) | MAT_Masonry, MAT_Trim, MAT_Rubble | 1009 | none | local (0,0,0) = inner face start, z 0 = stage base; local x along the face, y 0 = inner face / 40 = outer face; face W, stage S3 z 2500-3540; two belfry lancets (130 clear, sill z 200, apex z 762.6); wall top is a jagged stepped break (stepped_profile seed 1003, 6-9 steps) |
-| SM_LB_Tw_S3_N | BellTower/Meshes | (-15, 0, 0) | (935, 55, 1040) | MAT_Masonry, MAT_Trim | 1010 | none | local (0,0,0) = inner face start, z 0 = stage base; local x along the face, y 0 = inner face / 40 = outer face; face N, stage S3 z 2500-3540; two belfry lancets (130 clear, sill z 200, apex z 762.6) |
-| SM_LB_Tw_S3_E | BellTower/Meshes | (-15, 0, 0) | (1015, 55, 1040) | MAT_Masonry, MAT_Trim | 1011 | none | local (0,0,0) = inner face start, z 0 = stage base; local x along the face, y 0 = inner face / 40 = outer face; face E, stage S3 z 2500-3540; two belfry lancets (130 clear, sill z 200, apex z 762.6) |
-| SM_LB_Tw_S3_S_BrokenSW | BellTower/Meshes | (-15, 0, 0) | (935, 55, 1040) | MAT_Masonry, MAT_Trim, MAT_Rubble | 1012 | none | local (0,0,0) = inner face start, z 0 = stage base; local x along the face, y 0 = inner face / 40 = outer face; face S, stage S3 z 2500-3540; two belfry lancets (130 clear, sill z 200, apex z 762.6); wall top is a jagged stepped break (stepped_profile seed 1004, 6-9 steps) |
-| SM_LB_Tw_StairFlight_250x420 | BellTower/Meshes | (-10, 0, -10) | (430, 258, 257) | MAT_Wood, MAT_Iron | 1101 | none | flight frame: x along the climb 0-420 (tread i at 30i..30i+30), y core side 0 -> wall side 250, z 0 = flight base; 14 oak treads 6 thick (tops 16.2338(i+1)), open risers, 2 stringers, 3 wall brackets |
-| SM_LB_Tw_StairFlight_250x420_Closed | BellTower/Meshes | (-10, 0, 0) | (430, 258, 257) | MAT_Wood, MAT_Iron | 1101 | none | flight frame; T1 plus riser boards and side panels down to z 0 (F01 only) |
-| SM_LB_Tw_StairFlight_250x420_BrokenA | BellTower/Meshes | (-10, 0, -10) | (430, 258, 257) | MAT_Wood, MAT_Iron | 1102 | none | flight frame; tread 6 lacks y 210-250, tread 10 split at y 120 (F03, F09) |
-| SM_LB_Tw_StairFlight_250x420_BrokenB | BellTower/Meshes | (-10, 0, -10) | (430, 258, 257) | MAT_Wood, MAT_Iron | 1103 | none | flight frame; tread 3 lacks y 210-250, tread 9 cracked at y 80 (F06) |
-| SM_LB_Tw_FlightRail_420 | BellTower/Meshes | (0, 0, 58.2) | (420, 10, 341.5) | MAT_Wood | 1104 | none | flight frame; rail band y 0-10 (envelope of the 8-wide posts and handrail); posts 8x8 at x 140 and 280, handrail top z = 16.2338(x/30+1)+98, mid-rail 50 lower |
-| SM_LB_Tw_Landing_250 | BellTower/Meshes | (0, 0, -60) | (250, 250, 0) | MAT_Wood, MAT_Masonry | 1105 | none | top-surface min corner (top z = 0); x 0-250, y 0-250; x = 250 and y = 250 are the wall sides; boards 5 thick, 4 joists, 2+2 stone corbels (z -60..-25) at the wall sides |
-| SM_LB_Tw_ShaftBase_420x420x450 | BellTower/Meshes | (-210, -210, 0) | (210, 210, 450) | MAT_Masonry, MAT_Trim, MAT_Rubble, MAT_Wood | 1106 | none (the invisible Tw_Core collides) | bottom centre; hollow square 420 outer, 35 thick walls, Z 0-450, coping z 430-450 projecting 3 inward only, rubble floor z 0-40 |
-| SM_LB_Tw_ShaftPost_20x20x2015 | BellTower/Meshes | (-10, -10, 0) | (10, 10, 2015) | MAT_Wood, MAT_Iron | 1107 | none | bottom centre; oak post with iron splice plates at z 670 and 1340 and a cap plate |
-| SM_LB_Tw_BelfryFloor | BellTower/Meshes | (0, 0, -35) | (680, 920, 0) | MAT_Wood, MAT_Iron | 1108 | none | local (0,0,0) = world (12040, 1540, 2500), top at z 0; W slab x0-250 y0-920, N slab x250-670 y670-920, core top x250-670 y250-670, rope hole x490-520 y280-310, beams to x 680 |
-| SM_LB_Tw_TopRail_670 | BellTower/Meshes | (0, -5, 0) | (670, 5, 98) | MAT_Wood | - | none | rail start on its centre line at floor level; x along the rail; posts 10x10 every <= 120, handrail top 98, mid-rail top 50 |
-| SM_LB_Tw_TopRail_420 | BellTower/Meshes | (0, -5, 0) | (420, 5, 98) | MAT_Wood | - | none | rail start on its centre line at floor level; x along the rail; as _670 |
-| SM_LB_Tw_Partition_250x455 | BellTower/Meshes | (0, 0, 0) | (250, 4, 455) | MAT_Wood, MAT_Iron | 1109 | none | min corner; x 250 wide, y thickness 0-4, z 455; vertical boards, 2 rails, one board missing at x 150-170 |
-| SM_LB_Tw_Louvre_130x450 | BellTower/Meshes | (-65, 0, 0) | (65, 30, 450) | MAT_Wood | - | none | bottom centre of the opening on the inner face (local y 0); nine 130x30x3 boards sloping 40 deg, spaced 50 from z 25, two side cleats |
-| SM_LB_Tw_Louvre_130x450_Broken | BellTower/Meshes | (-65, 0, 0) | (65, 30, 450) | MAT_Wood | - | none | as the intact louvre; boards 3 and 4 missing, board 5 hangs at 70 deg |
-| SM_LB_Tw_BellFrame_A | BellTower/Meshes | (-165, -147.5, 0) | (165, 147.5, 380) | MAT_Wood, MAT_Iron | 1110 | 4 boxes (the posts only) | floor point under the bell axis; 4 oak posts 25x25 z 0-365 at (+-140, +-135); sills x -165..165; head sills z 335-365; cross-ties; braces; bearing blocks to z 380 |
-| SM_LB_Tw_BellHeadstock_A | BellTower/Meshes | (-130, -175, -130) | (130, 165, 130) | MAT_Wood, MAT_Iron | 1111 | none | axle centre; headstock 35x35 along y -150..150, gudgeons, straps, bell wheel O 260 in the plane y -170 (6 spokes) |
-| SM_LB_Prop_GreatBell_A | BellTower/Meshes | (-105, -105, -220) | (105, 105, 0) | MAT_Bronze, MAT_Iron | 1112 | 1 convex hull of the outer profile | crown top centre, the bell hangs along -z; lathe: canons z 0..-20, crown O110 at -20, shoulder O130 at -35, waist O150 at -120, sound bow O196 at -200, lip O210 at -220; crack on -x, V-chip |
-| SM_LB_Prop_BellRope_2610 | BellTower/Meshes | (-6.5, -6.5, -2610) | (6.5, 6.5, 0) | MAT_Rope, MAT_Sally | - | none | top; O 3.5 rope z 0..-2610 with 2 cm sway, sally O 9 x 100 at z -2410..-2510 |
-| SM_LB_Tw_Roof_BrokenSW | BellTower/Meshes | (-525, -525, -300) | (525, 525, 1292) | MAT_Slate, MAT_Wood, MAT_Iron | 1113 | none | bottom centre at the wall top: world (12500, 2000, 3540); pyramid eaves +-525 at z -10 to apex z 1200, cross finial 90 tall bent 20 deg toward +x; SW quarter missing (-x face y -525..-100, -y face x -525..-100, up to z 860); hanging rafter to z -300 |
-| SM_LB_Cl_Wall40_400x1300_A | Cloister/Meshes | (0, -6, 0) | (400, 40, 1300) | MAT_Masonry, MAT_Trim | 1201 | none | bottom-left-back; local x along the face, y 0 = inner face, 40 = outer; drip course z 1210-1230 proj 6 on the inner face; C1 |
-| SM_LB_Cl_Wall40_400x1300_B | Cloister/Meshes | (0, -6, 0) | (400, 40, 1300) | MAT_Masonry, MAT_Trim | 1202 | none | bottom-left-back; local x along the face, y 0 = inner face, 40 = outer; drip course z 1210-1230 proj 6 on the inner face; C1 |
-| SM_LB_Cl_Wall40_100x1300 | Cloister/Meshes | (0, -6, 0) | (100, 40, 1300) | MAT_Masonry, MAT_Trim | 1203 | none | as C1; C1 (used only when a run is < 300 long) |
-| SM_LB_Cl_Wall40_400x800_A | Cloister/Meshes | (0, 0, 0) | (400, 40, 800) | MAT_Masonry, MAT_Trim | 1204 | none | as C1; C2 passage, no drip course |
-| SM_LB_Cl_Wall40_400x800_B | Cloister/Meshes | (0, 0, 0) | (400, 40, 800) | MAT_Masonry, MAT_Trim | 1205 | none | as C1; C2 passage, no drip course |
-| SM_LB_Cl_Wall40_100x800 | Cloister/Meshes | (0, 0, 0) | (100, 40, 800) | MAT_Masonry, MAT_Trim | 1206 | none | as C1; C2 |
-| SM_LB_Cl_Wall40_400x450 | Cloister/Meshes | (0, 0, 0) | (400, 40, 450) | MAT_Masonry, MAT_Trim | 1207 | none | as C1; C3 stair-house |
-| SM_LB_Cl_Wall40_100x450 | Cloister/Meshes | (0, 0, 0) | (100, 40, 450) | MAT_Masonry, MAT_Trim | 1208 | none | as C1; C3 |
-| SM_LB_Cl_Archway_500x40x1300 | Cloister/Meshes | (0, -6, 0) | (500, 40, 1300) | MAT_Masonry, MAT_Trim | 1209 | none | bottom-left-back; local y 0 on the cloister side; C4 four-centred arch, springing z 300 at x 0 and 500, apex z 420, voussoir ring MAT_Trim, drip course on the cloister face |
-| SM_LB_Cl_Archway_300x40x1300 | Cloister/Meshes | (0, -6, 0) | (300, 40, 1300) | MAT_Masonry, MAT_Trim | 1210 | none | as C4; C5 springing z 330, apex z 450 |
-| SM_LB_Cl_Pier_80x80x640 | Cloister/Meshes | (-48, -48, 0) | (48, 48, 620) | MAT_Masonry, MAT_Trim | 1211 | none | bottom centre; C6: shaft z 25-300, base moulding z 0-25 (+4), bell capital z 300-330 (+8), wall block to z 600, coping z 600-620 (+5); the table gives the top at z 620 although the name says 640 |
-| SM_LB_Cl_PierCorner_130x80x640 | Cloister/Meshes | (-73, -48, 0) | (73, 48, 620) | MAT_Masonry, MAT_Trim | 1212 | none | bottom centre of the 130x80 plan; C7 |
-| SM_LB_Cl_ArcadeArch_120x80 | Cloister/Meshes | (0, -45, 0) | (120, 45, 290) | MAT_Masonry, MAT_Trim | 1213 | none | local (0,0,0) = left springing point on the pier line; x 0..span, y -40..40 (+5 coping), z 0..290 (world 330-620); C8 two-centred pointed arch, radius 0.8 span, voussoir ring MAT_Trim, spandrel to z 270, coping z 270-290 (+5) |
-| SM_LB_Cl_ArcadeArch_170x80 | Cloister/Meshes | (0, -45, 0) | (170, 45, 290) | MAT_Masonry, MAT_Trim | 1214 | none | local (0,0,0) = left springing point on the pier line; x 0..span, y -40..40 (+5 coping), z 0..290 (world 330-620); C8 two-centred pointed arch, radius 0.8 span, voussoir ring MAT_Trim, spandrel to z 270, coping z 270-290 (+5) |
-| SM_LB_Cl_ArcadeArch_220x80 | Cloister/Meshes | (0, -45, 0) | (220, 45, 290) | MAT_Masonry, MAT_Trim | 1215 | none | local (0,0,0) = left springing point on the pier line; x 0..span, y -40..40 (+5 coping), z 0..290 (world 330-620); C8 two-centred pointed arch, radius 0.8 span, voussoir ring MAT_Trim, spandrel to z 270, coping z 270-290 (+5) |
-| SM_LB_Cl_ArcadeArch_270x80 | Cloister/Meshes | (0, -45, 0) | (270, 45, 290) | MAT_Masonry, MAT_Trim | 1216 | none | local (0,0,0) = left springing point on the pier line; x 0..span, y -40..40 (+5 coping), z 0..290 (world 330-620); C8 two-centred pointed arch, radius 0.8 span, voussoir ring MAT_Trim, spandrel to z 270, coping z 270-290 (+5) |
-| SM_LB_Cl_GarthWall_1100x100 | Cloister/Meshes | (0, -4, 0) | (1100, 30, 100) | MAT_Masonry, MAT_Trim | 1217 | none | local y 0 = face toward the walk; body to y +15 (garth side); coping z 88-100 spans y -4..+30; C9 |
-| SM_LB_Cl_GarthWall_800x100 | Cloister/Meshes | (0, -4, 0) | (800, 30, 100) | MAT_Masonry, MAT_Trim | 1218 | none | as C9; C9 |
-| SM_LB_Cl_GarthBed_1100x800 | Cloister/Meshes | (0, 0, -4) | (1100, 800, 10) | MAT_Earth | 1219 | none | min corner, z 0 = garth top; C10 earth surface with 2-10 cm mounds and six shallow grave hollows (bed-local centres in extras.hollows) |
-| SM_LB_Cl_GraveSlab_200x80 | Cloister/Meshes | (-100, -40, 0) | (100, 40, 8) | MAT_Masonry | 1220 | none | bottom centre (ASSUMED: C11 gives no pivot, D1 convention for props); C11 slab 200x80x8 with chamfers and a worn cross relief |
-| SM_LB_Cl_GraveCross_60 | Cloister/Meshes | (-18, -4, 0) | (18, 4, 60) | MAT_Masonry | 1221 | none | bottom centre (ASSUMED); C11 small stone cross 60 tall, 8 thick (arm span assumed 36) |
-| SM_LB_Cl_GarthCross_350 | Cloister/Meshes | (-60, -60, 0) | (60, 60, 350) | MAT_Masonry | 1222 | none | bottom centre (ASSUMED); C11 stepped base 120x120x20 + 90x90x20, chamfered shaft 24x24 to z 290, cross head 90 wide |
-| SM_LB_Cl_Vault_Barrel_830x640 | Cloister/Meshes | (0, 0, 0) | (640, 830, 365) | MAT_Masonry, MAT_Trim | 1225 | none | min corner at the springing level; name = span x length; local x along the walk (length), y across (span); C12 four-centred barrel, soffit rise 340 (+25 shell), transverse ribs at x 0, L/2, L |
-| SM_LB_Cl_Vault_Barrel_770x640 | Cloister/Meshes | (0, 0, 0) | (640, 770, 365) | MAT_Masonry, MAT_Trim | 1226 | none | min corner at the springing level; name = span x length; local x along the walk (length), y across (span); C12 four-centred barrel, soffit rise 340 (+25 shell), transverse ribs at x 0, L/2, L |
-| SM_LB_Cl_Vault_Barrel_770x640_Broken | Cloister/Meshes | (0, 0, 0) | (640, 770, 365) | MAT_Masonry, MAT_Trim | 1227 | none | min corner at the springing level; name = span x length; local x along the walk (length), y across (span); C12 four-centred barrel, soffit rise 340 (+25 shell), transverse ribs at x 0, L/2, L; hole x 50-600 and snapped mid rib |
-| SM_LB_Cl_Vault_Barrel_770x980 | Cloister/Meshes | (0, 0, 0) | (980, 770, 365) | MAT_Masonry, MAT_Trim | 1228 | none | min corner at the springing level; name = span x length; local x along the walk (length), y across (span); C12 four-centred barrel, soffit rise 340 (+25 shell), transverse ribs at x 0, L/2, L |
-| SM_LB_Cl_Vault_Barrel_570x980 | Cloister/Meshes | (0, 0, 0) | (980, 570, 365) | MAT_Masonry, MAT_Trim | 1229 | none | min corner at the springing level; name = span x length; local x along the walk (length), y across (span); C12 four-centred barrel, soffit rise 340 (+25 shell), transverse ribs at x 0, L/2, L |
-| SM_LB_Cl_Vault_Groin_770x830 | Cloister/Meshes | (0, 0, 0) | (770, 830, 365) | MAT_Masonry, MAT_Trim | 1232 | none | min corner at the springing level; local x span x, y span y; C13 groin = two perpendicular barrels clipped to the square, diagonal and wall ribs |
-| SM_LB_Cl_Vault_Groin_570x830 | Cloister/Meshes | (0, 0, 0) | (570, 830, 365) | MAT_Masonry, MAT_Trim | 1233 | none | min corner at the springing level; local x span x, y span y; C13 groin = two perpendicular barrels clipped to the square, diagonal and wall ribs |
-| SM_LB_Cl_Vault_Groin_770x770 | Cloister/Meshes | (0, 0, 0) | (770, 770, 365) | MAT_Masonry, MAT_Trim | 1234 | none | min corner at the springing level; local x span x, y span y; C13 groin = two perpendicular barrels clipped to the square, diagonal and wall ribs |
-| SM_LB_Cl_Vault_Groin_570x770 | Cloister/Meshes | (0, 0, 0) | (570, 770, 365) | MAT_Masonry, MAT_Trim | 1235 | none | min corner at the springing level; local x span x, y span y; C13 groin = two perpendicular barrels clipped to the square, diagonal and wall ribs |
-| SM_LB_Cl_LeanTo_1000x1050 | Cloister/Meshes | (0, 0, -15) | (1000, 1050, 9) | MAT_Slate, MAT_Wood | 1236 | none | eaves-line start; local x along the eaves, y up the slope in the panel plane, z the panel normal; C14 slates 6 on battens, rafters 12x15 at 60 c/c below |
-| SM_LB_Cl_LeanTo_1000x1050_Hole | Cloister/Meshes | (0, 0, -95) | (1000, 1050, 9) | MAT_Slate, MAT_Wood | 1237 | none | as C14; C14 hole over x 150-850, y 0-800, broken battens, 3 snapped rafters (two stubs hanging 40-80) |
-| SM_LB_Cl_CellDoorFrame_150x270 | Cloister/Meshes | (0, -8, 0) | (150, 4, 270) | MAT_Masonry, MAT_Rubble | 1238 | none | bottom-left; local y 0 = wall face, frame projects to y -8; C15 surround 150x270, 20 jambs, straight-sided pointed head (shoulders z 220, apex 250), 110x250 opening, back panel at y +2 |
-| SM_LB_Cl_StairHouseGable_380x40x650 | Cloister/Meshes | (0, 0, 0) | (380, 40, 650) | MAT_Masonry, MAT_Trim | 1239 | none | as the wall pieces (inner face at local y 0); C16 triangular top from z 450 at the ends to 650 at the centre |
-| SM_LB_Cl_StairHouseRoof_420x640 | Cloister/Meshes | (0, 0, 0) | (420, 640, 208) | MAT_Slate, MAT_Wood | 1240 | none | min corner at the eaves level; C17 pitched roof, ridge along local y at x 210 z 200, 20 overhangs |
-| SM_LB_Prop_SmallBell_A | Cloister/Meshes | (-12, -12, -28) | (12, 12, 4) | MAT_Bronze, MAT_Iron, MAT_Band | 1301 | 1 convex hull | crown top, hangs along -z; M1 lathe: lip O24 at -28, sound bow O22 at -25, waist O16 at -14, crown O10 at -3; loop z 0..4; painted band z -8..-5 (MAT_Band) |
-| SM_LB_Prop_SmallBellBracket_A | Cloister/Meshes | (0, -10, -25) | (34, 10, 22) | MAT_Iron, MAT_Wood | 1302 | none | back face of the wall plate at the arm axis height, local +x out of the wall; M2 |
-| SM_LB_Prop_BellPlaque_A | Cloister/Meshes | (0, -17, -17) | (4, 17, 17) | MAT_Trim | 1303 | none | back centre, front faces +x; M3 plaque 4x34x34 |
-| SM_LB_Prop_InscriptionTablet_A | Cloister/Meshes | (0, -60, -15) | (4, 60, 15) | MAT_Trim | 1304 | none | back centre, front faces +x; M4 tablet 4x120x30 (x 2.5 root scale = 10x300x75) |
+| SM_LB_Tw_S1_W | BellTower/Meshes | (-10, 0, 0) | (1010, 50, 800) | MAT_Masonry, MAT_Trim, MAT_Rubble | 1001 | 0 | local (0,0,0) = inner face start, z 0 = stage base; local x along the face, y 0 = inner face / 40 = outer face; face W, stage S1 z 0-800; Door Y 1948-2052 (x 448-552), jambs z 0-194 (8 cm chamfers), gabled head apex z 228 at x 500, hood mould 8 proud 15 tall 20 above the head |
+| SM_LB_Tw_S1_N | BellTower/Meshes | (-40, 0, 0) | (960, 50, 800) | MAT_Masonry, MAT_Trim, MAT_Rubble | 1002 | 0 | local (0,0,0) = inner face start, z 0 = stage base; local x along the face, y 0 = inner face / 40 = outer face; face N, stage S1 z 0-800; Slit F01 at x 460, z 263.6 |
+| SM_LB_Tw_S1_E | BellTower/Meshes | (-10, 0, 0) | (1010, 50, 800) | MAT_Masonry, MAT_Trim, MAT_Rubble | 1003 | 0 | local (0,0,0) = inner face start, z 0 = stage base; local x along the face, y 0 = inner face / 40 = outer face; face E, stage S1 z 0-800; Slit F02 at x 500, z 490.9 |
+| SM_LB_Tw_S1_S | BellTower/Meshes | (-40, 0, 0) | (960, 50, 800) | MAT_Masonry, MAT_Trim, MAT_Rubble | 1004 | 0 | local (0,0,0) = inner face start, z 0 = stage base; local x along the face, y 0 = inner face / 40 = outer face; face S, stage S1 z 0-800; Slit F03 at x 460, z 718.1 |
+| SM_LB_Tw_S2_W | BellTower/Meshes | (-10, 0, 0) | (1010, 50, 1700) | MAT_Masonry, MAT_Trim, MAT_Rubble | 1005 | 0 | local (0,0,0) = inner face start, z 0 = stage base; local x along the face, y 0 = inner face / 40 = outer face; face W, stage S2 z 800-2500; Slit F08 at x 500, z 1054.0 (world 1854) |
+| SM_LB_Tw_S2_N | BellTower/Meshes | (-40, 0, 0) | (960, 50, 1700) | MAT_Masonry, MAT_Trim, MAT_Rubble | 1006 | 0 | local (0,0,0) = inner face start, z 0 = stage base; local x along the face, y 0 = inner face / 40 = outer face; face N, stage S2 z 800-2500; Slits F05 / F09 at x 460, z 372.7 / 1281.8 |
+| SM_LB_Tw_S2_E | BellTower/Meshes | (-10, 0, 0) | (1010, 50, 1700) | MAT_Masonry, MAT_Trim, MAT_Rubble | 1007 | 0 | local (0,0,0) = inner face start, z 0 = stage base; local x along the face, y 0 = inner face / 40 = outer face; face E, stage S2 z 800-2500; Slits F06 / F10 at x 500, z 600.0 / 1509.1 |
+| SM_LB_Tw_S2_S | BellTower/Meshes | (-40, 0, 0) | (960, 50, 1700) | MAT_Masonry, MAT_Trim, MAT_Rubble | 1008 | 0 | local (0,0,0) = inner face start, z 0 = stage base; local x along the face, y 0 = inner face / 40 = outer face; face S, stage S2 z 800-2500; Slit F07 at x 460, z 827.3 |
+| SM_LB_Tw_S3_W_BrokenSW | BellTower/Meshes | (0, 0, 0) | (1015, 55, 1040) | MAT_Masonry, MAT_Trim, MAT_Rubble | 1009 | 0 | local (0,0,0) = inner face start, z 0 = stage base; local x along the face, y 0 = inner face / 40 = outer face; face W, stage S3 z 2500-3540; two belfry lancets (130 clear, sill z 200, apex z 762.6); wall top is a jagged stepped break (stepped_profile seed 1003, 6-9 steps) |
+| SM_LB_Tw_S3_N | BellTower/Meshes | (-40, 0, 0) | (960, 55, 1040) | MAT_Masonry, MAT_Trim, MAT_Rubble | 1010 | 0 | local (0,0,0) = inner face start, z 0 = stage base; local x along the face, y 0 = inner face / 40 = outer face; face N, stage S3 z 2500-3540; two belfry lancets (130 clear, sill z 200, apex z 762.6) |
+| SM_LB_Tw_S3_E | BellTower/Meshes | (-15, 0, 0) | (1015, 55, 1040) | MAT_Masonry, MAT_Trim, MAT_Rubble | 1011 | 0 | local (0,0,0) = inner face start, z 0 = stage base; local x along the face, y 0 = inner face / 40 = outer face; face E, stage S3 z 2500-3540; two belfry lancets (130 clear, sill z 200, apex z 762.6) |
+| SM_LB_Tw_S3_S_BrokenSW | BellTower/Meshes | (-40, 0, 0) | (920, 55, 1040) | MAT_Masonry, MAT_Trim, MAT_Rubble | 1012 | 0 | local (0,0,0) = inner face start, z 0 = stage base; local x along the face, y 0 = inner face / 40 = outer face; face S, stage S3 z 2500-3540; two belfry lancets (130 clear, sill z 200, apex z 762.6); wall top is a jagged stepped break (stepped_profile seed 1004, 6-9 steps) |
+| SM_LB_Tw_StairFlight_250x420 | BellTower/Meshes | (-10, 0, -8.9) | (430, 258, 256.7) | MAT_Wood, MAT_Iron | 1101 | 0 | flight frame: x along the climb 0-420 (tread i at 30i..30i+30), y core side 0 -> wall side 250, z 0 = flight base; 14 oak treads 6 thick (tops 16.2338(i+1)), open risers, 2 stringers, 3 wall brackets |
+| SM_LB_Tw_StairFlight_250x420_Closed | BellTower/Meshes | (-10, 0, 0) | (430, 250, 256.7) | MAT_Wood, MAT_Iron | 1101 | 0 | flight frame; T1 plus riser boards and side panels down to z 0 (F01 only) |
+| SM_LB_Tw_StairFlight_250x420_BrokenA | BellTower/Meshes | (-10, 0, -8.9) | (430, 258, 256.7) | MAT_Wood, MAT_Iron | 1102 | 0 | flight frame; tread 6 lacks y 210-250, tread 10 split at y 120 (F03, F09) |
+| SM_LB_Tw_StairFlight_250x420_BrokenB | BellTower/Meshes | (-10, 0, -8.9) | (430, 258, 256.7) | MAT_Wood, MAT_Iron | 1103 | 0 | flight frame; tread 3 lacks y 210-250, tread 9 cracked at y 80 (F06) |
+| SM_LB_Tw_FlightRail_420 | BellTower/Meshes | (0, 0, 59.4) | (420, 8, 341.3) | MAT_Wood | 1104 | 0 | flight frame; rail band y 0-10 (envelope of the 8-wide posts and handrail); posts 8x8 at x 140 and 280, handrail top z = 16.2338(x/30+1)+98, mid-rail 50 lower |
+| SM_LB_Tw_Landing_250 | BellTower/Meshes | (0, 0, -59.8) | (250, 250, 0) | MAT_Wood, MAT_Masonry | 1105 | 0 | top-surface min corner (top z = 0); x 0-250, y 0-250; x = 250 and y = 250 are the wall sides; boards 5 thick, 4 joists, 2+2 stone corbels (z -60..-25) at the wall sides |
+| SM_LB_Tw_ShaftBase_420x420x450 | BellTower/Meshes | (-210, -210, 0) | (210, 210, 450) | MAT_Masonry, MAT_Trim, MAT_Rubble, MAT_Wood | 1106 | 0 | bottom centre; hollow square 420 outer, 35 thick walls, Z 0-450, coping z 430-450 projecting 3 inward only, rubble floor z 0-40 |
+| SM_LB_Tw_ShaftPost_20x20x2015 | BellTower/Meshes | (-10, -10, 0) | (10, 10, 2015) | MAT_Wood, MAT_Iron | 1107 | 0 | bottom centre; oak post with iron splice plates at z 670 and 1340 and a cap plate |
+| SM_LB_Tw_BelfryFloor | BellTower/Meshes | (0, 0, -35.4) | (680, 920, 0) | MAT_Wood, MAT_Iron | 1108 | 0 | local (0,0,0) = world (12040, 1540, 2500), top at z 0; W slab x0-250 y0-920, N slab x250-670 y670-920, core top x250-670 y250-670, rope hole x490-520 y280-310, beams to x 680 |
+| SM_LB_Tw_TopRail_670 | BellTower/Meshes | (0, -5, 0) | (670, 5, 98) | MAT_Wood | - | 0 | rail start on its centre line at floor level; x along the rail; posts 10x10 every <= 120, handrail top 98, mid-rail top 50 |
+| SM_LB_Tw_TopRail_420 | BellTower/Meshes | (0, -5, 0) | (420, 5, 98) | MAT_Wood | - | 0 | rail start on its centre line at floor level; x along the rail; as _670 |
+| SM_LB_Tw_Partition_250x455 | BellTower/Meshes | (0, -0, 0) | (250, 4, 455) | MAT_Wood, MAT_Iron | 1109 | 0 | min corner; x 250 wide, y thickness 0-4, z 455; vertical boards, 2 rails, one board missing at x 150-170 |
+| SM_LB_Tw_Louvre_130x450 | BellTower/Meshes | (-65, 0, 0) | (65, 30, 450) | MAT_Wood | - | 0 | bottom centre of the opening on the inner face (local y 0); nine 130x30x3 boards sloping 40 deg, spaced 50 from z 25, two side cleats |
+| SM_LB_Tw_Louvre_130x450_Broken | BellTower/Meshes | (-65, 0, 0) | (65, 30, 450) | MAT_Wood | - | 0 | as the intact louvre; boards 3 and 4 missing, board 5 hangs at 70 deg |
+| SM_LB_Tw_BellFrame_A | BellTower/Meshes | (-165, -150, 0) | (165, 150, 380) | MAT_Wood, MAT_Iron | 1110 | 4 | floor point under the bell axis; 4 oak posts 25x25 z 0-365 at (+-140, +-135); sills x -165..165; head sills z 335-365; cross-ties; braces; bearing blocks to z 380 |
+| SM_LB_Tw_BellHeadstock_A | BellTower/Meshes | (-130, -178, -134.5) | (134, 170, 130) | MAT_Wood, MAT_Iron | 1111 | 0 | axle centre; headstock 35x35 along y -150..150, gudgeons, straps, bell wheel O 260 in the plane y -170 (6 spokes) |
+| SM_LB_Prop_GreatBell_A | BellTower/Meshes | (-104.8, -105, -220) | (105, 105, -0) | MAT_Bronze, MAT_Iron | 1112 | 1 | crown top centre, the bell hangs along -z; lathe: canons z 0..-20, crown O110 at -20, shoulder O130 at -35, waist O150 at -120, sound bow O196 at -200, lip O210 at -220; crack on -x, V-chip |
+| SM_LB_Prop_BellRope_2610 | BellTower/Meshes | (-4.4, -4.6, -2610) | (5.1, 4.6, 0) | MAT_Rope, MAT_Sally | - | 0 | top; O 3.5 rope z 0..-2610 with 2 cm sway, sally O 9 x 100 at z -2410..-2510 |
+| SM_LB_Tw_Roof_BrokenSW | BellTower/Meshes | (-525.6, -525.6, -294) | (525.4, 525.3, 1284.8) | MAT_Slate, MAT_Wood, MAT_Iron | 1113 | 0 | bottom centre at the wall top: world (12500, 2000, 3540); pyramid eaves +-525 at z -10 to apex z 1200, cross finial 90 tall bent 20 deg toward +x; SW quarter missing (-x face y -525..-100, -y face x -525..-100, up to z 860); hanging rafter to z -300 |
+| SM_LB_Cl_Wall40_400x1300_A | Cloister/Meshes | (0, -6, 0) | (400, 40, 1300) | MAT_Masonry, MAT_Trim, MAT_Rubble | 1201 | 0 | bottom-left-back; local x along the face, y 0 = inner face, 40 = outer; drip course z 1210-1230 proj 6 on the inner face; C1 |
+| SM_LB_Cl_Wall40_400x1300_B | Cloister/Meshes | (0, -6, 0) | (400, 40, 1300) | MAT_Masonry, MAT_Trim, MAT_Rubble | 1202 | 0 | bottom-left-back; local x along the face, y 0 = inner face, 40 = outer; drip course z 1210-1230 proj 6 on the inner face; C1 |
+| SM_LB_Cl_Wall40_100x1300 | Cloister/Meshes | (0, -6, 0) | (100, 40, 1300) | MAT_Masonry, MAT_Trim, MAT_Rubble | 1203 | 0 | as C1; C1 (used only when a run is < 300 long) |
+| SM_LB_Cl_Wall40_400x800_A | Cloister/Meshes | (0, 0, 0) | (400, 40, 800) | MAT_Masonry, MAT_Trim, MAT_Rubble | 1204 | 0 | as C1; C2 passage, no drip course |
+| SM_LB_Cl_Wall40_400x800_B | Cloister/Meshes | (0, 0, 0) | (400, 40, 800) | MAT_Masonry, MAT_Trim, MAT_Rubble | 1205 | 0 | as C1; C2 passage, no drip course |
+| SM_LB_Cl_Wall40_100x800 | Cloister/Meshes | (0, 0, 0) | (100, 40, 800) | MAT_Masonry, MAT_Trim, MAT_Rubble | 1206 | 0 | as C1; C2 |
+| SM_LB_Cl_Wall40_400x450 | Cloister/Meshes | (0, 0, 0) | (400, 40, 450) | MAT_Masonry, MAT_Trim, MAT_Rubble | 1207 | 0 | as C1; C3 stair-house |
+| SM_LB_Cl_Wall40_100x450 | Cloister/Meshes | (0, 0, 0) | (100, 40, 450) | MAT_Masonry, MAT_Trim, MAT_Rubble | 1208 | 0 | as C1; C3 |
+| SM_LB_Cl_Archway_500x40x1300 | Cloister/Meshes | (0, -6, 300) | (500, 40, 1300) | MAT_Masonry, MAT_Trim, MAT_Rubble | 1209 | 0 | bottom-left-back; local y 0 on the cloister side; C4 four-centred arch, springing z 300 at x 0 and 500, apex z 420, voussoir ring MAT_Trim, drip course on the cloister face |
+| SM_LB_Cl_Archway_300x40x1300 | Cloister/Meshes | (0, -6, 330) | (300, 40, 1300) | MAT_Masonry, MAT_Trim, MAT_Rubble | 1210 | 0 | as C4; C5 springing z 330, apex z 450 |
+| SM_LB_Cl_Pier_80x80x640 | Cloister/Meshes | (-48, -48, 0) | (48, 48, 620) | MAT_Masonry, MAT_Trim, MAT_Rubble | 1211 | 0 | bottom centre; C6: shaft z 25-300, base moulding z 0-25 (+4), bell capital z 300-330 (+8), wall block to z 600, coping z 600-620 (+5); the table gives the top at z 620 although the name says 640 |
+| SM_LB_Cl_PierCorner_130x80x640 | Cloister/Meshes | (-73, -48, 0) | (73, 48, 620) | MAT_Masonry, MAT_Trim, MAT_Rubble | 1212 | 0 | bottom centre of the 130x80 plan; C7 |
+| SM_LB_Cl_ArcadeArch_120x80 | Cloister/Meshes | (0, -45, 0) | (120, 45, 290) | MAT_Masonry, MAT_Trim, MAT_Rubble | 1213 | 0 | local (0,0,0) = left springing point on the pier line; x 0..span, y -40..40 (+5 coping), z 0..290 (world 330-620); C8 two-centred pointed arch, radius 0.8 span, voussoir ring MAT_Trim, spandrel to z 270, coping z 270-290 (+5) |
+| SM_LB_Cl_ArcadeArch_170x80 | Cloister/Meshes | (0, -45, 0) | (170, 45, 290) | MAT_Masonry, MAT_Trim, MAT_Rubble | 1214 | 0 | local (0,0,0) = left springing point on the pier line; x 0..span, y -40..40 (+5 coping), z 0..290 (world 330-620); C8 two-centred pointed arch, radius 0.8 span, voussoir ring MAT_Trim, spandrel to z 270, coping z 270-290 (+5) |
+| SM_LB_Cl_ArcadeArch_220x80 | Cloister/Meshes | (0, -45, 0) | (220, 45, 290) | MAT_Masonry, MAT_Trim, MAT_Rubble | 1215 | 0 | local (0,0,0) = left springing point on the pier line; x 0..span, y -40..40 (+5 coping), z 0..290 (world 330-620); C8 two-centred pointed arch, radius 0.8 span, voussoir ring MAT_Trim, spandrel to z 270, coping z 270-290 (+5) |
+| SM_LB_Cl_ArcadeArch_270x80 | Cloister/Meshes | (0, -45, 0) | (270, 45, 290) | MAT_Masonry, MAT_Trim, MAT_Rubble | 1216 | 0 | local (0,0,0) = left springing point on the pier line; x 0..span, y -40..40 (+5 coping), z 0..290 (world 330-620); C8 two-centred pointed arch, radius 0.8 span, voussoir ring MAT_Trim, spandrel to z 270, coping z 270-290 (+5) |
+| SM_LB_Cl_GarthWall_1100x100 | Cloister/Meshes | (0, -4, 0) | (1100, 30, 100) | MAT_Masonry, MAT_Trim, MAT_Rubble | 1217 | 0 | local y 0 = face toward the walk; body to y +15 (garth side); coping z 88-100 spans y -4..+30; C9 |
+| SM_LB_Cl_GarthWall_800x100 | Cloister/Meshes | (0, -4, 0) | (800, 30, 100) | MAT_Masonry, MAT_Trim, MAT_Rubble | 1218 | 0 | as C9; C9 |
+| SM_LB_Cl_GarthBed_1100x800 | Cloister/Meshes | (0, 0, -8) | (1100, 800, 9.8) | MAT_Earth | 1219 | 0 | min corner, z 0 = garth top; C10 earth surface with 2-10 cm mounds and six shallow grave hollows (bed-local centres in extras.hollows) |
+| SM_LB_Cl_GraveSlab_200x80 | Cloister/Meshes | (-100, -40, 0) | (100, 40, 8) | MAT_Masonry, MAT_Trim, MAT_Rubble | 1220 | 0 | bottom centre (ASSUMED: C11 gives no pivot, D1 convention for props); C11 slab 200x80x8 with chamfers and a worn cross relief |
+| SM_LB_Cl_GraveCross_60 | Cloister/Meshes | (-17, -4, 0) | (17, 4, 60) | MAT_Masonry, MAT_Trim, MAT_Rubble | 1221 | 0 | bottom centre (ASSUMED); C11 small stone cross 60 tall, 8 thick (arm span assumed 36) |
+| SM_LB_Cl_GarthCross_350 | Cloister/Meshes | (-60, -60, 0) | (60, 60, 350) | MAT_Masonry, MAT_Trim, MAT_Rubble | 1222 | 0 | bottom centre (ASSUMED); C11 stepped base 120x120x20 + 90x90x20, chamfered shaft 24x24 to z 290, cross head 90 wide |
+| SM_LB_Cl_Vault_Barrel_830x640 | Cloister/Meshes | (0, 0, 0) | (640, 830, 340) | MAT_Masonry, MAT_Trim, MAT_Rubble | 1225 | 0 | min corner at the springing level; name = span x length; local x along the walk (length), y across (span); C12 four-centred barrel, soffit rise 340 (+25 shell), transverse ribs at x 0, L/2, L |
+| SM_LB_Cl_Vault_Barrel_770x640 | Cloister/Meshes | (0, 0, 0) | (640, 770, 340) | MAT_Masonry, MAT_Trim, MAT_Rubble | 1226 | 0 | min corner at the springing level; name = span x length; local x along the walk (length), y across (span); C12 four-centred barrel, soffit rise 340 (+25 shell), transverse ribs at x 0, L/2, L |
+| SM_LB_Cl_Vault_Barrel_770x640_Broken | Cloister/Meshes | (0, 0, 0) | (640, 770, 340) | MAT_Masonry, MAT_Trim, MAT_Rubble | 1227 | 0 | min corner at the springing level; name = span x length; local x along the walk (length), y across (span); C12 four-centred barrel, soffit rise 340 (+25 shell), transverse ribs at x 0, L/2, L; hole x 50-600 and snapped mid rib |
+| SM_LB_Cl_Vault_Barrel_770x980 | Cloister/Meshes | (0, 0, 0) | (980, 770, 340) | MAT_Masonry, MAT_Trim, MAT_Rubble | 1228 | 0 | min corner at the springing level; name = span x length; local x along the walk (length), y across (span); C12 four-centred barrel, soffit rise 340 (+25 shell), transverse ribs at x 0, L/2, L |
+| SM_LB_Cl_Vault_Barrel_570x980 | Cloister/Meshes | (0, 0, 0) | (980, 570, 340) | MAT_Masonry, MAT_Trim, MAT_Rubble | 1229 | 0 | min corner at the springing level; name = span x length; local x along the walk (length), y across (span); C12 four-centred barrel, soffit rise 340 (+25 shell), transverse ribs at x 0, L/2, L |
+| SM_LB_Cl_Vault_Groin_770x830 | Cloister/Meshes | (0, 0, 0) | (770, 830, 340) | MAT_Masonry, MAT_Trim, MAT_Rubble | 1232 | 0 | min corner at the springing level; local x span x, y span y; C13 groin = two perpendicular barrels clipped to the square, diagonal and wall ribs |
+| SM_LB_Cl_Vault_Groin_570x830 | Cloister/Meshes | (0, 0, 0) | (570, 830, 340) | MAT_Masonry, MAT_Trim, MAT_Rubble | 1233 | 0 | min corner at the springing level; local x span x, y span y; C13 groin = two perpendicular barrels clipped to the square, diagonal and wall ribs |
+| SM_LB_Cl_Vault_Groin_770x770 | Cloister/Meshes | (0, 0, 0) | (770, 770, 340) | MAT_Masonry, MAT_Trim, MAT_Rubble | 1234 | 0 | min corner at the springing level; local x span x, y span y; C13 groin = two perpendicular barrels clipped to the square, diagonal and wall ribs |
+| SM_LB_Cl_Vault_Groin_570x770 | Cloister/Meshes | (0, 0, 0) | (570, 770, 340) | MAT_Masonry, MAT_Trim, MAT_Rubble | 1235 | 0 | min corner at the springing level; local x span x, y span y; C13 groin = two perpendicular barrels clipped to the square, diagonal and wall ribs |
+| SM_LB_Cl_LeanTo_1000x1050 | Cloister/Meshes | (0, 0, -15) | (1000, 1050, 9.3) | MAT_Slate, MAT_Wood | 1236 | 0 | eaves-line start; local x along the eaves, y up the slope in the panel plane, z the panel normal; C14 slates 6 on battens, rafters 12x15 at 60 c/c below |
+| SM_LB_Cl_LeanTo_1000x1050_Hole | Cloister/Meshes | (0, 0, -93.5) | (1000, 1050, 9.3) | MAT_Slate, MAT_Wood | 1237 | 0 | as C14; C14 hole over x 150-850, y 0-800, broken battens, 3 snapped rafters (two stubs hanging 40-80) |
+| SM_LB_Cl_CellDoorFrame_150x270 | Cloister/Meshes | (-75, -8, 0) | (75, 2, 270) | MAT_Masonry, MAT_Trim, MAT_Rubble | 1238 | 0 | bottom-left; local y 0 = wall face, frame projects to y -8; C15 surround 150x270, 20 jambs, straight-sided pointed head (shoulders z 220, apex 250), 110x250 opening, back panel at y +2 |
+| SM_LB_Cl_StairHouseGable_380x40x650 | Cloister/Meshes | (0, 0, 0) | (380, 40, 650) | MAT_Masonry, MAT_Trim, MAT_Rubble | 1239 | 0 | as the wall pieces (inner face at local y 0); C16 triangular top from z 450 at the ends to 650 at the centre |
+| SM_LB_Cl_StairHouseRoof_420x640 | Cloister/Meshes | (-0.3, 0, -17.4) | (420.3, 640, 200) | MAT_Slate, MAT_Wood | 1240 | 0 | min corner at the eaves level; C17 pitched roof, ridge along local y at x 210 z 200, 20 overhangs |
+| SM_LB_Prop_SmallBell_A | Cloister/Meshes | (-12, -12, -28) | (12, 12, 4) | MAT_Bronze, MAT_Iron, MAT_Band | 1301 | 1 | crown top, hangs along -z; M1 lathe: lip O24 at -28, sound bow O22 at -25, waist O16 at -14, crown O10 at -3; loop z 0..4; painted band z -8..-5 (MAT_Band) |
+| SM_LB_Prop_SmallBellBracket_A | Cloister/Meshes | (0, -11, -25) | (34, 11, 22) | MAT_Iron, MAT_Wood | 1302 | 0 | back face of the wall plate at the arm axis height, local +x out of the wall; M2 |
+| SM_LB_Prop_BellPlaque_A | Cloister/Meshes | (0, -17, -17) | (4, 17, 17) | MAT_Trim | 1303 | 0 | back centre, front faces +x; M3 plaque 4x34x34 |
+| SM_LB_Prop_InscriptionTablet_A | Cloister/Meshes | (0, -60, -15) | (4, 60, 15) | MAT_Trim | 1304 | 0 | back centre, front faces +x; M4 tablet 4x120x30 (x 2.5 root scale = 10x300x75) |
+
+### D1 table vs built piece (differences > 0.5 cm in bounds, or slot lists)
+
+| Piece | D1 mbounds | Built mbounds | D1 slots | Built slots |
+|---|---|---|---|---|
+| SM_LB_Tw_S1_W | (-10, 0, 0) .. (1010, 50, 800) | (-10, 0, 0) .. (1010, 50, 800) | MAT_Masonry, MAT_Trim | MAT_Masonry, MAT_Trim, MAT_Rubble |
+| SM_LB_Tw_S1_N | (-10, 0, 0) .. (930, 50, 800) | (-40, 0, 0) .. (960, 50, 800) | MAT_Masonry, MAT_Trim | MAT_Masonry, MAT_Trim, MAT_Rubble |
+| SM_LB_Tw_S1_E | (-10, 0, 0) .. (1010, 50, 800) | (-10, 0, 0) .. (1010, 50, 800) | MAT_Masonry, MAT_Trim | MAT_Masonry, MAT_Trim, MAT_Rubble |
+| SM_LB_Tw_S1_S | (-10, 0, 0) .. (930, 50, 800) | (-40, 0, 0) .. (960, 50, 800) | MAT_Masonry, MAT_Trim | MAT_Masonry, MAT_Trim, MAT_Rubble |
+| SM_LB_Tw_S2_W | (-10, 0, 0) .. (1010, 50, 1700) | (-10, 0, 0) .. (1010, 50, 1700) | MAT_Masonry, MAT_Trim | MAT_Masonry, MAT_Trim, MAT_Rubble |
+| SM_LB_Tw_S2_N | (-10, 0, 0) .. (930, 50, 1700) | (-40, 0, 0) .. (960, 50, 1700) | MAT_Masonry, MAT_Trim | MAT_Masonry, MAT_Trim, MAT_Rubble |
+| SM_LB_Tw_S2_E | (-10, 0, 0) .. (1010, 50, 1700) | (-10, 0, 0) .. (1010, 50, 1700) | MAT_Masonry, MAT_Trim | MAT_Masonry, MAT_Trim, MAT_Rubble |
+| SM_LB_Tw_S2_S | (-10, 0, 0) .. (930, 50, 1700) | (-40, 0, 0) .. (960, 50, 1700) | MAT_Masonry, MAT_Trim | MAT_Masonry, MAT_Trim, MAT_Rubble |
+| SM_LB_Tw_S3_W_BrokenSW | (-15, 0, 0) .. (1015, 55, 1040) | (0, 0, 0) .. (1015, 55, 1040) | MAT_Masonry, MAT_Trim, MAT_Rubble | MAT_Masonry, MAT_Trim, MAT_Rubble |
+| SM_LB_Tw_S3_N | (-15, 0, 0) .. (935, 55, 1040) | (-40, 0, 0) .. (960, 55, 1040) | MAT_Masonry, MAT_Trim | MAT_Masonry, MAT_Trim, MAT_Rubble |
+| SM_LB_Tw_S3_E | (-15, 0, 0) .. (1015, 55, 1040) | (-15, 0, 0) .. (1015, 55, 1040) | MAT_Masonry, MAT_Trim | MAT_Masonry, MAT_Trim, MAT_Rubble |
+| SM_LB_Tw_S3_S_BrokenSW | (-15, 0, 0) .. (935, 55, 1040) | (-40, 0, 0) .. (920, 55, 1040) | MAT_Masonry, MAT_Trim, MAT_Rubble | MAT_Masonry, MAT_Trim, MAT_Rubble |
+| SM_LB_Tw_StairFlight_250x420 | (-10, 0, -10) .. (430, 258, 257) | (-10, 0, -8.9) .. (430, 258, 256.7) | MAT_Wood, MAT_Iron | MAT_Wood, MAT_Iron |
+| SM_LB_Tw_StairFlight_250x420_Closed | (-10, 0, 0) .. (430, 258, 257) | (-10, 0, 0) .. (430, 250, 256.7) | MAT_Wood, MAT_Iron | MAT_Wood, MAT_Iron |
+| SM_LB_Tw_StairFlight_250x420_BrokenA | (-10, 0, -10) .. (430, 258, 257) | (-10, 0, -8.9) .. (430, 258, 256.7) | MAT_Wood, MAT_Iron | MAT_Wood, MAT_Iron |
+| SM_LB_Tw_StairFlight_250x420_BrokenB | (-10, 0, -10) .. (430, 258, 257) | (-10, 0, -8.9) .. (430, 258, 256.7) | MAT_Wood, MAT_Iron | MAT_Wood, MAT_Iron |
+| SM_LB_Tw_FlightRail_420 | (0, 0, 58.2) .. (420, 10, 341.5) | (0, 0, 59.4) .. (420, 8, 341.3) | MAT_Wood | MAT_Wood |
+| SM_LB_Tw_BellFrame_A | (-165, -147.5, 0) .. (165, 147.5, 380) | (-165, -150, 0) .. (165, 150, 380) | MAT_Wood, MAT_Iron | MAT_Wood, MAT_Iron |
+| SM_LB_Tw_BellHeadstock_A | (-130, -175, -130) .. (130, 165, 130) | (-130, -178, -134.5) .. (134, 170, 130) | MAT_Wood, MAT_Iron | MAT_Wood, MAT_Iron |
+| SM_LB_Prop_BellRope_2610 | (-6.5, -6.5, -2610) .. (6.5, 6.5, 0) | (-4.4, -4.6, -2610) .. (5.1, 4.6, 0) | MAT_Rope, MAT_Sally | MAT_Rope, MAT_Sally |
+| SM_LB_Tw_Roof_BrokenSW | (-525, -525, -300) .. (525, 525, 1292) | (-525.6, -525.6, -294) .. (525.4, 525.3, 1284.8) | MAT_Slate, MAT_Wood, MAT_Iron | MAT_Slate, MAT_Wood, MAT_Iron |
+| SM_LB_Cl_Wall40_400x1300_A | (0, -6, 0) .. (400, 40, 1300) | (0, -6, 0) .. (400, 40, 1300) | MAT_Masonry, MAT_Trim | MAT_Masonry, MAT_Trim, MAT_Rubble |
+| SM_LB_Cl_Wall40_400x1300_B | (0, -6, 0) .. (400, 40, 1300) | (0, -6, 0) .. (400, 40, 1300) | MAT_Masonry, MAT_Trim | MAT_Masonry, MAT_Trim, MAT_Rubble |
+| SM_LB_Cl_Wall40_100x1300 | (0, -6, 0) .. (100, 40, 1300) | (0, -6, 0) .. (100, 40, 1300) | MAT_Masonry, MAT_Trim | MAT_Masonry, MAT_Trim, MAT_Rubble |
+| SM_LB_Cl_Wall40_400x800_A | (0, 0, 0) .. (400, 40, 800) | (0, 0, 0) .. (400, 40, 800) | MAT_Masonry, MAT_Trim | MAT_Masonry, MAT_Trim, MAT_Rubble |
+| SM_LB_Cl_Wall40_400x800_B | (0, 0, 0) .. (400, 40, 800) | (0, 0, 0) .. (400, 40, 800) | MAT_Masonry, MAT_Trim | MAT_Masonry, MAT_Trim, MAT_Rubble |
+| SM_LB_Cl_Wall40_100x800 | (0, 0, 0) .. (100, 40, 800) | (0, 0, 0) .. (100, 40, 800) | MAT_Masonry, MAT_Trim | MAT_Masonry, MAT_Trim, MAT_Rubble |
+| SM_LB_Cl_Wall40_400x450 | (0, 0, 0) .. (400, 40, 450) | (0, 0, 0) .. (400, 40, 450) | MAT_Masonry, MAT_Trim | MAT_Masonry, MAT_Trim, MAT_Rubble |
+| SM_LB_Cl_Wall40_100x450 | (0, 0, 0) .. (100, 40, 450) | (0, 0, 0) .. (100, 40, 450) | MAT_Masonry, MAT_Trim | MAT_Masonry, MAT_Trim, MAT_Rubble |
+| SM_LB_Cl_Archway_500x40x1300 | (0, -6, 0) .. (500, 40, 1300) | (0, -6, 300) .. (500, 40, 1300) | MAT_Masonry, MAT_Trim | MAT_Masonry, MAT_Trim, MAT_Rubble |
+| SM_LB_Cl_Archway_300x40x1300 | (0, -6, 0) .. (300, 40, 1300) | (0, -6, 330) .. (300, 40, 1300) | MAT_Masonry, MAT_Trim | MAT_Masonry, MAT_Trim, MAT_Rubble |
+| SM_LB_Cl_Pier_80x80x640 | (-48, -48, 0) .. (48, 48, 620) | (-48, -48, 0) .. (48, 48, 620) | MAT_Masonry, MAT_Trim | MAT_Masonry, MAT_Trim, MAT_Rubble |
+| SM_LB_Cl_PierCorner_130x80x640 | (-73, -48, 0) .. (73, 48, 620) | (-73, -48, 0) .. (73, 48, 620) | MAT_Masonry, MAT_Trim | MAT_Masonry, MAT_Trim, MAT_Rubble |
+| SM_LB_Cl_ArcadeArch_120x80 | (0, -45, 0) .. (120, 45, 290) | (0, -45, 0) .. (120, 45, 290) | MAT_Masonry, MAT_Trim | MAT_Masonry, MAT_Trim, MAT_Rubble |
+| SM_LB_Cl_ArcadeArch_170x80 | (0, -45, 0) .. (170, 45, 290) | (0, -45, 0) .. (170, 45, 290) | MAT_Masonry, MAT_Trim | MAT_Masonry, MAT_Trim, MAT_Rubble |
+| SM_LB_Cl_ArcadeArch_220x80 | (0, -45, 0) .. (220, 45, 290) | (0, -45, 0) .. (220, 45, 290) | MAT_Masonry, MAT_Trim | MAT_Masonry, MAT_Trim, MAT_Rubble |
+| SM_LB_Cl_ArcadeArch_270x80 | (0, -45, 0) .. (270, 45, 290) | (0, -45, 0) .. (270, 45, 290) | MAT_Masonry, MAT_Trim | MAT_Masonry, MAT_Trim, MAT_Rubble |
+| SM_LB_Cl_GarthWall_1100x100 | (0, -4, 0) .. (1100, 30, 100) | (0, -4, 0) .. (1100, 30, 100) | MAT_Masonry, MAT_Trim | MAT_Masonry, MAT_Trim, MAT_Rubble |
+| SM_LB_Cl_GarthWall_800x100 | (0, -4, 0) .. (800, 30, 100) | (0, -4, 0) .. (800, 30, 100) | MAT_Masonry, MAT_Trim | MAT_Masonry, MAT_Trim, MAT_Rubble |
+| SM_LB_Cl_GarthBed_1100x800 | (0, 0, -4) .. (1100, 800, 10) | (0, 0, -8) .. (1100, 800, 9.8) | MAT_Earth | MAT_Earth |
+| SM_LB_Cl_GraveSlab_200x80 | (-100, -40, 0) .. (100, 40, 8) | (-100, -40, 0) .. (100, 40, 8) | MAT_Masonry | MAT_Masonry, MAT_Trim, MAT_Rubble |
+| SM_LB_Cl_GraveCross_60 | (-18, -4, 0) .. (18, 4, 60) | (-17, -4, 0) .. (17, 4, 60) | MAT_Masonry | MAT_Masonry, MAT_Trim, MAT_Rubble |
+| SM_LB_Cl_GarthCross_350 | (-60, -60, 0) .. (60, 60, 350) | (-60, -60, 0) .. (60, 60, 350) | MAT_Masonry | MAT_Masonry, MAT_Trim, MAT_Rubble |
+| SM_LB_Cl_Vault_Barrel_830x640 | (0, 0, 0) .. (640, 830, 365) | (0, 0, 0) .. (640, 830, 340) | MAT_Masonry, MAT_Trim | MAT_Masonry, MAT_Trim, MAT_Rubble |
+| SM_LB_Cl_Vault_Barrel_770x640 | (0, 0, 0) .. (640, 770, 365) | (0, 0, 0) .. (640, 770, 340) | MAT_Masonry, MAT_Trim | MAT_Masonry, MAT_Trim, MAT_Rubble |
+| SM_LB_Cl_Vault_Barrel_770x640_Broken | (0, 0, 0) .. (640, 770, 365) | (0, 0, 0) .. (640, 770, 340) | MAT_Masonry, MAT_Trim | MAT_Masonry, MAT_Trim, MAT_Rubble |
+| SM_LB_Cl_Vault_Barrel_770x980 | (0, 0, 0) .. (980, 770, 365) | (0, 0, 0) .. (980, 770, 340) | MAT_Masonry, MAT_Trim | MAT_Masonry, MAT_Trim, MAT_Rubble |
+| SM_LB_Cl_Vault_Barrel_570x980 | (0, 0, 0) .. (980, 570, 365) | (0, 0, 0) .. (980, 570, 340) | MAT_Masonry, MAT_Trim | MAT_Masonry, MAT_Trim, MAT_Rubble |
+| SM_LB_Cl_Vault_Groin_770x830 | (0, 0, 0) .. (770, 830, 365) | (0, 0, 0) .. (770, 830, 340) | MAT_Masonry, MAT_Trim | MAT_Masonry, MAT_Trim, MAT_Rubble |
+| SM_LB_Cl_Vault_Groin_570x830 | (0, 0, 0) .. (570, 830, 365) | (0, 0, 0) .. (570, 830, 340) | MAT_Masonry, MAT_Trim | MAT_Masonry, MAT_Trim, MAT_Rubble |
+| SM_LB_Cl_Vault_Groin_770x770 | (0, 0, 0) .. (770, 770, 365) | (0, 0, 0) .. (770, 770, 340) | MAT_Masonry, MAT_Trim | MAT_Masonry, MAT_Trim, MAT_Rubble |
+| SM_LB_Cl_Vault_Groin_570x770 | (0, 0, 0) .. (570, 770, 365) | (0, 0, 0) .. (570, 770, 340) | MAT_Masonry, MAT_Trim | MAT_Masonry, MAT_Trim, MAT_Rubble |
+| SM_LB_Cl_LeanTo_1000x1050_Hole | (0, 0, -95) .. (1000, 1050, 9) | (0, 0, -93.5) .. (1000, 1050, 9.3) | MAT_Slate, MAT_Wood | MAT_Slate, MAT_Wood |
+| SM_LB_Cl_CellDoorFrame_150x270 | (0, -8, 0) .. (150, 4, 270) | (-75, -8, 0) .. (75, 2, 270) | MAT_Masonry, MAT_Rubble | MAT_Masonry, MAT_Trim, MAT_Rubble |
+| SM_LB_Cl_StairHouseGable_380x40x650 | (0, 0, 0) .. (380, 40, 650) | (0, 0, 0) .. (380, 40, 650) | MAT_Masonry, MAT_Trim | MAT_Masonry, MAT_Trim, MAT_Rubble |
+| SM_LB_Cl_StairHouseRoof_420x640 | (0, 0, 0) .. (420, 640, 208) | (-0.3, 0, -17.4) .. (420.3, 640, 200) | MAT_Slate, MAT_Wood | MAT_Slate, MAT_Wood |
+| SM_LB_Prop_SmallBellBracket_A | (0, -10, -25) .. (34, 10, 22) | (0, -11, -25) .. (34, 11, 22) | MAT_Iron, MAT_Wood | MAT_Iron, MAT_Wood |
+
+Built but not placed: SM_LB_Tw_S3_S, SM_LB_Tw_S3_W (the intact S3 W/S wall pieces; the SW collapse uses the `_BrokenSW` variants).
 
 ## Hidden collision blocks (8) (8)
 
@@ -230,17 +298,17 @@ Ground slabs `Ground_1`, `Ground_2`, `Ground_4`, `Ground_6` get `MI_Kit_Floor` (
 | Label | Mesh | Location | Rotation | Scale | AABB min .. max | Collision | Note |
 |---|---|---|---|---|---|---|---|
 | TWA_S1_W | SM_LB_Tw_S1_W | (12040, 1500, 0) | (0, 90, 0) | (1, 1, 1) | (11990, 1490, 0) .. (12040, 2510, 800) | NoCollision | face W, stage S1 z 0-800; Door Y 1948-2052 (x 448-552), jambs z 0-194 (8 cm chamfers), gabled head apex z 228 at x 500, hood mould 8 proud 15 tall 20 above the head |
-| TWA_S1_N | SM_LB_Tw_S1_N | (12040, 2460, 0) | (0, 0, 0) | (1, 1, 1) | (12030, 2460, 0) .. (12970, 2510, 800) | NoCollision | face N, stage S1 z 0-800; Slit F01 at x 460, z 263.6 |
+| TWA_S1_N | SM_LB_Tw_S1_N | (12040, 2460, 0) | (0, 0, 0) | (1, 1, 1) | (12000, 2460, 0) .. (13000, 2510, 800) | NoCollision | face N, stage S1 z 0-800; Slit F01 at x 460, z 263.6 |
 | TWA_S1_E | SM_LB_Tw_S1_E | (12960, 2500, 0) | (0, -90, 0) | (1, 1, 1) | (12960, 1490, 0) .. (13010, 2510, 800) | NoCollision | face E, stage S1 z 0-800; Slit F02 at x 500, z 490.9 |
-| TWA_S1_S | SM_LB_Tw_S1_S | (12960, 1540, 0) | (0, 180, 0) | (1, 1, 1) | (12030, 1490, 0) .. (12970, 1540, 800) | NoCollision | face S, stage S1 z 0-800; Slit F03 at x 460, z 718.1 |
+| TWA_S1_S | SM_LB_Tw_S1_S | (12960, 1540, 0) | (0, 180, 0) | (1, 1, 1) | (12000, 1490, 0) .. (13000, 1540, 800) | NoCollision | face S, stage S1 z 0-800; Slit F03 at x 460, z 718.1 |
 | TWA_S2_W | SM_LB_Tw_S2_W | (12040, 1500, 800) | (0, 90, 0) | (1, 1, 1) | (11990, 1490, 800) .. (12040, 2510, 2500) | NoCollision | face W, stage S2 z 800-2500; Slit F08 at x 500, z 1054.0 (world 1854) |
-| TWA_S2_N | SM_LB_Tw_S2_N | (12040, 2460, 800) | (0, 0, 0) | (1, 1, 1) | (12030, 2460, 800) .. (12970, 2510, 2500) | NoCollision | face N, stage S2 z 800-2500; Slits F05 / F09 at x 460, z 372.7 / 1281.8 |
+| TWA_S2_N | SM_LB_Tw_S2_N | (12040, 2460, 800) | (0, 0, 0) | (1, 1, 1) | (12000, 2460, 800) .. (13000, 2510, 2500) | NoCollision | face N, stage S2 z 800-2500; Slits F05 / F09 at x 460, z 372.7 / 1281.8 |
 | TWA_S2_E | SM_LB_Tw_S2_E | (12960, 2500, 800) | (0, -90, 0) | (1, 1, 1) | (12960, 1490, 800) .. (13010, 2510, 2500) | NoCollision | face E, stage S2 z 800-2500; Slits F06 / F10 at x 500, z 600.0 / 1509.1 |
-| TWA_S2_S | SM_LB_Tw_S2_S | (12960, 1540, 800) | (0, 180, 0) | (1, 1, 1) | (12030, 1490, 800) .. (12970, 1540, 2500) | NoCollision | face S, stage S2 z 800-2500; Slit F07 at x 460, z 827.3 |
-| TWA_S3_W | SM_LB_Tw_S3_W_BrokenSW | (12040, 1500, 2500) | (0, 90, 0) | (1, 1, 1) | (11985, 1485, 2500) .. (12040, 2515, 3540) | NoCollision | face W, stage S3 z 2500-3540; two belfry lancets (130 clear, sill z 200, apex z 762.6); wall top is a jagged stepped break (stepped_profile seed 1003, 6-9 steps) |
-| TWA_S3_N | SM_LB_Tw_S3_N | (12040, 2460, 2500) | (0, 0, 0) | (1, 1, 1) | (12025, 2460, 2500) .. (12975, 2515, 3540) | NoCollision | face N, stage S3 z 2500-3540; two belfry lancets (130 clear, sill z 200, apex z 762.6) |
+| TWA_S2_S | SM_LB_Tw_S2_S | (12960, 1540, 800) | (0, 180, 0) | (1, 1, 1) | (12000, 1490, 800) .. (13000, 1540, 2500) | NoCollision | face S, stage S2 z 800-2500; Slit F07 at x 460, z 827.3 |
+| TWA_S3_W | SM_LB_Tw_S3_W_BrokenSW | (12040, 1500, 2500) | (0, 90, 0) | (1, 1, 1) | (11985, 1500, 2500) .. (12040, 2515, 3540) | NoCollision | face W, stage S3 z 2500-3540; two belfry lancets (130 clear, sill z 200, apex z 762.6); wall top is a jagged stepped break (stepped_profile seed 1003, 6-9 steps) |
+| TWA_S3_N | SM_LB_Tw_S3_N | (12040, 2460, 2500) | (0, 0, 0) | (1, 1, 1) | (12000, 2460, 2500) .. (13000, 2515, 3540) | NoCollision | face N, stage S3 z 2500-3540; two belfry lancets (130 clear, sill z 200, apex z 762.6) |
 | TWA_S3_E | SM_LB_Tw_S3_E | (12960, 2500, 2500) | (0, -90, 0) | (1, 1, 1) | (12960, 1485, 2500) .. (13015, 2515, 3540) | NoCollision | face E, stage S3 z 2500-3540; two belfry lancets (130 clear, sill z 200, apex z 762.6) |
-| TWA_S3_S | SM_LB_Tw_S3_S_BrokenSW | (12960, 1540, 2500) | (0, 180, 0) | (1, 1, 1) | (12025, 1485, 2500) .. (12975, 1540, 3540) | NoCollision | face S, stage S3 z 2500-3540; two belfry lancets (130 clear, sill z 200, apex z 762.6); wall top is a jagged stepped break (stepped_profile seed 1004, 6-9 steps) |
+| TWA_S3_S | SM_LB_Tw_S3_S_BrokenSW | (12960, 1540, 2500) | (0, 180, 0) | (1, 1, 1) | (12040, 1485, 2500) .. (13000, 1540, 3540) | NoCollision | face S, stage S3 z 2500-3540; two belfry lancets (130 clear, sill z 200, apex z 762.6); wall top is a jagged stepped break (stepped_profile seed 1004, 6-9 steps) |
 
 ## Tower floor (1)
 
@@ -252,48 +320,48 @@ Ground slabs `Ground_1`, `Ground_2`, `Ground_4`, `Ground_6` get `MI_Kit_Floor` (
 
 | Label | Mesh | Location | Rotation | Scale | AABB min .. max | Collision | Note |
 |---|---|---|---|---|---|---|---|
-| TWA_Flight_F01 | SM_LB_Tw_StairFlight_250x420_Closed | (12290, 2210, 0) | (0, 0, 0) | (1, 1, 1) | (12280, 2210, 0) .. (12720, 2468, 257) | NoCollision | N ring, base Z 0.000; treads top = base + 16.2338 (i+1) |
-| TWA_Flight_F02 | SM_LB_Tw_StairFlight_250x420 | (12710, 2210, 227.27) | (0, -90, 0) | (1, 1, 1) | (12710, 1780, 217.3) .. (12968, 2220, 484.3) | NoCollision | E ring, base Z 227.273; treads top = base + 16.2338 (i+1) |
-| TWA_Flight_F03 | SM_LB_Tw_StairFlight_250x420_BrokenA | (12710, 1790, 454.55) | (0, 180, 0) | (1, 1, 1) | (12280, 1532, 444.6) .. (12720, 1790, 711.5) | NoCollision | S ring, base Z 454.545; treads top = base + 16.2338 (i+1) |
-| TWA_Flight_F04 | SM_LB_Tw_StairFlight_250x420 | (12290, 1790, 681.82) | (0, 90, 0) | (1, 1, 1) | (12032, 1780, 671.8) .. (12290, 2220, 938.8) | NoCollision | W ring, base Z 681.818; treads top = base + 16.2338 (i+1) |
-| TWA_Flight_F05 | SM_LB_Tw_StairFlight_250x420 | (12290, 2210, 909.09) | (0, 0, 0) | (1, 1, 1) | (12280, 2210, 899.1) .. (12720, 2468, 1166.1) | NoCollision | N ring, base Z 909.091; treads top = base + 16.2338 (i+1) |
-| TWA_Flight_F06 | SM_LB_Tw_StairFlight_250x420_BrokenB | (12710, 2210, 1136.36) | (0, -90, 0) | (1, 1, 1) | (12710, 1780, 1126.4) .. (12968, 2220, 1393.4) | NoCollision | E ring, base Z 1136.364; treads top = base + 16.2338 (i+1) |
-| TWA_Flight_F07 | SM_LB_Tw_StairFlight_250x420 | (12710, 1790, 1363.64) | (0, 180, 0) | (1, 1, 1) | (12280, 1532, 1353.6) .. (12720, 1790, 1620.6) | NoCollision | S ring, base Z 1363.636; treads top = base + 16.2338 (i+1) |
-| TWA_Flight_F08 | SM_LB_Tw_StairFlight_250x420 | (12290, 1790, 1590.91) | (0, 90, 0) | (1, 1, 1) | (12032, 1780, 1580.9) .. (12290, 2220, 1847.9) | NoCollision | W ring, base Z 1590.909; treads top = base + 16.2338 (i+1) |
-| TWA_Flight_F09 | SM_LB_Tw_StairFlight_250x420_BrokenA | (12290, 2210, 1818.18) | (0, 0, 0) | (1, 1, 1) | (12280, 2210, 1808.2) .. (12720, 2468, 2075.2) | NoCollision | N ring, base Z 1818.182; treads top = base + 16.2338 (i+1) |
-| TWA_Flight_F10 | SM_LB_Tw_StairFlight_250x420 | (12710, 2210, 2045.45) | (0, -90, 0) | (1, 1, 1) | (12710, 1780, 2035.5) .. (12968, 2220, 2302.4) | NoCollision | E ring, base Z 2045.455; treads top = base + 16.2338 (i+1) |
-| TWA_Flight_F11 | SM_LB_Tw_StairFlight_250x420 | (12710, 1790, 2272.73) | (0, 180, 0) | (1, 1, 1) | (12280, 1532, 2262.7) .. (12720, 1790, 2529.7) | NoCollision | S ring, base Z 2272.727; treads top = base + 16.2338 (i+1) |
+| TWA_Flight_F01 | SM_LB_Tw_StairFlight_250x420_Closed | (12290, 2210, 0) | (0, 0, 0) | (1, 1, 1) | (12280, 2210, 0) .. (12720, 2460, 256.7) | NoCollision | N ring, base Z 0.000; treads top = base + 16.2338 (i+1) |
+| TWA_Flight_F02 | SM_LB_Tw_StairFlight_250x420 | (12710, 2210, 227.27) | (0, -90, 0) | (1, 1, 1) | (12710, 1780, 218.3) .. (12968, 2220, 483.9) | NoCollision | E ring, base Z 227.273; treads top = base + 16.2338 (i+1) |
+| TWA_Flight_F03 | SM_LB_Tw_StairFlight_250x420_BrokenA | (12710, 1790, 454.55) | (0, 180, 0) | (1, 1, 1) | (12280, 1532, 445.6) .. (12720, 1790, 711.2) | NoCollision | S ring, base Z 454.545; treads top = base + 16.2338 (i+1) |
+| TWA_Flight_F04 | SM_LB_Tw_StairFlight_250x420 | (12290, 1790, 681.82) | (0, 90, 0) | (1, 1, 1) | (12032, 1780, 672.9) .. (12290, 2220, 938.5) | NoCollision | W ring, base Z 681.818; treads top = base + 16.2338 (i+1) |
+| TWA_Flight_F05 | SM_LB_Tw_StairFlight_250x420 | (12290, 2210, 909.09) | (0, 0, 0) | (1, 1, 1) | (12280, 2210, 900.1) .. (12720, 2468, 1165.8) | NoCollision | N ring, base Z 909.091; treads top = base + 16.2338 (i+1) |
+| TWA_Flight_F06 | SM_LB_Tw_StairFlight_250x420_BrokenB | (12710, 2210, 1136.36) | (0, -90, 0) | (1, 1, 1) | (12710, 1780, 1127.4) .. (12968, 2220, 1393) | NoCollision | E ring, base Z 1136.364; treads top = base + 16.2338 (i+1) |
+| TWA_Flight_F07 | SM_LB_Tw_StairFlight_250x420 | (12710, 1790, 1363.64) | (0, 180, 0) | (1, 1, 1) | (12280, 1532, 1354.7) .. (12720, 1790, 1620.3) | NoCollision | S ring, base Z 1363.636; treads top = base + 16.2338 (i+1) |
+| TWA_Flight_F08 | SM_LB_Tw_StairFlight_250x420 | (12290, 1790, 1590.91) | (0, 90, 0) | (1, 1, 1) | (12032, 1780, 1582) .. (12290, 2220, 1847.6) | NoCollision | W ring, base Z 1590.909; treads top = base + 16.2338 (i+1) |
+| TWA_Flight_F09 | SM_LB_Tw_StairFlight_250x420_BrokenA | (12290, 2210, 1818.18) | (0, 0, 0) | (1, 1, 1) | (12280, 2210, 1809.2) .. (12720, 2468, 2074.9) | NoCollision | N ring, base Z 1818.182; treads top = base + 16.2338 (i+1) |
+| TWA_Flight_F10 | SM_LB_Tw_StairFlight_250x420 | (12710, 2210, 2045.45) | (0, -90, 0) | (1, 1, 1) | (12710, 1780, 2036.5) .. (12968, 2220, 2302.1) | NoCollision | E ring, base Z 2045.455; treads top = base + 16.2338 (i+1) |
+| TWA_Flight_F11 | SM_LB_Tw_StairFlight_250x420 | (12710, 1790, 2272.73) | (0, 180, 0) | (1, 1, 1) | (12280, 1532, 2263.8) .. (12720, 1790, 2529.4) | NoCollision | S ring, base Z 2272.727; treads top = base + 16.2338 (i+1) |
 
 ## Flight rails (11) (11)
 
 | Label | Mesh | Location | Rotation | Scale | AABB min .. max | Collision | Note |
 |---|---|---|---|---|---|---|---|
-| TWA_FlightRail_F01 | SM_LB_Tw_FlightRail_420 | (12290, 2210, 0) | (0, 0, 0) | (1, 1, 1) | (12290, 2210, 58.2) .. (12710, 2220, 341.5) | NoCollision | inner balustrade on the rail plane, 10 cm outside the core face |
-| TWA_FlightRail_F02 | SM_LB_Tw_FlightRail_420 | (12710, 2210, 227.27) | (0, -90, 0) | (1, 1, 1) | (12710, 1790, 285.5) .. (12720, 2210, 568.8) | NoCollision | inner balustrade on the rail plane, 10 cm outside the core face |
-| TWA_FlightRail_F03 | SM_LB_Tw_FlightRail_420 | (12710, 1790, 454.55) | (0, 180, 0) | (1, 1, 1) | (12290, 1780, 512.8) .. (12710, 1790, 796) | NoCollision | inner balustrade on the rail plane, 10 cm outside the core face |
-| TWA_FlightRail_F04 | SM_LB_Tw_FlightRail_420 | (12290, 1790, 681.82) | (0, 90, 0) | (1, 1, 1) | (12280, 1790, 740) .. (12290, 2210, 1023.3) | NoCollision | inner balustrade on the rail plane, 10 cm outside the core face |
-| TWA_FlightRail_F05 | SM_LB_Tw_FlightRail_420 | (12290, 2210, 909.09) | (0, 0, 0) | (1, 1, 1) | (12290, 2210, 967.3) .. (12710, 2220, 1250.6) | NoCollision | inner balustrade on the rail plane, 10 cm outside the core face |
-| TWA_FlightRail_F06 | SM_LB_Tw_FlightRail_420 | (12710, 2210, 1136.36) | (0, -90, 0) | (1, 1, 1) | (12710, 1790, 1194.6) .. (12720, 2210, 1477.9) | NoCollision | inner balustrade on the rail plane, 10 cm outside the core face |
-| TWA_FlightRail_F07 | SM_LB_Tw_FlightRail_420 | (12710, 1790, 1363.64) | (0, 180, 0) | (1, 1, 1) | (12290, 1780, 1421.8) .. (12710, 1790, 1705.1) | NoCollision | inner balustrade on the rail plane, 10 cm outside the core face |
-| TWA_FlightRail_F08 | SM_LB_Tw_FlightRail_420 | (12290, 1790, 1590.91) | (0, 90, 0) | (1, 1, 1) | (12280, 1790, 1649.1) .. (12290, 2210, 1932.4) | NoCollision | inner balustrade on the rail plane, 10 cm outside the core face |
-| TWA_FlightRail_F09 | SM_LB_Tw_FlightRail_420 | (12290, 2210, 1818.18) | (0, 0, 0) | (1, 1, 1) | (12290, 2210, 1876.4) .. (12710, 2220, 2159.7) | NoCollision | inner balustrade on the rail plane, 10 cm outside the core face |
-| TWA_FlightRail_F10 | SM_LB_Tw_FlightRail_420 | (12710, 2210, 2045.45) | (0, -90, 0) | (1, 1, 1) | (12710, 1790, 2103.7) .. (12720, 2210, 2386.9) | NoCollision | inner balustrade on the rail plane, 10 cm outside the core face |
-| TWA_FlightRail_F11 | SM_LB_Tw_FlightRail_420 | (12710, 1790, 2272.73) | (0, 180, 0) | (1, 1, 1) | (12290, 1780, 2330.9) .. (12710, 1790, 2614.2) | NoCollision | inner balustrade on the rail plane, 10 cm outside the core face |
+| TWA_FlightRail_F01 | SM_LB_Tw_FlightRail_420 | (12290, 2210, 0) | (0, 0, 0) | (1, 1, 1) | (12290, 2210, 59.4) .. (12710, 2218, 341.3) | NoCollision | inner balustrade on the rail plane, 10 cm outside the core face |
+| TWA_FlightRail_F02 | SM_LB_Tw_FlightRail_420 | (12710, 2210, 227.27) | (0, -90, 0) | (1, 1, 1) | (12710, 1790, 286.7) .. (12718, 2210, 568.6) | NoCollision | inner balustrade on the rail plane, 10 cm outside the core face |
+| TWA_FlightRail_F03 | SM_LB_Tw_FlightRail_420 | (12710, 1790, 454.55) | (0, 180, 0) | (1, 1, 1) | (12290, 1782, 514) .. (12710, 1790, 795.9) | NoCollision | inner balustrade on the rail plane, 10 cm outside the core face |
+| TWA_FlightRail_F04 | SM_LB_Tw_FlightRail_420 | (12290, 1790, 681.82) | (0, 90, 0) | (1, 1, 1) | (12282, 1790, 741.2) .. (12290, 2210, 1023.1) | NoCollision | inner balustrade on the rail plane, 10 cm outside the core face |
+| TWA_FlightRail_F05 | SM_LB_Tw_FlightRail_420 | (12290, 2210, 909.09) | (0, 0, 0) | (1, 1, 1) | (12290, 2210, 968.5) .. (12710, 2218, 1250.4) | NoCollision | inner balustrade on the rail plane, 10 cm outside the core face |
+| TWA_FlightRail_F06 | SM_LB_Tw_FlightRail_420 | (12710, 2210, 1136.36) | (0, -90, 0) | (1, 1, 1) | (12710, 1790, 1195.8) .. (12718, 2210, 1477.7) | NoCollision | inner balustrade on the rail plane, 10 cm outside the core face |
+| TWA_FlightRail_F07 | SM_LB_Tw_FlightRail_420 | (12710, 1790, 1363.64) | (0, 180, 0) | (1, 1, 1) | (12290, 1782, 1423.1) .. (12710, 1790, 1705) | NoCollision | inner balustrade on the rail plane, 10 cm outside the core face |
+| TWA_FlightRail_F08 | SM_LB_Tw_FlightRail_420 | (12290, 1790, 1590.91) | (0, 90, 0) | (1, 1, 1) | (12282, 1790, 1650.3) .. (12290, 2210, 1932.2) | NoCollision | inner balustrade on the rail plane, 10 cm outside the core face |
+| TWA_FlightRail_F09 | SM_LB_Tw_FlightRail_420 | (12290, 2210, 1818.18) | (0, 0, 0) | (1, 1, 1) | (12290, 2210, 1877.6) .. (12710, 2218, 2159.5) | NoCollision | inner balustrade on the rail plane, 10 cm outside the core face |
+| TWA_FlightRail_F10 | SM_LB_Tw_FlightRail_420 | (12710, 2210, 2045.45) | (0, -90, 0) | (1, 1, 1) | (12710, 1790, 2104.9) .. (12718, 2210, 2386.8) | NoCollision | inner balustrade on the rail plane, 10 cm outside the core face |
+| TWA_FlightRail_F11 | SM_LB_Tw_FlightRail_420 | (12710, 1790, 2272.73) | (0, 180, 0) | (1, 1, 1) | (12290, 1782, 2332.2) .. (12710, 1790, 2614.1) | NoCollision | inner balustrade on the rail plane, 10 cm outside the core face |
 
 ## Landings (10) (10)
 
 | Label | Mesh | Location | Rotation | Scale | AABB min .. max | Collision | Note |
 |---|---|---|---|---|---|---|---|
-| TWA_Landing_01 | SM_LB_Tw_Landing_250 | (12710, 2210, 227.27) | (0, 0, 0) | (1, 1, 1) | (12710, 2210, 167.3) .. (12960, 2460, 227.3) | NoCollision | NE corner, top Z 227.273 |
-| TWA_Landing_02 | SM_LB_Tw_Landing_250 | (12710, 1790, 454.55) | (0, -90, 0) | (1, 1, 1) | (12710, 1540, 394.6) .. (12960, 1790, 454.6) | NoCollision | SE corner, top Z 454.545 |
-| TWA_Landing_03 | SM_LB_Tw_Landing_250 | (12290, 1790, 681.82) | (0, 180, 0) | (1, 1, 1) | (12040, 1540, 621.8) .. (12290, 1790, 681.8) | NoCollision | SW corner, top Z 681.818 |
-| TWA_Landing_04 | SM_LB_Tw_Landing_250 | (12290, 2210, 909.09) | (0, 90, 0) | (1, 1, 1) | (12040, 2210, 849.1) .. (12290, 2460, 909.1) | NoCollision | NW corner, top Z 909.091 |
-| TWA_Landing_05 | SM_LB_Tw_Landing_250 | (12710, 2210, 1136.36) | (0, 0, 0) | (1, 1, 1) | (12710, 2210, 1076.4) .. (12960, 2460, 1136.4) | NoCollision | NE corner, top Z 1136.364 |
-| TWA_Landing_06 | SM_LB_Tw_Landing_250 | (12710, 1790, 1363.64) | (0, -90, 0) | (1, 1, 1) | (12710, 1540, 1303.6) .. (12960, 1790, 1363.6) | NoCollision | SE corner, top Z 1363.636 |
-| TWA_Landing_07 | SM_LB_Tw_Landing_250 | (12290, 1790, 1590.91) | (0, 180, 0) | (1, 1, 1) | (12040, 1540, 1530.9) .. (12290, 1790, 1590.9) | NoCollision | SW corner, top Z 1590.909 |
-| TWA_Landing_08 | SM_LB_Tw_Landing_250 | (12290, 2210, 1818.18) | (0, 90, 0) | (1, 1, 1) | (12040, 2210, 1758.2) .. (12290, 2460, 1818.2) | NoCollision | NW corner, top Z 1818.182 |
-| TWA_Landing_09 | SM_LB_Tw_Landing_250 | (12710, 2210, 2045.45) | (0, 0, 0) | (1, 1, 1) | (12710, 2210, 1985.5) .. (12960, 2460, 2045.5) | NoCollision | NE corner, top Z 2045.455 |
-| TWA_Landing_10 | SM_LB_Tw_Landing_250 | (12710, 1790, 2272.73) | (0, -90, 0) | (1, 1, 1) | (12710, 1540, 2212.7) .. (12960, 1790, 2272.7) | NoCollision | SE corner, top Z 2272.727 |
+| TWA_Landing_01 | SM_LB_Tw_Landing_250 | (12710, 2210, 227.27) | (0, 0, 0) | (1, 1, 1) | (12710, 2210, 167.5) .. (12960, 2460, 227.3) | NoCollision | NE corner, top Z 227.273 |
+| TWA_Landing_02 | SM_LB_Tw_Landing_250 | (12710, 1790, 454.55) | (0, -90, 0) | (1, 1, 1) | (12710, 1540, 394.8) .. (12960, 1790, 454.6) | NoCollision | SE corner, top Z 454.545 |
+| TWA_Landing_03 | SM_LB_Tw_Landing_250 | (12290, 1790, 681.82) | (0, 180, 0) | (1, 1, 1) | (12040, 1540, 622.1) .. (12290, 1790, 681.8) | NoCollision | SW corner, top Z 681.818 |
+| TWA_Landing_04 | SM_LB_Tw_Landing_250 | (12290, 2210, 909.09) | (0, 90, 0) | (1, 1, 1) | (12040, 2210, 849.3) .. (12290, 2460, 909.1) | NoCollision | NW corner, top Z 909.091 |
+| TWA_Landing_05 | SM_LB_Tw_Landing_250 | (12710, 2210, 1136.36) | (0, 0, 0) | (1, 1, 1) | (12710, 2210, 1076.6) .. (12960, 2460, 1136.4) | NoCollision | NE corner, top Z 1136.364 |
+| TWA_Landing_06 | SM_LB_Tw_Landing_250 | (12710, 1790, 1363.64) | (0, -90, 0) | (1, 1, 1) | (12710, 1540, 1303.9) .. (12960, 1790, 1363.6) | NoCollision | SE corner, top Z 1363.636 |
+| TWA_Landing_07 | SM_LB_Tw_Landing_250 | (12290, 1790, 1590.91) | (0, 180, 0) | (1, 1, 1) | (12040, 1540, 1531.2) .. (12290, 1790, 1590.9) | NoCollision | SW corner, top Z 1590.909 |
+| TWA_Landing_08 | SM_LB_Tw_Landing_250 | (12290, 2210, 1818.18) | (0, 90, 0) | (1, 1, 1) | (12040, 2210, 1758.4) .. (12290, 2460, 1818.2) | NoCollision | NW corner, top Z 1818.182 |
+| TWA_Landing_09 | SM_LB_Tw_Landing_250 | (12710, 2210, 2045.45) | (0, 0, 0) | (1, 1, 1) | (12710, 2210, 1985.7) .. (12960, 2460, 2045.5) | NoCollision | NE corner, top Z 2045.455 |
+| TWA_Landing_10 | SM_LB_Tw_Landing_250 | (12710, 1790, 2272.73) | (0, -90, 0) | (1, 1, 1) | (12710, 1540, 2213) .. (12960, 1790, 2272.7) | NoCollision | SE corner, top Z 2272.727 |
 
 ## Shaft base, posts, partition (6)
 
@@ -310,7 +378,7 @@ Ground slabs `Ground_1`, `Ground_2`, `Ground_4`, `Ground_6` get `MI_Kit_Floor` (
 
 | Label | Mesh | Location | Rotation | Scale | AABB min .. max | Collision | Note |
 |---|---|---|---|---|---|---|---|
-| TWA_BelfryFloor | SM_LB_Tw_BelfryFloor | (12040, 1540, 2500) | (0, 0, 0) | (1, 1, 1) | (12040, 1540, 2465) .. (12720, 2460, 2500) | NoCollision | belfry floor boards over the W slab, N slab and core top; rope hole X 12530-12560, Y 1820-1850 |
+| TWA_BelfryFloor | SM_LB_Tw_BelfryFloor | (12040, 1540, 2500) | (0, 0, 0) | (1, 1, 1) | (12040, 1540, 2464.6) .. (12720, 2460, 2500) | NoCollision | belfry floor boards over the W slab, N slab and core top; rope hole X 12530-12560, Y 1820-1850 |
 | TWA_TopRail_670 | SM_LB_Tw_TopRail_670 | (12700, 1790, 2500) | (0, 90, 0) | (1, 1, 1) | (12695, 1790, 2500) .. (12705, 2460, 2598) | NoCollision | runs Y 1790 -> 2460 along the core E edge |
 | TWA_TopRail_420 | SM_LB_Tw_TopRail_420 | (12290, 1800, 2500) | (0, 0, 0) | (1, 1, 1) | (12290, 1795, 2500) .. (12710, 1805, 2598) | NoCollision | runs X 12290 -> 12710 along the core S edge |
 | TWA_Louvre_W1 | SM_LB_Tw_Louvre_130x450 | (12040, 1905, 2700) | (0, 90, 0) | (1, 1, 1) | (12010, 1840, 2700) .. (12040, 1970, 3150) | NoCollision | lancet centred x 405 on the W face, sill z 200 (world 2700) |
@@ -321,10 +389,10 @@ Ground slabs `Ground_1`, `Ground_2`, `Ground_4`, `Ground_6` get `MI_Kit_Floor` (
 | TWA_Louvre_E2 | SM_LB_Tw_Louvre_130x450_Broken | (12960, 1905, 2700) | (0, -90, 0) | (1, 1, 1) | (12960, 1840, 2700) .. (12990, 1970, 3150) | NoCollision | lancet centred x 595 on the E face, sill z 200 (world 2700) |
 | TWA_Louvre_S1 | SM_LB_Tw_Louvre_130x450 | (12595, 1540, 2700) | (0, 180, 0) | (1, 1, 1) | (12530, 1510, 2700) .. (12660, 1540, 3150) | NoCollision | lancet centred x 365 on the S face, sill z 200 (world 2700) |
 | TWA_Louvre_S2 | SM_LB_Tw_Louvre_130x450 | (12405, 1540, 2700) | (0, 180, 0) | (1, 1, 1) | (12340, 1510, 2700) .. (12470, 1540, 3150) | NoCollision | lancet centred x 555 on the S face, sill z 200 (world 2700) |
-| TWA_BellFrame | SM_LB_Tw_BellFrame_A | (12420, 2000, 2500) | (0, 0, 0) | (1, 1, 1) | (12255, 1852.5, 2500) .. (12585, 2147.5, 2880) | BlockAll (4 post UCX) | oak bell frame over the core top and W slab |
-| TWA_Headstock | SM_LB_Tw_BellHeadstock_A | (12420, 2000, 2880) | (0, 0, 0) | (1, 1, 1) | (12290, 1825, 2750) .. (12550, 2165, 3010) | NoCollision | axle along Y at Z 2880; bell wheel in the plane Y 1830 |
-| TWA_BellRope | SM_LB_Prop_BellRope_2610 | (12550, 1835, 2750) | (0, 0, 0) | (1, 1, 1) | (12543.5, 1828.5, 140) .. (12556.5, 1841.5, 2750) | NoCollision | rope in the wheel plane, through the floor hole (Y 1835, D1.11), Z 2750 down to 140; sally at Z 340-240 |
-| TWA_Roof | SM_LB_Tw_Roof_BrokenSW | (12500, 2000, 3540) | (0, 0, 0) | (1, 1, 1) | (11975, 1475, 3240) .. (13025, 2525, 4832) | NoCollision | steep pyramidal slate roof, apex Z 4740, SW quarter collapsed |
+| TWA_BellFrame | SM_LB_Tw_BellFrame_A | (12420, 2000, 2500) | (0, 0, 0) | (1, 1, 1) | (12255, 1850, 2500) .. (12585, 2150, 2880) | BlockAll (4 post UCX) | oak bell frame over the core top and W slab |
+| TWA_Headstock | SM_LB_Tw_BellHeadstock_A | (12420, 2000, 2880) | (0, 0, 0) | (1, 1, 1) | (12290, 1822, 2745.5) .. (12554, 2170, 3010) | NoCollision | axle along Y at Z 2880; bell wheel in the plane Y 1830 |
+| TWA_BellRope | SM_LB_Prop_BellRope_2610 | (12550, 1835, 2750) | (0, 0, 0) | (1, 1, 1) | (12545.6, 1830.4, 140) .. (12555.1, 1839.6, 2750) | NoCollision | rope in the wheel plane, through the floor hole (Y 1835, D1.11), Z 2750 down to 140; sally at Z 340-240 |
+| TWA_Roof | SM_LB_Tw_Roof_BrokenSW | (12500, 2000, 3540) | (0, 0, 0) | (1, 1, 1) | (11974.4, 1474.4, 3246) .. (13025.4, 2525.3, 4824.8) | NoCollision | steep pyramidal slate roof, apex Z 4740, SW quarter collapsed |
 
 ## Cloister, passage and stair-house wall pieces and archways (45)
 
@@ -372,8 +440,8 @@ Ground slabs `Ground_1`, `Ground_2`, `Ground_4`, `Ground_6` get `MI_Kit_Floor` (
 | SHA_Wall_SH_W_1 | SM_LB_Cl_Wall40_400x450 | (10500, 200, 0) | (0, 90, 0) | (0.75, 1, 1) | (10460, 200, 0) .. (10500, 500, 450) | NoCollision | run SH_W: 2 x 400 pieces scaled x0.7500, frame W origin (10500.0, -100.0), length 600 |
 | SHA_Wall_SH_E_0 | SM_LB_Cl_Wall40_400x450 | (10800, 500, 0) | (0, -90, 0) | (0.75, 1, 1) | (10800, 200, 0) .. (10840, 500, 450) | NoCollision | run SH_E: 2 x 400 pieces scaled x0.7500, frame E origin (10800.0, 500.0), length 600 |
 | SHA_Wall_SH_E_1 | SM_LB_Cl_Wall40_400x450 | (10800, 200, 0) | (0, -90, 0) | (0.75, 1, 1) | (10800, -100, 0) .. (10840, 200, 450) | NoCollision | run SH_E: 2 x 400 pieces scaled x0.7500, frame E origin (10800.0, 500.0), length 600 |
-| CLA_Archway_W | SM_LB_Cl_Archway_500x40x1300 | (9500, 1750, 0) | (0, 90, 0) | (1, 1, 1) | (9460, 1750, 0) .. (9506, 2250, 1300) | NoCollision | W archway Y 1750-2250 (greybox opening 500 x 400), W-type frame at X 9500, local y 0 on the cloister side |
-| CLA_Archway_S | SM_LB_Cl_Archway_300x40x1300 | (10800, 540, 0) | (0, 180, 0) | (1, 1, 1) | (10500, 500, 0) .. (10800, 546, 1300) | NoCollision | S archway X 10500-10800 over the crypt exit, S-type frame at Y 540 |
+| CLA_Archway_W | SM_LB_Cl_Archway_500x40x1300 | (9500, 1750, 0) | (0, 90, 0) | (1, 1, 1) | (9460, 1750, 300) .. (9506, 2250, 1300) | NoCollision | W archway Y 1750-2250 (greybox opening 500 x 400), W-type frame at X 9500, local y 0 on the cloister side |
+| CLA_Archway_S | SM_LB_Cl_Archway_300x40x1300 | (10800, 540, 0) | (0, 180, 0) | (1, 1, 1) | (10500, 500, 330) .. (10800, 546, 1300) | NoCollision | S archway X 10500-10800 over the crypt exit, S-type frame at Y 540 |
 | SHA_Gable_S | SM_LB_Cl_StairHouseGable_380x40x650 | (10840, -100, 0) | (0, 180, 0) | (1, 1, 1) | (10460, -140, 0) .. (10840, -100, 650) | NoCollision | south gable X 10460-10840, Y -140..-100, inner face at Y -100 |
 
 ## Arcade: piers (10), corner piers (4), arches (14) (28)
@@ -417,76 +485,76 @@ Ground slabs `Ground_1`, `Ground_2`, `Ground_4`, `Ground_6` get `MI_Kit_Floor` (
 | CLA_GarthWall_N | SM_LB_Cl_GarthWall_1100x100 | (11400, 2200, 0) | (0, 180, 0) | (1, 1, 1) | (10300, 2170, 0) .. (11400, 2204, 100) | NoCollision | retaining wall flush with the Garth block, top exactly Z 100 (Note_Cloister rests on the S coping) |
 | CLA_GarthWall_W | SM_LB_Cl_GarthWall_800x100 | (10300, 2200, 0) | (0, -90, 0) | (1, 1, 1) | (10296, 1400, 0) .. (10330, 2200, 100) | NoCollision | retaining wall flush with the Garth block, top exactly Z 100 (Note_Cloister rests on the S coping) |
 | CLA_GarthWall_E | SM_LB_Cl_GarthWall_800x100 | (11400, 1400, 0) | (0, 90, 0) | (1, 1, 1) | (11370, 1400, 0) .. (11404, 2200, 100) | NoCollision | retaining wall flush with the Garth block, top exactly Z 100 (Note_Cloister rests on the S coping) |
-| CLA_GarthBed | SM_LB_Cl_GarthBed_1100x800 | (10300, 1400, 100) | (0, 0, 0) | (1, 1, 1) | (10300, 1400, 96) .. (11400, 2200, 110) | NoCollision | earth surface on the Garth top (Z 100) |
+| CLA_GarthBed | SM_LB_Cl_GarthBed_1100x800 | (10300, 1400, 100) | (0, 0, 0) | (1, 1, 1) | (10300, 1400, 92) .. (11400, 2200, 109.8) | NoCollision | earth surface on the Garth top (Z 100) |
 | CLA_GraveSlab_0 | SM_LB_Cl_GraveSlab_200x80 | (10500, 1600, 100) | (0, 3.59, 2.03) | (1, 1, 1) | (10397.7, 1553.8, 98.6) .. (10602.3, 1646.4, 109.4) | NoCollision | grave slab, yaw 0 +-4 deg and 1-3 deg roll (seed 1223) |
 | CLA_GraveSlab_1 | SM_LB_Cl_GraveSlab_200x80 | (10500, 2000, 100) | (0, -0.13, 2.44) | (1, 1, 1) | (10399.9, 1959.8, 98.3) .. (10600.1, 2040.5, 109.7) | NoCollision | grave slab, yaw 0 +-4 deg and 1-3 deg roll (seed 1223) |
 | CLA_GraveSlab_2 | SM_LB_Cl_GraveSlab_200x80 | (10700, 1650, 100) | (0, 2.76, 2.43) | (1, 1, 1) | (10598.2, 1605.3, 98.3) .. (10801.8, 1695.1, 109.7) | NoCollision | grave slab, yaw 0 +-4 deg and 1-3 deg roll (seed 1223) |
 | CLA_GraveSlab_3 | SM_LB_Cl_GraveSlab_200x80 | (11000, 2000, 100) | (0, -2.63, -2.11) | (1, 1, 1) | (10898.3, 1955.2, 98.5) .. (11101.7, 2044.5, 109.5) | NoCollision | grave slab, yaw 0 +-4 deg and 1-3 deg roll (seed 1223) |
 | CLA_GraveSlab_4 | SM_LB_Cl_GraveSlab_200x80 | (11200, 1600, 100) | (0, -2.37, -1.42) | (1, 1, 1) | (11098.4, 1555.7, 99) .. (11301.6, 1644.1, 109) | NoCollision | grave slab, yaw 0 +-4 deg and 1-3 deg roll (seed 1223) |
 | CLA_GraveSlab_5 | SM_LB_Cl_GraveSlab_200x80 | (11200, 1950, 100) | (0, -3.25, -2.9) | (1, 1, 1) | (11097.9, 1904, 98) .. (11302.1, 1995.5, 110) | NoCollision | grave slab, yaw 0 +-4 deg and 1-3 deg roll (seed 1223) |
-| CLA_GraveCross_0 | SM_LB_Cl_GraveCross_60 | (10450, 1500, 100) | (0, 0, 0) | (1, 1, 1) | (10432, 1496, 100) .. (10468, 1504, 160) | NoCollision | small stone cross |
-| CLA_GraveCross_1 | SM_LB_Cl_GraveCross_60 | (11250, 1500, 100) | (0, 0, 0) | (1, 1, 1) | (11232, 1496, 100) .. (11268, 1504, 160) | NoCollision | small stone cross |
-| CLA_GraveCross_2 | SM_LB_Cl_GraveCross_60 | (10450, 2100, 100) | (0, 0, 0) | (1, 1, 1) | (10432, 2096, 100) .. (10468, 2104, 160) | NoCollision | small stone cross |
-| CLA_GraveCross_3 | SM_LB_Cl_GraveCross_60 | (11250, 2100, 100) | (0, 0, 0) | (1, 1, 1) | (11232, 2096, 100) .. (11268, 2104, 160) | NoCollision | small stone cross |
+| CLA_GraveCross_0 | SM_LB_Cl_GraveCross_60 | (10450, 1500, 100) | (0, 0, 0) | (1, 1, 1) | (10433, 1496, 100) .. (10467, 1504, 160) | NoCollision | small stone cross |
+| CLA_GraveCross_1 | SM_LB_Cl_GraveCross_60 | (11250, 1500, 100) | (0, 0, 0) | (1, 1, 1) | (11233, 1496, 100) .. (11267, 1504, 160) | NoCollision | small stone cross |
+| CLA_GraveCross_2 | SM_LB_Cl_GraveCross_60 | (10450, 2100, 100) | (0, 0, 0) | (1, 1, 1) | (10433, 2096, 100) .. (10467, 2104, 160) | NoCollision | small stone cross |
+| CLA_GraveCross_3 | SM_LB_Cl_GraveCross_60 | (11250, 2100, 100) | (0, 0, 0) | (1, 1, 1) | (11233, 2096, 100) .. (11267, 2104, 160) | NoCollision | small stone cross |
 | CLA_GarthCross | SM_LB_Cl_GarthCross_350 | (10850, 1800, 100) | (0, 15, 0) | (1, 1, 1) | (10776.5, 1726.5, 100) .. (10923.5, 1873.5, 450) | NoCollision | 3.5 m stone cross, yaw 15 |
 
 ## Vault bays (10) (10)
 
 | Label | Mesh | Location | Rotation | Scale | AABB min .. max | Collision | Note |
 |---|---|---|---|---|---|---|---|
-| CLA_Vault_S_W | SM_LB_Cl_Vault_Barrel_830x640 | (10210, 510, 560) | (0, 0, 0) | (1, 1, 1) | (10210, 510, 560) .. (10850, 1340, 925) | NoCollision | S walk west; springing Z 560, crown Z 900 |
-| CLA_Vault_S_E | SM_LB_Cl_Vault_Barrel_830x640 | (10850, 510, 560) | (0, 0, 0) | (1, 1, 1) | (10850, 510, 560) .. (11490, 1340, 925) | NoCollision | S walk east; springing Z 560, crown Z 900 |
-| CLA_Vault_N_W | SM_LB_Cl_Vault_Barrel_770x640 | (10210, 2260, 560) | (0, 0, 0) | (1, 1, 1) | (10210, 2260, 560) .. (10850, 3030, 925) | NoCollision | N walk west; springing Z 560, crown Z 900 |
-| CLA_Vault_N_E | SM_LB_Cl_Vault_Barrel_770x640_Broken | (10850, 2260, 560) | (0, 0, 0) | (1, 1, 1) | (10850, 2260, 560) .. (11490, 3030, 925) | NoCollision | N walk east: the collapse; springing Z 560, crown Z 900 |
-| CLA_Vault_W | SM_LB_Cl_Vault_Barrel_770x980 | (10240, 1310, 560) | (0, 90, 0) | (1, 1, 1) | (9470, 1310, 560) .. (10240, 2290, 925) | NoCollision | W walk: local x -> +Y (1310-2290), local y -> -X (10240 -> 9470); springing Z 560, crown Z 900 |
-| CLA_Vault_E | SM_LB_Cl_Vault_Barrel_570x980 | (12030, 1310, 560) | (0, 90, 0) | (1, 1, 1) | (11460, 1310, 560) .. (12030, 2290, 925) | NoCollision | E walk: local y -> -X (12030 -> 11460); springing Z 560, crown Z 900 |
-| CLA_Vault_SW | SM_LB_Cl_Vault_Groin_770x830 | (9470, 510, 560) | (0, 0, 0) | (1, 1, 1) | (9470, 510, 560) .. (10240, 1340, 925) | NoCollision | SW corner; springing Z 560, crown Z 900 |
-| CLA_Vault_SE | SM_LB_Cl_Vault_Groin_570x830 | (11460, 510, 560) | (0, 0, 0) | (1, 1, 1) | (11460, 510, 560) .. (12030, 1340, 925) | NoCollision | SE corner; springing Z 560, crown Z 900 |
-| CLA_Vault_NW | SM_LB_Cl_Vault_Groin_770x770 | (9470, 2260, 560) | (0, 0, 0) | (1, 1, 1) | (9470, 2260, 560) .. (10240, 3030, 925) | NoCollision | NW corner; springing Z 560, crown Z 900 |
-| CLA_Vault_NE | SM_LB_Cl_Vault_Groin_570x770 | (11460, 2260, 560) | (0, 0, 0) | (1, 1, 1) | (11460, 2260, 560) .. (12030, 3030, 925) | NoCollision | NE corner; springing Z 560, crown Z 900 |
+| CLA_Vault_S_W | SM_LB_Cl_Vault_Barrel_830x640 | (10210, 510, 540) | (0, 0, 0) | (1, 1, 1) | (10210, 510, 540) .. (10850, 1340, 880) | NoCollision | S walk west; springing Z 540 (D1.12), extrados crown Z 880 |
+| CLA_Vault_S_E | SM_LB_Cl_Vault_Barrel_830x640 | (10850, 510, 540) | (0, 0, 0) | (1, 1, 1) | (10850, 510, 540) .. (11490, 1340, 880) | NoCollision | S walk east; springing Z 540 (D1.12), extrados crown Z 880 |
+| CLA_Vault_N_W | SM_LB_Cl_Vault_Barrel_770x640 | (10210, 2260, 540) | (0, 0, 0) | (1, 1, 1) | (10210, 2260, 540) .. (10850, 3030, 880) | NoCollision | N walk west; springing Z 540 (D1.12), extrados crown Z 880 |
+| CLA_Vault_N_E | SM_LB_Cl_Vault_Barrel_770x640_Broken | (10850, 2260, 540) | (0, 0, 0) | (1, 1, 1) | (10850, 2260, 540) .. (11490, 3030, 880) | NoCollision | N walk east: the collapse; springing Z 540 (D1.12), extrados crown Z 880 |
+| CLA_Vault_W | SM_LB_Cl_Vault_Barrel_770x980 | (10240, 1310, 540) | (0, 90, 0) | (1, 1, 1) | (9470, 1310, 540) .. (10240, 2290, 880) | NoCollision | W walk: local x -> +Y (1310-2290), local y -> -X (10240 -> 9470); springing Z 540 (D1.12), extrados crown Z 880 |
+| CLA_Vault_E | SM_LB_Cl_Vault_Barrel_570x980 | (12030, 1310, 540) | (0, 90, 0) | (1, 1, 1) | (11460, 1310, 540) .. (12030, 2290, 880) | NoCollision | E walk: local y -> -X (12030 -> 11460); springing Z 540 (D1.12), extrados crown Z 880 |
+| CLA_Vault_SW | SM_LB_Cl_Vault_Groin_770x830 | (9470, 510, 540) | (0, 0, 0) | (1, 1, 1) | (9470, 510, 540) .. (10240, 1340, 880) | NoCollision | SW corner; springing Z 540 (D1.12), extrados crown Z 880 |
+| CLA_Vault_SE | SM_LB_Cl_Vault_Groin_570x830 | (11460, 510, 540) | (0, 0, 0) | (1, 1, 1) | (11460, 510, 540) .. (12030, 1340, 880) | NoCollision | SE corner; springing Z 540 (D1.12), extrados crown Z 880 |
+| CLA_Vault_NW | SM_LB_Cl_Vault_Groin_770x770 | (9470, 2260, 540) | (0, 0, 0) | (1, 1, 1) | (9470, 2260, 540) .. (10240, 3030, 880) | NoCollision | NW corner; springing Z 540 (D1.12), extrados crown Z 880 |
+| CLA_Vault_NE | SM_LB_Cl_Vault_Groin_570x770 | (11460, 2260, 540) | (0, 0, 0) | (1, 1, 1) | (11460, 2260, 540) .. (12030, 3030, 880) | NoCollision | NE corner; springing Z 540 (D1.12), extrados crown Z 880 |
 
 ## Corbels (20)
 
 | Label | Mesh | Location | Rotation | Scale | AABB min .. max | Collision | Note |
 |---|---|---|---|---|---|---|---|
-| CLA_Corbel_S_0 | SM_LB_Kit_Corbel_40x60x60 | (10230, 600, 500) | (0, 180, 0) | (1, 1, 1) | (10190, 540, 500) .. (10230, 600, 560) | NoCollision | under the rib end at X 10210 on the S wall, top Z 560 (kit corbel: free end local y 0, back local y 60) |
-| CLA_Corbel_S_1 | SM_LB_Kit_Corbel_40x60x60 | (10550, 600, 500) | (0, 180, 0) | (1, 1, 1) | (10510, 540, 500) .. (10550, 600, 560) | NoCollision | under the rib end at X 10530 on the S wall, top Z 560 (kit corbel: free end local y 0, back local y 60) |
-| CLA_Corbel_S_2 | SM_LB_Kit_Corbel_40x60x60 | (10870, 600, 500) | (0, 180, 0) | (1, 1, 1) | (10830, 540, 500) .. (10870, 600, 560) | NoCollision | under the rib end at X 10850 on the S wall, top Z 560 (kit corbel: free end local y 0, back local y 60) |
-| CLA_Corbel_S_3 | SM_LB_Kit_Corbel_40x60x60 | (11190, 600, 500) | (0, 180, 0) | (1, 1, 1) | (11150, 540, 500) .. (11190, 600, 560) | NoCollision | under the rib end at X 11170 on the S wall, top Z 560 (kit corbel: free end local y 0, back local y 60) |
-| CLA_Corbel_S_4 | SM_LB_Kit_Corbel_40x60x60 | (11510, 600, 500) | (0, 180, 0) | (1, 1, 1) | (11470, 540, 500) .. (11510, 600, 560) | NoCollision | under the rib end at X 11490 on the S wall, top Z 560 (kit corbel: free end local y 0, back local y 60) |
-| CLA_Corbel_N_0 | SM_LB_Kit_Corbel_40x60x60 | (10190, 2940, 500) | (0, 0, 0) | (1, 1, 1) | (10190, 2940, 500) .. (10230, 3000, 560) | NoCollision | under the rib end at X 10210 on the N wall, top Z 560 (kit corbel: free end local y 0, back local y 60) |
-| CLA_Corbel_N_1 | SM_LB_Kit_Corbel_40x60x60 | (10510, 2940, 500) | (0, 0, 0) | (1, 1, 1) | (10510, 2940, 500) .. (10550, 3000, 560) | NoCollision | under the rib end at X 10530 on the N wall, top Z 560 (kit corbel: free end local y 0, back local y 60) |
-| CLA_Corbel_N_2 | SM_LB_Kit_Corbel_40x60x60 | (10830, 2940, 500) | (0, 0, 0) | (1, 1, 1) | (10830, 2940, 500) .. (10870, 3000, 560) | NoCollision | under the rib end at X 10850 on the N wall, top Z 560 (kit corbel: free end local y 0, back local y 60) |
-| CLA_Corbel_N_3 | SM_LB_Kit_Corbel_40x60x60 | (11150, 2940, 500) | (0, 0, 0) | (1, 1, 1) | (11150, 2940, 500) .. (11190, 3000, 560) | NoCollision | under the rib end at X 11170 on the N wall, top Z 560 (kit corbel: free end local y 0, back local y 60) |
-| CLA_Corbel_N_4 | SM_LB_Kit_Corbel_40x60x60 | (11470, 2940, 500) | (0, 0, 0) | (1, 1, 1) | (11470, 2940, 500) .. (11510, 3000, 560) | NoCollision | under the rib end at X 11490 on the N wall, top Z 560 (kit corbel: free end local y 0, back local y 60) |
-| CLA_Corbel_W_0 | SM_LB_Kit_Corbel_40x60x60 | (9560, 1290, 500) | (0, 90, 0) | (1, 1, 1) | (9500, 1290, 500) .. (9560, 1330, 560) | NoCollision | under the rib end at Y 1310 on the W wall, top Z 560 (kit corbel: free end local y 0, back local y 60) |
-| CLA_Corbel_W_1 | SM_LB_Kit_Corbel_40x60x60 | (9560, 1780, 500) | (0, 90, 0) | (1, 1, 1) | (9500, 1780, 500) .. (9560, 1820, 560) | NoCollision | under the rib end at Y 1800 on the W wall, top Z 560 (kit corbel: free end local y 0, back local y 60) |
-| CLA_Corbel_W_2 | SM_LB_Kit_Corbel_40x60x60 | (9560, 2270, 500) | (0, 90, 0) | (1, 1, 1) | (9500, 2270, 500) .. (9560, 2310, 560) | NoCollision | under the rib end at Y 2290 on the W wall, top Z 560 (kit corbel: free end local y 0, back local y 60) |
-| CLA_Corbel_E_0 | SM_LB_Kit_Corbel_40x60x60 | (11940, 1330, 500) | (0, -90, 0) | (1, 1, 1) | (11940, 1290, 500) .. (12000, 1330, 560) | NoCollision | under the rib end at Y 1310 on the E wall, top Z 560 (kit corbel: free end local y 0, back local y 60) |
-| CLA_Corbel_E_1 | SM_LB_Kit_Corbel_40x60x60 | (11940, 1820, 500) | (0, -90, 0) | (1, 1, 1) | (11940, 1780, 500) .. (12000, 1820, 560) | NoCollision | under the rib end at Y 1800 on the E wall, top Z 560 (kit corbel: free end local y 0, back local y 60) |
-| CLA_Corbel_E_2 | SM_LB_Kit_Corbel_40x60x60 | (11940, 2310, 500) | (0, -90, 0) | (1, 1, 1) | (11940, 2270, 500) .. (12000, 2310, 560) | NoCollision | under the rib end at Y 2290 on the E wall, top Z 560 (kit corbel: free end local y 0, back local y 60) |
-| CLA_Corbel_SW | SM_LB_Kit_Corbel_40x60x60 | (9556.57, 568.28, 500) | (0, 135, 0) | (1, 1, 1) | (9485.9, 525.9, 500) .. (9556.6, 596.6, 560) | NoCollision | diagonal rib springer in the SW inner corner, top Z 560 |
-| CLA_Corbel_SE | SM_LB_Kit_Corbel_40x60x60 | (11971.7, 596.57, 500) | (0, -135, 0) | (1, 1, 1) | (11943.4, 525.9, 500) .. (12014.1, 596.6, 560) | NoCollision | diagonal rib springer in the SE inner corner, top Z 560 |
-| CLA_Corbel_NW | SM_LB_Kit_Corbel_40x60x60 | (9528.28, 2943.43, 500) | (0, 45, 0) | (1, 1, 1) | (9485.9, 2943.4, 500) .. (9556.6, 3014.1, 560) | NoCollision | diagonal rib springer in the NW inner corner, top Z 560 |
-| CLA_Corbel_NE | SM_LB_Kit_Corbel_40x60x60 | (11943.4, 2971.72, 500) | (0, -45, 0) | (1, 1, 1) | (11943.4, 2943.4, 500) .. (12014.1, 3014.1, 560) | NoCollision | diagonal rib springer in the NE inner corner, top Z 560 |
+| CLA_Corbel_S_0 | SM_LB_Kit_Corbel_40x60x60 | (10230, 600, 480) | (0, 180, 0) | (1, 1, 1) | (10190, 540, 480) .. (10230, 600, 540) | NoCollision | under the rib end at X 10210 on the S wall, top Z 540 (kit corbel: free end local y 0, back local y 60) |
+| CLA_Corbel_S_1 | SM_LB_Kit_Corbel_40x60x60 | (10550, 600, 480) | (0, 180, 0) | (1, 1, 1) | (10510, 540, 480) .. (10550, 600, 540) | NoCollision | under the rib end at X 10530 on the S wall, top Z 540 (kit corbel: free end local y 0, back local y 60) |
+| CLA_Corbel_S_2 | SM_LB_Kit_Corbel_40x60x60 | (10870, 600, 480) | (0, 180, 0) | (1, 1, 1) | (10830, 540, 480) .. (10870, 600, 540) | NoCollision | under the rib end at X 10850 on the S wall, top Z 540 (kit corbel: free end local y 0, back local y 60) |
+| CLA_Corbel_S_3 | SM_LB_Kit_Corbel_40x60x60 | (11190, 600, 480) | (0, 180, 0) | (1, 1, 1) | (11150, 540, 480) .. (11190, 600, 540) | NoCollision | under the rib end at X 11170 on the S wall, top Z 540 (kit corbel: free end local y 0, back local y 60) |
+| CLA_Corbel_S_4 | SM_LB_Kit_Corbel_40x60x60 | (11510, 600, 480) | (0, 180, 0) | (1, 1, 1) | (11470, 540, 480) .. (11510, 600, 540) | NoCollision | under the rib end at X 11490 on the S wall, top Z 540 (kit corbel: free end local y 0, back local y 60) |
+| CLA_Corbel_N_0 | SM_LB_Kit_Corbel_40x60x60 | (10190, 2940, 480) | (0, 0, 0) | (1, 1, 1) | (10190, 2940, 480) .. (10230, 3000, 540) | NoCollision | under the rib end at X 10210 on the N wall, top Z 540 (kit corbel: free end local y 0, back local y 60) |
+| CLA_Corbel_N_1 | SM_LB_Kit_Corbel_40x60x60 | (10510, 2940, 480) | (0, 0, 0) | (1, 1, 1) | (10510, 2940, 480) .. (10550, 3000, 540) | NoCollision | under the rib end at X 10530 on the N wall, top Z 540 (kit corbel: free end local y 0, back local y 60) |
+| CLA_Corbel_N_2 | SM_LB_Kit_Corbel_40x60x60 | (10830, 2940, 480) | (0, 0, 0) | (1, 1, 1) | (10830, 2940, 480) .. (10870, 3000, 540) | NoCollision | under the rib end at X 10850 on the N wall, top Z 540 (kit corbel: free end local y 0, back local y 60) |
+| CLA_Corbel_N_3 | SM_LB_Kit_Corbel_40x60x60 | (11150, 2940, 480) | (0, 0, 0) | (1, 1, 1) | (11150, 2940, 480) .. (11190, 3000, 540) | NoCollision | under the rib end at X 11170 on the N wall, top Z 540 (kit corbel: free end local y 0, back local y 60) |
+| CLA_Corbel_N_4 | SM_LB_Kit_Corbel_40x60x60 | (11470, 2940, 480) | (0, 0, 0) | (1, 1, 1) | (11470, 2940, 480) .. (11510, 3000, 540) | NoCollision | under the rib end at X 11490 on the N wall, top Z 540 (kit corbel: free end local y 0, back local y 60) |
+| CLA_Corbel_W_0 | SM_LB_Kit_Corbel_40x60x60 | (9560, 1290, 480) | (0, 90, 0) | (1, 1, 1) | (9500, 1290, 480) .. (9560, 1330, 540) | NoCollision | under the rib end at Y 1310 on the W wall, top Z 540 (kit corbel: free end local y 0, back local y 60) |
+| CLA_Corbel_W_1 | SM_LB_Kit_Corbel_40x60x60 | (9560, 1780, 480) | (0, 90, 0) | (1, 1, 1) | (9500, 1780, 480) .. (9560, 1820, 540) | NoCollision | under the rib end at Y 1800 on the W wall, top Z 540 (kit corbel: free end local y 0, back local y 60) |
+| CLA_Corbel_W_2 | SM_LB_Kit_Corbel_40x60x60 | (9560, 2270, 480) | (0, 90, 0) | (1, 1, 1) | (9500, 2270, 480) .. (9560, 2310, 540) | NoCollision | under the rib end at Y 2290 on the W wall, top Z 540 (kit corbel: free end local y 0, back local y 60) |
+| CLA_Corbel_E_0 | SM_LB_Kit_Corbel_40x60x60 | (11940, 1330, 480) | (0, -90, 0) | (1, 1, 1) | (11940, 1290, 480) .. (12000, 1330, 540) | NoCollision | under the rib end at Y 1310 on the E wall, top Z 540 (kit corbel: free end local y 0, back local y 60) |
+| CLA_Corbel_E_1 | SM_LB_Kit_Corbel_40x60x60 | (11940, 1820, 480) | (0, -90, 0) | (1, 1, 1) | (11940, 1780, 480) .. (12000, 1820, 540) | NoCollision | under the rib end at Y 1800 on the E wall, top Z 540 (kit corbel: free end local y 0, back local y 60) |
+| CLA_Corbel_E_2 | SM_LB_Kit_Corbel_40x60x60 | (11940, 2310, 480) | (0, -90, 0) | (1, 1, 1) | (11940, 2270, 480) .. (12000, 2310, 540) | NoCollision | under the rib end at Y 2290 on the E wall, top Z 540 (kit corbel: free end local y 0, back local y 60) |
+| CLA_Corbel_SW | SM_LB_Kit_Corbel_40x60x60 | (9556.57, 568.28, 480) | (0, 135, 0) | (1, 1, 1) | (9485.9, 525.9, 480) .. (9556.6, 596.6, 540) | NoCollision | diagonal rib springer in the SW inner corner, top Z 540 |
+| CLA_Corbel_SE | SM_LB_Kit_Corbel_40x60x60 | (11971.7, 596.57, 480) | (0, -135, 0) | (1, 1, 1) | (11943.4, 525.9, 480) .. (12014.1, 596.6, 540) | NoCollision | diagonal rib springer in the SE inner corner, top Z 540 |
+| CLA_Corbel_NW | SM_LB_Kit_Corbel_40x60x60 | (9528.28, 2943.43, 480) | (0, 45, 0) | (1, 1, 1) | (9485.9, 2943.4, 480) .. (9556.6, 3014.1, 540) | NoCollision | diagonal rib springer in the NW inner corner, top Z 540 |
+| CLA_Corbel_NE | SM_LB_Kit_Corbel_40x60x60 | (11943.4, 2971.72, 480) | (0, -45, 0) | (1, 1, 1) | (11943.4, 2943.4, 480) .. (12014.1, 3014.1, 540) | NoCollision | diagonal rib springer in the NE inner corner, top Z 540 |
 
 ## Roof panels (12) and the stair-house roof (13)
 
 | Label | Mesh | Location | Rotation | Scale | AABB min .. max | Collision | Note |
 |---|---|---|---|---|---|---|---|
-| SHA_Roof | SM_LB_Cl_StairHouseRoof_420x640 | (10440, -140, 450) | (0, 0, 0) | (1, 1, 1) | (10440, -140, 450) .. (10860, 500, 658) | NoCollision | slate roof over the stair trench, Y -140..500, abuts the cloister S wall |
-| CLA_Roof_S_0 | SM_LB_Cl_LeanTo_1000x1050 | (12000, 1420, 640) | (0, 180, -32.47) | (0.8333, 0.9934, 1) | (11166.7, 532, 627.4) .. (12000, 1424.8, 1207.6) | NoCollision | S walk panel 0: eaves line Y 1420 at Z 640, top line 540 at Z 1200, slope length 1043.1 |
-| CLA_Roof_S_1 | SM_LB_Cl_LeanTo_1000x1050 | (11166.7, 1420, 640) | (0, 180, -32.47) | (0.8333, 0.9934, 1) | (10333.3, 532, 627.4) .. (11166.7, 1424.8, 1207.6) | NoCollision | S walk panel 1: eaves line Y 1420 at Z 640, top line 540 at Z 1200, slope length 1043.1 |
-| CLA_Roof_S_2 | SM_LB_Cl_LeanTo_1000x1050 | (10333.3, 1420, 640) | (0, 180, -32.47) | (0.8333, 0.9934, 1) | (9500, 532, 627.4) .. (10333.3, 1424.8, 1207.6) | NoCollision | S walk panel 2: eaves line Y 1420 at Z 640, top line 540 at Z 1200, slope length 1043.1 |
-| CLA_Roof_N_0 | SM_LB_Cl_LeanTo_1000x1050 | (9500, 2180, 640) | (0, 0, -34.33) | (1.15, 0.9457, 1) | (9500, 2174.9, 627.6) .. (10650, 3008.5, 1207.4) | NoCollision | N walk panel 0: eaves line Y 2180 at Z 640, top line 3000 at Z 1200, slope length 993.0 |
-| CLA_Roof_N_1 | SM_LB_Cl_LeanTo_1000x1050_Hole | (10650, 2180, 640) | (0, 0, -34.33) | (1, 0.9457, 1) | (10650, 2174.9, 561.5) .. (11650, 3053.6, 1207.4) | NoCollision | N walk panel 1: eaves line Y 2180 at Z 640, top line 3000 at Z 1200, slope length 993.0 |
-| CLA_Roof_N_2 | SM_LB_Cl_LeanTo_1000x1050 | (11650, 2180, 640) | (0, 0, -34.33) | (0.35, 0.9457, 1) | (11650, 2174.9, 627.6) .. (12000, 3008.5, 1207.4) | NoCollision | N walk panel 2: eaves line Y 2180 at Z 640, top line 3000 at Z 1200, slope length 993.0 |
-| CLA_Roof_W_0 | SM_LB_Cl_LeanTo_1000x1050 | (10320, 540, 640) | (0, 90, -34.33) | (0.82, 0.9457, 1) | (9491.5, 540, 627.6) .. (10325.1, 1360, 1207.4) | NoCollision | W walk panel 0: eaves line X 10320 at Z 640, top line 9500 at Z 1200, slope length 993.0 |
-| CLA_Roof_W_1 | SM_LB_Cl_LeanTo_1000x1050 | (10320, 1360, 640) | (0, 90, -34.33) | (0.82, 0.9457, 1) | (9491.5, 1360, 627.6) .. (10325.1, 2180, 1207.4) | NoCollision | W walk panel 1: eaves line X 10320 at Z 640, top line 9500 at Z 1200, slope length 993.0 |
-| CLA_Roof_W_2 | SM_LB_Cl_LeanTo_1000x1050 | (10320, 2180, 640) | (0, 90, -34.33) | (0.82, 0.9457, 1) | (9491.5, 2180, 627.6) .. (10325.1, 3000, 1207.4) | NoCollision | W walk panel 2: eaves line X 10320 at Z 640, top line 9500 at Z 1200, slope length 993.0 |
-| CLA_Roof_E_0 | SM_LB_Cl_LeanTo_1000x1050 | (11380, 3000, 640) | (0, -90, -42.09) | (0.82, 0.7957, 1) | (11374, 2180, 628.9) .. (12010, 3000, 1206.7) | NoCollision | E walk panel 0: eaves line X 11380 at Z 640, top line 12000 at Z 1200, slope length 835.5 |
-| CLA_Roof_E_1 | SM_LB_Cl_LeanTo_1000x1050 | (11380, 2180, 640) | (0, -90, -42.09) | (0.82, 0.7957, 1) | (11374, 1360, 628.9) .. (12010, 2180, 1206.7) | NoCollision | E walk panel 1: eaves line X 11380 at Z 640, top line 12000 at Z 1200, slope length 835.5 |
-| CLA_Roof_E_2 | SM_LB_Cl_LeanTo_1000x1050 | (11380, 1360, 640) | (0, -90, -42.09) | (0.82, 0.7957, 1) | (11374, 540, 628.9) .. (12010, 1360, 1206.7) | NoCollision | E walk panel 2: eaves line X 11380 at Z 640, top line 12000 at Z 1200, slope length 835.5 |
+| SHA_Roof | SM_LB_Cl_StairHouseRoof_420x640 | (10440, -140, 450) | (0, 0, 0) | (1, 1, 1) | (10439.7, -140, 432.6) .. (10860.3, 500, 650) | NoCollision | slate roof over the stair trench, Y -140..500, abuts the cloister S wall |
+| CLA_Roof_S_0 | SM_LB_Cl_LeanTo_1000x1050 | (12000, 1420, 640) | (0, 180, -32.47) | (0.8333, 0.9934, 1) | (11166.7, 532, 627.4) .. (12000, 1425, 1207.8) | NoCollision | S walk panel 0: eaves line Y 1420 at Z 640, top line 540 at Z 1200, slope length 1043.1 |
+| CLA_Roof_S_1 | SM_LB_Cl_LeanTo_1000x1050 | (11166.7, 1420, 640) | (0, 180, -32.47) | (0.8333, 0.9934, 1) | (10333.3, 532, 627.4) .. (11166.7, 1425, 1207.8) | NoCollision | S walk panel 1: eaves line Y 1420 at Z 640, top line 540 at Z 1200, slope length 1043.1 |
+| CLA_Roof_S_2 | SM_LB_Cl_LeanTo_1000x1050 | (10333.3, 1420, 640) | (0, 180, -32.47) | (0.8333, 0.9934, 1) | (9500, 532, 627.4) .. (10333.3, 1425, 1207.8) | NoCollision | S walk panel 2: eaves line Y 1420 at Z 640, top line 540 at Z 1200, slope length 1043.1 |
+| CLA_Roof_N_0 | SM_LB_Cl_LeanTo_1000x1050 | (9500, 2180, 640) | (0, 0, -34.33) | (1.15, 0.9457, 1) | (9500, 2174.8, 627.6) .. (10650, 3008.5, 1207.7) | NoCollision | N walk panel 0: eaves line Y 2180 at Z 640, top line 3000 at Z 1200, slope length 993.0 |
+| CLA_Roof_N_1 | SM_LB_Cl_LeanTo_1000x1050_Hole | (10650, 2180, 640) | (0, 0, -34.33) | (1, 0.9457, 1) | (10650, 2174.8, 562.8) .. (11650, 3052.7, 1207.7) | NoCollision | N walk panel 1: eaves line Y 2180 at Z 640, top line 3000 at Z 1200, slope length 993.0 |
+| CLA_Roof_N_2 | SM_LB_Cl_LeanTo_1000x1050 | (11650, 2180, 640) | (0, 0, -34.33) | (0.35, 0.9457, 1) | (11650, 2174.8, 627.6) .. (12000, 3008.5, 1207.7) | NoCollision | N walk panel 2: eaves line Y 2180 at Z 640, top line 3000 at Z 1200, slope length 993.0 |
+| CLA_Roof_W_0 | SM_LB_Cl_LeanTo_1000x1050 | (10320, 540, 640) | (0, 90, -34.33) | (0.82, 0.9457, 1) | (9491.5, 540, 627.6) .. (10325.2, 1360, 1207.7) | NoCollision | W walk panel 0: eaves line X 10320 at Z 640, top line 9500 at Z 1200, slope length 993.0 |
+| CLA_Roof_W_1 | SM_LB_Cl_LeanTo_1000x1050 | (10320, 1360, 640) | (0, 90, -34.33) | (0.82, 0.9457, 1) | (9491.5, 1360, 627.6) .. (10325.2, 2180, 1207.7) | NoCollision | W walk panel 1: eaves line X 10320 at Z 640, top line 9500 at Z 1200, slope length 993.0 |
+| CLA_Roof_W_2 | SM_LB_Cl_LeanTo_1000x1050 | (10320, 2180, 640) | (0, 90, -34.33) | (0.82, 0.9457, 1) | (9491.5, 2180, 627.6) .. (10325.2, 3000, 1207.7) | NoCollision | W walk panel 2: eaves line X 10320 at Z 640, top line 9500 at Z 1200, slope length 993.0 |
+| CLA_Roof_E_0 | SM_LB_Cl_LeanTo_1000x1050 | (11380, 3000, 640) | (0, -90, -42.09) | (0.82, 0.7957, 1) | (11373.8, 2180, 628.9) .. (12010, 3000, 1206.9) | NoCollision | E walk panel 0: eaves line X 11380 at Z 640, top line 12000 at Z 1200, slope length 835.5 |
+| CLA_Roof_E_1 | SM_LB_Cl_LeanTo_1000x1050 | (11380, 2180, 640) | (0, -90, -42.09) | (0.82, 0.7957, 1) | (11373.8, 1360, 628.9) .. (12010, 2180, 1206.9) | NoCollision | E walk panel 1: eaves line X 11380 at Z 640, top line 12000 at Z 1200, slope length 835.5 |
+| CLA_Roof_E_2 | SM_LB_Cl_LeanTo_1000x1050 | (11380, 1360, 640) | (0, -90, -42.09) | (0.82, 0.7957, 1) | (11373.8, 540, 628.9) .. (12010, 1360, 1206.9) | NoCollision | E walk panel 2: eaves line X 11380 at Z 640, top line 12000 at Z 1200, slope length 835.5 |
 
 ## Cloister floors (6)
 
@@ -503,34 +571,34 @@ Ground slabs `Ground_1`, `Ground_2`, `Ground_4`, `Ground_6` get `MI_Kit_Floor` (
 
 | Label | Mesh | Location | Rotation | Scale | AABB min .. max | Collision | Note |
 |---|---|---|---|---|---|---|---|
-| CLA_CellDoor_N9900 | SM_LB_Cl_CellDoorFrame_150x270 | (9825, 3000, 0) | (0, 0, 0) | (1, 1, 1) | (9825, 2992, 0) .. (9975, 3004, 270) | NoCollision | N wall, centred at (9900, 3000); frame projects 8 into the walk |
-| CLA_CellLeaf_N9900 | SM_Dungeon_door | (9894.65, 3002.2, -0.69) | (0, -90, 0) | (0.5, 1.15, 1.37) | (9844.8, 2994.3, -0.1) .. (9955.1, 3001, 249.6) | NoCollision | SM_Dungeon_door leaf scale (0.5, 1.15, 1.37) (D1.11: 250 tall), back 1 cm in front of the back panel |
-| CLA_CellDoor_N10500 | SM_LB_Cl_CellDoorFrame_150x270 | (10425, 3000, 0) | (0, 0, 0) | (1, 1, 1) | (10425, 2992, 0) .. (10575, 3004, 270) | NoCollision | N wall, centred at (10500, 3000); frame projects 8 into the walk |
-| CLA_CellLeaf_N10500 | SM_Dungeon_door | (10494.6, 3002.2, -0.69) | (0, -90, 0) | (0.5, 1.15, 1.37) | (10444.8, 2994.3, -0.1) .. (10555.1, 3001, 249.6) | NoCollision | SM_Dungeon_door leaf scale (0.5, 1.15, 1.37) (D1.11: 250 tall), back 1 cm in front of the back panel |
-| CLA_CellDoor_N11100 | SM_LB_Cl_CellDoorFrame_150x270 | (11025, 3000, 0) | (0, 0, 0) | (1, 1, 1) | (11025, 2992, 0) .. (11175, 3004, 270) | NoCollision | N wall, centred at (11100, 3000); frame projects 8 into the walk |
-| CLA_CellLeaf_N11100 | SM_Dungeon_door | (11094.6, 3002.2, -0.69) | (0, -82, 4) | (0.5, 1.15, 1.37) | (11045.6, 2987.4, -4.3) .. (11172.7, 3011.8, 252.4) | NoCollision | SM_Dungeon_door leaf scale (0.5, 1.15, 1.37) (D1.11: 250 tall), back 1 cm in front of the back panel; under the collapse: hangs by one hinge (roll 4, yaw +8) |
-| CLA_CellDoor_W900 | SM_LB_Cl_CellDoorFrame_150x270 | (9500, 825, 0) | (0, 90, 0) | (1, 1, 1) | (9496, 825, 0) .. (9508, 975, 270) | NoCollision | W wall, centred at (9500, 900); frame projects 8 into the walk |
-| CLA_CellLeaf_W900 | SM_Dungeon_door | (9497.8, 894.65, -0.69) | (0, 0, 0) | (0.5, 1.15, 1.37) | (9499, 844.8, -0.1) .. (9505.7, 955.1, 249.6) | NoCollision | SM_Dungeon_door leaf scale (0.5, 1.15, 1.37) (D1.11: 250 tall), back 1 cm in front of the back panel |
-| CLA_CellDoor_W2700 | SM_LB_Cl_CellDoorFrame_150x270 | (9500, 2625, 0) | (0, 90, 0) | (1, 1, 1) | (9496, 2625, 0) .. (9508, 2775, 270) | NoCollision | W wall, centred at (9500, 2700); frame projects 8 into the walk |
-| CLA_CellLeaf_W2700 | SM_Dungeon_door | (9497.8, 2694.65, -0.69) | (0, 0, 0) | (0.5, 1.15, 1.37) | (9499, 2644.8, -0.1) .. (9505.7, 2755.1, 249.6) | NoCollision | SM_Dungeon_door leaf scale (0.5, 1.15, 1.37) (D1.11: 250 tall), back 1 cm in front of the back panel |
+| CLA_CellDoor_N9900 | SM_LB_Cl_CellDoorFrame_150x270 | (9900, 3000, 0) | (0, 0, 0) | (1, 1, 1) | (9825, 2992, 0) .. (9975, 3002, 270) | NoCollision | N wall, centred at (9900, 3000); frame projects 8 into the walk |
+| CLA_CellLeaf_N9900 | SM_Dungeon_door | (9894.65, 2998.2, -0.69) | (0, -90, 0) | (0.5, 1.15, 1.37) | (9844.8, 2990.3, -0.1) .. (9955.1, 2997, 249.6) | NoCollision | SM_Dungeon_door leaf scale (0.5, 1.15, 1.37) (D1.11: 250 tall), back 1 cm in front of the back panel |
+| CLA_CellDoor_N10500 | SM_LB_Cl_CellDoorFrame_150x270 | (10500, 3000, 0) | (0, 0, 0) | (1, 1, 1) | (10425, 2992, 0) .. (10575, 3002, 270) | NoCollision | N wall, centred at (10500, 3000); frame projects 8 into the walk |
+| CLA_CellLeaf_N10500 | SM_Dungeon_door | (10494.6, 2998.2, -0.69) | (0, -90, 0) | (0.5, 1.15, 1.37) | (10444.8, 2990.3, -0.1) .. (10555.1, 2997, 249.6) | NoCollision | SM_Dungeon_door leaf scale (0.5, 1.15, 1.37) (D1.11: 250 tall), back 1 cm in front of the back panel |
+| CLA_CellDoor_N11100 | SM_LB_Cl_CellDoorFrame_150x270 | (11100, 3000, 0) | (0, 0, 0) | (1, 1, 1) | (11025, 2992, 0) .. (11175, 3002, 270) | NoCollision | N wall, centred at (11100, 3000); frame projects 8 into the walk |
+| CLA_CellLeaf_N11100 | SM_Dungeon_door | (11094.6, 2998.2, -0.69) | (0, -82, 4) | (0.5, 1.15, 1.37) | (11045.6, 2983.4, -4.3) .. (11172.7, 3007.8, 252.4) | NoCollision | SM_Dungeon_door leaf scale (0.5, 1.15, 1.37) (D1.11: 250 tall), back 1 cm in front of the back panel; under the collapse: hangs by one hinge (roll 4, yaw +8) |
+| CLA_CellDoor_W900 | SM_LB_Cl_CellDoorFrame_150x270 | (9500, 900, 0) | (0, 90, 0) | (1, 1, 1) | (9498, 825, 0) .. (9508, 975, 270) | NoCollision | W wall, centred at (9500, 900); frame projects 8 into the walk |
+| CLA_CellLeaf_W900 | SM_Dungeon_door | (9501.8, 894.65, -0.69) | (0, 0, 0) | (0.5, 1.15, 1.37) | (9503, 844.8, -0.1) .. (9509.7, 955.1, 249.6) | NoCollision | SM_Dungeon_door leaf scale (0.5, 1.15, 1.37) (D1.11: 250 tall), back 1 cm in front of the back panel |
+| CLA_CellDoor_W2700 | SM_LB_Cl_CellDoorFrame_150x270 | (9500, 2700, 0) | (0, 90, 0) | (1, 1, 1) | (9498, 2625, 0) .. (9508, 2775, 270) | NoCollision | W wall, centred at (9500, 2700); frame projects 8 into the walk |
+| CLA_CellLeaf_W2700 | SM_Dungeon_door | (9501.8, 2694.65, -0.69) | (0, 0, 0) | (0.5, 1.15, 1.37) | (9503, 2644.8, -0.1) .. (9509.7, 2755.1, 249.6) | NoCollision | SM_Dungeon_door leaf scale (0.5, 1.15, 1.37) (D1.11: 250 tall), back 1 cm in front of the back panel |
 
 ## Gameplay references (placed by the child Blueprints) (15)
 
 | Label | Mesh | Location | Rotation | Scale | AABB min .. max | Collision | Note |
 |---|---|---|---|---|---|---|---|
-| TWA_GreatBell | SM_LB_Prop_GreatBell_A | (12420, 2000, 2860) | (0, 0, 0) | (1, 1, 1) | (12315, 1895, 2640) .. (12525, 2105, 2860) | BlockAll (convex hull) | REFERENCE ONLY: placed through BP_TagInteractable_GreatBell (D1.6.5): Mesh rel (0,0,94) scale 0.4 under root scale 2.5 -> world scale 1; expected bounds X 12315-12525, Y 1895-2105, Z 2640-2860 |
+| TWA_GreatBell | SM_LB_Prop_GreatBell_A | (12420, 2000, 2860) | (0, 0, 0) | (1, 1, 1) | (12315.2, 1895, 2640) .. (12525, 2105, 2860) | BlockAll (convex hull) | REFERENCE ONLY: placed through BP_TagInteractable_GreatBell (D1.6.5): Mesh rel (0,0,94) scale 0.4 under root scale 2.5 -> world scale 1; expected bounds X 12315-12525, Y 1895-2105, Z 2640-2860 |
 | GP_Mech_Ritual3 | Cube | (11780, 1760, 67.5) | (0, 0, 0) | (1.1, 1.1, 1.35) | (11725, 1705, 0) .. (11835, 1815, 135) | BlockAll (BP pedestal + drum) | REFERENCE ONLY (lane-check proxy): Mech_Ritual3 after the D-081 move to (11780, 1760, 50): 110 x 110 footprint, Z 0-135; BP_RitualMechanism_TowerCapstan swaps the actor in P10-6b |
 | GP_Clue_Inscription | SM_LB_Prop_InscriptionTablet_A | (12000, 2380, 200) | (0, 180, 0) | (2.5, 2.5, 2.5) | (11990, 2230, 162.5) .. (12000, 2530, 237.5) | BlockAllDynamic | REFERENCE ONLY: tablet back flush on the tower wall X 12000, front at X 11990, world 10 x 300 x 75 (D1.11: the child BP sets Plaque relative X -2 because the M4 pivot is at the back) |
-| GP_Bell_1_Bracket | SM_LB_Prop_SmallBellBracket_A | (12000, 2200, 145) | (0, 180, 0) | (1, 1, 1) | (11966, 2190, 120) .. (12000, 2210, 167) | NoCollision | REFERENCE ONLY (BP_SmallBell_Cloister Post): plate back on the wall |
+| GP_Bell_1_Bracket | SM_LB_Prop_SmallBellBracket_A | (12000, 2200, 145) | (0, 180, 0) | (1, 1, 1) | (11966, 2189, 120) .. (12000, 2211, 167) | NoCollision | REFERENCE ONLY (BP_SmallBell_Cloister Post): plate back on the wall |
 | GP_Bell_1 | SM_LB_Prop_SmallBell_A | (11975, 2200, 138) | (0, 0, 0) | (1.3, 1.3, 1.3) | (11959.4, 2184.4, 101.6) .. (11990.6, 2215.6, 143.2) | BlockAllDynamic | REFERENCE ONLY: Bell_1, BellScale 1.3, band MI_LB_BellBand_I; BellPivot (11975, 2200, 140), crown top Z 138 |
 | GP_Bell_1_Plaque | SM_LB_Prop_BellPlaque_A | (12000, 2200, 87) | (0, 180, 0) | (1, 1, 1) | (11996, 2183, 70) .. (12000, 2217, 104) | NoCollision | REFERENCE ONLY (BP_SmallBell_Cloister Plate) |
-| GP_Bell_2_Bracket | SM_LB_Prop_SmallBellBracket_A | (12000, 2320, 145) | (0, 180, 0) | (1, 1, 1) | (11966, 2310, 120) .. (12000, 2330, 167) | NoCollision | REFERENCE ONLY (BP_SmallBell_Cloister Post): plate back on the wall |
+| GP_Bell_2_Bracket | SM_LB_Prop_SmallBellBracket_A | (12000, 2320, 145) | (0, 180, 0) | (1, 1, 1) | (11966, 2309, 120) .. (12000, 2331, 167) | NoCollision | REFERENCE ONLY (BP_SmallBell_Cloister Post): plate back on the wall |
 | GP_Bell_2 | SM_LB_Prop_SmallBell_A | (11975, 2320, 138) | (0, 0, 0) | (1.15, 1.15, 1.15) | (11961.2, 2306.2, 105.8) .. (11988.8, 2333.8, 142.6) | BlockAllDynamic | REFERENCE ONLY: Bell_2, BellScale 1.15, band MI_LB_BellBand_II; BellPivot (11975, 2320, 140), crown top Z 138 |
 | GP_Bell_2_Plaque | SM_LB_Prop_BellPlaque_A | (12000, 2320, 87) | (0, 180, 0) | (1, 1, 1) | (11996, 2303, 70) .. (12000, 2337, 104) | NoCollision | REFERENCE ONLY (BP_SmallBell_Cloister Plate) |
-| GP_Bell_3_Bracket | SM_LB_Prop_SmallBellBracket_A | (12000, 2440, 145) | (0, 180, 0) | (1, 1, 1) | (11966, 2430, 120) .. (12000, 2450, 167) | NoCollision | REFERENCE ONLY (BP_SmallBell_Cloister Post): plate back on the wall |
+| GP_Bell_3_Bracket | SM_LB_Prop_SmallBellBracket_A | (12000, 2440, 145) | (0, 180, 0) | (1, 1, 1) | (11966, 2429, 120) .. (12000, 2451, 167) | NoCollision | REFERENCE ONLY (BP_SmallBell_Cloister Post): plate back on the wall |
 | GP_Bell_3 | SM_LB_Prop_SmallBell_A | (11975, 2440, 138) | (0, 0, 0) | (1, 1, 1) | (11963, 2428, 110) .. (11987, 2452, 142) | BlockAllDynamic | REFERENCE ONLY: Bell_3, BellScale 1.0, band MI_LB_BellBand_III; BellPivot (11975, 2440, 140), crown top Z 138 |
 | GP_Bell_3_Plaque | SM_LB_Prop_BellPlaque_A | (12000, 2440, 87) | (0, 180, 0) | (1, 1, 1) | (11996, 2423, 70) .. (12000, 2457, 104) | NoCollision | REFERENCE ONLY (BP_SmallBell_Cloister Plate) |
-| GP_Bell_4_Bracket | SM_LB_Prop_SmallBellBracket_A | (12000, 2560, 145) | (0, 180, 0) | (1, 1, 1) | (11966, 2550, 120) .. (12000, 2570, 167) | NoCollision | REFERENCE ONLY (BP_SmallBell_Cloister Post): plate back on the wall |
+| GP_Bell_4_Bracket | SM_LB_Prop_SmallBellBracket_A | (12000, 2560, 145) | (0, 180, 0) | (1, 1, 1) | (11966, 2549, 120) .. (12000, 2571, 167) | NoCollision | REFERENCE ONLY (BP_SmallBell_Cloister Post): plate back on the wall |
 | GP_Bell_4 | SM_LB_Prop_SmallBell_A | (11975, 2560, 138) | (0, 0, 0) | (0.85, 0.85, 0.85) | (11964.8, 2549.8, 114.2) .. (11985.2, 2570.2, 141.4) | BlockAllDynamic | REFERENCE ONLY: Bell_4, BellScale 0.85, band MI_LB_BellBand_IV; BellPivot (11975, 2560, 140), crown top Z 138 |
 | GP_Bell_4_Plaque | SM_LB_Prop_BellPlaque_A | (12000, 2560, 87) | (0, 180, 0) | (1, 1, 1) | (11996, 2543, 70) .. (12000, 2577, 104) | NoCollision | REFERENCE ONLY (BP_SmallBell_Cloister Plate) |
 

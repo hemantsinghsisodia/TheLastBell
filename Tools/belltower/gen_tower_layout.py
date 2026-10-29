@@ -155,13 +155,22 @@ def kit_slots(path):
 
 
 # ------------------------------------------------------------------------------------------------ piece registry
+REPORT = {}     # built meshes (P10-3a / P10-3b reports): measured bounds and real slot lists
+for _f in ("SourceArt/BellTower/tower_report.json", "SourceArt/Cloister/cloister_report.json"):
+    with open(os.path.join(ROOT, _f), encoding="utf-8") as _fh:
+        for _r in json.load(_fh):
+            REPORT[_r["name"]] = _r
 PIECES = {}     # name -> dict(path, mbounds, slots, seed, pivot, ucx, note)  (new Blender pieces; bounds from the D1 piece tables)
 EST_BOUNDS = set()
 
 
 def piece(name, folder, mb, slots, seed, pivot, ucx="none", note=""):
-    PIECES[name] = {"path": folder + name + "." + name, "mbounds": [list(mb[0]), list(mb[1])], "slots": slots, "seed": seed,
-                    "pivot": pivot, "ucx": ucx, "note": note}
+    """mb / slots are the D1 table values; the built mesh report (D1.12) overrides them and the D1 values are kept for comparison."""
+    assert name in REPORT, f"mesh {name} is not in the built-mesh reports"
+    r = REPORT[name]
+    PIECES[name] = {"path": folder + name + "." + name, "mbounds": [list(r["min"]), list(r["max"])], "slots": list(r["slots"]), "seed": seed,
+                    "pivot": pivot, "ucx": ucx, "note": note, "d1_mbounds": [list(mb[0]), list(mb[1])], "d1_slots": list(slots),
+                    "built_tris": r.get("tris"), "built_ucx": r.get("ucx")}
     return PIECES[name]["path"]
 
 
@@ -199,6 +208,13 @@ WARNS = []
 
 def add(rid, cat, group, mesh, loc, rot, scale, collision, folder, mi=None, note="", extras=None, lane_zlo=None):
     mb = mbounds_of(mesh)
+    for _n, _p in PIECES.items():
+        if _p["path"] == mesh:          # real slot list of the built mesh (MAT_Rubble -> MI_Kit_Rubble etc.); passed entries are overrides
+            _mi = {}
+            for _s in _p["slots"]:
+                _mi[_s] = (mi or {}).get(_s) or (WOOD_TOWER if _s == "MAT_Wood" else SLOT_MI[_s])
+            mi = _mi
+            break
     mn, mx = world_aabb(mb, loc, rot, scale)
     d = {"id": rid, "cat": cat, "group": group, "mesh": mesh, "loc": rnd(loc), "rot": rnd(rot, 4), "scale": rnd(scale, 5),
          "collision": collision, "folder": folder, "mbounds": [list(mb[0]), list(mb[1])], "aabb_min": rnd(mn, 2),
@@ -583,23 +599,23 @@ add("CLA_GarthCross", "garth", "garthcross", PIECES["SM_LB_Cl_GarthCross_350"]["
 
 # ------------------------------------------------------------------ vaults
 VAULT_BAYS = [   # id, piece, min-corner location, yaw, note
-    ("S_W", "Barrel_830x640", (10210.0, 510.0, 560.0), 0.0, "S walk west"),
-    ("S_E", "Barrel_830x640", (10850.0, 510.0, 560.0), 0.0, "S walk east"),
-    ("N_W", "Barrel_770x640", (10210.0, 2260.0, 560.0), 0.0, "N walk west"),
-    ("N_E", "Barrel_770x640_Broken", (10850.0, 2260.0, 560.0), 0.0, "N walk east: the collapse"),
-    ("W", "Barrel_770x980", (10240.0, 1310.0, 560.0), 90.0, "W walk: local x -> +Y (1310-2290), local y -> -X (10240 -> 9470)"),
-    ("E", "Barrel_570x980", (12030.0, 1310.0, 560.0), 90.0, "E walk: local y -> -X (12030 -> 11460)"),
-    ("SW", "Groin_770x830", (9470.0, 510.0, 560.0), 0.0, "SW corner"),
-    ("SE", "Groin_570x830", (11460.0, 510.0, 560.0), 0.0, "SE corner"),
-    ("NW", "Groin_770x770", (9470.0, 2260.0, 560.0), 0.0, "NW corner"),
-    ("NE", "Groin_570x770", (11460.0, 2260.0, 560.0), 0.0, "NE corner"),
+    ("S_W", "Barrel_830x640", (10210.0, 510.0, 540.0), 0.0, "S walk west"),
+    ("S_E", "Barrel_830x640", (10850.0, 510.0, 540.0), 0.0, "S walk east"),
+    ("N_W", "Barrel_770x640", (10210.0, 2260.0, 540.0), 0.0, "N walk west"),
+    ("N_E", "Barrel_770x640_Broken", (10850.0, 2260.0, 540.0), 0.0, "N walk east: the collapse"),
+    ("W", "Barrel_770x980", (10240.0, 1310.0, 540.0), 90.0, "W walk: local x -> +Y (1310-2290), local y -> -X (10240 -> 9470)"),
+    ("E", "Barrel_570x980", (12030.0, 1310.0, 540.0), 90.0, "E walk: local y -> -X (12030 -> 11460)"),
+    ("SW", "Groin_770x830", (9470.0, 510.0, 540.0), 0.0, "SW corner"),
+    ("SE", "Groin_570x830", (11460.0, 510.0, 540.0), 0.0, "SE corner"),
+    ("NW", "Groin_770x770", (9470.0, 2260.0, 540.0), 0.0, "NW corner"),
+    ("NE", "Groin_570x770", (11460.0, 2260.0, 540.0), 0.0, "NE corner"),
 ]
 for vid, pn, loc, yaw, note in VAULT_BAYS:
     nm = f"SM_LB_Cl_Vault_{pn}"
     add(f"CLA_Vault_{vid}", "vault", "vaultbay", PIECES[nm]["path"], loc, (0.0, yaw, 0.0), (1, 1, 1), "NoCollision", "Cloister/Art/Vaults",
-        mi=mi_for(MASONRY2), note=note + "; springing Z 560, crown Z 900", extras={"kind": "groin" if "Groin" in pn else "barrel"})
+        mi=mi_for(MASONRY2), note=note + "; springing Z 540 (D1.12), extrados crown Z 880", extras={"kind": "groin" if "Groin" in pn else "barrel"})
 
-# ------------------------------------------------------------------ corbels (under every rib end on the outer walls; top Z 560)
+# ------------------------------------------------------------------ corbels (under every rib end on the outer walls; top Z 540)
 KIT_CORBEL = existing(KIT, "SM_LB_Kit_Corbel_40x60x60")
 CORBEL_RIBS = {   # outer wall frame -> (frame type, origin, list of world coordinates along the wall)
     "S": ("S", (12040.0, 540.0), 0, [10210.0, 10530.0, 10850.0, 11170.0, 11490.0]),
@@ -612,8 +628,8 @@ for wl, (ft, org, ax, coords) in CORBEL_RIBS.items():
     for j, c in enumerate(coords):
         xf = {"S": org[0] - c, "N": c - org[0], "W": c - org[1], "E": org[1] - c}[ft]
         xy = frame_pt(org, yaw, xf - 20.0, -60.0)
-        add(f"CLA_Corbel_{wl}_{j}", "wall", "corbel", KIT_CORBEL, (xy[0], xy[1], 500.0), (0.0, yaw, 0.0), (1, 1, 1), "NoCollision", "Cloister/Art/Corbels",
-            mi=mi_for(["MAT_Trim"]), note=f"under the rib end at {('X' if ax == 0 else 'Y')} {c:g} on the {wl} wall, top Z 560 (kit corbel: free end local y 0, back local y 60)")
+        add(f"CLA_Corbel_{wl}_{j}", "wall", "corbel", KIT_CORBEL, (xy[0], xy[1], 480.0), (0.0, yaw, 0.0), (1, 1, 1), "NoCollision", "Cloister/Art/Corbels",
+            mi=mi_for(["MAT_Trim"]), note=f"under the rib end at {('X' if ax == 0 else 'Y')} {c:g} on the {wl} wall, top Z 540 (kit corbel: free end local y 0, back local y 60)")
 for cid, (cx, cy, sx_, sy_) in (("SW", (9500.0, 540.0, 1, 1)), ("SE", (12000.0, 540.0, -1, 1)), ("NW", (9500.0, 3000.0, 1, -1)), ("NE", (12000.0, 3000.0, -1, -1))):
     # diagonal rib springer in the inner corner; mesh local +y (back) points into the corner
     psi = math.degrees(math.atan2(sx_, -sy_))
@@ -621,8 +637,8 @@ for cid, (cx, cy, sx_, sy_) in (("SW", (9500.0, 540.0, 1, 1)), ("SE", (12000.0, 
     c, s = math.cos(math.radians(psi)), math.sin(math.radians(psi))
     # back-face centre (local 20, 60) must land on the corner
     org = (cx - (20.0 * c - 60.0 * s), cy - (20.0 * s + 60.0 * c))
-    add(f"CLA_Corbel_{cid}", "wall", "corbel", KIT_CORBEL, (org[0], org[1], 500.0), (0.0, psi, 0.0), (1, 1, 1), "NoCollision", "Cloister/Art/Corbels",
-        mi=mi_for(["MAT_Trim"]), note=f"diagonal rib springer in the {cid} inner corner, top Z 560")
+    add(f"CLA_Corbel_{cid}", "wall", "corbel", KIT_CORBEL, (org[0], org[1], 480.0), (0.0, psi, 0.0), (1, 1, 1), "NoCollision", "Cloister/Art/Corbels",
+        mi=mi_for(["MAT_Trim"]), note=f"diagonal rib springer in the {cid} inner corner, top Z 540")
 
 # ------------------------------------------------------------------ roofs (C14), rotators from the eaves and top lines
 LEAN = PIECES["SM_LB_Cl_LeanTo_1000x1050"]["path"]
@@ -685,14 +701,14 @@ LEAF = existing(DUNGEON, "SM_Dungeon_door")
 CELLS = [("N9900", "N", (9900.0, 3000.0), 0.0), ("N10500", "N", (10500.0, 3000.0), 0.0), ("N11100", "N", (11100.0, 3000.0), 0.0),
          ("W900", "W", (9500.0, 900.0), 90.0), ("W2700", "W", (9500.0, 2700.0), 90.0)]
 for cid, wl, (wx, wy), yaw in CELLS:
-    org = frame_pt((wx, wy), yaw, -75.0, 0.0)
+    org = (wx, wy)       # the built frame has its pivot at the centre of the width (bounds x -75..75)
     add(f"CLA_CellDoor_{cid}", "door", "celldoor", FRAME, (org[0], org[1], 0.0), (0.0, yaw, 0.0), (1, 1, 1), "NoCollision", "Cloister/Art/CellDoors",
         mi=mi_for(["MAT_Masonry", "MAT_Rubble"]), note=f"{wl} wall, centred at ({wx:g}, {wy:g}); frame projects 8 into the walk")
-    # leaf: SM_Dungeon_door (x 2.4..15.8 thick, y -43.3..52.6, z 0.5..182.7), scale (0.5, 1.15, 1.37) (D1.11: 250 tall), back 1 cm in front of the back panel (y +2 -> +1)
+    # leaf: SM_Dungeon_door (x 2.4..15.8 thick, y -43.3..52.6, z 0.5..182.7), scale (0.5, 1.15, 1.37) (D1.11: 250 tall), back at local y -3, 1 cm in front of the back panel face (y -2) (D1.12: back panel face y -2, leaf back y -3)
     lyaw = yaw - 90.0
     lx_centre = (-43.3 + 52.6) / 2.0 * 1.15
     lo = frame_pt((wx, wy), yaw, 0.0, 0.0)
-    pos_ = frame_pt((wx, wy), yaw, -lx_centre + 0.0, 1.0 + 2.4 * 0.5)
+    pos_ = frame_pt((wx, wy), yaw, -lx_centre + 0.0, -3.0 + 2.4 * 0.5)
     rot_ = [0.0, lyaw, 0.0]
     note_ = "SM_Dungeon_door leaf scale (0.5, 1.15, 1.37) (D1.11: 250 tall), back 1 cm in front of the back panel"
     if cid == "N11100":
@@ -1012,6 +1028,10 @@ def chk(group, name, ok, detail):
     CHECKS.append((group, name, bool(ok), detail))
 
 
+def short(m):
+    return m.split('/')[-1].split('.')[0]
+
+
 def rec_by_id(rid):
     return next(r for r in RECS if r["id"] == rid)
 
@@ -1311,10 +1331,13 @@ for k in range(1, 12):
     for j in range(7):
         mn, mx = gb(f"Rail_F{k:02d}_{j:02d}")
         glo, ghi = min(glo, mn[ax]), max(ghi, mx[ax])
-    dev = max(abs(rr_["aabb_min"][ax] - glo), abs(rr_["aabb_max"][ax] - ghi))
+    # built rails are 8 wide inside the 10 cm greybox plane: the core-side face must sit on the plane edge, the other face inside the plane
+    core_low = ring in ("N", "E")
+    dev = abs(rr_["aabb_min"][ax] - glo) if core_low else abs(rr_["aabb_max"][ax] - ghi)
+    dev = max(dev, rr_["aabb_min"][ax] - glo if False else max(glo - rr_["aabb_min"][ax], rr_["aabb_max"][ax] - ghi, 0.0))
     if dev > worst_r:
         worst_r, worst_r_id = dev, rr_["id"]
-chk("4 rails", "11 rail bands on the greybox rail planes", worst_r <= 0.5, f"worst deviation {worst_r:.3f} cm ({worst_r_id}); limit 0.5")
+chk("4 rails", "11 rail bands on the greybox rail planes (built rail 8 wide inside the 10 cm plane, core-side face on the plane)", worst_r <= 0.5, f"worst deviation {worst_r:.3f} cm ({worst_r_id}); limit 0.5")
 cmn, cmx = gb("Tw_Core")
 bad = []
 for r in RECS:
@@ -1429,6 +1452,28 @@ chk("7 derived", "cell-door leaf 250 tall (scale z 1.37)", abs(cl["aabb_max"][2]
 bell_l = rec_by_id("L_Tw_Bell")
 post = rec_by_id("TWA_BellFrame")
 chk("7 derived", "L_Tw_Bell outside the SW frame post (X 12267.5-12292.5)", bell_l["loc"][0] < 12267.5, "light at %s" % bell_l["loc"])
+rows_bad = []
+minnz = 9.0
+for walk, lst in ROOF_PANELS.items():
+    for d in lst:
+        nz = rot_rows(*d["rot"])[2][2]
+        xd = rot_rows(*d["rot"])[0]
+        minnz = min(minnz, nz)
+        want = {"S": (-1, 0), "N": (1, 0), "W": (0, 1), "E": (0, -1)}[walk]
+        if nz <= 0.5 or abs(xd[0] - want[0]) > 0.01 or abs(xd[1] - want[1]) > 0.01:
+            rows_bad.append(d["id"])
+chk("7 derived", "roof panels: local +z (slate normal) world Z > 0.5 and local x runs -X (S), +X (N), +Y (W), -Y (E)", not rows_bad, "min normal Z %.3f" % minnz + ("; bad: " + ", ".join(rows_bad) if rows_bad else ""))
+missing_mesh = sorted({short(r["mesh"]) if False else r["mesh"].split("/")[-1].split(".")[0] for r in RECS if "/Environments/BellTower/Meshes/" in r["mesh"] or "/Environments/Cloister/Meshes/" in r["mesh"]
+                       if r["mesh"].split("/")[-1].split(".")[0] not in REPORT})
+chk("7 derived", "every new-folder mesh named in a record exists in the built-mesh reports (tower 33, cloister 40)", not missing_mesh, "all %d record meshes found" % len({r["mesh"] for r in RECS if "/Meshes/" in r["mesh"] and "Environments/Kit" not in r["mesh"] and "Props" not in r["mesh"]}) if not missing_mesh else str(missing_mesh))
+sp = min(r["loc"][2] for r in RECS if r["group"] == "vaultbay")
+sp2 = max(r["loc"][2] for r in RECS if r["group"] == "vaultbay")
+cb = {r["aabb_max"][2] for r in RECS if r["group"] == "corbel"}
+chk("7 derived", "D1.12: all 10 vault bays spring at Z 540 and every corbel top is Z 540", sp == sp2 == 540.0 and cb == {540.0}, "vault Z %g..%g, corbel tops %s" % (sp, sp2, sorted(cb)))
+cl2 = rec_by_id("CLA_CellLeaf_N9900")
+cf = rec_by_id("CLA_CellDoor_N9900")
+back = cl2["aabb_max"][1] - 3000.0
+chk("7 derived", "D1.12: cell leaf back at local y -3 (world Y 2997 on the N wall)", abs(cl2["aabb_max"][1] - 2997.0) < 0.05, "leaf back Y %.2f; frame AABB Y %.1f..%.1f" % (cl2["aabb_max"][1], cf["aabb_min"][1], cf["aabb_max"][1]))
 # ---- notes (not failures)
 WARNINGS.append(("D1.11 accepted", "rafter leaning at Z 258, piers top at 620 (name stays ...x640), C11 bottom-centre pivots, latch box 8 x 20 x 30, routed wrap-around patrol method."))
 WARNINGS.append(("D1-N2 W lantern", "L_Cl_West is in the arch opening (no wall at Z 330, soffit apex Z 420): the lantern hangs from a ring at the soffit on a 106 cm chain (D1.11 says 'nearest wall')."))
@@ -1455,11 +1500,11 @@ for r in RECS:
 
 out_json = {
     "generator": "Tools/belltower/gen_tower_layout.py", "units": "cm, UE world; rot = [pitch, yaw, roll]; mbounds = mesh-local [min, max]",
-    "errata": "D1.11 applied", "all_checks_pass": ALL_OK, "counts": SUMMARY_CAT, "group_counts": SUMMARY_GROUP,
+    "all_checks_pass": ALL_OK, "counts": SUMMARY_CAT, "group_counts": SUMMARY_GROUP,
     "checks": [{"group": g, "name": n, "ok": ok, "detail": d} for g, n, ok, d in CHECKS],
     "warnings": [{"id": n, "detail": d} for n, d in WARNINGS],
     "mi_paths": MI_PATHS, "slot_mi": SLOT_MI, "wood": {"tower": WOOD_TOWER, "cloister": WOOD_CLOISTER},
-    "pieces": PIECES,
+    "pieces": PIECES, "built_but_unplaced": sorted(n for n in REPORT if n not in PIECES), "errata": "D1.11 + D1.12 applied",
     "existing_meshes": {p: {"mbounds": [list(v[0][0]), list(v[0][1])], "slots": v[1], "estimated": p in EST_BOUNDS} for p, v in EXISTING.items()},
     "hide_greybox": HIDE, "keep_visible": KEEP_VISIBLE, "ground_materials": {k: MI_PATHS[v] for k, v in GROUND_MI.items()},
     "lights_plan": LIGHTS_PLAN,
@@ -1511,11 +1556,17 @@ MD += ["", "## Greybox (D1.0)", "",
        f"`hide_greybox` in the JSON lists {len(HIDE)} actors to set not visible (collision unchanged): the {len(HIDE) - 2} actors of the folders Cloister (23), BellTower (24), "
        "BellTower/Stairs (154), BellTower/Railings (77), plus `Passage_S` and `Passage_N`. Kept visible: " + ", ".join(KEEP_VISIBLE) + ".", "",
        "Ground slabs `Ground_1`, `Ground_2`, `Ground_4`, `Ground_6` get `MI_Kit_Floor` (`ground_materials`).", ""]
-MD += ["## Pieces (new Blender pieces; mbounds from the D1 tables)", "", "| Piece | Folder | mbounds min | mbounds max | Slots | Seed | UCX | Pivot / note |", "|---|---|---|---|---|---|---|---|"]
+MD += ["## Pieces (built Blender pieces; mbounds and slots are the MEASURED values from tower_report.json / cloister_report.json, D1.12)", "",
+       "| Piece | Folder | mbounds min | mbounds max | Slots | Seed | UCX (built) | Pivot / note |", "|---|---|---|---|---|---|---|---|"]
 for nm, p in PIECES.items():
     MD.append(f"| {nm} | {p['path'].rsplit('/', 1)[0].split('Environments/')[-1]} | {fmt(p['mbounds'][0], 1)} | {fmt(p['mbounds'][1], 1)} | {', '.join(p['slots'])} | "
-              f"{p['seed'] if p['seed'] is not None else '-'} | {p['ucx']} | {p['pivot']}; {p['note']} |")
-MD.append("")
+              f"{p['seed'] if p['seed'] is not None else '-'} | {p['built_ucx']} | {p['pivot']}; {p['note']} |")
+MD += ["", "### D1 table vs built piece (differences > 0.5 cm in bounds, or slot lists)", "", "| Piece | D1 mbounds | Built mbounds | D1 slots | Built slots |", "|---|---|---|---|---|"]
+for nm, p in PIECES.items():
+    dm = max(abs(a - b) for a, b in zip(p["d1_mbounds"][0] + p["d1_mbounds"][1], p["mbounds"][0] + p["mbounds"][1]))
+    if dm > 0.5 or p["d1_slots"] != p["slots"]:
+        MD.append(f"| {nm} | {fmt(p['d1_mbounds'][0], 1)} .. {fmt(p['d1_mbounds'][1], 1)} | {fmt(p['mbounds'][0], 1)} .. {fmt(p['mbounds'][1], 1)} | {', '.join(p['d1_slots'])} | {', '.join(p['slots'])} |")
+MD += ["", "Built but not placed: " + ", ".join(sorted(n for n in REPORT if n not in PIECES)) + " (the intact S3 W/S wall pieces; the SW collapse uses the `_BrokenSW` variants).", ""]
 
 SECTIONS = [
     ("Hidden collision blocks (8)", lambda r: r["group"] == "block"),
