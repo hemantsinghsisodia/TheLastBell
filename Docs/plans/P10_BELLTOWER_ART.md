@@ -882,3 +882,42 @@ Never use `CP_`.
   - uses `capture_poses.py --raise` with the breaker;
   - runs the suite at 78/78;
   - commits with the prefix `P10-<task>: `.
+
+### D1.11 P10-L review and D1 errata (lead, 2026-10-30)
+**P10-L accepted** (4c2e379): 385 records, every D1.9 check passes.
+
+| Check | Worst value |
+|---|---|
+| Tread tops (154) | 0.0009 cm |
+| Landing tops (10) | 0.0045 cm |
+| Wall faces | 0.000 cm |
+| Rail bands | 0.000 cm |
+| Vault overlaps | 30.0 cm (= the tuck) |
+| Lanes: TowerStairs | 77.0 cm |
+| Lanes: Patrol route | 63.6 cm (Mech 3) |
+| Lanes: Search points | 65.9 cm |
+| Lanes: WSpawn points | 83.0 cm |
+
+The wrap-around patrol segment that crosses the garth is routed around it, which is accepted as the lane method.
+
+**Errata** (the generator applies 1–6; the P10-3b and P10-6b agents take 3 and 7):
+1. **N-walk roof panels.** D1.3's "3 equal panels, middle X 10833–11667" was arithmetically wrong; the equal split puts the middle panel at X 10333–11167. The N walk now uses:
+
+   | Panel | X range | x-scale |
+   |---|---|---|
+   | W | 9500–10650 | 1.15 |
+   | Hole | 10650–11650 | 1.00 (hole X 10800–11500, over the vault hole X 10900–11450) |
+   | E | 11650–12000 | 0.35 (mostly under the E roof at the NE valley) |
+
+2. **Bell rope:** Y 1835, so it clears the shaft base's S inner wall (Y 1825) and still passes through the floor hole.
+3. **Inscription tablet (D1.6.2):** the child BP sets `Plaque` relative **X −2**, because M4's pivot is at its back. The tablet back is then at world X 12000.
+4. **Lanterns:** every warm light except `L_Cl_Cell` (candles) and `L_Tw_BellFill` gets a lantern on a wall bracket. The landing lanterns hang at the landing's outer wall corner, Z = top + 180.
+5. **`L_Tw_Bell`** moves to (12255, 1865, 2690), clear of the frame post.
+6. **Cell-door leaves:** scale (0.5, 1.15, 1.37), so the leaf is 250 tall to match the frame.
+7. **Garth bed (C10):** its outer 35 cm band sits flat at z −1, under the coping top. The mounds stay inside the band, so there is no z-fighting at `Note_Cloister`.
+
+**Also accepted as implemented:**
+- the collapse rafter leans against the arcade face at Z 258 (a 260 rafter cannot reach Z 620);
+- the pier tops are at 620, and the name `…x640` is kept;
+- C11 pieces use bottom-centre pivots;
+- the latch box is 8 deep × 20 wide × 30 tall.
