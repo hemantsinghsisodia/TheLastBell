@@ -1,0 +1,446 @@
+{
+ "dirty_before": {
+  "MAP": false,
+  "BP_SmallBell": false,
+  "BP_SequencePuzzle": false,
+  "BP_Inscription": false,
+  "BP_RitualMechanism": false,
+  "BP_Door_Base": false,
+  "BP_TagInteractable": false,
+  "BP_TagTrigger": false,
+  "BP_EndingTrigger": false,
+  "BP_Inspectable_Note": false
+ },
+ "dirty_after": {},
+ "bps": {
+  "BP_SmallBell": {
+   "path": "/Game/LastBell/Blueprints/Puzzles/BP_SmallBell",
+   "parent": {
+    "refPath": "/Script/Engine.Actor"
+   },
+   "variables": [
+    "StruckTag",
+    "SymbolIndex",
+    "SwingDegrees",
+    "SwingDuration",
+    "Alpha",
+    "bAnimating"
+   ],
+   "cdo_ref": {
+    "refPath": "/Game/LastBell/Blueprints/Puzzles/BP_SmallBell.Default__BP_SmallBell_C"
+   },
+   "cdo_keys": [
+    "interactComp",
+    "glyph",
+    "plate",
+    "clapper",
+    "bell",
+    "bellPivot",
+    "arm",
+    "post",
+    "defaultSceneRoot",
+    "struckTag",
+    "symbolIndex",
+    "swingDegrees",
+    "swingDuration",
+    "alpha",
+    "bAnimating"
+   ],
+   "cdo_props": {
+    "interactComp": "None",
+    "glyph": "None",
+    "plate": "None",
+    "clapper": "None",
+    "bell": "None",
+    "bellPivot": "None",
+    "arm": "None",
+    "post": "None",
+    "defaultSceneRoot": "None",
+    "struckTag": {
+     "tagName": "State.Tower.Bell.1"
+    },
+    "symbolIndex": 0,
+    "swingDegrees": 12,
+    "swingDuration": 0.6,
+    "alpha": 0,
+    "bAnimating": false
+   },
+   "graphs": [
+    {
+     "refPath": "/Game/LastBell/Blueprints/Puzzles/BP_SmallBell.BP_SmallBell:UserConstructionScript"
+    },
+    {
+     "refPath": "/Game/LastBell/Blueprints/Puzzles/BP_SmallBell.BP_SmallBell:StartSwing"
+    },
+    {
+     "refPath": "/Game/LastBell/Blueprints/Puzzles/BP_SmallBell.BP_SmallBell:StepSwing"
+    },
+    {
+     "refPath": "/Game/LastBell/Blueprints/Puzzles/BP_SmallBell.BP_SmallBell:OnWorldStateChanged"
+    },
+    {
+     "refPath": "/Game/LastBell/Blueprints/Puzzles/BP_SmallBell.BP_SmallBell:EventGraph"
+    }
+   ]
+  },
+  "BP_SequencePuzzle": {
+   "path": "/Game/LastBell/Blueprints/Puzzles/BP_SequencePuzzle",
+   "parent": {
+    "refPath": "/Script/Engine.Actor"
+   },
+   "variables": [
+    "FailMessage",
+    "SolvedMessage"
+   ],
+   "cdo_ref": {
+    "refPath": "/Game/LastBell/Blueprints/Puzzles/BP_SequencePuzzle.Default__BP_SequencePuzzle_C"
+   },
+   "cdo_keys": [
+    "seqComp",
+    "defaultSceneRoot",
+    "failMessage",
+    "solvedMessage"
+   ],
+   "cdo_props": {
+    "seqComp": "None",
+    "defaultSceneRoot": "None",
+    "failMessage": "A cold draught snuffs the flames",
+    "solvedMessage": "The candles burn steady. Something unlocks."
+   },
+   "graphs": [
+    {
+     "refPath": "/Game/LastBell/Blueprints/Puzzles/BP_SequencePuzzle.BP_SequencePuzzle:UserConstructionScript"
+    },
+    {
+     "refPath": "/Game/LastBell/Blueprints/Puzzles/BP_SequencePuzzle.BP_SequencePuzzle:PlayFailFeedback"
+    },
+    {
+     "refPath": "/Game/LastBell/Blueprints/Puzzles/BP_SequencePuzzle.BP_SequencePuzzle:PlaySolvedFeedback"
+    },
+    {
+     "refPath": "/Game/LastBell/Blueprints/Puzzles/BP_SequencePuzzle.BP_SequencePuzzle:HandlePuzzleFailed"
+    },
+    {
+     "refPath": "/Game/LastBell/Blueprints/Puzzles/BP_SequencePuzzle.BP_SequencePuzzle:HandlePuzzleSolved"
+    },
+    {
+     "refPath": "/Game/LastBell/Blueprints/Puzzles/BP_SequencePuzzle.BP_SequencePuzzle:EventGraph"
+    }
+   ]
+  },
+  "BP_Inscription": {
+   "path": "/Game/LastBell/Blueprints/Puzzles/BP_Inscription",
+   "parent": {
+    "refPath": "/Script/Engine.Actor"
+   },
+   "variables": [
+    "Text"
+   ],
+   "cdo_ref": {
+    "refPath": "/Game/LastBell/Blueprints/Puzzles/BP_Inscription.Default__BP_Inscription_C"
+   },
+   "cdo_keys": [
+    "engraving",
+    "plaque",
+    "defaultSceneRoot",
+    "text"
+   ],
+   "cdo_props": {
+    "engraving": "None",
+    "plaque": "None",
+    "defaultSceneRoot": "None",
+    "text": "III \u00b7 I \u00b7 IV \u00b7 II"
+   },
+   "graphs": [
+    {
+     "refPath": "/Game/LastBell/Blueprints/Puzzles/BP_Inscription.BP_Inscription:UserConstructionScript"
+    },
+    {
+     "refPath": "/Game/LastBell/Blueprints/Puzzles/BP_Inscription.BP_Inscription:EventGraph"
+    }
+   ]
+  },
+  "BP_RitualMechanism": {
+   "path": "/Game/LastBell/Blueprints/Interactables/BP_RitualMechanism",
+   "parent": {
+    "refPath": "/Script/Engine.Actor"
+   },
+   "variables": [
+    "RitualTag",
+    "ExtraGrantedTags",
+    "CombinedTags",
+    "TurnYaw",
+    "TurnDuration",
+    "Alpha",
+    "bAnimating"
+   ],
+   "cdo_ref": {
+    "refPath": "/Game/LastBell/Blueprints/Interactables/BP_RitualMechanism.Default__BP_RitualMechanism_C"
+   },
+   "cdo_keys": [
+    "interactComp",
+    "coreMarker",
+    "core",
+    "pedestal",
+    "ritualTag",
+    "extraGrantedTags",
+    "combinedTags",
+    "turnYaw",
+    "turnDuration",
+    "alpha",
+    "bAnimating"
+   ],
+   "cdo_props": {
+    "interactComp": "None",
+    "coreMarker": "None",
+    "core": "None",
+    "pedestal": "None",
+    "ritualTag": {
+     "tagName": "None"
+    },
+    "extraGrantedTags": {
+     "gameplayTags": []
+    },
+    "combinedTags": {
+     "gameplayTags": []
+    },
+    "turnYaw": 90,
+    "turnDuration": 1.5,
+    "alpha": 0,
+    "bAnimating": false
+   },
+   "graphs": [
+    {
+     "refPath": "/Game/LastBell/Blueprints/Interactables/BP_RitualMechanism.BP_RitualMechanism:UserConstructionScript"
+    },
+    {
+     "refPath": "/Game/LastBell/Blueprints/Interactables/BP_RitualMechanism.BP_RitualMechanism:HandleStateChanged"
+    },
+    {
+     "refPath": "/Game/LastBell/Blueprints/Interactables/BP_RitualMechanism.BP_RitualMechanism:EventGraph"
+    }
+   ]
+  },
+  "BP_Door_Base": {
+   "path": "/Game/LastBell/Blueprints/Interactables/BP_Door_Base",
+   "parent": {
+    "refPath": "/Script/Engine.Actor"
+   },
+   "variables": [
+    "OpenStateTag",
+    "AutoOpenTag",
+    "OpenYaw",
+    "OpenDuration",
+    "bInteractable",
+    "Alpha",
+    "bAnimating",
+    "OpenSign"
+   ],
+   "cdo_ref": {
+    "refPath": "/Game/LastBell/Blueprints/Interactables/BP_Door_Base.Default__BP_Door_Base_C"
+   },
+   "cdo_keys": [
+    "interactComp",
+    "doorMesh",
+    "hinge",
+    "defaultSceneRoot",
+    "openStateTag",
+    "autoOpenTag",
+    "openYaw",
+    "openDuration",
+    "bInteractable",
+    "alpha",
+    "bAnimating",
+    "openSign"
+   ],
+   "cdo_props": {
+    "interactComp": "None",
+    "doorMesh": "None",
+    "hinge": "None",
+    "defaultSceneRoot": "None",
+    "openStateTag": {
+     "tagName": "None"
+    },
+    "autoOpenTag": {
+     "tagName": "None"
+    },
+    "openYaw": 90,
+    "openDuration": 1,
+    "bInteractable": true,
+    "alpha": 0,
+    "bAnimating": false,
+    "openSign": 1
+   },
+   "graphs": [
+    {
+     "refPath": "/Game/LastBell/Blueprints/Interactables/BP_Door_Base.BP_Door_Base:UserConstructionScript"
+    },
+    {
+     "refPath": "/Game/LastBell/Blueprints/Interactables/BP_Door_Base.BP_Door_Base:HandleStateChanged"
+    },
+    {
+     "refPath": "/Game/LastBell/Blueprints/Interactables/BP_Door_Base.BP_Door_Base:AutoOpenInit"
+    },
+    {
+     "refPath": "/Game/LastBell/Blueprints/Interactables/BP_Door_Base.BP_Door_Base:ComputeOpenSign"
+    },
+    {
+     "refPath": "/Game/LastBell/Blueprints/Interactables/BP_Door_Base.BP_Door_Base:EventGraph"
+    }
+   ]
+  },
+  "BP_TagInteractable": {
+   "path": "/Game/LastBell/Blueprints/Interactables/BP_TagInteractable",
+   "parent": {
+    "refPath": "/Script/Engine.Actor"
+   },
+   "variables": [
+    "UseStateTag",
+    "bHideOnUse",
+    "bInspectable"
+   ],
+   "cdo_ref": {
+    "refPath": "/Game/LastBell/Blueprints/Interactables/BP_TagInteractable.Default__BP_TagInteractable_C"
+   },
+   "cdo_keys": [
+    "inspectableComp",
+    "interactComp",
+    "mesh",
+    "useStateTag",
+    "bHideOnUse",
+    "bInspectable"
+   ],
+   "cdo_props": {
+    "inspectableComp": "None",
+    "interactComp": "None",
+    "mesh": "None",
+    "useStateTag": {
+     "tagName": "None"
+    },
+    "bHideOnUse": false,
+    "bInspectable": false
+   },
+   "graphs": [
+    {
+     "refPath": "/Game/LastBell/Blueprints/Interactables/BP_TagInteractable.BP_TagInteractable:UserConstructionScript"
+    },
+    {
+     "refPath": "/Game/LastBell/Blueprints/Interactables/BP_TagInteractable.BP_TagInteractable:ApplyUsed"
+    },
+    {
+     "refPath": "/Game/LastBell/Blueprints/Interactables/BP_TagInteractable.BP_TagInteractable:HandleStateChanged"
+    },
+    {
+     "refPath": "/Game/LastBell/Blueprints/Interactables/BP_TagInteractable.BP_TagInteractable:ApplyInspectSettings"
+    },
+    {
+     "refPath": "/Game/LastBell/Blueprints/Interactables/BP_TagInteractable.BP_TagInteractable:EventGraph"
+    }
+   ]
+  },
+  "BP_TagTrigger": {
+   "path": "/Game/LastBell/Blueprints/Interactables/BP_TagTrigger",
+   "parent": {
+    "refPath": "/Script/Engine.Actor"
+   },
+   "variables": [
+    "GrantedStateTags",
+    "bOnce"
+   ],
+   "cdo_ref": {
+    "refPath": "/Game/LastBell/Blueprints/Interactables/BP_TagTrigger.Default__BP_TagTrigger_C"
+   },
+   "cdo_keys": [
+    "trigger",
+    "grantedStateTags",
+    "bOnce"
+   ],
+   "cdo_props": {
+    "trigger": "None",
+    "grantedStateTags": {
+     "gameplayTags": []
+    },
+    "bOnce": true
+   },
+   "graphs": [
+    {
+     "refPath": "/Game/LastBell/Blueprints/Interactables/BP_TagTrigger.BP_TagTrigger:UserConstructionScript"
+    },
+    {
+     "refPath": "/Game/LastBell/Blueprints/Interactables/BP_TagTrigger.BP_TagTrigger:EventGraph"
+    }
+   ]
+  },
+  "BP_EndingTrigger": {
+   "path": "/Game/LastBell/Blueprints/BP_EndingTrigger",
+   "parent": {
+    "refPath": "/Script/Engine.Actor"
+   },
+   "variables": [
+    "EndingSeconds"
+   ],
+   "cdo_ref": {
+    "refPath": "/Game/LastBell/Blueprints/BP_EndingTrigger.Default__BP_EndingTrigger_C"
+   },
+   "cdo_keys": [
+    "defaultSceneRoot",
+    "endingSeconds"
+   ],
+   "cdo_props": {
+    "defaultSceneRoot": "None",
+    "endingSeconds": 8
+   },
+   "graphs": [
+    {
+     "refPath": "/Game/LastBell/Blueprints/BP_EndingTrigger.BP_EndingTrigger:UserConstructionScript"
+    },
+    {
+     "refPath": "/Game/LastBell/Blueprints/BP_EndingTrigger.BP_EndingTrigger:StartEnding"
+    },
+    {
+     "refPath": "/Game/LastBell/Blueprints/BP_EndingTrigger.BP_EndingTrigger:FinishEnding"
+    },
+    {
+     "refPath": "/Game/LastBell/Blueprints/BP_EndingTrigger.BP_EndingTrigger:EventGraph"
+    }
+   ]
+  },
+  "BP_Inspectable_Note": {
+   "path": "/Game/LastBell/Blueprints/Interactables/BP_Inspectable_Note",
+   "parent": {
+    "refPath": "/Script/Engine.Actor"
+   },
+   "variables": [
+    "DisplayName",
+    "BodyText"
+   ],
+   "cdo_ref": {
+    "refPath": "/Game/LastBell/Blueprints/Interactables/BP_Inspectable_Note.Default__BP_Inspectable_Note_C"
+   },
+   "cdo_keys": [
+    "paper",
+    "root",
+    "inspectableComp",
+    "interactComp",
+    "displayName",
+    "bodyText"
+   ],
+   "cdo_props": {
+    "paper": "None",
+    "root": "None",
+    "inspectableComp": "None",
+    "interactComp": "None",
+    "displayName": "",
+    "bodyText": ""
+   },
+   "graphs": [
+    {
+     "refPath": "/Game/LastBell/Blueprints/Interactables/BP_Inspectable_Note.BP_Inspectable_Note:UserConstructionScript"
+    },
+    {
+     "refPath": "/Game/LastBell/Blueprints/Interactables/BP_Inspectable_Note.BP_Inspectable_Note:EventGraph"
+    }
+   ]
+  }
+ }
+}

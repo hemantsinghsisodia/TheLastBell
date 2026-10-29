@@ -1,0 +1,179 @@
+{
+ "objectives": [
+  {
+   "id": {
+    "tagName": "Objective.Main.FollowBell"
+   },
+   "text": "Follow the sound of the bell",
+   "completionStateTags": {
+    "gameplayTags": [
+     {
+      "tagName": "State.Event.CourtyardEntered"
+     }
+    ]
+   }
+  },
+  {
+   "id": {
+    "tagName": "Objective.Main.EnterChapel"
+   },
+   "text": "Find a way into the chapel",
+   "completionStateTags": {
+    "gameplayTags": [
+     {
+      "tagName": "State.Door.ChapelMain.Open"
+     }
+    ]
+   }
+  },
+  {
+   "id": {
+    "tagName": "Objective.Main.LightCandles"
+   },
+   "text": "Light the candles in the order of the saints",
+   "completionStateTags": {
+    "gameplayTags": [
+     {
+      "tagName": "State.Chapel.CandlesSolved"
+     }
+    ]
+   }
+  },
+  {
+   "id": {
+    "tagName": "Objective.Main.Mechanism1"
+   },
+   "text": "Use the altar mechanism",
+   "completionStateTags": {
+    "gameplayTags": [
+     {
+      "tagName": "State.Ritual.1"
+     }
+    ]
+   }
+  },
+  {
+   "id": {
+    "tagName": "Objective.Main.DescendCrypt"
+   },
+   "text": "Descend into the crypt",
+   "completionStateTags": {
+    "gameplayTags": [
+     {
+      "tagName": "State.Event.CryptEntered"
+     }
+    ]
+   }
+  },
+  {
+   "id": {
+    "tagName": "Objective.Main.FindCrank"
+   },
+   "text": "Find a way to turn the winch",
+   "completionStateTags": {
+    "gameplayTags": [
+     {
+      "tagName": "State.Item.Crank"
+     }
+    ]
+   }
+  },
+  {
+   "id": {
+    "tagName": "Objective.Main.BalanceChains"
+   },
+   "text": "Balance the chain counterweights",
+   "completionStateTags": {
+    "gameplayTags": [
+     {
+      "tagName": "State.Crypt.Dial.A.2"
+     },
+     {
+      "tagName": "State.Crypt.Dial.B.0"
+     },
+     {
+      "tagName": "State.Crypt.Dial.C.1"
+     }
+    ]
+   }
+  },
+  {
+   "id": {
+    "tagName": "Objective.Main.Mechanism2"
+   },
+   "text": "Raise the chains",
+   "completionStateTags": {
+    "gameplayTags": [
+     {
+      "tagName": "State.Ritual.2"
+     }
+    ]
+   }
+  },
+  {
+   "id": {
+    "tagName": "Objective.Main.EscapeCrypt"
+   },
+   "text": "Escape the crypt",
+   "completionStateTags": {
+    "gameplayTags": [
+     {
+      "tagName": "State.Event.CloisterEntered"
+     }
+    ]
+   }
+  },
+  {
+   "id": {
+    "tagName": "Objective.Main.RingBellsInOrder"
+   },
+   "text": "Strike the bells in the inscribed order",
+   "completionStateTags": {
+    "gameplayTags": [
+     {
+      "tagName": "State.Tower.BellsSolved"
+     }
+    ]
+   }
+  },
+  {
+   "id": {
+    "tagName": "Objective.Main.Mechanism3"
+   },
+   "text": "Release the tower mechanism",
+   "completionStateTags": {
+    "gameplayTags": [
+     {
+      "tagName": "State.Ritual.3"
+     }
+    ]
+   }
+  },
+  {
+   "id": {
+    "tagName": "Objective.Main.ClimbTower"
+   },
+   "text": "Climb the bell tower",
+   "completionStateTags": {
+    "gameplayTags": [
+     {
+      "tagName": "State.Event.TowerTop"
+     }
+    ]
+   }
+  },
+  {
+   "id": {
+    "tagName": "Objective.Main.RingBell"
+   },
+   "text": "Ring the bell",
+   "completionStateTags": {
+    "gameplayTags": [
+     {
+      "tagName": "State.Event.Finale"
+     }
+    ]
+   }
+  }
+ ]
+}

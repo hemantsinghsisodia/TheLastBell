@@ -1,0 +1,72 @@
+{
+ "Trig_TowerTop": {
+  "center": [
+   12165,
+   1700,
+   2650
+  ],
+  "boxExtent": {
+   "x": 125,
+   "y": 125,
+   "z": 150
+  },
+  "overlap": true,
+  "profile": "OverlapOnlyPawn"
+ },
+ "Trig_CloisterEntered": {
+  "center": [
+   10650,
+   700,
+   150
+  ],
+  "boxExtent": {
+   "x": 250,
+   "y": 100,
+   "z": 150
+  },
+  "overlap": true,
+  "profile": "OverlapOnlyPawn"
+ },
+ "CP_Cloister": {
+  "center": [
+   10650,
+   780,
+   92
+  ],
+  "boxExtent": {
+   "x": 300,
+   "y": 100,
+   "z": 100
+  },
+  "overlap": true,
+  "profile": "Custom"
+ },
+ "CP_TowerBase": {
+  "center": [
+   12200,
+   2000,
+   92
+  ],
+  "boxExtent": {
+   "x": 100,
+   "y": 200,
+   "z": 100
+  },
+  "overlap": true,
+  "profile": "Custom"
+ },
+ "CP_TowerTop": {
+  "center": [
+   12165,
+   1950,
+   2592
+  ],
+  "boxExtent": {
+   "x": 100,
+   "y": 150,
+   "z": 100
+  },
+  "overlap": true,
+  "profile": "Custom"
+ }
+}

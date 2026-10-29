@@ -1,0 +1,95 @@
+| Flight | Dir | Lane (X x Y) | Step 0 AABB | Step 13 AABB | Base Z | Top Z (step 13) | Run measured | Rise measured | Lands on |
+|---|---|---|---|---|---|---|---|---|---|
+| F01 | +X | X 12290..12710, Y 2210..2460 | X 12290..12320 Y 2210..2460 Z 0.000..16.234 | X 12680..12710 Y 2210..2460 Z 0.000..227.273 | [0] | 227.273 | [30.0] | [16.234] | Landing_01 |
+| F02 | -Y | X 12710..12960, Y 1790..2210 | X 12710..12960 Y 2180..2210 Z 227.273..243.506 | X 12710..12960 Y 1790..1820 Z 227.273..454.545 | [227.273] | 454.545 | [30.0] | [16.234] | Landing_02 |
+| F03 | -X | X 12290..12710, Y 1540..1790 | X 12680..12710 Y 1540..1790 Z 454.545..470.779 | X 12290..12320 Y 1540..1790 Z 454.545..681.818 | [454.545] | 681.818 | [30.0] | [16.234] | Landing_03 |
+| F04 | +Y | X 12040..12290, Y 1790..2210 | X 12040..12290 Y 1790..1820 Z 681.818..698.052 | X 12040..12290 Y 2180..2210 Z 681.818..909.091 | [681.818] | 909.091 | [30.0] | [16.234] | Landing_04 |
+| F05 | +X | X 12290..12710, Y 2210..2460 | X 12290..12320 Y 2210..2460 Z 909.091..925.325 | X 12680..12710 Y 2210..2460 Z 909.091..1136.364 | [909.091] | 1136.364 | [30.0] | [16.234] | Landing_05 |
+| F06 | -Y | X 12710..12960, Y 1790..2210 | X 12710..12960 Y 2180..2210 Z 1136.364..1152.597 | X 12710..12960 Y 1790..1820 Z 1136.364..1363.636 | [1136.364] | 1363.636 | [30.0] | [16.234] | Landing_06 |
+| F07 | -X | X 12290..12710, Y 1540..1790 | X 12680..12710 Y 1540..1790 Z 1363.636..1379.870 | X 12290..12320 Y 1540..1790 Z 1363.636..1590.909 | [1363.636] | 1590.909 | [30.0] | [16.234] | Landing_07 |
+| F08 | +Y | X 12040..12290, Y 1790..2210 | X 12040..12290 Y 1790..1820 Z 1590.909..1607.143 | X 12040..12290 Y 2180..2210 Z 1590.909..1818.182 | [1590.909] | 1818.182 | [30.0] | [16.234] | Landing_08 |
+| F09 | +X | X 12290..12710, Y 2210..2460 | X 12290..12320 Y 2210..2460 Z 1818.182..1834.416 | X 12680..12710 Y 2210..2460 Z 1818.182..2045.455 | [1818.182] | 2045.455 | [30.0] | [16.234] | Landing_09 |
+| F10 | -Y | X 12710..12960, Y 1790..2210 | X 12710..12960 Y 2180..2210 Z 2045.455..2061.688 | X 12710..12960 Y 1790..1820 Z 2045.455..2272.727 | [2045.455] | 2272.727 | [30.0] | [16.234] | Landing_10 |
+| F11 | -X | X 12290..12710, Y 1540..1790 | X 12680..12710 Y 1540..1790 Z 2272.727..2288.961 | X 12290..12320 Y 1540..1790 Z 2272.727..2500.000 | [2272.727] | 2500.000 | [30.0] | [16.234] | top slab (Z 2500) |
+
+step depths/widths per flight (run depth, lane width):
+ F01 depth [30] width [250] base [0]
+ F02 depth [30] width [250] base [227.273]
+ F03 depth [30] width [250] base [454.545]
+ F04 depth [30] width [250] base [681.818]
+ F05 depth [30] width [250] base [909.091]
+ F06 depth [30] width [250] base [1136.364]
+ F07 depth [30] width [250] base [1363.636]
+ F08 depth [30] width [250] base [1590.909]
+ F09 depth [30] width [250] base [1818.182]
+ F10 depth [30] width [250] base [2045.455]
+ F11 depth [30] width [250] base [2272.727]
+
+Landings:
+ Tw_Landing_01 X 12710..12960 Y 2210..2460 Z 187.273..227.273 (thick 40.000)
+ Tw_Landing_02 X 12710..12960 Y 1540..1790 Z 414.545..454.545 (thick 40.000)
+ Tw_Landing_03 X 12040..12290 Y 1540..1790 Z 641.818..681.818 (thick 40.000)
+ Tw_Landing_04 X 12040..12290 Y 2210..2460 Z 869.091..909.091 (thick 40.000)
+ Tw_Landing_05 X 12710..12960 Y 2210..2460 Z 1096.364..1136.364 (thick 40.000)
+ Tw_Landing_06 X 12710..12960 Y 1540..1790 Z 1323.636..1363.636 (thick 40.000)
+ Tw_Landing_07 X 12040..12290 Y 1540..1790 Z 1550.909..1590.909 (thick 40.000)
+ Tw_Landing_08 X 12040..12290 Y 2210..2460 Z 1778.182..1818.182 (thick 40.000)
+ Tw_Landing_09 X 12710..12960 Y 2210..2460 Z 2005.455..2045.455 (thick 40.000)
+ Tw_Landing_10 X 12710..12960 Y 1540..1790 Z 2232.727..2272.727 (thick 40.000)
+
+Landing before / after each flight (top Z):
+ F01 before: ground NW corner (Z 0) | after: Landing_01 top 227.273 | last step top 227.273
+ F02 before: Landing_01 top 227.273 | after: Landing_02 top 454.545 | last step top 454.545
+ F03 before: Landing_02 top 454.545 | after: Landing_03 top 681.818 | last step top 681.818
+ F04 before: Landing_03 top 681.818 | after: Landing_04 top 909.091 | last step top 909.091
+ F05 before: Landing_04 top 909.091 | after: Landing_05 top 1136.364 | last step top 1136.364
+ F06 before: Landing_05 top 1136.364 | after: Landing_06 top 1363.636 | last step top 1363.636
+ F07 before: Landing_06 top 1363.636 | after: Landing_07 top 1590.909 | last step top 1590.909
+ F08 before: Landing_07 top 1590.909 | after: Landing_08 top 1818.182 | last step top 1818.182
+ F09 before: Landing_08 top 1818.182 | after: Landing_09 top 2045.455 | last step top 2045.455
+ F10 before: Landing_09 top 2045.455 | after: Landing_10 top 2272.727 | last step top 2272.727
+ F11 before: Landing_10 top 2272.727 | after: Top_Slab_W top 2500 | last step top 2500.000
+
+Rails per flight:
+ F01 n=7 size(dx,dy,dz)=[(60, 10, 116.23)] plane Y 2210..2220 bottomZ 16.23..211.04 topZ 132.47..327.27
+ F02 n=7 size(dx,dy,dz)=[(10, 60, 116.23)] plane X 12710..12720 bottomZ 243.51..438.31 topZ 359.74..554.55
+ F03 n=7 size(dx,dy,dz)=[(60, 10, 116.23)] plane Y 1780..1790 bottomZ 470.78..665.58 topZ 587.01..781.82
+ F04 n=7 size(dx,dy,dz)=[(10, 60, 116.23)] plane X 12280..12290 bottomZ 698.05..892.86 topZ 814.29..1009.09
+ F05 n=7 size(dx,dy,dz)=[(60, 10, 116.23)] plane Y 2210..2220 bottomZ 925.32..1120.13 topZ 1041.56..1236.36
+ F06 n=7 size(dx,dy,dz)=[(10, 60, 116.23)] plane X 12710..12720 bottomZ 1152.60..1347.40 topZ 1268.83..1463.64
+ F07 n=7 size(dx,dy,dz)=[(60, 10, 116.23)] plane Y 1780..1790 bottomZ 1379.87..1574.68 topZ 1496.10..1690.91
+ F08 n=7 size(dx,dy,dz)=[(10, 60, 116.23)] plane X 12280..12290 bottomZ 1607.14..1801.95 topZ 1723.38..1918.18
+ F09 n=7 size(dx,dy,dz)=[(60, 10, 116.23)] plane Y 2210..2220 bottomZ 1834.42..2029.22 topZ 1950.65..2145.45
+ F10 n=7 size(dx,dy,dz)=[(10, 60, 116.23)] plane X 12710..12720 bottomZ 2061.69..2256.49 topZ 2177.92..2372.73
+ F11 n=7 size(dx,dy,dz)=[(60, 10, 116.23)] plane Y 1780..1790 bottomZ 2288.96..2483.77 topZ 2405.19..2600.00
+rails whose bottom != top of tread 2i: 0
+
+rail/step volume overlaps: 77 [('Rail_F01_00', 'Stair_F01_01', (30, 10, 16.23)), ('Rail_F01_01', 'Stair_F01_03', (30, 10, 16.23)), ('Rail_F01_02', 'Stair_F01_05', (30, 10, 16.23)), ('Rail_F01_03', 'Stair_F01_07', (30, 10, 16.23)), ('Rail_F01_04', 'Stair_F01_09', (30, 10, 16.23)), ('Rail_F01_05', 'Stair_F01_11', (30, 10, 16.23))]
+core (12290, 12710, 1790, 2210, 0, 2500)
+min gap flight->wall/core (should be 0 where touching):
+ F01 Tw_W_S 362.14  Tw_W_N 250.00  Tw_N 0.00  Tw_S 670.00  Tw_E 250.00  Tw_Core 0.00
+ F02 Tw_W_S 670.00  Tw_W_N 670.00  Tw_N 250.00  Tw_S 250.00  Tw_E 0.00  Tw_Core 0.00
+ F03 Tw_W_S 250.00  Tw_W_N 362.14  Tw_N 670.00  Tw_S 0.00  Tw_E 250.00  Tw_Core 0.00
+ F04 Tw_W_S 0.00  Tw_W_N 0.00  Tw_N 250.00  Tw_S 250.00  Tw_E 670.00  Tw_Core 0.00
+ F05 Tw_W_S 362.14  Tw_W_N 250.00  Tw_N 0.00  Tw_S 670.00  Tw_E 250.00  Tw_Core 0.00
+ F06 Tw_W_S 670.00  Tw_W_N 670.00  Tw_N 250.00  Tw_S 250.00  Tw_E 0.00  Tw_Core 0.00
+ F07 Tw_W_S 250.00  Tw_W_N 362.14  Tw_N 670.00  Tw_S 0.00  Tw_E 250.00  Tw_Core 0.00
+ F08 Tw_W_S 0.00  Tw_W_N 0.00  Tw_N 250.00  Tw_S 250.00  Tw_E 670.00  Tw_Core 0.00
+ F09 Tw_W_S 362.14  Tw_W_N 250.00  Tw_N 0.00  Tw_S 670.00  Tw_E 250.00  Tw_Core 0.00
+ F10 Tw_W_S 670.00  Tw_W_N 670.00  Tw_N 250.00  Tw_S 250.00  Tw_E 0.00  Tw_Core 0.00
+ F11 Tw_W_S 250.00  Tw_W_N 362.14  Tw_N 670.00  Tw_S 0.00  Tw_E 250.00  Tw_Core 0.00
+landing vs step volume overlaps:
+step vs step (other flights) overlaps:
+ total 0
+landing underside Z: {1: 187.27, 2: 414.55, 3: 641.82, 4: 869.09, 5: 1096.36, 6: 1323.64, 7: 1550.91, 8: 1778.18, 9: 2005.45, 10: 2232.73}
+what supports each landing (boxes whose top ~ landing bottom within 0.01 and XY overlap):
+   Tw_Landing_01 NOTHING (cavity below, ground at 0)
+   Tw_Landing_02 NOTHING (cavity below, ground at 0)
+   Tw_Landing_03 NOTHING (cavity below, ground at 0)
+   Tw_Landing_04 NOTHING (cavity below, ground at 0)
+   Tw_Landing_05 NOTHING (cavity below, ground at 0)
+   Tw_Landing_06 NOTHING (cavity below, ground at 0)
+   Tw_Landing_07 NOTHING (cavity below, ground at 0)
+   Tw_Landing_08 NOTHING (cavity below, ground at 0)
+   Tw_Landing_09 NOTHING (cavity below, ground at 0)
+   Tw_Landing_10 NOTHING (cavity below, ground at 0)

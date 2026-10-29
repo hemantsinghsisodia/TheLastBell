@@ -1,0 +1,3115 @@
+{
+ "actors": [
+  {
+   "label": "Puzzle_Bells",
+   "ref": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.BP_SequencePuzzle_C_1",
+   "class": "/Game/LastBell/Blueprints/Puzzles/BP_SequencePuzzle.BP_SequencePuzzle_C",
+   "transform": {
+    "location": {
+     "x": 11900,
+     "y": 2380,
+     "z": 0
+    },
+    "rotation": {
+     "pitch": 0,
+     "yaw": 0,
+     "roll": 0
+    },
+    "scale": {
+     "x": 1,
+     "y": 1,
+     "z": 1
+    }
+   },
+   "bounds": {
+    "min": {
+     "x": 11772,
+     "y": 2252,
+     "z": -128
+    },
+    "max": {
+     "x": 12028,
+     "y": 2508,
+     "z": 128
+    },
+    "isValid": true
+   },
+   "folder": "Gameplay/Cloister",
+   "tags": [],
+   "blueprint": "/Game/LastBell/Blueprints/Puzzles/BP_SequencePuzzle.BP_SequencePuzzle",
+   "parent": {
+    "refPath": "/Script/Engine.Actor"
+   },
+   "actor_prop_keys": [
+    "failMessage",
+    "solvedMessage"
+   ],
+   "instance_props": {
+    "failMessage": "The bells clash and fall silent.",
+    "solvedMessage": "The last note hangs in the air. The tower mechanism unlocks.",
+    "bHidden": false
+   },
+   "components": [
+    {
+     "name": "DefaultSceneRoot",
+     "class": "/Script/Engine.SceneComponent",
+     "props": {
+      "relativeLocation": {
+       "x": 11900,
+       "y": 2380,
+       "z": 0
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 0,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 1,
+       "y": 1,
+       "z": 1
+      },
+      "bVisible": true,
+      "bHiddenInGame": false
+     }
+    },
+    {
+     "name": "BillboardComponent_1",
+     "class": "/Script/Engine.BillboardComponent",
+     "collisionProfile": "NoCollision",
+     "collisionEnabled": "NoCollision",
+     "props": {
+      "relativeLocation": {
+       "x": 0,
+       "y": 0,
+       "z": 0
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 0,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 0.5,
+       "y": 0.5,
+       "z": 0.5
+      },
+      "bVisible": true,
+      "bHiddenInGame": true
+     }
+    },
+    {
+     "name": "SeqComp",
+     "class": "/Script/LastBell.LBSequencePuzzleComponent",
+     "props": {
+      "steps": [
+       {
+        "tagName": "State.Tower.Bell.3"
+       },
+       {
+        "tagName": "State.Tower.Bell.1"
+       },
+       {
+        "tagName": "State.Tower.Bell.4"
+       },
+       {
+        "tagName": "State.Tower.Bell.2"
+       }
+      ],
+      "solvedTags": {
+       "gameplayTags": [
+        {
+         "tagName": "State.Tower.BellsSolved"
+        }
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "label": "Bell_1",
+   "ref": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.BP_SmallBell_C_0",
+   "class": "/Game/LastBell/Blueprints/Puzzles/BP_SmallBell.BP_SmallBell_C",
+   "transform": {
+    "location": {
+     "x": 11983,
+     "y": 2200,
+     "z": 0
+    },
+    "rotation": {
+     "pitch": 0,
+     "yaw": 180,
+     "roll": 0
+    },
+    "scale": {
+     "x": 1,
+     "y": 1,
+     "z": 1
+    }
+   },
+   "bounds": {
+    "min": {
+     "x": 11855,
+     "y": 2072,
+     "z": -128
+    },
+    "max": {
+     "x": 12111,
+     "y": 2328,
+     "z": 128
+    },
+    "isValid": true
+   },
+   "folder": "Gameplay/Cloister",
+   "tags": [],
+   "blueprint": "/Game/LastBell/Blueprints/Puzzles/BP_SmallBell.BP_SmallBell",
+   "parent": {
+    "refPath": "/Script/Engine.Actor"
+   },
+   "actor_prop_keys": [
+    "struckTag",
+    "symbolIndex",
+    "swingDegrees",
+    "swingDuration",
+    "alpha",
+    "bAnimating"
+   ],
+   "instance_props": {
+    "struckTag": {
+     "tagName": "State.Tower.Bell.1"
+    },
+    "symbolIndex": 0,
+    "swingDegrees": 12,
+    "swingDuration": 0.6,
+    "alpha": 0,
+    "bAnimating": false,
+    "bHidden": false
+   },
+   "components": [
+    {
+     "name": "DefaultSceneRoot",
+     "class": "/Script/Engine.SceneComponent",
+     "props": {
+      "relativeLocation": {
+       "x": 11983,
+       "y": 2200,
+       "z": 0
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 180,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 1,
+       "y": 1,
+       "z": 1
+      },
+      "bVisible": true,
+      "bHiddenInGame": false
+     }
+    },
+    {
+     "name": "BillboardComponent_1",
+     "class": "/Script/Engine.BillboardComponent",
+     "collisionProfile": "NoCollision",
+     "collisionEnabled": "NoCollision",
+     "props": {
+      "relativeLocation": {
+       "x": 0,
+       "y": 0,
+       "z": 0
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 0,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 0.5,
+       "y": 0.5,
+       "z": 0.5
+      },
+      "bVisible": true,
+      "bHiddenInGame": true
+     }
+    },
+    {
+     "name": "Post",
+     "class": "/Script/Engine.StaticMeshComponent",
+     "collisionProfile": "BlockAllDynamic",
+     "collisionEnabled": "QueryAndPhysics",
+     "props": {
+      "relativeLocation": {
+       "x": -14,
+       "y": 0,
+       "z": 40
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 0,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 0.06,
+       "y": 0.06,
+       "z": 0.8
+      },
+      "bVisible": true,
+      "bHiddenInGame": false,
+      "staticMesh": {
+       "refPath": "/Engine/BasicShapes/Cube.Cube"
+      },
+      "overrideMaterials": [
+       {
+        "refPath": "/Game/LastBell/Materials/Instances/MI_LB_Iron.MI_LB_Iron"
+       }
+      ],
+      "castShadow": true
+     }
+    },
+    {
+     "name": "Arm",
+     "class": "/Script/Engine.StaticMeshComponent",
+     "collisionProfile": "BlockAllDynamic",
+     "collisionEnabled": "QueryAndPhysics",
+     "props": {
+      "relativeLocation": {
+       "x": -6,
+       "y": 0,
+       "z": 78
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 0,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 0.18,
+       "y": 0.04,
+       "z": 0.04
+      },
+      "bVisible": true,
+      "bHiddenInGame": false,
+      "staticMesh": {
+       "refPath": "/Engine/BasicShapes/Cube.Cube"
+      },
+      "overrideMaterials": [
+       {
+        "refPath": "/Game/LastBell/Materials/Instances/MI_LB_Iron.MI_LB_Iron"
+       }
+      ],
+      "castShadow": true
+     }
+    },
+    {
+     "name": "BellPivot",
+     "class": "/Script/Engine.SceneComponent",
+     "props": {
+      "relativeLocation": {
+       "x": 0,
+       "y": 0,
+       "z": 76
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 0,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 1,
+       "y": 1,
+       "z": 1
+      },
+      "bVisible": true,
+      "bHiddenInGame": false
+     }
+    },
+    {
+     "name": "Bell",
+     "class": "/Script/Engine.StaticMeshComponent",
+     "collisionProfile": "BlockAllDynamic",
+     "collisionEnabled": "QueryAndPhysics",
+     "props": {
+      "relativeLocation": {
+       "x": 0,
+       "y": 0,
+       "z": -14
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 0,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 0.18,
+       "y": 0.18,
+       "z": 0.25
+      },
+      "bVisible": true,
+      "bHiddenInGame": false,
+      "staticMesh": {
+       "refPath": "/Engine/BasicShapes/Cone.Cone"
+      },
+      "overrideMaterials": [
+       {
+        "refPath": "/Game/LastBell/Materials/Instances/MI_LB_Bronze.MI_LB_Bronze"
+       }
+      ],
+      "castShadow": true
+     }
+    },
+    {
+     "name": "Clapper",
+     "class": "/Script/Engine.StaticMeshComponent",
+     "collisionProfile": "BlockAllDynamic",
+     "collisionEnabled": "QueryAndPhysics",
+     "props": {
+      "relativeLocation": {
+       "x": 0,
+       "y": 0,
+       "z": -27
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 0,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 0.05,
+       "y": 0.05,
+       "z": 0.05
+      },
+      "bVisible": true,
+      "bHiddenInGame": false,
+      "staticMesh": {
+       "refPath": "/Engine/BasicShapes/Sphere.Sphere"
+      },
+      "overrideMaterials": [
+       {
+        "refPath": "/Game/LastBell/Materials/Instances/MI_LB_Iron.MI_LB_Iron"
+       }
+      ],
+      "castShadow": true
+     }
+    },
+    {
+     "name": "Plate",
+     "class": "/Script/Engine.StaticMeshComponent",
+     "collisionProfile": "BlockAllDynamic",
+     "collisionEnabled": "QueryAndPhysics",
+     "props": {
+      "relativeLocation": {
+       "x": -10.5,
+       "y": 0,
+       "z": 38
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 0,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 0.02,
+       "y": 0.26,
+       "z": 0.16
+      },
+      "bVisible": true,
+      "bHiddenInGame": false,
+      "staticMesh": {
+       "refPath": "/Engine/BasicShapes/Cube.Cube"
+      },
+      "overrideMaterials": [
+       {
+        "refPath": "/Game/LastBell/Materials/Instances/MI_LB_Stone.MI_LB_Stone"
+       }
+      ],
+      "castShadow": true
+     }
+    },
+    {
+     "name": "Glyph",
+     "class": "/Script/Engine.TextRenderComponent",
+     "collisionProfile": "NoCollision",
+     "collisionEnabled": "NoCollision",
+     "props": {
+      "relativeLocation": {
+       "x": -9.3,
+       "y": 0,
+       "z": 38
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 0,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 1,
+       "y": 1,
+       "z": 1
+      },
+      "bVisible": true,
+      "bHiddenInGame": false,
+      "text": "I"
+     }
+    },
+    {
+     "name": "InteractComp",
+     "class": "/Script/LastBell.LBInteractableComponent",
+     "props": {
+      "promptText": "Strike bell",
+      "bEnabled": true,
+      "deniedPromptText": "",
+      "requiredStateTags": {
+       "gameplayTags": []
+      },
+      "grantedStateTags": {
+       "gameplayTags": [
+        {
+         "tagName": "State.Tower.Bell.1"
+        }
+       ]
+      },
+      "bSingleUse": true,
+      "consumedStateTag": {
+       "tagName": "State.Tower.Bell.1"
+      },
+      "bInspectOnInteract": false,
+      "noiseLoudness": 0.8999999761581421
+     }
+    }
+   ]
+  },
+  {
+   "label": "Bell_2",
+   "ref": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.BP_SmallBell_C_1",
+   "class": "/Game/LastBell/Blueprints/Puzzles/BP_SmallBell.BP_SmallBell_C",
+   "transform": {
+    "location": {
+     "x": 11983,
+     "y": 2320,
+     "z": 0
+    },
+    "rotation": {
+     "pitch": 0,
+     "yaw": 180,
+     "roll": 0
+    },
+    "scale": {
+     "x": 1,
+     "y": 1,
+     "z": 1
+    }
+   },
+   "bounds": {
+    "min": {
+     "x": 11855,
+     "y": 2192,
+     "z": -128
+    },
+    "max": {
+     "x": 12111,
+     "y": 2448,
+     "z": 128
+    },
+    "isValid": true
+   },
+   "folder": "Gameplay/Cloister",
+   "tags": [],
+   "blueprint": "/Game/LastBell/Blueprints/Puzzles/BP_SmallBell.BP_SmallBell",
+   "parent": {
+    "refPath": "/Script/Engine.Actor"
+   },
+   "actor_prop_keys": [
+    "struckTag",
+    "symbolIndex",
+    "swingDegrees",
+    "swingDuration",
+    "alpha",
+    "bAnimating"
+   ],
+   "instance_props": {
+    "struckTag": {
+     "tagName": "State.Tower.Bell.2"
+    },
+    "symbolIndex": 1,
+    "swingDegrees": 12,
+    "swingDuration": 0.6,
+    "alpha": 0,
+    "bAnimating": false,
+    "bHidden": false
+   },
+   "components": [
+    {
+     "name": "DefaultSceneRoot",
+     "class": "/Script/Engine.SceneComponent",
+     "props": {
+      "relativeLocation": {
+       "x": 11983,
+       "y": 2320,
+       "z": 0
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 180,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 1,
+       "y": 1,
+       "z": 1
+      },
+      "bVisible": true,
+      "bHiddenInGame": false
+     }
+    },
+    {
+     "name": "BillboardComponent_1",
+     "class": "/Script/Engine.BillboardComponent",
+     "collisionProfile": "NoCollision",
+     "collisionEnabled": "NoCollision",
+     "props": {
+      "relativeLocation": {
+       "x": 0,
+       "y": 0,
+       "z": 0
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 0,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 0.5,
+       "y": 0.5,
+       "z": 0.5
+      },
+      "bVisible": true,
+      "bHiddenInGame": true
+     }
+    },
+    {
+     "name": "Post",
+     "class": "/Script/Engine.StaticMeshComponent",
+     "collisionProfile": "BlockAllDynamic",
+     "collisionEnabled": "QueryAndPhysics",
+     "props": {
+      "relativeLocation": {
+       "x": -14,
+       "y": 0,
+       "z": 40
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 0,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 0.06,
+       "y": 0.06,
+       "z": 0.8
+      },
+      "bVisible": true,
+      "bHiddenInGame": false,
+      "staticMesh": {
+       "refPath": "/Engine/BasicShapes/Cube.Cube"
+      },
+      "overrideMaterials": [
+       {
+        "refPath": "/Game/LastBell/Materials/Instances/MI_LB_Iron.MI_LB_Iron"
+       }
+      ],
+      "castShadow": true
+     }
+    },
+    {
+     "name": "Arm",
+     "class": "/Script/Engine.StaticMeshComponent",
+     "collisionProfile": "BlockAllDynamic",
+     "collisionEnabled": "QueryAndPhysics",
+     "props": {
+      "relativeLocation": {
+       "x": -6,
+       "y": 0,
+       "z": 78
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 0,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 0.18,
+       "y": 0.04,
+       "z": 0.04
+      },
+      "bVisible": true,
+      "bHiddenInGame": false,
+      "staticMesh": {
+       "refPath": "/Engine/BasicShapes/Cube.Cube"
+      },
+      "overrideMaterials": [
+       {
+        "refPath": "/Game/LastBell/Materials/Instances/MI_LB_Iron.MI_LB_Iron"
+       }
+      ],
+      "castShadow": true
+     }
+    },
+    {
+     "name": "BellPivot",
+     "class": "/Script/Engine.SceneComponent",
+     "props": {
+      "relativeLocation": {
+       "x": 0,
+       "y": 0,
+       "z": 76
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 0,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 1,
+       "y": 1,
+       "z": 1
+      },
+      "bVisible": true,
+      "bHiddenInGame": false
+     }
+    },
+    {
+     "name": "Bell",
+     "class": "/Script/Engine.StaticMeshComponent",
+     "collisionProfile": "BlockAllDynamic",
+     "collisionEnabled": "QueryAndPhysics",
+     "props": {
+      "relativeLocation": {
+       "x": 0,
+       "y": 0,
+       "z": -14
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 0,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 0.18,
+       "y": 0.18,
+       "z": 0.25
+      },
+      "bVisible": true,
+      "bHiddenInGame": false,
+      "staticMesh": {
+       "refPath": "/Engine/BasicShapes/Cone.Cone"
+      },
+      "overrideMaterials": [
+       {
+        "refPath": "/Game/LastBell/Materials/Instances/MI_LB_Bronze.MI_LB_Bronze"
+       }
+      ],
+      "castShadow": true
+     }
+    },
+    {
+     "name": "Clapper",
+     "class": "/Script/Engine.StaticMeshComponent",
+     "collisionProfile": "BlockAllDynamic",
+     "collisionEnabled": "QueryAndPhysics",
+     "props": {
+      "relativeLocation": {
+       "x": 0,
+       "y": 0,
+       "z": -27
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 0,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 0.05,
+       "y": 0.05,
+       "z": 0.05
+      },
+      "bVisible": true,
+      "bHiddenInGame": false,
+      "staticMesh": {
+       "refPath": "/Engine/BasicShapes/Sphere.Sphere"
+      },
+      "overrideMaterials": [
+       {
+        "refPath": "/Game/LastBell/Materials/Instances/MI_LB_Iron.MI_LB_Iron"
+       }
+      ],
+      "castShadow": true
+     }
+    },
+    {
+     "name": "Plate",
+     "class": "/Script/Engine.StaticMeshComponent",
+     "collisionProfile": "BlockAllDynamic",
+     "collisionEnabled": "QueryAndPhysics",
+     "props": {
+      "relativeLocation": {
+       "x": -10.5,
+       "y": 0,
+       "z": 38
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 0,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 0.02,
+       "y": 0.26,
+       "z": 0.16
+      },
+      "bVisible": true,
+      "bHiddenInGame": false,
+      "staticMesh": {
+       "refPath": "/Engine/BasicShapes/Cube.Cube"
+      },
+      "overrideMaterials": [
+       {
+        "refPath": "/Game/LastBell/Materials/Instances/MI_LB_Stone.MI_LB_Stone"
+       }
+      ],
+      "castShadow": true
+     }
+    },
+    {
+     "name": "Glyph",
+     "class": "/Script/Engine.TextRenderComponent",
+     "collisionProfile": "NoCollision",
+     "collisionEnabled": "NoCollision",
+     "props": {
+      "relativeLocation": {
+       "x": -9.3,
+       "y": 0,
+       "z": 38
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 0,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 1,
+       "y": 1,
+       "z": 1
+      },
+      "bVisible": true,
+      "bHiddenInGame": false,
+      "text": "II"
+     }
+    },
+    {
+     "name": "InteractComp",
+     "class": "/Script/LastBell.LBInteractableComponent",
+     "props": {
+      "promptText": "Strike bell",
+      "bEnabled": true,
+      "deniedPromptText": "",
+      "requiredStateTags": {
+       "gameplayTags": []
+      },
+      "grantedStateTags": {
+       "gameplayTags": [
+        {
+         "tagName": "State.Tower.Bell.2"
+        }
+       ]
+      },
+      "bSingleUse": true,
+      "consumedStateTag": {
+       "tagName": "State.Tower.Bell.2"
+      },
+      "bInspectOnInteract": false,
+      "noiseLoudness": 0.8999999761581421
+     }
+    }
+   ]
+  },
+  {
+   "label": "Bell_3",
+   "ref": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.BP_SmallBell_C_2",
+   "class": "/Game/LastBell/Blueprints/Puzzles/BP_SmallBell.BP_SmallBell_C",
+   "transform": {
+    "location": {
+     "x": 11983,
+     "y": 2440,
+     "z": 0
+    },
+    "rotation": {
+     "pitch": 0,
+     "yaw": 180,
+     "roll": 0
+    },
+    "scale": {
+     "x": 1,
+     "y": 1,
+     "z": 1
+    }
+   },
+   "bounds": {
+    "min": {
+     "x": 11855,
+     "y": 2312,
+     "z": -128
+    },
+    "max": {
+     "x": 12111,
+     "y": 2568,
+     "z": 128
+    },
+    "isValid": true
+   },
+   "folder": "Gameplay/Cloister",
+   "tags": [],
+   "blueprint": "/Game/LastBell/Blueprints/Puzzles/BP_SmallBell.BP_SmallBell",
+   "parent": {
+    "refPath": "/Script/Engine.Actor"
+   },
+   "actor_prop_keys": [
+    "struckTag",
+    "symbolIndex",
+    "swingDegrees",
+    "swingDuration",
+    "alpha",
+    "bAnimating"
+   ],
+   "instance_props": {
+    "struckTag": {
+     "tagName": "State.Tower.Bell.3"
+    },
+    "symbolIndex": 2,
+    "swingDegrees": 12,
+    "swingDuration": 0.6,
+    "alpha": 0,
+    "bAnimating": false,
+    "bHidden": false
+   },
+   "components": [
+    {
+     "name": "DefaultSceneRoot",
+     "class": "/Script/Engine.SceneComponent",
+     "props": {
+      "relativeLocation": {
+       "x": 11983,
+       "y": 2440,
+       "z": 0
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 180,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 1,
+       "y": 1,
+       "z": 1
+      },
+      "bVisible": true,
+      "bHiddenInGame": false
+     }
+    },
+    {
+     "name": "BillboardComponent_1",
+     "class": "/Script/Engine.BillboardComponent",
+     "collisionProfile": "NoCollision",
+     "collisionEnabled": "NoCollision",
+     "props": {
+      "relativeLocation": {
+       "x": 0,
+       "y": 0,
+       "z": 0
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 0,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 0.5,
+       "y": 0.5,
+       "z": 0.5
+      },
+      "bVisible": true,
+      "bHiddenInGame": true
+     }
+    },
+    {
+     "name": "Post",
+     "class": "/Script/Engine.StaticMeshComponent",
+     "collisionProfile": "BlockAllDynamic",
+     "collisionEnabled": "QueryAndPhysics",
+     "props": {
+      "relativeLocation": {
+       "x": -14,
+       "y": 0,
+       "z": 40
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 0,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 0.06,
+       "y": 0.06,
+       "z": 0.8
+      },
+      "bVisible": true,
+      "bHiddenInGame": false,
+      "staticMesh": {
+       "refPath": "/Engine/BasicShapes/Cube.Cube"
+      },
+      "overrideMaterials": [
+       {
+        "refPath": "/Game/LastBell/Materials/Instances/MI_LB_Iron.MI_LB_Iron"
+       }
+      ],
+      "castShadow": true
+     }
+    },
+    {
+     "name": "Arm",
+     "class": "/Script/Engine.StaticMeshComponent",
+     "collisionProfile": "BlockAllDynamic",
+     "collisionEnabled": "QueryAndPhysics",
+     "props": {
+      "relativeLocation": {
+       "x": -6,
+       "y": 0,
+       "z": 78
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 0,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 0.18,
+       "y": 0.04,
+       "z": 0.04
+      },
+      "bVisible": true,
+      "bHiddenInGame": false,
+      "staticMesh": {
+       "refPath": "/Engine/BasicShapes/Cube.Cube"
+      },
+      "overrideMaterials": [
+       {
+        "refPath": "/Game/LastBell/Materials/Instances/MI_LB_Iron.MI_LB_Iron"
+       }
+      ],
+      "castShadow": true
+     }
+    },
+    {
+     "name": "BellPivot",
+     "class": "/Script/Engine.SceneComponent",
+     "props": {
+      "relativeLocation": {
+       "x": 0,
+       "y": 0,
+       "z": 76
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 0,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 1,
+       "y": 1,
+       "z": 1
+      },
+      "bVisible": true,
+      "bHiddenInGame": false
+     }
+    },
+    {
+     "name": "Bell",
+     "class": "/Script/Engine.StaticMeshComponent",
+     "collisionProfile": "BlockAllDynamic",
+     "collisionEnabled": "QueryAndPhysics",
+     "props": {
+      "relativeLocation": {
+       "x": 0,
+       "y": 0,
+       "z": -14
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 0,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 0.18,
+       "y": 0.18,
+       "z": 0.25
+      },
+      "bVisible": true,
+      "bHiddenInGame": false,
+      "staticMesh": {
+       "refPath": "/Engine/BasicShapes/Cone.Cone"
+      },
+      "overrideMaterials": [
+       {
+        "refPath": "/Game/LastBell/Materials/Instances/MI_LB_Bronze.MI_LB_Bronze"
+       }
+      ],
+      "castShadow": true
+     }
+    },
+    {
+     "name": "Clapper",
+     "class": "/Script/Engine.StaticMeshComponent",
+     "collisionProfile": "BlockAllDynamic",
+     "collisionEnabled": "QueryAndPhysics",
+     "props": {
+      "relativeLocation": {
+       "x": 0,
+       "y": 0,
+       "z": -27
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 0,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 0.05,
+       "y": 0.05,
+       "z": 0.05
+      },
+      "bVisible": true,
+      "bHiddenInGame": false,
+      "staticMesh": {
+       "refPath": "/Engine/BasicShapes/Sphere.Sphere"
+      },
+      "overrideMaterials": [
+       {
+        "refPath": "/Game/LastBell/Materials/Instances/MI_LB_Iron.MI_LB_Iron"
+       }
+      ],
+      "castShadow": true
+     }
+    },
+    {
+     "name": "Plate",
+     "class": "/Script/Engine.StaticMeshComponent",
+     "collisionProfile": "BlockAllDynamic",
+     "collisionEnabled": "QueryAndPhysics",
+     "props": {
+      "relativeLocation": {
+       "x": -10.5,
+       "y": 0,
+       "z": 38
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 0,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 0.02,
+       "y": 0.26,
+       "z": 0.16
+      },
+      "bVisible": true,
+      "bHiddenInGame": false,
+      "staticMesh": {
+       "refPath": "/Engine/BasicShapes/Cube.Cube"
+      },
+      "overrideMaterials": [
+       {
+        "refPath": "/Game/LastBell/Materials/Instances/MI_LB_Stone.MI_LB_Stone"
+       }
+      ],
+      "castShadow": true
+     }
+    },
+    {
+     "name": "Glyph",
+     "class": "/Script/Engine.TextRenderComponent",
+     "collisionProfile": "NoCollision",
+     "collisionEnabled": "NoCollision",
+     "props": {
+      "relativeLocation": {
+       "x": -9.3,
+       "y": 0,
+       "z": 38
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 0,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 1,
+       "y": 1,
+       "z": 1
+      },
+      "bVisible": true,
+      "bHiddenInGame": false,
+      "text": "III"
+     }
+    },
+    {
+     "name": "InteractComp",
+     "class": "/Script/LastBell.LBInteractableComponent",
+     "props": {
+      "promptText": "Strike bell",
+      "bEnabled": true,
+      "deniedPromptText": "",
+      "requiredStateTags": {
+       "gameplayTags": []
+      },
+      "grantedStateTags": {
+       "gameplayTags": [
+        {
+         "tagName": "State.Tower.Bell.3"
+        }
+       ]
+      },
+      "bSingleUse": true,
+      "consumedStateTag": {
+       "tagName": "State.Tower.Bell.3"
+      },
+      "bInspectOnInteract": false,
+      "noiseLoudness": 0.8999999761581421
+     }
+    }
+   ]
+  },
+  {
+   "label": "Bell_4",
+   "ref": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.BP_SmallBell_C_3",
+   "class": "/Game/LastBell/Blueprints/Puzzles/BP_SmallBell.BP_SmallBell_C",
+   "transform": {
+    "location": {
+     "x": 11983,
+     "y": 2560,
+     "z": 0
+    },
+    "rotation": {
+     "pitch": 0,
+     "yaw": 180,
+     "roll": 0
+    },
+    "scale": {
+     "x": 1,
+     "y": 1,
+     "z": 1
+    }
+   },
+   "bounds": {
+    "min": {
+     "x": 11855,
+     "y": 2432,
+     "z": -128
+    },
+    "max": {
+     "x": 12111,
+     "y": 2688,
+     "z": 128
+    },
+    "isValid": true
+   },
+   "folder": "Gameplay/Cloister",
+   "tags": [],
+   "blueprint": "/Game/LastBell/Blueprints/Puzzles/BP_SmallBell.BP_SmallBell",
+   "parent": {
+    "refPath": "/Script/Engine.Actor"
+   },
+   "actor_prop_keys": [
+    "struckTag",
+    "symbolIndex",
+    "swingDegrees",
+    "swingDuration",
+    "alpha",
+    "bAnimating"
+   ],
+   "instance_props": {
+    "struckTag": {
+     "tagName": "State.Tower.Bell.4"
+    },
+    "symbolIndex": 3,
+    "swingDegrees": 12,
+    "swingDuration": 0.6,
+    "alpha": 0,
+    "bAnimating": false,
+    "bHidden": false
+   },
+   "components": [
+    {
+     "name": "DefaultSceneRoot",
+     "class": "/Script/Engine.SceneComponent",
+     "props": {
+      "relativeLocation": {
+       "x": 11983,
+       "y": 2560,
+       "z": 0
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 180,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 1,
+       "y": 1,
+       "z": 1
+      },
+      "bVisible": true,
+      "bHiddenInGame": false
+     }
+    },
+    {
+     "name": "BillboardComponent_1",
+     "class": "/Script/Engine.BillboardComponent",
+     "collisionProfile": "NoCollision",
+     "collisionEnabled": "NoCollision",
+     "props": {
+      "relativeLocation": {
+       "x": 0,
+       "y": 0,
+       "z": 0
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 0,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 0.5,
+       "y": 0.5,
+       "z": 0.5
+      },
+      "bVisible": true,
+      "bHiddenInGame": true
+     }
+    },
+    {
+     "name": "Post",
+     "class": "/Script/Engine.StaticMeshComponent",
+     "collisionProfile": "BlockAllDynamic",
+     "collisionEnabled": "QueryAndPhysics",
+     "props": {
+      "relativeLocation": {
+       "x": -14,
+       "y": 0,
+       "z": 40
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 0,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 0.06,
+       "y": 0.06,
+       "z": 0.8
+      },
+      "bVisible": true,
+      "bHiddenInGame": false,
+      "staticMesh": {
+       "refPath": "/Engine/BasicShapes/Cube.Cube"
+      },
+      "overrideMaterials": [
+       {
+        "refPath": "/Game/LastBell/Materials/Instances/MI_LB_Iron.MI_LB_Iron"
+       }
+      ],
+      "castShadow": true
+     }
+    },
+    {
+     "name": "Arm",
+     "class": "/Script/Engine.StaticMeshComponent",
+     "collisionProfile": "BlockAllDynamic",
+     "collisionEnabled": "QueryAndPhysics",
+     "props": {
+      "relativeLocation": {
+       "x": -6,
+       "y": 0,
+       "z": 78
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 0,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 0.18,
+       "y": 0.04,
+       "z": 0.04
+      },
+      "bVisible": true,
+      "bHiddenInGame": false,
+      "staticMesh": {
+       "refPath": "/Engine/BasicShapes/Cube.Cube"
+      },
+      "overrideMaterials": [
+       {
+        "refPath": "/Game/LastBell/Materials/Instances/MI_LB_Iron.MI_LB_Iron"
+       }
+      ],
+      "castShadow": true
+     }
+    },
+    {
+     "name": "BellPivot",
+     "class": "/Script/Engine.SceneComponent",
+     "props": {
+      "relativeLocation": {
+       "x": 0,
+       "y": 0,
+       "z": 76
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 0,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 1,
+       "y": 1,
+       "z": 1
+      },
+      "bVisible": true,
+      "bHiddenInGame": false
+     }
+    },
+    {
+     "name": "Bell",
+     "class": "/Script/Engine.StaticMeshComponent",
+     "collisionProfile": "BlockAllDynamic",
+     "collisionEnabled": "QueryAndPhysics",
+     "props": {
+      "relativeLocation": {
+       "x": 0,
+       "y": 0,
+       "z": -14
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 0,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 0.18,
+       "y": 0.18,
+       "z": 0.25
+      },
+      "bVisible": true,
+      "bHiddenInGame": false,
+      "staticMesh": {
+       "refPath": "/Engine/BasicShapes/Cone.Cone"
+      },
+      "overrideMaterials": [
+       {
+        "refPath": "/Game/LastBell/Materials/Instances/MI_LB_Bronze.MI_LB_Bronze"
+       }
+      ],
+      "castShadow": true
+     }
+    },
+    {
+     "name": "Clapper",
+     "class": "/Script/Engine.StaticMeshComponent",
+     "collisionProfile": "BlockAllDynamic",
+     "collisionEnabled": "QueryAndPhysics",
+     "props": {
+      "relativeLocation": {
+       "x": 0,
+       "y": 0,
+       "z": -27
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 0,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 0.05,
+       "y": 0.05,
+       "z": 0.05
+      },
+      "bVisible": true,
+      "bHiddenInGame": false,
+      "staticMesh": {
+       "refPath": "/Engine/BasicShapes/Sphere.Sphere"
+      },
+      "overrideMaterials": [
+       {
+        "refPath": "/Game/LastBell/Materials/Instances/MI_LB_Iron.MI_LB_Iron"
+       }
+      ],
+      "castShadow": true
+     }
+    },
+    {
+     "name": "Plate",
+     "class": "/Script/Engine.StaticMeshComponent",
+     "collisionProfile": "BlockAllDynamic",
+     "collisionEnabled": "QueryAndPhysics",
+     "props": {
+      "relativeLocation": {
+       "x": -10.5,
+       "y": 0,
+       "z": 38
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 0,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 0.02,
+       "y": 0.26,
+       "z": 0.16
+      },
+      "bVisible": true,
+      "bHiddenInGame": false,
+      "staticMesh": {
+       "refPath": "/Engine/BasicShapes/Cube.Cube"
+      },
+      "overrideMaterials": [
+       {
+        "refPath": "/Game/LastBell/Materials/Instances/MI_LB_Stone.MI_LB_Stone"
+       }
+      ],
+      "castShadow": true
+     }
+    },
+    {
+     "name": "Glyph",
+     "class": "/Script/Engine.TextRenderComponent",
+     "collisionProfile": "NoCollision",
+     "collisionEnabled": "NoCollision",
+     "props": {
+      "relativeLocation": {
+       "x": -9.3,
+       "y": 0,
+       "z": 38
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 0,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 1,
+       "y": 1,
+       "z": 1
+      },
+      "bVisible": true,
+      "bHiddenInGame": false,
+      "text": "IV"
+     }
+    },
+    {
+     "name": "InteractComp",
+     "class": "/Script/LastBell.LBInteractableComponent",
+     "props": {
+      "promptText": "Strike bell",
+      "bEnabled": true,
+      "deniedPromptText": "",
+      "requiredStateTags": {
+       "gameplayTags": []
+      },
+      "grantedStateTags": {
+       "gameplayTags": [
+        {
+         "tagName": "State.Tower.Bell.4"
+        }
+       ]
+      },
+      "bSingleUse": true,
+      "consumedStateTag": {
+       "tagName": "State.Tower.Bell.4"
+      },
+      "bInspectOnInteract": false,
+      "noiseLoudness": 0.8999999761581421
+     }
+    }
+   ]
+  },
+  {
+   "label": "Clue_Inscription",
+   "ref": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.BP_Inscription_C_0",
+   "class": "/Game/LastBell/Blueprints/Puzzles/BP_Inscription.BP_Inscription_C",
+   "transform": {
+    "location": {
+     "x": 11995,
+     "y": 2380,
+     "z": 200
+    },
+    "rotation": {
+     "pitch": 0,
+     "yaw": 180,
+     "roll": 0
+    },
+    "scale": {
+     "x": 2.5,
+     "y": 2.5,
+     "z": 2.5
+    }
+   },
+   "bounds": {
+    "min": {
+     "x": 11867,
+     "y": 2230,
+     "z": 72
+    },
+    "max": {
+     "x": 12123,
+     "y": 2530,
+     "z": 328
+    },
+    "isValid": true
+   },
+   "folder": "Gameplay/Cloister",
+   "tags": [],
+   "blueprint": "/Game/LastBell/Blueprints/Puzzles/BP_Inscription.BP_Inscription",
+   "parent": {
+    "refPath": "/Script/Engine.Actor"
+   },
+   "actor_prop_keys": [
+    "text"
+   ],
+   "instance_props": {
+    "text": "STRIKE AS THE DEAD RECALL|III \u00b7 I \u00b7 IV \u00b7 II",
+    "bHidden": false
+   },
+   "components": [
+    {
+     "name": "DefaultSceneRoot",
+     "class": "/Script/Engine.SceneComponent",
+     "props": {
+      "relativeLocation": {
+       "x": 11995,
+       "y": 2380,
+       "z": 200
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 180,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 2.5,
+       "y": 2.5,
+       "z": 2.5
+      },
+      "bVisible": true,
+      "bHiddenInGame": false
+     }
+    },
+    {
+     "name": "BillboardComponent_1",
+     "class": "/Script/Engine.BillboardComponent",
+     "collisionProfile": "NoCollision",
+     "collisionEnabled": "NoCollision",
+     "props": {
+      "relativeLocation": {
+       "x": 0,
+       "y": 0,
+       "z": 0
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 0,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 0.5,
+       "y": 0.5,
+       "z": 0.5
+      },
+      "bVisible": true,
+      "bHiddenInGame": true
+     }
+    },
+    {
+     "name": "Plaque",
+     "class": "/Script/Engine.StaticMeshComponent",
+     "collisionProfile": "BlockAllDynamic",
+     "collisionEnabled": "QueryAndPhysics",
+     "props": {
+      "relativeLocation": {
+       "x": 0,
+       "y": 0,
+       "z": 0
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 0,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 0.04,
+       "y": 1.2,
+       "z": 0.3
+      },
+      "bVisible": true,
+      "bHiddenInGame": false,
+      "staticMesh": {
+       "refPath": "/Engine/BasicShapes/Cube.Cube"
+      },
+      "overrideMaterials": [
+       {
+        "refPath": "/Game/LastBell/Materials/Instances/MI_LB_Stone.MI_LB_Stone"
+       }
+      ],
+      "castShadow": true
+     }
+    },
+    {
+     "name": "Engraving",
+     "class": "/Script/Engine.TextRenderComponent",
+     "collisionProfile": "NoCollision",
+     "collisionEnabled": "NoCollision",
+     "props": {
+      "relativeLocation": {
+       "x": 2.2,
+       "y": 0,
+       "z": 0
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 0,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 1,
+       "y": 1,
+       "z": 1
+      },
+      "bVisible": true,
+      "bHiddenInGame": false,
+      "text": "STRIKE AS THE DEAD RECALL\nIII \u00b7 I \u00b7 IV \u00b7 II"
+     }
+    }
+   ]
+  },
+  {
+   "label": "Mech_Ritual3",
+   "ref": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.BP_RitualMechanism_C_3",
+   "class": "/Game/LastBell/Blueprints/Interactables/BP_RitualMechanism.BP_RitualMechanism_C",
+   "transform": {
+    "location": {
+     "x": 11750,
+     "y": 2000,
+     "z": 50
+    },
+    "rotation": {
+     "pitch": 0,
+     "yaw": 0,
+     "roll": 0
+    },
+    "scale": {
+     "x": 1,
+     "y": 1,
+     "z": 1
+    }
+   },
+   "bounds": {
+    "min": {
+     "x": 11700,
+     "y": 1950,
+     "z": 0
+    },
+    "max": {
+     "x": 11800,
+     "y": 2050,
+     "z": 165
+    },
+    "isValid": true
+   },
+   "folder": "Gameplay/Cloister",
+   "tags": [],
+   "blueprint": "/Game/LastBell/Blueprints/Interactables/BP_RitualMechanism.BP_RitualMechanism",
+   "parent": {
+    "refPath": "/Script/Engine.Actor"
+   },
+   "actor_prop_keys": [
+    "ritualTag",
+    "extraGrantedTags",
+    "combinedTags",
+    "turnYaw",
+    "turnDuration",
+    "alpha",
+    "bAnimating"
+   ],
+   "instance_props": {
+    "ritualTag": {
+     "tagName": "State.Ritual.3"
+    },
+    "extraGrantedTags": {
+     "gameplayTags": []
+    },
+    "combinedTags": {
+     "gameplayTags": [
+      {
+       "tagName": "State.Ritual.3"
+      }
+     ]
+    },
+    "turnYaw": 90,
+    "turnDuration": 1.5,
+    "alpha": 0,
+    "bAnimating": false,
+    "bHidden": false
+   },
+   "components": [
+    {
+     "name": "Pedestal",
+     "class": "/Script/Engine.StaticMeshComponent",
+     "collisionProfile": "BlockAllDynamic",
+     "collisionEnabled": "QueryAndPhysics",
+     "props": {
+      "relativeLocation": {
+       "x": 11750,
+       "y": 2000,
+       "z": 50
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 0,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 1,
+       "y": 1,
+       "z": 1
+      },
+      "bVisible": true,
+      "bHiddenInGame": false,
+      "staticMesh": {
+       "refPath": "/Engine/BasicShapes/Cube.Cube"
+      },
+      "overrideMaterials": [],
+      "castShadow": true
+     }
+    },
+    {
+     "name": "Core",
+     "class": "/Script/Engine.StaticMeshComponent",
+     "collisionProfile": "BlockAllDynamic",
+     "collisionEnabled": "QueryAndPhysics",
+     "props": {
+      "relativeLocation": {
+       "x": 0,
+       "y": 0,
+       "z": 75
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 0,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 0.8,
+       "y": 0.8,
+       "z": 0.5
+      },
+      "bVisible": true,
+      "bHiddenInGame": false,
+      "staticMesh": {
+       "refPath": "/Engine/BasicShapes/Cylinder.Cylinder"
+      },
+      "overrideMaterials": [],
+      "castShadow": true
+     }
+    },
+    {
+     "name": "CoreMarker",
+     "class": "/Script/Engine.StaticMeshComponent",
+     "collisionProfile": "BlockAllDynamic",
+     "collisionEnabled": "QueryAndPhysics",
+     "props": {
+      "relativeLocation": {
+       "x": 0,
+       "y": 37.5,
+       "z": 65
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 0,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 0.1875,
+       "y": 0.1875,
+       "z": 0.3
+      },
+      "bVisible": true,
+      "bHiddenInGame": false,
+      "staticMesh": {
+       "refPath": "/Engine/BasicShapes/Cube.Cube"
+      },
+      "overrideMaterials": [],
+      "castShadow": true
+     }
+    },
+    {
+     "name": "InteractComp",
+     "class": "/Script/LastBell.LBInteractableComponent",
+     "props": {
+      "promptText": "Activate",
+      "bEnabled": true,
+      "deniedPromptText": "Something is missing",
+      "requiredStateTags": {
+       "gameplayTags": [
+        {
+         "tagName": "State.Tower.BellsSolved"
+        }
+       ]
+      },
+      "grantedStateTags": {
+       "gameplayTags": [
+        {
+         "tagName": "State.Ritual.3"
+        }
+       ]
+      },
+      "bSingleUse": true,
+      "consumedStateTag": {
+       "tagName": "State.Ritual.3"
+      },
+      "bInspectOnInteract": false,
+      "noiseLoudness": 1
+     }
+    }
+   ]
+  },
+  {
+   "label": "Door_Tower",
+   "ref": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.BP_Door_Base_C_5",
+   "class": "/Game/LastBell/Blueprints/Interactables/BP_Door_Base.BP_Door_Base_C",
+   "transform": {
+    "location": {
+     "x": 12020,
+     "y": 1950,
+     "z": 0
+    },
+    "rotation": {
+     "pitch": 0,
+     "yaw": 0,
+     "roll": 0
+    },
+    "scale": {
+     "x": 1,
+     "y": 1,
+     "z": 1
+    }
+   },
+   "bounds": {
+    "min": {
+     "x": 11892,
+     "y": 1822,
+     "z": -128
+    },
+    "max": {
+     "x": 12148,
+     "y": 2078,
+     "z": 220
+    },
+    "isValid": true
+   },
+   "folder": "Gameplay/Cloister",
+   "tags": [],
+   "blueprint": "/Game/LastBell/Blueprints/Interactables/BP_Door_Base.BP_Door_Base",
+   "parent": {
+    "refPath": "/Script/Engine.Actor"
+   },
+   "actor_prop_keys": [
+    "openStateTag",
+    "autoOpenTag",
+    "openYaw",
+    "openDuration",
+    "bInteractable",
+    "alpha",
+    "bAnimating",
+    "openSign"
+   ],
+   "instance_props": {
+    "openStateTag": {
+     "tagName": "State.Door.TowerBase.Open"
+    },
+    "autoOpenTag": {
+     "tagName": "State.Ritual.3"
+    },
+    "openYaw": 90,
+    "openDuration": 1,
+    "bInteractable": false,
+    "alpha": 0,
+    "bAnimating": false,
+    "openSign": 1,
+    "bHidden": false
+   },
+   "components": [
+    {
+     "name": "DefaultSceneRoot",
+     "class": "/Script/Engine.SceneComponent",
+     "props": {
+      "relativeLocation": {
+       "x": 12020,
+       "y": 1950,
+       "z": 0
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 0,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 1,
+       "y": 1,
+       "z": 1
+      },
+      "bVisible": true,
+      "bHiddenInGame": false
+     }
+    },
+    {
+     "name": "BillboardComponent_1",
+     "class": "/Script/Engine.BillboardComponent",
+     "collisionProfile": "NoCollision",
+     "collisionEnabled": "NoCollision",
+     "props": {
+      "relativeLocation": {
+       "x": 0,
+       "y": 0,
+       "z": 0
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 0,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 0.5,
+       "y": 0.5,
+       "z": 0.5
+      },
+      "bVisible": true,
+      "bHiddenInGame": true
+     }
+    },
+    {
+     "name": "Hinge",
+     "class": "/Script/Engine.SceneComponent",
+     "props": {
+      "relativeLocation": {
+       "x": 0,
+       "y": 0,
+       "z": 0
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 0,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 1,
+       "y": 1,
+       "z": 1
+      },
+      "bVisible": true,
+      "bHiddenInGame": false
+     }
+    },
+    {
+     "name": "DoorMesh",
+     "class": "/Script/Engine.StaticMeshComponent",
+     "collisionProfile": "BlockAllDynamic",
+     "collisionEnabled": "QueryAndPhysics",
+     "props": {
+      "relativeLocation": {
+       "x": 0,
+       "y": 50,
+       "z": 110
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 0,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 0.1,
+       "y": 1,
+       "z": 2.2
+      },
+      "bVisible": true,
+      "bHiddenInGame": false,
+      "staticMesh": {
+       "refPath": "/Engine/BasicShapes/Cube.Cube"
+      },
+      "overrideMaterials": [],
+      "castShadow": true
+     }
+    },
+    {
+     "name": "InteractComp",
+     "class": "/Script/LastBell.LBInteractableComponent",
+     "props": {
+      "promptText": "Open",
+      "bEnabled": true,
+      "deniedPromptText": "Locked",
+      "requiredStateTags": {
+       "gameplayTags": []
+      },
+      "grantedStateTags": {
+       "gameplayTags": [
+        {
+         "tagName": "State.Door.TowerBase.Open"
+        }
+       ]
+      },
+      "bSingleUse": true,
+      "consumedStateTag": {
+       "tagName": "State.Door.TowerBase.Open"
+      },
+      "bInspectOnInteract": false,
+      "noiseLoudness": 0.6000000238418579
+     }
+    }
+   ]
+  },
+  {
+   "label": "Door_Shortcut",
+   "ref": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.BP_Door_Base_C_0",
+   "class": "/Game/LastBell/Blueprints/Interactables/BP_Door_Base.BP_Door_Base_C",
+   "transform": {
+    "location": {
+     "x": 6020,
+     "y": 1941,
+     "z": 0
+    },
+    "rotation": {
+     "pitch": 0,
+     "yaw": 0,
+     "roll": 0
+    },
+    "scale": {
+     "x": 1,
+     "y": 1.18,
+     "z": 1.0818
+    }
+   },
+   "bounds": {
+    "min": {
+     "x": 5892,
+     "y": 1813,
+     "z": -128
+    },
+    "max": {
+     "x": 6148,
+     "y": 2069,
+     "z": 237.99600000000004
+    },
+    "isValid": true
+   },
+   "folder": "Gameplay/Courtyard",
+   "tags": [],
+   "blueprint": "/Game/LastBell/Blueprints/Interactables/BP_Door_Base.BP_Door_Base",
+   "parent": {
+    "refPath": "/Script/Engine.Actor"
+   },
+   "actor_prop_keys": [
+    "openStateTag",
+    "autoOpenTag",
+    "openYaw",
+    "openDuration",
+    "bInteractable",
+    "alpha",
+    "bAnimating",
+    "openSign"
+   ],
+   "instance_props": {
+    "openStateTag": {
+     "tagName": "State.Door.Shortcut.Open"
+    },
+    "autoOpenTag": {
+     "tagName": "State.Ritual.3"
+    },
+    "openYaw": 90,
+    "openDuration": 1,
+    "bInteractable": false,
+    "alpha": 0,
+    "bAnimating": false,
+    "openSign": 1,
+    "bHidden": false
+   },
+   "components": [
+    {
+     "name": "DefaultSceneRoot",
+     "class": "/Script/Engine.SceneComponent",
+     "props": {
+      "relativeLocation": {
+       "x": 6020,
+       "y": 1941,
+       "z": 0
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 0,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 1,
+       "y": 1.18,
+       "z": 1.0818
+      },
+      "bVisible": true,
+      "bHiddenInGame": false
+     }
+    },
+    {
+     "name": "BillboardComponent_1",
+     "class": "/Script/Engine.BillboardComponent",
+     "collisionProfile": "NoCollision",
+     "collisionEnabled": "NoCollision",
+     "props": {
+      "relativeLocation": {
+       "x": 0,
+       "y": 0,
+       "z": 0
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 0,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 0.5,
+       "y": 0.5,
+       "z": 0.5
+      },
+      "bVisible": true,
+      "bHiddenInGame": true
+     }
+    },
+    {
+     "name": "Hinge",
+     "class": "/Script/Engine.SceneComponent",
+     "props": {
+      "relativeLocation": {
+       "x": 0,
+       "y": 0,
+       "z": 0
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 0,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 1,
+       "y": 1,
+       "z": 1
+      },
+      "bVisible": true,
+      "bHiddenInGame": false
+     }
+    },
+    {
+     "name": "DoorMesh",
+     "class": "/Script/Engine.StaticMeshComponent",
+     "collisionProfile": "BlockAllDynamic",
+     "collisionEnabled": "QueryAndPhysics",
+     "props": {
+      "relativeLocation": {
+       "x": 0,
+       "y": 50,
+       "z": 110
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 0,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 0.1,
+       "y": 1,
+       "z": 2.2
+      },
+      "bVisible": true,
+      "bHiddenInGame": false,
+      "staticMesh": {
+       "refPath": "/Engine/BasicShapes/Cube.Cube"
+      },
+      "overrideMaterials": [
+       {
+        "refPath": "/Game/LastBell/ArtTest/Materials/Weathered_Planks/MI_Weathered_Planks_WA.MI_Weathered_Planks_WA"
+       }
+      ],
+      "castShadow": true
+     }
+    },
+    {
+     "name": "InteractComp",
+     "class": "/Script/LastBell.LBInteractableComponent",
+     "props": {
+      "promptText": "Open",
+      "bEnabled": true,
+      "deniedPromptText": "Locked",
+      "requiredStateTags": {
+       "gameplayTags": []
+      },
+      "grantedStateTags": {
+       "gameplayTags": [
+        {
+         "tagName": "State.Door.Shortcut.Open"
+        }
+       ]
+      },
+      "bSingleUse": true,
+      "consumedStateTag": {
+       "tagName": "State.Door.Shortcut.Open"
+      },
+      "bInspectOnInteract": false,
+      "noiseLoudness": 0.6000000238418579
+     }
+    }
+   ]
+  },
+  {
+   "label": "Bell",
+   "ref": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.BP_TagInteractable_C_8",
+   "class": "/Game/LastBell/Blueprints/Interactables/BP_TagInteractable.BP_TagInteractable_C",
+   "transform": {
+    "location": {
+     "x": 12420,
+     "y": 2000,
+     "z": 2625
+    },
+    "rotation": {
+     "pitch": 0,
+     "yaw": 0,
+     "roll": 0
+    },
+    "scale": {
+     "x": 2.5,
+     "y": 2.5,
+     "z": 2.5
+    }
+   },
+   "bounds": {
+    "min": {
+     "x": 12295,
+     "y": 1875,
+     "z": 2500
+    },
+    "max": {
+     "x": 12545,
+     "y": 2125,
+     "z": 2750
+    },
+    "isValid": true
+   },
+   "folder": "Gameplay/BellTower",
+   "tags": [],
+   "blueprint": "/Game/LastBell/Blueprints/Interactables/BP_TagInteractable.BP_TagInteractable",
+   "parent": {
+    "refPath": "/Script/Engine.Actor"
+   },
+   "actor_prop_keys": [
+    "useStateTag",
+    "bHideOnUse",
+    "bInspectable"
+   ],
+   "instance_props": {
+    "useStateTag": {
+     "tagName": "State.Event.Finale"
+    },
+    "bHideOnUse": false,
+    "bInspectable": false,
+    "bHidden": false
+   },
+   "components": [
+    {
+     "name": "Mesh",
+     "class": "/Script/Engine.StaticMeshComponent",
+     "collisionProfile": "BlockAllDynamic",
+     "collisionEnabled": "QueryAndPhysics",
+     "props": {
+      "relativeLocation": {
+       "x": 12420,
+       "y": 2000,
+       "z": 2625
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 0,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 2.5,
+       "y": 2.5,
+       "z": 2.5
+      },
+      "bVisible": true,
+      "bHiddenInGame": false,
+      "staticMesh": {
+       "refPath": "/Engine/BasicShapes/Cylinder.Cylinder"
+      },
+      "overrideMaterials": [],
+      "castShadow": true
+     }
+    },
+    {
+     "name": "InteractComp",
+     "class": "/Script/LastBell.LBInteractableComponent",
+     "props": {
+      "promptText": "Ring the bell",
+      "bEnabled": true,
+      "deniedPromptText": "",
+      "requiredStateTags": {
+       "gameplayTags": []
+      },
+      "grantedStateTags": {
+       "gameplayTags": [
+        {
+         "tagName": "State.Event.Finale"
+        }
+       ]
+      },
+      "bSingleUse": true,
+      "consumedStateTag": {
+       "tagName": "State.Event.Finale"
+      },
+      "bInspectOnInteract": false,
+      "noiseLoudness": 0.20000000298023224
+     }
+    },
+    {
+     "name": "InspectableComp",
+     "class": "/Script/LastBell.LBInspectableComponent",
+     "props": {
+      "displayName": "",
+      "bodyText": "",
+      "bKeepOnClose": false,
+      "bAutoFaceCamera": true,
+      "initialInspectRotation": {
+       "pitch": 0,
+       "yaw": 0,
+       "roll": 0
+      }
+     }
+    }
+   ]
+  },
+  {
+   "label": "EndingTrigger",
+   "ref": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.BP_EndingTrigger_C_0",
+   "class": "/Game/LastBell/Blueprints/BP_EndingTrigger.BP_EndingTrigger_C",
+   "transform": {
+    "location": {
+     "x": 12165,
+     "y": 2300,
+     "z": 2600
+    },
+    "rotation": {
+     "pitch": 0,
+     "yaw": 0,
+     "roll": 0
+    },
+    "scale": {
+     "x": 1,
+     "y": 1,
+     "z": 1
+    }
+   },
+   "bounds": {
+    "min": {
+     "x": 12037,
+     "y": 2172,
+     "z": 2472
+    },
+    "max": {
+     "x": 12293,
+     "y": 2428,
+     "z": 2728
+    },
+    "isValid": true
+   },
+   "folder": "Gameplay/BellTower",
+   "tags": [],
+   "blueprint": "/Game/LastBell/Blueprints/BP_EndingTrigger.BP_EndingTrigger",
+   "parent": {
+    "refPath": "/Script/Engine.Actor"
+   },
+   "actor_prop_keys": [
+    "endingSeconds"
+   ],
+   "instance_props": {
+    "endingSeconds": 8,
+    "bHidden": false
+   },
+   "components": [
+    {
+     "name": "DefaultSceneRoot",
+     "class": "/Script/Engine.SceneComponent",
+     "props": {
+      "relativeLocation": {
+       "x": 12165,
+       "y": 2300,
+       "z": 2600
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 0,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 1,
+       "y": 1,
+       "z": 1
+      },
+      "bVisible": true,
+      "bHiddenInGame": false
+     }
+    },
+    {
+     "name": "BillboardComponent_1",
+     "class": "/Script/Engine.BillboardComponent",
+     "collisionProfile": "NoCollision",
+     "collisionEnabled": "NoCollision",
+     "props": {
+      "relativeLocation": {
+       "x": 0,
+       "y": 0,
+       "z": 0
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 0,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 0.5,
+       "y": 0.5,
+       "z": 0.5
+      },
+      "bVisible": true,
+      "bHiddenInGame": true
+     }
+    }
+   ]
+  },
+  {
+   "label": "Trig_TowerTop",
+   "ref": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.BP_TagTrigger_C_3",
+   "class": "/Game/LastBell/Blueprints/Interactables/BP_TagTrigger.BP_TagTrigger_C",
+   "transform": {
+    "location": {
+     "x": 12165,
+     "y": 1700,
+     "z": 2650
+    },
+    "rotation": {
+     "pitch": 0,
+     "yaw": 0,
+     "roll": 0
+    },
+    "scale": {
+     "x": 1,
+     "y": 1,
+     "z": 1
+    }
+   },
+   "bounds": {
+    "min": {
+     "x": 12040,
+     "y": 1575,
+     "z": 2500
+    },
+    "max": {
+     "x": 12290,
+     "y": 1825,
+     "z": 2800
+    },
+    "isValid": true
+   },
+   "folder": "Gameplay/BellTower",
+   "tags": [],
+   "blueprint": "/Game/LastBell/Blueprints/Interactables/BP_TagTrigger.BP_TagTrigger",
+   "parent": {
+    "refPath": "/Script/Engine.Actor"
+   },
+   "actor_prop_keys": [
+    "grantedStateTags",
+    "bOnce"
+   ],
+   "instance_props": {
+    "grantedStateTags": {
+     "gameplayTags": [
+      {
+       "tagName": "State.Event.TowerTop"
+      }
+     ]
+    },
+    "bOnce": true,
+    "bHidden": false
+   },
+   "components": [
+    {
+     "name": "Trigger",
+     "class": "/Script/Engine.BoxComponent",
+     "collisionProfile": "OverlapOnlyPawn",
+     "collisionEnabled": "QueryOnly",
+     "props": {
+      "relativeLocation": {
+       "x": 12165,
+       "y": 1700,
+       "z": 2650
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 0,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 1,
+       "y": 1,
+       "z": 1
+      },
+      "bVisible": true,
+      "bHiddenInGame": true
+     }
+    }
+   ]
+  },
+  {
+   "label": "Trig_CloisterEntered",
+   "ref": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.BP_TagTrigger_C_2",
+   "class": "/Game/LastBell/Blueprints/Interactables/BP_TagTrigger.BP_TagTrigger_C",
+   "transform": {
+    "location": {
+     "x": 10650,
+     "y": 700,
+     "z": 150
+    },
+    "rotation": {
+     "pitch": 0,
+     "yaw": 0,
+     "roll": 0
+    },
+    "scale": {
+     "x": 1,
+     "y": 1,
+     "z": 1
+    }
+   },
+   "bounds": {
+    "min": {
+     "x": 10400,
+     "y": 600,
+     "z": 0
+    },
+    "max": {
+     "x": 10900,
+     "y": 800,
+     "z": 300
+    },
+    "isValid": true
+   },
+   "folder": "Gameplay/Cloister",
+   "tags": [],
+   "blueprint": "/Game/LastBell/Blueprints/Interactables/BP_TagTrigger.BP_TagTrigger",
+   "parent": {
+    "refPath": "/Script/Engine.Actor"
+   },
+   "actor_prop_keys": [
+    "grantedStateTags",
+    "bOnce"
+   ],
+   "instance_props": {
+    "grantedStateTags": {
+     "gameplayTags": [
+      {
+       "tagName": "State.Event.CloisterEntered"
+      },
+      {
+       "tagName": "State.Warden.Stage.5"
+      }
+     ]
+    },
+    "bOnce": true,
+    "bHidden": false
+   },
+   "components": [
+    {
+     "name": "Trigger",
+     "class": "/Script/Engine.BoxComponent",
+     "collisionProfile": "OverlapOnlyPawn",
+     "collisionEnabled": "QueryOnly",
+     "props": {
+      "relativeLocation": {
+       "x": 10650,
+       "y": 700,
+       "z": 150
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 0,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 1,
+       "y": 1,
+       "z": 1
+      },
+      "bVisible": true,
+      "bHiddenInGame": true
+     }
+    }
+   ]
+  },
+  {
+   "label": "CP_Cloister",
+   "ref": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.LBCheckpoint_10",
+   "class": "/Script/LastBell.LBCheckpoint",
+   "transform": {
+    "location": {
+     "x": 10650,
+     "y": 780,
+     "z": 92
+    },
+    "rotation": {
+     "pitch": 0,
+     "yaw": 0,
+     "roll": 0
+    },
+    "scale": {
+     "x": 1,
+     "y": 1,
+     "z": 1
+    }
+   },
+   "bounds": {
+    "min": {
+     "x": 10350,
+     "y": 680,
+     "z": -8
+    },
+    "max": {
+     "x": 10950,
+     "y": 880,
+     "z": 192
+    },
+    "isValid": true
+   },
+   "folder": "Gameplay/Cloister",
+   "tags": [],
+   "actor_prop_keys": [
+    "checkpointId"
+   ],
+   "instance_props": {
+    "checkpointId": "CP_Cloister",
+    "bHidden": false
+   },
+   "components": [
+    {
+     "name": "Trigger",
+     "class": "/Script/Engine.BoxComponent",
+     "collisionProfile": "Custom",
+     "collisionEnabled": "QueryOnly",
+     "props": {
+      "relativeLocation": {
+       "x": 10650,
+       "y": 780,
+       "z": 92
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 0,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 1,
+       "y": 1,
+       "z": 1
+      },
+      "bVisible": true,
+      "bHiddenInGame": true
+     }
+    },
+    {
+     "name": "SpawnArrow",
+     "class": "/Script/Engine.ArrowComponent",
+     "collisionProfile": "NoCollision",
+     "collisionEnabled": "NoCollision",
+     "props": {
+      "relativeLocation": {
+       "x": 0,
+       "y": 0,
+       "z": 0
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 0,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 1,
+       "y": 1,
+       "z": 1
+      },
+      "bVisible": true,
+      "bHiddenInGame": true
+     }
+    }
+   ]
+  },
+  {
+   "label": "CP_TowerBase",
+   "ref": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.LBCheckpoint_11",
+   "class": "/Script/LastBell.LBCheckpoint",
+   "transform": {
+    "location": {
+     "x": 12200,
+     "y": 2000,
+     "z": 92
+    },
+    "rotation": {
+     "pitch": 0,
+     "yaw": 0,
+     "roll": 0
+    },
+    "scale": {
+     "x": 1,
+     "y": 1,
+     "z": 1
+    }
+   },
+   "bounds": {
+    "min": {
+     "x": 12100,
+     "y": 1800,
+     "z": -8
+    },
+    "max": {
+     "x": 12440,
+     "y": 2200,
+     "z": 192
+    },
+    "isValid": true
+   },
+   "folder": "Gameplay/Cloister",
+   "tags": [],
+   "actor_prop_keys": [
+    "checkpointId"
+   ],
+   "instance_props": {
+    "checkpointId": "CP_TowerBase",
+    "bHidden": false
+   },
+   "components": [
+    {
+     "name": "Trigger",
+     "class": "/Script/Engine.BoxComponent",
+     "collisionProfile": "Custom",
+     "collisionEnabled": "QueryOnly",
+     "props": {
+      "relativeLocation": {
+       "x": 12200,
+       "y": 2000,
+       "z": 92
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 0,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 1,
+       "y": 1,
+       "z": 1
+      },
+      "bVisible": true,
+      "bHiddenInGame": true
+     }
+    },
+    {
+     "name": "SpawnArrow",
+     "class": "/Script/Engine.ArrowComponent",
+     "collisionProfile": "NoCollision",
+     "collisionEnabled": "NoCollision",
+     "props": {
+      "relativeLocation": {
+       "x": 0,
+       "y": 0,
+       "z": 0
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 0,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 1,
+       "y": 1,
+       "z": 1
+      },
+      "bVisible": true,
+      "bHiddenInGame": true
+     }
+    }
+   ]
+  },
+  {
+   "label": "CP_TowerTop",
+   "ref": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.LBCheckpoint_12",
+   "class": "/Script/LastBell.LBCheckpoint",
+   "transform": {
+    "location": {
+     "x": 12165,
+     "y": 1950,
+     "z": 2592
+    },
+    "rotation": {
+     "pitch": 0,
+     "yaw": 0,
+     "roll": 0
+    },
+    "scale": {
+     "x": 1,
+     "y": 1,
+     "z": 1
+    }
+   },
+   "bounds": {
+    "min": {
+     "x": 12065,
+     "y": 1800,
+     "z": 2492
+    },
+    "max": {
+     "x": 12405,
+     "y": 2100,
+     "z": 2692
+    },
+    "isValid": true
+   },
+   "folder": "Gameplay/BellTower",
+   "tags": [],
+   "actor_prop_keys": [
+    "checkpointId"
+   ],
+   "instance_props": {
+    "checkpointId": "CP_TowerTop",
+    "bHidden": false
+   },
+   "components": [
+    {
+     "name": "Trigger",
+     "class": "/Script/Engine.BoxComponent",
+     "collisionProfile": "Custom",
+     "collisionEnabled": "QueryOnly",
+     "props": {
+      "relativeLocation": {
+       "x": 12165,
+       "y": 1950,
+       "z": 2592
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 0,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 1,
+       "y": 1,
+       "z": 1
+      },
+      "bVisible": true,
+      "bHiddenInGame": true
+     }
+    },
+    {
+     "name": "SpawnArrow",
+     "class": "/Script/Engine.ArrowComponent",
+     "collisionProfile": "NoCollision",
+     "collisionEnabled": "NoCollision",
+     "props": {
+      "relativeLocation": {
+       "x": 0,
+       "y": 0,
+       "z": 0
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 0,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 1,
+       "y": 1,
+       "z": 1
+      },
+      "bVisible": true,
+      "bHiddenInGame": true
+     }
+    }
+   ]
+  },
+  {
+   "label": "Note_Cloister",
+   "ref": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.BP_Inspectable_Note_C_9",
+   "class": "/Game/LastBell/Blueprints/Interactables/BP_Inspectable_Note.BP_Inspectable_Note_C",
+   "transform": {
+    "location": {
+     "x": 10750,
+     "y": 1425,
+     "z": 100.2500030517578
+    },
+    "rotation": {
+     "pitch": 0,
+     "yaw": 15.000000000000002,
+     "roll": 0
+    },
+    "scale": {
+     "x": 1,
+     "y": 1,
+     "z": 1
+    }
+   },
+   "bounds": {
+    "min": {
+     "x": 10736.717275105673,
+     "y": 1408.888847980928,
+     "z": 100.1000030517578
+    },
+    "max": {
+     "x": 10763.282724894327,
+     "y": 1441.111152019072,
+     "z": 100.4000030517578
+    },
+    "isValid": true
+   },
+   "folder": "Gameplay/Notes",
+   "tags": [],
+   "blueprint": "/Game/LastBell/Blueprints/Interactables/BP_Inspectable_Note.BP_Inspectable_Note",
+   "parent": {
+    "refPath": "/Script/Engine.Actor"
+   },
+   "actor_prop_keys": [
+    "displayName",
+    "bodyText"
+   ],
+   "instance_props": {
+    "displayName": "The Last Entry",
+    "bodyText": "The counterweights hang in the three corners of the cloister. When all three are set true, the tower will open. I should have burned this page, but I leave it for whoever comes after. Do not ring the bell. And if you must, know that it has always been rung for you.",
+    "bHidden": false
+   },
+   "components": [
+    {
+     "name": "InteractComp",
+     "class": "/Script/LastBell.LBInteractableComponent",
+     "props": {
+      "promptText": "Read",
+      "bEnabled": true,
+      "deniedPromptText": "",
+      "requiredStateTags": {
+       "gameplayTags": []
+      },
+      "grantedStateTags": {
+       "gameplayTags": []
+      },
+      "bSingleUse": false,
+      "consumedStateTag": {
+       "tagName": "None"
+      },
+      "bInspectOnInteract": true,
+      "noiseLoudness": 0
+     }
+    },
+    {
+     "name": "InspectableComp",
+     "class": "/Script/LastBell.LBInspectableComponent",
+     "props": {
+      "displayName": "The Last Entry",
+      "bodyText": "The counterweights hang in the three corners of the cloister. When all three are set true, the tower will open. I should have burned this page, but I leave it for whoever comes after. Do not ring the bell. And if you must, know that it has always been rung for you.",
+      "bKeepOnClose": false,
+      "bAutoFaceCamera": true,
+      "initialInspectRotation": {
+       "pitch": 0,
+       "yaw": 0,
+       "roll": 0
+      }
+     }
+    },
+    {
+     "name": "Root",
+     "class": "/Script/Engine.SceneComponent",
+     "props": {
+      "relativeLocation": {
+       "x": 10750,
+       "y": 1425,
+       "z": 100.2500030517578
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 15.000000000000005,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 1,
+       "y": 1,
+       "z": 1
+      },
+      "bVisible": true,
+      "bHiddenInGame": false
+     }
+    },
+    {
+     "name": "Paper",
+     "class": "/Script/Engine.StaticMeshComponent",
+     "collisionProfile": "BlockAllDynamic",
+     "collisionEnabled": "QueryAndPhysics",
+     "props": {
+      "relativeLocation": {
+       "x": 0,
+       "y": 0,
+       "z": 0
+      },
+      "relativeRotation": {
+       "pitch": 0,
+       "yaw": 0,
+       "roll": 0
+      },
+      "relativeScale3D": {
+       "x": 0.2,
+       "y": 0.28,
+       "z": 0.003
+      },
+      "bVisible": true,
+      "bHiddenInGame": false,
+      "staticMesh": {
+       "refPath": "/Engine/BasicShapes/Cube.Cube"
+      },
+      "overrideMaterials": [
+       {
+        "refPath": "/Game/LastBell/Materials/Instances/MI_LB_Paper.MI_LB_Paper"
+       }
+      ],
+      "castShadow": false
+     }
+    }
+   ]
+  }
+ ],
+ "missing": []
+}

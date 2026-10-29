@@ -1,0 +1,1088 @@
+{
+ "Light_Cloister_0": {
+  "folder": "Lighting/Cloister",
+  "class": "PointLight",
+  "loc": [
+   10000,
+   1000,
+   500
+  ],
+  "rot": [
+   0,
+   0,
+   0
+  ],
+  "comps": [
+   {
+    "name": "LightComponent0",
+    "class": "PointLightComponent",
+    "props": {
+     "intensity": 3000,
+     "lightColor": {
+      "r": 1,
+      "g": 1,
+      "b": 1,
+      "a": 1
+     },
+     "attenuationRadius": 1500,
+     "sourceRadius": 0,
+     "castShadows": false,
+     "temperature": 6500,
+     "bUseTemperature": false,
+     "volumetricScatteringIntensity": 0,
+     "lightFunctionMaterial": "None",
+     "indirectLightingIntensity": 1,
+     "intensityUnits": "Lumens",
+     "bVisible": true,
+     "lightingChannels": {
+      "bChannel0": true,
+      "bChannel1": false,
+      "bChannel2": false
+     }
+    }
+   }
+  ]
+ },
+ "Light_Cloister_1": {
+  "folder": "Lighting/Cloister",
+  "class": "PointLight",
+  "loc": [
+   11000,
+   900,
+   500
+  ],
+  "rot": [
+   0,
+   0,
+   0
+  ],
+  "comps": [
+   {
+    "name": "LightComponent0",
+    "class": "PointLightComponent",
+    "props": {
+     "intensity": 3000,
+     "lightColor": {
+      "r": 1,
+      "g": 1,
+      "b": 1,
+      "a": 1
+     },
+     "attenuationRadius": 1500,
+     "sourceRadius": 0,
+     "castShadows": false,
+     "temperature": 6500,
+     "bUseTemperature": false,
+     "volumetricScatteringIntensity": 0,
+     "lightFunctionMaterial": "None",
+     "indirectLightingIntensity": 1,
+     "intensityUnits": "Lumens",
+     "bVisible": true,
+     "lightingChannels": {
+      "bChannel0": true,
+      "bChannel1": false,
+      "bChannel2": false
+     }
+    }
+   }
+  ]
+ },
+ "Light_Cloister_2": {
+  "folder": "Lighting/Cloister",
+  "class": "PointLight",
+  "loc": [
+   10000,
+   2600,
+   500
+  ],
+  "rot": [
+   0,
+   0,
+   0
+  ],
+  "comps": [
+   {
+    "name": "LightComponent0",
+    "class": "PointLightComponent",
+    "props": {
+     "intensity": 3000,
+     "lightColor": {
+      "r": 1,
+      "g": 1,
+      "b": 1,
+      "a": 1
+     },
+     "attenuationRadius": 1500,
+     "sourceRadius": 0,
+     "castShadows": false,
+     "temperature": 6500,
+     "bUseTemperature": false,
+     "volumetricScatteringIntensity": 0,
+     "lightFunctionMaterial": "None",
+     "indirectLightingIntensity": 1,
+     "intensityUnits": "Lumens",
+     "bVisible": true,
+     "lightingChannels": {
+      "bChannel0": true,
+      "bChannel1": false,
+      "bChannel2": false
+     }
+    }
+   }
+  ]
+ },
+ "Light_Cloister_3": {
+  "folder": "Lighting/Cloister",
+  "class": "PointLight",
+  "loc": [
+   11000,
+   2750,
+   500
+  ],
+  "rot": [
+   0,
+   0,
+   0
+  ],
+  "comps": [
+   {
+    "name": "LightComponent0",
+    "class": "PointLightComponent",
+    "props": {
+     "intensity": 3000,
+     "lightColor": {
+      "r": 1,
+      "g": 1,
+      "b": 1,
+      "a": 1
+     },
+     "attenuationRadius": 1500,
+     "sourceRadius": 0,
+     "castShadows": false,
+     "temperature": 6500,
+     "bUseTemperature": false,
+     "volumetricScatteringIntensity": 0,
+     "lightFunctionMaterial": "None",
+     "indirectLightingIntensity": 1,
+     "intensityUnits": "Lumens",
+     "bVisible": true,
+     "lightingChannels": {
+      "bChannel0": true,
+      "bChannel1": false,
+      "bChannel2": false
+     }
+    }
+   }
+  ]
+ },
+ "Light_Cloister_4": {
+  "folder": "Lighting/Cloister",
+  "class": "PointLight",
+  "loc": [
+   11700,
+   1000,
+   500
+  ],
+  "rot": [
+   0,
+   0,
+   0
+  ],
+  "comps": [
+   {
+    "name": "LightComponent0",
+    "class": "PointLightComponent",
+    "props": {
+     "intensity": 3000,
+     "lightColor": {
+      "r": 1,
+      "g": 1,
+      "b": 1,
+      "a": 1
+     },
+     "attenuationRadius": 1500,
+     "sourceRadius": 0,
+     "castShadows": false,
+     "temperature": 6500,
+     "bUseTemperature": false,
+     "volumetricScatteringIntensity": 0,
+     "lightFunctionMaterial": "None",
+     "indirectLightingIntensity": 1,
+     "intensityUnits": "Lumens",
+     "bVisible": true,
+     "lightingChannels": {
+      "bChannel0": true,
+      "bChannel1": false,
+      "bChannel2": false
+     }
+    }
+   }
+  ]
+ },
+ "Light_Cloister_5": {
+  "folder": "Lighting/Cloister",
+  "class": "PointLight",
+  "loc": [
+   11700,
+   2700,
+   500
+  ],
+  "rot": [
+   0,
+   0,
+   0
+  ],
+  "comps": [
+   {
+    "name": "LightComponent0",
+    "class": "PointLightComponent",
+    "props": {
+     "intensity": 3000,
+     "lightColor": {
+      "r": 1,
+      "g": 1,
+      "b": 1,
+      "a": 1
+     },
+     "attenuationRadius": 1500,
+     "sourceRadius": 0,
+     "castShadows": false,
+     "temperature": 6500,
+     "bUseTemperature": false,
+     "volumetricScatteringIntensity": 0,
+     "lightFunctionMaterial": "None",
+     "indirectLightingIntensity": 1,
+     "intensityUnits": "Lumens",
+     "bVisible": true,
+     "lightingChannels": {
+      "bChannel0": true,
+      "bChannel1": false,
+      "bChannel2": false
+     }
+    }
+   }
+  ]
+ },
+ "Light_Cloister_6": {
+  "folder": "Lighting/Cloister",
+  "class": "PointLight",
+  "loc": [
+   10650,
+   300,
+   200
+  ],
+  "rot": [
+   0,
+   0,
+   0
+  ],
+  "comps": [
+   {
+    "name": "LightComponent0",
+    "class": "PointLightComponent",
+    "props": {
+     "intensity": 3000,
+     "lightColor": {
+      "r": 1,
+      "g": 1,
+      "b": 1,
+      "a": 1
+     },
+     "attenuationRadius": 1500,
+     "sourceRadius": 0,
+     "castShadows": false,
+     "temperature": 6500,
+     "bUseTemperature": false,
+     "volumetricScatteringIntensity": 0,
+     "lightFunctionMaterial": "None",
+     "indirectLightingIntensity": 1,
+     "intensityUnits": "Lumens",
+     "bVisible": true,
+     "lightingChannels": {
+      "bChannel0": true,
+      "bChannel1": false,
+      "bChannel2": false
+     }
+    }
+   }
+  ]
+ },
+ "Light_Cloister_7": {
+  "folder": "Lighting/Cloister",
+  "class": "PointLight",
+  "loc": [
+   9900,
+   2000,
+   400
+  ],
+  "rot": [
+   0,
+   0,
+   0
+  ],
+  "comps": [
+   {
+    "name": "LightComponent0",
+    "class": "PointLightComponent",
+    "props": {
+     "intensity": 3000,
+     "lightColor": {
+      "r": 1,
+      "g": 1,
+      "b": 1,
+      "a": 1
+     },
+     "attenuationRadius": 1500,
+     "sourceRadius": 0,
+     "castShadows": false,
+     "temperature": 6500,
+     "bUseTemperature": false,
+     "volumetricScatteringIntensity": 0,
+     "lightFunctionMaterial": "None",
+     "indirectLightingIntensity": 1,
+     "intensityUnits": "Lumens",
+     "bVisible": true,
+     "lightingChannels": {
+      "bChannel0": true,
+      "bChannel1": false,
+      "bChannel2": false
+     }
+    }
+   }
+  ]
+ },
+ "Light_Tower_0": {
+  "folder": "Lighting/BellTower",
+  "class": "PointLight",
+  "loc": [
+   12165,
+   2000,
+   300
+  ],
+  "rot": [
+   0,
+   0,
+   0
+  ],
+  "comps": [
+   {
+    "name": "LightComponent0",
+    "class": "PointLightComponent",
+    "props": {
+     "intensity": 3000,
+     "lightColor": {
+      "r": 1,
+      "g": 1,
+      "b": 1,
+      "a": 1
+     },
+     "attenuationRadius": 900,
+     "sourceRadius": 0,
+     "castShadows": false,
+     "temperature": 6500,
+     "bUseTemperature": false,
+     "volumetricScatteringIntensity": 0,
+     "lightFunctionMaterial": "None",
+     "indirectLightingIntensity": 1,
+     "intensityUnits": "Lumens",
+     "bVisible": true,
+     "lightingChannels": {
+      "bChannel0": true,
+      "bChannel1": false,
+      "bChannel2": false
+     }
+    }
+   }
+  ]
+ },
+ "Light_Tower_1": {
+  "folder": "Lighting/BellTower",
+  "class": "PointLight",
+  "loc": [
+   12165,
+   2000,
+   900
+  ],
+  "rot": [
+   0,
+   0,
+   0
+  ],
+  "comps": [
+   {
+    "name": "LightComponent0",
+    "class": "PointLightComponent",
+    "props": {
+     "intensity": 3000,
+     "lightColor": {
+      "r": 1,
+      "g": 1,
+      "b": 1,
+      "a": 1
+     },
+     "attenuationRadius": 900,
+     "sourceRadius": 0,
+     "castShadows": false,
+     "temperature": 6500,
+     "bUseTemperature": false,
+     "volumetricScatteringIntensity": 0,
+     "lightFunctionMaterial": "None",
+     "indirectLightingIntensity": 1,
+     "intensityUnits": "Lumens",
+     "bVisible": true,
+     "lightingChannels": {
+      "bChannel0": true,
+      "bChannel1": false,
+      "bChannel2": false
+     }
+    }
+   }
+  ]
+ },
+ "Light_Tower_2": {
+  "folder": "Lighting/BellTower",
+  "class": "PointLight",
+  "loc": [
+   12165,
+   2000,
+   1500
+  ],
+  "rot": [
+   0,
+   0,
+   0
+  ],
+  "comps": [
+   {
+    "name": "LightComponent0",
+    "class": "PointLightComponent",
+    "props": {
+     "intensity": 3000,
+     "lightColor": {
+      "r": 1,
+      "g": 1,
+      "b": 1,
+      "a": 1
+     },
+     "attenuationRadius": 900,
+     "sourceRadius": 0,
+     "castShadows": false,
+     "temperature": 6500,
+     "bUseTemperature": false,
+     "volumetricScatteringIntensity": 0,
+     "lightFunctionMaterial": "None",
+     "indirectLightingIntensity": 1,
+     "intensityUnits": "Lumens",
+     "bVisible": true,
+     "lightingChannels": {
+      "bChannel0": true,
+      "bChannel1": false,
+      "bChannel2": false
+     }
+    }
+   }
+  ]
+ },
+ "Light_Tower_3": {
+  "folder": "Lighting/BellTower",
+  "class": "PointLight",
+  "loc": [
+   12165,
+   2000,
+   2100
+  ],
+  "rot": [
+   0,
+   0,
+   0
+  ],
+  "comps": [
+   {
+    "name": "LightComponent0",
+    "class": "PointLightComponent",
+    "props": {
+     "intensity": 3000,
+     "lightColor": {
+      "r": 1,
+      "g": 1,
+      "b": 1,
+      "a": 1
+     },
+     "attenuationRadius": 900,
+     "sourceRadius": 0,
+     "castShadows": false,
+     "temperature": 6500,
+     "bUseTemperature": false,
+     "volumetricScatteringIntensity": 0,
+     "lightFunctionMaterial": "None",
+     "indirectLightingIntensity": 1,
+     "intensityUnits": "Lumens",
+     "bVisible": true,
+     "lightingChannels": {
+      "bChannel0": true,
+      "bChannel1": false,
+      "bChannel2": false
+     }
+    }
+   }
+  ]
+ },
+ "Light_Tower_4": {
+  "folder": "Lighting/BellTower",
+  "class": "PointLight",
+  "loc": [
+   12165,
+   2000,
+   2750
+  ],
+  "rot": [
+   0,
+   0,
+   0
+  ],
+  "comps": [
+   {
+    "name": "LightComponent0",
+    "class": "PointLightComponent",
+    "props": {
+     "intensity": 3000,
+     "lightColor": {
+      "r": 1,
+      "g": 1,
+      "b": 1,
+      "a": 1
+     },
+     "attenuationRadius": 900,
+     "sourceRadius": 0,
+     "castShadows": false,
+     "temperature": 6500,
+     "bUseTemperature": false,
+     "volumetricScatteringIntensity": 0,
+     "lightFunctionMaterial": "None",
+     "indirectLightingIntensity": 1,
+     "intensityUnits": "Lumens",
+     "bVisible": true,
+     "lightingChannels": {
+      "bChannel0": true,
+      "bChannel1": false,
+      "bChannel2": false
+     }
+    }
+   }
+  ]
+ },
+ "Light_Tower_5": {
+  "folder": "Lighting/BellTower",
+  "class": "PointLight",
+  "loc": [
+   12165,
+   2000,
+   3200
+  ],
+  "rot": [
+   0,
+   0,
+   0
+  ],
+  "comps": [
+   {
+    "name": "LightComponent0",
+    "class": "PointLightComponent",
+    "props": {
+     "intensity": 3000,
+     "lightColor": {
+      "r": 1,
+      "g": 1,
+      "b": 1,
+      "a": 1
+     },
+     "attenuationRadius": 900,
+     "sourceRadius": 0,
+     "castShadows": false,
+     "temperature": 6500,
+     "bUseTemperature": false,
+     "volumetricScatteringIntensity": 0,
+     "lightFunctionMaterial": "None",
+     "indirectLightingIntensity": 1,
+     "intensityUnits": "Lumens",
+     "bVisible": true,
+     "lightingChannels": {
+      "bChannel0": true,
+      "bChannel1": false,
+      "bChannel2": false
+     }
+    }
+   }
+  ]
+ },
+ "Light_TowerBell": {
+  "folder": "Lighting/BellTower",
+  "class": "PointLight",
+  "loc": [
+   12600,
+   2300,
+   2900
+  ],
+  "rot": [
+   0,
+   0,
+   0
+  ],
+  "comps": [
+   {
+    "name": "LightComponent0",
+    "class": "PointLightComponent",
+    "props": {
+     "intensity": 3000,
+     "lightColor": {
+      "r": 1,
+      "g": 1,
+      "b": 1,
+      "a": 1
+     },
+     "attenuationRadius": 900,
+     "sourceRadius": 0,
+     "castShadows": false,
+     "temperature": 6500,
+     "bUseTemperature": false,
+     "volumetricScatteringIntensity": 0,
+     "lightFunctionMaterial": "None",
+     "indirectLightingIntensity": 1,
+     "intensityUnits": "Lumens",
+     "bVisible": true,
+     "lightingChannels": {
+      "bChannel0": true,
+      "bChannel1": false,
+      "bChannel2": false
+     }
+    }
+   }
+  ]
+ },
+ "Light_TowerExt_0": {
+  "folder": "Lighting/BellTower",
+  "class": "PointLight",
+  "loc": [
+   11500,
+   2000,
+   1200
+  ],
+  "rot": [
+   0,
+   0,
+   0
+  ],
+  "comps": [
+   {
+    "name": "LightComponent0",
+    "class": "PointLightComponent",
+    "props": {
+     "intensity": 300,
+     "lightColor": {
+      "r": 0.7450980544090271,
+      "g": 0.803921639919281,
+      "b": 0.9215686917304993,
+      "a": 1
+     },
+     "attenuationRadius": 3500,
+     "sourceRadius": 0,
+     "castShadows": false,
+     "temperature": 6500,
+     "bUseTemperature": false,
+     "volumetricScatteringIntensity": 0,
+     "lightFunctionMaterial": "None",
+     "indirectLightingIntensity": 1,
+     "intensityUnits": "Lumens",
+     "bVisible": true,
+     "lightingChannels": {
+      "bChannel0": true,
+      "bChannel1": false,
+      "bChannel2": false
+     }
+    }
+   }
+  ]
+ },
+ "Light_TowerExt_1": {
+  "folder": "Lighting/BellTower",
+  "class": "PointLight",
+  "loc": [
+   11500,
+   2000,
+   2400
+  ],
+  "rot": [
+   0,
+   0,
+   0
+  ],
+  "comps": [
+   {
+    "name": "LightComponent0",
+    "class": "PointLightComponent",
+    "props": {
+     "intensity": 300,
+     "lightColor": {
+      "r": 0.7450980544090271,
+      "g": 0.803921639919281,
+      "b": 0.9215686917304993,
+      "a": 1
+     },
+     "attenuationRadius": 3500,
+     "sourceRadius": 0,
+     "castShadows": false,
+     "temperature": 6500,
+     "bUseTemperature": false,
+     "volumetricScatteringIntensity": 0,
+     "lightFunctionMaterial": "None",
+     "indirectLightingIntensity": 1,
+     "intensityUnits": "Lumens",
+     "bVisible": true,
+     "lightingChannels": {
+      "bChannel0": true,
+      "bChannel1": false,
+      "bChannel2": false
+     }
+    }
+   }
+  ]
+ },
+ "Light_TowerExt_2": {
+  "folder": "Lighting/BellTower",
+  "class": "PointLight",
+  "loc": [
+   11500,
+   2000,
+   3300
+  ],
+  "rot": [
+   0,
+   0,
+   0
+  ],
+  "comps": [
+   {
+    "name": "LightComponent0",
+    "class": "PointLightComponent",
+    "props": {
+     "intensity": 300,
+     "lightColor": {
+      "r": 0.7450980544090271,
+      "g": 0.803921639919281,
+      "b": 0.9215686917304993,
+      "a": 1
+     },
+     "attenuationRadius": 3500,
+     "sourceRadius": 0,
+     "castShadows": false,
+     "temperature": 6500,
+     "bUseTemperature": false,
+     "volumetricScatteringIntensity": 0,
+     "lightFunctionMaterial": "None",
+     "indirectLightingIntensity": 1,
+     "intensityUnits": "Lumens",
+     "bVisible": true,
+     "lightingChannels": {
+      "bChannel0": true,
+      "bChannel1": false,
+      "bChannel2": false
+     }
+    }
+   }
+  ]
+ },
+ "Light_TowerTop_0": {
+  "folder": "Lighting/BellTower",
+  "class": "PointLight",
+  "loc": [
+   12500,
+   2000,
+   3700
+  ],
+  "rot": [
+   0,
+   0,
+   0
+  ],
+  "comps": [
+   {
+    "name": "LightComponent0",
+    "class": "PointLightComponent",
+    "props": {
+     "intensity": 20000,
+     "lightColor": {
+      "r": 1,
+      "g": 1,
+      "b": 1,
+      "a": 1
+     },
+     "attenuationRadius": 3000,
+     "sourceRadius": 0,
+     "castShadows": false,
+     "temperature": 6500,
+     "bUseTemperature": false,
+     "volumetricScatteringIntensity": 0,
+     "lightFunctionMaterial": "None",
+     "indirectLightingIntensity": 1,
+     "intensityUnits": "Lumens",
+     "bVisible": true,
+     "lightingChannels": {
+      "bChannel0": true,
+      "bChannel1": false,
+      "bChannel2": false
+     }
+    }
+   }
+  ]
+ },
+ "DirectionalLight": {
+  "folder": "Lighting/Environment",
+  "class": "DirectionalLight",
+  "loc": [
+   0,
+   0,
+   400
+  ],
+  "rot": [
+   -38.0,
+   35,
+   0.0
+  ],
+  "comps": [
+   {
+    "name": "LightComponent0",
+    "class": "DirectionalLightComponent",
+    "props": {
+     "intensity": 0.8999999761581421,
+     "lightColor": {
+      "r": 0.7450980544090271,
+      "g": 0.803921639919281,
+      "b": 0.9215686917304993,
+      "a": 1
+     },
+     "castShadows": true,
+     "temperature": 6500,
+     "bUseTemperature": false,
+     "volumetricScatteringIntensity": 1,
+     "lightFunctionMaterial": "None",
+     "indirectLightingIntensity": 1,
+     "bVisible": true,
+     "lightingChannels": {
+      "bChannel0": true,
+      "bChannel1": false,
+      "bChannel2": false
+     }
+    }
+   }
+  ]
+ },
+ "SkyAtmosphere": {
+  "folder": "Lighting/Environment",
+  "class": "SkyAtmosphere",
+  "loc": [
+   0,
+   0,
+   -6000
+  ],
+  "rot": [
+   0,
+   0,
+   0
+  ],
+  "comps": [
+   {
+    "name": "SkyAtmosphereComponent",
+    "class": "SkyAtmosphereComponent",
+    "props": {
+     "bVisible": false
+    }
+   }
+  ]
+ },
+ "SkyLight": {
+  "folder": "Lighting/Environment",
+  "class": "SkyLight",
+  "loc": [
+   0,
+   0,
+   600
+  ],
+  "rot": [
+   0,
+   0,
+   0
+  ],
+  "comps": [
+   {
+    "name": "SkyLightComponent0",
+    "class": "SkyLightComponent",
+    "props": {
+     "intensity": 0.2800000011920929,
+     "lightColor": {
+      "r": 0.8823530077934265,
+      "g": 0.8627451658248901,
+      "b": 0.8431373238563538,
+      "a": 1
+     },
+     "castShadows": true,
+     "volumetricScatteringIntensity": 1,
+     "indirectLightingIntensity": 1,
+     "bVisible": true
+    }
+   }
+  ]
+ },
+ "ExponentialHeightFog": {
+  "folder": "Lighting/Environment",
+  "class": "ExponentialHeightFog",
+  "loc": [
+   0,
+   0,
+   0
+  ],
+  "rot": [
+   0,
+   0,
+   0
+  ],
+  "comps": [
+   {
+    "name": "HeightFogComponent0",
+    "class": "ExponentialHeightFogComponent",
+    "props": {
+     "bVisible": true
+    }
+   }
+  ]
+ },
+ "SkySphere": {
+  "folder": "Lighting/Environment",
+  "class": "StaticMeshActor",
+  "loc": [
+   0,
+   0,
+   0
+  ],
+  "rot": [
+   0,
+   0,
+   0
+  ],
+  "comps": []
+ },
+ "PostProcess_Exposure": {
+  "folder": "Lighting/Environment",
+  "class": "PostProcessVolume",
+  "loc": [
+   5200,
+   0,
+   500
+  ],
+  "rot": [
+   0,
+   0,
+   0
+  ],
+  "comps": []
+ },
+ "Moon_Fill": {
+  "folder": "Lighting/Environment",
+  "class": "DirectionalLight",
+  "loc": [
+   0,
+   0,
+   500
+  ],
+  "rot": [
+   -28.0,
+   -145.0,
+   0
+  ],
+  "comps": [
+   {
+    "name": "LightComponent0",
+    "class": "DirectionalLightComponent",
+    "props": {
+     "intensity": 0.05999999865889549,
+     "lightColor": {
+      "r": 0.7254902124404907,
+      "g": 0.7843137979507446,
+      "b": 0.8823530077934265,
+      "a": 1
+     },
+     "castShadows": false,
+     "temperature": 6500,
+     "bUseTemperature": false,
+     "volumetricScatteringIntensity": 1,
+     "lightFunctionMaterial": "None",
+     "indirectLightingIntensity": 1,
+     "bVisible": true,
+     "lightingChannels": {
+      "bChannel0": true,
+      "bChannel1": false,
+      "bChannel2": false
+     }
+    }
+   }
+  ]
+ },
+ "PP_Outdoor_Night": {
+  "folder": "Lighting/Environment",
+  "class": "PostProcessVolume",
+  "loc": [
+   1092.5,
+   0,
+   1900
+  ],
+  "rot": [
+   0,
+   0,
+   0
+  ],
+  "comps": []
+ },
+ "Light_Courtyard_7": {
+  "folder": "name",
+  "class": "PointLight",
+  "loc": [
+   7700,
+   2000,
+   400
+  ],
+  "rot": [
+   0,
+   0,
+   0
+  ],
+  "comps": [
+   {
+    "name": "LightComponent0",
+    "class": "PointLightComponent",
+    "props": {
+     "intensity": 3000,
+     "lightColor": {
+      "r": 1,
+      "g": 1,
+      "b": 1,
+      "a": 1
+     },
+     "attenuationRadius": 1500,
+     "sourceRadius": 0,
+     "castShadows": false,
+     "temperature": 6500,
+     "bUseTemperature": false,
+     "volumetricScatteringIntensity": 0,
+     "lightFunctionMaterial": "None",
+     "indirectLightingIntensity": 1,
+     "intensityUnits": "Lumens",
+     "bVisible": true,
+     "lightingChannels": {
+      "bChannel0": true,
+      "bChannel1": false,
+      "bChannel2": false
+     }
+    }
+   }
+  ]
+ }
+}

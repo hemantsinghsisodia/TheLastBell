@@ -1,0 +1,132 @@
+23:16:35   retry 1 CaptureViewport: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:16:35   attempt failed 1/6 sl_spawn: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:16:57   retry 1 CaptureViewport: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:16:57   attempt failed 2/6 sl_spawn: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:17:19   retry 1 CaptureViewport: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:17:19   attempt failed 3/6 sl_spawn: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:17:41   retry 1 CaptureViewport: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:17:41   attempt failed 4/6 sl_spawn: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:18:03   retry 1 CaptureViewport: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:18:03   attempt failed 5/6 sl_spawn: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:18:25   retry 1 CaptureViewport: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:18:25   attempt failed 6/6 sl_spawn: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:18:26 MISSING sl_spawn: 6 failed attempts (cap 6), not retried
+23:18:47   retry 1 CaptureViewport: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:18:47   attempt failed 1/6 sl_spawn_aim: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:19:10   retry 1 CaptureViewport: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:19:10   attempt failed 2/6 sl_spawn_aim: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:19:32   retry 1 CaptureViewport: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:19:32   attempt failed 3/6 sl_spawn_aim: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:19:54   retry 1 CaptureViewport: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:19:54   attempt failed 4/6 sl_spawn_aim: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:20:16   retry 1 CaptureViewport: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:20:16   attempt failed 5/6 sl_spawn_aim: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:20:19 saved sl_spawn_aim (113s, 5 failed attempts)
+23:20:39   retry 1 CaptureViewport: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:20:39   attempt failed 1/6 sl_gate: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:20:44 saved sl_gate (25s, 1 failed attempts)
+23:21:04   retry 1 CaptureViewport: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:21:04   attempt failed 1/6 sl_gate_aim: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:21:26   retry 1 CaptureViewport: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:21:26   attempt failed 2/6 sl_gate_aim: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:21:50   retry 1 CaptureViewport: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:21:50   attempt failed 3/6 sl_gate_aim: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:22:11   retry 1 CaptureViewport: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:22:11   attempt failed 4/6 sl_gate_aim: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:22:33   retry 1 CaptureViewport: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:22:33   attempt failed 5/6 sl_gate_aim: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:22:55   retry 1 CaptureViewport: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:22:55   attempt failed 6/6 sl_gate_aim: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:22:56 MISSING sl_gate_aim: 6 failed attempts (cap 6), not retried
+23:23:18   retry 1 CaptureViewport: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:23:18   attempt failed 1/6 sl_garth: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:23:40   retry 1 CaptureViewport: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:23:40   attempt failed 2/6 sl_garth: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:24:02   retry 1 CaptureViewport: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:24:02   attempt failed 3/6 sl_garth: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:24:24   retry 1 CaptureViewport: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:24:24   attempt failed 4/6 sl_garth: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:24:46   retry 1 CaptureViewport: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:24:46   attempt failed 5/6 sl_garth: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:24:49 saved sl_garth (113s, 5 failed attempts)
+23:25:43   retry 1 CaptureViewport: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:25:43   attempt failed 1/6 sl_garth_aim: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:26:06   retry 1 CaptureViewport: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:26:06   attempt failed 2/6 sl_garth_aim: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:26:30   retry 1 CaptureViewport: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:26:30   attempt failed 3/6 sl_garth_aim: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:26:34 saved sl_garth_aim (72s, 3 failed attempts)
+23:26:55   retry 1 CaptureViewport: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:26:55   attempt failed 1/6 sl_shortcut: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:27:19   retry 1 CaptureViewport: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:27:19   attempt failed 2/6 sl_shortcut: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:27:22 saved sl_shortcut (48s, 2 failed attempts)
+23:27:44   retry 1 CaptureViewport: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:27:44   attempt failed 1/6 sl_shortcut_up: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:28:06   retry 1 CaptureViewport: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:28:06   attempt failed 2/6 sl_shortcut_up: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:28:30   retry 1 CaptureViewport: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:28:30   attempt failed 3/6 sl_shortcut_up: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:28:53   retry 1 CaptureViewport: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:28:53   attempt failed 4/6 sl_shortcut_up: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:29:16   retry 1 CaptureViewport: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:29:16   attempt failed 5/6 sl_shortcut_up: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:29:20 saved sl_shortcut_up (118s, 5 failed attempts)
+23:29:41   retry 1 CaptureViewport: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:29:41   attempt failed 1/6 sl_cloister_s_entry: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:30:05   retry 1 CaptureViewport: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:30:05   attempt failed 2/6 sl_cloister_s_entry: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:30:28   retry 1 CaptureViewport: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:30:28   attempt failed 3/6 sl_cloister_s_entry: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:30:33 saved sl_cloister_s_entry (72s, 3 failed attempts)
+23:30:35 saved sl_cloister_s_entry_tower (2s, 0 failed attempts)
+23:30:37 saved sl_cloister_nw (2s, 0 failed attempts)
+23:30:57   retry 1 CaptureViewport: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:30:57   attempt failed 1/6 sl_cloister_nw_up: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:31:02 saved sl_cloister_nw_up (26s, 1 failed attempts)
+23:31:04 saved cl_sw (2s, 0 failed attempts)
+23:31:06 saved cl_se (2s, 0 failed attempts)
+23:31:27   retry 1 CaptureViewport: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:31:27   attempt failed 1/6 cl_ne: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:31:50   retry 1 CaptureViewport: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:31:50   attempt failed 2/6 cl_ne: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:32:14   retry 1 CaptureViewport: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:32:14   attempt failed 3/6 cl_ne: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:32:37   retry 1 CaptureViewport: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:32:37   attempt failed 4/6 cl_ne: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:33:00   retry 1 CaptureViewport: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:33:00   attempt failed 5/6 cl_ne: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:33:24   retry 1 CaptureViewport: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:33:24   attempt failed 6/6 cl_ne: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:33:25 MISSING cl_ne: 6 failed attempts (cap 6), not retried
+23:33:27 saved cl_nw (2s, 0 failed attempts)
+23:33:28 saved pass_west_end (2s, 0 failed attempts)
+23:33:49   retry 1 CaptureViewport: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:33:49   attempt failed 1/6 pass_east_end: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:34:11   retry 1 CaptureViewport: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:34:11   attempt failed 2/6 pass_east_end: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:34:33   retry 1 CaptureViewport: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:34:33   attempt failed 3/6 pass_east_end: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:34:55   retry 1 CaptureViewport: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:34:55   attempt failed 4/6 pass_east_end: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:35:17   retry 1 CaptureViewport: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:35:17   attempt failed 5/6 pass_east_end: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:35:20 saved pass_east_end (111s, 5 failed attempts)
+23:35:40   retry 1 CaptureViewport: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:35:40   attempt failed 1/6 tower_base_door: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:36:02   retry 1 CaptureViewport: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:36:02   attempt failed 2/6 tower_base_door: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:36:24   retry 1 CaptureViewport: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:36:24   attempt failed 3/6 tower_base_door: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:36:46   retry 1 CaptureViewport: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:36:46   attempt failed 4/6 tower_base_door: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:37:07   retry 1 CaptureViewport: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:37:07   attempt failed 5/6 tower_base_door: [WinError 10054] An existing connection was forcibly closed by the remote host
+23:37:09 saved tower_base_door (110s, 5 failed attempts)
+23:37:10 saved m3_mech_2m (1s, 0 failed attempts)
+23:37:12 saved m3_bells_2m (1s, 0 failed attempts)
+23:37:13 saved tower_shaft_up (1s, 0 failed attempts)
+23:37:14 saved tower_landing5 (1s, 0 failed attempts)
+23:37:15 saved tower_top_bell (1s, 0 failed attempts)
+23:37:16 saved overview_top (1s, 0 failed attempts)
+23:37:16 finished: 19 saved, 1 missing

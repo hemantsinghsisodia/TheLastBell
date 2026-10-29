@@ -1,0 +1,1252 @@
+{
+ "AI/Patrol": [
+  {
+   "label": "Patrol_Cloister_01",
+   "class": "LBPatrolPoint",
+   "loc": [
+    9850,
+    2000,
+    0
+   ],
+   "props": {
+    "routeId": "Cloister",
+    "order": 1,
+    "waitSeconds": 2,
+    "arrow": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.LBPatrolPoint_7.Arrow"
+    },
+    "tags": []
+   }
+  },
+  {
+   "label": "Patrol_Cloister_02",
+   "class": "LBPatrolPoint",
+   "loc": [
+    9850,
+    2750,
+    0
+   ],
+   "props": {
+    "routeId": "Cloister",
+    "order": 2,
+    "waitSeconds": 3,
+    "arrow": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.LBPatrolPoint_8.Arrow"
+    },
+    "tags": []
+   }
+  },
+  {
+   "label": "Patrol_Cloister_03",
+   "class": "LBPatrolPoint",
+   "loc": [
+    10850,
+    2750,
+    0
+   ],
+   "props": {
+    "routeId": "Cloister",
+    "order": 3,
+    "waitSeconds": 1,
+    "arrow": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.LBPatrolPoint_9.Arrow"
+    },
+    "tags": []
+   }
+  },
+  {
+   "label": "Patrol_Cloister_04",
+   "class": "LBPatrolPoint",
+   "loc": [
+    11750,
+    2650,
+    0
+   ],
+   "props": {
+    "routeId": "Cloister",
+    "order": 4,
+    "waitSeconds": 3,
+    "arrow": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.LBPatrolPoint_10.Arrow"
+    },
+    "tags": []
+   }
+  },
+  {
+   "label": "Patrol_Cloister_05",
+   "class": "LBPatrolPoint",
+   "loc": [
+    11600,
+    1700,
+    0
+   ],
+   "props": {
+    "routeId": "Cloister",
+    "order": 5,
+    "waitSeconds": 3,
+    "arrow": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.LBPatrolPoint_11.Arrow"
+    },
+    "tags": []
+   }
+  },
+  {
+   "label": "Patrol_Cloister_06",
+   "class": "LBPatrolPoint",
+   "loc": [
+    11750,
+    800,
+    0
+   ],
+   "props": {
+    "routeId": "Cloister",
+    "order": 6,
+    "waitSeconds": 2,
+    "arrow": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.LBPatrolPoint_12.Arrow"
+    },
+    "tags": []
+   }
+  },
+  {
+   "label": "Patrol_Cloister_07",
+   "class": "LBPatrolPoint",
+   "loc": [
+    10950,
+    900,
+    0
+   ],
+   "props": {
+    "routeId": "Cloister",
+    "order": 7,
+    "waitSeconds": 1,
+    "arrow": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.LBPatrolPoint_13.Arrow"
+    },
+    "tags": []
+   }
+  }
+ ],
+ "AI/Search": [
+  {
+   "label": "Search_Cloister_01",
+   "class": "LBSearchPoint",
+   "loc": [
+    9650,
+    750,
+    0
+   ],
+   "props": {
+    "arrow": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.LBSearchPoint_8.Arrow"
+    },
+    "tags": []
+   }
+  },
+  {
+   "label": "Search_Cloister_02",
+   "class": "LBSearchPoint",
+   "loc": [
+    9650,
+    2850,
+    0
+   ],
+   "props": {
+    "arrow": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.LBSearchPoint_9.Arrow"
+    },
+    "tags": []
+   }
+  },
+  {
+   "label": "Search_Cloister_03",
+   "class": "LBSearchPoint",
+   "loc": [
+    10850,
+    2850,
+    0
+   ],
+   "props": {
+    "arrow": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.LBSearchPoint_10.Arrow"
+    },
+    "tags": []
+   }
+  },
+  {
+   "label": "Search_Cloister_04",
+   "class": "LBSearchPoint",
+   "loc": [
+    11850,
+    2850,
+    0
+   ],
+   "props": {
+    "arrow": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.LBSearchPoint_11.Arrow"
+    },
+    "tags": []
+   }
+  },
+  {
+   "label": "Search_Cloister_05",
+   "class": "LBSearchPoint",
+   "loc": [
+    11800,
+    2300,
+    0
+   ],
+   "props": {
+    "arrow": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.LBSearchPoint_12.Arrow"
+    },
+    "tags": []
+   }
+  },
+  {
+   "label": "Search_Cloister_06",
+   "class": "LBSearchPoint",
+   "loc": [
+    11700,
+    1600,
+    0
+   ],
+   "props": {
+    "arrow": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.LBSearchPoint_13.Arrow"
+    },
+    "tags": []
+   }
+  },
+  {
+   "label": "Search_Cloister_07",
+   "class": "LBSearchPoint",
+   "loc": [
+    11850,
+    750,
+    0
+   ],
+   "props": {
+    "arrow": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.LBSearchPoint_14.Arrow"
+    },
+    "tags": []
+   }
+  },
+  {
+   "label": "Search_Cloister_08",
+   "class": "LBSearchPoint",
+   "loc": [
+    11000,
+    1000,
+    0
+   ],
+   "props": {
+    "arrow": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.LBSearchPoint_15.Arrow"
+    },
+    "tags": []
+   }
+  },
+  {
+   "label": "Search_Cloister_09",
+   "class": "LBSearchPoint",
+   "loc": [
+    9650,
+    1450,
+    0
+   ],
+   "props": {
+    "arrow": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.LBSearchPoint_23.Arrow"
+    },
+    "tags": []
+   }
+  },
+  {
+   "label": "Search_Cloister_10",
+   "class": "LBSearchPoint",
+   "loc": [
+    9650,
+    2450,
+    0
+   ],
+   "props": {
+    "arrow": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.LBSearchPoint_24.Arrow"
+    },
+    "tags": []
+   }
+  },
+  {
+   "label": "Search_Cloister_11",
+   "class": "LBSearchPoint",
+   "loc": [
+    10250,
+    2850,
+    0
+   ],
+   "props": {
+    "arrow": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.LBSearchPoint_25.Arrow"
+    },
+    "tags": []
+   }
+  },
+  {
+   "label": "Search_Cloister_12",
+   "class": "LBSearchPoint",
+   "loc": [
+    11350,
+    2850,
+    0
+   ],
+   "props": {
+    "arrow": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.LBSearchPoint_26.Arrow"
+    },
+    "tags": []
+   }
+  },
+  {
+   "label": "Search_Cloister_13",
+   "class": "LBSearchPoint",
+   "loc": [
+    10300,
+    850,
+    0
+   ],
+   "props": {
+    "arrow": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.LBSearchPoint_27.Arrow"
+    },
+    "tags": []
+   }
+  },
+  {
+   "label": "Search_Cloister_14",
+   "class": "LBSearchPoint",
+   "loc": [
+    10850,
+    2500,
+    0
+   ],
+   "props": {
+    "arrow": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.LBSearchPoint_28.Arrow"
+    },
+    "tags": []
+   }
+  }
+ ],
+ "AI/Spawn": [
+  {
+   "label": "WSpawn_Crypt",
+   "class": "LBWardenSpawnPoint",
+   "loc": [
+    11380,
+    -850,
+    -600
+   ],
+   "props": {
+    "minStage": 3,
+    "routeId": "Crypt",
+    "arrow": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.LBWardenSpawnPoint_0.Arrow"
+    },
+    "tags": []
+   }
+  },
+  {
+   "label": "WSpawn_Cloister",
+   "class": "LBWardenSpawnPoint",
+   "loc": [
+    9000,
+    2000,
+    0
+   ],
+   "props": {
+    "minStage": 5,
+    "routeId": "Cloister",
+    "arrow": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.LBWardenSpawnPoint_1.Arrow"
+    },
+    "tags": []
+   }
+  },
+  {
+   "label": "WSpawn_Tower",
+   "class": "LBWardenSpawnPoint",
+   "loc": [
+    12165,
+    1665,
+    0
+   ],
+   "props": {
+    "minStage": 6,
+    "routeId": "Tower",
+    "arrow": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.LBWardenSpawnPoint_2.Arrow"
+    },
+    "tags": []
+   }
+  }
+ ],
+ "WalkPaths/TowerStairs": [
+  {
+   "label": "WP_TowerStairs_00",
+   "class": "TargetPoint",
+   "loc": [
+    12150,
+    2000,
+    0
+   ],
+   "props": {
+    "spriteComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_73.Sprite"
+    },
+    "arrowComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_73.Arrow"
+    },
+    "tags": [
+     "WalkPath.TowerStairs.00",
+     "Requires.State.Ritual.3"
+    ]
+   }
+  },
+  {
+   "label": "WP_TowerStairs_01",
+   "class": "TargetPoint",
+   "loc": [
+    12255,
+    2335,
+    0
+   ],
+   "props": {
+    "spriteComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_74.Sprite"
+    },
+    "arrowComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_74.Arrow"
+    },
+    "tags": [
+     "WalkPath.TowerStairs.01"
+    ]
+   }
+  },
+  {
+   "label": "WP_TowerStairs_02",
+   "class": "TargetPoint",
+   "loc": [
+    12695,
+    2335,
+    227.3
+   ],
+   "props": {
+    "spriteComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_75.Sprite"
+    },
+    "arrowComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_75.Arrow"
+    },
+    "tags": [
+     "WalkPath.TowerStairs.02"
+    ]
+   }
+  },
+  {
+   "label": "WP_TowerStairs_03",
+   "class": "TargetPoint",
+   "loc": [
+    12835,
+    2230,
+    227.3
+   ],
+   "props": {
+    "spriteComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_76.Sprite"
+    },
+    "arrowComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_76.Arrow"
+    },
+    "tags": [
+     "WalkPath.TowerStairs.03"
+    ]
+   }
+  },
+  {
+   "label": "WP_TowerStairs_04",
+   "class": "TargetPoint",
+   "loc": [
+    12835,
+    1805,
+    454.5
+   ],
+   "props": {
+    "spriteComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_77.Sprite"
+    },
+    "arrowComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_77.Arrow"
+    },
+    "tags": [
+     "WalkPath.TowerStairs.04"
+    ]
+   }
+  },
+  {
+   "label": "WP_TowerStairs_05",
+   "class": "TargetPoint",
+   "loc": [
+    12730,
+    1665,
+    454.5
+   ],
+   "props": {
+    "spriteComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_78.Sprite"
+    },
+    "arrowComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_78.Arrow"
+    },
+    "tags": [
+     "WalkPath.TowerStairs.05"
+    ]
+   }
+  },
+  {
+   "label": "WP_TowerStairs_06",
+   "class": "TargetPoint",
+   "loc": [
+    12305,
+    1665,
+    681.8
+   ],
+   "props": {
+    "spriteComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_79.Sprite"
+    },
+    "arrowComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_79.Arrow"
+    },
+    "tags": [
+     "WalkPath.TowerStairs.06"
+    ]
+   }
+  },
+  {
+   "label": "WP_TowerStairs_07",
+   "class": "TargetPoint",
+   "loc": [
+    12165,
+    1770,
+    681.8
+   ],
+   "props": {
+    "spriteComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_80.Sprite"
+    },
+    "arrowComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_80.Arrow"
+    },
+    "tags": [
+     "WalkPath.TowerStairs.07"
+    ]
+   }
+  },
+  {
+   "label": "WP_TowerStairs_08",
+   "class": "TargetPoint",
+   "loc": [
+    12165,
+    2195,
+    909.1
+   ],
+   "props": {
+    "spriteComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_81.Sprite"
+    },
+    "arrowComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_81.Arrow"
+    },
+    "tags": [
+     "WalkPath.TowerStairs.08"
+    ]
+   }
+  },
+  {
+   "label": "WP_TowerStairs_09",
+   "class": "TargetPoint",
+   "loc": [
+    12270,
+    2335,
+    909.1
+   ],
+   "props": {
+    "spriteComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_82.Sprite"
+    },
+    "arrowComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_82.Arrow"
+    },
+    "tags": [
+     "WalkPath.TowerStairs.09"
+    ]
+   }
+  },
+  {
+   "label": "WP_TowerStairs_10",
+   "class": "TargetPoint",
+   "loc": [
+    12695,
+    2335,
+    1136.4
+   ],
+   "props": {
+    "spriteComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_83.Sprite"
+    },
+    "arrowComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_83.Arrow"
+    },
+    "tags": [
+     "WalkPath.TowerStairs.10"
+    ]
+   }
+  },
+  {
+   "label": "WP_TowerStairs_11",
+   "class": "TargetPoint",
+   "loc": [
+    12835,
+    2230,
+    1136.4
+   ],
+   "props": {
+    "spriteComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_84.Sprite"
+    },
+    "arrowComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_84.Arrow"
+    },
+    "tags": [
+     "WalkPath.TowerStairs.11"
+    ]
+   }
+  },
+  {
+   "label": "WP_TowerStairs_12",
+   "class": "TargetPoint",
+   "loc": [
+    12835,
+    1805,
+    1363.6
+   ],
+   "props": {
+    "spriteComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_85.Sprite"
+    },
+    "arrowComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_85.Arrow"
+    },
+    "tags": [
+     "WalkPath.TowerStairs.12"
+    ]
+   }
+  },
+  {
+   "label": "WP_TowerStairs_13",
+   "class": "TargetPoint",
+   "loc": [
+    12730,
+    1665,
+    1363.6
+   ],
+   "props": {
+    "spriteComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_86.Sprite"
+    },
+    "arrowComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_86.Arrow"
+    },
+    "tags": [
+     "WalkPath.TowerStairs.13"
+    ]
+   }
+  },
+  {
+   "label": "WP_TowerStairs_14",
+   "class": "TargetPoint",
+   "loc": [
+    12305,
+    1665,
+    1590.9
+   ],
+   "props": {
+    "spriteComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_87.Sprite"
+    },
+    "arrowComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_87.Arrow"
+    },
+    "tags": [
+     "WalkPath.TowerStairs.14"
+    ]
+   }
+  },
+  {
+   "label": "WP_TowerStairs_15",
+   "class": "TargetPoint",
+   "loc": [
+    12165,
+    1770,
+    1590.9
+   ],
+   "props": {
+    "spriteComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_88.Sprite"
+    },
+    "arrowComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_88.Arrow"
+    },
+    "tags": [
+     "WalkPath.TowerStairs.15"
+    ]
+   }
+  },
+  {
+   "label": "WP_TowerStairs_16",
+   "class": "TargetPoint",
+   "loc": [
+    12165,
+    2195,
+    1818.2
+   ],
+   "props": {
+    "spriteComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_89.Sprite"
+    },
+    "arrowComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_89.Arrow"
+    },
+    "tags": [
+     "WalkPath.TowerStairs.16"
+    ]
+   }
+  },
+  {
+   "label": "WP_TowerStairs_17",
+   "class": "TargetPoint",
+   "loc": [
+    12270,
+    2335,
+    1818.2
+   ],
+   "props": {
+    "spriteComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_90.Sprite"
+    },
+    "arrowComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_90.Arrow"
+    },
+    "tags": [
+     "WalkPath.TowerStairs.17"
+    ]
+   }
+  },
+  {
+   "label": "WP_TowerStairs_18",
+   "class": "TargetPoint",
+   "loc": [
+    12695,
+    2335,
+    2045.5
+   ],
+   "props": {
+    "spriteComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_91.Sprite"
+    },
+    "arrowComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_91.Arrow"
+    },
+    "tags": [
+     "WalkPath.TowerStairs.18"
+    ]
+   }
+  },
+  {
+   "label": "WP_TowerStairs_19",
+   "class": "TargetPoint",
+   "loc": [
+    12835,
+    2230,
+    2045.5
+   ],
+   "props": {
+    "spriteComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_92.Sprite"
+    },
+    "arrowComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_92.Arrow"
+    },
+    "tags": [
+     "WalkPath.TowerStairs.19"
+    ]
+   }
+  },
+  {
+   "label": "WP_TowerStairs_20",
+   "class": "TargetPoint",
+   "loc": [
+    12835,
+    1805,
+    2272.7
+   ],
+   "props": {
+    "spriteComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_93.Sprite"
+    },
+    "arrowComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_93.Arrow"
+    },
+    "tags": [
+     "WalkPath.TowerStairs.20"
+    ]
+   }
+  },
+  {
+   "label": "WP_TowerStairs_21",
+   "class": "TargetPoint",
+   "loc": [
+    12730,
+    1665,
+    2272.7
+   ],
+   "props": {
+    "spriteComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_94.Sprite"
+    },
+    "arrowComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_94.Arrow"
+    },
+    "tags": [
+     "WalkPath.TowerStairs.21"
+    ]
+   }
+  },
+  {
+   "label": "WP_TowerStairs_22",
+   "class": "TargetPoint",
+   "loc": [
+    12305,
+    1665,
+    2500
+   ],
+   "props": {
+    "spriteComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_95.Sprite"
+    },
+    "arrowComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_95.Arrow"
+    },
+    "tags": [
+     "WalkPath.TowerStairs.22"
+    ]
+   }
+  },
+  {
+   "label": "WP_TowerStairs_23",
+   "class": "TargetPoint",
+   "loc": [
+    12165,
+    1665,
+    2500
+   ],
+   "props": {
+    "spriteComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_96.Sprite"
+    },
+    "arrowComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_96.Arrow"
+    },
+    "tags": [
+     "WalkPath.TowerStairs.23"
+    ]
+   }
+  },
+  {
+   "label": "WP_TowerStairs_24",
+   "class": "TargetPoint",
+   "loc": [
+    12165,
+    2000,
+    2500
+   ],
+   "props": {
+    "spriteComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_97.Sprite"
+    },
+    "arrowComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_97.Arrow"
+    },
+    "tags": [
+     "WalkPath.TowerStairs.24"
+    ]
+   }
+  }
+ ],
+ "WalkPaths/CryptToCloister": [
+  {
+   "label": "WP_CryptToCloister_00",
+   "class": "TargetPoint",
+   "loc": [
+    10650,
+    -1650,
+    -600
+   ],
+   "props": {
+    "spriteComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_106.Sprite"
+    },
+    "arrowComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_106.Arrow"
+    },
+    "tags": [
+     "WalkPath.CryptToCloister.00",
+     "Requires.State.Ritual.2"
+    ]
+   }
+  },
+  {
+   "label": "WP_CryptToCloister_01",
+   "class": "TargetPoint",
+   "loc": [
+    11100,
+    -2000,
+    -600
+   ],
+   "props": {
+    "spriteComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_107.Sprite"
+    },
+    "arrowComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_107.Arrow"
+    },
+    "tags": [
+     "WalkPath.CryptToCloister.01"
+    ]
+   }
+  },
+  {
+   "label": "WP_CryptToCloister_02",
+   "class": "TargetPoint",
+   "loc": [
+    11425,
+    -1900,
+    -600
+   ],
+   "props": {
+    "spriteComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_108.Sprite"
+    },
+    "arrowComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_108.Arrow"
+    },
+    "tags": [
+     "WalkPath.CryptToCloister.02"
+    ]
+   }
+  },
+  {
+   "label": "WP_CryptToCloister_03",
+   "class": "TargetPoint",
+   "loc": [
+    11425,
+    -1450,
+    -600
+   ],
+   "props": {
+    "spriteComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_109.Sprite"
+    },
+    "arrowComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_109.Arrow"
+    },
+    "tags": [
+     "WalkPath.CryptToCloister.03"
+    ]
+   }
+  },
+  {
+   "label": "WP_CryptToCloister_04",
+   "class": "TargetPoint",
+   "loc": [
+    11425,
+    -900,
+    -600
+   ],
+   "props": {
+    "spriteComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_110.Sprite"
+    },
+    "arrowComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_110.Arrow"
+    },
+    "tags": [
+     "WalkPath.CryptToCloister.04"
+    ]
+   }
+  },
+  {
+   "label": "WP_CryptToCloister_05",
+   "class": "TargetPoint",
+   "loc": [
+    10900,
+    -900,
+    -600
+   ],
+   "props": {
+    "spriteComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_111.Sprite"
+    },
+    "arrowComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_111.Arrow"
+    },
+    "tags": [
+     "WalkPath.CryptToCloister.05"
+    ]
+   }
+  },
+  {
+   "label": "WP_CryptToCloister_06",
+   "class": "TargetPoint",
+   "loc": [
+    10650,
+    -730,
+    -600
+   ],
+   "props": {
+    "spriteComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_112.Sprite"
+    },
+    "arrowComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_112.Arrow"
+    },
+    "tags": [
+     "WalkPath.CryptToCloister.06"
+    ]
+   }
+  },
+  {
+   "label": "WP_CryptToCloister_07",
+   "class": "TargetPoint",
+   "loc": [
+    10650,
+    -265,
+    -375
+   ],
+   "props": {
+    "spriteComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_113.Sprite"
+    },
+    "arrowComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_113.Arrow"
+    },
+    "tags": [
+     "WalkPath.CryptToCloister.07"
+    ]
+   }
+  },
+  {
+   "label": "WP_CryptToCloister_08",
+   "class": "TargetPoint",
+   "loc": [
+    10650,
+    155,
+    -165
+   ],
+   "props": {
+    "spriteComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_114.Sprite"
+    },
+    "arrowComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_114.Arrow"
+    },
+    "tags": [
+     "WalkPath.CryptToCloister.08"
+    ]
+   }
+  },
+  {
+   "label": "WP_CryptToCloister_09",
+   "class": "TargetPoint",
+   "loc": [
+    10650,
+    485,
+    0
+   ],
+   "props": {
+    "spriteComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_115.Sprite"
+    },
+    "arrowComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_115.Arrow"
+    },
+    "tags": [
+     "WalkPath.CryptToCloister.09"
+    ]
+   }
+  },
+  {
+   "label": "WP_CryptToCloister_10",
+   "class": "TargetPoint",
+   "loc": [
+    10650,
+    700,
+    0
+   ],
+   "props": {
+    "spriteComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_116.Sprite"
+    },
+    "arrowComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.TargetPoint_116.Arrow"
+    },
+    "tags": [
+     "WalkPath.CryptToCloister.10"
+    ]
+   }
+  }
+ ],
+ "WalkPaths/SacristyToCrypt": [
+  {
+   "label": "WP_SacristyToCrypt_00"
+  },
+  {
+   "label": "WP_SacristyToCrypt_01"
+  },
+  {
+   "label": "WP_SacristyToCrypt_02"
+  },
+  {
+   "label": "WP_SacristyToCrypt_03"
+  },
+  {
+   "label": "WP_SacristyToCrypt_04"
+  },
+  {
+   "label": "WP_SacristyToCrypt_05"
+  },
+  {
+   "label": "WP_SacristyToCrypt_06"
+  },
+  {
+   "label": "WP_SacristyToCrypt_07"
+  }
+ ],
+ "WalkPaths/FloodedLedge": [
+  {
+   "label": "WP_FloodedLedge_00"
+  },
+  {
+   "label": "WP_FloodedLedge_01"
+  },
+  {
+   "label": "WP_FloodedLedge_02"
+  },
+  {
+   "label": "WP_FloodedLedge_03"
+  },
+  {
+   "label": "WP_FloodedLedge_04"
+  },
+  {
+   "label": "WP_FloodedLedge_05"
+  }
+ ],
+ "AI": [
+  {
+   "label": "Warden",
+   "class": "BP_Warden_C",
+   "loc": [
+    8920,
+    -2560,
+    -490
+   ],
+   "props": {
+    "tellLight": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.BP_Warden_C_0.TellLight"
+    },
+    "maskCrack": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.BP_Warden_C_0.MaskCrack"
+    },
+    "mask": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.BP_Warden_C_0.Mask"
+    },
+    "armRight": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.BP_Warden_C_0.ArmRight"
+    },
+    "armLeft": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.BP_Warden_C_0.ArmLeft"
+    },
+    "head": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.BP_Warden_C_0.Head"
+    },
+    "neck": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.BP_Warden_C_0.Neck"
+    },
+    "shoulders": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.BP_Warden_C_0.Shoulders"
+    },
+    "robe": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.BP_Warden_C_0.Robe"
+    },
+    "placeholderBody": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.BP_Warden_C_0.PlaceholderBody"
+    },
+    "bBrainBound": false,
+    "tuning": {
+     "refPath": "/Game/LastBell/Data/DA_WardenTuning.DA_WardenTuning"
+    },
+    "mesh": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.BP_Warden_C_0.CharacterMesh0"
+    },
+    "characterMovement": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.BP_Warden_C_0.CharMoveComp"
+    },
+    "capsuleComponent": {
+     "refPath": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.BP_Warden_C_0.CollisionCylinder"
+    },
+    "crouchedEyeHeight": 32,
+    "bIsCrouched": false,
+    "bPressedJump": false,
+    "bWasJumping": false,
+    "jumpKeyHoldTime": 0,
+    "jumpForceTimeRemaining": 0,
+    "proxyJumpForceStartedTime": 0,
+    "jumpMaxHoldTime": 0,
+    "jumpMaxCount": 1,
+    "jumpCurrentCount": 0,
+    "jumpCurrentCountPreJump": 0,
+    "landedDelegate": "()",
+    "movementModeChangedDelegate": "()",
+    "bUseControllerRotationPitch": false,
+    "bUseControllerRotationYaw": false,
+    "bUseControllerRotationRoll": false,
+    "bCanAffectNavigationGeneration": false,
+    "baseEyeHeight": 85,
+    "autoPossessPlayer": "Disabled",
+    "autoPossessAI": "PlacedInWorldOrSpawned",
+    "aIControllerClass": {
+     "refPath": "/Script/LastBell.LBWardenController"
+    },
+    "playerState": "None",
+    "lastHitBy": "None",
+    "receiveControllerChangedDelegate": "()",
+    "receiveRestartedDelegate": "()",
+    "overrideInputComponentClass": "None",
+    "tags": []
+   }
+  }
+ ]
+}

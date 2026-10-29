@@ -1,0 +1,196 @@
+{
+ "ground": [
+  {
+   "label": "Ground_0",
+   "bounds": {
+    "min": {
+     "x": -3000,
+     "y": -3600,
+     "z": -40
+    },
+    "max": {
+     "x": 7400,
+     "y": 3600,
+     "z": 0
+    },
+    "isValid": true
+   },
+   "mesh": "/Engine/BasicShapes/Cube.Cube",
+   "bVisible": true,
+   "collisionProfile": "BlockAll",
+   "materials": [
+    "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Floor.MI_Kit_Floor"
+   ]
+  },
+  {
+   "label": "Ground_1",
+   "bounds": {
+    "min": {
+     "x": 8000,
+     "y": -3600,
+     "z": -40
+    },
+    "max": {
+     "x": 10500,
+     "y": 3600,
+     "z": 0
+    },
+    "isValid": true
+   },
+   "mesh": "/Engine/BasicShapes/Cube.Cube",
+   "bVisible": true,
+   "collisionProfile": "BlockAll",
+   "materials": [
+    "/Engine/EngineMaterials/WorldGridMaterial.WorldGridMaterial"
+   ]
+  },
+  {
+   "label": "Ground_2",
+   "bounds": {
+    "min": {
+     "x": 10800,
+     "y": -3600,
+     "z": -40
+    },
+    "max": {
+     "x": 13400,
+     "y": 3600,
+     "z": 0
+    },
+    "isValid": true
+   },
+   "mesh": "/Engine/BasicShapes/Cube.Cube",
+   "bVisible": true,
+   "collisionProfile": "BlockAll",
+   "materials": [
+    "/Engine/EngineMaterials/WorldGridMaterial.WorldGridMaterial"
+   ]
+  },
+  {
+   "label": "Ground_3",
+   "bounds": {
+    "min": {
+     "x": 10500,
+     "y": -3600,
+     "z": -40
+    },
+    "max": {
+     "x": 10800,
+     "y": -100,
+     "z": 0
+    },
+    "isValid": true
+   },
+   "mesh": "/Engine/BasicShapes/Cube.Cube",
+   "bVisible": true,
+   "collisionProfile": "BlockAll",
+   "materials": [
+    "/Engine/EngineMaterials/WorldGridMaterial.WorldGridMaterial"
+   ]
+  },
+  {
+   "label": "Ground_4",
+   "bounds": {
+    "min": {
+     "x": 10500,
+     "y": 500,
+     "z": -40
+    },
+    "max": {
+     "x": 10800,
+     "y": 3600,
+     "z": 0
+    },
+    "isValid": true
+   },
+   "mesh": "/Engine/BasicShapes/Cube.Cube",
+   "bVisible": true,
+   "collisionProfile": "BlockAll",
+   "materials": [
+    "/Engine/EngineMaterials/WorldGridMaterial.WorldGridMaterial"
+   ]
+  },
+  {
+   "label": "Ground_5",
+   "bounds": {
+    "min": {
+     "x": 7400,
+     "y": -3600,
+     "z": -40
+    },
+    "max": {
+     "x": 8000,
+     "y": -1300,
+     "z": 0
+    },
+    "isValid": true
+   },
+   "mesh": "/Engine/BasicShapes/Cube.Cube",
+   "bVisible": true,
+   "collisionProfile": "BlockAll",
+   "materials": [
+    "/Engine/EngineMaterials/WorldGridMaterial.WorldGridMaterial"
+   ]
+  },
+  {
+   "label": "Ground_6",
+   "bounds": {
+    "min": {
+     "x": 7400,
+     "y": -900,
+     "z": -40
+    },
+    "max": {
+     "x": 8000,
+     "y": 3600,
+     "z": 0
+    },
+    "isValid": true
+   },
+   "mesh": "/Engine/BasicShapes/Cube.Cube",
+   "bVisible": true,
+   "collisionProfile": "BlockAll",
+   "materials": [
+    "/Engine/EngineMaterials/WorldGridMaterial.WorldGridMaterial"
+   ]
+  }
+ ],
+ "nav": [
+  {
+   "label": "NavBounds_Monastery",
+   "class": {
+    "refPath": "/Script/NavigationSystem.NavMeshBoundsVolume"
+   },
+   "bounds": {
+    "min": {
+     "x": -3300,
+     "y": -3700,
+     "z": -1000
+    },
+    "max": {
+     "x": 13300,
+     "y": 3700,
+     "z": 3600
+    },
+    "isValid": true
+   },
+   "transform": {
+    "location": {
+     "x": 5000,
+     "y": 0,
+     "z": 1300
+    },
+    "rotation": {
+     "pitch": 0,
+     "yaw": 0,
+     "roll": 0
+    },
+    "scale": {
+     "x": 83,
+     "y": 37,
+     "z": 23
+    }
+   }
+  }
+ ]
+}
