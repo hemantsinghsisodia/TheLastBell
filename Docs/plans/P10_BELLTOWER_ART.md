@@ -921,3 +921,72 @@ The wrap-around patrol segment that crosses the garth is routed around it, which
 - the pier tops are at 620, and the name `…x640` is kept;
 - C11 pieces use bottom-centre pivots;
 - the latch box is 8 deep × 20 wide × 30 tall.
+
+### D1.12 P10-3a / P10-3b review; generator sync; P10-4 spec (lead, 2026-10-30)
+**P10-3a accepted** (ba1f0e6, 27ae1dc):
+- 33 tower meshes; `verify_tower` 33/33.
+- **Renders:**
+  - `tower_SW_overview` reads as a tall ashlar bell tower with twin louvred lancets and a broken SW roof corner;
+  - `belfry_interior_bell` shows the massive cracked bronze bell in its oak frame, with the wheel, chain and rope;
+  - `stair_core_section_close` shows open-riser oak flights on corbelled landings around the stone shaft base, with shaft posts and the under-stair partition.
+- **Deviations accepted:**
+  - N/S courses run 40 past the piece ends, plus corner quoins;
+  - every wall piece carries the third kit slot, `MAT_Rubble`;
+  - an iron chain bridges the wheel rim (axle height) to the rope top at Z 2750;
+  - the bell's canons use the iron slot;
+  - the louvre `_Broken` keeps 7 of 9 boards;
+  - stringer brackets reach 8 into the wall;
+  - extra joists under the W/N slabs;
+  - the bell-frame and top-rail bounds differ by 2.5.
+
+**P10-3b accepted** (b22300f, 42307f1):
+- 40 cloister and Mech 3 meshes; `verify_cloister` 40/40.
+- **Renders:**
+  - `cloister_corner_walk` reads as a dark ribbed barrel-vaulted walk with pointed arcade arches and a cell door;
+  - `mech3_bells_inscription` shows four bells of different sizes with red/ochre/green/bone bands, I–IV plaques, and the carved tablet readable above them;
+  - `collapse_ne_bay_walk` shows a fallen vault bay with sky and broken rafters.
+- **Deviations accepted:**
+  - `four_centred` is fixed with a 9° apex slope for the archways; C4 uses r1 = 87.5;
+  - the vault sections use upper radius = span, and rise 340 is to the extrados apex;
+  - the archways have no mesh below the springing;
+  - the pier mouldings project on all faces (bounds 96 and 146);
+  - C12 is named span × length;
+  - C13's wall ribs sit 30–60 in;
+  - C16 has a flush coping;
+  - C14's hole is a jagged outline inside x 150–850 / y 0–800.
+
+**Corrections for the generator** (the P10-L agent applies them; then re-run and commit "P10-L: D1.12 sync"):
+1. **All 10 vault bays spring at Z 540** (was 560), and the corbel tops move to 540. Reason: the P10-3b section shows the S-walk vault extrados within the roof's rafter build-up near the arcade haunch (21 cm deep on S, 12 on N/W). Lowering 20 leaves ≤ 1 cm on S, and the slates stay untouched.
+   - Side effect accepted: the top 20 cm of the 270-span arches' voussoir rings on the W/E walk faces sits behind the vault haunch.
+2. **Pieces table synced to the built meshes:** read `SourceArt/BellTower/tower_report.json` and `SourceArt/Cloister/cloister_report.json`.
+   - Use the measured bounds as `mbounds` for every new piece.
+   - Use the real slot lists. All wall, arch, pier, garth-wall, vault, gable, frame and grave pieces have `MAT_Masonry`, `MAT_Trim` and `MAT_Rubble`; map `MAT_Rubble` → `MI_Kit_Rubble`.
+   - Assert that every mesh named in a record exists in the reports.
+   - Re-run every check with the real bounds.
+3. **Cell-door leaves:** the C15 back panel's visible face is at local y −2. The leaf's back sits at y −3, 1 cm in front of it.
+4. **Roof panels:** assert that each panel's local +z (the slate normal) has a world Z component > 0.5. Per P10-3b, the panel's local x must run −X (S walk), +X (N), +Y (W) and −Y (E) for that to hold. Fix the rotators if any panel fails.
+
+**P10-4 spec** (technical-artist, [EDITOR]; commit "P10-4: …"):
+1. **Import every FBX** (MCP_NOTES "Importing meshes (FBX)": the kit import settings, no auto collision, combine meshes):
+   - `SourceArt/BellTower/*.fbx` → `/Game/LastBell/Environments/BellTower/Meshes/`;
+   - `SourceArt/Cloister/*.fbx` → `/Game/LastBell/Environments/Cloister/Meshes/`.
+   - Names exactly as the FBX.
+   - **Simple collision:** only `SM_LB_Tw_BellFrame_A` (4 UCX boxes), `SM_LB_Prop_GreatBell_A` (1 hull) and `SM_LB_Prop_SmallBell_A` (1 hull). Read back the convex counts.
+   - Every other mesh: no simple collision. Set the collision trace flag to default.
+2. **Nanite** (D1.5):
+   - **On:** every `SM_LB_Tw_*` and `SM_LB_Cl_*` (except the louvres), `SM_LB_Prop_GreatBell_A`, `SM_LB_Tw_BellFrame_A` and `SM_LB_Tw_BellHeadstock_A`.
+   - **Off:** the louvres, the rope and the four Mech 3 props.
+3. **New MIs** in `/Game/LastBell/Environments/BellTower/Materials/`, built exactly as D1.5 specifies:
+   - `MI_LB_BellBronze`, `MI_LB_Rope` and `MI_LB_Sally`;
+   - `MI_LB_BellBand_I..IV`.
+   - Import the textures from `ExternalAssets/Incoming/ambientcg-Metal058B/` and `ambientcg-Rope003/` (2K JPG) into `/Game/LastBell/Environments/BellTower/Textures/` with the correct compression: normals as Normalmap, roughness/metalness as Masks, linear.
+   - Read `M_LB_Surface`'s parameter names first (`MaterialInstanceTools`, full object paths). Set and read back every value.
+4. **Slot assignment per mesh** (static-mesh material slots, so placed actors need no overrides), per the D1.5 mapping:
+   - tower `MAT_Wood` → `MI_Chapel_Wood_Old`;
+   - cloister roofs, stair-house roof, C15 back panel and M2 → `MI_Prop_Wood_Weathered`;
+   - `MAT_Rubble` → `MI_Kit_Rubble`.
+   - Read back every slot.
+5. **Saves:** one package per `save_assets` call, and check `is_dirty` = false after each.
+6. **Thumbnails:** generate them for the bell, small bell, roof, a wall piece and a vault. Write a short `Docs/ArtTest/belltower/p10_4_import_report.md` listing per mesh: path, Nanite, tris, slots → MIs, and collision.
+7. **Suite:** 78/78. Imports cannot affect gameplay; run it anyway as the regression gate.
+8. **Untouched:** no placement in any level (that is P10-5); no edits to `L_Monastery`.
