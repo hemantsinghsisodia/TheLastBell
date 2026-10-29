@@ -1737,3 +1737,21 @@ Start only after the editor is restarted and `L_Monastery` is loaded clean.
    - "Mech_Shell" described as current;
    - G1/G2 `bCastVolumetricShadow` true.
    Do not edit.
+
+### D1.32 P9-8 close; Phase 9 ready for review (lead, 2026-10-29)
+- **P9-8a docs: accepted** (196a06e).
+  - MCP_NOTES: P9 section, items 1–15.
+  - DECISIONS: D-072 to D-076.
+  - RISKS: R-36 and R-37 closed; R-38 mitigated; R-39, R-40 and R-41 added. The lead corrected the R-38 text: 2 shadowed moon spots, G3 shadowless.
+  - PERFORMANCE_BUDGET: Phase 9 row.
+  - ASSET_REGISTRY: 17 usage cells now read "used in crypt (P9)", including `SM_Dungeon_door`.
+  - IMPLEMENTATION_PLAN: status line updated.
+  - TECHNICAL_DESIGN: no change needed (it lists only base classes).
+- **P9-8b QA: skipped by the owner** (2026-10-29: "final qa pass is not needed, wrap phase 9"). The last suite run was 78/78 after R2-C (d3a7e19), with the light `--check` at 16/16.
+- **Known documentation gaps (not blocking):**
+  - Earlier project-made procedural props used in the crypt (e.g. `SM_LB_Prop_Rafter_Broken_15x10x260`, `SM_LB_Prop_RoofPlanks_Broken_200x100x4`) have no registry rows.
+  - The external sources behind `MI_Prop_*`, the parents of the crypt MIs, are not traced in the registry.
+  - The P9-4 water edge-fade outcome is not recorded (MCP_NOTES item 4 describes the intended behaviour).
+- **Open item carried to a later phase:** the dress `--check` reports 118 failures. Not investigated, since the owner skipped QA.
+- **Housekeeping:** delete the untracked `Content/LastBell/Maps/L_Throwaway_P9_4.umap` once Unreal is closed. It is never committed.
+- **Phase 9 is ready for the owner's review.** Merge only on "approve and merge".
