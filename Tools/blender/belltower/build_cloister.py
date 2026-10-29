@@ -437,7 +437,7 @@ def face_relief_xy(hx, hy, z0, z1, courses, seed, u_inset, **kw):
 
 def build_pier(short, hx, hy, seed):
     """Pivot bottom centre.  base 0-25 (+4), chamfered shaft 25-300 (faces at +-hx, +-hy), bell capital 300-330 (+8), wall block 330-600,
-    coping 600-620 (+5), seat block 620-640 (inset 5) -- D1.3 C6/C7 (the seat block is a deviation, see README)."""
+    coping 600-620 (+5) -- D1.3 C6/C7.  Top at z 620 (D1.11: the name x640 is kept, tops are at 620)."""
     parts = []
     # base moulding z 0..25 projecting 4 (chamfered top)
     base = K.box(-hx - 4, hx + 4, -hy - 4, hy + 4, 0, 25, S1, 0.0)
@@ -471,12 +471,9 @@ def build_pier(short, hx, hy, seed):
     cop = K.box(-hx - 5, hx + 5, -hy - 5, hy + 5, 600.0, 620.0, S1, 0.0)
     K.bevel_all(cop, 2.5, 20.0)
     parts.append(cop)
-    # seat block for the lean-to wall plate z 620..640 (inset 5 from the shaft faces)
-    seat = K.box(-hx + 5, hx - 5, -hy + 5, hy - 5, 619.0, 640.0, S1, 0.0)
-    parts.append(seat)
     out = K.combine(*parts)
     free(*parts)
-    return CP(P + short, out, None, note="pivot bottom centre; base +4, shaft faces at +-%g/+-%g z 25..300, capital +8, block z 330..600, coping +5 z 600..620, seat block z 620..640" % (hx, hy))
+    return CP(P + short, out, None, note="pivot bottom centre; base +4, shaft faces at +-%g/+-%g z 25..300, capital +8, block z 330..600, coping +5 z 600..620, top z 620 (name keeps x640, D1.11)" % (hx, hy))
 
 
 def build_arcade_arch(short, span, seed):

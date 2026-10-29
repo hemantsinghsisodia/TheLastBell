@@ -166,10 +166,7 @@ def chk_pier(c, hx, hy):
     cor = [p for p in shaft if abs(abs(p.x) - hx) < 0.05 and abs(p.y) > hy - 5.9]
     if cor:
         c.fail("shaft corners not chamfered 6 cm (%d verts)" % len(cor))
-    seat = [p for p in pts if p.z > 621]
-    if seat and max(abs(p.x) for p in seat) > hx - 5 + 0.05:
-        c.fail("seat block not inset 5")
-    c.expect("top z", c.mx.z, 640.0, 0.05)
+    c.expect("top z (D1.11: tops at 620)", c.mx.z, 620.0, 0.05)
 
 
 def chk_arcade_arch(c, span):
@@ -539,8 +536,8 @@ def spec():
         add(P + "Wall40_" + sfx, (0, 0, 0), (L, 40, 450), KIT, 2500, check=lambda c: chk_wall(c, 450, False))
     add(P + "Archway_500x40x1300", (0, -6, 300), (500, 40, 1300), KIT, 8000, check=lambda c: chk_archway(c, 500.0, 300.0, 420.0))
     add(P + "Archway_300x40x1300", (0, -6, 330), (300, 40, 1300), KIT, 6000, check=lambda c: chk_archway(c, 300.0, 330.0, 450.0))
-    add(P + "Pier_80x80x640", (-48, -48, 0), (48, 48, 640), KIT, 1500, check=lambda c: chk_pier(c, 40.0, 40.0))
-    add(P + "PierCorner_130x80x640", (-73, -48, 0), (73, 48, 640), KIT, 1500, check=lambda c: chk_pier(c, 65.0, 40.0))
+    add(P + "Pier_80x80x640", (-48, -48, 0), (48, 48, 620), KIT, 1500, check=lambda c: chk_pier(c, 40.0, 40.0))
+    add(P + "PierCorner_130x80x640", (-73, -48, 0), (73, 48, 620), KIT, 1500, check=lambda c: chk_pier(c, 65.0, 40.0))
     for sp in (120, 170, 220, 270):
         add(P + "ArcadeArch_%dx80" % sp, (0, -45, 0), (sp, 45, 290), KIT, 3000, check=lambda c, sp=sp: chk_arcade_arch(c, sp))
     add(P + "GarthWall_1100x100", (0, -4, 0), (1100, 30, 100), KIT, 1500, check=chk_garth_wall)

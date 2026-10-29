@@ -109,8 +109,8 @@ def mk_stone(name, c0, c1, rough=0.9, scale=0.012, bump=0.45):
 
 
 def setup_materials():
-    mk_stone("MAT_Masonry", (0.085, 0.082, 0.075, 1), (0.20, 0.19, 0.17, 1), 0.92, 0.02, 0.5)
-    mk_stone("MAT_Trim", (0.14, 0.135, 0.12, 1), (0.30, 0.285, 0.25, 1), 0.88, 0.03, 0.35)
+    mk_stone("MAT_Masonry", (0.05, 0.05, 0.048, 1), (0.135, 0.13, 0.12, 1), 0.92, 0.02, 0.5)
+    mk_stone("MAT_Trim", (0.09, 0.088, 0.082, 1), (0.21, 0.2, 0.18, 1), 0.88, 0.03, 0.35)
     mk_stone("MAT_Rubble", (0.045, 0.043, 0.04, 1), (0.13, 0.12, 0.105, 1), 0.95, 0.05, 0.7)
     mk_stone("MAT_Slate", (0.025, 0.028, 0.034, 1), (0.075, 0.082, 0.095, 1), 0.55, 0.03, 0.25)
     mk_stone("MAT_Wood", (0.05, 0.032, 0.018, 1), (0.16, 0.10, 0.055, 1), 0.85, 0.01, 0.3)
@@ -120,7 +120,7 @@ def setup_materials():
     # bronze with verdigris
     b = bpy.data.materials.get("MAT_Bronze") or bpy.data.materials.new("MAT_Bronze")
     nt, bs = _clear(b)
-    cr, nz, mp = _noise_ramp(nt, 14.0 * 3, (0.34, 0.20, 0.09, 1), (0.10, 0.26, 0.20, 1), seed=5.0)
+    cr, nz, mp = _noise_ramp(nt, 14.0 * 3, (0.16, 0.09, 0.04, 1), (0.05, 0.16, 0.12, 1), seed=5.0)
     nt.links.new(cr.outputs['Color'], bs.inputs['Base Color'])
     bs.inputs['Metallic'].default_value = 0.85
     bs.inputs['Roughness'].default_value = 0.42
@@ -308,8 +308,7 @@ def roof_panel(name, origin, ex, slope_dir, sx, sy):
 
 def build_roofs(aligned_hole=True):
     """Lean-to roofs.  Eaves Z 640 -> top line Z 1200.  Frames: S x -X from X 12000, N x +X from 9500, W x +Y from 540, E x -Y from 3000 (the rotator that keeps the panel normal up).
-    N walk: D1 says the middle of 3 equal panels (X 10833-11667) is the _Hole panel, but 3 equal panels over X 9500-12000 put the middle at X 10333-11167;
-    here (aligned_hole) the hole panel sits at X 10833-11667 and the neighbours stretch (0.667 / 0.667 / 0.4) so the hole lies over the broken vault."""
+    N walk: D1.11 errata 1 (W 9500-10650 x1.15, hole 10650-11650 x1.00, E 11650-12000 x0.35)."""
     # S
     d = (0, -880, 560)
     ln = math.hypot(880, 560)
@@ -319,10 +318,7 @@ def build_roofs(aligned_hole=True):
     # N
     d = (0, 820, 560)
     ln = math.hypot(820, 560)
-    if aligned_hole:
-        segs = [(9500, 10167, None), (10167, 10833, None), (10833, 11667, "H"), (11667, 12067, None)]
-    else:
-        segs = [(9500, 10333, None), (10333, 11167, "H"), (11167, 12000, None)]
+    segs = [(9500, 10650, None), (10650, 11650, "H"), (11650, 12000, None)]       # D1.11 errata 1
     for (a, b, h) in segs:
         roof_panel("LeanTo_1000x1050_Hole" if h else "LeanTo_1000x1050", (a, 2180, 640), (1, 0, 0), d, (b - a) / 1000.0, ln / 1050.0)
     # W
@@ -355,10 +351,10 @@ def door_leaf(loc, yaw, hang=False):
     b = bmesh.new()
     n = 5
     for i in range(n):
-        bx = K.box(-52 + i * 20.8 + 0.3, -52 + (i + 1) * 20.8 - 0.3, -2.5, 2.5, 6, 236, 0, 0.5)
+        bx = K.box(-52 + i * 20.8 + 0.3, -52 + (i + 1) * 20.8 - 0.3, -2.5, 2.5, 4, 249, 0, 0.5)
         K.bm_append(b, bx)
         bx.free()
-    for z in (40, 190):
+    for z in (40, 200):
         K.bm_append(b, K.box(-52, 52, 2.5, 4.5, z, z + 12, 0, 0.4))
     iron = flat_mat("R_Iron", (0.02, 0.02, 0.022, 1), 0.5, 0.9)
     o = new_mesh_obj("door_leaf", b, [bpy.data.materials["MAT_Wood"]], grp="cells")
@@ -478,6 +474,7 @@ def make_text(txt, size, loc, rot_euler, mat, extrude=0.3, align='CENTER', name=
     o.data.materials.append(mat)
     o.location = loc
     o.rotation_euler = rot_euler
+    o.scale = (-1.0, 1.0, 1.0)                  # pre-mirrored: the camera below is mirrored too (authoring space = Y-mirror of Unreal)
     bpy.context.scene.collection.objects.link(o)
     o["grp"] = "bells"
     PLACED.append(o)
@@ -536,9 +533,12 @@ def add_sun(name, rot_deg, strength, color=(0.62, 0.72, 1.0)):
     return o
 
 
+LANTERN_SCALE = 0.35
+
+
 def add_point(name, loc, watts, color=(1.0, 0.55, 0.26), radius=6.0):
     l = bpy.data.lights.new(name, 'POINT')
-    l.energy = watts
+    l.energy = watts * LANTERN_SCALE
     l.color = color
     l.shadow_soft_size = radius
     o = bpy.data.objects.new(name, l)
@@ -561,10 +561,10 @@ def add_spot(name, loc, target, watts, cone_deg, color=(1.0, 0.6, 0.3), radius=8
     return o
 
 
-def setup_render(quick, samples, w=1600, h=900):
+def setup_render(quick, samples, w=1440, h=810):
     sc = bpy.context.scene
     sc.render.engine = 'CYCLES'
-    sc.cycles.samples = samples or (24 if quick else 160)
+    sc.cycles.samples = samples or (24 if quick else 80)
     sc.cycles.use_denoising = True
     sc.cycles.max_bounces = 6
     sc.cycles.use_adaptive_sampling = True
@@ -594,6 +594,7 @@ def setup_render(quick, samples, w=1600, h=900):
 
 
 def aim(cam, loc, target, lens=24.0):
+    cam.scale = (-1.0, 1.0, 1.0)
     cam.location = loc
     cam.data.lens = lens
     cam.data.clip_start = 5.0
@@ -607,6 +608,11 @@ def show_groups(groups, extra_names=()):
 
 
 # Each view: name, groups visible, camera loc, target, lens, lights fn, exposure
+def lights_section():
+    add_sun("moon", (70, 0, 250), 2.0)
+    add_point("fill", (11500, 925, 400), 8.0e6, radius=20)
+
+
 def lights_corner_in():
     add_sun("moon", (58, 0, 205), 0.45)
     for (x, y) in ((10560, 760), (11500, 900), (9900, 780)):
@@ -615,13 +621,13 @@ def lights_corner_in():
 
 
 def lights_garth():
-    add_sun("moon", (52, 0, 200), 0.7)
+    add_sun("moon", (52, 0, 200), 1.4)
     for (x, y) in ((10560, 760), (11500, 900)):
         add_point("lantern_%d" % x, (x, y, 235), 4.0e6, radius=6)
 
 
 def lights_collapse():
-    add_sun("moon", (46, 0, 175), 1.6)
+    add_sun("moon", (22, 0, 180), 3.0)
     add_point("lantern_a", (10700, 2600, 235), 4.0e6, radius=6)
     add_point("lantern_b", (11700, 2550, 235), 3.0e6, radius=6)
 
@@ -643,23 +649,25 @@ def lights_cell():
 
 
 def lights_stair():
-    add_sun("moon", (40, 0, 150), 1.1)
+    add_sun("moon", (40, 0, 10), 1.5)
     add_point("stair_lantern", (10650, 120, 360), 6.0e6, radius=5)
 
 
 ALL = {"walls", "arcade", "garth", "vault", "roof", "cells", "floor", "dress", "passage", "stairhouse", "bells"}
 VIEWS = {
-    "corner_in": dict(file="p10_3b_cloister_corner_walk", groups=ALL - {"bells"}, loc=(11380, 850, 175), tgt=(9900, 1000, 330), lens=20, lights=lights_corner_in, exp=1.6),
-    "corner_garth": dict(file="p10_3b_cloister_corner_garth", groups=ALL - {"bells"}, loc=(11200, 1700, 190), tgt=(9900, 2650, 520), lens=18, lights=lights_garth, exp=1.2),
-    "collapse": dict(file="p10_3b_collapse_ne_bay", groups=ALL - {"bells"}, loc=(10300, 1950, 170), tgt=(11150, 2500, 520), lens=18, lights=lights_collapse, exp=1.2),
-    "collapse_hi": dict(file="p10_3b_collapse_ne_bay_walk", groups=ALL - {"bells"}, loc=(10050, 2450, 165), tgt=(11200, 2480, 520), lens=22, lights=lights_collapse, exp=1.4),
-    "archway": dict(file="p10_3b_w_archway_from_passage", groups=ALL - {"bells"}, loc=(8300, 2000, 165), tgt=(9800, 2000, 330), lens=24, lights=lights_archway, exp=1.2),
-    "garth": dict(file="p10_3b_garth_graves_cross", groups=ALL - {"bells"}, loc=(10300, 1500, 220), tgt=(10950, 1900, 130), lens=24, lights=lights_garth, exp=1.2),
-    "garth_hi": dict(file="p10_3b_garth_cross_close", groups=ALL - {"bells"}, loc=(10350, 1550, 130), tgt=(10850, 1800, 150), lens=30, lights=lights_garth, exp=1.2),
-    "cell": dict(file="p10_3b_cell_door", groups=ALL - {"bells"}, loc=(10500, 2560, 150), tgt=(10500, 3000, 135), lens=30, lights=lights_cell, exp=1.6),
-    "stairhouse": dict(file="p10_3b_stairhouse", groups=ALL - {"bells"}, loc=(10300, -1100, 260), tgt=(10650, 100, 280), lens=24, lights=lights_stair, exp=1.2),
-    "bells": dict(file="p10_3b_mech3_bells_inscription", groups={"bells", "floor"}, loc=(11520, 2380, 150), tgt=(12000, 2380, 150), lens=26, lights=lights_bells, exp=1.8),
-    "bells_close": dict(file="p10_3b_mech3_bells_close", groups={"bells", "floor"}, loc=(11760, 2300, 135), tgt=(12000, 2330, 125), lens=30, lights=lights_bells, exp=1.8),
+    "corner_in": dict(file="p10_3b_cloister_corner_walk", groups=ALL - {"bells"}, loc=(11380, 850, 175), tgt=(9900, 1000, 330), lens=20, lights=lights_corner_in, exp=0.9),
+    "corner_garth": dict(file="p10_3b_cloister_corner_garth", groups=ALL - {"bells"}, loc=(11200, 1700, 190), tgt=(9900, 2650, 520), lens=18, lights=lights_garth, exp=1.8),
+    "ceiling": dict(file="p10_3b_groin_ceiling_up", groups=ALL - {"bells"}, loc=(10300, 925, 150), tgt=(9900, 925, 700), lens=18, lights=lights_corner_in, exp=0.9),
+    "section": dict(file="p10_3b_section_s_bay_roof_clearance", groups={"vault", "roof", "walls", "arcade"}, loc=(11500, 925, 760), tgt=(10000, 925, 760), lens=24, lights=lights_section, exp=2.2, xr=(10300, 10800), ortho=1700),
+    "collapse": dict(file="p10_3b_collapse_ne_bay", groups=ALL - {"bells"}, loc=(11300, 1000, 1150), tgt=(11200, 2450, 760), lens=24, lights=lights_collapse, exp=1.0),
+    "collapse_hi": dict(file="p10_3b_collapse_ne_bay_walk", groups=ALL - {"bells"}, loc=(10050, 2450, 165), tgt=(11200, 2480, 520), lens=22, lights=lights_collapse, exp=1.2),
+    "archway": dict(file="p10_3b_w_archway_from_passage", groups=ALL - {"bells"}, loc=(8300, 2000, 165), tgt=(9800, 2000, 330), lens=24, lights=lights_archway, exp=0.5),
+    "garth": dict(file="p10_3b_garth_graves_cross", groups=ALL - {"bells"}, loc=(10300, 1500, 220), tgt=(10950, 1900, 130), lens=24, lights=lights_garth, exp=1.8),
+    "garth_hi": dict(file="p10_3b_garth_cross_close", groups=ALL - {"bells"}, loc=(10330, 1520, 175), tgt=(10850, 1800, 190), lens=26, lights=lights_garth, exp=2.6),
+    "cell": dict(file="p10_3b_cell_door", groups=ALL - {"bells"}, loc=(10500, 2560, 150), tgt=(10500, 3000, 135), lens=30, lights=lights_cell, exp=0.9),
+    "stairhouse": dict(file="p10_3b_stairhouse", groups=ALL - {"bells"}, loc=(10050, -950, 640), tgt=(10650, 80, 330), lens=26, lights=lights_stair, exp=1.0),
+    "bells": dict(file="p10_3b_mech3_bells_inscription", groups={"bells", "floor"}, loc=(11520, 2380, 150), tgt=(12000, 2380, 150), lens=26, lights=lights_bells, exp=1.1),
+    "bells_close": dict(file="p10_3b_mech3_bells_close", groups={"bells", "floor"}, loc=(11760, 2300, 135), tgt=(12000, 2330, 125), lens=30, lights=lights_bells, exp=1.1),
 }
 
 
@@ -689,6 +697,19 @@ def main():
         v = VIEWS[nm]
         clear_lights()
         show_groups(v["groups"])
+        if v.get("xr"):
+            for o in PLACED:
+                if o.hide_render:
+                    continue
+                bb = [o.matrix_world @ Vector(c) for c in o.bound_box]
+                x0, x1 = min(b.x for b in bb), max(b.x for b in bb)
+                if x1 < v["xr"][0] or x0 > v["xr"][1]:
+                    o.hide_render = True
+        if v.get("ortho"):
+            cam.data.type = 'ORTHO'
+            cam.data.ortho_scale = v["ortho"]
+        else:
+            cam.data.type = 'PERSP'
         v["lights"]()
         sc.view_settings.exposure = v["exp"]
         aim(cam, v["loc"], v["tgt"], v["lens"])
