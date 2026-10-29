@@ -661,7 +661,7 @@ for cid, org, yaw, note in clusters:
         check=False)
     add(f"L_Crypt_Candle_{cid}", "light", "Point", "", (org[0], org[1], org[2] + 25.0), (0.0, 0.0, 0.0), (1, 1, 1), "-",
         "Lighting/Crypt", note=note, check=False,
-        extra={"light": {"type": "PointLight", "lumens": 80 if cid.startswith("Puzzle") else (45 if cid.startswith("Sarc") else 60),
+        extra={"light": {"type": "PointLight", "lumens": 40 if cid.startswith("Puzzle") else (67.5 if cid.startswith("Sarc") else 90),   # P9-7 F7 / D1.16 accepted values
                          "radius": 320 if cid.startswith("Puzzle") else (250 if cid.startswith("Sarc") else 280),
                          "color": [255, 147, 70], "shadows": False, "light_function": "MI_LF_Candle", "source_radius": 2}})
 
@@ -683,19 +683,27 @@ for i, (mesh, (x, y), s) in enumerate(FLOOR_BONES):
 for tid, loc, yaw, note in TORCHES:
     w = to_world(loc, yaw, 0.0, 30.0, 45.0)
     add(f"L_Crypt_Torch_{tid}", "light", "Point", "", w, (0.0, 0.0, 0.0), (1, 1, 1), "-", "Lighting/Crypt", note=note, check=False,
-        extra={"light": {"type": "PointLight", "lumens": 500, "radius": 700, "color": [255, 140, 60], "shadows": False,
-                         "light_function": "MI_LF_Torch", "source_radius": 4, "volumetric_scattering": 1.0,
+        extra={"light": {"type": "PointLight", "lumens": 250, "radius": 350 if tid in ("T1", "T3") else 700, "color": [255, 140, 60], "shadows": False,
+                         # F7 (D1.16/D1.17): 250 lm, T1/T3 radius 350 (T2 700); R2-C (D1.25): scattering 1.0 -> 0.5
+                         "light_function": "MI_LF_Torch", "source_radius": 4, "volumetric_scattering": 0.5,
                          "fire": "PS_Fire_00 at the torch head, scale copied from the courtyard wall torch"}})
 add("L_Crypt_Brazier", "light", "Point", "", (11000, -2300, -440), (0.0, 0.0, 0.0), (1, 1, 1), "-", "Lighting/Crypt", check=False,
-    extra={"light": {"type": "PointLight", "lumens": 400, "radius": 650, "color": [255, 110, 40], "shadows": False,
+    extra={"light": {"type": "PointLight", "lumens": 200, "radius": 650, "color": [255, 110, 40], "shadows": False,
                      "light_function": "MI_LF_Fire", "source_radius": 8, "fire": "PS_Fire_01 in the charcoal pit, scale to fit 55 cm"}})
-for gid, loc, rot in (("G1", (8250, -2247.5, -50), "moon"), ("G2", (9750, -2280, -50), "moon"), ("G3", (11050, -1625, -46), (-58.1, 137.3, 0.0))):
+# Moon shafts. Accepted values: G1 560 / G2 900 lm (D1.16); G3 250 lm, radius 550, shadowless, aimed 40 cm below Note_Chains (R2-C, D1.25).
+# R2-C: bCastVolumetricShadow false on all three (it stepped the beam edges) and G1/G2 scattering 1.5 -> 0.8 (0.5 failed the +-15 % pose-mean check).
+MOON = {"G1": dict(lumens=560, radius=900, inner=8, outer=20, shadows=True, scatter=0.8),
+        "G2": dict(lumens=900, radius=900, inner=8, outer=20, shadows=True, scatter=0.8),
+        "G3": dict(lumens=250, radius=550, inner=6, outer=16, shadows=False, scatter=1.5)}
+for gid, loc, rot in (("G1", (8250, -2247.5, -50), "moon"), ("G2", (9750, -2280, -50), "moon"), ("G3", (11050, -1625, -46), (-67.3, 137.1, 0.0))):
+    m = MOON[gid]
     add(f"L_Crypt_Moon_{gid}", "light", "Point", "", loc, rot if isinstance(rot, tuple) else (-78.0, 0.0, 0.0), (1, 1, 1), "-",
-        "Lighting/Crypt", note=("aimed at the clue plaque centre (10920, -1505, -330)" if gid == "G3"
+        "Lighting/Crypt", note=("aimed at (10920, -1504, -470): 40 cm below the Note_Chains centre (10920, -1504.15, -430)" if gid == "G3"
                                 else "yaw = DirectionalLight_1 yaw (the moon azimuth); pitch -78"), check=False,
-        extra={"light": {"type": "SpotLight", "lumens": 1200, "radius": 900 if gid != "G3" else 750, "inner_cone": 8 if gid != "G3" else 12,
-                         "outer_cone": 20 if gid != "G3" else 26, "color": [158, 184, 255], "shadows": True, "volumetric_scattering": 1.5,
-                         "tune": "pool centre luma 0.25-0.45 (G1/G2 floor; G3 the plaque)"}})
+        extra={"light": {"type": "SpotLight", "lumens": m["lumens"], "radius": m["radius"], "inner_cone": m["inner"],
+                         "outer_cone": m["outer"], "color": [158, 184, 255], "shadows": m["shadows"], "volumetric_scattering": m["scatter"],
+                         "volumetric_shadow": False,
+                         "tune": "pool centre luma 0.25-0.45 (G1/G2 floor); G3: pool on the note 0.30-0.45, note in the brightest third"}})
 
 # -- decals (P9-6a). Wall decals: rotation (0, yaw, 90), DecalSize (depth, vertical/2, horizontal/2); floor: (-90, yaw, 0) --
 def wall_decal(did, mi, run_id, along, zc, vhalf, hhalf, note=""):
@@ -882,7 +890,8 @@ for d in [p for p in placements if p["cat"] == "light"]:
     L = d["light"]
     extra = L.get("light_function", "")
     if "inner_cone" in L:
-        extra = f"cone {L['inner_cone']}/{L['outer_cone']}; scattering {L['volumetric_scattering']}; tune: {L['tune']}"
+        extra = (f"cone {L['inner_cone']}/{L['outer_cone']}; scattering {L['volumetric_scattering']}; "
+                 f"volumetric shadow {L.get('volumetric_shadow', False)}; tune: {L['tune']}")
     if "fire" in L:
         extra += f"; {L['fire']}"
     lines.append(f"| {d['id']} | {L['type']} | {fmt(d['loc'])} | {fmt(d['rot'])} | {L['lumens']} | {L['radius']} | {fmt(L['color'])} | "

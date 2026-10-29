@@ -367,22 +367,22 @@ Wall: rotation (0, yaw, 90), DecalSize = (depth, vertical half, horizontal half)
 
 | Label | Type | Location | Rotation | Lumens | Radius | Colour | Shadows | Light function / extra | Note |
 |---|---|---|---|---|---|---|---|---|---|
-| L_Crypt_Candle_Niche_E_WC | PointLight | (6612, -1847.11, -443.7) | (0, 0, 0) | 60 | 280 | (255, 147, 70) | False | MI_LF_Candle | candle niche in CA_Wall_E_WC_0 |
-| L_Crypt_Candle_Niche_N_SC | PointLight | (7103.35, -2188, -443.7) | (0, 0, 0) | 60 | 280 | (255, 147, 70) | False | MI_LF_Candle | candle niche in CA_Wall_N_SC_0 |
-| L_Crypt_Candle_Niche_S_FP | PointLight | (9704.73, -2472, -443.7) | (0, 0, 0) | 60 | 280 | (255, 147, 70) | False | MI_LF_Candle | candle niche in CA_Wall_S_FP_1 |
-| L_Crypt_Candle_Niche_E_CC | PointLight | (11512, -1640.87, -443.7) | (0, 0, 0) | 60 | 280 | (255, 147, 70) | False | MI_LF_Candle | candle niche in CA_Wall_E_CC_1 |
-| L_Crypt_Candle_Niche_S_NC | PointLight | (10696.6, -1112, -443.7) | (0, 0, 0) | 60 | 280 | (255, 147, 70) | False | MI_LF_Candle | candle niche in CA_Wall_S_NC_0 |
-| L_Crypt_Candle_Sarc_0 | PointLight | (7690, -2750, -505) | (0, 0, 0) | 45 | 250 | (255, 147, 70) | False | MI_LF_Candle | on the sarcophagus lid, west end |
-| L_Crypt_Candle_Sarc_1 | PointLight | (8810, -2750, -505) | (0, 0, 0) | 45 | 250 | (255, 147, 70) | False | MI_LF_Candle | on the sarcophagus lid, east end |
-| L_Crypt_Candle_Puzzle_W | PointLight | (10690, -1545, -575) | (0, 0, 0) | 80 | 320 | (255, 147, 70) | False | MI_LF_Candle | floor, west of the lever row |
-| L_Crypt_Candle_Puzzle_E | PointLight | (11150, -1545, -575) | (0, 0, 0) | 80 | 320 | (255, 147, 70) | False | MI_LF_Candle | floor, east of the lever row |
-| L_Crypt_Torch_T1 | PointLight | (6324, -1100, -355) | (0, 0, 0) | 500 | 700 | (255, 140, 60) | False | MI_LF_Torch; PS_Fire_00 at the torch head, scale copied from the courtyard wall torch | landing west wall, seen from the stair foot |
-| L_Crypt_Torch_T2 | PointLight | (8976, -2700, -355) | (0, 0, 0) | 500 | 700 | (255, 140, 60) | False | MI_LF_Torch; PS_Fire_00 at the torch head, scale copied from the courtyard wall torch | ossuary east wall, south of J5: draws the player east |
-| L_Crypt_Torch_T3 | PointLight | (11150, -724, -355) | (0, 0, 0) | 500 | 700 | (255, 140, 60) | False | MI_LF_Torch; PS_Fire_00 at the torch head, scale copied from the courtyard wall torch | north corridor north wall, by the exit gate |
-| L_Crypt_Brazier | PointLight | (11000, -2300, -440) | (0, 0, 0) | 400 | 650 | (255, 110, 40) | False | MI_LF_Fire; PS_Fire_01 in the charcoal pit, scale to fit 55 cm |  |
-| L_Crypt_Moon_G1 | SpotLight | (8250, -2247.5, -50) | (-78, 0, 0) | 1200 | 900 | (158, 184, 255) | True | cone 8/20; scattering 1.5; tune: pool centre luma 0.25-0.45 (G1/G2 floor; G3 the plaque) | yaw = DirectionalLight_1 yaw (the moon azimuth); pitch -78 |
-| L_Crypt_Moon_G2 | SpotLight | (9750, -2280, -50) | (-78, 0, 0) | 1200 | 900 | (158, 184, 255) | True | cone 8/20; scattering 1.5; tune: pool centre luma 0.25-0.45 (G1/G2 floor; G3 the plaque) | yaw = DirectionalLight_1 yaw (the moon azimuth); pitch -78 |
-| L_Crypt_Moon_G3 | SpotLight | (11050, -1625, -46) | (-58.1, 137.3, 0) | 1200 | 750 | (158, 184, 255) | True | cone 12/26; scattering 1.5; tune: pool centre luma 0.25-0.45 (G1/G2 floor; G3 the plaque) | aimed at the clue plaque centre (10920, -1505, -330) |
+| L_Crypt_Candle_Niche_E_WC | PointLight | (6612, -1847.11, -443.7) | (0, 0, 0) | 90 | 280 | (255, 147, 70) | False | MI_LF_Candle | candle niche in CA_Wall_E_WC_0 |
+| L_Crypt_Candle_Niche_N_SC | PointLight | (7103.35, -2188, -443.7) | (0, 0, 0) | 90 | 280 | (255, 147, 70) | False | MI_LF_Candle | candle niche in CA_Wall_N_SC_0 |
+| L_Crypt_Candle_Niche_S_FP | PointLight | (9704.73, -2472, -443.7) | (0, 0, 0) | 90 | 280 | (255, 147, 70) | False | MI_LF_Candle | candle niche in CA_Wall_S_FP_1 |
+| L_Crypt_Candle_Niche_E_CC | PointLight | (11512, -1640.87, -443.7) | (0, 0, 0) | 90 | 280 | (255, 147, 70) | False | MI_LF_Candle | candle niche in CA_Wall_E_CC_1 |
+| L_Crypt_Candle_Niche_S_NC | PointLight | (10696.6, -1112, -443.7) | (0, 0, 0) | 90 | 280 | (255, 147, 70) | False | MI_LF_Candle | candle niche in CA_Wall_S_NC_0 |
+| L_Crypt_Candle_Sarc_0 | PointLight | (7690, -2750, -505) | (0, 0, 0) | 67.5 | 250 | (255, 147, 70) | False | MI_LF_Candle | on the sarcophagus lid, west end |
+| L_Crypt_Candle_Sarc_1 | PointLight | (8810, -2750, -505) | (0, 0, 0) | 67.5 | 250 | (255, 147, 70) | False | MI_LF_Candle | on the sarcophagus lid, east end |
+| L_Crypt_Candle_Puzzle_W | PointLight | (10690, -1545, -575) | (0, 0, 0) | 40 | 320 | (255, 147, 70) | False | MI_LF_Candle | floor, west of the lever row |
+| L_Crypt_Candle_Puzzle_E | PointLight | (11150, -1545, -575) | (0, 0, 0) | 40 | 320 | (255, 147, 70) | False | MI_LF_Candle | floor, east of the lever row |
+| L_Crypt_Torch_T1 | PointLight | (6324, -1100, -355) | (0, 0, 0) | 250 | 350 | (255, 140, 60) | False | MI_LF_Torch; PS_Fire_00 at the torch head, scale copied from the courtyard wall torch | landing west wall, seen from the stair foot |
+| L_Crypt_Torch_T2 | PointLight | (8976, -2700, -355) | (0, 0, 0) | 250 | 700 | (255, 140, 60) | False | MI_LF_Torch; PS_Fire_00 at the torch head, scale copied from the courtyard wall torch | ossuary east wall, south of J5: draws the player east |
+| L_Crypt_Torch_T3 | PointLight | (11150, -724, -355) | (0, 0, 0) | 250 | 350 | (255, 140, 60) | False | MI_LF_Torch; PS_Fire_00 at the torch head, scale copied from the courtyard wall torch | north corridor north wall, by the exit gate |
+| L_Crypt_Brazier | PointLight | (11000, -2300, -440) | (0, 0, 0) | 200 | 650 | (255, 110, 40) | False | MI_LF_Fire; PS_Fire_01 in the charcoal pit, scale to fit 55 cm |  |
+| L_Crypt_Moon_G1 | SpotLight | (8250, -2247.5, -50) | (-78, 0, 0) | 560 | 900 | (158, 184, 255) | True | cone 8/20; scattering 0.8; volumetric shadow False; tune: pool centre luma 0.25-0.45 (G1/G2 floor); G3: pool on the note 0.30-0.45, note in the brightest third | yaw = DirectionalLight_1 yaw (the moon azimuth); pitch -78 |
+| L_Crypt_Moon_G2 | SpotLight | (9750, -2280, -50) | (-78, 0, 0) | 900 | 900 | (158, 184, 255) | True | cone 8/20; scattering 0.8; volumetric shadow False; tune: pool centre luma 0.25-0.45 (G1/G2 floor); G3: pool on the note 0.30-0.45, note in the brightest third | yaw = DirectionalLight_1 yaw (the moon azimuth); pitch -78 |
+| L_Crypt_Moon_G3 | SpotLight | (11050, -1625, -46) | (-67.3, 137.1, 0) | 250 | 550 | (158, 184, 255) | False | cone 6/16; scattering 1.5; volumetric shadow False; tune: pool centre luma 0.25-0.45 (G1/G2 floor); G3: pool on the note 0.30-0.45, note in the brightest third | aimed at (10920, -1504, -470): 40 cm below the Note_Chains centre (10920, -1504.15, -430) |
 
 ## Floor tiles (179)
 

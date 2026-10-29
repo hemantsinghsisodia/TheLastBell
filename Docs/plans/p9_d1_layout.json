@@ -25012,7 +25012,7 @@
    "note": "candle niche in CA_Wall_E_WC_0",
    "light": {
     "type": "PointLight",
-    "lumens": 60,
+    "lumens": 90,
     "radius": 280,
     "color": [
      255,
@@ -25283,7 +25283,7 @@
    "note": "candle niche in CA_Wall_N_SC_0",
    "light": {
     "type": "PointLight",
-    "lumens": 60,
+    "lumens": 90,
     "radius": 280,
     "color": [
      255,
@@ -25554,7 +25554,7 @@
    "note": "candle niche in CA_Wall_S_FP_1",
    "light": {
     "type": "PointLight",
-    "lumens": 60,
+    "lumens": 90,
     "radius": 280,
     "color": [
      255,
@@ -25825,7 +25825,7 @@
    "note": "candle niche in CA_Wall_E_CC_1",
    "light": {
     "type": "PointLight",
-    "lumens": 60,
+    "lumens": 90,
     "radius": 280,
     "color": [
      255,
@@ -26096,7 +26096,7 @@
    "note": "candle niche in CA_Wall_S_NC_0",
    "light": {
     "type": "PointLight",
-    "lumens": 60,
+    "lumens": 90,
     "radius": 280,
     "color": [
      255,
@@ -26367,7 +26367,7 @@
    "note": "on the sarcophagus lid, west end",
    "light": {
     "type": "PointLight",
-    "lumens": 45,
+    "lumens": 67.5,
     "radius": 250,
     "color": [
      255,
@@ -26638,7 +26638,7 @@
    "note": "on the sarcophagus lid, east end",
    "light": {
     "type": "PointLight",
-    "lumens": 45,
+    "lumens": 67.5,
     "radius": 250,
     "color": [
      255,
@@ -26909,7 +26909,7 @@
    "note": "floor, west of the lever row",
    "light": {
     "type": "PointLight",
-    "lumens": 80,
+    "lumens": 40,
     "radius": 320,
     "color": [
      255,
@@ -27180,7 +27180,7 @@
    "note": "floor, east of the lever row",
    "light": {
     "type": "PointLight",
-    "lumens": 80,
+    "lumens": 40,
     "radius": 320,
     "color": [
      255,
@@ -27652,8 +27652,8 @@
    "note": "landing west wall, seen from the stair foot",
    "light": {
     "type": "PointLight",
-    "lumens": 500,
-    "radius": 700,
+    "lumens": 250,
+    "radius": 350,
     "color": [
      255,
      140,
@@ -27662,7 +27662,7 @@
     "shadows": false,
     "light_function": "MI_LF_Torch",
     "source_radius": 4,
-    "volumetric_scattering": 1.0,
+    "volumetric_scattering": 0.5,
     "fire": "PS_Fire_00 at the torch head, scale copied from the courtyard wall torch"
    }
   },
@@ -27700,7 +27700,7 @@
    "note": "ossuary east wall, south of J5: draws the player east",
    "light": {
     "type": "PointLight",
-    "lumens": 500,
+    "lumens": 250,
     "radius": 700,
     "color": [
      255,
@@ -27710,7 +27710,7 @@
     "shadows": false,
     "light_function": "MI_LF_Torch",
     "source_radius": 4,
-    "volumetric_scattering": 1.0,
+    "volumetric_scattering": 0.5,
     "fire": "PS_Fire_00 at the torch head, scale copied from the courtyard wall torch"
    }
   },
@@ -27748,8 +27748,8 @@
    "note": "north corridor north wall, by the exit gate",
    "light": {
     "type": "PointLight",
-    "lumens": 500,
-    "radius": 700,
+    "lumens": 250,
+    "radius": 350,
     "color": [
      255,
      140,
@@ -27758,7 +27758,7 @@
     "shadows": false,
     "light_function": "MI_LF_Torch",
     "source_radius": 4,
-    "volumetric_scattering": 1.0,
+    "volumetric_scattering": 0.5,
     "fire": "PS_Fire_00 at the torch head, scale copied from the courtyard wall torch"
    }
   },
@@ -27796,7 +27796,7 @@
    "note": "",
    "light": {
     "type": "PointLight",
-    "lumens": 400,
+    "lumens": 200,
     "radius": 650,
     "color": [
      255,
@@ -27843,7 +27843,7 @@
    "note": "yaw = DirectionalLight_1 yaw (the moon azimuth); pitch -78",
    "light": {
     "type": "SpotLight",
-    "lumens": 1200,
+    "lumens": 560,
     "radius": 900,
     "inner_cone": 8,
     "outer_cone": 20,
@@ -27853,8 +27853,9 @@
      255
     ],
     "shadows": true,
-    "volumetric_scattering": 1.5,
-    "tune": "pool centre luma 0.25-0.45 (G1/G2 floor; G3 the plaque)"
+    "volumetric_scattering": 0.8,
+    "volumetric_shadow": false,
+    "tune": "pool centre luma 0.25-0.45 (G1/G2 floor); G3: pool on the note 0.30-0.45, note in the brightest third"
    }
   },
   {
@@ -27891,7 +27892,7 @@
    "note": "yaw = DirectionalLight_1 yaw (the moon azimuth); pitch -78",
    "light": {
     "type": "SpotLight",
-    "lumens": 1200,
+    "lumens": 900,
     "radius": 900,
     "inner_cone": 8,
     "outer_cone": 20,
@@ -27901,8 +27902,9 @@
      255
     ],
     "shadows": true,
-    "volumetric_scattering": 1.5,
-    "tune": "pool centre luma 0.25-0.45 (G1/G2 floor; G3 the plaque)"
+    "volumetric_scattering": 0.8,
+    "volumetric_shadow": false,
+    "tune": "pool centre luma 0.25-0.45 (G1/G2 floor); G3: pool on the note 0.30-0.45, note in the brightest third"
    }
   },
   {
@@ -27915,8 +27917,8 @@
     -46
    ],
    "rot": [
-    -58.1,
-    137.3,
+    -67.3,
+    137.1,
     0.0
    ],
    "scale": [
@@ -27936,21 +27938,22 @@
     -1625.0,
     -46.0
    ],
-   "note": "aimed at the clue plaque centre (10920, -1505, -330)",
+   "note": "aimed at (10920, -1504, -470): 40 cm below the Note_Chains centre (10920, -1504.15, -430)",
    "light": {
     "type": "SpotLight",
-    "lumens": 1200,
-    "radius": 750,
-    "inner_cone": 12,
-    "outer_cone": 26,
+    "lumens": 250,
+    "radius": 550,
+    "inner_cone": 6,
+    "outer_cone": 16,
     "color": [
      158,
      184,
      255
     ],
-    "shadows": true,
+    "shadows": false,
     "volumetric_scattering": 1.5,
-    "tune": "pool centre luma 0.25-0.45 (G1/G2 floor; G3 the plaque)"
+    "volumetric_shadow": false,
+    "tune": "pool centre luma 0.25-0.45 (G1/G2 floor); G3: pool on the note 0.30-0.45, note in the brightest third"
    }
   },
   {

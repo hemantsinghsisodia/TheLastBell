@@ -10,6 +10,7 @@ Usage (editor open on L_Monastery):
 Placed categories (P9-5): backdrop wall pitwall portal vault column ossuary tile stair soffit ceiling grate water.
 P9-6a adds: lining (R4 greybox slab-face lining; F1 CA_Parapet_* rail enclosures), dress (CD_* dressing), decal (CD_Decal_* DecalActors).
 P9-7 adds `light` (16 records, PointLight/SpotLight, label = id, folder Lighting/Crypt; G1/G2 yaw = DirectionalLight_1 yaw, pitch -78).
+R2-C: `--cats light --check` also reads back each record's `volumetric_shadow` (bCastVolumetricShadow), cones, scattering, shadows, radius and lumens; the records hold the accepted scene values.
 Fires, shaft cards, LFV and PP_Crypt are in place_lighting.py. Never run --cats light while PIE is running (it would spawn in the PIE world).
 Dress skulls: actor yaw = record face_yaw + SKULL_OFFSETS[mesh] (override: --skull-offset SM_Skull_00=90 ...).
 Decals: DecalActor via add_to_scene_from_class; decal.mi -> NewDecalComponent.decalMaterial, decal.size -> decalSize
@@ -290,8 +291,8 @@ class Placer:
         if "light_function" in L:
             n = L["light_function"]
             v["lightFunctionMaterial"] = {"refPath": LF_DIR + n + "." + n}
-        if rec["id"].startswith("L_Crypt_Moon_"):
-            v["bCastVolumetricShadow"] = True
+        if "volumetric_shadow" in L:   # R2-C: a record field now (moon spots: false, it stepped the shaft edges); read back by --check
+            v["bCastVolumetricShadow"] = bool(L["volumetric_shadow"])
         return v
 
     def place_light(self, rec):
