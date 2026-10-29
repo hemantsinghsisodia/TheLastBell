@@ -990,3 +990,76 @@ The wrap-around patrol segment that crosses the garth is routed around it, which
 6. **Thumbnails:** generate them for the bell, small bell, roof, a wall piece and a vault. Write a short `Docs/ArtTest/belltower/p10_4_import_report.md` listing per mesh: path, Nanite, tris, slots → MIs, and collision.
 7. **Suite:** 78/78. Imports cannot affect gameplay; run it anyway as the regression gate.
 8. **Untouched:** no placement in any level (that is P10-5); no edits to `L_Monastery`.
+
+### D1.13 P10-5 spec: structure placement (environment-designer, [EDITOR]; commits "P10-5: …")
+**Inputs** (the P10-L generator, final at 0e621ec; never hand-edit):
+- `Docs/plans/p10_d1_layout.json`, with keys `placements`, `hide_greybox`, `ground_materials` and `pieces`;
+- `p10_d1_tables.md`.
+
+**Placement script:** `Tools/belltower/place_tower.py`, adapted from `Tools/crypt/place_crypt.py`.
+- **Options:** `--cats`, `--only`, `--check`, `--fix-collision`, plus:
+  - `--hide-greybox` (set `bVisible=false` on every `hide_greybox` label's StaticMeshComponent; collision untouched);
+  - `--verify-greybox` (read back `bVisible` and the collision profile, and run trace checks);
+  - `--ground` (apply `ground_materials`).
+- **Each record:**
+  - spawn the mesh (or the engine cube for `cat: block`) with the record's label, folder, location, rotation and scale;
+  - collision per the record:
+    - `NoCollision`: set both `collisionProfileName` and `bodyInstance.collisionEnabled` (MCP_NOTES);
+    - `BlockAll`;
+    - `hidden-block`: BlockAll, then StaticMeshComponent visible = false;
+  - material overrides **only** where the record's `mi_slots` differs from the mesh's own slot material set in P10-4 (e.g. floor slabs).
+- **Skip** records with `extras.skip_place` (they are owned by the child BPs in P10-6b), `cat: dress` (P10-6a) and `cat: light` (P10-7).
+- **`--check`:**
+  - the world AABB is within 3 cm of `aabb_min/max`, using the P9 rule for off-axis rotations;
+  - collision and materials match the record;
+  - for `hidden-block`, the actor is not visible and its profile is BlockAll.
+
+**Order:**
+1. `--cats block`, then check.
+2. `--hide-greybox`, then `--verify-greybox`.
+   - Trace checks must still hit: a vertical trace on 3 steps (F01_05, F06_07, F11_13), landing 5, the core centre at Z 1200 (horizontal, from the W ring), the `Garth` top, one cloister wall and one passage wall.
+3. `--ground`, and read back the 4 slab materials.
+4. Structure categories, one category per run, then `--check` on each: `wall`, `tower`, `stair`, `arcade`, `vault`, `roof`, `floor`, `garth`, `door`, `doorleaf`.
+5. **Save `L_Monastery` once after each step** (its own `save_assets` call; check `is_dirty` false). Commit after steps 2, 4-vaults and 4-end.
+
+**Gap and look pass:**
+- Captures: `Tools/crypt/capture_poses.py --raise`, poses in `Tools/belltower/poses/p10_5_poses.json`. Use PIE Simulate with a temporary 3000 lm shadowless light via `--light`, as in P9-5 (a PIE-only copy; never saved). Editor-mode captures are acceptable where PIE fails.
+- **Spaces:**
+
+  | Space | Views |
+  |---|---|
+  | Cloister | 4 corners looking along both walks and up into the groins; the 4 walk midpoints looking up (rib/wall/arcade junctions) |
+  | Collapse bay | looking up |
+  | Archways | the W archway from both sides; the S archway |
+  | Stair-house | from the top of the crypt stair (10650, 0, −120) looking +Y |
+  | Passage | both ends |
+  | Tower | base inside the door; up the shaft from the W ring (12150, 2000, 170, pitch 70); landings 3, 6 and 9 looking along the next flight; the belfry from `WP_TowerStairs_24` (the bell is still the greybox cylinder until P10-6b) |
+  | Exterior | tower from the gate (300, 0, 170) aimed at the tower; tower from the cloister NW corner |
+
+- **Pass criteria:**
+  - no greybox colour visible (white BasicShape, WorldGrid or checker) anywhere the art should be;
+  - no black or sky slit wider than 2 cm at wall/vault/arcade/roof/stair junctions;
+  - no z-fighting;
+  - nothing floating;
+  - on the S walk, no rafters or slates visible below or through the vault, and no gap between the arcade wall top and the eaves seen from the garth;
+  - from the gate the belfry and the broken roof read against the sky.
+- **Fixes:**
+  - move or scale that record ±10 cm or ±2 %, but only by changing the generator (`gen_tower_layout.py`), re-running it (exit 0) and re-placing that record;
+  - record every fix.
+  - If a fix needs a mesh change, stop and report it (P10-3 owners).
+
+**Tests:**
+- `mirror_build_and_test.ps1` 78/78, with these named:
+  - WalkPath.Monastery: TowerStairs and CryptToCloister PASS;
+  - RouteBot.Monastery Success (cloister bells, Mech 3, doors, stairs, finale);
+  - Warden.MonasteryReachability (the hidden blocks change the navmesh);
+  - StagesRelocateTheWarden;
+  - the Save tests.
+- If any test fails, stop and report with the log lines. Do not "fix" gameplay.
+
+**End state:**
+- map saved and not dirty;
+- no `TMP_` actors and no PIE proxies;
+- throttle restored to true;
+- the 9 dirty BPs from P10-2 never saved.
+- Report the record counts placed per category, the check results, the captures (and what each shows) and the fixes made.
