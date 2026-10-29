@@ -1063,3 +1063,161 @@ The wrap-around patrol segment that crosses the garth is routed around it, which
 - throttle restored to true;
 - the 9 dirty BPs from P10-2 never saved.
 - Report the record counts placed per category, the check results, the captures (and what each shows) and the fixes made.
+
+### D1.14 P10-5 review; cloister roof valleys; P10-5b / P10-5c specs (lead, 2026-10-30)
+**P10-5 accepted in part** (4919443, 0244245, 692ad1b, 2e3a379):
+- 222 records placed and every `--check` passes (worst bounds deviation 0.01 cm).
+  - The 8 hidden blocks are BlockAll and invisible, and a trace across each one hits it.
+  - All 280 greybox actors are hidden with their collision unchanged.
+  - The 8 verify-greybox traces hit before hiding, after hiding and after all the art was placed.
+- Suite 78/78, including WalkPath.Monastery (TowerStairs, CryptToCloister), RouteBot.Monastery, Warden.MonasteryReachability, StagesRelocateTheWarden and the Save tests.
+- **Generator fix accepted:** the cell-door frame's `MAT_Rubble` slot maps to `MI_Prop_Wood_Weathered`, which matches P10-4.
+- **Captures (8 of 44)** are clean except for the roofs:
+  - the S and W walk barrel vaults with ribs;
+  - the pointed arcade;
+  - a cell door and its leaf;
+  - the W archway into the passage;
+  - the E arcade with the tower and the readable tablet behind it.
+
+**Fail: the cloister roofs show through the vaults.**
+- **Cause.** Each C14 run covers the full outer-wall length (X 9500–12000 or Y 540–3000). So every walk's roof continues through both corner squares, and its eaves strip (Z 640) crosses the neighbouring walk.
+- **Lead numeric check:** rafter underside = plane − 15 / cos α, against the four-centred extrados (rise 340, R2 = span; a groin is the max of its two barrels, as in `build_groin`), on a 5 cm grid over all 10 bays. The lowest panel sits up to:
+  - **258 cm** below the extrados where an eaves strip crosses a walk bay (the dark rafters in `mid_s_up_outer` and the "eave" across the far end of `cl_sw_along_s` / `cl_sw_along_w`);
+  - **207 cm** below it in the groins (`cl_sw_groin`, `cl_ne_groin`).
+- **Erratum to D1.3.** "At the corners the panels overlap and form the valleys" is wrong: two full planes do not make a valley, and the lower one stays visible from below.
+- **The fix (D-082).** Over a corner the roof is a **valley**: the surface is the higher of the two walk planes, max(Z_a, Z_b).
+  - Each walk's roof stops at the garth corners.
+  - Two valley-cut triangular panels meet in each corner square along the valley line, from the garth eaves corner (Z 640) to the outer-wall corner (Z 1200).
+- **Why it clears.**
+  - Each walk plane clears its own barrel.
+  - A groin's extrados is the max of the same two barrels.
+  - So the valley roof clears every groin.
+- **The same numeric check with the valley layout:**
+
+  | Bay | Minimum clearance |
+  |---|---|
+  | SE groin | 7.2 cm |
+  | S walk and SW groin | 9.3 cm |
+  | NE groin | 17.2 cm |
+  | N walk, W walk and NW groin | 18.3 cm |
+  | E walk | 38.8 cm |
+
+  No bay is negative.
+- **Accepted consequence.** The N walk's hole panel must now end at the NE garth corner (X 11380).
+  - Its hole covers X 10853–11287, which overlaps the broken vault's hole (X 10900–11450) by 387 cm.
+  - The east 163 cm of the vault hole shows roof timbers from below, read as a partial roof collapse.
+- **Also fixed in P10-5c:** `Ground_3` (X 10500–10800, Y −3600…−100) and `Ground_5` (X 7400–8000, Y −3600…−1300) still use `WorldGridMaterial` and can be seen from the belfry. Add both to `ground_materials` with `MI_Kit_Floor`.
+- **Missing captures (36).** `CaptureViewport` timed out because the editor was covered by other windows (Claude, the floating Message Log) and minimised at the start (MCP_NOTES §6).
+  - P10-5c captures all 44 poses again after the roof fix.
+  - The owner keeps the Unreal Editor window visible and uncovered during that run.
+
+**Roof layout** (replaces the D1.3 / D1.11 panel split):
+- Same eaves and top lines, the same per-walk rotators (`rot_from_rows`, unchanged) and the same local frames as the current generator.
+- The origin is on the walk's eaves line at Z 640, at run offset `off` from the run start `a` in the run direction:
+  - S runs −X from 12000;
+  - N runs +X from 9500;
+  - W runs +Y from 540;
+  - E runs −Y from 3000.
+- **y-scale = Ls / 1050:**
+
+  | Walk | y-scale | Ls (cm) |
+  |---|---|---|
+  | S | 0.993398 | 1043.07 |
+  | N, W | 0.945690 | 992.97 |
+  | E | 0.795682 | 835.46 |
+
+| Label | Mesh | off | Width | x-scale | Origin (world) | Covers |
+|---|---|---|---|---|---|---|
+| `CLA_Roof_S_0` | `Valley_L` | 0 | 620 | 0.62 | (12000, 1420, 640) | SE corner, S side |
+| `CLA_Roof_S_1` | `LeanTo` | 620 | 1060 | 1.06 | (11380, 1420, 640) | S walk X 11380 → 10320 |
+| `CLA_Roof_S_2` | `Valley_R` | 1680 | 820 | 0.82 | (10320, 1420, 640) | SW corner, S side |
+| `CLA_Roof_N_0` | `Valley_L` | 0 | 820 | 0.82 | (9500, 2180, 640) | NW corner, N side |
+| `CLA_Roof_N_1` | `LeanTo` | 820 | 440 | 0.44 | (10320, 2180, 640) | N walk X 10320–10760 |
+| `CLA_Roof_N_2` | `LeanTo_Hole` | 1260 | 620 | 0.62 | (10760, 2180, 640) | N walk X 10760–11380; hole X 10853–11287 |
+| `CLA_Roof_N_3` | `Valley_R` | 1880 | 620 | 0.62 | (11380, 2180, 640) | NE corner, N side |
+| `CLA_Roof_W_0` | `Valley_L` | 0 | 880 | 0.88 | (10320, 540, 640) | SW corner, W side |
+| `CLA_Roof_W_1` | `LeanTo` | 880 | 760 | 0.76 | (10320, 1420, 640) | W walk Y 1420–2180 |
+| `CLA_Roof_W_2` | `Valley_R` | 1640 | 820 | 0.82 | (10320, 2180, 640) | NW corner, W side |
+| `CLA_Roof_E_0` | `Valley_L` | 0 | 820 | 0.82 | (11380, 3000, 640) | NE corner, E side |
+| `CLA_Roof_E_1` | `LeanTo` | 820 | 760 | 0.76 | (11380, 2180, 640) | E walk Y 2180 → 1420 |
+| `CLA_Roof_E_2` | `Valley_R` | 1580 | 880 | 0.88 | (11380, 1420, 640) | SE corner, E side |
+
+- The widths add up to each run: S and N 2500, W and E 2460.
+- In every corner, the `Valley_L` of one walk and the `Valley_R` of the other share both hypotenuse ends:
+  - the garth corner (10320 or 11380, 1420 or 2180, 640);
+  - the outer corner (9500 or 12000, 540 or 3000, 1200).
+- In each corner square, the triangle kept is the one where its own plane is the higher one.
+- All 12 old labels are in the new set, so `place_tower.py`'s `remove_existing` deletes them all. `CLA_Roof_N_3` is new.
+
+**P10-5b spec** (technical-artist; Blender headless, then [EDITOR] for the import; commits "P10-5b: …"):
+1. **C14V, two new pieces in `Tools/blender/belltower/build_cloister.py`** (seeds 1241 L and 1242 R):
+   - Frame, layers and slots are exactly C14's:
+     - the pivot is at the eaves-line start;
+     - x 0..1000 along the eaves, y 0..1050 up the slope, z is the panel normal;
+     - rafters 12 × 15 at 60 c/c (z −15..0), sarking 0..2.8, battens, and slates 2.8..8.8;
+     - slots `["MAT_Slate", "MAT_Wood"]`.
+   - **`SM_LB_Cl_LeanTo_Valley_L_1000x1050`** keeps the triangle (0, 1050)–(1000, 1050)–(1000, 0): the points with 1050·x + 1000·y ≥ 1 050 000. The eaves vertex is at (1000, 0).
+   - **`SM_LB_Cl_LeanTo_Valley_R_1000x1050`** keeps the triangle (0, 0)–(0, 1050)–(1000, 1050): the points with 1000·y − 1050·x ≥ 0. The eaves vertex is at (0, 0).
+   - **Method:**
+     1. Build the full panel with `slate_panel(1000.0, 1050.0, seed)` (no hole, no snaps).
+     2. `bmesh.ops.bisect_plane` with the vertical plane through the hypotenuse:
+        - L: point (1000, 0, 0), normal ∝ (1050, 1000, 0);
+        - R: point (0, 0, 0), normal ∝ (−1050, 1000, 0).
+     3. Delete the geometry on the cut-away side.
+     4. Cap the open cut loops with `bmesh.ops.holes_fill`. If some loops fail, report the count; open cut faces are acceptable because they lie inside the neighbouring triangle's slate layer.
+   - **Valley rafter:** `MAT_Wood`, 12 wide × 15 deep (z −15..0), along the full hypotenuse. Its outer face lies on the cut line and its body is inside the kept triangle. The ends are cut square to the piece bounds, so it never pokes outside x 0..1000, y 0..1050.
+   - **Bounds:** x 0..1000, y 0..1050, z −15..9 (±1). Nanite budget ≤ 30 000 tris each.
+   - **`verify_cloister.py`:** add both pieces (bounds, slots, tris) and check:
+     - every vertex has a signed distance to the hypotenuse ≥ −0.5 cm (nothing on the cut-away side);
+     - L has a vertex within 2 cm of (1000, 0) and of (0, 1050); R has one within 2 cm of (0, 0) and of (1000, 1050).
+2. **`render_cloister.py`:** switch the assembly's roofs to the 13-record table above (the old 3-panel loops at lines 317–334 go). Add two renders, and LOOK at them:
+   - `cloister_sw_groin_up`: camera (9900, 1000, 170), pitch +80, looking up into the SW groin with walls, vaults and roofs. Pass: no timber or slate visible below or through the vault.
+   - `cloister_roofs_top`: camera (12600, 0, 2600) aimed at (10850, 1800, 700). Pass: all four valleys read as clean diagonal creases, there is no gap or step along any valley, and the N-walk hole is visible.
+   - Re-render `cloister_corner_walk` and `collapse_ne_bay_walk` and compare them with the P10-3b versions.
+3. **Export** both FBX files to `SourceArt/Cloister/` and add both entries to `cloister_report.json`, with measured bounds, slots and tris.
+4. **[EDITOR] Import** both into `/Game/LastBell/Environments/Cloister/Meshes/` with the P10-4 settings: combine meshes, no auto collision, collision trace flag default, Nanite on.
+   - Slots: `MAT_Slate` → `MI_Kit_Slate`, `MAT_Wood` → `MI_Prop_Wood_Weathered`. Read every slot back.
+   - Save one package per `save_assets` call, then check `is_dirty` is false.
+   - Generate thumbnails.
+   - Append both rows to `Docs/ArtTest/belltower/p10_4_import_report.md`.
+5. **Untouched:** no placement, no level edits, no generator edits, and never save the 9 dirty P10-2 Blueprints.
+
+**P10-5c spec** (environment-designer [EDITOR]; commits "P10-5c: …"):
+1. **Generator** (`Tools/belltower/gen_tower_layout.py`):
+   - **Pieces:** add `SM_LB_Cl_LeanTo_Valley_L_1000x1050` and `_R_` from `cloister_report.json` (mbounds, slots `["MAT_Slate", "MAT_Wood"]`, seeds 1241 / 1242).
+   - **Roofs:** replace the three-equal-panel loop with the explicit 13-row table above. Keep `ROOF_WALKS`, the rotator code and the y-scale formula. Every record gets the extras:
+     - `walk`, `eaves`, `top`, `slope_len`, `x_dir`, `y_dir`, `run_from`, `run_to`, `line_axis`;
+     - `hole` (true only for `N_2`);
+     - `valley`: "L", "R" or none.
+   - **`ground_materials`:** add `Ground_3` and `Ground_5` → `MI_Kit_Floor`.
+   - **Checks** (replace or add):
+     - **Count:** 13 roof panels.
+     - **Tiling:** the widths tile each run with no gap or overlap (S and N 2500, W and E 2460).
+     - **Rectangles** stay out of the corner squares: S and N inside X 10320–11380; W and E inside Y 1420–2180.
+     - **Corners on the lines:** the transformed corners of every rectangle lie on the eaves and top lines within 1 cm. For each triangle, its three vertices: the eaves vertex on the eaves line, and both top vertices on the top line.
+     - **Valley lines:** in each corner the two triangles' hypotenuse ends coincide within 1 cm, at the garth corner (Z 640) and the outer corner (Z 1200).
+     - **Roof vs vault:** on a 5 cm grid over every vault bay inside the walls (X 9500–12000, Y 540–3000):
+       - the roof underside is the max over the covering panels of (plane Z − 15 / cos α);
+       - it must be ≥ 5 cm above the vault extrados (four-centred, rise 340, R2 = span, as `build_cloister.four_centred`; groins are the max of their two barrels);
+       - report the minimum per bay (expected about 7.2 cm in the SE groin).
+     - **N hole:** the roof hole's X range overlaps the vault hole X 10900–11450 by ≥ 380 cm (expected 387). This replaces the old "covers" check.
+   - **Re-run:** exit 0. The JSON diff may change only the roof records (12 → 13), `ground_materials` and the `pieces` entries.
+2. **Place:**
+   - `place_tower.py --cats roof`, then `--check` with 0 failures.
+   - The folder `Cloister/Art/Roofs` must hold exactly the 13 new labels.
+   - `--ground` (6 slabs), then read the 6 materials back.
+   - Save `L_Monastery` (its own call) and check `is_dirty` is false. Commit.
+3. **Captures:** all 44 poses of `Tools/belltower/poses/p10_5_poses.json` with `--force`, written to `Docs/ArtTest/belltower/p10_5c_*.png`.
+   - **Before the run:**
+     - close every floating editor window (Message Log, import dialogs) and un-minimise the editor;
+     - set `bThrottleCPUWhenNotForeground` false in memory;
+     - tell the lead the run is starting (the owner keeps the editor uncovered).
+   - **Editor mode** for structure: `--editor --double --raise --timeout 4`. Helper icons are acceptable.
+   - **PIE with `--light`** only for `cl_sw_along_s` and `cl_sw_along_w`, as in P10-5.
+   - Follow the circuit-breaker rules in MCP_NOTES §6. A pose that still fails goes on the owner checklist; never fake it.
+4. **Judge** every capture against the D1.13 pass criteria. Also check:
+   - in every groin and walk-end view, no timber or slate below the vault;
+   - from the garth, the four valleys and the eaves read cleanly;
+   - from the gate and the cloister, the belfry and the broken tower roof read against the sky.
+   - **Fixes** go only through the generator (±10 cm / ±2 %). Record every fix. If a mesh issue turns up, stop and report it.
+5. **Suite** 78/78 with the D1.13 named tests. End state as D1.13; restore the throttle to true.
