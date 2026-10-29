@@ -1608,3 +1608,45 @@ Start only after the editor is restarted and `L_Monastery` is loaded clean.
   - Instance `set_properties` on `relativeLocation`/`relativeScale3D` applies only one axis when the other two match the template, so set one axis per call.
 - **Owner playtest:** open both doors and confirm the backing swings with them and does not clip the jamb.
 - **Next: R2-C** (D1.25, unchanged; `Note_Chains` is 2×, centre (10920, −1504.15, −430), 56 × 40 cm).
+
+### D1.30 R2-C review; R2 complete (lead, 2026-10-29)
+- **Accepted** (d3a7e19).
+- **Staircase:** `L_Crypt_Moon_G1/G2` `bCastVolumetricShadow` false, scattering 1.5 → **0.8**; torches T1–T3 scattering 1.0 → 0.5.
+  - The stepped slabs in the beams came from the volumetric shadow. The beam is now one smooth cone (`r2c_flooded_passage_oldref.png` vs `r2c_flooded_passage_r2c.png`).
+  - **Deviation accepted:** 0.8 instead of 0.5, because 0.5 failed the ±15 % mean test.
+  - Means vs a same-session F7 baseline:
+
+    | Pose | Change |
+    |---|---|
+    | 05 | −6.4 % |
+    | 07 | −4.6 % |
+    | 08 | −4.2 % |
+    | d11 | −5.0 % |
+- **Roof gobo:** the 4 cubes are replaced by one `Gobo_Moon_Roof` (`SM_LB_Gobo_RoofHole`) with the same flags and Channel1 only.
+  - The lit parallelogram on the roof slab is gone (`r2c_ext_chapel_before.png` vs `_after.png`). A thin rim of about 9 cm stays lit along the hole edge (the 0.7 offset).
+  - Roof patch 1.001 vs R1-B; moon leak check 0.403 (< 1.0).
+- **G3:** aimed at (10920, −1504, −470), 250 lm, radius 550.
+  - **Deviation accepted:** cones 12/26 → **6/16**. At about 15° grazing, a wide cone's brightest region is always the upper wall, whatever the lumens.
+  - The note's wall sits at the 73rd percentile of the pool (brightest third), with a pool median of 0.413 at 2 m (target 0.30–0.45).
+  - `SA_Crypt_G3` re-oriented. The note reads as clearly lit in a defined moon pool (`r2c_09_puzzle_wall_final.png`).
+- **Layout JSON:** all 16 crypt light records were stale and are now synced to the accepted scene values.
+  - `place_crypt.py` now reads `volumetric_shadow` from the record instead of hard-coding it.
+  - `--check` 16/16, 0.00 cm deviation.
+- **Suite:** 78/78. End state clean: map not dirty, no `TMP_` actors, throttle true.
+- **Lesson for MCP_NOTES (P9-8):** Static actors ignore `set_actor_transform` in PIE. To A/B a gobo in PIE, toggle `castShadow` on its components instead.
+
+**R2 is complete:** R2-A, R2-A2, R2-A3, R2-B, R2-B2 and R2-C. **Next: P9-8** (D1.18: 8a docs, 8b QA, 8c owner playtest), only on the owner's go.
+
+**Owner playtest checklist (consolidated):**
+1. In normal Play (not Simulate), the chapel gobo plates and lancet cubes are invisible: no bright blobs in the sky.
+2. From the courtyard, the roof hole shows no lit slab. Judge the thin lit rim.
+3. Crypt moon beams are smooth (flooded passage, J4 shaft).
+4. `Note_Chains`: lit, readable, pickable. `Note_Gatehouse`: pickable.
+5. Bell wheel: look and quarter turn. Altar plate: if it reads as a hole, switch it to `MI_LB_Bronze`.
+6. Levers A/B/C: look, and high/mid/low through real interaction.
+7. Both doors: they swing with their backing, do not clip the jamb, and hinge on the correct side.
+8. GPU at High (`stat gpu`) in the chain chamber and the ossuary (≤ 16.6 ms).
+9. Carried over:
+   - candle bloom;
+   - sacristy table warmth;
+   - interior poses 04/05/14 darkness.
