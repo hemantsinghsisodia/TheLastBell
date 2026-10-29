@@ -1,0 +1,1285 @@
+[
+ {
+  "name": "SM_LB_Cl_Wall40_400x1300_A",
+  "seed": 1201,
+  "min": [
+   0.0,
+   -6.0,
+   0.0
+  ],
+  "max": [
+   400.0,
+   40.0,
+   1300.0
+  ],
+  "dims": [
+   400.0,
+   46.0,
+   1300.0
+  ],
+  "tris": 3880,
+  "slots": [
+   "MAT_Masonry",
+   "MAT_Trim",
+   "MAT_Rubble"
+  ],
+  "slots_used": [
+   0,
+   1,
+   2
+  ],
+  "ucx": 0,
+  "seconds": 1.0,
+  "note": "T 40, inner face y 0; drip course y -6..0 at z 1210..1230 (inner face only)"
+ },
+ {
+  "name": "SM_LB_Cl_Wall40_400x1300_B",
+  "seed": 1202,
+  "min": [
+   0.0,
+   -6.0,
+   0.0
+  ],
+  "max": [
+   400.0,
+   40.0,
+   1300.0
+  ],
+  "dims": [
+   400.0,
+   46.0,
+   1300.0
+  ],
+  "tris": 3706,
+  "slots": [
+   "MAT_Masonry",
+   "MAT_Trim",
+   "MAT_Rubble"
+  ],
+  "slots_used": [
+   0,
+   1,
+   2
+  ],
+  "ucx": 0,
+  "seconds": 1.6,
+  "note": "T 40, inner face y 0; drip course y -6..0 at z 1210..1230 (inner face only)"
+ },
+ {
+  "name": "SM_LB_Cl_Wall40_100x1300",
+  "seed": 1203,
+  "min": [
+   0.0,
+   -6.0,
+   0.0
+  ],
+  "max": [
+   100.0,
+   40.0,
+   1300.0
+  ],
+  "dims": [
+   100.0,
+   46.0,
+   1300.0
+  ],
+  "tris": 918,
+  "slots": [
+   "MAT_Masonry",
+   "MAT_Trim",
+   "MAT_Rubble"
+  ],
+  "slots_used": [
+   0,
+   1
+  ],
+  "ucx": 0,
+  "seconds": 0.3,
+  "note": "T 40, inner face y 0; drip course y -6..0 at z 1210..1230 (inner face only)"
+ },
+ {
+  "name": "SM_LB_Cl_Wall40_400x800_A",
+  "seed": 1204,
+  "min": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "max": [
+   400.0,
+   40.0,
+   800.0
+  ],
+  "dims": [
+   400.0,
+   40.0,
+   800.0
+  ],
+  "tris": 2478,
+  "slots": [
+   "MAT_Masonry",
+   "MAT_Trim",
+   "MAT_Rubble"
+  ],
+  "slots_used": [
+   0,
+   1,
+   2
+  ],
+  "ucx": 0,
+  "seconds": 1.3,
+  "note": "T 40, inner face y 0"
+ },
+ {
+  "name": "SM_LB_Cl_Wall40_400x800_B",
+  "seed": 1205,
+  "min": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "max": [
+   400.0,
+   40.0,
+   800.0
+  ],
+  "dims": [
+   400.0,
+   40.0,
+   800.0
+  ],
+  "tris": 2444,
+  "slots": [
+   "MAT_Masonry",
+   "MAT_Trim",
+   "MAT_Rubble"
+  ],
+  "slots_used": [
+   0,
+   1,
+   2
+  ],
+  "ucx": 0,
+  "seconds": 1.3,
+  "note": "T 40, inner face y 0"
+ },
+ {
+  "name": "SM_LB_Cl_Wall40_100x800",
+  "seed": 1206,
+  "min": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "max": [
+   100.0,
+   40.0,
+   800.0
+  ],
+  "dims": [
+   100.0,
+   40.0,
+   800.0
+  ],
+  "tris": 512,
+  "slots": [
+   "MAT_Masonry",
+   "MAT_Trim",
+   "MAT_Rubble"
+  ],
+  "slots_used": [
+   0,
+   1
+  ],
+  "ucx": 0,
+  "seconds": 0.2,
+  "note": "T 40, inner face y 0"
+ },
+ {
+  "name": "SM_LB_Cl_Wall40_400x450",
+  "seed": 1207,
+  "min": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "max": [
+   400.0,
+   40.0,
+   450.0
+  ],
+  "dims": [
+   400.0,
+   40.0,
+   450.0
+  ],
+  "tris": 1476,
+  "slots": [
+   "MAT_Masonry",
+   "MAT_Trim",
+   "MAT_Rubble"
+  ],
+  "slots_used": [
+   0,
+   1,
+   2
+  ],
+  "ucx": 0,
+  "seconds": 0.6,
+  "note": "T 40, inner face y 0"
+ },
+ {
+  "name": "SM_LB_Cl_Wall40_100x450",
+  "seed": 1208,
+  "min": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "max": [
+   100.0,
+   40.0,
+   450.0
+  ],
+  "dims": [
+   100.0,
+   40.0,
+   450.0
+  ],
+  "tris": 280,
+  "slots": [
+   "MAT_Masonry",
+   "MAT_Trim",
+   "MAT_Rubble"
+  ],
+  "slots_used": [
+   0,
+   1
+  ],
+  "ucx": 0,
+  "seconds": 0.1,
+  "note": "T 40, inner face y 0"
+ },
+ {
+  "name": "SM_LB_Cl_Archway_500x40x1300",
+  "seed": 1209,
+  "min": [
+   0.0,
+   -6.0,
+   300.0
+  ],
+  "max": [
+   500.0,
+   40.0,
+   1300.0
+  ],
+  "dims": [
+   500.0,
+   46.0,
+   1000.0
+  ],
+  "tris": 5156,
+  "slots": [
+   "MAT_Masonry",
+   "MAT_Trim",
+   "MAT_Rubble"
+  ],
+  "slots_used": [
+   0,
+   1,
+   2
+  ],
+  "ucx": 0,
+  "seconds": 1.3,
+  "note": "tympanum of a full-width four-centred opening: springing z 300 at x 0 and 500, apex z 420; lower radius 87.5 (span/4 = 125.0), upper radius 2958.8, apex slope 9.0 deg; ring radial width 40; drip y -6..0 at z 1210..1230 (cloister face only); no mesh below the springing line"
+ },
+ {
+  "name": "SM_LB_Cl_Archway_300x40x1300",
+  "seed": 1210,
+  "min": [
+   0.0,
+   -6.0,
+   330.0
+  ],
+  "max": [
+   300.0,
+   40.0,
+   1300.0
+  ],
+  "dims": [
+   300.0,
+   46.0,
+   970.0
+  ],
+  "tris": 3479,
+  "slots": [
+   "MAT_Masonry",
+   "MAT_Trim",
+   "MAT_Rubble"
+  ],
+  "slots_used": [
+   0,
+   1,
+   2
+  ],
+  "ucx": 0,
+  "seconds": 0.8,
+  "note": "tympanum of a full-width four-centred opening: springing z 330 at x 0 and 300, apex z 450; lower radius 75.0 (span/4 = 75.0), upper radius 226.5, apex slope 9.0 deg; ring radial width 40; drip y -6..0 at z 1210..1230 (cloister face only); no mesh below the springing line"
+ },
+ {
+  "name": "SM_LB_Cl_Pier_80x80x640",
+  "seed": 1211,
+  "min": [
+   -48.0,
+   -48.0,
+   0.0
+  ],
+  "max": [
+   48.0,
+   48.0,
+   640.0
+  ],
+  "dims": [
+   96.0,
+   96.0,
+   640.0
+  ],
+  "tris": 800,
+  "slots": [
+   "MAT_Masonry",
+   "MAT_Trim",
+   "MAT_Rubble"
+  ],
+  "slots_used": [
+   0,
+   1
+  ],
+  "ucx": 0,
+  "seconds": 0.1,
+  "note": "pivot bottom centre; base +4, shaft faces at +-40/+-40 z 25..300, capital +8, block z 330..600, coping +5 z 600..620, seat block z 620..640"
+ },
+ {
+  "name": "SM_LB_Cl_PierCorner_130x80x640",
+  "seed": 1212,
+  "min": [
+   -73.0,
+   -48.0,
+   0.0
+  ],
+  "max": [
+   73.0,
+   48.0,
+   640.0
+  ],
+  "dims": [
+   146.0,
+   96.0,
+   640.0
+  ],
+  "tris": 910,
+  "slots": [
+   "MAT_Masonry",
+   "MAT_Trim",
+   "MAT_Rubble"
+  ],
+  "slots_used": [
+   0,
+   1,
+   2
+  ],
+  "ucx": 0,
+  "seconds": 0.1,
+  "note": "pivot bottom centre; base +4, shaft faces at +-65/+-40 z 25..300, capital +8, block z 330..600, coping +5 z 600..620, seat block z 620..640"
+ },
+ {
+  "name": "SM_LB_Cl_ArcadeArch_120x80",
+  "seed": 1213,
+  "min": [
+   0.0,
+   -45.0,
+   0.0
+  ],
+  "max": [
+   120.0,
+   45.0,
+   290.0
+  ],
+  "dims": [
+   120.0,
+   90.0,
+   290.0
+  ],
+  "tris": 898,
+  "slots": [
+   "MAT_Masonry",
+   "MAT_Trim",
+   "MAT_Rubble"
+  ],
+  "slots_used": [
+   0,
+   1,
+   2
+  ],
+  "ucx": 0,
+  "seconds": 0.2,
+  "note": "pivot = left springing point, x 0..120, two-centred R 96.0, intrados apex z 88.99, spandrel top 270, coping 270..290 (+5)"
+ },
+ {
+  "name": "SM_LB_Cl_ArcadeArch_170x80",
+  "seed": 1214,
+  "min": [
+   0.0,
+   -45.0,
+   0.0
+  ],
+  "max": [
+   170.0,
+   45.0,
+   290.0
+  ],
+  "dims": [
+   170.0,
+   90.0,
+   290.0
+  ],
+  "tris": 1146,
+  "slots": [
+   "MAT_Masonry",
+   "MAT_Trim",
+   "MAT_Rubble"
+  ],
+  "slots_used": [
+   0,
+   1
+  ],
+  "ucx": 0,
+  "seconds": 0.3,
+  "note": "pivot = left springing point, x 0..170, two-centred R 136.0, intrados apex z 126.08, spandrel top 270, coping 270..290 (+5)"
+ },
+ {
+  "name": "SM_LB_Cl_ArcadeArch_220x80",
+  "seed": 1215,
+  "min": [
+   0.0,
+   -45.0,
+   0.0
+  ],
+  "max": [
+   220.0,
+   45.0,
+   290.0
+  ],
+  "dims": [
+   220.0,
+   90.0,
+   290.0
+  ],
+  "tris": 1370,
+  "slots": [
+   "MAT_Masonry",
+   "MAT_Trim",
+   "MAT_Rubble"
+  ],
+  "slots_used": [
+   0,
+   1,
+   2
+  ],
+  "ucx": 0,
+  "seconds": 0.4,
+  "note": "pivot = left springing point, x 0..220, two-centred R 176.0, intrados apex z 163.16, spandrel top 270, coping 270..290 (+5)"
+ },
+ {
+  "name": "SM_LB_Cl_ArcadeArch_270x80",
+  "seed": 1216,
+  "min": [
+   0.0,
+   -45.0,
+   0.0
+  ],
+  "max": [
+   270.0,
+   45.0,
+   290.0
+  ],
+  "dims": [
+   270.0,
+   90.0,
+   290.0
+  ],
+  "tris": 1672,
+  "slots": [
+   "MAT_Masonry",
+   "MAT_Trim",
+   "MAT_Rubble"
+  ],
+  "slots_used": [
+   0,
+   1
+  ],
+  "ucx": 0,
+  "seconds": 0.6,
+  "note": "pivot = left springing point, x 0..270, two-centred R 216.0, intrados apex z 200.24, spandrel top 270, coping 270..290 (+5)"
+ },
+ {
+  "name": "SM_LB_Cl_GarthWall_1100x100",
+  "seed": 1217,
+  "min": [
+   0.0,
+   -4.0,
+   0.0
+  ],
+  "max": [
+   1100.0,
+   30.0,
+   100.0
+  ],
+  "dims": [
+   1100.0,
+   34.0,
+   100.0
+  ],
+  "tris": 878,
+  "slots": [
+   "MAT_Masonry",
+   "MAT_Trim",
+   "MAT_Rubble"
+  ],
+  "slots_used": [
+   0,
+   1,
+   2
+  ],
+  "ucx": 0,
+  "seconds": 0.2,
+  "note": "y 0 = walk-facing face, body to y +15, coping y -4..+30 at z 88..100 (top exactly 100)"
+ },
+ {
+  "name": "SM_LB_Cl_GarthWall_800x100",
+  "seed": 1218,
+  "min": [
+   0.0,
+   -4.0,
+   0.0
+  ],
+  "max": [
+   800.0,
+   30.0,
+   100.0
+  ],
+  "dims": [
+   800.0,
+   34.0,
+   100.0
+  ],
+  "tris": 678,
+  "slots": [
+   "MAT_Masonry",
+   "MAT_Trim",
+   "MAT_Rubble"
+  ],
+  "slots_used": [
+   0,
+   1,
+   2
+  ],
+  "ucx": 0,
+  "seconds": 0.2,
+  "note": "y 0 = walk-facing face, body to y +15, coping y -4..+30 at z 88..100 (top exactly 100)"
+ },
+ {
+  "name": "SM_LB_Cl_GarthBed_1100x800",
+  "seed": 1219,
+  "min": [
+   0.0,
+   0.0,
+   -8.0
+  ],
+  "max": [
+   1100.0,
+   800.0,
+   9.8
+  ],
+  "dims": [
+   1100.0,
+   800.0,
+   17.8
+  ],
+  "tris": 13280,
+  "slots": [
+   "MAT_Earth"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 0,
+  "seconds": 0.1,
+  "note": "earth bed over the garth block: z -8 (back plane) .. surface -2.5..+9.8; outer 35 cm band flat at z -1 (D1.11); six hollows under the slabs; flat apron around the cross"
+ },
+ {
+  "name": "SM_LB_Cl_GraveSlab_200x80",
+  "seed": 1220,
+  "min": [
+   -100.0,
+   -40.0,
+   0.0
+  ],
+  "max": [
+   100.0,
+   40.0,
+   8.0
+  ],
+  "dims": [
+   200.0,
+   80.0,
+   8.0
+  ],
+  "tris": 152,
+  "slots": [
+   "MAT_Masonry",
+   "MAT_Trim",
+   "MAT_Rubble"
+  ],
+  "slots_used": [
+   0,
+   1,
+   2
+  ],
+  "ucx": 0,
+  "seconds": 0.0,
+  "note": "pivot bottom centre; 200 x 80 x 8, chamfered, worn cross relief on the top; box-projected UVs (lichen-ready, 1 UV = 100 cm)"
+ },
+ {
+  "name": "SM_LB_Cl_GraveCross_60",
+  "seed": 1221,
+  "min": [
+   -17.0,
+   -4.0,
+   0.0
+  ],
+  "max": [
+   17.0,
+   4.0,
+   60.0
+  ],
+  "dims": [
+   34.0,
+   8.0,
+   60.0
+  ],
+  "tris": 70,
+  "slots": [
+   "MAT_Masonry",
+   "MAT_Trim",
+   "MAT_Rubble"
+  ],
+  "slots_used": [
+   1,
+   2
+  ],
+  "ucx": 0,
+  "seconds": 0.0,
+  "note": "pivot bottom centre; 60 tall, 8 thick, arms 34 wide at z 36..46"
+ },
+ {
+  "name": "SM_LB_Cl_GarthCross_350",
+  "seed": 1222,
+  "min": [
+   -60.0,
+   -60.0,
+   0.0
+  ],
+  "max": [
+   60.0,
+   60.0,
+   350.0
+  ],
+  "dims": [
+   120.0,
+   120.0,
+   350.0
+  ],
+  "tris": 248,
+  "slots": [
+   "MAT_Masonry",
+   "MAT_Trim",
+   "MAT_Rubble"
+  ],
+  "slots_used": [
+   1
+  ],
+  "ucx": 0,
+  "seconds": 0.0,
+  "note": "pivot bottom centre; base 120 x 120 x 20 + 90 x 90 x 20, chamfered shaft 24 x 24 to z 290, collar, head 90 wide, top z 350"
+ },
+ {
+  "name": "SM_LB_Cl_Vault_Barrel_830x640",
+  "seed": 1225,
+  "min": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "max": [
+   640.0,
+   830.0,
+   340.0
+  ],
+  "dims": [
+   640.0,
+   830.0,
+   340.0
+  ],
+  "tris": 3012,
+  "slots": [
+   "MAT_Masonry",
+   "MAT_Trim",
+   "MAT_Rubble"
+  ],
+  "slots_used": [
+   0,
+   1
+  ],
+  "ucx": 0,
+  "seconds": 0.0,
+  "note": "x = length 640 along the walk, y = span 830 across; four-centred section: lower radius 207.5, upper radius 830.0, apex slope 14.5 deg, extrados apex z 340; shell 25; ribs 30 wide x 25 deep at x 0..15, 305..335, 625..640 (end ribs are 15 wide so two bays make one 30 rib)"
+ },
+ {
+  "name": "SM_LB_Cl_Vault_Barrel_770x640",
+  "seed": 1226,
+  "min": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "max": [
+   640.0,
+   770.0,
+   340.0
+  ],
+  "dims": [
+   640.0,
+   770.0,
+   340.0
+  ],
+  "tris": 3012,
+  "slots": [
+   "MAT_Masonry",
+   "MAT_Trim",
+   "MAT_Rubble"
+  ],
+  "slots_used": [
+   0,
+   1
+  ],
+  "ucx": 0,
+  "seconds": 0.0,
+  "note": "x = length 640 along the walk, y = span 770 across; four-centred section: lower radius 192.5, upper radius 770.0, apex slope 17.3 deg, extrados apex z 340; shell 25; ribs 30 wide x 25 deep at x 0..15, 305..335, 625..640 (end ribs are 15 wide so two bays make one 30 rib)"
+ },
+ {
+  "name": "SM_LB_Cl_Vault_Barrel_770x640_Broken",
+  "seed": 1227,
+  "min": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "max": [
+   640.0,
+   770.0,
+   340.0
+  ],
+  "dims": [
+   640.0,
+   770.0,
+   340.0
+  ],
+  "tris": 3304,
+  "slots": [
+   "MAT_Masonry",
+   "MAT_Trim",
+   "MAT_Rubble"
+  ],
+  "slots_used": [
+   0,
+   1,
+   2
+  ],
+  "ucx": 0,
+  "seconds": 0.4,
+  "note": "x = length 640 along the walk, y = span 770 across; four-centred section: lower radius 192.5, upper radius 770.0, apex slope 17.3 deg, extrados apex z 340; shell 25; ribs 30 wide x 25 deep at x 0..15, 305..335, 625..640 (end ribs are 15 wide so two bays make one 30 rib); ragged hole through the shell and ribs (plan polygon x 39..602), mid rib snapped leaving two stubs on the haunches, fracture faces MAT_Rubble"
+ },
+ {
+  "name": "SM_LB_Cl_Vault_Barrel_770x980",
+  "seed": 1228,
+  "min": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "max": [
+   980.0,
+   770.0,
+   340.0
+  ],
+  "dims": [
+   980.0,
+   770.0,
+   340.0
+  ],
+  "tris": 3012,
+  "slots": [
+   "MAT_Masonry",
+   "MAT_Trim",
+   "MAT_Rubble"
+  ],
+  "slots_used": [
+   0,
+   1
+  ],
+  "ucx": 0,
+  "seconds": 0.0,
+  "note": "x = length 980 along the walk, y = span 770 across; four-centred section: lower radius 192.5, upper radius 770.0, apex slope 17.3 deg, extrados apex z 340; shell 25; ribs 30 wide x 25 deep at x 0..15, 475..505, 965..980 (end ribs are 15 wide so two bays make one 30 rib)"
+ },
+ {
+  "name": "SM_LB_Cl_Vault_Barrel_570x980",
+  "seed": 1229,
+  "min": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "max": [
+   980.0,
+   570.0,
+   340.0
+  ],
+  "dims": [
+   980.0,
+   570.0,
+   340.0
+  ],
+  "tris": 3012,
+  "slots": [
+   "MAT_Masonry",
+   "MAT_Trim",
+   "MAT_Rubble"
+  ],
+  "slots_used": [
+   0,
+   1
+  ],
+  "ucx": 0,
+  "seconds": 0.0,
+  "note": "x = length 980 along the walk, y = span 570 across; four-centred section: lower radius 142.5, upper radius 570.0, apex slope 25.8 deg, extrados apex z 340; shell 25; ribs 30 wide x 25 deep at x 0..15, 475..505, 965..980 (end ribs are 15 wide so two bays make one 30 rib)"
+ },
+ {
+  "name": "SM_LB_Cl_Vault_Groin_770x830",
+  "seed": 1232,
+  "min": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "max": [
+   770.0,
+   830.0,
+   340.0
+  ],
+  "dims": [
+   770.0,
+   830.0,
+   340.0
+  ],
+  "tris": 17816,
+  "slots": [
+   "MAT_Masonry",
+   "MAT_Trim",
+   "MAT_Rubble"
+  ],
+  "slots_used": [
+   0,
+   1
+  ],
+  "ucx": 0,
+  "seconds": 0.1,
+  "note": "x span 770, y span 830; intrados = max(zA(x), zB(y)); diagonal ribs on the groin curves; wall ribs on x0+y0; four-centred sections: x r1 192.5 R2 770.0, y r1 207.5 R2 830.0"
+ },
+ {
+  "name": "SM_LB_Cl_Vault_Groin_570x830",
+  "seed": 1233,
+  "min": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "max": [
+   570.0,
+   830.0,
+   340.0
+  ],
+  "dims": [
+   570.0,
+   830.0,
+   340.0
+  ],
+  "tris": 18288,
+  "slots": [
+   "MAT_Masonry",
+   "MAT_Trim",
+   "MAT_Rubble"
+  ],
+  "slots_used": [
+   0,
+   1
+  ],
+  "ucx": 0,
+  "seconds": 0.1,
+  "note": "x span 570, y span 830; intrados = max(zA(x), zB(y)); diagonal ribs on the groin curves; wall ribs on x1+y0; four-centred sections: x r1 142.5 R2 570.0, y r1 207.5 R2 830.0"
+ },
+ {
+  "name": "SM_LB_Cl_Vault_Groin_770x770",
+  "seed": 1234,
+  "min": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "max": [
+   770.0,
+   770.0,
+   340.0
+  ],
+  "dims": [
+   770.0,
+   770.0,
+   340.0
+  ],
+  "tris": 16516,
+  "slots": [
+   "MAT_Masonry",
+   "MAT_Trim",
+   "MAT_Rubble"
+  ],
+  "slots_used": [
+   0,
+   1
+  ],
+  "ucx": 0,
+  "seconds": 0.1,
+  "note": "x span 770, y span 770; intrados = max(zA(x), zB(y)); diagonal ribs on the groin curves; wall ribs on x0+y1; four-centred sections: x r1 192.5 R2 770.0, y r1 192.5 R2 770.0"
+ },
+ {
+  "name": "SM_LB_Cl_Vault_Groin_570x770",
+  "seed": 1235,
+  "min": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "max": [
+   570.0,
+   770.0,
+   340.0
+  ],
+  "dims": [
+   570.0,
+   770.0,
+   340.0
+  ],
+  "tris": 17864,
+  "slots": [
+   "MAT_Masonry",
+   "MAT_Trim",
+   "MAT_Rubble"
+  ],
+  "slots_used": [
+   0,
+   1
+  ],
+  "ucx": 0,
+  "seconds": 0.1,
+  "note": "x span 570, y span 770; intrados = max(zA(x), zB(y)); diagonal ribs on the groin curves; wall ribs on x1+y1; four-centred sections: x r1 142.5 R2 570.0, y r1 192.5 R2 770.0"
+ },
+ {
+  "name": "SM_LB_Cl_LeanTo_1000x1050",
+  "seed": 1236,
+  "min": [
+   0.0,
+   0.0,
+   -15.0
+  ],
+  "max": [
+   1000.0,
+   1050.0,
+   9.3
+  ],
+  "dims": [
+   1000.0,
+   1050.0,
+   24.3
+  ],
+  "tris": 21516,
+  "slots": [
+   "MAT_Slate",
+   "MAT_Wood"
+  ],
+  "slots_used": [
+   0,
+   1
+  ],
+  "ucx": 0,
+  "seconds": 0.1,
+  "note": "pivot at the eaves-line start; x 0..1000 along the eaves, y 0..1050 up the slope, z the panel normal; slates 6 on sarking + battens, rafters 12 x 15 at 60 c/c (z -15..0)"
+ },
+ {
+  "name": "SM_LB_Cl_LeanTo_1000x1050_Hole",
+  "seed": 1237,
+  "min": [
+   0.0,
+   0.0,
+   -93.52
+  ],
+  "max": [
+   1000.0,
+   1050.0,
+   9.3
+  ],
+  "dims": [
+   1000.0,
+   1050.0,
+   102.82
+  ],
+  "tris": 12324,
+  "slots": [
+   "MAT_Slate",
+   "MAT_Wood"
+  ],
+  "slots_used": [
+   0,
+   1
+  ],
+  "ucx": 0,
+  "seconds": 0.2,
+  "note": "pivot at the eaves-line start; x 0..1000 along the eaves, y 0..1050 up the slope, z the panel normal; slates 6 on sarking + battens, rafters 12 x 15 at 60 c/c (z -15..0); ragged hole inside x 150..850 y 0..800 (contains x 170..830, y 30..780): slates/boards/battens removed, rafters cut, 3 rafters snapped (droop 40 / 80 / 0)"
+ },
+ {
+  "name": "SM_LB_Cl_CellDoorFrame_150x270",
+  "seed": 1238,
+  "min": [
+   -75.0,
+   -8.0,
+   0.0
+  ],
+  "max": [
+   75.0,
+   2.0,
+   270.0
+  ],
+  "dims": [
+   150.0,
+   10.0,
+   270.0
+  ],
+  "tris": 656,
+  "slots": [
+   "MAT_Masonry",
+   "MAT_Trim",
+   "MAT_Rubble"
+  ],
+  "slots_used": [
+   0,
+   1,
+   2
+  ],
+  "ucx": 0,
+  "seconds": 0.0,
+  "note": "pivot bottom centre of the wall face (x centre, y 0 = wall face, z 0 = floor); frame projects to y -8, back panel y -2..+2 (D1 says +2: see README deviation), opening 110 x 250 straight-sided pointed head, shoulders z 220, apex 250, surround 150 x 270"
+ },
+ {
+  "name": "SM_LB_Cl_StairHouseGable_380x40x650",
+  "seed": 1239,
+  "min": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "max": [
+   380.0,
+   40.0,
+   650.0
+  ],
+  "dims": [
+   380.0,
+   40.0,
+   650.0
+  ],
+  "tris": 1896,
+  "slots": [
+   "MAT_Masonry",
+   "MAT_Trim",
+   "MAT_Rubble"
+  ],
+  "slots_used": [
+   0,
+   1,
+   2
+  ],
+  "ucx": 0,
+  "seconds": 0.4,
+  "note": "380 x 40 x 650 gable: ashlar to a rake from z 450 at the ends to 650 at the centre, 13 cm trim coping along the rake (flush, chamfered); inner face y 0"
+ },
+ {
+  "name": "SM_LB_Cl_StairHouseRoof_420x640",
+  "seed": 1240,
+  "min": [
+   -0.27,
+   0.0,
+   -17.4
+  ],
+  "max": [
+   420.32,
+   640.0,
+   200.0
+  ],
+  "dims": [
+   420.59,
+   640.0,
+   217.4
+  ],
+  "tris": 8336,
+  "slots": [
+   "MAT_Slate",
+   "MAT_Wood"
+  ],
+  "slots_used": [
+   0,
+   1
+  ],
+  "ucx": 0,
+  "seconds": 0.1,
+  "note": "pitched slate roof: eaves x 0 and 420 (slate top plane at z 0), slate planes rise 196 to the ridge at x 210, ridge cap top z 200; ridge along local y 0..640; rafters + 4 tie beams visible from below"
+ },
+ {
+  "name": "SM_LB_Prop_SmallBell_A",
+  "seed": 1301,
+  "min": [
+   -12.0,
+   -12.0,
+   -28.0
+  ],
+  "max": [
+   12.0,
+   12.0,
+   4.0
+  ],
+  "dims": [
+   24.0,
+   24.0,
+   32.0
+  ],
+  "tris": 1628,
+  "slots": [
+   "MAT_Bronze",
+   "MAT_Iron",
+   "MAT_Band"
+  ],
+  "slots_used": [
+   0,
+   1,
+   2
+  ],
+  "ucx": 1,
+  "seconds": 0.0,
+  "note": "pivot at the crown top z 0, hangs along -z: lip O24 at z -28, bow O22 at -25, waist O16 at -14, crown O10 at -3; loop z 0..+4; clapper O4 at z -24; band ring z -8..-5 (MAT_Band); 1 UCX convex hull of the bell body"
+ },
+ {
+  "name": "SM_LB_Prop_SmallBellBracket_A",
+  "seed": 1302,
+  "min": [
+   0.0,
+   -11.0,
+   -25.0
+  ],
+  "max": [
+   34.0,
+   11.0,
+   22.0
+  ],
+  "dims": [
+   34.0,
+   22.0,
+   47.0
+  ],
+  "tris": 892,
+  "slots": [
+   "MAT_Iron",
+   "MAT_Wood"
+  ],
+  "slots_used": [
+   0,
+   1
+  ],
+  "ucx": 0,
+  "seconds": 0.0,
+  "note": "pivot at the back face of the plate (x 0), arm axis z 0, +x out of the wall; plate 4 x 20 x 40 (z -25..15), 4 rivets, cranked arm to x 30 with a scroll, hook at x 25 (tip z -5, bell loop hangs on it), oak hood x 0..34 z 18..22"
+ },
+ {
+  "name": "SM_LB_Prop_BellPlaque_A",
+  "seed": 1303,
+  "min": [
+   0.0,
+   -17.0,
+   -17.0
+  ],
+  "max": [
+   4.0,
+   17.0,
+   17.0
+  ],
+  "dims": [
+   4.0,
+   34.0,
+   34.0
+  ],
+  "tris": 220,
+  "slots": [
+   "MAT_Trim"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 0,
+  "seconds": 0.0,
+  "note": "pivot back centre, front faces +x: 4 x 34 x 34, 3 cm moulded border (x 3..4), field recessed 1"
+ },
+ {
+  "name": "SM_LB_Prop_InscriptionTablet_A",
+  "seed": 1304,
+  "min": [
+   0.0,
+   -60.0,
+   -15.0
+  ],
+  "max": [
+   4.0,
+   60.0,
+   15.0
+  ],
+  "dims": [
+   4.0,
+   120.0,
+   30.0
+  ],
+  "tris": 220,
+  "slots": [
+   "MAT_Trim"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 0,
+  "seconds": 0.0,
+  "note": "pivot back centre, front faces +x: 4 x 120 x 30, 3 cm moulded border (x 2.8..4), field recessed 1.2"
+ }
+]
