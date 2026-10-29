@@ -244,7 +244,7 @@ Branch `claude/phase-10-belltower`. Spec: `Docs/plans/P10_BELLTOWER_ART.md` (D-0
 | P10-7 | Lighting: moon through the fallen roof and louvres, lanterns, candles, tower slit light; luma targets | lighting-vfx [EDITOR] | P10-6a, P10-6b |
 | P10-8 | Docs, QA, owner stat gpu + playtest; PHASE 10 READY FOR YOUR REVIEW | lead + qa + owner | all |
 
-Status 2026-10-29: P10-0 done; P10-1 and P10-2 next.
+Status 2026-10-30: P10-0, P10-1 (Rope003, Metal058B) and P10-2 (survey) done; D1 written (D-078…D-081); P10-3a, P10-3b and P10-L next.
 
 ## Deferred to Phase 14–15 (Lighting, VFX: storm work)
 Items the owner asked to fold into the storm pass. Plan them in detail (Docs/plans/) when Phase 14–15 starts.
