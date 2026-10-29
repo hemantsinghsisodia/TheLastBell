@@ -323,10 +323,16 @@ def show(A, pred):
 CX, CY = 12500.0, 2000.0
 
 
-def exterior_view(A, sc, name, cam_loc, target, lens=28.0, pred=None, out=OUT):
+def exterior_view(A, sc, name, cam_loc, target, lens=28.0, pred=None, out=OUT, moon_side=True):
     clear_lights()
     setup_world(sc, (0.26, 0.32, 0.46), 0.38)
-    add_sun(3.2, direction=Vector((0.72, 0.30, -0.50)))
+    if moon_side:
+        add_sun(3.2, direction=Vector((0.72, 0.30, -0.50)))
+    else:                                                  # the N / E faces are away from the moon: review key light from behind the camera, to its left
+        h = Vector((target[0] - cam_loc[0], target[1] - cam_loc[1], 0.0)).normalized()
+        a = math.radians(35.0)
+        h2 = Vector((h.x * math.cos(a) - h.y * math.sin(a), h.x * math.sin(a) + h.y * math.cos(a), 0.0))
+        add_sun(3.2, direction=Vector((h2.x * 0.79, h2.y * 0.79, -0.62)))
     show(A, pred or (lambda t: True))
     make_cam(sc, cam_loc, target, lens)
     render(sc, os.path.join(out, name))
@@ -346,7 +352,7 @@ def run_faces(A, sc, only, out):
     for nm, cam, tgt, lens in views:
         if only and not any(k in nm for k in only):
             continue
-        exterior_view(A, sc, nm, cam, tgt, lens, out=out)
+        exterior_view(A, sc, nm, cam, tgt, lens, out=out, moon_side=not (nm.endswith("_N.png") or nm.endswith("_E.png")))
 
 
 def run_section(A, sc, only, out):
@@ -441,14 +447,14 @@ def run_flights(A, sc, only, out):
             bpy.data.objects.remove(o)
 
 
-def belfry_lights(include_moon=True):
+def belfry_lights(include_moon=True, gain=1.0):
     clear_lights()
     setup_world(sc_global, (0.16, 0.20, 0.30), 0.7)
     if include_moon:
         add_sun(3.4)
-    add_point((12150.0, 1800.0, 2800.0), 600000.0, (1.0, 0.72, 0.45), 14.0)         # lantern-ish warm fill on the stair arrival
-    add_point((12640.0, 2300.0, 2900.0), 500000.0, (1.0, 0.72, 0.45), 14.0)
-    add_area((12420.0, 2000.0, 3350.0), (12420.0, 2000.0, 2600.0), 1.2e6, 500.0, (0.6, 0.7, 1.0))
+    add_point((12150.0, 1800.0, 2800.0), 600000.0 * gain, (1.0, 0.72, 0.45), 14.0)         # lantern-ish warm fill on the stair arrival
+    add_point((12640.0, 2300.0, 2900.0), 500000.0 * gain, (1.0, 0.72, 0.45), 14.0)
+    add_area((12420.0, 2000.0, 3350.0), (12420.0, 2000.0, 2600.0), 1.2e6 * gain, 500.0, (0.6, 0.7, 1.0))
 
 
 sc_global = None
@@ -467,7 +473,9 @@ def run_belfry(A, sc, only, out):
     for nm, cam, tgt, lens in views:
         if only and not any(o in nm for o in only):
             continue
-        belfry_lights(True)
+        belfry_lights(True, 3.0 if "rope" in nm else 1.0)
+        if "rope" in nm:
+            add_point((12560.0, 1760.0, 2640.0), 900000.0, (1.0, 0.75, 0.5), 10.0)
         show(A, belfry_vis)
         make_cam(sc, cam, tgt, lens)
         render(sc, os.path.join(out, nm))
