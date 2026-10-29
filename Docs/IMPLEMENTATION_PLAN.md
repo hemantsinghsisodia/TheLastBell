@@ -225,7 +225,26 @@ Branch `claude/phase-09-crypt`. Spec: `Docs/plans/P9_CRYPT_ART.md` (D-067). P9-0
 | P9-7 | Lighting: torches, candles, brazier, moon grates + shafts, LFV, PP_Crypt; luma targets | lighting-vfx [EDITOR] | P9-6a, P9-6b |
 | P9-8 | QA, docs, owner stat gpu + playtest; PHASE 9 READY FOR YOUR REVIEW | qa + lead + owner | all |
 
-Status 2026-10-29: P9-0…P9-7 done (P9-5 325bec8, abc167f; P9-6a e066901 and fix sets 8fa049a, b7f63c4, a2bc978; P9-6b 621d02b, a50a573, 3a9b0de; P9-7 c5bfc12 … fe82dca; suite 78/78, crypt WalkPaths, RouteBot, Puzzles/Save tests and Warden crypt patrol pass). Owner review fix set R1 done (R1-A db20f3f, R1-C 5fbef54, R1-B 88092f8 … fa95078: rail enclosures, note clue, aged props, stained-glass saints, chapel moon gobos). Owner review fix set R2 done (R2-A 0bf92d9, 76b443a, R2-A2 71d2ac9, R2-A3 fe11ba4, R2-B 73e1f16, f2b3a20, R2-B2 a0e5f34, R2-C d3a7e19: bell wheel, dial levers, dungeon doors, beam fix, roof gobo, note aim). P9-8a docs done (D-072…D-076, R-36…R-41, MCP_NOTES crypt section, PERFORMANCE_BUDGET and ASSET_REGISTRY). P9-8b QA skipped by the owner. Owner playtest signed off 2026-10-29 ("I have reviewed and its fine"); owner GPU 14.72 ms at High in the ossuary. Awaiting the owner's "approve and merge".
+Status 2026-10-29: P9-0…P9-7 done (P9-5 325bec8, abc167f; P9-6a e066901 and fix sets 8fa049a, b7f63c4, a2bc978; P9-6b 621d02b, a50a573, 3a9b0de; P9-7 c5bfc12 … fe82dca; suite 78/78, crypt WalkPaths, RouteBot, Puzzles/Save tests and Warden crypt patrol pass). Owner review fix set R1 done (R1-A db20f3f, R1-C 5fbef54, R1-B 88092f8 … fa95078: rail enclosures, note clue, aged props, stained-glass saints, chapel moon gobos). Owner review fix set R2 done (R2-A 0bf92d9, 76b443a, R2-A2 71d2ac9, R2-A3 fe11ba4, R2-B 73e1f16, f2b3a20, R2-B2 a0e5f34, R2-C d3a7e19: bell wheel, dial levers, dungeon doors, beam fix, roof gobo, note aim). P9-8a docs done (D-072…D-076, R-36…R-41, MCP_NOTES crypt section, PERFORMANCE_BUDGET and ASSET_REGISTRY). P9-8b QA skipped by the owner. Owner playtest signed off 2026-10-29 ("I have reviewed and its fine"); owner GPU 14.72 ms at High in the ossuary. Owner approved and merged into `main` 2026-10-29 (fb5c3ba).
+
+## Phase 10 — Cloister and Bell Tower art: task breakdown
+Branch `claude/phase-10-belltower`. Spec: `Docs/plans/P10_BELLTOWER_ART.md` (D-077). Owner choices 2026-10-29: cloister and tower in one phase; timber stairs around an open shaft; half-collapsed louvred belfry with the great cracked bell; roofed vaulted cloister walk with a fallen bay and cell doors. Collision stays the greybox collision (D-068 approach).
+
+| Task | Scope | Owner | Depends on |
+|---|---|---|---|
+| P10-0 | Outline, D-077, R-42…R-45, plan table | lead | — |
+| P10-1 | CC0 downloads: bell rope, bronze patina | asset-curator | P10-0 |
+| P10-2 | Read-only survey: greybox geometry, gameplay BPs, AI markers, reusable kit, sight lines, captures | technical-artist [EDITOR read-only] | P10-0 |
+| D1 | Exact layout (generator `Tools/belltower/gen_tower_layout.py`), D-078…, risks | lead | P10-1, P10-2 |
+| P10-3 | Blender pieces: vault bays, tower shell stages, timber stair set, belfry, bell frame, great bell, small-bell frame, cell door | technical-artist (no editor) | D1 |
+| P10-4 | Materials and imports | technical-artist [EDITOR] | P10-3 |
+| P10-5 | Structure: hide greybox, cloister, passage, tower shell, stairs, belfry, roof | environment-designer [EDITOR] | P10-4 |
+| P10-6a | Dressing: garth, cells, rubble, timber debris, bell rope, lanterns, grime | environment-designer [EDITOR] | P10-5 |
+| P10-6b | Child BPs: small bells, inscription, Mech 3, great bell, tower and shortcut doors | unreal-blueprint-engineer [EDITOR] | P10-4 |
+| P10-7 | Lighting: moon through the fallen roof and louvres, lanterns, candles, tower slit light; luma targets | lighting-vfx [EDITOR] | P10-6a, P10-6b |
+| P10-8 | Docs, QA, owner stat gpu + playtest; PHASE 10 READY FOR YOUR REVIEW | lead + qa + owner | all |
+
+Status 2026-10-29: P10-0 done; P10-1 and P10-2 next.
 
 ## Deferred to Phase 14–15 (Lighting, VFX: storm work)
 Items the owner asked to fold into the storm pass. Plan them in detail (Docs/plans/) when Phase 14–15 starts.
