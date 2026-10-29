@@ -16607,7 +16607,7 @@
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
     "MAT_Trim": "MI_Kit_Trim",
-    "MAT_Rubble": "MI_Kit_Rubble"
+    "MAT_Rubble": "MI_Prop_Wood_Weathered"
    },
    "extras": {},
    "note": "N wall, centred at (9900, 3000); frame projects 8 into the walk"
@@ -16709,7 +16709,7 @@
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
     "MAT_Trim": "MI_Kit_Trim",
-    "MAT_Rubble": "MI_Kit_Rubble"
+    "MAT_Rubble": "MI_Prop_Wood_Weathered"
    },
    "extras": {},
    "note": "N wall, centred at (10500, 3000); frame projects 8 into the walk"
@@ -16811,7 +16811,7 @@
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
     "MAT_Trim": "MI_Kit_Trim",
-    "MAT_Rubble": "MI_Kit_Rubble"
+    "MAT_Rubble": "MI_Prop_Wood_Weathered"
    },
    "extras": {},
    "note": "N wall, centred at (11100, 3000); frame projects 8 into the walk"
@@ -16913,7 +16913,7 @@
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
     "MAT_Trim": "MI_Kit_Trim",
-    "MAT_Rubble": "MI_Kit_Rubble"
+    "MAT_Rubble": "MI_Prop_Wood_Weathered"
    },
    "extras": {},
    "note": "W wall, centred at (9500, 900); frame projects 8 into the walk"
@@ -17015,7 +17015,7 @@
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
     "MAT_Trim": "MI_Kit_Trim",
-    "MAT_Rubble": "MI_Kit_Rubble"
+    "MAT_Rubble": "MI_Prop_Wood_Weathered"
    },
    "extras": {},
    "note": "W wall, centred at (9500, 2700); frame projects 8 into the walk"

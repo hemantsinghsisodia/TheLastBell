@@ -703,7 +703,7 @@ CELLS = [("N9900", "N", (9900.0, 3000.0), 0.0), ("N10500", "N", (10500.0, 3000.0
 for cid, wl, (wx, wy), yaw in CELLS:
     org = (wx, wy)       # the built frame has its pivot at the centre of the width (bounds x -75..75)
     add(f"CLA_CellDoor_{cid}", "door", "celldoor", FRAME, (org[0], org[1], 0.0), (0.0, yaw, 0.0), (1, 1, 1), "NoCollision", "Cloister/Art/CellDoors",
-        mi=mi_for(["MAT_Masonry", "MAT_Rubble"]), note=f"{wl} wall, centred at ({wx:g}, {wy:g}); frame projects 8 into the walk")
+        mi=mi_for(["MAT_Masonry", "MAT_Rubble"], overrides={"MAT_Rubble": "MI_Prop_Wood_Weathered"}), note=f"{wl} wall, centred at ({wx:g}, {wy:g}); frame projects 8 into the walk")
     # leaf: SM_Dungeon_door (x 2.4..15.8 thick, y -43.3..52.6, z 0.5..182.7), scale (0.4, 1.15, 1.37): 5.4 thick, 250 tall; back at local y -2.5 (0.5 in front of the back panel face y -2), front at -7.9 inside the frame face (-8) (D1.12: back panel face y -2, leaf back y -3)
     lyaw = yaw - 90.0
     lx_centre = (-43.3 + 52.6) / 2.0 * 1.15
