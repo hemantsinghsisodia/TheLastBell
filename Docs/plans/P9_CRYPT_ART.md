@@ -1650,3 +1650,90 @@ Start only after the editor is restarted and `L_Monastery` is loaded clean.
    - candle bloom;
    - sacristy table warmth;
    - interior poses 04/05/14 darkness.
+
+### D1.31 Owner sign-off of R2; P9-8 execution spec (lead, 2026-10-29)
+- **Owner, 2026-10-29:** "I have reviewed and its fine". This covers the R2 results and the D1.30 playtest checklist, so P9-8c's playtest and judgement items are done. Nothing is outstanding from the owner apart from the final "approve and merge".
+- **GPU:**
+  - The owner measured 14.72 ms at High in the ossuary (D1.19 addendum).
+  - The chain chamber was not reported as a separate number; the owner accepted the playtest.
+  - Record R-38 as **Mitigated**, stating exactly that.
+- **P9-8a and P9-8b** run as specified in D1.18, with the additions below. They run in parallel: 8a has no editor access, 8b is read-only.
+
+**P9-8a additions (docs; general-purpose; commit "P9-8a: Phase 9 docs").**
+1. **`Tools/mcp/MCP_NOTES.md`**, new section `## Crypt and Phase 9 fix sets (P9)`. It holds D1.18 items 1–9; in item 8, note that the plaque was later replaced by a note (D-073) but the texture fact stands. Then add:
+   10. **Replacing a mesh referenced by a BP** (D1.28):
+       - `StaticMeshTools.import_file` refuses an existing path, and `AssetTools.delete` nulls the in-memory references.
+       - Procedure: point the BP's `SetStaticMesh` pin at `/Engine/BasicShapes/Cube` and compile; delete; import at the same path; restore the slot MIs; point the pin back and compile; save one package per call.
+   11. **Components added to a child BP** (D1.29):
+       - Placed instances don't pick up template values, so the construction script must set mesh, transform, material and collision.
+       - Instance `set_properties` on `relativeLocation`/`relativeScale3D` applies only one axis when the others equal the template, so set one axis per call.
+   12. **Saving** (D1.27):
+       - Save exactly one package per `save_assets` call and check `is_dirty` after each. An editor deadlocked inside a multi-package save (game thread stuck in `InternalPromptForCheckoutAndSave`, CPU idle, the window not responding).
+       - If an MCP call hangs for more than about 180 s, stop all editor calls.
+       - Recovery: End task (equivalent to Don't Save), then skip the autosave restore.
+   13. **Simple collision on imported Blender props** (D1.27): meshes without UCX get no simple collision, so the interaction trace misses them. Add a 1-hull convex (`StaticMeshTools`); never use complex as simple on moving parts.
+   14. **Gobos and lighting channels** (D1.23, D1.30):
+       - The light is masked by hidden actors (`bHiddenInGame`, `bCastHiddenShadow`, lighting Channel1 only, on spots that use channels 0+1).
+       - Simulate ignores `bHiddenInGame`, so gobos show there as bright shapes; judge them in normal Play.
+       - Static actors ignore `set_actor_transform` in PIE; to A/B a gobo, toggle `castShadow`.
+   15. **Volumetric fog stepping** (D1.30): stepped slabs along spot-light beams come from `bCastVolumetricShadow`, not from the scattering amount. Turn it off on beam lights that pass bars or grates.
+2. **`Docs/DECISIONS.md`:** add these rows in the existing table format (columns: ID | Date | Context | Decision | Alternatives | Why | Consequences). Take the facts from the D-sections named.
+   - **D-072 Crypt lighting outcome (final)** (D1.16–D1.19, D1.24, D1.30):
+     - G1 560 lm, G2 900 lm, cones 8/20, shadowed, `bCastVolumetricShadow` false, scattering 0.8;
+     - G3 250 lm, radius 550, cones 6/16, shadowless, scattering 1.5, aimed 40 cm below the note centre;
+     - torches 250 lm (T1/T3 radius 350, T2 700), scattering 0.5;
+     - candles: niche 90, sarcophagus 67.5, puzzle 40 lm; brazier 200 lm;
+     - `PP_Crypt` EV100 0.2, bloom 0.27;
+     - `LFV_Crypt_Flood`;
+     - accepted deviations (torch poses 02/10, flicker noise 06/09); drips deferred.
+   - **D-073 Crypt chain clue is a readable note** (D1.19, D1.25, 2× by the owner):
+     - `Note_Chains` (`BP_Inspectable_Note`, 2× = 56 × 40 cm) on the puzzle wall, with its body text;
+     - it replaces the plaque and the `CD_PlaqueFrame`;
+     - G3 pool on the note.
+   - **D-074 Chapel moon gobos** (D1.23, D1.26, D1.30):
+     - 12 hidden shadow-only lancet cubes plus one Blender gobo plate `SM_LB_Gobo_RoofHole` (offset 0.7);
+     - the 4 outside moon spots on channels 0+1 with scattering 0;
+     - replaces the interior rect lights (rejected: flooded the nave);
+     - residual: a thin lit rim of about 9 cm at the roof hole.
+   - **D-075 Candle-order clue as stained-glass saints** (D1.20, D1.22): `BP_StainedGlassClue_Saints`, `MI_Glass_Clue_Saints`, `T_LB_StainedGlass_Clue`; it replaces the wall pattern (owner: "not fitting").
+   - **D-076 Owner review 2 replacements** (D1.25–D1.29):
+     - Mechanism 1 is a bell wheel (`BP_RitualMechanism_ChapelBells`, `SM_LB_Prop_BellWheel_A`, `Ch_Altar_BearingPlate`), and the 5 `Mech_Shell_*` actors were removed;
+     - crypt levers are `BP_DialLever_Crypt` with the oak board, pulley chain, skeletal quadrant, arm and counterweight meshes;
+     - both doors are `BP_Door_Base_Dungeon` (`SM_Dungeon_door`, mirrored in Y, plank backing);
+     - alternatives: keeping the P8 shells, or the greybox levers;
+     - consequence: three more child BPs duplicate their parents' construction (R-40).
+   - Add index lines if the file has an index, matching its format.
+3. **`Docs/RISKS.md`:**
+   - **R-36:** Closed (P9-5 gap pass).
+   - **R-37:** Closed (P9-6b and R2-B dumps/diffs, suite 78/78, RouteBot).
+   - **R-38:** Mitigated (ossuary 14.72 ms at High; owner playtest accepted 2026-10-29; chain chamber not measured separately; fallbacks unchanged).
+   - **New rows:**
+
+     | ID | Area | Risk | L | I | Mitigation | Status |
+     |---|---|---|---|---|---|---|
+     | R-39 | Tooling | Capture tooling reliability | M | L | `--raise`, the breaker, ≤ 6 tries, owner checklist for missing poses | Open |
+     | R-40 | Architecture | Child BPs duplicate parent construction scripts: CryptWinch, CryptCrank, StainedGlassClue_Saints, ChapelBells, DialLever_Crypt, Door_Base_Dungeon | M | M | Update the children whenever a parent construction script changes; listed in MCP_NOTES | Open |
+     | R-41 | Tooling | The editor can deadlock inside a multi-package save | L | M | One package per save; the 180 s stop rule; End-task recovery | Mitigated |
+4. **`Docs/PERFORMANCE_BUDGET.md`:**
+   - Phase 9 crypt row as in D1.18 item 2, with the final light values from D-072.
+   - GPU: "ossuary 14.72 ms at High (owner, 2026-10-28); chain chamber not separately measured; owner playtest accepted 2026-10-29".
+5. **`Docs/ASSET_REGISTRY.md`:**
+   - As D1.18 item 3. Also check rows for `SM_Dungeon_door` / `MI_Dungeon_door` (Fab Dungeon pack) and the Poly Haven/ambientCG sources used by `MI_Crypt_*` and `MI_Aged_*`.
+   - If the file has a section for project-made (Blender procedural) assets, add the R2 meshes: `SM_LB_Prop_BellWheel_A`, `SM_LB_Prop_DialLever_{Backplate,Quadrant,Arm,Weight,NotchStop}`, `SM_LB_Gobo_RoofHole`. If not, list them only in the report.
+   - Never invent a licence.
+6. **`Docs/IMPLEMENTATION_PLAN.md`:** set the Phase 9 status line to: P9-0…P9-7, R1 and R2 done (key commits); P9-8 docs and QA done; awaiting owner "approve and merge".
+7. **`Docs/TECHNICAL_DESIGN.md`:** check whether it names the puzzle/door Blueprints placed in `L_Monastery`. If it lists placed classes, add the six child BPs (R-40); otherwise make no change, and say so in the report.
+
+**P9-8b additions (QA; qa-reviewer; report only, no fixes, no editor mutations, no saves, no commits).**
+1. D1.18 items 1–5.
+2. **Lane re-check:** also report the clearance at the levers (the quadrant protrudes up to 48 cm from the wall at the high/low positions), and at both doors with the backing (closed and fully open, if the script supports doors; otherwise say it doesn't).
+3. **Dress check investigation:** `python Tools/crypt/place_crypt.py --cats dress --check` reported 118 failures earlier. Run it read-only (confirm `--check` makes no edits by reading the code first).
+   - Classify the failures by cause: stale JSON vs a real displacement; which fields fail (mesh, transform, bounds, materials, collision); which categories or prefixes.
+   - Give 3 concrete examples with values.
+   - Recommend a fix (regenerate the JSON from the scene, or fix the actors). Do not apply it.
+4. **Light check:** `python Tools/crypt/place_crypt.py --cats light --check` must report 16/16.
+5. **Doc consistency:** grep `Docs/` for stale statements that contradict the final state, and list the file:line of each. Examples:
+   - "plaque" described as the current crypt clue;
+   - "Mech_Shell" described as current;
+   - G1/G2 `bCastVolumetricShadow` true.
+   Do not edit.
