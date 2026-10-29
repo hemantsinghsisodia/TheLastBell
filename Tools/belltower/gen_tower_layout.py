@@ -8,7 +8,7 @@ Pure Python, no Unreal Editor, no Blender. Reads the P10-2 survey data (Docs/Art
 
 Run from anywhere:  python Tools/belltower/gen_tower_layout.py
 Deterministic (seeded). Exit code 0 only when every D1.9 check passes.
-Optional flag --n-roof-fix applies the proposed fix for the N-walk collapse panel (see check D1-N1 in the output).
+D1.11 errata applied (N-walk roof split 1.15 / 1.00 / 0.35, rope Y 1835, lanterns for every warm light, cell leaf scale 1.37).
 """
 import heapq
 import json
@@ -19,7 +19,6 @@ import sys
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 SURVEY = os.path.join(ROOT, "Docs", "ArtTest", "belltower")
-N_ROOF_FIX = "--n-roof-fix" in sys.argv
 
 # ------------------------------------------------------------------------------------------------ paths
 TWM = "/Game/LastBell/Environments/BellTower/Meshes/"
@@ -398,8 +397,8 @@ add("TWA_GreatBell", "gameplay", "greatbell", P_GREATBELL, (12420.0, 2000.0, 286
     mi=mi_for(["MAT_Bronze", "MAT_Iron"]),
     note="REFERENCE ONLY: placed through BP_TagInteractable_GreatBell (D1.6.5): Mesh rel (0,0,94) scale 0.4 under root scale 2.5 -> world scale 1; "
          "expected bounds X 12315-12525, Y 1895-2105, Z 2640-2860", extras={"via_bp": "BP_TagInteractable_GreatBell", "skip_place": True})
-add("TWA_BellRope", "tower", "rope", P_ROPE, (12550.0, 1830.0, 2750.0), (0, 0, 0), (1, 1, 1), "NoCollision", "BellTower/Art/Belfry",
-    mi=mi_for(["MAT_Rope", "MAT_Sally"]), note="rope in the wheel plane, through the floor hole, Z 2750 down to 140; sally at Z 340-240")
+add("TWA_BellRope", "tower", "rope", P_ROPE, (12550.0, 1835.0, 2750.0), (0, 0, 0), (1, 1, 1), "NoCollision", "BellTower/Art/Belfry",
+    mi=mi_for(["MAT_Rope", "MAT_Sally"]), note="rope in the wheel plane, through the floor hole (Y 1835, D1.11), Z 2750 down to 140; sally at Z 340-240")
 add("TWA_Roof", "roof", "towerroof", P_ROOF, (12500.0, 2000.0, 3540.0), (0, 0, 0), (1, 1, 1), "NoCollision", "BellTower/Art/Roof",
     mi=mi_for(["MAT_Slate", "MAT_Wood", "MAT_Iron"]), note="steep pyramidal slate roof, apex Z 4740, SW quarter collapsed")
 
@@ -652,8 +651,8 @@ for walk, w in ROOF_WALKS.items():
     assert zd[2] > 0, f"roof panel normal points down for walk {walk}"
     rot = rot_from_rows(tuple(xd), tuple(yd), tuple(zd))
     widths = [abs(run) / 3.0] * 3
-    if walk == "N" and N_ROOF_FIX:
-        widths = [1333.3333, 833.3333, 333.3333]   # proposed fix: the middle (hole) panel starts at X 10833 as D1.3 states
+    if walk == "N":
+        widths = [1150.0, 1000.0, 350.0]           # D1.11: x-scale 1.15 / 1.00 / 0.35, the hole panel is X 10650-11650
     pos = 0.0
     for j, wd in enumerate(widths):
         sx = wd / 1000.0
@@ -689,17 +688,17 @@ for cid, wl, (wx, wy), yaw in CELLS:
     org = frame_pt((wx, wy), yaw, -75.0, 0.0)
     add(f"CLA_CellDoor_{cid}", "door", "celldoor", FRAME, (org[0], org[1], 0.0), (0.0, yaw, 0.0), (1, 1, 1), "NoCollision", "Cloister/Art/CellDoors",
         mi=mi_for(["MAT_Masonry", "MAT_Rubble"]), note=f"{wl} wall, centred at ({wx:g}, {wy:g}); frame projects 8 into the walk")
-    # leaf: SM_Dungeon_door (x 2.4..15.8 thick, y -43.3..52.6, z 0.5..182.7), scale (0.5, 1.15, 1.2), back 1 cm in front of the back panel (y +2 -> +1)
+    # leaf: SM_Dungeon_door (x 2.4..15.8 thick, y -43.3..52.6, z 0.5..182.7), scale (0.5, 1.15, 1.37) (D1.11: 250 tall), back 1 cm in front of the back panel (y +2 -> +1)
     lyaw = yaw - 90.0
     lx_centre = (-43.3 + 52.6) / 2.0 * 1.15
     lo = frame_pt((wx, wy), yaw, 0.0, 0.0)
     pos_ = frame_pt((wx, wy), yaw, -lx_centre + 0.0, 1.0 + 2.4 * 0.5)
     rot_ = [0.0, lyaw, 0.0]
-    note_ = "SM_Dungeon_door leaf scale (0.5, 1.15, 1.2), back 1 cm in front of the back panel"
+    note_ = "SM_Dungeon_door leaf scale (0.5, 1.15, 1.37) (D1.11: 250 tall), back 1 cm in front of the back panel"
     if cid == "N11100":
         rot_ = [0.0, lyaw + 8.0, 4.0]
         note_ += "; under the collapse: hangs by one hinge (roll 4, yaw +8)"
-    add(f"CLA_CellLeaf_{cid}", "doorleaf", "cellleaf", LEAF, (pos_[0], pos_[1], -0.6), rot_, (0.5, 1.15, 1.2), "NoCollision", "Cloister/Art/CellDoors",
+    add(f"CLA_CellLeaf_{cid}", "doorleaf", "cellleaf", LEAF, (pos_[0], pos_[1], -0.685), rot_, (0.5, 1.15, 1.37), "NoCollision", "Cloister/Art/CellDoors",
         note=note_, extras={"frame_yaw": yaw})
 
 
@@ -712,9 +711,9 @@ add("GP_Mech_Ritual3", "gameplay", "mech3", CUBE, (MECH3_LOC[0], MECH3_LOC[1], 6
          "swaps the actor in P10-6b", extras={"via_bp": "BP_RitualMechanism_TowerCapstan", "skip_place": True, "actor_loc": list(MECH3_LOC)})
 add("GP_Clue_Inscription", "gameplay", "inscription", PIECES["SM_LB_Prop_InscriptionTablet_A"]["path"], (12000.0, 2380.0, 200.0), (0.0, 180.0, 0.0), (2.5, 2.5, 2.5),
     "BlockAllDynamic", "Gameplay/Cloister", mi=mi_for(["MAT_Trim"]),
-    note="REFERENCE ONLY: tablet back flush on the tower wall X 12000, world 10 x 300 x 75. NB D1.6.2 says the Plaque keeps the parent's relative transform (0,0,0): "
-         "that puts the back at X 11995 and the front at 11985 (5 cm off the wall); the BP needs Plaque rel X -2 for flush",
-    extras={"via_bp": "BP_Inscription_Cloister", "skip_place": True, "actor_loc": [11995.0, 2380.0, 200.0], "plaque_rel_x_for_flush": -2.0})
+    note="REFERENCE ONLY: tablet back flush on the tower wall X 12000, front at X 11990, world 10 x 300 x 75 (D1.11: the child BP sets Plaque relative X -2 because "
+         "the M4 pivot is at the back)",
+    extras={"via_bp": "BP_Inscription_Cloister", "skip_place": True, "actor_loc": [11995.0, 2380.0, 200.0], "plaque_rel_x": -2.0})
 BELL_Y = [2200.0, 2320.0, 2440.0, 2560.0]
 BELL_SCALE = [1.30, 1.15, 1.00, 0.85]
 BELL_BAND = ["MI_LB_BellBand_I", "MI_LB_BellBand_II", "MI_LB_BellBand_III", "MI_LB_BellBand_IV"]
@@ -859,18 +858,41 @@ for i, (x, y, yaw, note) in enumerate(((10900.0, 1391.0, 0.0, "S row"), (11000.0
     add(f"CLA_Ivy_{i}", "dress", "ivy", IVY_C, (x, y, 400.0), (0.0, yaw, 0.0), (1, 1, 1), "NoCollision", "Cloister/Dressing/Ivy",
         note=f"dead ivy card on the garth-facing arcade wall, {note}, Z 400-600")
 
-# ---- lanterns (every D1.8 light that is a lantern) with an iron bracket
+WALLCORNER = {"NE": ((12960.0, 2460.0), 180.0), "SE": ((12960.0, 1540.0), 90.0), "SW": ((12040.0, 1540.0), 0.0), "NW": ((12040.0, 2460.0), -90.0)}
+
+# ---- lanterns (D1.11: every warm light except the candle cluster and the moon fill); the light sits 10 cm below the lantern's top hook point
 LANTERN = existing(ARTTEST + "Wooden_Lantern_01/", "SM_Wooden_Lantern_01")
-LANTERNS = [("CLA_Lantern_Bells", "CLA", (11960.0, 2380.0, 320.0), (12000.0, 180.0), "above the inscription"),
-            ("CLA_Lantern_Door", "CLA", (11960.0, 1880.0, 300.0), (12000.0, 180.0), "beside the tower door"),
-            ("SHA_Lantern_Entry", "SHA", (10520.0, 300.0, 300.0), (10500.0, 0.0), "stair-house lantern"),
-            ("PSA_Lantern", "PSA", (9380.0, 2240.0, 300.0), (2300.0, -90.0), "passage, cloister end")]
-for lid, pre, (lx, ly, lz), (wallc, byaw), note in LANTERNS:
-    folder = {"CLA": "Cloister/Dressing/Lanterns", "SHA": "Cloister/Art/StairHouse", "PSA": "Courtyard/Passage"}[pre]
-    add(lid, "dress", "lantern", LANTERN, (lx, ly, lz - 26.0), (0, 0, 0), (1, 1, 1), "NoCollision", folder, note=note + "; hangs at the light position (centre of the lantern)")
-    bx, by = (wallc, ly) if byaw in (180.0, 0.0) else (lx, wallc)
-    add(lid.replace("Lantern", "LanternBracket"), "dress", "lantern", HOLDER, (bx, by, lz + 30.0), (0.0, byaw, 0.0), (1, 1, 1), "NoCollision", folder,
-        note="iron bracket on the wall above the lantern (chain holder, +x out of the wall)")
+LANT_TOP = 51.9
+LANTERN_LIGHT = {}      # light id -> (x, y, z) final light position
+
+
+def lantern(lid, folder, lx, ly, hook_z, bx, by, byaw, note, light_id):
+    add(lid, "dress", "lantern", LANTERN, (lx, ly, hook_z - LANT_TOP), (0, 0, 0), (1, 1, 1), "NoCollision", folder,
+        note=note + "; top hook point at Z %.0f, the light sits 10 cm below it" % hook_z)
+    add(lid.replace("Lantern", "LanternBracket"), "dress", "lantern", HOLDER, (bx, by, hook_z), (0.0, byaw, 0.0), (1, 1, 1), "NoCollision", folder,
+        note="iron bracket (chain holder, +x out of the wall) at the lantern's hook")
+    LANTERN_LIGHT[light_id] = (lx, ly, hook_z - 10.0)
+
+
+lantern("CLA_Lantern_Bells", "Cloister/Dressing/Lanterns", 11960.0, 2380.0, 330.0, 12000.0, 2380.0, 180.0, "above the inscription", "L_Cl_Bells")
+lantern("CLA_Lantern_Door", "Cloister/Dressing/Lanterns", 11960.0, 1880.0, 310.0, 12000.0, 1880.0, 180.0, "beside the tower door", "L_Cl_Door")
+lantern("SHA_Lantern_Entry", "Cloister/Art/StairHouse", 10520.0, 300.0, 310.0, 10500.0, 300.0, 0.0, "stair-house lantern", "L_Cl_Entry")
+lantern("PSA_Lantern", "Courtyard/Passage", 9380.0, 2240.0, 310.0, 9380.0, 2300.0, -90.0, "passage, cloister end", "L_Ps_Lantern")
+lantern("CLA_Lantern_West", "Cloister/Dressing/Lanterns", 9560.0, 2000.0, 330.0, 9500.0, 2000.0, 0.0, "W walk at the passage arch", "L_Cl_West")
+lantern("TWA_Lantern_Base", "BellTower/Art/Dressing", 12060.0, 1880.0, 270.0, 12040.0, 1880.0, 0.0, "tower base, on the W wall S of the door", "L_Tw_Base")
+# the passage arch has no wall at Z 330 (its soffit apex is Z 420): the west lantern hangs from the soffit on a short chain
+chain_run("CLA_Lantern_West_Chain", (9500.0, 2000.0, 418.0), (9560.0, 2000.0, 330.0), "Cloister/Dressing/Lanterns", "chain from the arch soffit to the lantern hook")
+add("CLA_Lantern_West_Soffit", "dress", "lantern", HOLDER, (9500.0, 2000.0, 420.0), (0.0, 0.0, 0.0), (1, 1, 1), "NoCollision", "Cloister/Dressing/Lanterns",
+    note="iron ring at the apex of the W archway soffit (Z 420)")
+for n in (4, 7, 10):                               # landing lanterns at the outer wall corner, hook Z = landing top + 180
+    corner, pt, yaw, top = LANDINGS[n]
+    (wcx, wcy), _ = WALLCORNER[corner]
+    sxn = 1.0 if wcx < 12500 else -1.0
+    syn = 1.0 if wcy < 2000 else -1.0
+    lx, ly = wcx + 14.0 * sxn, wcy + 14.0 * syn
+    byaw = 90.0 if syn > 0 else -90.0               # bracket on the N or S wall, +x out of the wall
+    lantern(f"TWA_Lantern_Land{n}", "BellTower/Art/Dressing", lx, ly, top + 180.0, lx, wcy, byaw, f"{corner} wall corner above landing {n}", f"L_Tw_Land{n}")
+lantern("TWA_Lantern_Bell", "BellTower/Art/Belfry", 12255.0, 1865.0, 2700.0, 12267.5, 1865.0, 180.0, "hung from the -X face of the bell frame SW post", "L_Tw_Bell")
 
 # ---- tower dressing
 ROPE_COIL = existing(DUNGEON, "SM_Torture_Devices_Rope_00")
@@ -882,8 +904,7 @@ for k, (sx, sy, syaw) in enumerate(((12760.0, 1575.0, 0.0), (12830.0, 1575.0, 8.
     add(f"TWA_Slates_{k}", "dress", "towerdress", SLATES, (sx, sy, top10), (0.0, syaw, 0.0), (0.5, 0.5, 1.0), "NoCollision", "BellTower/Art/Dressing",
         mi=mi_for(["MAT_Slate"]), note="broken slates on landing 10, within 30 of the walls")
 COBWEB = existing(CHAPEL, "SM_LB_Prop_Cobweb_Corner_A", mb=((-60.0, -60.0, 0.0), (60.0, 60.0, 120.0)), slots=["MAT_Cobweb"], est=True)
-WALLCORNER = {"NE": ((12960.0, 2460.0), 180.0), "SE": ((12960.0, 1540.0), 90.0), "SW": ((12040.0, 1540.0), 0.0), "NW": ((12040.0, 2460.0), -90.0)}
-for k, n in enumerate((2, 3, 4, 6, 7, 8)):
+for k, n in enumerate((2, 3, 5, 6, 8, 9)):
     corner, pt, yaw, top = LANDINGS[n]
     (cx, cy), cyaw = WALLCORNER[corner]
     c, s = math.cos(math.radians(cyaw)), math.sin(math.radians(cyaw))
@@ -952,20 +973,18 @@ def light(lid, loc, lm, radius, temp=None, color=None, folder="Lighting/Cloister
     add(lid, "light", "light", "Point", loc, (0, 0, 0), (1, 1, 1), "-", folder, note=note, extras=ex)
 
 
-light("L_Cl_Bells", (11960.0, 2380.0, 320.0), 250, 600, 2200, note="lantern above the inscription")
-light("L_Cl_Door", (11960.0, 1880.0, 300.0), 200, 500, 2200, note="lantern beside the tower door")
-light("L_Cl_Entry", (10520.0, 300.0, 300.0), 150, 450, 2200, note="stair-house lantern")
-light("L_Cl_West", (9560.0, 2000.0, 320.0), 150, 450, 2200, note="W walk, at the passage arch")
-light("L_Cl_Cell", (9900.0, 2970.0, 30.0), 60, 200, 1900, note="candle cluster at the N-wall door at X 9900 (30 from the wall), Z 30")
-light("L_Ps_Lantern", (9380.0, 2240.0, 300.0), 150, 500, 2200, folder="Lighting/Cloister", note="passage, cloister end")
-light("L_Tw_Base", (12060.0, 1880.0, 260.0), 150, 450, 2200, folder="Lighting/BellTower", note="tower base")
+light("L_Cl_Bells", LANTERN_LIGHT["L_Cl_Bells"], 250, 600, 2200, note="lantern above the inscription")
+light("L_Cl_Door", LANTERN_LIGHT["L_Cl_Door"], 200, 500, 2200, note="lantern beside the tower door")
+light("L_Cl_Entry", LANTERN_LIGHT["L_Cl_Entry"], 150, 450, 2200, note="stair-house lantern")
+light("L_Cl_West", LANTERN_LIGHT["L_Cl_West"], 150, 450, 2200, note="W walk, at the passage arch (lantern on the arch soffit)")
+light("L_Cl_Cell", (9900.0, 2970.0, 30.0), 60, 200, 1900, note="candle cluster at the N-wall door at X 9900 (30 from the wall), Z 30 (no lantern)")
+light("L_Ps_Lantern", LANTERN_LIGHT["L_Ps_Lantern"], 150, 500, 2200, folder="Lighting/Cloister", note="passage, cloister end")
+light("L_Tw_Base", LANTERN_LIGHT["L_Tw_Base"], 150, 450, 2200, folder="Lighting/BellTower", note="tower base")
 for n in (4, 7, 10):
-    corner, pt, yaw, top = LANDINGS[n]
-    cx = pt[0] + (125.0 if corner in ("NE", "SE") else -125.0)
-    cy = pt[1] + (125.0 if corner in ("NE", "NW") else -125.0)
-    light(f"L_Tw_Land{n}", (cx, cy, top + 30.0), 100, 350, 2200, folder="Lighting/BellTower", note=f"30 above the {corner} landing-{n} top (landing centre)")
-light("L_Tw_Bell", (12290.0, 1865.0, 2700.0), 150, 500, 2200, folder="Lighting/BellTower", note="on the bell frame post")
-light("L_Tw_BellFill", (12500.0, 2300.0, 3300.0), 120, 900, None, (0.75, 0.80, 0.92), folder="Lighting/BellTower", note="moon fill")
+    light(f"L_Tw_Land{n}", LANTERN_LIGHT[f"L_Tw_Land{n}"], 100, 350, 2200, folder="Lighting/BellTower",
+          note=f"D1.11: moved to the lantern at the landing-{n} wall corner (10 below the hook, landing top + 170)")
+light("L_Tw_Bell", LANTERN_LIGHT["L_Tw_Bell"], 150, 500, 2200, folder="Lighting/BellTower", note="D1.11: moved out of the frame post, lantern on the post's -X face")
+light("L_Tw_BellFill", (12500.0, 2300.0, 3300.0), 120, 900, None, (0.75, 0.80, 0.92), folder="Lighting/BellTower", note="moon fill (no lantern)")
 LIGHTS_PLAN = {
     "delete": [f"Light_Cloister_{i}" for i in range(8)] + [f"Light_Tower_{i}" for i in range(6)] + ["Light_TowerBell", "Light_TowerTop_0", "Light_Courtyard_7"],
     "keep_and_tune": {f"Light_TowerExt_{i}": "tune to 200-400 lm so the W face reads against the sky from the gate" for i in range(3)},
@@ -1391,47 +1410,30 @@ chk("7 derived", "record ids unique", len(ids) == len(set(ids)), f"{len(ids)} re
 # greybox hide list
 chk("7 derived", "hide list = 278 folder actors + Passage_S/N", len(HIDE) == 280, f"{len(HIDE)} actors")
 
-# ---- D1 consistency notes (WARN, not failures) -------------------------------------------------------
-# N-walk hole panel vs the broken vault bay
+# ---- D1.11 checks replacing the former consistency warnings -------------------------------------------
 hole = next(d for d in ROOF_PANELS["N"] if d["extras"]["hole"])
 x0 = min(hole["extras"]["run_from"], hole["extras"]["run_to"])
-sxh = hole["scale"][0]
-hx0, hx1 = x0 + 150.0 * sxh, x0 + 850.0 * sxh
-vault = rec_by_id("CLA_Vault_N_E")
-vx0, vx1 = vault["aabb_min"][0], vault["aabb_max"][0]
-ov = max(0.0, min(hx1, vx1) - max(hx0, vx0))
-WARNINGS.append(("D1-N1 N-walk roof hole vs broken vault",
-                 f"the middle N panel spans X {x0:.0f}-{x0 + 1000 * sxh:.0f}; its hole is X {hx0:.0f}-{hx1:.0f}; the broken vault bay is X {vx0:.0f}-{vx1:.0f}; overlap {ov:.0f} of "
-                 f"{hx1 - hx0:.0f}. D1.3 states the middle panel is X 10833-11667 (hole 10958-11541), which only holds for a run X 10000-12500, not 9500-12000. "
-                 + ("(--n-roof-fix applied.)" if N_ROOF_FIX else "Proposed fix: run the generator with --n-roof-fix (panels 9500-10833, 10833-11667, 11667-12000 with x-scale 1.3333 / 0.8333 / 0.3333).")))
-# rope vs the shaft base inner wall
+hx0, hx1 = x0 + 150.0 * hole["scale"][0], x0 + 850.0 * hole["scale"][0]
+chk("7 derived", "N roof hole (X %.0f-%.0f) covers the broken vault hole X 10900-11450" % (hx0, hx1), hx0 <= 10900.0 and hx1 >= 11450.0,
+    "N panels start X %s, x-scales %s" % ([round(min(d["extras"]["run_from"], d["extras"]["run_to"])) for d in ROOF_PANELS["N"]], [d["scale"][0] for d in ROOF_PANELS["N"]]))
 rope = rec_by_id("TWA_BellRope")
 sb = rec_by_id("TWA_ShaftBase")
-inner_y0 = sb["aabb_min"][1] + 35.0
-gap = rope["loc"][1] - inner_y0
-WARNINGS.append(("D1-T1 bell rope vs the shaft base",
-                 f"the rope hangs at Y {rope['loc'][1]:.0f}, only {gap:.0f} cm inside the shaft base's S inner wall (Y {inner_y0:.0f}); the sally (O 9, r 4.5) plus 2 cm sway "
-                 f"needs 6.5, so it can clip the inner wall by {max(0.0, 6.5 - gap):.1f} cm in Z 240-340. Proposed: make the shaft base inner opening 5 cm wider on that wall or move the "
-                 f"rope to Y 1835 (a 5 cm nudge that also stays in the floor hole Y 1820-1850)."))
-# inscription flush
-WARNINGS.append(("D1-B1 inscription tablet flush",
-                 "D1.6.2 keeps the parent Plaque's relative transform (0,0,0), but the parent Plaque is a centred cube (back at X 11990..12000 -> centre 11995) whereas "
-                 "M4 has its pivot at the back centre: back at X 11995, front at 11985, a 5 cm gap to the wall. Proposed: Plaque relative X = -2 (local, x2.5 root scale = 5 cm)."))
-# rafter lean
-WARNINGS.append(("D1-D1 collapse rafter lean",
-                 "D1.7: 'one rafter leaning from the floor (11300, 2330) up to the arcade wall top' is not reachable with a 260 cm rafter (the arcade wall top is Z 620); "
-                 "implemented as leaning against the arcade face (Y 2290), top at Z 258."))
-# pier height naming
-WARNINGS.append(("D1-P1 pier piece name",
-                 "C6/C7 are named ...x640 but the table puts the coping top at z 620 (and arches end at world 620); mbounds use 620. P10-3b should either keep 620 and drop 640 "
-                 "from the name or confirm the 20 cm block."))
-WARNINGS.append(("D1-C1 C11 pivots",
-                 "C11 (GraveSlab, GraveCross, GarthCross) gives no pivot; the generator assumes bottom centre (positions in D1.3 are centres)."))
-WARNINGS.append(("D1-L1 lantern list",
-                 "D1.7 'every light position that says lantern': implemented for L_Cl_Bells, L_Cl_Door, L_Cl_Entry and L_Ps_Lantern; L_Cl_West and L_Tw_Base are 2200 K "
-                 "lights without the word 'lantern' and get no mesh."))
-WARNINGS.append(("D1-M1 cell leaf height",
-                 "the Dungeon door leaf at scale (0.5, 1.15, 1.2) is 110 x 219 cm in a 110 x 250 cm opening: 31 cm of the dark back panel shows above the leaf."))
+gap = rope["loc"][1] - (sb["aabb_min"][1] + 35.0)
+chk("7 derived", "bell rope clear of the shaft base inner wall (sally r 4.5 + 2 sway) and inside the floor hole Y 1820-1850",
+    gap >= 6.5 and 1820 <= rope["loc"][1] - 6.5 and rope["loc"][1] + 6.5 <= 1850, "rope Y %g, %.1f cm inside the inner wall" % (rope["loc"][1], gap))
+lights_with_lantern = sorted(LANTERN_LIGHT)
+warm = sorted(r["id"] for r in RECS if r["cat"] == "light" and r["id"] not in ("L_Cl_Cell", "L_Tw_BellFill"))
+chk("7 derived", "every warm light except L_Cl_Cell and L_Tw_BellFill has a lantern", lights_with_lantern == warm, "%d lanterns for %d warm lights" % (len(lights_with_lantern), len(warm)))
+cl = rec_by_id("CLA_CellLeaf_N9900")
+chk("7 derived", "cell-door leaf 250 tall (scale z 1.37)", abs(cl["aabb_max"][2] - cl["aabb_min"][2] - 250.0) <= 1.5, "height %.1f" % (cl["aabb_max"][2] - cl["aabb_min"][2]))
+bell_l = rec_by_id("L_Tw_Bell")
+post = rec_by_id("TWA_BellFrame")
+chk("7 derived", "L_Tw_Bell outside the SW frame post (X 12267.5-12292.5)", bell_l["loc"][0] < 12267.5, "light at %s" % bell_l["loc"])
+# ---- notes (not failures)
+WARNINGS.append(("D1.11 accepted", "rafter leaning at Z 258, piers top at 620 (name stays ...x640), C11 bottom-centre pivots, latch box 8 x 20 x 30, routed wrap-around patrol method."))
+WARNINGS.append(("D1-N2 W lantern", "L_Cl_West is in the arch opening (no wall at Z 330, soffit apex Z 420): the lantern hangs from a ring at the soffit on a 106 cm chain (D1.11 says 'nearest wall')."))
+WARNINGS.append(("D1-N3 landing lights moved", "D1.11 puts the landing lanterns at the wall corner, Z = landing top + 180, so L_Tw_Land4/7/10 move from the landing centre to the corner (10 below the hook, top + 170)."))
+WARNINGS.append(("D1-N4 cobwebs", "cobwebs moved from landings 2,3,4,6,7,8 to 2,3,5,6,8,9 so they do not share the lantern corners of landings 4 and 7."))
 
 
 # =====================================================================================================
@@ -1440,9 +1442,6 @@ WARNINGS.append(("D1-M1 cell leaf height",
 WARNINGS.append(("D1-G1 Note_Cloister vs the garth bed",
                  "the S coping (top Z 100, spans Y 1396-1430) and CLA_GarthBed (origin Y 1400, mounds up to Z 110) overlap in plan for Y 1400-1430, where Note_Cloister "
                  "(10750, 1425, 100.25) lies: a 2-10 cm mound would bury the note. Proposed: the bed mesh stays flat (<= 0.2) within 35 of the S edge, or starts at y 35."))
-WARNINGS.append(("D1-T2 L_Tw_Bell inside the frame post",
-                 "L_Tw_Bell (12290, 1865, 2700) is inside the SW post of the bell frame (X 12267.5-12292.5, Y 1852.5-1877.5, Z 2500-2865); shadowless so it does not matter, "
-                 "but P10-7 may want it 15 cm off the post face."))
 
 # =====================================================================================================
 # OUTPUTS
@@ -1456,7 +1455,7 @@ for r in RECS:
 
 out_json = {
     "generator": "Tools/belltower/gen_tower_layout.py", "units": "cm, UE world; rot = [pitch, yaw, roll]; mbounds = mesh-local [min, max]",
-    "n_roof_fix_applied": N_ROOF_FIX, "all_checks_pass": ALL_OK, "counts": SUMMARY_CAT, "group_counts": SUMMARY_GROUP,
+    "errata": "D1.11 applied", "all_checks_pass": ALL_OK, "counts": SUMMARY_CAT, "group_counts": SUMMARY_GROUP,
     "checks": [{"group": g, "name": n, "ok": ok, "detail": d} for g, n, ok, d in CHECKS],
     "warnings": [{"id": n, "detail": d} for n, d in WARNINGS],
     "mi_paths": MI_PATHS, "slot_mi": SLOT_MI, "wood": {"tower": WOOD_TOWER, "cloister": WOOD_CLOISTER},
@@ -1490,7 +1489,7 @@ MD = ["# P10 D1 placement tables (generated)", "",
       "## Checks (D1.9)", "", "| Group | Check | Result | Numbers |", "|---|---|---|---|"]
 for g, n, ok, d in CHECKS:
     MD.append(f"| {g} | {n} | {'PASS' if ok else '**FAIL**'} | {d} |")
-MD += ["", f"**Overall: {'PASS' if ALL_OK else 'FAIL'}**" + (" (N-walk roof fix applied)" if N_ROOF_FIX else ""), "", "## D1 consistency notes (not failures)", ""]
+MD += ["", f"**Overall: {'PASS' if ALL_OK else 'FAIL'}**", "", "## D1 consistency notes (not failures)", ""]
 for n, d in WARNINGS:
     MD.append(f"- **{n}**: {d}")
 MD += ["", "## Lane clearances", "",
@@ -1747,7 +1746,7 @@ def draw_plan():
         if r["group"] == "louvre":
             qrect(r["aabb_min"], r["aabb_max"], fill=(120, 170, 255))
         if r["group"] == "rope":
-            dr.ellipse([qx(12550) - 3, qy(1830) - 3, qx(12550) + 3, qy(1830) + 3], fill=(255, 120, 120))
+            dr.ellipse([qx(12550) - 3, qy(1835) - 3, qx(12550) + 3, qy(1835) + 3], fill=(255, 120, 120))
         if r["group"] == "greatbell":
             qrect(r["aabb_min"], r["aabb_max"], outline=(255, 90, 230), width=2)
         if r["group"] == "chamberdebris":
@@ -1895,7 +1894,7 @@ def draw_section():
             prof = [(0, 0), (6, 0), (6, -20), (55, -20), (65, -35), (75, -120), (98, -200), (105, -220)]
             pts = [(2000.0 + x, 2860.0 + z) for x, z in prof] + [(2000.0 - x, 2860.0 + z) for x, z in reversed(prof)]
             dr.polygon([(h(x), pz(z)) for x, z in pts], fill=(160, 120, 70), outline=(255, 200, 120))
-            dr.line([(h(1830.0), pz(2750.0)), (h(1830.0), pz(140.0))], fill=(230, 190, 120), width=2)
+            dr.line([(h(1835.0), pz(2750.0)), (h(1835.0), pz(140.0))], fill=(230, 190, 120), width=2)
         # roof (pyramid, eaves +-525 about the centre)
         cx = 12500.0 if which == "A" else 2000.0
         dr.polygon([(h(cx - 525.0), pz(3530.0)), (h(cx), pz(4740.0)), (h(cx + 525.0), pz(3530.0)), (h(cx + 525.0), pz(3540.0)), (h(cx - 525.0), pz(3540.0))],
