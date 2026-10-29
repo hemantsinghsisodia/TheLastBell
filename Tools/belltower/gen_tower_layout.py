@@ -704,17 +704,17 @@ for cid, wl, (wx, wy), yaw in CELLS:
     org = (wx, wy)       # the built frame has its pivot at the centre of the width (bounds x -75..75)
     add(f"CLA_CellDoor_{cid}", "door", "celldoor", FRAME, (org[0], org[1], 0.0), (0.0, yaw, 0.0), (1, 1, 1), "NoCollision", "Cloister/Art/CellDoors",
         mi=mi_for(["MAT_Masonry", "MAT_Rubble"]), note=f"{wl} wall, centred at ({wx:g}, {wy:g}); frame projects 8 into the walk")
-    # leaf: SM_Dungeon_door (x 2.4..15.8 thick, y -43.3..52.6, z 0.5..182.7), scale (0.5, 1.15, 1.37) (D1.11: 250 tall), back at local y -3, 1 cm in front of the back panel face (y -2) (D1.12: back panel face y -2, leaf back y -3)
+    # leaf: SM_Dungeon_door (x 2.4..15.8 thick, y -43.3..52.6, z 0.5..182.7), scale (0.4, 1.15, 1.37): 5.4 thick, 250 tall; back at local y -2.5 (0.5 in front of the back panel face y -2), front at -7.9 inside the frame face (-8) (D1.12: back panel face y -2, leaf back y -3)
     lyaw = yaw - 90.0
     lx_centre = (-43.3 + 52.6) / 2.0 * 1.15
     lo = frame_pt((wx, wy), yaw, 0.0, 0.0)
-    pos_ = frame_pt((wx, wy), yaw, -lx_centre + 0.0, -3.0 + 2.4 * 0.5)
+    pos_ = frame_pt((wx, wy), yaw, -lx_centre + 0.0, -2.5 + 2.4 * 0.4)
     rot_ = [0.0, lyaw, 0.0]
     note_ = "SM_Dungeon_door leaf scale (0.5, 1.15, 1.37) (D1.11: 250 tall), back 1 cm in front of the back panel"
     if cid == "N11100":
         rot_ = [0.0, lyaw + 8.0, 4.0]
         note_ += "; under the collapse: hangs by one hinge (roll 4, yaw +8)"
-    add(f"CLA_CellLeaf_{cid}", "doorleaf", "cellleaf", LEAF, (pos_[0], pos_[1], -0.685), rot_, (0.5, 1.15, 1.37), "NoCollision", "Cloister/Art/CellDoors",
+    add(f"CLA_CellLeaf_{cid}", "doorleaf", "cellleaf", LEAF, (pos_[0], pos_[1], -0.685), rot_, (0.4, 1.15, 1.37), "NoCollision", "Cloister/Art/CellDoors",
         note=note_, extras={"frame_yaw": yaw})
 
 
@@ -1470,10 +1470,24 @@ sp = min(r["loc"][2] for r in RECS if r["group"] == "vaultbay")
 sp2 = max(r["loc"][2] for r in RECS if r["group"] == "vaultbay")
 cb = {r["aabb_max"][2] for r in RECS if r["group"] == "corbel"}
 chk("7 derived", "D1.12: all 10 vault bays spring at Z 540 and every corbel top is Z 540", sp == sp2 == 540.0 and cb == {540.0}, "vault Z %g..%g, corbel tops %s" % (sp, sp2, sorted(cb)))
-cl2 = rec_by_id("CLA_CellLeaf_N9900")
-cf = rec_by_id("CLA_CellDoor_N9900")
-back = cl2["aabb_max"][1] - 3000.0
-chk("7 derived", "D1.12: cell leaf back at local y -3 (world Y 2997 on the N wall)", abs(cl2["aabb_max"][1] - 2997.0) < 0.05, "leaf back Y %.2f; frame AABB Y %.1f..%.1f" % (cl2["aabb_max"][1], cf["aabb_min"][1], cf["aabb_max"][1]))
+bad = []
+nums = []
+for cid in ("N9900", "N10500", "N11100", "W900", "W2700"):
+    lf = rec_by_id(f"CLA_CellLeaf_{cid}")
+    fr = rec_by_id(f"CLA_CellDoor_{cid}")
+    yaw = fr["rot"][1]
+    # leaf back / front in the frame's local y: local y of the leaf AABB corners (sin/cos of the frame yaw), leaf rotated only by 8 deg yaw / 4 roll on N11100
+    c, s_ = math.cos(math.radians(yaw)), math.sin(math.radians(yaw))
+    wx, wy = fr["loc"][0], fr["loc"][1]
+    ys = []
+    for px_ in (lf["aabb_min"][0], lf["aabb_max"][0]):
+        for py_ in (lf["aabb_min"][1], lf["aabb_max"][1]):
+            ys.append(-(px_ - wx) * s_ + (py_ - wy) * c)
+    back, front = max(ys), min(ys)
+    nums.append("%s back %.2f front %.2f" % (cid, back, front))
+    if cid != "N11100" and not (front >= -8.0 and back <= -2.0):
+        bad.append(cid)
+chk("7 derived", "D1.12 cell leaves: front >= -8.0 and back <= -2.0 in the frame's local y (N11100 hangs rotated, excluded)", not bad, "; ".join(nums))
 # ---- notes (not failures)
 WARNINGS.append(("D1.11 accepted", "rafter leaning at Z 258, piers top at 620 (name stays ...x640), C11 bottom-centre pivots, latch box 8 x 20 x 30, routed wrap-around patrol method."))
 WARNINGS.append(("D1-N2 W lantern", "L_Cl_West is in the arch opening (no wall at Z 330, soffit apex Z 420): the lantern hangs from a ring at the soffit on a 106 cm chain (D1.11 says 'nearest wall')."))

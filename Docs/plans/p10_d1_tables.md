@@ -57,7 +57,7 @@ Counts by category: arcade 28, block 8, door 5, doorleaf 5, dress 150, floor 7, 
 | 7 derived | roof panels: local +z (slate normal) world Z > 0.5 and local x runs -X (S), +X (N), +Y (W), -Y (E) | PASS | min normal Z 0.742 |
 | 7 derived | every new-folder mesh named in a record exists in the built-mesh reports (tower 33, cloister 40) | PASS | all 68 record meshes found |
 | 7 derived | D1.12: all 10 vault bays spring at Z 540 and every corbel top is Z 540 | PASS | vault Z 540..540, corbel tops [540.0] |
-| 7 derived | D1.12: cell leaf back at local y -3 (world Y 2997 on the N wall) | PASS | leaf back Y 2996.98; frame AABB Y 2992.0..3002.0 |
+| 7 derived | D1.12 cell leaves: front >= -8.0 and back <= -2.0 in the frame's local y (N11100 hangs rotated, excluded) | PASS | N9900 back -2.52 front -7.88; N10500 back -2.52 front -7.88; N11100 back 8.31 front -14.73; W900 back -2.52 front -7.88; W2700 back -2.52 front -7.88 |
 
 **Overall: PASS**
 
@@ -101,25 +101,25 @@ Clearance = distance from the sampled walk line (or the routed Warden path) to t
 | WP_TowerStairs_23->WP_TowerStairs_24 | WalkPath TowerStairs | 125.0 | TWA_S3_W |
 | WP_CryptToCloister_09->WP_CryptToCloister_10 | WalkPath CryptToCloister | 150.0 | SHA_Wall_SH_W_1 |
 | (the other 0 TowerStairs segments have > 200) | | | |
-| Patrol_Cloister_01->Patrol_Cloister_02 | Patrol (straight 750) | 198.3 | CLA_CellLeaf_N9900 |
-| Patrol_Cloister_02->Patrol_Cloister_03 | Patrol (straight 1000) | 198.3 | CLA_CellLeaf_N9900 |
+| Patrol_Cloister_01->Patrol_Cloister_02 | Patrol (straight 750) | 237.0 | CLA_Lantern_West |
+| Patrol_Cloister_02->Patrol_Cloister_03 | Patrol (straight 1000) | 257.2 | CLA_Cell_Stool |
 | Patrol_Cloister_03->Patrol_Cloister_04 | Patrol (straight 906) | 144.1 | CLA_Collapse_Heap |
 | Patrol_Cloister_04->Patrol_Cloister_05 | Patrol (straight 962) | 63.6 | GP_Mech_Ritual3 |
 | Patrol_Cloister_05->Patrol_Cloister_06 | Patrol (straight 912) | 82.1 | GP_Mech_Ritual3 |
 | Patrol_Cloister_06->Patrol_Cloister_07 | Patrol (straight 806) | 372.8 | SHA_Wall_SH_E_0 |
 | Patrol_Cloister_07->Patrol_Cloister_01 | Patrol (straight 1556, routed 1730) | 86.6 | Cl_Block_PierSW |
-| Search_Cloister_01 | AI point | 127.3 | CLA_CellLeaf_W900 |
+| Search_Cloister_01 | AI point | 750.0 | Cl_Block_PierSW |
 | Search_Cloister_02 | AI point | 90.4 | CLA_Cell_Bucket |
-| Search_Cloister_03 | AI point | 194.8 | CLA_CellLeaf_N11100 |
+| Search_Cloister_03 | AI point | 195.8 | CLA_CellLeaf_N11100 |
 | Search_Cloister_04 | AI point | 260.2 | GP_Bell_4_Bracket |
 | Search_Cloister_05 | AI point | 119.3 | GP_Bell_2 |
 | Search_Cloister_06 | AI point | 65.9 | GP_Mech_Ritual3 |
 | Search_Cloister_07 | AI point | 623.7 | Cl_Block_PierSE |
 | Search_Cloister_08 | AI point | 483.0 | SHA_Wall_SH_E_0 |
-| Search_Cloister_09 | AI point | 472.4 | CLA_CellLeaf_W900 |
+| Search_Cloister_09 | AI point | 502.7 | CLA_Lantern_West |
 | Search_Cloister_10 | AI point | 152.3 | CLA_Cell_Stool |
-| Search_Cloister_11 | AI point | 198.1 | CLA_CellLeaf_N10500 |
-| Search_Cloister_12 | AI point | 179.9 | CLA_CellLeaf_N11100 |
+| Search_Cloister_11 | AI point | 518.0 | Cl_Block_PierNW |
+| Search_Cloister_12 | AI point | 181.2 | CLA_CellLeaf_N11100 |
 | Search_Cloister_13 | AI point | 342.8 | SHA_Wall_SH_W_1 |
 | Search_Cloister_14 | AI point | 156.7 | CLA_Collapse_Rubble_5 |
 | WSpawn_Cloister | AI point | 392.2 | PSA_Lantern |
@@ -572,15 +572,15 @@ Built but not placed: SM_LB_Tw_S3_S, SM_LB_Tw_S3_W (the intact S3 W/S wall piece
 | Label | Mesh | Location | Rotation | Scale | AABB min .. max | Collision | Note |
 |---|---|---|---|---|---|---|---|
 | CLA_CellDoor_N9900 | SM_LB_Cl_CellDoorFrame_150x270 | (9900, 3000, 0) | (0, 0, 0) | (1, 1, 1) | (9825, 2992, 0) .. (9975, 3002, 270) | NoCollision | N wall, centred at (9900, 3000); frame projects 8 into the walk |
-| CLA_CellLeaf_N9900 | SM_Dungeon_door | (9894.65, 2998.2, -0.69) | (0, -90, 0) | (0.5, 1.15, 1.37) | (9844.8, 2990.3, -0.1) .. (9955.1, 2997, 249.6) | NoCollision | SM_Dungeon_door leaf scale (0.5, 1.15, 1.37) (D1.11: 250 tall), back 1 cm in front of the back panel |
+| CLA_CellLeaf_N9900 | SM_Dungeon_door | (9894.65, 2998.46, -0.69) | (0, -90, 0) | (0.4, 1.15, 1.37) | (9844.8, 2992.1, -0.1) .. (9955.1, 2997.5, 249.6) | NoCollision | SM_Dungeon_door leaf scale (0.5, 1.15, 1.37) (D1.11: 250 tall), back 1 cm in front of the back panel |
 | CLA_CellDoor_N10500 | SM_LB_Cl_CellDoorFrame_150x270 | (10500, 3000, 0) | (0, 0, 0) | (1, 1, 1) | (10425, 2992, 0) .. (10575, 3002, 270) | NoCollision | N wall, centred at (10500, 3000); frame projects 8 into the walk |
-| CLA_CellLeaf_N10500 | SM_Dungeon_door | (10494.6, 2998.2, -0.69) | (0, -90, 0) | (0.5, 1.15, 1.37) | (10444.8, 2990.3, -0.1) .. (10555.1, 2997, 249.6) | NoCollision | SM_Dungeon_door leaf scale (0.5, 1.15, 1.37) (D1.11: 250 tall), back 1 cm in front of the back panel |
+| CLA_CellLeaf_N10500 | SM_Dungeon_door | (10494.6, 2998.46, -0.69) | (0, -90, 0) | (0.4, 1.15, 1.37) | (10444.8, 2992.1, -0.1) .. (10555.1, 2997.5, 249.6) | NoCollision | SM_Dungeon_door leaf scale (0.5, 1.15, 1.37) (D1.11: 250 tall), back 1 cm in front of the back panel |
 | CLA_CellDoor_N11100 | SM_LB_Cl_CellDoorFrame_150x270 | (11100, 3000, 0) | (0, 0, 0) | (1, 1, 1) | (11025, 2992, 0) .. (11175, 3002, 270) | NoCollision | N wall, centred at (11100, 3000); frame projects 8 into the walk |
-| CLA_CellLeaf_N11100 | SM_Dungeon_door | (11094.6, 2998.2, -0.69) | (0, -82, 4) | (0.5, 1.15, 1.37) | (11045.6, 2983.4, -4.3) .. (11172.7, 3007.8, 252.4) | NoCollision | SM_Dungeon_door leaf scale (0.5, 1.15, 1.37) (D1.11: 250 tall), back 1 cm in front of the back panel; under the collapse: hangs by one hinge (roll 4, yaw +8) |
+| CLA_CellLeaf_N11100 | SM_Dungeon_door | (11094.6, 2998.46, -0.69) | (0, -82, 4) | (0.4, 1.15, 1.37) | (11045.6, 2985.3, -4.3) .. (11172.5, 3008.3, 252.4) | NoCollision | SM_Dungeon_door leaf scale (0.5, 1.15, 1.37) (D1.11: 250 tall), back 1 cm in front of the back panel; under the collapse: hangs by one hinge (roll 4, yaw +8) |
 | CLA_CellDoor_W900 | SM_LB_Cl_CellDoorFrame_150x270 | (9500, 900, 0) | (0, 90, 0) | (1, 1, 1) | (9498, 825, 0) .. (9508, 975, 270) | NoCollision | W wall, centred at (9500, 900); frame projects 8 into the walk |
-| CLA_CellLeaf_W900 | SM_Dungeon_door | (9501.8, 894.65, -0.69) | (0, 0, 0) | (0.5, 1.15, 1.37) | (9503, 844.8, -0.1) .. (9509.7, 955.1, 249.6) | NoCollision | SM_Dungeon_door leaf scale (0.5, 1.15, 1.37) (D1.11: 250 tall), back 1 cm in front of the back panel |
+| CLA_CellLeaf_W900 | SM_Dungeon_door | (9501.54, 894.65, -0.69) | (0, 0, 0) | (0.4, 1.15, 1.37) | (9502.5, 844.8, -0.1) .. (9507.9, 955.1, 249.6) | NoCollision | SM_Dungeon_door leaf scale (0.5, 1.15, 1.37) (D1.11: 250 tall), back 1 cm in front of the back panel |
 | CLA_CellDoor_W2700 | SM_LB_Cl_CellDoorFrame_150x270 | (9500, 2700, 0) | (0, 90, 0) | (1, 1, 1) | (9498, 2625, 0) .. (9508, 2775, 270) | NoCollision | W wall, centred at (9500, 2700); frame projects 8 into the walk |
-| CLA_CellLeaf_W2700 | SM_Dungeon_door | (9501.8, 2694.65, -0.69) | (0, 0, 0) | (0.5, 1.15, 1.37) | (9503, 2644.8, -0.1) .. (9509.7, 2755.1, 249.6) | NoCollision | SM_Dungeon_door leaf scale (0.5, 1.15, 1.37) (D1.11: 250 tall), back 1 cm in front of the back panel |
+| CLA_CellLeaf_W2700 | SM_Dungeon_door | (9501.54, 2694.65, -0.69) | (0, 0, 0) | (0.4, 1.15, 1.37) | (9502.5, 2644.8, -0.1) .. (9507.9, 2755.1, 249.6) | NoCollision | SM_Dungeon_door leaf scale (0.5, 1.15, 1.37) (D1.11: 250 tall), back 1 cm in front of the back panel |
 
 ## Gameplay references (placed by the child Blueprints) (15)
 

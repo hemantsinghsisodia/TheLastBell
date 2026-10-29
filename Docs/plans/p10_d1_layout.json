@@ -353,9 +353,9 @@
   },
   {
    "group": "7 derived",
-   "name": "D1.12: cell leaf back at local y -3 (world Y 2997 on the N wall)",
+   "name": "D1.12 cell leaves: front >= -8.0 and back <= -2.0 in the frame's local y (N11100 hangs rotated, excluded)",
    "ok": true,
-   "detail": "leaf back Y 2996.98; frame AABB Y 2992.0..3002.0"
+   "detail": "N9900 back -2.52 front -7.88; N10500 back -2.52 front -7.88; N11100 back 8.31 front -14.73; W900 back -2.52 front -7.88; W2700 back -2.52 front -7.88"
   }
  ],
  "warnings": [
@@ -16619,7 +16619,7 @@
    "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Dungeon_door.SM_Dungeon_door",
    "loc": [
     9894.653,
-    2998.2,
+    2998.46,
     -0.685
    ],
    "rot": [
@@ -16628,7 +16628,7 @@
     0.0
    ],
    "scale": [
-    0.5,
+    0.4,
     1.15,
     1.37
    ],
@@ -16648,12 +16648,12 @@
    ],
    "aabb_min": [
     9844.82,
-    2990.28,
+    2992.12,
     -0.06
    ],
    "aabb_max": [
     9955.09,
-    2996.98,
+    2997.48,
     249.56
    ],
    "mi_slots": {},
@@ -16721,7 +16721,7 @@
    "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Dungeon_door.SM_Dungeon_door",
    "loc": [
     10494.653,
-    2998.2,
+    2998.46,
     -0.685
    ],
    "rot": [
@@ -16730,7 +16730,7 @@
     0.0
    ],
    "scale": [
-    0.5,
+    0.4,
     1.15,
     1.37
    ],
@@ -16750,12 +16750,12 @@
    ],
    "aabb_min": [
     10444.82,
-    2990.28,
+    2992.12,
     -0.06
    ],
    "aabb_max": [
     10555.09,
-    2996.98,
+    2997.48,
     249.56
    ],
    "mi_slots": {},
@@ -16823,7 +16823,7 @@
    "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Dungeon_door.SM_Dungeon_door",
    "loc": [
     11094.653,
-    2998.2,
+    2998.46,
     -0.685
    ],
    "rot": [
@@ -16832,7 +16832,7 @@
     4.0
    ],
    "scale": [
-    0.5,
+    0.4,
     1.15,
     1.37
    ],
@@ -16851,13 +16851,13 @@
     ]
    ],
    "aabb_min": [
-    11045.64,
-    2983.44,
+    11045.61,
+    2985.27,
     -4.28
    ],
    "aabb_max": [
-    11172.74,
-    3007.81,
+    11172.52,
+    3008.31,
     252.42
    ],
    "mi_slots": {},
@@ -16924,7 +16924,7 @@
    "group": "cellleaf",
    "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Dungeon_door.SM_Dungeon_door",
    "loc": [
-    9501.8,
+    9501.54,
     894.653,
     -0.685
    ],
@@ -16934,7 +16934,7 @@
     0.0
    ],
    "scale": [
-    0.5,
+    0.4,
     1.15,
     1.37
    ],
@@ -16953,12 +16953,12 @@
     ]
    ],
    "aabb_min": [
-    9503.02,
+    9502.52,
     844.82,
     -0.06
    ],
    "aabb_max": [
-    9509.72,
+    9507.88,
     955.09,
     249.56
    ],
@@ -17026,7 +17026,7 @@
    "group": "cellleaf",
    "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Dungeon_door.SM_Dungeon_door",
    "loc": [
-    9501.8,
+    9501.54,
     2694.653,
     -0.685
    ],
@@ -17036,7 +17036,7 @@
     0.0
    ],
    "scale": [
-    0.5,
+    0.4,
     1.15,
     1.37
    ],
@@ -17055,12 +17055,12 @@
     ]
    ],
    "aabb_min": [
-    9503.02,
+    9502.52,
     2644.82,
     -0.06
    ],
    "aabb_max": [
-    9509.72,
+    9507.88,
     2755.09,
     249.56
    ],
