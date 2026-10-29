@@ -1,0 +1,1060 @@
+[
+ {
+  "name": "SM_LB_Tw_S1_W",
+  "min": [
+   -10.0,
+   0.0,
+   0.0
+  ],
+  "max": [
+   1010.0,
+   50.0,
+   800.0
+  ],
+  "dims": [
+   1020.0,
+   50.0,
+   800.0
+  ],
+  "tris": 7451,
+  "slots": [
+   "MAT_Masonry",
+   "MAT_Trim",
+   "MAT_Rubble"
+  ],
+  "slots_used": [
+   0,
+   1,
+   2
+  ],
+  "ucx": 0,
+  "note": "",
+  "seconds": 1.9,
+  "extra": {
+   "seed": 1001
+  }
+ },
+ {
+  "name": "SM_LB_Tw_S1_N",
+  "min": [
+   -40.0,
+   0.0,
+   0.0
+  ],
+  "max": [
+   960.0,
+   50.0,
+   800.0
+  ],
+  "dims": [
+   1000.0,
+   50.0,
+   800.0
+  ],
+  "tris": 4825,
+  "slots": [
+   "MAT_Masonry",
+   "MAT_Trim",
+   "MAT_Rubble"
+  ],
+  "slots_used": [
+   0,
+   1,
+   2
+  ],
+  "ucx": 0,
+  "note": "slit F01 at x 460 z 263.6",
+  "seconds": 1.2,
+  "extra": {
+   "seed": 1002
+  }
+ },
+ {
+  "name": "SM_LB_Tw_S1_E",
+  "min": [
+   -10.0,
+   0.0,
+   0.0
+  ],
+  "max": [
+   1010.0,
+   50.0,
+   800.0
+  ],
+  "dims": [
+   1020.0,
+   50.0,
+   800.0
+  ],
+  "tris": 7016,
+  "slots": [
+   "MAT_Masonry",
+   "MAT_Trim",
+   "MAT_Rubble"
+  ],
+  "slots_used": [
+   0,
+   1,
+   2
+  ],
+  "ucx": 0,
+  "note": "slit F02 at x 500 z 490.9",
+  "seconds": 1.6,
+  "extra": {
+   "seed": 1003
+  }
+ },
+ {
+  "name": "SM_LB_Tw_S1_S",
+  "min": [
+   -40.0,
+   0.0,
+   0.0
+  ],
+  "max": [
+   960.0,
+   50.0,
+   800.0
+  ],
+  "dims": [
+   1000.0,
+   50.0,
+   800.0
+  ],
+  "tris": 4789,
+  "slots": [
+   "MAT_Masonry",
+   "MAT_Trim",
+   "MAT_Rubble"
+  ],
+  "slots_used": [
+   0,
+   1,
+   2
+  ],
+  "ucx": 0,
+  "note": "slit F03 at x 460 z 718.1",
+  "seconds": 1.3,
+  "extra": {
+   "seed": 1004
+  }
+ },
+ {
+  "name": "SM_LB_Tw_S2_W",
+  "min": [
+   -10.0,
+   0.0,
+   0.0
+  ],
+  "max": [
+   1010.0,
+   50.0,
+   1700.0
+  ],
+  "dims": [
+   1020.0,
+   50.0,
+   1700.0
+  ],
+  "tris": 15729,
+  "slots": [
+   "MAT_Masonry",
+   "MAT_Trim",
+   "MAT_Rubble"
+  ],
+  "slots_used": [
+   0,
+   1,
+   2
+  ],
+  "ucx": 0,
+  "note": "slit F08 at x 500 z 1054",
+  "seconds": 3.5,
+  "extra": {
+   "seed": 1005
+  }
+ },
+ {
+  "name": "SM_LB_Tw_S2_N",
+  "min": [
+   -40.0,
+   0.0,
+   0.0
+  ],
+  "max": [
+   960.0,
+   50.0,
+   1700.0
+  ],
+  "dims": [
+   1000.0,
+   50.0,
+   1700.0
+  ],
+  "tris": 12298,
+  "slots": [
+   "MAT_Masonry",
+   "MAT_Trim",
+   "MAT_Rubble"
+  ],
+  "slots_used": [
+   0,
+   1,
+   2
+  ],
+  "ucx": 0,
+  "note": "slit F05 at x 460 z 372.7; slit F09 at x 460 z 1281.8",
+  "seconds": 3.2,
+  "extra": {
+   "seed": 1006
+  }
+ },
+ {
+  "name": "SM_LB_Tw_S2_E",
+  "min": [
+   -10.0,
+   0.0,
+   0.0
+  ],
+  "max": [
+   1010.0,
+   50.0,
+   1700.0
+  ],
+  "dims": [
+   1020.0,
+   50.0,
+   1700.0
+  ],
+  "tris": 16165,
+  "slots": [
+   "MAT_Masonry",
+   "MAT_Trim",
+   "MAT_Rubble"
+  ],
+  "slots_used": [
+   0,
+   1,
+   2
+  ],
+  "ucx": 0,
+  "note": "slit F06 at x 500 z 600; slit F10 at x 500 z 1509.1",
+  "seconds": 3.9,
+  "extra": {
+   "seed": 1007
+  }
+ },
+ {
+  "name": "SM_LB_Tw_S2_S",
+  "min": [
+   -40.0,
+   0.0,
+   0.0
+  ],
+  "max": [
+   960.0,
+   50.0,
+   1700.0
+  ],
+  "dims": [
+   1000.0,
+   50.0,
+   1700.0
+  ],
+  "tris": 11552,
+  "slots": [
+   "MAT_Masonry",
+   "MAT_Trim",
+   "MAT_Rubble"
+  ],
+  "slots_used": [
+   0,
+   1,
+   2
+  ],
+  "ucx": 0,
+  "note": "slit F07 at x 460 z 827.3",
+  "seconds": 3.0,
+  "extra": {
+   "seed": 1008
+  }
+ },
+ {
+  "name": "SM_LB_Tw_S3_W",
+  "min": [
+   -15.0,
+   0.0,
+   0.0
+  ],
+  "max": [
+   1015.0,
+   55.0,
+   1040.0
+  ],
+  "dims": [
+   1030.0,
+   55.0,
+   1040.0
+  ],
+  "tris": 10728,
+  "slots": [
+   "MAT_Masonry",
+   "MAT_Trim",
+   "MAT_Rubble"
+  ],
+  "slots_used": [
+   0,
+   1,
+   2
+  ],
+  "ucx": 0,
+  "note": "",
+  "seconds": 2.4,
+  "extra": {
+   "seed": 1009
+  }
+ },
+ {
+  "name": "SM_LB_Tw_S3_W_BrokenSW",
+  "min": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "max": [
+   1015.0,
+   55.0,
+   1040.0
+  ],
+  "dims": [
+   1015.0,
+   55.0,
+   1040.0
+  ],
+  "tris": 11274,
+  "slots": [
+   "MAT_Masonry",
+   "MAT_Trim",
+   "MAT_Rubble"
+  ],
+  "slots_used": [
+   0,
+   1,
+   2
+  ],
+  "ucx": 0,
+  "note": "",
+  "seconds": 2.6,
+  "extra": {
+   "seed": 1009
+  }
+ },
+ {
+  "name": "SM_LB_Tw_S3_N",
+  "min": [
+   -40.0,
+   0.0,
+   0.0
+  ],
+  "max": [
+   960.0,
+   55.0,
+   1040.0
+  ],
+  "dims": [
+   1000.0,
+   55.0,
+   1040.0
+  ],
+  "tris": 7319,
+  "slots": [
+   "MAT_Masonry",
+   "MAT_Trim",
+   "MAT_Rubble"
+  ],
+  "slots_used": [
+   0,
+   1,
+   2
+  ],
+  "ucx": 0,
+  "note": "",
+  "seconds": 1.7,
+  "extra": {
+   "seed": 1010
+  }
+ },
+ {
+  "name": "SM_LB_Tw_S3_E",
+  "min": [
+   -15.0,
+   0.0,
+   0.0
+  ],
+  "max": [
+   1015.0,
+   55.0,
+   1040.0
+  ],
+  "dims": [
+   1030.0,
+   55.0,
+   1040.0
+  ],
+  "tris": 10970,
+  "slots": [
+   "MAT_Masonry",
+   "MAT_Trim",
+   "MAT_Rubble"
+  ],
+  "slots_used": [
+   0,
+   1,
+   2
+  ],
+  "ucx": 0,
+  "note": "",
+  "seconds": 2.4,
+  "extra": {
+   "seed": 1011
+  }
+ },
+ {
+  "name": "SM_LB_Tw_S3_S",
+  "min": [
+   -40.0,
+   0.0,
+   0.0
+  ],
+  "max": [
+   960.0,
+   55.0,
+   1040.0
+  ],
+  "dims": [
+   1000.0,
+   55.0,
+   1040.0
+  ],
+  "tris": 7869,
+  "slots": [
+   "MAT_Masonry",
+   "MAT_Trim",
+   "MAT_Rubble"
+  ],
+  "slots_used": [
+   0,
+   1,
+   2
+  ],
+  "ucx": 0,
+  "note": "",
+  "seconds": 2.0,
+  "extra": {
+   "seed": 1012
+  }
+ },
+ {
+  "name": "SM_LB_Tw_S3_S_BrokenSW",
+  "min": [
+   -40.0,
+   0.0,
+   0.0
+  ],
+  "max": [
+   920.0,
+   55.0,
+   1040.0
+  ],
+  "dims": [
+   960.0,
+   55.0,
+   1040.0
+  ],
+  "tris": 8444,
+  "slots": [
+   "MAT_Masonry",
+   "MAT_Trim",
+   "MAT_Rubble"
+  ],
+  "slots_used": [
+   0,
+   1,
+   2
+  ],
+  "ucx": 0,
+  "note": "",
+  "seconds": 2.0,
+  "extra": {
+   "seed": 1012
+  }
+ },
+ {
+  "name": "SM_LB_Tw_Roof_BrokenSW",
+  "min": [
+   -525.56,
+   -525.61,
+   -294.03
+  ],
+  "max": [
+   525.41,
+   525.33,
+   1284.76
+  ],
+  "dims": [
+   1050.97,
+   1050.94,
+   1578.8
+  ],
+  "tris": 50516,
+  "slots": [
+   "MAT_Slate",
+   "MAT_Wood",
+   "MAT_Iron"
+  ],
+  "slots_used": [
+   0,
+   1,
+   2
+  ],
+  "ucx": 0,
+  "note": "pivot at the wall-top centre (12500, 2000, 3540); pyramid eaves +-525 at z -10, apex z 1200; 3636 slates; SW quarter missing (-x face y -525..-100, -y face x -525..-100, to z 860); SW hip snapped at z 600; 3 broken common rafters (one hangs to z -300); cross finial bent 20 deg to +x",
+  "seconds": 0.3,
+  "extra": {
+   "slates": 3636
+  }
+ },
+ {
+  "name": "SM_LB_Tw_Louvre_130x450",
+  "min": [
+   -65.0,
+   0.0,
+   0.0
+  ],
+  "max": [
+   65.0,
+   30.0,
+   450.0
+  ],
+  "dims": [
+   130.0,
+   30.0,
+   450.0
+  ],
+  "tris": 484,
+  "slots": [
+   "MAT_Wood"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 0,
+  "note": "9 boards 130 x 30 x 3 at 40 deg, spaced 50 from z 25, 2 side cleats",
+  "seconds": 0.0
+ },
+ {
+  "name": "SM_LB_Tw_Louvre_130x450_Broken",
+  "min": [
+   -65.0,
+   0.0,
+   0.0
+  ],
+  "max": [
+   65.0,
+   30.0,
+   450.0
+  ],
+  "dims": [
+   130.0,
+   30.0,
+   450.0
+  ],
+  "tris": 396,
+  "slots": [
+   "MAT_Wood"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 0,
+  "note": "boards 3+4 missing, board 5 hangs at 70 deg; 9 boards 130 x 30 x 3 at 40 deg, spaced 50 from z 25, 2 side cleats",
+  "seconds": 0.0
+ },
+ {
+  "name": "SM_LB_Tw_ShaftBase_420x420x450",
+  "min": [
+   -210.0,
+   -210.0,
+   0.0
+  ],
+  "max": [
+   210.0,
+   210.0,
+   450.0
+  ],
+  "dims": [
+   420.0,
+   420.0,
+   450.0
+  ],
+  "tris": 6934,
+  "slots": [
+   "MAT_Masonry",
+   "MAT_Trim",
+   "MAT_Rubble",
+   "MAT_Wood"
+  ],
+  "slots_used": [
+   0,
+   1,
+   2,
+   3
+  ],
+  "ucx": 0,
+  "note": "pivot bottom centre; hollow square 420 outer / 35 walls z 0..430 + coping 430..450 (3 cm inward only); rubble floor z 0..40, 2 broken treads; NO collision",
+  "seconds": 0.5
+ },
+ {
+  "name": "SM_LB_Tw_ShaftPost_20x20x2015",
+  "min": [
+   -10.0,
+   -10.0,
+   0.0
+  ],
+  "max": [
+   10.0,
+   10.0,
+   2015.0
+  ],
+  "dims": [
+   20.0,
+   20.0,
+   2015.0
+  ],
+  "tris": 184,
+  "slots": [
+   "MAT_Wood",
+   "MAT_Iron"
+  ],
+  "slots_used": [
+   0,
+   1
+  ],
+  "ucx": 0,
+  "note": "pivot bottom centre; oak post 2015 tall with iron splice bands at z 670 / 1340 and an iron cap plate",
+  "seconds": 0.0
+ },
+ {
+  "name": "SM_LB_Tw_StairFlight_250x420",
+  "min": [
+   -10.0,
+   0.0,
+   -8.94
+  ],
+  "max": [
+   430.0,
+   258.0,
+   256.68
+  ],
+  "dims": [
+   440.0,
+   258.0,
+   265.62
+  ],
+  "tris": 968,
+  "slots": [
+   "MAT_Wood",
+   "MAT_Iron"
+  ],
+  "slots_used": [
+   0,
+   1
+  ],
+  "ucx": 0,
+  "note": "14 oak treads (6 thick, y 1..249, nosing -2), open risers, 2 stringers 8 x 28, 3 iron brackets",
+  "seconds": 0.0
+ },
+ {
+  "name": "SM_LB_Tw_StairFlight_250x420_Closed",
+  "min": [
+   -10.0,
+   0.0,
+   0.0
+  ],
+  "max": [
+   430.0,
+   250.0,
+   256.68
+  ],
+  "dims": [
+   440.0,
+   250.0,
+   256.68
+  ],
+  "tris": 1320,
+  "slots": [
+   "MAT_Wood",
+   "MAT_Iron"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 0,
+  "note": "as the base flight plus 2-thick riser boards and full-height side panels to z 0 (no brackets)",
+  "seconds": 0.0
+ },
+ {
+  "name": "SM_LB_Tw_StairFlight_250x420_BrokenA",
+  "min": [
+   -10.0,
+   0.0,
+   -8.94
+  ],
+  "max": [
+   430.0,
+   258.0,
+   256.68
+  ],
+  "dims": [
+   440.0,
+   258.0,
+   265.62
+  ],
+  "tris": 1196,
+  "slots": [
+   "MAT_Wood",
+   "MAT_Iron"
+  ],
+  "slots_used": [
+   0,
+   1
+  ],
+  "ucx": 0,
+  "note": "tread 6 lacks y 210..250 (3 prongs, max y 209.8); tread 10 split at y 120 (2.4 gap, halves 0.35 apart)",
+  "seconds": 0.0
+ },
+ {
+  "name": "SM_LB_Tw_StairFlight_250x420_BrokenB",
+  "min": [
+   -10.0,
+   0.0,
+   -8.94
+  ],
+  "max": [
+   430.0,
+   258.0,
+   256.68
+  ],
+  "dims": [
+   440.0,
+   258.0,
+   265.62
+  ],
+  "tris": 1196,
+  "slots": [
+   "MAT_Wood",
+   "MAT_Iron"
+  ],
+  "slots_used": [
+   0,
+   1
+  ],
+  "ucx": 0,
+  "note": "tread 3 lacks y 210..250 (3 prongs, max y 209.8); tread 9 cracked at y 80 (1.2 gap)",
+  "seconds": 0.0
+ },
+ {
+  "name": "SM_LB_Tw_FlightRail_420",
+  "min": [
+   0.0,
+   0.0,
+   59.42
+  ],
+  "max": [
+   420.0,
+   8.0,
+   341.32
+  ],
+  "dims": [
+   420.0,
+   8.0,
+   281.89
+  ],
+  "tris": 176,
+  "slots": [
+   "MAT_Wood"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 0,
+  "note": "flight frame, rail band y 0..8; handrail top = 16.2338 (x/30+1) + 98, mid-rail 50 lower, posts at x 140 / 280",
+  "seconds": 0.0
+ },
+ {
+  "name": "SM_LB_Tw_Landing_250",
+  "min": [
+   0.0,
+   0.0,
+   -59.76
+  ],
+  "max": [
+   250.0,
+   250.0,
+   0.0
+  ],
+  "dims": [
+   250.0,
+   250.0,
+   59.76
+  ],
+  "tris": 856,
+  "slots": [
+   "MAT_Wood",
+   "MAT_Masonry"
+  ],
+  "slots_used": [
+   0,
+   1
+  ],
+  "ucx": 0,
+  "note": "top z 0; boards z -5..0; joists z -25..-5; corbels z -60..-25 under the x = 250 and y = 250 edges",
+  "seconds": 0.0
+ },
+ {
+  "name": "SM_LB_Tw_BelfryFloor",
+  "min": [
+   0.0,
+   0.0,
+   -35.4
+  ],
+  "max": [
+   680.0,
+   920.0,
+   0.0
+  ],
+  "dims": [
+   680.0,
+   920.0,
+   35.4
+  ],
+  "tris": 4048,
+  "slots": [
+   "MAT_Wood",
+   "MAT_Iron"
+  ],
+  "slots_used": [
+   0,
+   1
+  ],
+  "ucx": 0,
+  "note": "pivot = world (12040, 1540, 2500); boards top z 0; 3 rectangles; rope hole x 490..520, y 280..310",
+  "seconds": 0.0
+ },
+ {
+  "name": "SM_LB_Tw_TopRail_670",
+  "min": [
+   0.0,
+   -5.0,
+   0.0
+  ],
+  "max": [
+   670.0,
+   5.0,
+   98.0
+  ],
+  "dims": [
+   670.0,
+   10.0,
+   98.0
+  ],
+  "tris": 396,
+  "slots": [
+   "MAT_Wood"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 0,
+  "note": "local x along the rail 0..670, y -5..5, floor level z 0, handrail top 98, mid-rail top 50",
+  "seconds": 0.0
+ },
+ {
+  "name": "SM_LB_Tw_TopRail_420",
+  "min": [
+   0.0,
+   -5.0,
+   0.0
+  ],
+  "max": [
+   420.0,
+   5.0,
+   98.0
+  ],
+  "dims": [
+   420.0,
+   10.0,
+   98.0
+  ],
+  "tris": 308,
+  "slots": [
+   "MAT_Wood"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 0,
+  "note": "local x along the rail 0..420, y -5..5, floor level z 0, handrail top 98, mid-rail top 50",
+  "seconds": 0.0
+ },
+ {
+  "name": "SM_LB_Tw_Partition_250x455",
+  "min": [
+   0.0,
+   -0.0,
+   0.0
+  ],
+  "max": [
+   250.0,
+   4.0,
+   455.0
+  ],
+  "dims": [
+   250.0,
+   4.0,
+   455.0
+  ],
+  "tris": 2344,
+  "slots": [
+   "MAT_Wood",
+   "MAT_Iron"
+  ],
+  "slots_used": [
+   0,
+   1
+  ],
+  "ucx": 0,
+  "note": "origin (12290,1790,0) yaw -90; vertical boards (13, board x 150..170 missing), 2 rails, nail heads; y 0..4",
+  "seconds": 0.0
+ },
+ {
+  "name": "SM_LB_Tw_BellFrame_A",
+  "min": [
+   -165.0,
+   -150.0,
+   0.0
+  ],
+  "max": [
+   165.0,
+   150.0,
+   380.0
+  ],
+  "dims": [
+   330.0,
+   300.0,
+   380.0
+  ],
+  "tris": 1104,
+  "slots": [
+   "MAT_Wood",
+   "MAT_Iron"
+  ],
+  "slots_used": [
+   0,
+   1
+  ],
+  "ucx": 4,
+  "note": "pivot at the floor point under the bell axis; 4 posts 25 x 25 x 365 at (+-140, +-135); UCX = the 4 posts only",
+  "seconds": 0.0
+ },
+ {
+  "name": "SM_LB_Tw_BellHeadstock_A",
+  "min": [
+   -130.0,
+   -178.0,
+   -134.46
+  ],
+  "max": [
+   134.0,
+   170.0,
+   130.0
+  ],
+  "dims": [
+   264.0,
+   348.0,
+   264.46
+  ],
+  "tris": 3920,
+  "slots": [
+   "MAT_Wood",
+   "MAT_Iron"
+  ],
+  "slots_used": [
+   0,
+   1
+  ],
+  "ucx": 0,
+  "note": "pivot at the axle centre; beam 35 x 35 along y -150..150, gudgeons, 2 straps, wheel O260 in plane y -170 (6 spokes, grooved rim), iron staple + 130 cm chain at the rim's 3 o'clock down to the rope top",
+  "seconds": 0.0
+ },
+ {
+  "name": "SM_LB_Prop_GreatBell_A",
+  "min": [
+   -104.76,
+   -105.0,
+   -220.0
+  ],
+  "max": [
+   105.0,
+   105.0,
+   -0.0
+  ],
+  "dims": [
+   209.76,
+   210.0,
+   220.0
+  ],
+  "tris": 13931,
+  "slots": [
+   "MAT_Bronze",
+   "MAT_Iron"
+  ],
+  "slots_used": [
+   0,
+   1
+  ],
+  "ucx": 1,
+  "note": "pivot crown top centre, hangs along -z; lathe 72 sides: crown O110 (-20), shoulder O130 (-35), waist O150 (-120, wall 6), sound bow O196 (-200, wall 14), lip O210 (-220); mould rings at z -55 / -62; 6 canons (MAT_Iron); iron clapper, ball O22 at z -195; crack on the -x side (angle 180) from the lip up 90 + V-chip 12 x 10; UCX = 1 convex hull",
+  "seconds": 0.9
+ },
+ {
+  "name": "SM_LB_Prop_BellRope_2610",
+  "min": [
+   -4.39,
+   -4.63,
+   -2610.0
+  ],
+  "max": [
+   5.11,
+   4.63,
+   0.0
+  ],
+  "dims": [
+   9.5,
+   9.26,
+   2610.01
+  ],
+  "tris": 3384,
+  "slots": [
+   "MAT_Rope",
+   "MAT_Sally"
+  ],
+  "slots_used": [
+   0,
+   1
+  ],
+  "ucx": 0,
+  "note": "pivot at the top; O3.5 rope z 0..-2610 (2 cm sway in +x), woollen sally O9 x 100 at z -2410..-2510 (MAT_Sally); UV: u around, v = depth / 140",
+  "seconds": 0.0
+ }
+]
