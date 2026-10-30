@@ -144,3 +144,11 @@ In `Docs/ArtTest/belltower/`: `p10_4_thumb_GreatBell.png`, `p10_4_thumb_SmallBel
 - Every mesh package was saved one per `save_assets` call. After the first save of each new mesh the package turned dirty again (probably the asynchronous Nanite/derived-data build finishing). I re-saved all 71 affected packages one by one afterwards; `is_dirty` is false on all 73 meshes, 7 textures and 7 MIs.
 - `git status` shows only new (untracked) packages; no pre-existing `.uasset` is modified.
 - Regression gate: `Tools/mirror_build_and_test.ps1` built the mirror (exit 0) and ran 78 tests, 78 passed, 0 failures.
+
+## P10-5b addendum: valley roof pieces (D1.14)
+Imported with `Tools/belltower/import_p10.py meshes --only LeanTo_Valley` (same CDO settings: combine meshes, no auto collision, vertex colour Replace, Nanite on; collision trace flag default). Folder `/Game/LastBell/Environments/Cloister/Meshes/`. Bounds read back from the editor: x 0..1000, y 0..1050, z -15..9.3 on both. Both packages were saved one per `save_assets` call; `SM_LB_Cl_LeanTo_Valley_L_1000x1050` turned dirty again after the first save (the asynchronous Nanite build, as above), was re-saved, and both read `is_dirty = false` afterwards (re-checked 20 s later for L). Nothing placed, no level edit, no other asset touched. Thumbnails: `Docs/ArtTest/belltower/p10_5b_thumb_Valley_L.png`, `p10_5b_thumb_Valley_R.png`.
+
+| Mesh | Nanite | Tris (source, Nanite fallback) | Slots -> MI | Simple collision |
+|---|---|---|---|---|
+| `SM_LB_Cl_LeanTo_Valley_L_1000x1050` | on | 11980 (8030) | MAT_Slate -> MI_Kit_Slate, MAT_Wood -> MI_Prop_Wood_Weathered | none |
+| `SM_LB_Cl_LeanTo_Valley_R_1000x1050` | on | 11836 (7956) | MAT_Slate -> MI_Kit_Slate, MAT_Wood -> MI_Prop_Wood_Weathered | none |
