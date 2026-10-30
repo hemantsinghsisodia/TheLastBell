@@ -1259,3 +1259,30 @@ The wrap-around patrol segment that crosses the garth is routed around it, which
      | `belfry_out_sw` | (12100, 1600, 2670) | −10 | −135 |
 
    - The lead judges these against the D1.13 criteria and D1.14 step 4.
+
+### D1.15 P10-5b review; P10-5c details (lead, 2026-10-30)
+**P10-5b accepted** (fda215d, 1b8d2f3):
+- **Pieces:** `SM_LB_Cl_LeanTo_Valley_L/R_1000x1050`.
+  - bounds 0,0,−15 .. 1000,1050,9.3;
+  - 11 980 / 11 836 tris;
+  - every cut loop capped (195 / 196 loops, 0 open edges).
+- **Checks:**
+  - `verify_cloister` 42/42;
+  - the four valley lines coincide within 0.000 cm on Z 640 / 1200;
+  - imported with Nanite on, no simple collision, `MI_Kit_Slate` / `MI_Prop_Wood_Weathered`, saved and not dirty.
+- **Renders:**
+  - `p10_5b_cloister_roofs_top`: four clean valley creases and the N-walk hole;
+  - `p10_5b_cloister_sw_groin_up`: a clean groin; the magenta-roof probe counted 0 roof pixels;
+  - `p10_5b_cloister_corner_walk`: the walk-end eaves strip is gone;
+  - `p10_5b_collapse_ne_bay_walk`: sky plus the accepted roof timbers.
+- **Accepted deviation:** the valley-rafter ends are clipped flush to the piece rectangle, so they cannot poke out at the eaves vertex.
+
+**P10-5c details** (complete the D1.14 / D1.14a spec):
+- **Perimeter materials.** The generator writes a new layout key `perimeter_materials`, the same format as `ground_materials`, mapping `Perim_N`, `Perim_E`, `Perim_S` and `Perim_W` to `/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry` (world-aligned).
+- **`place_tower.py --perim` (new option):**
+  - finds each label with an exact label match (exactly one actor each);
+  - sets `overrideMaterials` slot 0;
+  - reads back the material, `bVisible`, `collisionProfileName` and `collisionEnabled`, which must be unchanged from before the edit.
+- **Roof-vs-vault check.** Copy `_fc_solve`, `four_centred` (R2_target = span) and `FourCentred.z_at` from `build_cloister.py` into the generator as pure functions; `build_cloister.py` itself imports `bpy`.
+  - Model: rafter underside = plane Z − 15 / cos α, roof = max over the covering panels; groin extrados = max of its two barrels.
+  - The lead's reference run of this model: minimum 7.2 cm at the SE groin; 9.3 cm on the S walk and SW groin; 17.2 cm at the NE groin; 18.3 cm on the N walk, W walk and NW groin; 38.8 cm on the E walk.
