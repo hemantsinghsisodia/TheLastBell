@@ -7,7 +7,7 @@
   "floor": 7,
   "stair": 32,
   "gameplay": 15,
-  "roof": 14,
+  "roof": 15,
   "block": 8,
   "wall": 65,
   "arcade": 28,
@@ -49,7 +49,7 @@
   "garthcross": 1,
   "vaultbay": 10,
   "corbel": 20,
-  "roofpanel": 12,
+  "roofpanel": 13,
   "celldoor": 5,
   "cellleaf": 5,
   "mech3": 1,
@@ -229,7 +229,7 @@
    "group": "6 counts",
    "name": "Roof panels",
    "ok": true,
-   "detail": "12 (expected 12)"
+   "detail": "13 (expected 13)"
   },
   {
    "group": "6 counts",
@@ -275,15 +275,39 @@
   },
   {
    "group": "7 derived",
-   "name": "12 roof panels: transformed corners on the eaves (Z 640) and top (Z 1200) lines",
+   "name": "13 roof panels (S 3, N 4, W 3, E 3)",
    "ok": true,
-   "detail": "worst corner deviation 0.0021 cm (CLA_Roof_S_0); limit 1.0"
+   "detail": "13 panels: {'S': 3, 'N': 4, 'W': 3, 'E': 3}"
   },
   {
    "group": "7 derived",
-   "name": "roof panels tile each walk's run (3 per walk)",
+   "name": "roof panel widths tile each run with no gap or overlap (S, N 2500; W, E 2460)",
    "ok": true,
    "detail": "ok"
+  },
+  {
+   "group": "7 derived",
+   "name": "roof rectangles stay out of the corner squares (S, N inside X 10320-11380; W, E inside Y 1420-2180)",
+   "ok": true,
+   "detail": "5 rectangles ok"
+  },
+  {
+   "group": "7 derived",
+   "name": "roof corners on the eaves (Z 640) and top (Z 1200) lines: 5 rectangles x 4 corners, 8 triangles x 3 vertices",
+   "ok": true,
+   "detail": "worst corner deviation 0.0021 cm (CLA_Roof_S_1); limit 1.0"
+  },
+  {
+   "group": "7 derived",
+   "name": "valley lines: in each of the 4 corners both triangles' hypotenuse ends coincide with the garth corner (Z 640) and the outer corner (Z 1200)",
+   "ok": true,
+   "detail": "worst deviation 0.0021 cm; SE CLA_Roof_S_0 0.002; SE CLA_Roof_E_2 0.000; SW CLA_Roof_W_0 0.001; SW CLA_Roof_S_2 0.002; NW CLA_Roof_N_0 0.001; NW CLA_Roof_W_2 0.001; NE CLA_Roof_E_0 0.000; NE CLA_Roof_N_3 0.001"
+  },
+  {
+   "group": "7 derived",
+   "name": "roof vs vault: on a 5 cm grid over all 10 bays (X 9500-12000, Y 540-3000) the rafter underside (plane Z - 15 / cos a, max of the covering panels) clears the four-centred extrados by >= 5 cm",
+   "ok": true,
+   "detail": "min 7.2 cm at SE (11560.0, 1165.0); 202524 grid points, 0 uncovered by any panel, 9483 inside the N hole (skipped); per-bay minima: {'S_W': 9.3, 'S_E': 9.3, 'N_W': 18.3, 'N_E': 18.3, 'W': 18.3, 'E': 38.8, 'SW': 9.3, 'SE': 7.2, 'NW': 18.3, 'NE': 17.2}"
   },
   {
    "group": "7 derived",
@@ -295,7 +319,7 @@
    "group": "7 derived",
    "name": "record ids unique",
    "ok": true,
-   "detail": "399 records"
+   "detail": "400 records"
   },
   {
    "group": "7 derived",
@@ -305,9 +329,9 @@
   },
   {
    "group": "7 derived",
-   "name": "N roof hole (X 10800-11500) covers the broken vault hole X 10900-11450",
+   "name": "N roof hole (X 10853-11287) overlaps the broken vault hole X 10900-11450 by >= 380 cm (expected 387)",
    "ok": true,
-   "detail": "N panels start X [9500, 10650, 11650], x-scales [1.15, 1.0, 0.35]"
+   "detail": "overlap 387.0 cm; hole panel CLA_Roof_N_2 starts X 10760, x-scale 0.62"
   },
   {
    "group": "7 derived",
@@ -343,7 +367,7 @@
    "group": "7 derived",
    "name": "every new-folder mesh named in a record exists in the built-mesh reports (tower 33, cloister 40)",
    "ok": true,
-   "detail": "all 68 record meshes found"
+   "detail": "all 70 record meshes found"
   },
   {
    "group": "7 derived",
@@ -3079,6 +3103,88 @@
    "built_tris": 12324,
    "built_ucx": 0
   },
+  "SM_LB_Cl_LeanTo_Valley_L_1000x1050": {
+   "path": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_LeanTo_Valley_L_1000x1050.SM_LB_Cl_LeanTo_Valley_L_1000x1050",
+   "mbounds": [
+    [
+     0.0,
+     0.0,
+     -15.0
+    ],
+    [
+     1000.0,
+     1050.0,
+     9.3
+    ]
+   ],
+   "slots": [
+    "MAT_Slate",
+    "MAT_Wood"
+   ],
+   "seed": 1241,
+   "pivot": "as C14 (eaves-line start; local x along the eaves, y up the slope in the panel plane, z the panel normal)",
+   "ucx": "none",
+   "note": "C14V valley-cut panel (D-082): keeps the triangle (0,1050)-(1000,1050)-(1000,0); eaves vertex at (1000,0)",
+   "d1_mbounds": [
+    [
+     0.0,
+     0.0,
+     -15.0
+    ],
+    [
+     1000.0,
+     1050.0,
+     9.3
+    ]
+   ],
+   "d1_slots": [
+    "MAT_Slate",
+    "MAT_Wood"
+   ],
+   "built_tris": 11980,
+   "built_ucx": 0
+  },
+  "SM_LB_Cl_LeanTo_Valley_R_1000x1050": {
+   "path": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_LeanTo_Valley_R_1000x1050.SM_LB_Cl_LeanTo_Valley_R_1000x1050",
+   "mbounds": [
+    [
+     0.0,
+     0.0,
+     -15.0
+    ],
+    [
+     1000.0,
+     1050.0,
+     9.3
+    ]
+   ],
+   "slots": [
+    "MAT_Slate",
+    "MAT_Wood"
+   ],
+   "seed": 1242,
+   "pivot": "as C14 (eaves-line start; local x along the eaves, y up the slope in the panel plane, z the panel normal)",
+   "ucx": "none",
+   "note": "C14V valley-cut panel (D-082): keeps the triangle (0,0)-(0,1050)-(1000,1050); eaves vertex at (0,0)",
+   "d1_mbounds": [
+    [
+     0.0,
+     0.0,
+     -15.0
+    ],
+    [
+     1000.0,
+     1050.0,
+     9.3
+    ]
+   ],
+   "d1_slots": [
+    "MAT_Slate",
+    "MAT_Wood"
+   ],
+   "built_tris": 11836,
+   "built_ucx": 0
+  },
   "SM_LB_Cl_CellDoorFrame_150x270": {
    "path": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_CellDoorFrame_150x270.SM_LB_Cl_CellDoorFrame_150x270",
    "mbounds": [
@@ -4368,8 +4474,16 @@
  "ground_materials": {
   "Ground_1": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Floor",
   "Ground_2": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Floor",
+  "Ground_3": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Floor",
   "Ground_4": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Floor",
+  "Ground_5": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Floor",
   "Ground_6": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Floor"
+ },
+ "perimeter_materials": {
+  "Perim_N": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry",
+  "Perim_E": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry",
+  "Perim_S": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry",
+  "Perim_W": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry"
  },
  "lights_plan": {
   "delete": [
@@ -15424,7 +15538,7 @@
    "id": "CLA_Roof_S_0",
    "cat": "roof",
    "group": "roofpanel",
-   "mesh": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_LeanTo_1000x1050.SM_LB_Cl_LeanTo_1000x1050",
+   "mesh": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_LeanTo_Valley_L_1000x1050.SM_LB_Cl_LeanTo_Valley_L_1000x1050",
    "loc": [
     12000.0,
     1420.0,
@@ -15436,7 +15550,7 @@
     -32.4712
    ],
    "scale": [
-    0.83333,
+    0.62,
     0.9934,
     1.0
    ],
@@ -15455,7 +15569,7 @@
     ]
    ],
    "aabb_min": [
-    11166.67,
+    11380.0,
     531.95,
     627.35
    ],
@@ -15484,11 +15598,12 @@
      0.53688
     ],
     "run_from": 12000.0,
-    "run_to": 11166.666666666666,
+    "run_to": 11380.0,
     "line_axis": 1,
-    "hole": false
+    "hole": false,
+    "valley": "L"
    },
-   "note": "S walk panel 0: eaves line Y 1420 at Z 640, top line 540 at Z 1200, slope length 1043.1"
+   "note": "S walk panel 0 (valley L): eaves line Y 1420 at Z 640, top line 540 at Z 1200, slope length 1043.1"
   },
   {
    "id": "CLA_Roof_S_1",
@@ -15496,7 +15611,7 @@
    "group": "roofpanel",
    "mesh": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_LeanTo_1000x1050.SM_LB_Cl_LeanTo_1000x1050",
    "loc": [
-    11166.667,
+    11380.0,
     1420.0,
     640.0
    ],
@@ -15506,7 +15621,7 @@
     -32.4712
    ],
    "scale": [
-    0.83333,
+    1.06,
     0.9934,
     1.0
    ],
@@ -15525,12 +15640,12 @@
     ]
    ],
    "aabb_min": [
-    10333.33,
+    10320.0,
     531.95,
     627.35
    ],
    "aabb_max": [
-    11166.67,
+    11380.0,
     1424.99,
     1207.85
    ],
@@ -15553,10 +15668,11 @@
      -0.84366,
      0.53688
     ],
-    "run_from": 11166.666666666666,
-    "run_to": 10333.333333333334,
+    "run_from": 11380.0,
+    "run_to": 10320.0,
     "line_axis": 1,
-    "hole": false
+    "hole": false,
+    "valley": null
    },
    "note": "S walk panel 1: eaves line Y 1420 at Z 640, top line 540 at Z 1200, slope length 1043.1"
   },
@@ -15564,9 +15680,9 @@
    "id": "CLA_Roof_S_2",
    "cat": "roof",
    "group": "roofpanel",
-   "mesh": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_LeanTo_1000x1050.SM_LB_Cl_LeanTo_1000x1050",
+   "mesh": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_LeanTo_Valley_R_1000x1050.SM_LB_Cl_LeanTo_Valley_R_1000x1050",
    "loc": [
-    10333.333,
+    10320.0,
     1420.0,
     640.0
    ],
@@ -15576,7 +15692,7 @@
     -32.4712
    ],
    "scale": [
-    0.83333,
+    0.82,
     0.9934,
     1.0
    ],
@@ -15600,7 +15716,7 @@
     627.35
    ],
    "aabb_max": [
-    10333.33,
+    10320.0,
     1424.99,
     1207.85
    ],
@@ -15623,18 +15739,19 @@
      -0.84366,
      0.53688
     ],
-    "run_from": 10333.333333333334,
+    "run_from": 10320.0,
     "run_to": 9500.0,
     "line_axis": 1,
-    "hole": false
+    "hole": false,
+    "valley": "R"
    },
-   "note": "S walk panel 2: eaves line Y 1420 at Z 640, top line 540 at Z 1200, slope length 1043.1"
+   "note": "S walk panel 2 (valley R): eaves line Y 1420 at Z 640, top line 540 at Z 1200, slope length 1043.1"
   },
   {
    "id": "CLA_Roof_N_0",
    "cat": "roof",
    "group": "roofpanel",
-   "mesh": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_LeanTo_1000x1050.SM_LB_Cl_LeanTo_1000x1050",
+   "mesh": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_LeanTo_Valley_L_1000x1050.SM_LB_Cl_LeanTo_Valley_L_1000x1050",
    "loc": [
     9500.0,
     2180.0,
@@ -15646,7 +15763,7 @@
     -34.3302
    ],
    "scale": [
-    1.15,
+    0.82,
     0.94569,
     1.0
    ],
@@ -15670,7 +15787,7 @@
     627.61
    ],
    "aabb_max": [
-    10650.0,
+    10320.0,
     3008.46,
     1207.68
    ],
@@ -15694,19 +15811,20 @@
      0.56396
     ],
     "run_from": 9500.0,
-    "run_to": 10650.0,
+    "run_to": 10320.0,
     "line_axis": 1,
-    "hole": false
+    "hole": false,
+    "valley": "L"
    },
-   "note": "N walk panel 0: eaves line Y 2180 at Z 640, top line 3000 at Z 1200, slope length 993.0"
+   "note": "N walk panel 0 (valley L): eaves line Y 2180 at Z 640, top line 3000 at Z 1200, slope length 993.0"
   },
   {
    "id": "CLA_Roof_N_1",
    "cat": "roof",
    "group": "roofpanel",
-   "mesh": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_LeanTo_1000x1050_Hole.SM_LB_Cl_LeanTo_1000x1050_Hole",
+   "mesh": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_LeanTo_1000x1050.SM_LB_Cl_LeanTo_1000x1050",
    "loc": [
-    10650.0,
+    10320.0,
     2180.0,
     640.0
    ],
@@ -15716,7 +15834,78 @@
     -34.3302
    ],
    "scale": [
-    1.0,
+    0.44,
+    0.94569,
+    1.0
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Art/Roofs",
+   "mbounds": [
+    [
+     0.0,
+     0.0,
+     -15.0
+    ],
+    [
+     1000.0,
+     1050.0,
+     9.3
+    ]
+   ],
+   "aabb_min": [
+    10320.0,
+    2174.76,
+    627.61
+   ],
+   "aabb_max": [
+    10760.0,
+    3008.46,
+    1207.68
+   ],
+   "mi_slots": {
+    "MAT_Slate": "MI_Kit_Slate",
+    "MAT_Wood": "MI_Prop_Wood_Weathered"
+   },
+   "extras": {
+    "walk": "N",
+    "eaves": 2180.0,
+    "top": 3000.0,
+    "slope_len": 992.975,
+    "x_dir": [
+     1.0,
+     0.0,
+     0.0
+    ],
+    "y_dir": [
+     0.0,
+     0.8258,
+     0.56396
+    ],
+    "run_from": 10320.0,
+    "run_to": 10760.0,
+    "line_axis": 1,
+    "hole": false,
+    "valley": null
+   },
+   "note": "N walk panel 1: eaves line Y 2180 at Z 640, top line 3000 at Z 1200, slope length 993.0"
+  },
+  {
+   "id": "CLA_Roof_N_2",
+   "cat": "roof",
+   "group": "roofpanel",
+   "mesh": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_LeanTo_1000x1050_Hole.SM_LB_Cl_LeanTo_1000x1050_Hole",
+   "loc": [
+    10760.0,
+    2180.0,
+    640.0
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    -34.3302
+   ],
+   "scale": [
+    0.62,
     0.94569,
     1.0
    ],
@@ -15735,12 +15924,12 @@
     ]
    ],
    "aabb_min": [
-    10650.0,
+    10760.0,
     2174.76,
     562.77
    ],
    "aabb_max": [
-    11650.0,
+    11380.0,
     3052.74,
     1207.68
    ],
@@ -15763,20 +15952,21 @@
      0.8258,
      0.56396
     ],
-    "run_from": 10650.0,
-    "run_to": 11650.0,
+    "run_from": 10760.0,
+    "run_to": 11380.0,
     "line_axis": 1,
-    "hole": true
+    "hole": true,
+    "valley": null
    },
-   "note": "N walk panel 1: eaves line Y 2180 at Z 640, top line 3000 at Z 1200, slope length 993.0"
+   "note": "N walk panel 2: eaves line Y 2180 at Z 640, top line 3000 at Z 1200, slope length 993.0"
   },
   {
-   "id": "CLA_Roof_N_2",
+   "id": "CLA_Roof_N_3",
    "cat": "roof",
    "group": "roofpanel",
-   "mesh": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_LeanTo_1000x1050.SM_LB_Cl_LeanTo_1000x1050",
+   "mesh": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_LeanTo_Valley_R_1000x1050.SM_LB_Cl_LeanTo_Valley_R_1000x1050",
    "loc": [
-    11650.0,
+    11380.0,
     2180.0,
     640.0
    ],
@@ -15786,7 +15976,7 @@
     -34.3302
    ],
    "scale": [
-    0.35,
+    0.62,
     0.94569,
     1.0
    ],
@@ -15805,7 +15995,7 @@
     ]
    ],
    "aabb_min": [
-    11650.0,
+    11380.0,
     2174.76,
     627.61
    ],
@@ -15833,18 +16023,19 @@
      0.8258,
      0.56396
     ],
-    "run_from": 11650.0,
+    "run_from": 11380.0,
     "run_to": 12000.0,
     "line_axis": 1,
-    "hole": false
+    "hole": false,
+    "valley": "R"
    },
-   "note": "N walk panel 2: eaves line Y 2180 at Z 640, top line 3000 at Z 1200, slope length 993.0"
+   "note": "N walk panel 3 (valley R): eaves line Y 2180 at Z 640, top line 3000 at Z 1200, slope length 993.0"
   },
   {
    "id": "CLA_Roof_W_0",
    "cat": "roof",
    "group": "roofpanel",
-   "mesh": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_LeanTo_1000x1050.SM_LB_Cl_LeanTo_1000x1050",
+   "mesh": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_LeanTo_Valley_L_1000x1050.SM_LB_Cl_LeanTo_Valley_L_1000x1050",
    "loc": [
     10320.0,
     540.0,
@@ -15856,7 +16047,7 @@
     -34.3302
    ],
    "scale": [
-    0.82,
+    0.88,
     0.94569,
     1.0
    ],
@@ -15881,7 +16072,7 @@
    ],
    "aabb_max": [
     10325.24,
-    1360.0,
+    1420.0,
     1207.68
    ],
    "mi_slots": {
@@ -15904,11 +16095,12 @@
      0.56396
     ],
     "run_from": 540.0,
-    "run_to": 1360.0,
+    "run_to": 1420.0,
     "line_axis": 0,
-    "hole": false
+    "hole": false,
+    "valley": "L"
    },
-   "note": "W walk panel 0: eaves line X 10320 at Z 640, top line 9500 at Z 1200, slope length 993.0"
+   "note": "W walk panel 0 (valley L): eaves line X 10320 at Z 640, top line 9500 at Z 1200, slope length 993.0"
   },
   {
    "id": "CLA_Roof_W_1",
@@ -15917,7 +16109,7 @@
    "mesh": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_LeanTo_1000x1050.SM_LB_Cl_LeanTo_1000x1050",
    "loc": [
     10320.0,
-    1360.0,
+    1420.0,
     640.0
    ],
    "rot": [
@@ -15926,7 +16118,7 @@
     -34.3302
    ],
    "scale": [
-    0.82,
+    0.76,
     0.94569,
     1.0
    ],
@@ -15946,7 +16138,7 @@
    ],
    "aabb_min": [
     9491.54,
-    1360.0,
+    1420.0,
     627.61
    ],
    "aabb_max": [
@@ -15973,10 +16165,11 @@
      0.0,
      0.56396
     ],
-    "run_from": 1360.0,
+    "run_from": 1420.0,
     "run_to": 2180.0,
     "line_axis": 0,
-    "hole": false
+    "hole": false,
+    "valley": null
    },
    "note": "W walk panel 1: eaves line X 10320 at Z 640, top line 9500 at Z 1200, slope length 993.0"
   },
@@ -15984,7 +16177,7 @@
    "id": "CLA_Roof_W_2",
    "cat": "roof",
    "group": "roofpanel",
-   "mesh": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_LeanTo_1000x1050.SM_LB_Cl_LeanTo_1000x1050",
+   "mesh": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_LeanTo_Valley_R_1000x1050.SM_LB_Cl_LeanTo_Valley_R_1000x1050",
    "loc": [
     10320.0,
     2180.0,
@@ -16046,15 +16239,16 @@
     "run_from": 2180.0,
     "run_to": 3000.0,
     "line_axis": 0,
-    "hole": false
+    "hole": false,
+    "valley": "R"
    },
-   "note": "W walk panel 2: eaves line X 10320 at Z 640, top line 9500 at Z 1200, slope length 993.0"
+   "note": "W walk panel 2 (valley R): eaves line X 10320 at Z 640, top line 9500 at Z 1200, slope length 993.0"
   },
   {
    "id": "CLA_Roof_E_0",
    "cat": "roof",
    "group": "roofpanel",
-   "mesh": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_LeanTo_1000x1050.SM_LB_Cl_LeanTo_1000x1050",
+   "mesh": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_LeanTo_Valley_L_1000x1050.SM_LB_Cl_LeanTo_Valley_L_1000x1050",
    "loc": [
     11380.0,
     3000.0,
@@ -16116,9 +16310,10 @@
     "run_from": 3000.0,
     "run_to": 2180.0,
     "line_axis": 0,
-    "hole": false
+    "hole": false,
+    "valley": "L"
    },
-   "note": "E walk panel 0: eaves line X 11380 at Z 640, top line 12000 at Z 1200, slope length 835.5"
+   "note": "E walk panel 0 (valley L): eaves line X 11380 at Z 640, top line 12000 at Z 1200, slope length 835.5"
   },
   {
    "id": "CLA_Roof_E_1",
@@ -16136,7 +16331,7 @@
     -42.0892
    ],
    "scale": [
-    0.82,
+    0.76,
     0.79568,
     1.0
    ],
@@ -16156,7 +16351,7 @@
    ],
    "aabb_min": [
     11373.77,
-    1360.0,
+    1420.0,
     628.87
    ],
    "aabb_max": [
@@ -16184,9 +16379,10 @@
      0.67029
     ],
     "run_from": 2180.0,
-    "run_to": 1360.0,
+    "run_to": 1420.0,
     "line_axis": 0,
-    "hole": false
+    "hole": false,
+    "valley": null
    },
    "note": "E walk panel 1: eaves line X 11380 at Z 640, top line 12000 at Z 1200, slope length 835.5"
   },
@@ -16194,10 +16390,10 @@
    "id": "CLA_Roof_E_2",
    "cat": "roof",
    "group": "roofpanel",
-   "mesh": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_LeanTo_1000x1050.SM_LB_Cl_LeanTo_1000x1050",
+   "mesh": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_LeanTo_Valley_R_1000x1050.SM_LB_Cl_LeanTo_Valley_R_1000x1050",
    "loc": [
     11380.0,
-    1360.0,
+    1420.0,
     640.0
    ],
    "rot": [
@@ -16206,7 +16402,7 @@
     -42.0892
    ],
    "scale": [
-    0.82,
+    0.88,
     0.79568,
     1.0
    ],
@@ -16231,7 +16427,7 @@
    ],
    "aabb_max": [
     12010.05,
-    1360.0,
+    1420.0,
     1206.9
    ],
    "mi_slots": {
@@ -16253,12 +16449,13 @@
      0.0,
      0.67029
     ],
-    "run_from": 1360.0,
+    "run_from": 1420.0,
     "run_to": 540.0,
     "line_axis": 0,
-    "hole": false
+    "hole": false,
+    "valley": "R"
    },
-   "note": "E walk panel 2: eaves line X 11380 at Z 640, top line 12000 at Z 1200, slope length 835.5"
+   "note": "E walk panel 2 (valley R): eaves line X 11380 at Z 640, top line 12000 at Z 1200, slope length 835.5"
   },
   {
    "id": "CLA_Floor_S",

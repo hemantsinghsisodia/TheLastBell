@@ -8,7 +8,7 @@ Pure Python, no Unreal Editor, no Blender. Reads the P10-2 survey data (Docs/Art
 
 Run from anywhere:  python Tools/belltower/gen_tower_layout.py
 Deterministic (seeded). Exit code 0 only when every D1.9 check passes.
-D1.11 errata applied (N-walk roof split 1.15 / 1.00 / 0.35, rope Y 1835, lanterns for every warm light, cell leaf scale 1.37).
+D1.11 errata applied (N-walk roof split 1.15 / 1.00 / 0.35 [superseded by the D1.14 13-panel roof], rope Y 1835, lanterns for every warm light, cell leaf scale 1.37).
 """
 import heapq
 import json
@@ -481,6 +481,11 @@ piece("SM_LB_Cl_LeanTo_1000x1050", CLM, ((0.0, 0.0, -15.0), (1000.0, 1050.0, 9.0
       "eaves-line start; local x along the eaves, y up the slope in the panel plane, z the panel normal", "none", "C14 slates 6 on battens, rafters 12x15 at 60 c/c below")
 piece("SM_LB_Cl_LeanTo_1000x1050_Hole", CLM, ((0.0, 0.0, -95.0), (1000.0, 1050.0, 9.0)), ["MAT_Slate", "MAT_Wood"], 1237, "as C14", "none",
       "C14 hole over x 150-850, y 0-800, broken battens, 3 snapped rafters (two stubs hanging 40-80)")
+for nm, sd, who in (("L", 1241, "keeps the triangle (0,1050)-(1000,1050)-(1000,0); eaves vertex at (1000,0)"),
+                    ("R", 1242, "keeps the triangle (0,0)-(0,1050)-(1000,1050); eaves vertex at (0,0)")):
+    piece(f"SM_LB_Cl_LeanTo_Valley_{nm}_1000x1050", CLM, ((0.0, 0.0, -15.0), (1000.0, 1050.0, 9.3)), ["MAT_Slate", "MAT_Wood"], sd,
+          "as C14 (eaves-line start; local x along the eaves, y up the slope in the panel plane, z the panel normal)", "none",
+          "C14V valley-cut panel (D-082): " + who)
 piece("SM_LB_Cl_CellDoorFrame_150x270", CLM, ((0.0, -8.0, 0.0), (150.0, 4.0, 270.0)), ["MAT_Masonry", "MAT_Rubble"], 1238,
       "bottom-left; local y 0 = wall face, frame projects to y -8", "none", "C15 surround 150x270, 20 jambs, straight-sided pointed head (shoulders z 220, apex 250), 110x250 opening, back panel at y +2")
 piece("SM_LB_Cl_StairHouseGable_380x40x650", CLM, ((0.0, 0.0, 0.0), (380.0, 40.0, 650.0)), MASONRY2, 1239, "as the wall pieces (inner face at local y 0)", "none",
@@ -650,6 +655,17 @@ ROOF_WALKS = {   # walk -> (eaves line coord, top line coord, run start, run end
     "W": dict(eaves=10320.0, top=9500.0, a=540.0, b=3000.0, line_axis=0),
     "E": dict(eaves=11380.0, top=12000.0, a=3000.0, b=540.0, line_axis=0),
 }
+# D1.14 roof layout: 13 panels. (walk, index, kind, off, width, world origin). kind: R rectangle, H rectangle with hole, L / R valley-cut triangle.
+LEAN_VL = PIECES["SM_LB_Cl_LeanTo_Valley_L_1000x1050"]["path"]
+LEAN_VR = PIECES["SM_LB_Cl_LeanTo_Valley_R_1000x1050"]["path"]
+ROOF_TABLE = [
+    ("S", 0, "VL", 0.0, 620.0, (12000.0, 1420.0, 640.0)), ("S", 1, "LT", 620.0, 1060.0, (11380.0, 1420.0, 640.0)), ("S", 2, "VR", 1680.0, 820.0, (10320.0, 1420.0, 640.0)),
+    ("N", 0, "VL", 0.0, 820.0, (9500.0, 2180.0, 640.0)), ("N", 1, "LT", 820.0, 440.0, (10320.0, 2180.0, 640.0)), ("N", 2, "LH", 1260.0, 620.0, (10760.0, 2180.0, 640.0)),
+    ("N", 3, "VR", 1880.0, 620.0, (11380.0, 2180.0, 640.0)),
+    ("W", 0, "VL", 0.0, 880.0, (10320.0, 540.0, 640.0)), ("W", 1, "LT", 880.0, 760.0, (10320.0, 1420.0, 640.0)), ("W", 2, "VR", 1640.0, 820.0, (10320.0, 2180.0, 640.0)),
+    ("E", 0, "VL", 0.0, 820.0, (11380.0, 3000.0, 640.0)), ("E", 1, "LT", 820.0, 760.0, (11380.0, 2180.0, 640.0)), ("E", 2, "VR", 1580.0, 880.0, (11380.0, 1420.0, 640.0)),
+]
+ROOF_MESH = {"VL": LEAN_VL, "VR": LEAN_VR, "LT": LEAN, "LH": LEAN_H}
 ROOF_PANELS = {}
 for walk, w in ROOF_WALKS.items():
     h = abs(w["top"] - w["eaves"])
@@ -666,25 +682,24 @@ for walk, w in ROOF_WALKS.items():
     zd = cross(xd, yd)
     assert zd[2] > 0, f"roof panel normal points down for walk {walk}"
     rot = rot_from_rows(tuple(xd), tuple(yd), tuple(zd))
-    widths = [abs(run) / 3.0] * 3
-    if walk == "N":
-        widths = [1150.0, 1000.0, 350.0]           # D1.11: x-scale 1.15 / 1.00 / 0.35, the hole panel is X 10650-11650
-    pos = 0.0
-    for j, wd in enumerate(widths):
+    for (tw, j, kind, off, wd, worg) in ROOF_TABLE:
+        if tw != walk:
+            continue
         sx = wd / 1000.0
         sy = Ls / 1050.0
         org = [0.0, 0.0, EAVES_Z]
         org[ax] = w["eaves"]
-        org[1 - ax] = w["a"] + sgn * pos
-        mesh = LEAN_H if (walk == "N" and j == 1) else LEAN
+        org[1 - ax] = w["a"] + sgn * off
+        assert max(abs(org[k] - worg[k]) for k in range(3)) <= 0.01, f"CLA_Roof_{walk}_{j}: computed origin {org} != table origin {worg}"
+        mesh = ROOF_MESH[kind]
+        valley = {"VL": "L", "VR": "R"}.get(kind)
         d = add(f"CLA_Roof_{walk}_{j}", "roof", "roofpanel", mesh, org, rot, (sx, sy, 1.0), "NoCollision", "Cloister/Art/Roofs",
                 mi=mi_for(["MAT_Slate", "MAT_Wood"], wood=WOOD_CLOISTER),
-                note=f"{walk} walk panel {j}: eaves line {'Y' if ax == 1 else 'X'} {w['eaves']:g} at Z 640, top line {w['top']:g} at Z 1200, slope length {Ls:.1f}",
+                note=f"{walk} walk panel {j}" + (f" (valley {valley})" if valley else "") + f": eaves line {'Y' if ax == 1 else 'X'} {w['eaves']:g} at Z 640, top line {w['top']:g} at Z 1200, slope length {Ls:.1f}",
                 extras={"walk": walk, "eaves": w["eaves"], "top": w["top"], "slope_len": round(Ls, 3), "x_dir": [round(v, 4) for v in xd],
-                        "y_dir": [round(v, 5) for v in yd], "run_from": w["a"] + sgn * pos, "run_to": w["a"] + sgn * (pos + wd), "line_axis": ax,
-                        "hole": mesh == LEAN_H})
+                        "y_dir": [round(v, 5) for v in yd], "run_from": w["a"] + sgn * off, "run_to": w["a"] + sgn * (off + wd), "line_axis": ax,
+                        "hole": kind == "LH", "valley": valley})
         ROOF_PANELS.setdefault(walk, []).append(d)
-        pos += wd
 
 # ------------------------------------------------------------------ floors
 FLOORS = [("S", (9500, 540, 12000, 1310), "MI_Chapel_Floor_Dirty"), ("W", (9500, 1310, 10210, 2290), "MI_Chapel_Floor_Dirty"),
@@ -693,7 +708,9 @@ FLOORS = [("S", (9500, 540, 12000, 1310), "MI_Chapel_Floor_Dirty"), ("W", (9500,
 for fid, (x0, y0, x1, y1), mi in FLOORS:
     add(f"CLA_Floor_{fid}", "floor", "floor", P_FLOORSLAB, (float(x0), float(y0), -38.5), (0, 0, 0), ((x1 - x0) / 1000.0, (y1 - y0) / 1000.0, 1.0), "NoCollision",
         "Cloister/Art/Floors", mi={"MAT_Masonry": mi}, note=f"X {x0}-{x1}, Y {y0}-{y1}")
-GROUND_MI = {"Ground_1": "MI_Kit_Floor", "Ground_2": "MI_Kit_Floor", "Ground_4": "MI_Kit_Floor", "Ground_6": "MI_Kit_Floor"}
+GROUND_MI = {"Ground_1": "MI_Kit_Floor", "Ground_2": "MI_Kit_Floor", "Ground_3": "MI_Kit_Floor", "Ground_4": "MI_Kit_Floor", "Ground_5": "MI_Kit_Floor",
+             "Ground_6": "MI_Kit_Floor"}
+PERIM_MI = {"Perim_N": "MI_Kit_Masonry", "Perim_E": "MI_Kit_Masonry", "Perim_S": "MI_Kit_Masonry", "Perim_W": "MI_Kit_Masonry"}   # D1.14a: world-aligned masonry on the outer perimeter wall
 
 # ------------------------------------------------------------------ cell doors (C15) + leaves
 FRAME = PIECES["SM_LB_Cl_CellDoorFrame_150x270"]["path"]
@@ -1368,7 +1385,7 @@ def n_group(g):
 
 COUNTS = [("Flights", n_group("flight"), 11), ("Landings", n_group("landing"), 10), ("Flight rails", n_group("flightrail"), 11), ("Louvres", n_group("louvre"), 8),
           ("Piers (row + column)", n_group("pier"), 10), ("Piers (corner)", n_group("pier_corner"), 4), ("Arches", n_group("arch"), 14),
-          ("Vault bays", n_group("vaultbay"), 10), ("Roof panels", n_group("roofpanel"), 12), ("Hidden blocks", n_group("block"), 8), ("Cell doors", n_group("celldoor"), 5)]
+          ("Vault bays", n_group("vaultbay"), 10), ("Roof panels", n_group("roofpanel"), 13), ("Hidden blocks", n_group("block"), 8), ("Cell doors", n_group("celldoor"), 5)]
 for nm, got, want in COUNTS:
     chk("6 counts", f"{nm}", got == want, f"{got} (expected {want})")
 
@@ -1396,26 +1413,243 @@ ins = rec_by_id("GP_Clue_Inscription")
 dev = max(abs(ins["aabb_min"][0] - 11990.0), abs(ins["aabb_max"][0] - 12000.0), abs(ins["aabb_min"][1] - 2230.0), abs(ins["aabb_max"][1] - 2530.0),
           abs(ins["aabb_min"][2] - 162.5), abs(ins["aabb_max"][2] - 237.5))
 chk("7 derived", "inscription tablet 10 x 300 x 75, flush on X 12000 (with the Plaque shifted -2 local, see D1 note)", dev <= 0.5, f"deviation {dev:.3f} cm")
-# roof panel corners on the eaves and top lines
-worst_c, worst_c_id = 0.0, ""
-for walk, lst in ROOF_PANELS.items():
-    w = ROOF_WALKS[walk]
-    ax = w["line_axis"]
-    for d in lst:
-        for (lx, ly, line, zt) in ((0.0, 0.0, w["eaves"], EAVES_Z), (1000.0, 0.0, w["eaves"], EAVES_Z), (0.0, 1050.0, w["top"], TOP_Z), (1000.0, 1050.0, w["top"], TOP_Z)):
-            p = xf_point(d["loc"], d["rot"], d["scale"], (lx, ly, 0.0))
-            dev = max(abs(p[ax] - line), abs(p[2] - zt))
-            if dev > worst_c:
-                worst_c, worst_c_id = dev, d["id"]
-chk("7 derived", "12 roof panels: transformed corners on the eaves (Z 640) and top (Z 1200) lines", worst_c <= 1.0, f"worst corner deviation {worst_c:.4f} cm ({worst_c_id}); limit 1.0")
-# roof run coverage: panels tile the run without gaps
+# roof panels (D1.14): count, tiling, corner squares, corners on the lines, valley lines
+ROOFS = [r for r in RECS if r["group"] == "roofpanel"]
+chk("7 derived", "13 roof panels (S 3, N 4, W 3, E 3)", len(ROOFS) == 13 and {w: len(l) for w, l in ROOF_PANELS.items()} == {"S": 3, "N": 4, "W": 3, "E": 3},
+    "%d panels: %s" % (len(ROOFS), {w: len(l) for w, l in ROOF_PANELS.items()}))
 bad = []
 for walk, lst in ROOF_PANELS.items():
+    w = ROOF_WALKS[walk]
     cov = sorted((min(d["extras"]["run_from"], d["extras"]["run_to"]), max(d["extras"]["run_from"], d["extras"]["run_to"])) for d in lst)
+    lo, hi = min(w["a"], w["b"]), max(w["a"], w["b"])
+    if abs(cov[0][0] - lo) > 0.01 or abs(cov[-1][1] - hi) > 0.01:
+        bad.append(f"{walk}: covers {cov[0][0]:g}-{cov[-1][1]:g}, run {lo:g}-{hi:g}")
     for i in range(len(cov) - 1):
         if abs(cov[i][1] - cov[i + 1][0]) > 0.01:
-            bad.append(walk)
-chk("7 derived", "roof panels tile each walk's run (3 per walk)", not bad, "ok" if not bad else str(bad))
+            bad.append(f"{walk}: gap/overlap {cov[i][1]:g} vs {cov[i + 1][0]:g}")
+    tot = sum(c[1] - c[0] for c in cov)
+    if abs(tot - (hi - lo)) > 0.01:
+        bad.append(f"{walk}: widths sum {tot:g} != run {hi - lo:g}")
+chk("7 derived", "roof panel widths tile each run with no gap or overlap (S, N 2500; W, E 2460)", not bad, "ok" if not bad else str(bad))
+# rectangles stay out of the corner squares
+RECT_LIM = {"S": (10320.0, 11380.0), "N": (10320.0, 11380.0), "W": (1420.0, 2180.0), "E": (1420.0, 2180.0)}
+bad = []
+for d in ROOFS:
+    if d["extras"]["valley"] is None:
+        lo, hi = sorted((d["extras"]["run_from"], d["extras"]["run_to"]))
+        a_, b_ = RECT_LIM[d["extras"]["walk"]]
+        if lo < a_ - 0.01 or hi > b_ + 0.01:
+            bad.append(f"{d['id']} {lo:g}-{hi:g}")
+chk("7 derived", "roof rectangles stay out of the corner squares (S, N inside X 10320-11380; W, E inside Y 1420-2180)", not bad,
+    "5 rectangles ok" if not bad and sum(1 for d in ROOFS if d["extras"]["valley"] is None) == 5 else str(bad))
+# corners on the eaves and top lines
+VALLEY_VERTS = {"L": ((1000.0, 0.0, "e"), (0.0, 1050.0, "t"), (1000.0, 1050.0, "t")), "R": ((0.0, 0.0, "e"), (0.0, 1050.0, "t"), (1000.0, 1050.0, "t"))}
+RECT_VERTS = ((0.0, 0.0, "e"), (1000.0, 0.0, "e"), (0.0, 1050.0, "t"), (1000.0, 1050.0, "t"))
+worst_c, worst_c_id = 0.0, ""
+for d in ROOFS:
+    w = ROOF_WALKS[d["extras"]["walk"]]
+    ax = w["line_axis"]
+    for (lx, ly, kind) in (VALLEY_VERTS[d["extras"]["valley"]] if d["extras"]["valley"] else RECT_VERTS):
+        line, zt = (w["eaves"], EAVES_Z) if kind == "e" else (w["top"], TOP_Z)
+        p = xf_point(d["loc"], d["rot"], d["scale"], (lx, ly, 0.0))
+        dev = max(abs(p[ax] - line), abs(p[2] - zt))
+        if dev > worst_c:
+            worst_c, worst_c_id = dev, d["id"]
+chk("7 derived", "roof corners on the eaves (Z 640) and top (Z 1200) lines: 5 rectangles x 4 corners, 8 triangles x 3 vertices", worst_c <= 1.0,
+    f"worst corner deviation {worst_c:.4f} cm ({worst_c_id}); limit 1.0")
+# valley lines: both triangles of a corner share the hypotenuse ends (garth corner Z 640, outer corner Z 1200)
+VALLEY_CORNERS = {"SE": ("CLA_Roof_S_0", "CLA_Roof_E_2", (11380.0, 1420.0, 640.0), (12000.0, 540.0, 1200.0)),
+                  "SW": ("CLA_Roof_W_0", "CLA_Roof_S_2", (10320.0, 1420.0, 640.0), (9500.0, 540.0, 1200.0)),
+                  "NW": ("CLA_Roof_N_0", "CLA_Roof_W_2", (10320.0, 2180.0, 640.0), (9500.0, 3000.0, 1200.0)),
+                  "NE": ("CLA_Roof_E_0", "CLA_Roof_N_3", (11380.0, 2180.0, 640.0), (12000.0, 3000.0, 1200.0))}
+HYP_ENDS = {"L": ((1000.0, 0.0), (0.0, 1050.0)), "R": ((0.0, 0.0), (1000.0, 1050.0))}   # (eaves end, top end)
+
+
+def hyp_ends(d):
+    ee, te = HYP_ENDS[d["extras"]["valley"]]
+    return xf_point(d["loc"], d["rot"], d["scale"], (ee[0], ee[1], 0.0)), xf_point(d["loc"], d["rot"], d["scale"], (te[0], te[1], 0.0))
+
+
+worst_v2, vrows = 0.0, []
+for cn, (ia, ib, garth, outer) in VALLEY_CORNERS.items():
+    da, db = rec_by_id(ia), rec_by_id(ib)
+    assert {da["extras"]["valley"], db["extras"]["valley"]} == {"L", "R"}, cn
+    for d in (da, db):
+        e, t = hyp_ends(d)
+        dev = max(max(abs(e[k] - garth[k]) for k in range(3)), max(abs(t[k] - outer[k]) for k in range(3)))
+        worst_v2 = max(worst_v2, dev)
+        vrows.append(f"{cn} {d['id']} {dev:.3f}")
+chk("7 derived", "valley lines: in each of the 4 corners both triangles' hypotenuse ends coincide with the garth corner (Z 640) and the outer corner (Z 1200)", worst_v2 <= 1.0,
+    f"worst deviation {worst_v2:.4f} cm; " + "; ".join(vrows))
+# ---- roof vs vault (D1.14 / D1.15): pure copies of build_cloister._fc_solve / four_centred / FourCentred.z_at (build_cloister imports bpy)
+def _fc_solve(sp, h, r1, beta_deg):
+    b = math.radians(beta_deg)
+    n = (-math.sin(b), math.cos(b))                     # unit vector C1 -> tangent point T
+    ax, az = sp / 2 - r1, h                             # A - C1
+    na = n[0] * ax + n[1] * az
+    den = 2.0 * (r1 - na)
+    if abs(den) < 1e-9:
+        return None
+    D = (ax * ax + az * az - r1 * r1) / den
+    if D <= 0:
+        return None
+    C2 = (r1 - D * n[0], -D * n[1])
+    R2 = D + r1
+    gam = math.degrees(math.atan2(C2[0] - sp / 2, h - C2[1]))
+    return dict(beta=beta_deg, D=D, R2=R2, C2=C2, gamma=gam)
+
+
+class FourCentred:
+    def __init__(self, sp, h, r1, sol):
+        self.s, self.h, self.r1 = sp, h, r1
+        self.beta = sol['beta']
+        self.R2, self.C2, self.gamma = sol['R2'], sol['C2'], sol['gamma']
+        self.C1 = (r1, 0.0)
+        self.phi = math.pi / 2 + math.radians(self.beta)
+
+    def z_at(self, y, t=0.0):
+        """Height of the (outward = negative t) offset curve at y (None outside)."""
+        if y > self.s / 2:
+            y = self.s - y
+        rho1 = self.r1 - t
+        yT = self.C1[0] + rho1 * math.cos(self.phi)
+        if y < self.C1[0] - rho1 - 1e-9:
+            return None
+        if y <= yT:
+            return math.sqrt(max(0.0, rho1 * rho1 - (y - self.C1[0]) ** 2))
+        rho2 = self.R2 - t
+        return self.C2[1] + math.sqrt(max(0.0, rho2 * rho2 - (self.C2[0] - y) ** 2))
+
+
+def four_centred(span, rise, R2_target):
+    """build_cloister.four_centred with the vault call (r1 = span/4 and its fallbacks, R2_target = span)."""
+    for rr in [span / 4.0 * f for f in (1.0, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.25, 0.2, 0.15)]:
+        prev = None
+        for bd in [0.25 * i for i in range(1, 359)]:
+            sol = _fc_solve(span, rise, rr, bd)
+            if not (sol is not None and sol['C2'][0] >= span / 2 + 1e-6):
+                prev = None
+                continue
+            val = sol['R2'] - R2_target
+            if prev is not None and (val == 0 or (val > 0) != (prev[1] > 0)):
+                lo, hi, flo = prev[0], bd, prev[1]
+                for _ in range(60):
+                    mid = 0.5 * (lo + hi)
+                    sm = _fc_solve(span, rise, rr, mid)
+                    if sm is None:
+                        break
+                    fm = sm['R2'] - R2_target
+                    if (fm > 0) == (flo > 0):
+                        lo, flo = mid, fm
+                    else:
+                        hi = mid
+                return FourCentred(span, rise, rr, _fc_solve(span, rise, rr, 0.5 * (lo + hi)))
+            prev = (bd, val)
+    raise RuntimeError("no four-centred solution for span %g rise %g" % (span, rise))
+
+
+_FC = {}
+
+
+def vault_fc(span):
+    if span not in _FC:
+        _FC[span] = four_centred(float(span), 340.0, float(span))
+    return _FC[span]
+
+
+VAULT_SPRING_Z = 540.0
+
+
+def vault_bay_geom(vid, pn, loc, yaw):
+    """(x0, x1, y0, y1, extrados_fn(x, y)) for one bay in world coordinates; extrados = four-centred rise 340 (outer curve, t = 0), groin = max of its two barrels."""
+    nm = pn.replace("Barrel_", "").replace("Groin_", "")
+    dims = nm.split("_")[0]
+    a_, b_ = (float(v) for v in dims.split("x"))
+    if pn.startswith("Groin_"):                   # name = Sx x Sy, yaw 0
+        sx_, sy_ = a_, b_
+        x0, y0 = loc[0], loc[1]
+        fx, fy = vault_fc(int(sx_)), vault_fc(int(sy_))
+        return (x0, x0 + sx_, y0, y0 + sy_,
+                lambda x, y: VAULT_SPRING_Z + max(fx.z_at(x - x0) or 0.0, fy.z_at(y - y0) or 0.0))
+    span, length = a_, b_
+    fc = vault_fc(int(span))
+    if abs(yaw) < 1e-6:                           # local x = length along +X, local y = span along +Y
+        x0, y0 = loc[0], loc[1]
+        return (x0, x0 + length, y0, y0 + span, lambda x, y: VAULT_SPRING_Z + (fc.z_at(y - y0) or 0.0))
+    # yaw 90: local x -> +Y (length), local y -> -X (span)
+    x1, y0 = loc[0], loc[1]
+    return (x1 - span, x1, y0, y0 + length, lambda x, y: VAULT_SPRING_Z + (fc.z_at(x1 - x) or 0.0))
+
+
+def roof_panel_cover(d):
+    """returns f(x, y) -> (covers, plane Z, underside Z, in_hole) for a roof record, from the record's own frame data."""
+    e = d["extras"]
+    ax = e["line_axis"]
+    ra = 1 - ax
+    rf, rt = e["run_from"], e["run_to"]
+    wd = abs(rt - rf)
+    sgn = 1.0 if rt > rf else -1.0
+    h = e["top"] - e["eaves"]
+    Ls = e["slope_len"]
+    cosa = abs(h) / Ls
+    kind, hole_ = e["valley"], e["hole"]
+
+    def f(x, y):
+        pt = (x, y)
+        u = (pt[ra] - rf) * sgn / wd
+        v = (pt[ax] - e["eaves"]) / h
+        eps = 1e-9
+        if u < -eps or u > 1 + eps or v < -eps or v > 1 + eps:
+            return False, 0.0, 0.0, False
+        if kind == "L" and u + v < 1 - eps:
+            return False, 0.0, 0.0, False
+        if kind == "R" and v < u - eps:
+            return False, 0.0, 0.0, False
+        z = EAVES_Z + (TOP_Z - EAVES_Z) * v
+        in_hole = bool(hole_ and 0.15 <= u <= 0.85 and v <= 800.0 / 1050.0)
+        return True, z, z - 15.0 / cosa, in_hole
+    return f
+
+
+ROOF_FN = [(d["id"], roof_panel_cover(d)) for d in ROOFS]
+BAY_GEOM = [(vid,) + vault_bay_geom(vid, pn, loc, yaw) for vid, pn, loc, yaw, _n in VAULT_BAYS]
+bay_min = {vid: (9e9, None) for vid, *_ in BAY_GEOM}
+n_pts = n_uncov = n_hole = 0
+GX0, GX1, GY0, GY1 = 9500.0, 12000.0, 540.0, 3000.0
+for ix in range(int(round((GX1 - GX0) / 5.0)) + 1):
+    x = GX0 + 5.0 * ix
+    for iy in range(int(round((GY1 - GY0) / 5.0)) + 1):
+        y = GY0 + 5.0 * iy
+        bays = [(vid, ex(x, y)) for vid, bx0, bx1, by0, by1, ex in BAY_GEOM if bx0 - 1e-9 <= x <= bx1 + 1e-9 and by0 - 1e-9 <= y <= by1 + 1e-9]
+        if not bays:
+            continue
+        n_pts += 1
+        under, any_cover, in_hole = -9e9, False, False
+        for rid_, fn in ROOF_FN:
+            c, z, zu, ih = fn(x, y)
+            if c:
+                any_cover = True
+                if ih:
+                    in_hole = True
+                else:
+                    under = max(under, zu)
+        if not any_cover:
+            n_uncov += 1
+            continue
+        if in_hole and under < -1e8:
+            n_hole += 1
+            continue
+        for vid, ev in bays:
+            clr = under - ev
+            if clr < bay_min[vid][0]:
+                bay_min[vid] = (clr, (x, y))
+worst_bay = min(bay_min.items(), key=lambda kv: kv[1][0])
+BAY_MIN_ROWS = {vid: round(v[0], 1) for vid, v in bay_min.items()}
+chk("7 derived", "roof vs vault: on a 5 cm grid over all 10 bays (X 9500-12000, Y 540-3000) the rafter underside (plane Z - 15 / cos a, max of the covering panels) clears the four-centred extrados by >= 5 cm",
+    worst_bay[1][0] >= 5.0 and n_uncov == 0,
+    "min %.1f cm at %s %s; %d grid points, %d uncovered by any panel, %d inside the N hole (skipped); per-bay minima: %s" % (
+        worst_bay[1][0], worst_bay[0], tuple(round(c, 1) for c in worst_bay[1][1]), n_pts, n_uncov, n_hole, BAY_MIN_ROWS))
+
 # floors do not overlap
 fl = [r for r in RECS if r["id"].startswith("CLA_Floor_")]
 bad = []
@@ -1435,10 +1669,12 @@ chk("7 derived", "hide list = 278 folder actors + Passage_S/N", len(HIDE) == 280
 
 # ---- D1.11 checks replacing the former consistency warnings -------------------------------------------
 hole = next(d for d in ROOF_PANELS["N"] if d["extras"]["hole"])
+assert [d["id"] for d in ROOFS if d["extras"]["hole"]] == ["CLA_Roof_N_2"]
 x0 = min(hole["extras"]["run_from"], hole["extras"]["run_to"])
 hx0, hx1 = x0 + 150.0 * hole["scale"][0], x0 + 850.0 * hole["scale"][0]
-chk("7 derived", "N roof hole (X %.0f-%.0f) covers the broken vault hole X 10900-11450" % (hx0, hx1), hx0 <= 10900.0 and hx1 >= 11450.0,
-    "N panels start X %s, x-scales %s" % ([round(min(d["extras"]["run_from"], d["extras"]["run_to"])) for d in ROOF_PANELS["N"]], [d["scale"][0] for d in ROOF_PANELS["N"]]))
+ov = min(hx1, 11450.0) - max(hx0, 10900.0)
+chk("7 derived", "N roof hole (X %.0f-%.0f) overlaps the broken vault hole X 10900-11450 by >= 380 cm (expected 387)" % (hx0, hx1), ov >= 380.0,
+    "overlap %.1f cm; hole panel %s starts X %g, x-scale %g" % (ov, hole["id"], x0, hole["scale"][0]))
 rope = rec_by_id("TWA_BellRope")
 sb = rec_by_id("TWA_ShaftBase")
 gap = rope["loc"][1] - (sb["aabb_min"][1] + 35.0)
@@ -1521,6 +1757,7 @@ out_json = {
     "pieces": PIECES, "built_but_unplaced": sorted(n for n in REPORT if n not in PIECES), "errata": "D1.11 + D1.12 applied",
     "existing_meshes": {p: {"mbounds": [list(v[0][0]), list(v[0][1])], "slots": v[1], "estimated": p in EST_BOUNDS} for p, v in EXISTING.items()},
     "hide_greybox": HIDE, "keep_visible": KEEP_VISIBLE, "ground_materials": {k: MI_PATHS[v] for k, v in GROUND_MI.items()},
+    "perimeter_materials": {k: MI_PATHS[v] for k, v in PERIM_MI.items()},
     "lights_plan": LIGHTS_PLAN,
     "mech_ritual3_target": {"loc": list(MECH3_LOC), "yaw": 0.0, "footprint_used_for_clearance": [110, 110]},
     "placements": RECS,
@@ -1569,7 +1806,7 @@ for nm, d, who in STRAIGHT_ROWS:
 MD += ["", "## Greybox (D1.0)", "",
        f"`hide_greybox` in the JSON lists {len(HIDE)} actors to set not visible (collision unchanged): the {len(HIDE) - 2} actors of the folders Cloister (23), BellTower (24), "
        "BellTower/Stairs (154), BellTower/Railings (77), plus `Passage_S` and `Passage_N`. Kept visible: " + ", ".join(KEEP_VISIBLE) + ".", "",
-       "Ground slabs `Ground_1`, `Ground_2`, `Ground_4`, `Ground_6` get `MI_Kit_Floor` (`ground_materials`).", ""]
+       "Ground slabs `Ground_1` to `Ground_6` get `MI_Kit_Floor` (`ground_materials`); `Perim_N`, `Perim_E`, `Perim_S`, `Perim_W` get `MI_Kit_Masonry` (`perimeter_materials`).", ""]
 MD += ["## Pieces (built Blender pieces; mbounds and slots are the MEASURED values from tower_report.json / cloister_report.json, D1.12)", "",
        "| Piece | Folder | mbounds min | mbounds max | Slots | Seed | UCX (built) | Pivot / note |", "|---|---|---|---|---|---|---|---|"]
 for nm, p in PIECES.items():
@@ -1596,7 +1833,7 @@ SECTIONS = [
     ("Garth", lambda r: r["cat"] == "garth"),
     ("Vault bays (10)", lambda r: r["group"] == "vaultbay"),
     ("Corbels", lambda r: r["group"] == "corbel"),
-    ("Roof panels (12) and the stair-house roof", lambda r: r["group"] in ("roofpanel", "stairhouseroof")),
+    ("Roof panels (13) and the stair-house roof", lambda r: r["group"] in ("roofpanel", "stairhouseroof")),
     ("Cloister floors", lambda r: r["id"].startswith("CLA_Floor_")),
     ("Cell doors (5) and leaves (5)", lambda r: r["group"] in ("celldoor", "cellleaf")),
     ("Gameplay references (placed by the child Blueprints)", lambda r: r["cat"] == "gameplay"),
@@ -1689,7 +1926,12 @@ def draw_plan():
     # roof panels and vaults (outline only)
     for r in RECS:
         if r["group"] == "roofpanel":
-            rect(r["aabb_min"], r["aabb_max"], outline=(150, 100, 70))
+            if r["extras"].get("valley"):
+                vv = VALLEY_VERTS[r["extras"]["valley"]]
+                tri = [xf_point(r["loc"], r["rot"], r["scale"], (lx, ly, 0.0)) for (lx, ly, _k) in vv]
+                dr.polygon([(px(t[0]), py(t[1])) for t in tri], outline=(150, 100, 70))
+            else:
+                rect(r["aabb_min"], r["aabb_max"], outline=(150, 100, 70))
         if r["group"] == "vaultbay":
             rect(r["aabb_min"], r["aabb_max"], outline=(100, 140, 230))
     # art footprints
