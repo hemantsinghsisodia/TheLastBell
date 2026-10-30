@@ -248,7 +248,7 @@ SEARCH = [(p["label"], tuple(p["loc"])) for p in AIJ["AI/Search"]]
 SPAWN = [(p["label"], tuple(p["loc"])) for p in AIJ["AI/Spawn"] if p["label"] in ("WSpawn_Cloister", "WSpawn_Tower")]
 WP_TOWER = [(p["label"], tuple(p["loc"])) for p in AIJ["WalkPaths/TowerStairs"]]
 WP_CRYPT = [(p["label"], tuple(p["loc"])) for p in AIJ["WalkPaths/CryptToCloister"]]
-MECH3_LOC = (11780.0, 1760.0, 50.0)     # D1.0/D1.6: Mech_Ritual3 moved here by P10-6b
+MECH3_LOC = (11790.0, 1780.0, 50.0)     # D1.0/D1.6, amended by D1.18: Mech_Ritual3 (yaw 90) moved here by P10-6b
 
 
 # =====================================================================================================
@@ -740,8 +740,8 @@ for cid, wl, (wx, wy), yaw in CELLS:
 # =====================================================================================================
 EXISTING["Point"] = (((0.0, 0.0, 0.0), (0.0, 0.0, 0.0)), [])
 add("GP_Mech_Ritual3", "gameplay", "mech3", CUBE, (MECH3_LOC[0], MECH3_LOC[1], 67.5), (0, 0, 0), (1.1, 1.1, 1.35), "BlockAll (BP pedestal + drum)", "Gameplay/Cloister",
-    note="REFERENCE ONLY (lane-check proxy): Mech_Ritual3 after the D-081 move to (11780, 1760, 50): 110 x 110 footprint, Z 0-135; BP_RitualMechanism_TowerCapstan "
-         "swaps the actor in P10-6b", extras={"via_bp": "BP_RitualMechanism_TowerCapstan", "skip_place": True, "actor_loc": list(MECH3_LOC)})
+    note=("REFERENCE ONLY (lane-check proxy): Mech_Ritual3 after the D-081 move, amended by D1.18 to (%g, %g, %g) yaw 90: 110 x 110 footprint, Z 0-135; BP_RitualMechanism_TowerCapstan "
+          "swaps the actor in P10-6b") % MECH3_LOC, extras={"via_bp": "BP_RitualMechanism_TowerCapstan", "skip_place": True, "actor_loc": list(MECH3_LOC)})
 add("GP_Clue_Inscription", "gameplay", "inscription", PIECES["SM_LB_Prop_InscriptionTablet_A"]["path"], (12000.0, 2380.0, 200.0), (0.0, 180.0, 0.0), (2.5, 2.5, 2.5),
     "BlockAllDynamic", "Gameplay/Cloister", mi=mi_for(["MAT_Trim"]),
     note="REFERENCE ONLY: tablet back flush on the tower wall X 12000, front at X 11990, world 10 x 300 x 75 (D1.11: the child BP sets Plaque relative X -2 because "
@@ -790,7 +790,7 @@ CHAIN = existing(DUNGEON, "SM_Torture_Devices_Chains")
 HOLDER = existing(DUNGEON, "SM_Dungeon_chain_holder")
 add("CLA_Mech3_Eyelet", "dress", "mech3chain", HOLDER, (11995.0, 1800.0, 140.0), (0.0, 180.0, 0.0), (1, 1, 1), "NoCollision", "Cloister/Dressing/Mech3",
     note="iron wall eyelet at the tower wall (chain holder, +x out of the wall)")
-chain_run("CLA_Mech3_Chain_A", (11810.0, 1760.0, 110.0), (11995.0, 1800.0, 140.0), "Cloister/Dressing/Mech3", "chain from the capstan drum to the wall eyelet")
+chain_run("CLA_Mech3_Chain_A", (11820.0, 1780.0, 110.0), (11995.0, 1800.0, 140.0), "Cloister/Dressing/Mech3", "chain from the capstan drum to the wall eyelet")
 chain_run("CLA_Mech3_Chain_B", (11995.0, 1800.0, 140.0), (11995.0, 1935.0, 120.0), "Cloister/Dressing/Mech3", "chain along the wall to the latch box")
 add("CLA_Mech3_LatchBox", "dress", "mech3chain", CUBE, (11995.0, 1935.0, 120.0), (0, 0, 0), (0.08, 0.20, 0.30), "NoCollision", "Cloister/Dressing/Mech3",
     mi={"0": "MI_Crypt_Iron"}, note="iron box 8 deep x 20 wide x 30 tall on the wall beside the door (D1.7 lists 20 x 8 x 30; depth taken as 8)")
@@ -1300,7 +1300,7 @@ chk("2 lanes", "D1.2 chamber debris >= 120 from WP_TowerStairs_22/23/24", kc2 >=
 # Mech_Ritual3 vs Patrol 04->05 (D1.6: >= 60 + 42)
 m3 = rec_by_id("GP_Mech_Ritual3")
 dm = seg_rect_dist(PATROL[3][1], PATROL[4][1], (m3["aabb_min"][0], m3["aabb_min"][1]), (m3["aabb_max"][0], m3["aabb_max"][1]))
-chk("2 lanes", "Mech_Ritual3 footprint 110x110 at (11780, 1760) vs Patrol_Cloister_04->05 (>= 102)", dm >= 102.0, f"distance {dm:.1f} cm (clearance {dm - 42:.1f})")
+chk("2 lanes", "Mech_Ritual3 footprint 110x110 at (%g, %g) vs Patrol_Cloister_04->05 (>= 102)" % (MECH3_LOC[0], MECH3_LOC[1]), dm >= 102.0, f"distance {dm:.1f} cm (clearance {dm - 42:.1f})")
 # the collapse heap vs patrol 03->04
 hp = rec_by_id("CLA_Collapse_Heap")
 dh = seg_rect_dist(PATROL[2][1], PATROL[3][1], (hp["aabb_min"][0], hp["aabb_min"][1]), (hp["aabb_max"][0], hp["aabb_max"][1]))
@@ -1759,7 +1759,7 @@ out_json = {
     "hide_greybox": HIDE, "keep_visible": KEEP_VISIBLE, "ground_materials": {k: MI_PATHS[v] for k, v in GROUND_MI.items()},
     "perimeter_materials": {k: MI_PATHS[v] for k, v in PERIM_MI.items()},
     "lights_plan": LIGHTS_PLAN,
-    "mech_ritual3_target": {"loc": list(MECH3_LOC), "yaw": 0.0, "footprint_used_for_clearance": [110, 110]},
+    "mech_ritual3_target": {"loc": list(MECH3_LOC), "yaw": 90.0, "footprint_used_for_clearance": [110, 110]},
     "placements": RECS,
 }
 os.makedirs(os.path.join(ROOT, "Docs", "plans"), exist_ok=True)

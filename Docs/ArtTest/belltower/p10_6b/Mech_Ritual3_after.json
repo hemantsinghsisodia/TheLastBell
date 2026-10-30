@@ -5,13 +5,13 @@
  "class": "/Game/LastBell/Blueprints/Interactables/BP_RitualMechanism_TowerCapstan.BP_RitualMechanism_TowerCapstan_C",
  "transform": {
   "location": {
-   "x": 11780,
-   "y": 1760,
+   "x": 11790,
+   "y": 1780,
    "z": 50
   },
   "rotation": {
    "pitch": 0,
-   "yaw": 0,
+   "yaw": 89.99999999999999,
    "roll": 0
   },
   "scale": {
@@ -407,13 +407,13 @@
     "onTouchEntered": "()",
     "onTouchExited": "()",
     "relativeLocation": {
-     "x": 11780,
-     "y": 1760,
+     "x": 11790,
+     "y": 1780,
      "z": 50
     },
     "relativeRotation": {
      "pitch": 0,
-     "yaw": 0,
+     "yaw": 89.99999999999999,
      "roll": 0
     },
     "relativeScale3D": {
@@ -1112,13 +1112,13 @@
  },
  "bounds": {
   "min": {
-   "x": 11725,
-   "y": 1705,
+   "x": 11735,
+   "y": 1725,
    "z": 0
   },
   "max": {
-   "x": 11835,
-   "y": 1815,
+   "x": 11845,
+   "y": 1835,
    "z": 205
   },
   "isValid": true

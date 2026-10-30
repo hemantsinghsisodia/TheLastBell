@@ -16,12 +16,12 @@ Counts by category: arcade 28, block 8, door 5, doorleaf 5, dress 150, floor 7, 
 | 1 treads | 10 landing footprints vs greybox | PASS | worst XY deviation 0.000 cm; limit 0.5 |
 | 2 lanes | WalkPath TowerStairs 00..24 (24 segments, walk line, head 200) | PASS | worst clearance 77.0 cm at WP_TowerStairs_04->WP_TowerStairs_05 vs TWA_ShaftPost_SE; limit 60 |
 | 2 lanes | WalkPath CryptToCloister 09->10 | PASS | clearance 150.0 cm vs SHA_Wall_SH_W_1; limit 60 |
-| 2 lanes | Patrol_Cloister route 01..07 + wrap-around 07->01 (Warden radius 42, routed around the greybox, new colliders kept 60 off) | PASS | worst clearance 63.6 cm at Patrol_Cloister_04->Patrol_Cloister_05 vs GP_Mech_Ritual3; limit 60 |
-| 2 lanes | Search_Cloister_01..14 points (radius 42) | PASS | worst clearance 65.9 cm at Search_Cloister_06 vs GP_Mech_Ritual3; limit 60 |
+| 2 lanes | Patrol_Cloister route 01..07 + wrap-around 07->01 (Warden radius 42, routed around the greybox, new colliders kept 60 off) | PASS | worst clearance 70.3 cm at Patrol_Cloister_04->Patrol_Cloister_05 vs GP_Mech_Ritual3; limit 60 |
+| 2 lanes | Search_Cloister_01..14 points (radius 42) | PASS | worst clearance 87.8 cm at Search_Cloister_06 vs GP_Mech_Ritual3; limit 60 |
 | 2 lanes | WSpawn_Cloister and WSpawn_Tower (radius 42) | PASS | worst clearance 83.0 cm at WSpawn_Tower vs TWA_S1_W; limit 60 |
 | 2 lanes | D1.7 collapse debris >= 120 from Search_Cloister_14/_12 and Patrol_Cloister_03 | PASS | closest 198.7 cm |
 | 2 lanes | D1.2 chamber debris >= 120 from WP_TowerStairs_22/23/24 | PASS | closest 217.1 cm |
-| 2 lanes | Mech_Ritual3 footprint 110x110 at (11780, 1760) vs Patrol_Cloister_04->05 (>= 102) | PASS | distance 105.5 cm (clearance 63.5) |
+| 2 lanes | Mech_Ritual3 footprint 110x110 at (11790, 1780) vs Patrol_Cloister_04->05 (>= 102) | PASS | distance 112.3 cm (clearance 70.3) |
 | 2 lanes | BlockAll rubble heap vs Patrol_Cloister_03->04 (>= 102) | PASS | distance 186.1 cm (clearance 144.1) |
 | 3 faces | 57 wall-piece inner faces vs greybox faces | PASS | worst deviation 0.000 cm (TWA_S1_W); limit 0.5 |
 | 3 faces | tower pieces inside the shell AABB (X 12000-13000, Y 1500-2500, Z <= 3540) except courses and the roof | PASS | all inside |
@@ -108,8 +108,8 @@ Clearance = distance from the sampled walk line (or the routed Warden path) to t
 | Patrol_Cloister_01->Patrol_Cloister_02 | Patrol (straight 750) | 237.0 | CLA_Lantern_West |
 | Patrol_Cloister_02->Patrol_Cloister_03 | Patrol (straight 1000) | 257.2 | CLA_Cell_Stool |
 | Patrol_Cloister_03->Patrol_Cloister_04 | Patrol (straight 906) | 144.1 | CLA_Collapse_Heap |
-| Patrol_Cloister_04->Patrol_Cloister_05 | Patrol (straight 962) | 63.6 | GP_Mech_Ritual3 |
-| Patrol_Cloister_05->Patrol_Cloister_06 | Patrol (straight 912) | 82.1 | GP_Mech_Ritual3 |
+| Patrol_Cloister_04->Patrol_Cloister_05 | Patrol (straight 962) | 70.3 | GP_Mech_Ritual3 |
+| Patrol_Cloister_05->Patrol_Cloister_06 | Patrol (straight 912) | 95.3 | GP_Mech_Ritual3 |
 | Patrol_Cloister_06->Patrol_Cloister_07 | Patrol (straight 806) | 372.8 | SHA_Wall_SH_E_0 |
 | Patrol_Cloister_07->Patrol_Cloister_01 | Patrol (straight 1556, routed 1730) | 86.6 | Cl_Block_PierSW |
 | Search_Cloister_01 | AI point | 750.0 | Cl_Block_PierSW |
@@ -117,7 +117,7 @@ Clearance = distance from the sampled walk line (or the routed Warden path) to t
 | Search_Cloister_03 | AI point | 195.8 | CLA_CellLeaf_N11100 |
 | Search_Cloister_04 | AI point | 260.2 | GP_Bell_4_Bracket |
 | Search_Cloister_05 | AI point | 119.3 | GP_Bell_2 |
-| Search_Cloister_06 | AI point | 65.9 | GP_Mech_Ritual3 |
+| Search_Cloister_06 | AI point | 87.8 | GP_Mech_Ritual3 |
 | Search_Cloister_07 | AI point | 623.7 | Cl_Block_PierSE |
 | Search_Cloister_08 | AI point | 483.0 | SHA_Wall_SH_E_0 |
 | Search_Cloister_09 | AI point | 502.7 | CLA_Lantern_West |
@@ -134,8 +134,8 @@ Straight-line distance of the patrol segments to the new colliders (blocks, heap
 - Patrol_Cloister_01->Patrol_Cloister_02: 318.0 (Cl_Block_PierNW)
 - Patrol_Cloister_02->Patrol_Cloister_03: 274.3 (CLA_Collapse_Heap)
 - Patrol_Cloister_03->Patrol_Cloister_04: 144.1 (CLA_Collapse_Heap)
-- Patrol_Cloister_04->Patrol_Cloister_05: 63.5 (GP_Mech_Ritual3)
-- Patrol_Cloister_05->Patrol_Cloister_06: 82.1 (GP_Mech_Ritual3)
+- Patrol_Cloister_04->Patrol_Cloister_05: 70.3 (GP_Mech_Ritual3)
+- Patrol_Cloister_05->Patrol_Cloister_06: 95.3 (GP_Mech_Ritual3)
 - Patrol_Cloister_06->Patrol_Cloister_07: 425.6 (Cl_Block_PierSE)
 
 ## Greybox (D1.0)
@@ -594,7 +594,7 @@ Built but not placed: SM_LB_Tw_S3_S, SM_LB_Tw_S3_W (the intact S3 W/S wall piece
 | Label | Mesh | Location | Rotation | Scale | AABB min .. max | Collision | Note |
 |---|---|---|---|---|---|---|---|
 | TWA_GreatBell | SM_LB_Prop_GreatBell_A | (12420, 2000, 2860) | (0, 0, 0) | (1, 1, 1) | (12315.2, 1895, 2640) .. (12525, 2105, 2860) | BlockAll (convex hull) | REFERENCE ONLY: placed through BP_TagInteractable_GreatBell (D1.6.5): Mesh rel (0,0,94) scale 0.4 under root scale 2.5 -> world scale 1; expected bounds X 12315-12525, Y 1895-2105, Z 2640-2860 |
-| GP_Mech_Ritual3 | Cube | (11780, 1760, 67.5) | (0, 0, 0) | (1.1, 1.1, 1.35) | (11725, 1705, 0) .. (11835, 1815, 135) | BlockAll (BP pedestal + drum) | REFERENCE ONLY (lane-check proxy): Mech_Ritual3 after the D-081 move to (11780, 1760, 50): 110 x 110 footprint, Z 0-135; BP_RitualMechanism_TowerCapstan swaps the actor in P10-6b |
+| GP_Mech_Ritual3 | Cube | (11790, 1780, 67.5) | (0, 0, 0) | (1.1, 1.1, 1.35) | (11735, 1725, 0) .. (11845, 1835, 135) | BlockAll (BP pedestal + drum) | REFERENCE ONLY (lane-check proxy): Mech_Ritual3 after the D-081 move, amended by D1.18 to (11790, 1780, 50) yaw 90: 110 x 110 footprint, Z 0-135; BP_RitualMechanism_TowerCapstan swaps the actor in P10-6b |
 | GP_Clue_Inscription | SM_LB_Prop_InscriptionTablet_A | (12000, 2380, 200) | (0, 180, 0) | (2.5, 2.5, 2.5) | (11990, 2230, 162.5) .. (12000, 2530, 237.5) | BlockAllDynamic | REFERENCE ONLY: tablet back flush on the tower wall X 12000, front at X 11990, world 10 x 300 x 75 (D1.11: the child BP sets Plaque relative X -2 because the M4 pivot is at the back) |
 | GP_Bell_1_Bracket | SM_LB_Prop_SmallBellBracket_A | (12000, 2200, 145) | (0, 180, 0) | (1, 1, 1) | (11966, 2189, 120) .. (12000, 2211, 167) | NoCollision | REFERENCE ONLY (BP_SmallBell_Cloister Post): plate back on the wall |
 | GP_Bell_1 | SM_LB_Prop_SmallBell_A | (11975, 2200, 138) | (0, 0, 0) | (1.3, 1.3, 1.3) | (11959.4, 2184.4, 101.6) .. (11990.6, 2215.6, 143.2) | BlockAllDynamic | REFERENCE ONLY: Bell_1, BellScale 1.3, band MI_LB_BellBand_I; BellPivot (11975, 2200, 140), crown top Z 138 |
@@ -614,8 +614,8 @@ Built but not placed: SM_LB_Tw_S3_S, SM_LB_Tw_S3_W (the intact S3 W/S wall piece
 | Label | Mesh | Location | Rotation | Scale | Collision | Note |
 |---|---|---|---|---|---|---|
 | CLA_Mech3_Eyelet | SM_Dungeon_chain_holder | (11995, 1800, 140) | (0, 180, 0) | (1, 1, 1) | NoCollision | iron wall eyelet at the tower wall (chain holder, +x out of the wall) |
-| CLA_Mech3_Chain_A_0 | SM_Torture_Devices_Chains | (11810, 1760, 110) | (80.79, 180, 167.95) | (1, 1, 0.8162) | NoCollision | chain from the capstan drum to the wall eyelet (segment 1/2, run length 191.6) |
-| CLA_Mech3_Chain_A_1 | SM_Torture_Devices_Chains | (11902.5, 1780, 125) | (80.79, 180, 167.95) | (1, 1, 0.8162) | NoCollision | chain from the capstan drum to the wall eyelet (segment 2/2, run length 191.6) |
+| CLA_Mech3_Chain_A_0 | SM_Torture_Devices_Chains | (11820, 1780, 110) | (80.27, 180, 173.57) | (1, 1, 0.761) | NoCollision | chain from the capstan drum to the wall eyelet (segment 1/2, run length 178.7) |
+| CLA_Mech3_Chain_A_1 | SM_Torture_Devices_Chains | (11907.5, 1790, 125) | (80.27, 180, 173.57) | (1, 1, 0.761) | NoCollision | chain from the capstan drum to the wall eyelet (segment 2/2, run length 178.7) |
 | CLA_Mech3_Chain_B_0 | SM_Torture_Devices_Chains | (11995, 1800, 140) | (-81.57, -90, -0) | (1, 1, 0.5812) | NoCollision | chain along the wall to the latch box (segment 1/2, run length 136.5) |
 | CLA_Mech3_Chain_B_1 | SM_Torture_Devices_Chains | (11995, 1867.5, 130) | (-81.57, -90, -0) | (1, 1, 0.5812) | NoCollision | chain along the wall to the latch box (segment 2/2, run length 136.5) |
 | CLA_Mech3_LatchBox | Cube | (11995, 1935, 120) | (0, 0, 0) | (0.08, 0.2, 0.3) | NoCollision | iron box 8 deep x 20 wide x 30 tall on the wall beside the door (D1.7 lists 20 x 8 x 30; depth taken as 8) |

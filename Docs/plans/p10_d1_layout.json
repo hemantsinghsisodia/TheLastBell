@@ -109,13 +109,13 @@
    "group": "2 lanes",
    "name": "Patrol_Cloister route 01..07 + wrap-around 07->01 (Warden radius 42, routed around the greybox, new colliders kept 60 off)",
    "ok": true,
-   "detail": "worst clearance 63.6 cm at Patrol_Cloister_04->Patrol_Cloister_05 vs GP_Mech_Ritual3; limit 60"
+   "detail": "worst clearance 70.3 cm at Patrol_Cloister_04->Patrol_Cloister_05 vs GP_Mech_Ritual3; limit 60"
   },
   {
    "group": "2 lanes",
    "name": "Search_Cloister_01..14 points (radius 42)",
    "ok": true,
-   "detail": "worst clearance 65.9 cm at Search_Cloister_06 vs GP_Mech_Ritual3; limit 60"
+   "detail": "worst clearance 87.8 cm at Search_Cloister_06 vs GP_Mech_Ritual3; limit 60"
   },
   {
    "group": "2 lanes",
@@ -137,9 +137,9 @@
   },
   {
    "group": "2 lanes",
-   "name": "Mech_Ritual3 footprint 110x110 at (11780, 1760) vs Patrol_Cloister_04->05 (>= 102)",
+   "name": "Mech_Ritual3 footprint 110x110 at (11790, 1780) vs Patrol_Cloister_04->05 (>= 102)",
    "ok": true,
-   "detail": "distance 105.5 cm (clearance 63.5)"
+   "detail": "distance 112.3 cm (clearance 70.3)"
   },
   {
    "group": "2 lanes",
@@ -4528,11 +4528,11 @@
  },
  "mech_ritual3_target": {
   "loc": [
-   11780.0,
-   1760.0,
+   11790.0,
+   1780.0,
    50.0
   ],
-  "yaw": 0.0,
+  "yaw": 90.0,
   "footprint_used_for_clearance": [
    110,
    110
@@ -17273,8 +17273,8 @@
    "group": "mech3",
    "mesh": "/Engine/BasicShapes/Cube.Cube",
    "loc": [
-    11780.0,
-    1760.0,
+    11790.0,
+    1780.0,
     67.5
    ],
    "rot": [
@@ -17302,13 +17302,13 @@
     ]
    ],
    "aabb_min": [
-    11725.0,
-    1705.0,
+    11735.0,
+    1725.0,
     0.0
    ],
    "aabb_max": [
-    11835.0,
-    1815.0,
+    11845.0,
+    1835.0,
     135.0
    ],
    "mi_slots": {},
@@ -17316,12 +17316,12 @@
     "via_bp": "BP_RitualMechanism_TowerCapstan",
     "skip_place": true,
     "actor_loc": [
-     11780.0,
-     1760.0,
+     11790.0,
+     1780.0,
      50.0
     ]
    },
-   "note": "REFERENCE ONLY (lane-check proxy): Mech_Ritual3 after the D-081 move to (11780, 1760, 50): 110 x 110 footprint, Z 0-135; BP_RitualMechanism_TowerCapstan swaps the actor in P10-6b"
+   "note": "REFERENCE ONLY (lane-check proxy): Mech_Ritual3 after the D-081 move, amended by D1.18 to (11790, 1780, 50) yaw 90: 110 x 110 footprint, Z 0-135; BP_RitualMechanism_TowerCapstan swaps the actor in P10-6b"
   },
   {
    "id": "GP_Clue_Inscription",
@@ -18084,19 +18084,19 @@
    "group": "chain",
    "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Torture_Devices_Chains.SM_Torture_Devices_Chains",
    "loc": [
-    11810.0,
-    1760.0,
+    11820.0,
+    1780.0,
     110.0
    ],
    "rot": [
-    80.789,
+    80.2724,
     180.0,
-    167.9522
+    173.5731
    ],
    "scale": [
     1.0,
     1.0,
-    0.81617
+    0.76097
    ],
    "collision": "NoCollision",
    "folder": "Cloister/Dressing/Mech3",
@@ -18113,20 +18113,20 @@
     ]
    ],
    "aabb_min": [
-    11807.97,
-    1754.57,
-    105.21
+    11818.46,
+    1774.5,
+    105.3
    ],
    "aabb_max": [
-    11904.4,
-    1785.41,
-    129.77
+    11908.92,
+    1795.49,
+    129.68
    ],
    "mi_slots": {},
    "extras": {
     "run_from": [
-     11810.0,
-     1760.0,
+     11820.0,
+     1780.0,
      110.0
     ],
     "run_to": [
@@ -18135,7 +18135,7 @@
      140.0
     ]
    },
-   "note": "chain from the capstan drum to the wall eyelet (segment 1/2, run length 191.6)"
+   "note": "chain from the capstan drum to the wall eyelet (segment 1/2, run length 178.7)"
   },
   {
    "id": "CLA_Mech3_Chain_A_1",
@@ -18143,19 +18143,19 @@
    "group": "chain",
    "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Torture_Devices_Chains.SM_Torture_Devices_Chains",
    "loc": [
-    11902.5,
-    1780.0,
+    11907.5,
+    1790.0,
     125.0
    ],
    "rot": [
-    80.789,
+    80.2724,
     180.0,
-    167.9522
+    173.5731
    ],
    "scale": [
     1.0,
     1.0,
-    0.81617
+    0.76097
    ],
    "collision": "NoCollision",
    "folder": "Cloister/Dressing/Mech3",
@@ -18172,20 +18172,20 @@
     ]
    ],
    "aabb_min": [
-    11900.47,
-    1774.57,
-    120.21
+    11905.96,
+    1784.5,
+    120.3
    ],
    "aabb_max": [
-    11996.9,
-    1805.41,
-    144.77
+    11996.42,
+    1805.49,
+    144.68
    ],
    "mi_slots": {},
    "extras": {
     "run_from": [
-     11810.0,
-     1760.0,
+     11820.0,
+     1780.0,
      110.0
     ],
     "run_to": [
@@ -18194,7 +18194,7 @@
      140.0
     ]
    },
-   "note": "chain from the capstan drum to the wall eyelet (segment 2/2, run length 191.6)"
+   "note": "chain from the capstan drum to the wall eyelet (segment 2/2, run length 178.7)"
   },
   {
    "id": "CLA_Mech3_Chain_B_0",

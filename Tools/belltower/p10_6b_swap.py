@@ -164,7 +164,29 @@ def do_note():
     bp_swap.cmd_diff(os.path.join(OUT, "Note_Cloister_before.json"), os.path.join(OUT, "Note_Cloister_after.json"))
 
 
-STEPS = {"bells": do_bells, "inscription": do_inscription, "capstan": do_capstan, "doors": do_doors, "note": do_note}
+def do_greatbell():
+    """D1.18 decision 1: Mesh is the ROOT of BP_TagInteractable, so the child is placed at (12420, 2000, 2860), scale 1 (T12 pivot = crown top)."""
+    before = load_before("Bell")
+    b = before["actor"]
+    vals = {k: b[k] for k in ("useStateTag", "bHideOnUse", "bInspectable")}
+    ip = before["components"]["InspectableComp"]["props"]
+    insp = {k: ip[k] for k in ("displayName", "bodyText", "bKeepOnClose", "bAutoFaceCamera", "initialInspectRotation") if k in ip}
+    xf = {"location": {"x": 12420, "y": 2000, "z": 2860}, "rotation": {"pitch": 0, "yaw": 0, "roll": 0}, "scale": {"x": 1, "y": 1, "z": 1}}
+    swap("Bell", BP + "Interactables/BP_TagInteractable_GreatBell.BP_TagInteractable_GreatBell", vals, xform=xf, extra_comp={"InspectableComp": insp})
+
+
+def do_capstan2():
+    """D1.18 decision 2: Mech_Ritual3 moves again to (11790, 1780, 50), yaw 90 (no other value changes). Edits the actor in place."""
+    print("== move Mech_Ritual3 -> (11790, 1780, 50) yaw 90")
+    if DRY:
+        return
+    a = bp_swap.find_exact(ue, "Mech_Ritual3")
+    xf = {"location": {"x": 11790, "y": 1780, "z": 50}, "rotation": {"pitch": 0, "yaw": 90, "roll": 0}, "scale": {"x": 1, "y": 1, "z": 1}}
+    ue.call(A, "set_actor_transform", {"actor": a, "xform": xf, "worldspace": True})
+    print("  transform now:", ue.call(A, "get_actor_transform", {"actor": a}))
+
+
+STEPS = {"greatbell": do_greatbell, "capstan2": do_capstan2, "bells": do_bells, "inscription": do_inscription, "capstan": do_capstan, "doors": do_doors, "note": do_note}
 
 if __name__ == "__main__":
     step = sys.argv[1] if len(sys.argv) > 1 else ""
