@@ -240,13 +240,14 @@ Branch `claude/phase-10-belltower`. Spec: `Docs/plans/P10_BELLTOWER_ART.md` (D-0
 | P10-4 | Materials and imports | technical-artist [EDITOR] | P10-3 |
 | P10-5 | Structure: hide greybox, cloister, passage, tower shell, stairs, belfry, roof | environment-designer [EDITOR] | P10-4 |
 | P10-5b | Roof valley pieces C14V L/R (Blender, verify, renders, import) (D1.14, D-082) | technical-artist [EDITOR for import] | P10-5 |
-| P10-5c | Re-place the 13 roof records, Ground_3/5, all 44 gap/look captures, suite | environment-designer [EDITOR] | P10-5b |
+| P10-5c | Re-place the 13 roof records, Ground_3/5, Perim_* masonry, 3 belfry poses, suite (no captures) | environment-designer [EDITOR] | P10-5b |
+| P10-5d | Re-capture the roof/perimeter-affected poses with the editor in the foreground; review | lead + owner [EDITOR] | P10-5c |
 | P10-6a | Dressing: garth, cells, rubble, timber debris, bell rope, lanterns, grime | environment-designer [EDITOR] | P10-5 |
 | P10-6b | Child BPs: small bells, inscription, Mech 3, great bell, tower and shortcut doors | unreal-blueprint-engineer [EDITOR] | P10-4 |
 | P10-7 | Lighting: moon through the fallen roof and louvres, lanterns, candles, tower slit light; luma targets | lighting-vfx [EDITOR] | P10-6a, P10-6b |
 | P10-8 | Docs, QA, owner stat gpu + playtest; PHASE 10 READY FOR YOUR REVIEW | lead + qa + owner | all |
 
-Status 2026-10-30: P10-0, P10-1 (Rope003, Metal058B) and P10-2 (survey) done; D1 written (D-078…D-081); P10-3a (ba1f0e6, 27ae1dc), P10-3b (b22300f, 42307f1), P10-L (generator, final 0e621ec), P10-4 imports (8733d97) and P10-5 structure placement (4919443 … 2e3a379; 222 records, suite 78/78) done. P10-5 found the cloister roofs showing through the corner vaults: D1.14 / D-082 roof valleys, P10-5b (valley meshes, technical-artist) and P10-5c (re-place roofs, Ground_3/5, all 44 captures, environment-designer) next, then P10-6b, P10-6a, P10-7.
+Status 2026-10-30: P10-0, P10-1 (Rope003, Metal058B) and P10-2 (survey) done; D1 written (D-078…D-081); P10-3a (ba1f0e6, 27ae1dc), P10-3b (b22300f, 42307f1), P10-L (generator, final 0e621ec), P10-4 imports (8733d97) and P10-5 structure placement (4919443 … 2e3a379; 222 records, suite 78/78) done. P10-5 found the cloister roofs showing through the corner vaults: D1.14 / D-082 roof valleys, P10-5b (valley meshes, technical-artist) and P10-5c (re-place roofs, Ground_3/5, Perim_* masonry, environment-designer) and P10-5d (lead + owner captures) next; the 36 missing P10-5 captures were taken by the lead (D1.14a), then P10-6b, P10-6a, P10-7.
 
 ## Deferred to Phase 14–15 (Lighting, VFX: storm work)
 Items the owner asked to fold into the storm pass. Plan them in detail (Docs/plans/) when Phase 14–15 starts.

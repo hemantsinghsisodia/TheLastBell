@@ -1221,3 +1221,41 @@ The wrap-around patrol segment that crosses the garth is routed around it, which
    - from the gate and the cloister, the belfry and the broken tower roof read against the sky.
    - **Fixes** go only through the generator (±10 cm / ±2 %). Record every fix. If a mesh issue turns up, stop and report it.
 5. **Suite** 78/78 with the D1.13 named tests. End state as D1.13; restore the throttle to true.
+
+#### D1.14a Lead capture run and spec changes (2026-10-30)
+**Lead capture run.** The 36 missing P10-5 poses were captured in editor mode (`--editor --double --raise --timeout 4 --settle 1.0`) as `p10_5_<pose>_ed.png`, so all 44 poses now exist.
+- **How it worked:** `CaptureViewport` only succeeded once the owner put the editor in the foreground and minimised Claude, and even then only about one call in two.
+- **What did not help:** with Claude maximised in front, every call reset after 19 s, even with `bThrottleCPUWhenNotForeground` false and the editor raised by `--raise`.
+- `CaptureEditorImage` worked in 0.1 s in both cases.
+- Lesson for MCP_NOTES (P10-8): viewport captures need the editor as the **foreground** window, so the owner sets that up for each capture run.
+
+**Findings:**
+- **Roofs.** The same roof intrusion shows in every corner and at every walk end: `cl_se_*`, `cl_ne_*`, `cl_nw_*`, `mid_*`, `collapse_up` and `collapse_along` (the E roof's eaves cross the broken N-E bay below the vault), and `ext_tower_from_cloister_nw`. All are fixed by D1.14.
+- **Tower:**
+  - the shaft looking up, landings 3, 6 and 9 and the base are clean: timber flights, rails, posts, slits and landings;
+  - the belfry is clean: louvres, oak frame and balustrade. The bell is still the greybox cylinder until P10-6b.
+  - From the gate, the tower reads above the chapel roofline with its louvred belfry and pyramid roof. The broken SW roof corner is too small to judge in an editor capture at that distance, so P10-7 judges it in its PIE captures.
+- **Clean:** the passage (both ends), the stair-house (inside and out), the cell doors (the N-E one hangs askew as specified), the archways, and the garth with its cross and slabs.
+- **`Perim_N` is white greybox.** It is the outer perimeter wall (X −3040…13440, Y 3600–3640, Z 0–800), visible in `ext_tower_from_north_of_cloister` (lead trace hits at Y 3600).
+  - `Perim_E` (X 13400) and `Perim_S` (Y −3640) are probably also visible from the belfry louvres, the N/E stair slits and the SW collapse.
+  - Fixed in P10-5c.
+- **Close-up "double coursing" on the ashlar walls.** The world-aligned `MI_Kit_Masonry` texture courses do not line up with the modelled block joints. This is the established kit look (courtyard and cloister walls), and it is strongest under the bright greybox `Light_Tower_*` point lights that P10-7 deletes. No action.
+- The garth earth (`MI_Prop_Earth`) reads very glossy under the editor lights. P10-6a covers most of it with vegetation; P10-7 judges what is left.
+
+**Spec changes:**
+1. **P10-5c additions:**
+   - set the `StaticMeshComponent` override material, slot 0, to `MI_Kit_Masonry` (world-aligned) on `Perim_N`, `Perim_E`, `Perim_S` and `Perim_W`;
+   - collision and visibility stay unchanged;
+   - read back each material, plus the collision profile and `collisionEnabled`.
+2. **P10-5c captures move to the lead** (step "P10-5d", lead with the owner). P10-5c does steps 1, 2 and 5 of D1.14, plus the Perim materials above, and **no captures**.
+3. **P10-5d** (lead and owner, editor in the foreground with Claude minimised): with `--force`, re-capture every pose affected by the roofs or the perimeter as `p10_5d_<pose>_ed.png`:
+   - every `cl_*`, `mid_*`, `garth_*`, `collapse_*`, `arch_*`, `cell_*`, `stairhouse_*` and `ext_*` pose;
+   - three new belfry poses, added to `p10_5_poses.json` by P10-5c:
+
+     | Pose | Location | Pitch | Yaw |
+     |---|---|---|---|
+     | `belfry_out_n` | (12500, 2400, 2670) | −20 | 90 |
+     | `belfry_out_e` | (12900, 2000, 2670) | −20 | 0 |
+     | `belfry_out_sw` | (12100, 1600, 2670) | −10 | −135 |
+
+   - The lead judges these against the D1.13 criteria and D1.14 step 4.
