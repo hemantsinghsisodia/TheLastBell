@@ -8,7 +8,8 @@ Usage (editor open on L_Monastery; no PIE; one editor-touching process at a time
     python place_tower.py --cats door --check --fix-collision   # re-apply NoCollision incl. collisionEnabled before checking
     python place_tower.py --hide-greybox                  # D1.0 / D-078: StaticMeshComponent.bVisible=false on the 280 hide_greybox labels
     python place_tower.py --verify-greybox                # read back bVisible + collision profile and run the trace checks
-    python place_tower.py --ground                        # apply ground_materials to Ground_1/2/4/6 and read back the slab materials
+    python place_tower.py --ground                        # apply ground_materials (Ground_1..6) and read back the slab materials
+    python place_tower.py --perim                         # apply perimeter_materials (Perim_N/E/S/W -> MI_Kit_Masonry); visibility and collision must stay unchanged
 
 Placed categories (P10-5): block wall tower stair arcade vault roof floor garth door doorleaf.
 NOT placed here: dress (P10-6a), light (P10-7), gameplay and every record with extras.skip_place (P10-6b: GP_*, TWA_GreatBell).
@@ -336,7 +337,39 @@ class Placer:
                 flag = "OK" if st["mats"][:1] == [want.rsplit("/", 1)[-1]] else "MISMATCH"
                 ok &= flag == "OK"
             print("  %-9s override %s %s" % (lbl, st["mats"], flag))
-        print("ground:", "all 4 target slabs carry MI_Kit_Floor" if ok else "MISMATCH")
+        print("ground:", "all %d target slabs carry their material" % len(gm) if ok else "MISMATCH")
+        return ok
+
+    # ---- perimeter wall (D1.14a): world-aligned masonry on Perim_N/E/S/W, nothing else touched
+    def perim(self):
+        pm = self.layout["perimeter_materials"]
+        found = {}
+        for lbl in sorted(pm):
+            hits = self.call(S, "find_actors", {"name": lbl, "tag": "", "collision_channels": []}) or []
+            exact = [a for a in hits if self.label(a) == lbl]       # find_actors matches by substring: keep exact labels only
+            if len(exact) != 1:
+                print("  STOP: %s matched %d actors exactly (%d substring hits: %s)" % (lbl, len(exact), len(hits), [self.label(a) for a in hits]))
+                return False
+            found[lbl] = exact[0]
+        before = {lbl: self.read_state(self.comp0(a)) for lbl, a in found.items()}
+        for lbl, st in before.items():
+            print("  before %-7s override %s visible %s profile %s enabled %s useDefault %s" %
+                  (lbl, st["mats"], st["visible"], st["profile"], st["enabled"], st["useDefault"]))
+        for lbl, a in found.items():
+            path = pm[lbl]
+            self.set_props(self.comp0(a), {"overrideMaterials": [{"refPath": path + "." + path.rsplit("/", 1)[-1]}]})
+        ok = True
+        for lbl, a in found.items():
+            st = self.read_state(self.comp0(a))
+            b = before[lbl]
+            want = pm[lbl].rsplit("/", 1)[-1]
+            mat_ok = st["mats"][:1] == [want]
+            same = all(st[k] == b[k] for k in ("visible", "profile", "enabled", "useDefault"))
+            print("  after  %-7s override %s visible %s profile %s enabled %s useDefault %s -> material %s, visibility/collision %s" %
+                  (lbl, st["mats"], st["visible"], st["profile"], st["enabled"], st["useDefault"], "OK" if mat_ok else "MISMATCH",
+                   "unchanged" if same else "CHANGED"))
+            ok &= mat_ok and same
+        print("perimeter:", "all %d walls carry their material, visibility and collision unchanged" % len(pm) if ok else "MISMATCH")
         return ok
 
     # ---- greybox (D-078)
@@ -447,6 +480,7 @@ def main():
     ap.add_argument("--hide-greybox", action="store_true")
     ap.add_argument("--verify-greybox", action="store_true")
     ap.add_argument("--ground", action="store_true")
+    ap.add_argument("--perim", action="store_true")
     args = ap.parse_args()
     for c in args.cats:
         if c not in ORDER:
@@ -463,6 +497,8 @@ def main():
         rc |= 0 if p.verify_greybox() else 2
     if args.ground:
         rc |= 0 if p.ground() else 2
+    if args.perim:
+        rc |= 0 if p.perim() else 2
     if args.cats:
         s = p.run_cats(args.cats, args.only, args.check)
         if any(x[3] for x in s):
