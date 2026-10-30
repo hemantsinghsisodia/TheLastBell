@@ -30,9 +30,13 @@ PR = "SM_LB_Prop_"
 # ----------------------------------------------------------------------------------------------
 # args
 # ----------------------------------------------------------------------------------------------
+PROBE = False
+
+
 def parse():
     argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
     sets, quick, samples, out = [], False, None, OUT
+    global PROBE
     i = 0
     while i < len(argv):
         if argv[i] == "--set":
@@ -42,6 +46,9 @@ def parse():
                 i += 1
         elif argv[i] == "--quick":
             quick = True
+            i += 1
+        elif argv[i] == "--probe":                  # after each view, re-render with the roofs magenta and count the magenta pixels (roof visible through the vault?)
+            PROBE = True
             i += 1
         elif argv[i] == "--samples":
             samples = int(argv[i + 1])
@@ -150,7 +157,25 @@ SRC = {}
 PLACED = []
 
 
+VALLEY_BLEND = os.path.join(REPO, "SourceArt", "Cloister", "LB_Cloister_valley.blend")
+
+
+def append_valley_pieces():
+    """The C14V pieces live in LB_Cloister_valley.blend until a full rebuild merges them into LB_Cloister.blend: append them (and bind them to the existing MAT_ datablocks)."""
+    names = ["SM_LB_Cl_LeanTo_Valley_L_1000x1050", "SM_LB_Cl_LeanTo_Valley_R_1000x1050"]
+    if all(n in bpy.data.objects for n in names) or not os.path.exists(VALLEY_BLEND):
+        return
+    with bpy.data.libraries.load(VALLEY_BLEND, link=False) as (src, dst):
+        dst.objects = [n for n in src.objects if n in names]
+    for o in dst.objects:
+        for i, m in enumerate(o.data.materials):
+            base = bpy.data.materials.get(m.name.split(".")[0])
+            if base is not None and base is not m:
+                o.data.materials[i] = base
+
+
 def collect_sources():
+    append_valley_pieces()
     for o in bpy.data.objects:
         if o.type == 'MESH' and o.name.startswith("SM_LB_") and not o.name.startswith("UCX_"):
             SRC[o.name] = o
@@ -303,35 +328,82 @@ def roof_panel(name, origin, ex, slope_dir, sx, sy):
     ey = Vector(slope_dir).normalized()
     ez = ex.cross(ey)
     assert ez.z > 0, "roof panel normal must point up"
-    place(name, origin, rot=basis4(ex, ey, ez), scale=(sx, sy, 1.0), group="roof")
+    return place(name, origin, rot=basis4(ex, ey, ez), scale=(sx, sy, 1.0), group="roof")
+
+
+# D1.14 roof layout (valley roofs, D-082): 13 records, (label, mesh, walk, offset along the run, width).  x-scale = width / 1000, y-scale = slope length / 1050 per walk.
+ROOF_WALKS = {   # walk: (run start a, run axis, eaves line coordinate, run direction (local x), slope direction (local y, up the slope))
+    'S': (12000.0, 'x', 1420.0, (-1, 0, 0), (0, -880, 560)),
+    'N': (9500.0, 'x', 2180.0, (1, 0, 0), (0, 820, 560)),
+    'W': (540.0, 'y', 10320.0, (0, 1, 0), (-820, 0, 560)),
+    'E': (3000.0, 'y', 11380.0, (0, -1, 0), (620, 0, 560)),
+}
+ROOF_RECORDS = [
+    ("CLA_Roof_S_0", "LeanTo_Valley_L_1000x1050", 'S', 0, 620), ("CLA_Roof_S_1", "LeanTo_1000x1050", 'S', 620, 1060), ("CLA_Roof_S_2", "LeanTo_Valley_R_1000x1050", 'S', 1680, 820),
+    ("CLA_Roof_N_0", "LeanTo_Valley_L_1000x1050", 'N', 0, 820), ("CLA_Roof_N_1", "LeanTo_1000x1050", 'N', 820, 440), ("CLA_Roof_N_2", "LeanTo_1000x1050_Hole", 'N', 1260, 620),
+    ("CLA_Roof_N_3", "LeanTo_Valley_R_1000x1050", 'N', 1880, 620),
+    ("CLA_Roof_W_0", "LeanTo_Valley_L_1000x1050", 'W', 0, 880), ("CLA_Roof_W_1", "LeanTo_1000x1050", 'W', 880, 760), ("CLA_Roof_W_2", "LeanTo_Valley_R_1000x1050", 'W', 1640, 820),
+    ("CLA_Roof_E_0", "LeanTo_Valley_L_1000x1050", 'E', 0, 820), ("CLA_Roof_E_1", "LeanTo_1000x1050", 'E', 820, 760), ("CLA_Roof_E_2", "LeanTo_Valley_R_1000x1050", 'E', 1580, 880),
+]
+ROOF_OBJ = {}     # label -> placed object
+
+
+def roof_origin(walk, off):
+    a, axis, line, ex, _d = ROOF_WALKS[walk]
+    if axis == 'x':
+        return (a + ex[0] * off, line, 640.0)
+    return (line, a + ex[1] * off, 640.0)
 
 
 def build_roofs(aligned_hole=True):
-    """Lean-to roofs.  Eaves Z 640 -> top line Z 1200.  Frames: S x -X from X 12000, N x +X from 9500, W x +Y from 540, E x -Y from 3000 (the rotator that keeps the panel normal up).
-    N walk: D1.11 errata 1 (W 9500-10650 x1.15, hole 10650-11650 x1.00, E 11650-12000 x0.35)."""
-    # S
-    d = (0, -880, 560)
-    ln = math.hypot(880, 560)
-    w = 2500 / 3.0
-    for i in range(3):
-        roof_panel("LeanTo_1000x1050", (12000 - i * w, 1420, 640), (-1, 0, 0), d, w / 1000.0, ln / 1050.0)
-    # N
-    d = (0, 820, 560)
-    ln = math.hypot(820, 560)
-    segs = [(9500, 10650, None), (10650, 11650, "H"), (11650, 12000, None)]       # D1.11 errata 1
-    for (a, b, h) in segs:
-        roof_panel("LeanTo_1000x1050_Hole" if h else "LeanTo_1000x1050", (a, 2180, 640), (1, 0, 0), d, (b - a) / 1000.0, ln / 1050.0)
-    # W
-    d = (-820, 0, 560)
-    ln = math.hypot(820, 560)
-    w = 2460 / 3.0
-    for i in range(3):
-        roof_panel("LeanTo_1000x1050", (10320, 540 + i * w, 640), (0, 1, 0), d, w / 1000.0, ln / 1050.0)
-    # E
-    d = (620, 0, 560)
-    ln = math.hypot(620, 560)
-    for i in range(3):
-        roof_panel("LeanTo_1000x1050", (11380, 3000 - i * w, 640), (0, -1, 0), d, w / 1000.0, ln / 1050.0)
+    """Lean-to roofs, D1.14 layout: 13 records, valley triangles over the corner squares.  Eaves Z 640 -> top line Z 1200.  Frames: S x -X from X 12000, N x +X from 9500,
+    W x +Y from 540, E x -Y from 3000 (the rotator that keeps the panel normal up)."""
+    for (label, mesh, walk, off, width) in ROOF_RECORDS:
+        _a, _axis, _line, ex, d = ROOF_WALKS[walk]
+        ln = math.sqrt(d[0] ** 2 + d[1] ** 2 + d[2] ** 2)          # slope length Ls: S 1043.07, N/W 992.97, E 835.46
+        o = roof_panel(mesh, roof_origin(walk, off), ex, d, width / 1000.0, ln / 1050.0)
+        o.name = label
+        ROOF_OBJ[label] = o
+
+
+def check_valleys():
+    """Numeric check of the four valley corners: transform the two triangles' mesh vertices with the D1.14 table and print where the hypotenuse ends land."""
+    corners = {"SE": ("CLA_Roof_S_0", "CLA_Roof_E_2", (11380.0, 1420.0, 640.0), (12000.0, 540.0, 1200.0)),
+               "SW": ("CLA_Roof_W_0", "CLA_Roof_S_2", (10320.0, 1420.0, 640.0), (9500.0, 540.0, 1200.0)),
+               "NW": ("CLA_Roof_N_0", "CLA_Roof_W_2", (10320.0, 2180.0, 640.0), (9500.0, 3000.0, 1200.0)),
+               "NE": ("CLA_Roof_E_0", "CLA_Roof_N_3", (11380.0, 2180.0, 640.0), (12000.0, 3000.0, 1200.0))}
+
+    def vert(o, lx, ly):
+        me = o.data
+        cand = [v.co for v in me.vertices if abs(v.co.z) < 0.01]
+        c = min(cand, key=lambda p: (p.x - lx) ** 2 + (p.y - ly) ** 2)
+        return o.matrix_world @ Vector((c.x, c.y, 0.0)), math.hypot(c.x - lx, c.y - ly)
+    worst = 0.0
+    print("VALLEY CHECK  (world coordinates of the hypotenuse ends, cm)")
+    for nm, (lab_l, lab_r, garth, outer) in corners.items():
+        # which label is the L and which the R triangle: by mesh name
+        pair = {}
+        for lab in (lab_l, lab_r):
+            o = ROOF_OBJ[lab]
+            pair['L' if 'Valley_L' in o.data.name else 'R'] = (lab, o)
+        (labL, oL), (labR, oR) = pair['L'], pair['R']
+        eL, dL1 = vert(oL, 1000.0, 0.0)
+        tL, dL2 = vert(oL, 0.0, 1050.0)
+        uL, dL3 = vert(oL, 1000.0, 1050.0)
+        eR, dR1 = vert(oR, 0.0, 0.0)
+        tR, dR2 = vert(oR, 1000.0, 1050.0)
+        uR, dR3 = vert(oR, 0.0, 1050.0)
+        g = (eL - eR).length
+        t = (tL - tR).length
+        ge = max((eL - Vector(garth)).length, (eR - Vector(garth)).length)
+        oe = max((tL - Vector(outer)).length, (tR - Vector(outer)).length)
+        worst = max(worst, g, t)
+        print("  %s  %s(L) + %s(R)" % (nm, labL, labR))
+        print("      garth end : L (%.2f, %.2f, %.2f)  R (%.2f, %.2f, %.2f)  gap %.3f  max off table %.3f  [mesh vertex off ideal %.3f / %.3f]" % (*eL, *eR, g, ge, dL1, dR1))
+        print("      outer end : L (%.2f, %.2f, %.2f)  R (%.2f, %.2f, %.2f)  gap %.3f  max off table %.3f  [mesh vertex off ideal %.3f / %.3f]" % (*tL, *tR, t, oe, dL2, dR2))
+        print("      other top vertices (must be Z 1200): L (%.2f, %.2f, %.2f)  R (%.2f, %.2f, %.2f)" % (*uL, *uR))
+        print("      eaves Z (640): %.3f / %.3f   top Z (1200): %.3f %.3f %.3f %.3f" % (eL.z, eR.z, tL.z, tR.z, uL.z, uR.z))
+    print("VALLEY CHECK worst hypotenuse-end gap %.3f cm (limit 1.0)" % worst)
 
 
 def build_cells(stand_in_leaves=True):
@@ -632,6 +704,11 @@ def lights_collapse():
     add_point("lantern_b", (11700, 2550, 235), 3.0e6, radius=6)
 
 
+def lights_roofs_top():
+    add_sun("moon", (50, 0, 215), 3.2)
+    add_sun("fill", (35, 0, 20), 0.6)
+
+
 def lights_bells():
     add_point("lantern_l", (11720, 2250, 190), 9.0e6, radius=5)
     add_point("lantern_r", (11720, 2520, 190), 5.0e6, radius=5)
@@ -655,20 +732,53 @@ def lights_stair():
 
 ALL = {"walls", "arcade", "garth", "vault", "roof", "cells", "floor", "dress", "passage", "stairhouse", "bells"}
 VIEWS = {
-    "corner_in": dict(file="p10_3b_cloister_corner_walk", groups=ALL - {"bells"}, loc=(11380, 850, 175), tgt=(9900, 1000, 330), lens=20, lights=lights_corner_in, exp=0.9),
+    "corner_in": dict(file="p10_5b_cloister_corner_walk", groups=ALL - {"bells"}, loc=(11380, 850, 175), tgt=(9900, 1000, 330), lens=20, lights=lights_corner_in, exp=0.9),
     "corner_garth": dict(file="p10_3b_cloister_corner_garth", groups=ALL - {"bells"}, loc=(11200, 1700, 190), tgt=(9900, 2650, 520), lens=18, lights=lights_garth, exp=1.8),
     "ceiling": dict(file="p10_3b_groin_ceiling_up", groups=ALL - {"bells"}, loc=(10300, 925, 150), tgt=(9900, 925, 700), lens=18, lights=lights_corner_in, exp=0.9),
     "section": dict(file="p10_3b_section_s_bay_roof_clearance", groups={"vault", "roof", "walls", "arcade"}, loc=(11500, 925, 760), tgt=(10000, 925, 760), lens=24, lights=lights_section, exp=2.2, xr=(10300, 10800), ortho=1700),
     "collapse": dict(file="p10_3b_collapse_ne_bay", groups=ALL - {"bells"}, loc=(11300, 1000, 1150), tgt=(11200, 2450, 760), lens=24, lights=lights_collapse, exp=1.0),
-    "collapse_hi": dict(file="p10_3b_collapse_ne_bay_walk", groups=ALL - {"bells"}, loc=(10050, 2450, 165), tgt=(11200, 2480, 520), lens=22, lights=lights_collapse, exp=1.2),
+    "collapse_hi": dict(file="p10_5b_collapse_ne_bay_walk", groups=ALL - {"bells"}, loc=(10050, 2450, 165), tgt=(11200, 2480, 520), lens=22, lights=lights_collapse, exp=1.2),
     "archway": dict(file="p10_3b_w_archway_from_passage", groups=ALL - {"bells"}, loc=(8300, 2000, 165), tgt=(9800, 2000, 330), lens=24, lights=lights_archway, exp=0.5),
     "garth": dict(file="p10_3b_garth_graves_cross", groups=ALL - {"bells"}, loc=(10300, 1500, 220), tgt=(10950, 1900, 130), lens=24, lights=lights_garth, exp=1.8),
     "garth_hi": dict(file="p10_3b_garth_cross_close", groups=ALL - {"bells"}, loc=(10330, 1520, 175), tgt=(10850, 1800, 190), lens=26, lights=lights_garth, exp=2.6),
     "cell": dict(file="p10_3b_cell_door", groups=ALL - {"bells"}, loc=(10500, 2560, 150), tgt=(10500, 3000, 135), lens=30, lights=lights_cell, exp=0.9),
     "stairhouse": dict(file="p10_3b_stairhouse", groups=ALL - {"bells"}, loc=(10050, -950, 640), tgt=(10650, 80, 330), lens=26, lights=lights_stair, exp=1.0),
+    # P10-5b: the valley roofs (D1.14)
+    "sw_groin_up": dict(file="p10_5b_cloister_sw_groin_up", groups=ALL - {"bells"}, loc=(9900, 1000, 170), tgt=(9786, 869, 1155), lens=18, lights=lights_corner_in, exp=2.2),
+    "roofs_top": dict(file="p10_5b_cloister_roofs_top", groups=ALL - {"bells"}, loc=(12600, 0, 2600), tgt=(10850, 1800, 700), lens=24, lights=lights_roofs_top, exp=1.0),
     "bells": dict(file="p10_3b_mech3_bells_inscription", groups={"bells", "floor"}, loc=(11520, 2380, 150), tgt=(12000, 2380, 150), lens=26, lights=lights_bells, exp=1.1),
     "bells_close": dict(file="p10_3b_mech3_bells_close", groups={"bells", "floor"}, loc=(11760, 2300, 135), tgt=(12000, 2330, 125), lens=30, lights=lights_bells, exp=1.1),
 }
+
+
+def probe_roofs(sc, out, name):
+    """Render the same view with every roof object magenta (emission) and count magenta pixels: any roof timber/slate that is visible shows up."""
+    import numpy as np
+    mg = bpy.data.materials.get("R_Probe") or bpy.data.materials.new("R_Probe")
+    nt, bs = _clear(mg)
+    bs.inputs['Base Color'].default_value = (1.0, 0.0, 1.0, 1)
+    bs.inputs['Emission Color'].default_value = (1.0, 0.0, 1.0, 1)
+    bs.inputs['Emission Strength'].default_value = 1.0
+    roofs = [o for o in PLACED if o.get("grp") == "roof" and not o.hide_render]
+    for o in roofs:
+        for sl in o.material_slots:
+            sl.link = 'OBJECT'
+            sl.material = mg
+    old = sc.render.filepath
+    old_vt, old_exp = sc.view_settings.view_transform, sc.view_settings.exposure
+    sc.view_settings.view_transform, sc.view_settings.exposure = 'Standard', 0.0      # emission (1,0,1) -> pixel (1,0,1)
+    sc.render.filepath = os.path.join(out, name + "_probe.png")
+    bpy.ops.render.render(write_still=True)
+    sc.view_settings.view_transform, sc.view_settings.exposure = old_vt, old_exp
+    img = bpy.data.images.load(sc.render.filepath)
+    px = np.array(img.pixels[:]).reshape(-1, 4)
+    mag = (px[:, 0] > 0.35) & (px[:, 2] > 0.35) & (px[:, 1] < 0.4 * np.minimum(px[:, 0], px[:, 2]))
+    print("PROBE %s: %d of %d pixels show a roof (%.3f %%)" % (name, int(mag.sum()), len(px), 100.0 * mag.sum() / len(px)))
+    bpy.data.images.remove(img)
+    for o in roofs:
+        for sl in o.material_slots:
+            sl.link = 'DATA'
+    sc.render.filepath = old
 
 
 def main():
@@ -687,12 +797,13 @@ def main():
     build_garth()
     build_vaults()
     build_roofs(aligned_hole=True)
+    check_valleys()
     build_cells()
     build_floors()
     build_collapse_rubble()
     build_grass()
     build_bells()
-    names = list(VIEWS) if "all" in sets else sets
+    names = list(VIEWS) if "all" in sets else [n for n in sets if n in VIEWS]
     for nm in names:
         v = VIEWS[nm]
         clear_lights()
@@ -716,6 +827,8 @@ def main():
         sc.render.filepath = os.path.join(out, v["file"] + ".png")
         bpy.ops.render.render(write_still=True)
         print("RENDERED", sc.render.filepath)
+        if PROBE:
+            probe_roofs(sc, out, v["file"])
     sys.stdout.flush()
 
 

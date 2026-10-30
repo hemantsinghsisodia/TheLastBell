@@ -39,6 +39,8 @@ set B="C:\Program Files\Blender Foundation\Blender 5.2\blender.exe"
 | `SM_LB_Cl_Vault_Groin_{770x830,570x830,770x770,570x770}` | x span x y span x 340 | 0,0,0 .. Sx,Sy,340 | 17816 / 18288 / 16516 / 17864 | Masonry, Trim, Rubble |
 | `SM_LB_Cl_LeanTo_1000x1050` | 1000x1050x24.3 | 0,0,-15 .. 1000,1050,9.3 | 21516 | Slate, Wood |
 | `SM_LB_Cl_LeanTo_1000x1050_Hole` | 1000x1050x102.8 | 0,0,-93.5 .. 1000,1050,9.3 | 12324 | Slate, Wood |
+| `SM_LB_Cl_LeanTo_Valley_L_1000x1050` | 1000x1050x24.3 | 0,0,-15 .. 1000,1050,9.3 | 11980 | Slate, Wood |
+| `SM_LB_Cl_LeanTo_Valley_R_1000x1050` | 1000x1050x24.3 | 0,0,-15 .. 1000,1050,9.3 | 11836 | Slate, Wood |
 | `SM_LB_Cl_CellDoorFrame_150x270` | 150x10x270 | -75,-8,0 .. 75,2,270 | 656 | Masonry, Trim, Rubble |
 | `SM_LB_Cl_StairHouseGable_380x40x650` | 380x40x650 | 0,0,0 .. 380,40,650 | 1896 | Masonry, Trim, Rubble |
 | `SM_LB_Cl_StairHouseRoof_420x640` | 420x640x217 | -0.27,0,-17.4 .. 420.3,640,200 | 8336 | Slate, Wood |
@@ -63,9 +65,13 @@ set B="C:\Program Files\Blender Foundation\Blender 5.2\blender.exe"
 12. **C17:** the "eaves x 0 / 420 at z 0" plane is the slate **top** surface; the slate planes rise 196 to x 210, the ridge cap tops out at z 200. Rafters 12 x 15 at 60 c/c and 4 tie beams are visible from below. The lowest point (rafter tails) is z -17.4.
 13. **M2:** the hook at x 25 hangs from the arm and its tip (z -5, running along Y) passes through the bell's loop (the child BP puts the loop centre at bracket z -5).
 
+14. **C14V valley pieces (P10-5b, D1.14 / D-082).** `LeanTo_Valley_L` keeps the triangle (0,1050)-(1000,1050)-(1000,0), `_R` keeps (0,0)-(0,1050)-(1000,1050); each is the full C14 panel (`slate_panel(1000, 1050, seed)`, seeds 1241 / 1242) cut by `bisect_plane` along the vertical plane through the hypotenuse, with the cut loops capped by `holes_fill` (195 / 196 loops, all filled, 0 open edges, windings contiguous) and a valley rafter 12 x 15 (z -15..0, MAT_Wood) whose outer face lies on the cut line.
+    The rafter is clipped (Sutherland-Hodgman) to the piece rectangle x 0..1000, y 0..1050, so its ends are flush with the bounds rather than square to the rafter axis (square ends would poke out at the eaves vertex). Bounds are the same as C14 (z -15..9.3). Build only these two with `--only LeanTo_Valley --tag valley` (writes `LB_Cloister_valley.blend`; `render_cloister.py` appends the two pieces from that file when `LB_Cloister.blend` does not hold them yet).
+    **Render assembly:** the roofs are now the 13-record D1.14 table (`ROOF_RECORDS`); `check_valleys()` prints the transformed hypotenuse ends (all four corners coincide to 0.000 cm); `--probe` re-renders each view with the roofs magenta and counts roof pixels (the SW groin view shows 0). New views `sw_groin_up` and `roofs_top`; `corner_in` / `collapse_hi` now write `p10_5b_*` (the `p10_3b_*` images keep the old 3-panel roofs). Other views still write `p10_3b_*`, so `--set all` overwrites those with valley-roof versions.
+
 ## Findings for the lead / generator
 - **Roof vs vault clearance (D1 numbers).** With springing 560, crown 900 and the lean-to slate plane at 640 (eaves) -> 1200, the vault extrados stays below the slate top (smallest margin: S walk 7 cm, N 16 cm, W 16 cm, E 39 cm) but **enters the 24 cm roof build-up** (rafters + sarking): the rafter undersides are crossed by up to 21 cm on the S walk, 12 cm on N and W, none on E. It is hidden inside the roof void and nothing pokes through the slates; if it ever matters, raise the eaves (D1: 640) by about 25 cm or lower the vault rise. See `p10_3b_section_s_bay_roof_clearance.png`.
-- **N roof panels:** the renders use the D1.11 errata layout (W 9500-10650 x1.15, hole 10650-11650, E 11650-12000 x0.35).
+- **N roof panels:** (superseded by D1.14) the P10-3b renders used the D1.11 errata layout (W 9500-10650 x1.15, hole 10650-11650, E 11650-12000 x0.35); the assembly now uses the 13-record valley layout (see deviation 14).
 - Panel frame for the roof rotators: with local x along the eaves and local y up the slope, local z (the normal) points up only if x runs **-X** for the S walk, **+X** for N, **+Y** for W and **-Y** for E (the face-frame types). Placing the S panels with x = +X would flip them.
 
 ## Render notes

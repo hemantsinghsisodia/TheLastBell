@@ -424,6 +424,65 @@ def chk_leanto(c, hole):
             c.fail("slates missing outside the hole")
 
 
+def chk_leanto_valley(c, side):
+    """C14V: triangle kept, nothing past the hypotenuse, both hypotenuse ends present, valley rafter, slates still cover the triangle."""
+    pts = c.pts
+    c.expect("min x", c.mn.x, 0.0, 0.01)
+    c.expect("max x", c.mx.x, 1000.0, 0.01)
+    c.expect("min y", c.mn.y, 0.0, 0.01)
+    c.expect("max y", c.mx.y, 1050.0, 0.01)
+    c.expect("rafter underside z", min(p.z for p in pts if p.z > -20), -15.0, 0.01)
+    if side == 'L':
+        n = Vector((1050.0, 1000.0, 0.0)).normalized()
+        o = Vector((1000.0, 0.0, 0.0))
+        ends = ((1000.0, 0.0), (0.0, 1050.0))
+    else:
+        n = Vector((-1050.0, 1000.0, 0.0)).normalized()
+        o = Vector((0.0, 0.0, 0.0))
+        ends = ((0.0, 0.0), (1000.0, 1050.0))
+    dmin = min((p - o).dot(n) for p in pts)
+    if dmin < -0.5:
+        c.fail("vertex on the cut-away side: signed distance to the hypotenuse %.3f < -0.5" % dmin)
+    for (ex, ey) in ends:
+        d = min(math.hypot(p.x - ex, p.y - ey) for p in pts)
+        if d > 2.0:
+            c.fail("no vertex within 2 cm of (%g, %g) (nearest %.2f)" % (ex, ey, d))
+    # the cut is a real cut: the far corner of the cut-away triangle is empty, and the kept corner is full
+    far = (0.0, 0.0) if side == 'L' else (1000.0, 0.0)
+    if any(math.hypot(p.x - far[0], p.y - far[1]) < 30.0 for p in pts):
+        c.fail("geometry left in the cut-away corner (%g, %g)" % far)
+    # valley rafter: wood, 12 wide, along the hypotenuse -> a vertex row at z -15 and 0 on both rafter faces
+    zs = [p for p in pts if abs(p.z + 15.0) < 0.01]
+    inner = [p for p in zs if 11.0 < (p - o).dot(n) < 13.0]
+    if len(inner) < 2:
+        c.fail("no valley rafter inner face (offset 12) found at z -15")
+    # slates cover the kept triangle (cells whose centre is well inside the triangle)
+    miss = tot = 0
+    for xi in range(40, 961, 40):
+        for yi in range(40, 1011, 40):
+            if (Vector((xi, yi, 0.0)) - o).dot(n) < 40.0:
+                continue
+            tot += 1
+            h = c.first((xi, yi, 50.0), (0, 0, -1))
+            if h is None or not (4.5 <= h.z <= 9.8):
+                miss += 1
+    if tot == 0 or miss > 0.06 * tot:
+        c.fail("slate coverage: %d of %d samples without a slate" % (miss, tot))
+    # the cut-away side has no slate
+    out = 0
+    for xi in range(40, 961, 40):
+        for yi in range(40, 1011, 40):
+            if (Vector((xi, yi, 0.0)) - o).dot(n) < -20.0:
+                h = c.first((xi, yi, 50.0), (0, 0, -1))
+                if h is not None:
+                    out += 1
+    if out:
+        c.fail("%d rays hit geometry on the cut-away side" % out)
+    # open boundary edges (the caps)
+    bnd = sum(1 for e in c.bm.edges if e.is_boundary)
+    c.notes.append("signed distance min %.3f, slate coverage %d/%d, boundary edges %d, volume checked by the generic test" % (dmin, tot - miss, tot, bnd))
+
+
 def chk_cell(c):
     c.expect("frame projects to y", c.mn.y, -8.0, 0.05)
     if max(p.y for p in c.pts) > 2.05:
@@ -552,6 +611,8 @@ def spec():
         add(P + "Vault_Groin_" + nm, (0, 0, 0), (sx, sy, 340), KIT, 26000, check=lambda c, sx=sx, sy=sy, outer=outer: chk_groin(c, float(sx), float(sy), outer))
     add(P + "LeanTo_1000x1050", (0, 0, -15), (1000, 1050, None), ROOF, 30000, check=lambda c: chk_leanto(c, False))
     add(P + "LeanTo_1000x1050_Hole", (0, 0, None), (1000, 1050, None), ROOF, 30000, check=lambda c: chk_leanto(c, True))
+    add(P + "LeanTo_Valley_L_1000x1050", (0, 0, -15), (1000, 1050, 9.3), ROOF, 30000, tol=1.0, check=lambda c: chk_leanto_valley(c, 'L'))
+    add(P + "LeanTo_Valley_R_1000x1050", (0, 0, -15), (1000, 1050, 9.3), ROOF, 30000, tol=1.0, check=lambda c: chk_leanto_valley(c, 'R'))
     add(P + "CellDoorFrame_150x270", (-75, -8, 0), (75, 2, 270), KIT, 1500, check=chk_cell)
     add(P + "StairHouseGable_380x40x650", (0, 0, 0), (380, 40, 650), KIT, 3000, check=chk_gable)
     add(P + "StairHouseRoof_420x640", (0, 0, None), (420, 640, 200), ROOF, 12000, check=chk_stair_roof)

@@ -991,6 +991,91 @@ def build_leanto(short, seed, hole):
     return CP(P + short, bm, ROOF_SLOTS, note=note, smooth=25.0)
 
 
+def clip_poly_rect(poly, x0, x1, y0, y1):
+    """Sutherland-Hodgman: clip a convex 2D polygon to the rectangle x0..x1, y0..y1."""
+    def clip(pts, inside, inter):
+        out = []
+        for i, p in enumerate(pts):
+            q = pts[(i + 1) % len(pts)]
+            pi, qi = inside(p), inside(q)
+            if pi:
+                out.append(p)
+            if pi != qi:
+                out.append(inter(p, q))
+        return out
+    pts = list(poly)
+    pts = clip(pts, lambda p: p[0] >= x0, lambda p, q: (x0, p[1] + (q[1] - p[1]) * (x0 - p[0]) / (q[0] - p[0])))
+    if pts:
+        pts = clip(pts, lambda p: p[0] <= x1, lambda p, q: (x1, p[1] + (q[1] - p[1]) * (x1 - p[0]) / (q[0] - p[0])))
+    if pts:
+        pts = clip(pts, lambda p: p[1] >= y0, lambda p, q: (p[0] + (q[0] - p[0]) * (y0 - p[1]) / (q[1] - p[1]), y0))
+    if pts:
+        pts = clip(pts, lambda p: p[1] <= y1, lambda p, q: (p[0] + (q[0] - p[0]) * (y1 - p[1]) / (q[1] - p[1]), y1))
+    return poly_dedupe(pts)
+
+
+VALLEY_REPORT = {}      # piece name -> dict(loops=, filled=, open_edges=, non_contiguous=)
+
+
+def build_leanto_valley(short, seed, side):
+    """C14V (D1.14 / P10-5b): the C14 panel cut along its diagonal by a vertical plane (bisect_plane), capped (holes_fill), plus a valley rafter.
+    L keeps the triangle (0,1050)-(1000,1050)-(1000,0), eaves vertex (1000,0); R keeps (0,0)-(0,1050)-(1000,1050), eaves vertex (0,0)."""
+    L, S = 1000.0, 1050.0
+    bm = slate_panel(L, S, seed)
+    if side == 'L':
+        a, b = Vector((L, 0.0, 0.0)), Vector((0.0, S, 0.0))          # hypotenuse ends (eaves vertex, outer-corner vertex)
+        no = Vector((S, L, 0.0)).normalized()                         # points into the kept triangle
+    else:
+        a, b = Vector((0.0, 0.0, 0.0)), Vector((L, S, 0.0))
+        no = Vector((-S, L, 0.0)).normalized()
+    geom = list(bm.verts) + list(bm.edges) + list(bm.faces)
+    bmesh.ops.bisect_plane(bm, geom=geom, dist=1e-4, plane_co=a, plane_no=no, clear_inner=True, clear_outer=False)
+    # drop loose leftovers, then cap the cut loops
+    loose = [v for v in bm.verts if not v.link_faces]
+    if loose:
+        bmesh.ops.delete(bm, geom=loose, context='VERTS')
+    bedges = [e for e in bm.edges if e.is_boundary]
+    # count the boundary loops (connected components of boundary edges)
+    parent = {}
+
+    def find(v):
+        while parent.setdefault(v, v) != v:
+            parent[v] = parent[parent[v]]
+            v = parent[v]
+        return v
+    for e in bedges:
+        parent[find(e.verts[0])] = find(e.verts[1])
+    loops = len({find(v) for e in bedges for v in e.verts})
+    before_faces = set(bm.faces)
+    res = bmesh.ops.holes_fill(bm, edges=bedges, sides=0)
+    new_faces = [f for f in bm.faces if f not in before_faces]
+    for f in new_faces:               # the cap takes the material of the shell it closes (slate / wood)
+        for e in f.edges:
+            nb = [g for g in e.link_faces if g is not f and g in before_faces]
+            if nb:
+                f.material_index = nb[0].material_index
+                break
+    bm.normal_update()
+    open_edges = sum(1 for e in bm.edges if e.is_boundary)
+    non_contig = sum(1 for e in bm.edges if len(e.link_faces) == 2 and not e.is_contiguous)
+    VALLEY_REPORT[P + short] = dict(loops=loops, filled=len(new_faces), open_edges=open_edges, non_contiguous=non_contig)
+    print("VALLEY", P + short, json.dumps(VALLEY_REPORT[P + short]))
+    # valley rafter 12 x 15 (z -15..0), outer face on the cut line, body inside the kept triangle, clipped to the piece rectangle
+    t = (b - a).normalized()
+    ext = 40.0
+    p0, p1 = a - t * ext, b + t * ext
+    q0, q1 = p0 + no * 12.0, p1 + no * 12.0
+    poly = clip_poly_rect([(p0.x, p0.y), (p1.x, p1.y), (q1.x, q1.y), (q0.x, q0.y)], 0.0, L, 0.0, S)
+    vr = K.prism(poly, 'z', -15.0, 0.0, S1)
+    K.bm_append(bm, vr)
+    vr.free()
+    note = ("C14V valley piece %s: the C14 panel (x 0..1000 along the eaves, y 0..1050 up the slope, z the panel normal) cut by the vertical plane through the hypotenuse "
+            "(%s), keeping the triangle with eaves vertex (%g, 0); bisect_plane + holes_fill (%d loops, %d caps, %d open edges left); "
+            "valley rafter 12 x 15 (z -15..0) along the hypotenuse, outer face on the cut line, clipped to x 0..1000 y 0..1050; slates 6 on sarking + battens, rafters 12 x 15 at 60 c/c"
+            % (side, "1050x + 1000y = 1 050 000" if side == 'L' else "1000y = 1050x", L if side == 'L' else 0.0, loops, len(new_faces), open_edges))
+    return CP(P + short, bm, ROOF_SLOTS, note=note, smooth=25.0)
+
+
 def xform_basis(bm, o, ex, ey, ez):
     """Map panel coords (x, y, z) -> o + x ex + y ey + z ez; reverse the faces if the basis is a reflection."""
     o, ex, ey, ez = Vector(o), Vector(ex), Vector(ey), Vector(ez)
@@ -1238,6 +1323,8 @@ def table():
     # C14 roof panels, C15 cell door frame, C16 / C17 stair-house
     A(("LeanTo_1000x1050", 1236, lambda: build_leanto("LeanTo_1000x1050", 1236, False)))
     A(("LeanTo_1000x1050_Hole", 1237, lambda: build_leanto("LeanTo_1000x1050_Hole", 1237, True)))
+    A(("LeanTo_Valley_L_1000x1050", 1241, lambda: build_leanto_valley("LeanTo_Valley_L_1000x1050", 1241, 'L')))
+    A(("LeanTo_Valley_R_1000x1050", 1242, lambda: build_leanto_valley("LeanTo_Valley_R_1000x1050", 1242, 'R')))
     A(("CellDoorFrame_150x270", 1238, lambda: build_cell_frame("CellDoorFrame_150x270", 1238)))
     A(("StairHouseGable_380x40x650", 1239, lambda: build_stair_gable("StairHouseGable_380x40x650", 1239)))
     A(("StairHouseRoof_420x640", 1240, lambda: build_stair_roof("StairHouseRoof_420x640", 1240)))

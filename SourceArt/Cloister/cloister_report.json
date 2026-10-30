@@ -1064,6 +1064,68 @@
   "note": "pivot at the eaves-line start; x 0..1000 along the eaves, y 0..1050 up the slope, z the panel normal; slates 6 on sarking + battens, rafters 12 x 15 at 60 c/c (z -15..0); ragged hole inside x 150..850 y 0..800 (contains x 170..830, y 30..780): slates/boards/battens removed, rafters cut, 3 rafters snapped (droop 40 / 80 / 0)"
  },
  {
+  "name": "SM_LB_Cl_LeanTo_Valley_L_1000x1050",
+  "seed": 1241,
+  "min": [
+   0.0,
+   0.0,
+   -15.0
+  ],
+  "max": [
+   1000.0,
+   1050.0,
+   9.3
+  ],
+  "dims": [
+   1000.0,
+   1050.0,
+   24.3
+  ],
+  "tris": 11980,
+  "slots": [
+   "MAT_Slate",
+   "MAT_Wood"
+  ],
+  "slots_used": [
+   0,
+   1
+  ],
+  "ucx": 0,
+  "seconds": 0.5,
+  "note": "C14V valley piece L: the C14 panel (x 0..1000 along the eaves, y 0..1050 up the slope, z the panel normal) cut by the vertical plane through the hypotenuse (1050x + 1000y = 1 050 000), keeping the triangle with eaves vertex (1000, 0); bisect_plane + holes_fill (195 loops, 195 caps, 0 open edges left); valley rafter 12 x 15 (z -15..0) along the hypotenuse, outer face on the cut line, clipped to x 0..1000 y 0..1050; slates 6 on sarking + battens, rafters 12 x 15 at 60 c/c"
+ },
+ {
+  "name": "SM_LB_Cl_LeanTo_Valley_R_1000x1050",
+  "seed": 1242,
+  "min": [
+   0.0,
+   0.0,
+   -15.0
+  ],
+  "max": [
+   1000.0,
+   1050.0,
+   9.3
+  ],
+  "dims": [
+   1000.0,
+   1050.0,
+   24.3
+  ],
+  "tris": 11836,
+  "slots": [
+   "MAT_Slate",
+   "MAT_Wood"
+  ],
+  "slots_used": [
+   0,
+   1
+  ],
+  "ucx": 0,
+  "seconds": 0.1,
+  "note": "C14V valley piece R: the C14 panel (x 0..1000 along the eaves, y 0..1050 up the slope, z the panel normal) cut by the vertical plane through the hypotenuse (1000y = 1050x), keeping the triangle with eaves vertex (0, 0); bisect_plane + holes_fill (196 loops, 196 caps, 0 open edges left); valley rafter 12 x 15 (z -15..0) along the hypotenuse, outer face on the cut line, clipped to x 0..1000 y 0..1050; slates 6 on sarking + battens, rafters 12 x 15 at 60 c/c"
+ },
+ {
   "name": "SM_LB_Cl_CellDoorFrame_150x270",
   "seed": 1238,
   "min": [
