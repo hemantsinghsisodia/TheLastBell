@@ -1309,3 +1309,163 @@ The wrap-around patrol segment that crosses the garth is routed around it, which
   - In the belfry the player's eye (Z 2670) is below the sills, and the louvres slope outward-down, so the outside can be seen only through the broken SW corner. The perimeter walls are now masonry anyway.
   - The poses are replaced by one, `belfry_up_sw` (12500, 2150, 2670, pitch 25, yaw −135), for P10-7's PIE pass, which also judges the broken roof from the gate.
 - **Result:** the P10-5 structure pass is complete. Next per D1.10: P10-6b (child BPs, D1.6), then P10-6a (dressing, D1.7), then P10-7 (lighting, D1.8).
+
+### D1.17 P10-6b spec: child Blueprints and swaps (unreal-blueprint-engineer, [EDITOR]; commits "P10-6b: …")
+This is the D1.6 design, made exact, plus the D1.11 errata. The P9 lessons apply: MCP_NOTES §5 (child-BP swaps), §10, §11 and §12 (saving).
+
+**0. Rules for this task**
+- **Parents:**
+  - Never edit or save a parent Blueprint: `BP_SmallBell`, `BP_Inscription`, `BP_RitualMechanism`, `BP_Door_Base`, `BP_TagInteractable` and `BP_Inspectable_Note`.
+  - `BP_SequencePuzzle`, `BP_TagTrigger` and `BP_EndingTrigger` are also off limits.
+  - `read_graph_dsl` marks a Blueprint dirty in memory. That is expected; never save it.
+- **Existing children:** `BP_Door_Base_Dungeon` and `BP_RitualMechanism_CryptWinch` are used as they are. Never edit them.
+- **New children:** `/Game/LastBell/Blueprints/Puzzles/BP_SmallBell_Cloister`, `/Game/LastBell/Blueprints/Interactables/BP_Inscription_Cloister`, `/Game/LastBell/Blueprints/Interactables/BP_RitualMechanism_TowerCapstan` and `/Game/LastBell/Blueprints/Interactables/BP_TagInteractable_GreatBell`.
+  - Each child's construction script first copies the parent's construction-script body; the DSL cannot call the parent's construction script. It then sets the art.
+  - Compile each child with warnings as errors and read back that it compiles clean.
+- **Materials.** After every `SetStaticMesh` in a child construction script, set **every** material slot explicitly with `SetMaterial(index, MI)`. Inherited component override materials, such as the parent's `MI_LB_Bronze` on `Bell`, would otherwise leak onto the new mesh. Slot MIs:
+
+  | Slot | MI |
+  |---|---|
+  | MAT_Bronze | `MI_LB_BellBronze` |
+  | MAT_Iron | `MI_Crypt_Iron` |
+  | MAT_Wood (M2 bracket, capstan) | `MI_Prop_Wood_Weathered` |
+  | MAT_Trim | `MI_Kit_Trim` |
+  | MAT_Masonry | `MI_Kit_Masonry` |
+  | MAT_Rubble | `MI_Kit_Rubble` |
+
+  - Read each mesh's slot names with StaticMeshTools first; set the slots by index in that order.
+  - The bell band slot (`MAT_Band`, index 2 of M1) takes the `BandMaterial` variable.
+- **Swap procedure, per instance** (MCP_NOTES §5; D-051):
+  1. Dump the old actor to `Docs/ArtTest/belltower/p10_6b/<label>_before.json`: class, label, folder, transform, every instance-editable variable, and every component (name, class, relative transform, mesh, materials, collision profile and enabled, visibility) including all `InteractComp`, `InspectableComp` and `SeqComp` properties.
+  2. Spawn the child at the same transform (or the new transform where a step says so).
+  3. Set the instance values listed in the step: copy them from the dump and read each one back.
+  4. Delete the old actor, then apply the **same label** and **same folder**.
+  5. Dump `<label>_after.json` and diff. Only the differences the step allows may appear; list every difference in the report.
+  6. Write the dump/diff helper as a reusable script, `Tools/belltower/bp_swap.py` (`dump <label> <out.json>`, `diff <a> <b>`).
+- **Copy rule.** Copy only the values each step lists, plus `InteractComp`, `InspectableComp` and the variables the parent's construction script reads.
+  - **Never copy the old instance's component material overrides or meshes.** For example, `Door_Shortcut`'s planks material and `Bell`'s cylinder must not carry over.
+- **Saving:** one package per `save_assets` call, then check `is_dirty` is false. Never save-all.
+  - Save order: each new child BP, then `L_Monastery` last.
+  - If any MCP call hangs over about 180 s, stop all editor calls and report.
+
+**1. `BP_SmallBell_Cloister`** (parent `BP_SmallBell`; the instances have yaw 180, so local +x points into the walk and the wall plane is local x −17).
+- **Before writing:**
+  - read the parent's component tree and construction script;
+  - confirm `Plate` and `Glyph` have a relative rotation whose front faces local +x;
+  - confirm `Bell` is attached to `BellPivot`.
+  If either is not so, stop and report.
+- **New instance-editable variables:**
+  - `BellScale` (float, default 1.0);
+  - `BandMaterial` (MaterialInterface, default `MI_LB_BellBand_III`).
+- **Construction script, after the copied parent body:**
+
+  | Component | Mesh | Relative location | Rotation | Scale | Materials (slot order) | Collision | Visible |
+  |---|---|---|---|---|---|---|---|
+  | `Post` | `SM_LB_Prop_SmallBellBracket_A` (M2) | (−17, 0, 145) | 0 | 1 | Iron `MI_Crypt_Iron`, Wood `MI_Prop_Wood_Weathered` | NoCollision | yes |
+  | `Arm` | unchanged | unchanged | — | — | — | NoCollision | **no** |
+  | `BellPivot` | — | (8, 0, 140) | unchanged | — | — | — | — |
+  | `Bell` | `SM_LB_Prop_SmallBell_A` (M1) | (0, 0, −2) relative to BellPivot | 0 | `BellScale` (uniform) | Bronze `MI_LB_BellBronze`, Iron `MI_Crypt_Iron`, Band = `BandMaterial` | unchanged (BlockAllDynamic; M1 has 1 hull) | yes |
+  | `Clapper` | unchanged | unchanged | — | — | — | NoCollision | **no** |
+  | `Plate` | `SM_LB_Prop_BellPlaque_A` (M3) | (−17, 0, 87) | 0 | 1 | Trim `MI_Kit_Trim` | NoCollision | yes |
+  | `Glyph` | (TextRender) | (−12.8, 0, 87) | unchanged | — | — | — | yes |
+
+  `Glyph` gets WorldSize 18 and TextRenderColor (26, 23, 20, 255).
+- **Swaps:**
+  - `Bell_1..4` keep their transforms and their `StruckTag`, `SymbolIndex`, `SwingDegrees`, `SwingDuration` and `InteractComp` values.
+  - Per bell:
+
+    | Bell | `BellScale` | `BandMaterial` |
+    |---|---|---|
+    | `Bell_1` | 1.30 | `MI_LB_BellBand_I` |
+    | `Bell_2` | 1.15 | `MI_LB_BellBand_II` |
+    | `Bell_3` | 1.00 | `MI_LB_BellBand_III` |
+    | `Bell_4` | 0.85 | `MI_LB_BellBand_IV` |
+
+  - Allowed diffs: class; the components and materials changed above; the two new variables.
+- **Checks** (report the numbers):
+  - each `Bell` component's world bounds, which should hang below Z ≈ 138, with Bell_1 the largest;
+  - a trace from (11800, Y_bell, 160) to (12000, Y_bell, 120) hits that bell's `Bell` component or actor;
+  - the four `Glyph` texts still read I, II, III, IV for `SymbolIndex` 0–3, as before.
+
+**2. `BP_Inscription_Cloister`** (parent `BP_Inscription`).
+- **Construction script, after the copied parent body:**
+  - `Plaque` mesh `SM_LB_Prop_InscriptionTablet_A` (M4);
+  - relative location **(−2, 0, 0)** (D1.11 erratum 3), rotation 0, scale 1, slot `MI_Kit_Trim`;
+  - collision unchanged.
+  - `Engraving` TextRenderColor (20, 18, 15, 255). Keep its relative location from the parent, then check that it sits in front of the tablet face, at actor-local x ≥ +2.1. If it does not, set its relative x to +2.2 and report.
+- **Swap `Clue_Inscription`.** Keep the transform: (11995, 2380, 200), yaw 180, root scale 2.5. Keep `Text` = `STRIKE AS THE DEAD RECALL|III · I · IV · II`.
+- **Check** the `Plaque` world bounds: X 11990–12000 (±1), Y 2230–2530, Z 162.5–237.5 (±1).
+
+**3. `BP_RitualMechanism_TowerCapstan`** (parent `BP_RitualMechanism`).
+- **Construction script.** Copy `BP_RitualMechanism_CryptWinch`'s construction script exactly, including the instance-editable `RequiredTags` variable that feeds `SetRequiredStateTags`. Then set the materials of `Pedestal` (`SM_LB_Crypt_Block_100_C`) and `Core` (`SM_LB_Crypt_CapstanDrum_80x50`, relative (0, 0, 75), scale 1) slot by slot with the table in §0. `CoreMarker` is hidden.
+- **Swap `Mech_Ritual3`:**
+  - keep `RitualTag` `State.Ritual.3`, `ExtraGrantedTags`, `TurnYaw`, `TurnDuration` and every `InteractComp` value;
+  - set `RequiredTags` = {`State.Tower.BellsSolved`}.
+  - **New transform: (11780, 1760, 50), yaw 0, scale 1** (D-081).
+  - Allowed diffs: class, location X/Y, meshes, materials, `RequiredTags`.
+- **Checks:**
+  - read back the actor's world AABB;
+  - the AABB's min X must be ≥ 11609 + 102 = 11711, the `Patrol_Cloister_04 → 05` clearance;
+  - report the AABB, and the distance from its edge to the tower door leaf (Y 1950).
+
+**4. Doors → `BP_Door_Base_Dungeon`** (existing child, unchanged).
+- **`Door_Tower`:**
+  - keep the location (12020, 1950, 0) and yaw 0;
+  - **scale (1, 1, 1.036)**. The leaf apex reaches Z 228, the art opening's apex (D1.1: opening Y 1948–2052, jambs to Z 194, gabled head to Z 228).
+- **`Door_Shortcut`:** keep the location (6020, 1941, 0), yaw 0 and scale (1, 1.18, 1.0818).
+- **Copy:** `OpenStateTag`, `AutoOpenTag` (`State.Ritual.3`), `bInteractable` false, `OpenYaw`, `OpenDuration`, `OpenSign` and the `InteractComp` values. **Do not copy the old `DoorMesh` material override.**
+- Allowed diffs: class, the door components and materials, and `Door_Tower`'s Z scale.
+
+**5. `BP_TagInteractable_GreatBell`** (parent `BP_TagInteractable`).
+- **Construction script, after the copied parent body:**
+  - `Mesh` = `SM_LB_Prop_GreatBell_A` (T12), relative location (0, 0, 94), rotation 0, relative scale 0.4;
+  - every slot set explicitly per its slot names (§0 table);
+  - collision unchanged (T12 has 1 hull).
+- **Swap `Bell`.** Keep the transform: (12420, 2000, 2625), yaw 0, root scale 2.5. Keep `UseStateTag` `State.Event.Finale`, `bHideOnUse`, `bInspectable` and every `InteractComp` / `InspectableComp` value.
+- **Checks:**
+  - world bounds ≈ X 12315–12525, Y 1895–2105, Z 2640–2860 (±5);
+  - a trace from `WP_TowerStairs_24` eye (12165, 2000, 2660) to (12420, 2000, 2750) hits the bell.
+
+**6. `Note_Cloister`.** Set the instance `BodyText`, exactly:
+
+> The great bell rang again tonight, and no hand was on the rope. Brother Anselm says the four small bells beside the tower door still answer to the old order of the dead, and that the order is cut in the stone above them. Strike them as the dead recall, and the tower will open. I will not go up. God forgive whoever does.
+
+- `DisplayName` stays "The Last Entry". Read both back, and dump before and after.
+
+**7. Save, reload and re-dump, tests**
+1. Save each new child BP, then `L_Monastery`, each in its own call; check `is_dirty` is false after each.
+2. `load_level` `/Game/LastBell/Maps/L_Monastery`.
+3. Re-dump the 10 swapped actors: `Bell_1..4`, `Clue_Inscription`, `Mech_Ritual3`, `Door_Tower`, `Door_Shortcut`, `Bell` and `Note_Cloister`. Diff them against the `_after` dumps; there must be **no** differences.
+4. Run `Tools/mirror_build_and_test.ps1`: 78/78. Name in the report:
+   - `RouteBot.Monastery` Success: it strikes the bells, turns the moved capstan, passes the tower door and rings the great bell;
+   - `Puzzles.Blueprints`;
+   - `WalkPath.Monastery`, including TowerStairs and CryptToCloister;
+   - `Warden.MonasteryReachability` (the capstan moved, so the navmesh changes);
+   - `Warden.Monastery.StagesRelocateTheWarden`;
+   - the Save tests.
+5. If anything fails, stop and report with the log lines; do not change gameplay.
+
+**8. Poses for the lead's capture pass (P10-6c, with the owner; P10-6b takes no captures).** Write `Tools/belltower/poses/p10_6_poses.json` with these entries, `[x, y, z, pitch, yaw]`:
+
+| Pose | Value |
+|---|---|
+| `m3_bells_2m` | [11800, 2380, 160, −5, 0] |
+| `m3_bells_close` | [11850, 2250, 150, −10, 20] |
+| `m3_inscription_2m` | [11800, 2380, 170, 5, 0] |
+| `m3_capstan` | [11500, 1650, 170, −15, 21] |
+| `m3_capstan_door` | [11400, 1950, 170, −5, 0] |
+| `door_tower_out` | [11700, 2000, 170, 0, 0] |
+| `door_tower_in` | [12200, 2000, 170, 0, 180] |
+| `door_shortcut_court` | [5600, 2000, 170, 0, 0] |
+| `door_shortcut_pass` | [6400, 2000, 170, 0, 180] |
+| `greatbell_from_stairs` | [12165, 2000, 2660, 10, 0] |
+| `greatbell_corner` | [12850, 1650, 2670, 15, 141] |
+| `note_cloister` | [10750, 1600, 220, −34, −90] |
+
+**End state:**
+- map saved and not dirty;
+- PIE stopped;
+- no `TMP_` actors;
+- the throttle untouched;
+- no parent Blueprint saved;
+- `git status` shows only the task's files (never stage `L_Throwaway_P9_4.umap`).
