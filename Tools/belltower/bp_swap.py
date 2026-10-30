@@ -163,7 +163,8 @@ def diff_dumps(a, b):
         if na.get(k) != nb.get(k):
             out.append(("actor", k, na.get(k), nb.get(k)))
     _flat_cmp("actor.props", na["actor"], nb["actor"], out, IGNORE_ACTOR)
-    ca, cb = na["components"], nb["components"]
+    ca = {re.sub(r"^BillboardComponent_\d+$", "BillboardComponent", k): v for k, v in na["components"].items()}   # editor sprite: auto-numbered
+    cb = {re.sub(r"^BillboardComponent_\d+$", "BillboardComponent", k): v for k, v in nb["components"].items()}
     for name in sorted(set(ca) | set(cb)):
         if name not in ca:
             out.append(("component " + name, "<component>", "<absent>", cb[name]["class"]))
