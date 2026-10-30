@@ -1469,3 +1469,38 @@ This is the D1.6 design, made exact, plus the D1.11 errata. The P9 lessons apply
 - the throttle untouched;
 - no parent Blueprint saved;
 - `git status` shows only the task's files (never stage `L_Throwaway_P9_4.umap`).
+
+### D1.18 P10-6b review and decisions (lead, 2026-10-31)
+**Accepted** (1ac66e2, b1be7c0, 30da957):
+- **Child Blueprints:** four children, compiled clean and saved.
+- **Swaps:** `Bell_1..4`, `Clue_Inscription`, `Mech_Ritual3`, `Door_Tower` (Z scale 1.036) and `Door_Shortcut`, each with only allowed diffs, plus the `Note_Cloister` text. The reload re-dump showed 0 differences.
+- **Checks:**
+  - bell bounds: Bell_1 is the largest, bodies hang below Z 138, and the eye traces hit;
+  - the Plaque is exactly X 11990–12000 × Y 2230–2530 × Z 162.5–237.5;
+  - Engraving x is 2.2.
+- **Also accepted:**
+  - `Clue_Inscription` Engraving WorldSize 7 (the instance value is kept; 10 would overflow the tablet);
+  - capstan `MAT_Stone` → `MI_Kit_Masonry`;
+  - the capstan child made by duplicating `BP_RitualMechanism_CryptWinch`, with its CDO tags reset.
+
+**Decision 1: the great bell (Known Issue 1).** In `BP_TagInteractable`, `Mesh` is the **root** component, so D1.6/D1.17 §5's "relative (0, 0, 94), scale 0.4 under a 2.5 root" cannot apply.
+- Swap `Bell` to `BP_TagInteractable_GreatBell` at **(12420, 2000, 2860), yaw 0, scale 1**. The T12 pivot is the crown top, so the bell occupies X 12315–12525, Y 1895–2105, Z 2640–2860.
+- Allowed diffs: class, location Z, actor scale, mesh, materials.
+- Checks as in D1.17 §5.
+
+**Decision 2: the capstan (Known Issue 2, `RouteBot.Monastery` red).**
+- **What happened:**
+  - The RouteBot uses the target's forward direction as its first approach. The capstan has yaw 0, so the bot stood east at (11955, 1760).
+  - `TickCheckpoints` then needs a clear line from that spot to `CP_TowerBase` (12200, 2000). That line hits the tower W wall at Y 1804, outside the doorway (Y 1948–2052).
+  - So the checkpoint was skipped and the restore assertions failed.
+- **This is a placement and bot-heuristic mismatch, not a gameplay bug.** The test code stays unchanged.
+- **New `Mech_Ritual3` transform: (11790, 1780, 50), yaw 90.** This amends D-081's (11780, 1760).
+  - The bot's front approach is then north at (11790, 1955).
+  - Its line to the checkpoint crosses X 11920 at Y 1969, which clears the open leaf by about 13 cm (the leaf lies along X 11920–12020 at Y 1943–1957). It crosses X 12000–12040 at Y 1978–1982, inside the doorway.
+  - The footprint (X 11735–11845, Y 1725–1835) stays about 112 cm from the `Patrol_Cloister_04 → 05` segment (≥ 102).
+- **Generator:**
+  - `MECH3_LOC` = (11790, 1780, 50);
+  - `mech_ritual3_target` yaw 90;
+  - the check text uses the constant;
+  - the D1.7 chain start moves from the drum at (11810, 1760, 110) to (11820, 1780, 110).
+  - Re-run: exit 0, with the Mech 3 lane check passing.
