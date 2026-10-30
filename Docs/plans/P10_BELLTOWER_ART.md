@@ -1286,3 +1286,26 @@ The wrap-around patrol segment that crosses the garth is routed around it, which
 - **Roof-vs-vault check.** Copy `_fc_solve`, `four_centred` (R2_target = span) and `FourCentred.z_at` from `build_cloister.py` into the generator as pure functions; `build_cloister.py` itself imports `bpy`.
   - Model: rafter underside = plane Z − 15 / cos α, roof = max over the covering panels; groin extrados = max of its two barrels.
   - The lead's reference run of this model: minimum 7.2 cm at the SE groin; 9.3 cm on the S walk and SW groin; 17.2 cm at the NE groin; 18.3 cm on the N walk, W walk and NW groin; 38.8 cm on the E walk.
+
+### D1.16 P10-5c / P10-5d review: structure pass complete (lead, 2026-10-30)
+**P10-5c accepted** (291c4f5, 54b0326):
+- **Generator:** 52/52 checks pass. The roof-vs-vault minimums match D1.15 exactly (SE groin 7.2 cm … E walk 38.8 cm), and the N-hole overlap is 387 cm.
+- **Placement:** the roof `--check` is 15/15 with 0.00 cm deviation.
+  - `Cloister/Art/Roofs` holds exactly the 13 new labels.
+  - `Ground_1…6` all read `MI_Kit_Floor`.
+  - `Perim_N/E/S/W` read `MI_Kit_Masonry`, with visibility and collision unchanged.
+- **Map and traces:** the map is saved and not dirty; the 8 verify-greybox traces hit; the suite is 78/78.
+- **Accepted:** `--cats roof` also respawned `SHA_Roof` and `TWA_Roof` (the same records, identical transforms, `--check` passes).
+
+**P10-5d (lead with the owner, editor in the foreground)**
+- **Run:** 35 roof- and perimeter-affected poses re-captured as `p10_5d_<pose>_ed.png`. The run needed two passes, because the circuit breaker tripped once while the editor was in the foreground.
+- **Roofs pass:**
+  - no timber or slate shows below or through any groin or walk vault (`cl_*_groin`, `mid_*`, `cl_*_along_*`, `ext_tower_from_cloister_nw`);
+  - from the garth the eaves meet the arcade wall tops without a gap, and the valleys turn the corners (`garth_to_*`);
+  - the broken N-E bay shows sky plus the accepted roof timbers (`collapse_up`, `collapse_along`).
+- **Perimeter passes:** `Perim_N` reads as masonry (`ext_tower_from_north_of_cloister`).
+- **Belfry poses:**
+  - The three `belfry_out_*` poses (D1.14a) were badly specified by the lead: the cameras sat 40–60 cm from the walls, below the lancet sills (world Z 2700). They showed only wall, so those images were discarded.
+  - In the belfry the player's eye (Z 2670) is below the sills, and the louvres slope outward-down, so the outside can be seen only through the broken SW corner. The perimeter walls are now masonry anyway.
+  - The poses are replaced by one, `belfry_up_sw` (12500, 2150, 2670, pitch 25, yaw −135), for P10-7's PIE pass, which also judges the broken roof from the gate.
+- **Result:** the P10-5 structure pass is complete. Next per D1.10: P10-6b (child BPs, D1.6), then P10-6a (dressing, D1.7), then P10-7 (lighting, D1.8).

@@ -247,7 +247,7 @@ Branch `claude/phase-10-belltower`. Spec: `Docs/plans/P10_BELLTOWER_ART.md` (D-0
 | P10-7 | Lighting: moon through the fallen roof and louvres, lanterns, candles, tower slit light; luma targets | lighting-vfx [EDITOR] | P10-6a, P10-6b |
 | P10-8 | Docs, QA, owner stat gpu + playtest; PHASE 10 READY FOR YOUR REVIEW | lead + qa + owner | all |
 
-Status 2026-10-30: P10-0, P10-1 (Rope003, Metal058B) and P10-2 (survey) done; D1 written (D-078…D-081); P10-3a (ba1f0e6, 27ae1dc), P10-3b (b22300f, 42307f1), P10-L (generator, final 0e621ec), P10-4 imports (8733d97) and P10-5 structure placement (4919443 … 2e3a379; 222 records, suite 78/78) done. P10-5 found the cloister roofs showing through the corner vaults: D1.14 / D-082 roof valleys, P10-5b (valley meshes, technical-artist) and P10-5c (re-place roofs, Ground_3/5, Perim_* masonry, environment-designer) and P10-5d (lead + owner captures) next; the 36 missing P10-5 captures were taken by the lead (D1.14a), then P10-6b, P10-6a, P10-7.
+Status 2026-10-30: P10-0…P10-4 done (P10-3a ba1f0e6/27ae1dc, P10-3b b22300f/42307f1, P10-L final 0e621ec, P10-4 8733d97). P10-5 structure (4919443…2e3a379) plus the roof-valley fix set (D1.14–D1.16, D-082): P10-5b fda215d/1b8d2f3, P10-5c 291c4f5/54b0326, P10-5d captures (lead + owner); suite 78/78. Structure pass complete; P10-6b (child BPs) next, then P10-6a, P10-7.
 
 ## Deferred to Phase 14–15 (Lighting, VFX: storm work)
 Items the owner asked to fold into the storm pass. Plan them in detail (Docs/plans/) when Phase 14–15 starts.
