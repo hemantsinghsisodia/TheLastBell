@@ -1,0 +1,10 @@
+(fn ConstructionScript ()
+  (bind _plaque (Variables|Default|GetPlaque))
+  (bind _engraving (Variables|Default|GetEngraving))
+  (Components|StaticMesh|SetStaticMesh _plaque "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Prop_InscriptionTablet_A.SM_LB_Prop_InscriptionTablet_A")
+  (Transformation|SetRelativeLocation _plaque (Math|Vector|MakeVector -2.0))
+  (Transformation|SetRelativeScale3D _plaque (Math|Vector|MakeVector 1.0 1.0 1.0))
+  (Rendering|Material|SetMaterial _plaque 0 "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim")
+  (Rendering|Components|TextRender|SetTextRenderColor _engraving (Utilities|Struct|MakeColor 15 18 20 255))
+  (Rendering|Components|TextRender|SetText _engraving (Utilities|Text|ToText(String) (Utilities|String|Replace (Variables|Default|GetText) "|" "
+"))))
