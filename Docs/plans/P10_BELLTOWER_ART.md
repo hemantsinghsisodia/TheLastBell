@@ -2048,3 +2048,106 @@ D1.8's 100–250 lm at 2200 K would leave the vaulted walks far darker than the 
   - the LFV extinction;
   - `MI_LB_BellBronze` tint, if it reads pink.
 - Each tuning round is a small Sonnet task followed by one more capture session.
+
+### D1.24 P10-7 capture review; P10-7b tuning spec (lead, 2026-10-31)
+**Accepted** (f58d697, 61b9f38):
+- 13 lights, 4 LFVs, `PP_Cloister`;
+- 17 greybox lights removed, with the dump at `Docs/ArtTest/belltower/greybox_lights_before.json`;
+- `place_lighting_p10.py check` 40/40;
+- suite 78/78;
+- the agent's four small deviations (the script fix, the narrow `--only`, the lantern Z 258.1, and Movable lights like the courtyard's).
+
+**Capture run.** All 14 `p10_7_poses.json` views were captured in **PIE Simulate** as `Docs/ArtTest/belltower/p10_7_<pose>.png`, with no editor sprites and the true exposure. B2 luma (`luma_report.py`):
+
+| Pose | Measured | Target | Verdict |
+|---|---|---|---|
+| `lt_cl_s_entry` | mean **0.030**, 66 % < 0.02 | mean 0.04–0.08 | **Low.** The moonlit garth through the arcade reads well, but the walk floor is near black. |
+| `lt_inscription` | plaque contrast **2.41** | ≥ 2.5 | **Just low.** The text is clearly legible, dark on lit stone. The lantern 40 cm from the wall over-lights it: the wall above the tablet glows saturated orange. |
+| `lt_bells` | mean 0.18 | numerals legible | **Pass.** II and III read; I and IV sit partly behind their bells, as before. Same orange over-light. |
+| `lt_tower_mid` | mean **0.027** | 0.02–0.06 | **Pass on luma.** A dark stair with one lantern pool. **No moonbeams** come through the slits. |
+| `lt_tower_shaft_up` | mean 0.099 | louvre / roof light | **Fail (look).** The upper tower is black, with no moonlight from the louvres or the broken roof. |
+| `lt_bell_top` | centre-10 % median **0.233** | ≥ 0.08 | **Luma pass, look fail.** The great bell reads as shiny orange copper, not old bronze (the D1.5 target). |
+| `lt_belfry_up_sw` | mean 0.061 | moonlight through the SW collapse | **Fail (look).** No moonlit patch shows. |
+| `lt_gate` | — | tower against the sky | **Pass.** The belfry and pyramid roof read as a moonlit silhouette above the chapel roofline. |
+| `lt_garth` | mean 0.023 | sheen | **Pass.** No sheen is left. Dim and moonlit, the note faintly visible. |
+| `lt_cl_ne` | mean 0.041 | dark but readable | **Pass.** The vaulted walk is dark, with the candle pool at the far end. |
+| `lt_door_tower_out` | mean 0.217 | plank slits | **Pass for the slits:** none show now that the interior is dark. **Fail for the look:** the wall is over-lit orange by `L_Cl_Door` and `L_Cl_Bells`. |
+| `lt_door_shortcut_pass` | mean 0.014 | hinge slit | **Pass.** A thin bright line along the hinge edge reads as light round an old door. A dry tussock stands at the threshold (P7 dressing). |
+| `lt_passage_east` | mean 0.067 | readable | **Pass.** The `L_Ps_West` pool, with the cloister arch lantern at the far end. |
+| `lt_cell_candles` | centre median 0.81 | candle pool | **Pass, a little hot.** |
+
+**Outside Phase 10:** in `lt_gate`, four white specks hang in the sky above the courtyard. The lead traced them to the chapel's `Gobo_Moon_*` cards (P8), at (5300–7850, −1250…−1280, 1340–2820). This is not judged here; the owner decides whether to look at it.
+
+**Decisions for P10-7b** (instance values only, except the new moon lights):
+1. **Exposure:** `PP_Cloister` EV100 1.15 → **0.65** (+0.5 stop). This brings `lt_cl_s_entry` to about 0.042 and `lt_tower_mid` to about 0.038.
+2. **Hot lanterns:** `L_Cl_Bells` 400 → **200** lm, `L_Cl_Door` 350 → **180**, `L_Tw_Bell` 400 → **250**, `L_Cl_Cell` 120 → **80**. All other lights stay.
+3. **Bronze** (`MI_LB_BellBronze`, parent `M_LB_Surface`; this also changes the small bells, which should read older and browner):
+
+   | Parameter | Old | New |
+   |---|---|---|
+   | `BaseColorTint` | (0.62, 0.45, 0.32) | **(0.46, 0.42, 0.34)** |
+   | `BrightnessMul` | 0.5 | **0.42** |
+   | `Metallic` | 0.9 | **0.75** |
+   | `RoughnessMin` | 0.45 | **0.55** |
+   | `RoughnessMax` | 0.75 | **0.85** |
+
+4. **Tower moonbeams.** Follow the project's established pattern: a P8/P9 moon spot outside the opening, aimed along the moon, plus a P9 shaft card from the opening along the beam.
+   - The moon travels along d = (0.6455, 0.4520, −0.6157), which is `DirectionalLight` pitch −38, yaw 35. Only the S and W faces and the SW roof collapse face the moon.
+   - **New light records** in the generator (`cat` `light`, folder `Lighting/BellTower`, `extras.light.type` `SpotLight`):
+     - rotation (−38, 35, 0); colour (0.745, 0.804, 0.922); no light function;
+     - `castShadows` **true**, `bCastVolumetricShadow` true, `volumetricScatteringIntensity` 0.8, `sourceRadius` 0.
+     - Each spot sits 150 cm (roof: 200) back along −d from the inner centre of its opening:
+
+     | Label | Opening (inner centre) | Spot location | lm | Inner / outer cone | Radius |
+     |---|---|---|---|---|---|
+     | `L_Tw_MoonSlit_F03` | S slit F03 (12500, 1540, 718.1) | (12403.2, 1472.2, 810.4) | 600 | 4 / 8 | 1500 |
+     | `L_Tw_MoonSlit_F07` | S slit F07 (12500, 1540, 1627.3) | (12403.2, 1472.2, 1719.6) | 600 | 4 / 8 | 1500 |
+     | `L_Tw_MoonSlit_F08` | W slit F08 (12040, 2000, 1854.0) | (11943.2, 1932.2, 1946.3) | 600 | 4 / 8 | 1500 |
+     | `L_Tw_MoonRoof` | SW roof collapse (12188, 1688, 4027) | (12058.9, 1597.6, 4150.1) | 1500 | 10 / 20 | 2500 |
+
+     - Store the opening point in `extras.opening` and the card width in `extras.shaft_width_cm`: 40 for the slits, 200 for the roof.
+   - **Shaft cards** `SA_Tower_F03`, `SA_Tower_F07`, `SA_Tower_F08`, `SA_Tower_Roof`: a new `shafts` action in `place_lighting_p10.py`, ported from `Tools/crypt/place_lighting.py` `shafts` with one change:
+     - The card starts at the **opening point + 5·d**, not at the spot, because the spot is outside the wall.
+     - Trace from that start along d up to 1500 cm. Length = 5 + hit distance (600 if nothing is hit).
+     - Engine `Cylinder` centred on the segment, `cyl_rot(d)`, scale (w/100, w/100, length/100), `MI_LightShaft_Crypt`.
+     - `castShadow` false, NoCollision (profile and `collisionEnabled`), folder `Lighting/BellTower`.
+     - Read back and report each card's start, end, hit distance and bounds.
+   - **`lights` spawns `SpotLight`** for these records (`/Script/Engine.SpotLight`). It sets `innerConeAngle`, `outerConeAngle`, `castShadows` and `bCastVolumetricShadow` from the record, plus everything it already sets.
+
+**P10-7b steps** (lighting-vfx, [EDITOR]; commits "P10-7b: …"):
+1. **Generator.**
+   - Change the 4 lumens in decision 2. Add the 4 spot records in decision 4, plus a `lights_plan.pp` EV of 0.65.
+   - Comment: `# D1.24: P10-7 capture review`.
+   - Re-run: exit 0, all checks pass. The light count is **17**.
+   - Commit the generator and its outputs.
+2. **`place_lighting_p10.py`.**
+   - Add SpotLight support to `lights` and a new `shafts` action.
+   - `check` also verifies:
+     - the 4 spots: type, cones, shadows and rotation within 0.1°;
+     - the 4 cards: present, NoCollision, `MI_LightShaft_Crypt`;
+     - the `PP_Cloister` EV.
+   - Commit.
+3. **Bronze.** Set the five `MI_LB_BellBronze` values in decision 3 and read them back.
+   - Save that MI alone, then check that `is_dirty` is false and that the log shows no material errors.
+   - This is the only material change allowed.
+4. **Place.** Run `place_lighting_p10.py lights` (idempotent: it re-places all 17), then `pp`, then `shafts`, then `check`. Everything must pass.
+5. **Save, reload, re-check.**
+   - Save `L_Monastery` (one package) and check `is_dirty` is false.
+   - Run `load_level`, then `check` again.
+6. **Suite:** 78/78, with the named tests of D1.20 step 6.
+7. **Commit:** `P10-7b: EV 0.65, cooler lanterns, old-bronze MI, tower moon spots + shaft cards, suite 78/78`, including `L_Monastery.umap` and `MI_LB_BellBronze.uasset`. Never stage `L_Throwaway_P9_4.umap`.
+
+**End state:**
+- the map is saved and not dirty;
+- PIE is stopped;
+- there are no `TMP_` actors;
+- the throttle is untouched;
+- no parent Blueprint was saved;
+- the only material changed is `MI_LB_BellBronze`.
+
+**Lead re-capture after P10-7b** (PIE Simulate, prefix `p10_7b_`): all 14 poses.
+- `lt_cl_s_entry`: mean 0.04–0.08.
+- `lt_inscription`: contrast ≥ 2.5.
+- `lt_tower_mid` and `lt_tower_shaft_up`: moonbeams visible.
+- `lt_bell_top`: median ≥ 0.08 and the bronze reads old, not copper.
+- `lt_belfry_up_sw`: a moonlit patch.
