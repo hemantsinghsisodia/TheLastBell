@@ -15,7 +15,7 @@
   "vault": 10,
   "door": 5,
   "doorleaf": 5,
-  "dress": 150,
+  "dress": 242,
   "light": 12
  },
  "group_counts": {
@@ -64,8 +64,8 @@
   "ivy": 4,
   "lantern": 21,
   "towerdress": 11,
-  "weed": 20,
-  "garthveg": 60,
+  "weed": 32,
+  "garthveg": 140,
   "light": 12
  },
  "checks": [
@@ -319,7 +319,7 @@
    "group": "7 derived",
    "name": "record ids unique",
    "ok": true,
-   "detail": "400 records"
+   "detail": "492 records"
   },
   {
    "group": "7 derived",
@@ -3738,14 +3738,14 @@
     ],
     [
      200.0,
-     25.0,
+     20.5,
      200.0
     ]
    ],
    "slots": [
     "Ivy"
    ],
-   "estimated": true
+   "estimated": false
   },
   "/Game/LastBell/ArtTest/Props/Wooden_Lantern_01/SM_Wooden_Lantern_01.SM_Wooden_Lantern_01": {
    "mbounds": [
@@ -3794,13 +3794,13 @@
     [
      60.0,
      45.0,
-     8.0
+     21.2
     ]
    ],
    "slots": [
     "MAT_Slate"
    ],
-   "estimated": true
+   "estimated": false
   },
   "/Game/LastBell/Environments/Props/Procedural/Chapel/SM_LB_Prop_Cobweb_Corner_A.SM_LB_Prop_Cobweb_Corner_A": {
    "mbounds": [
@@ -3818,7 +3818,7 @@
    "slots": [
     "MAT_Cobweb"
    ],
-   "estimated": true
+   "estimated": false
   },
   "/Game/LastBell/Environments/Props/CC0/WeedPlant02/SM_LB_CC0_WeedPlant02_01.SM_LB_CC0_WeedPlant02_01": {
    "mbounds": [
@@ -3913,92 +3913,92 @@
   "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_01.SM_LB_CC0_GrassMedium02_01": {
    "mbounds": [
     [
-     -25.0,
-     -25.0,
+     -6.0,
+     -6.0,
      0.0
     ],
     [
-     25.0,
-     25.0,
-     35.0
+     6.0,
+     6.0,
+     15.7
     ]
    ],
    "slots": [
     "grass"
    ],
-   "estimated": true
+   "estimated": false
   },
   "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_02.SM_LB_CC0_GrassMedium02_02": {
    "mbounds": [
     [
-     -25.0,
-     -25.0,
+     -9.0,
+     -10.0,
      0.0
     ],
     [
-     25.0,
-     25.0,
-     35.0
+     9.0,
+     10.0,
+     18.0
     ]
    ],
    "slots": [
     "grass"
    ],
-   "estimated": true
+   "estimated": false
   },
   "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_03.SM_LB_CC0_GrassMedium02_03": {
    "mbounds": [
     [
-     -25.0,
-     -25.0,
+     -13.1,
+     -12.5,
      0.0
     ],
     [
-     25.0,
-     25.0,
-     35.0
+     13.1,
+     12.5,
+     23.2
     ]
    ],
    "slots": [
     "grass"
    ],
-   "estimated": true
+   "estimated": false
   },
   "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_04.SM_LB_CC0_GrassMedium02_04": {
    "mbounds": [
     [
-     -25.0,
-     -25.0,
+     -15.9,
+     -18.1,
      0.0
     ],
     [
-     25.0,
-     25.0,
-     35.0
+     15.9,
+     18.1,
+     26.0
     ]
    ],
    "slots": [
     "grass"
    ],
-   "estimated": true
+   "estimated": false
   },
   "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_05.SM_LB_CC0_GrassMedium02_05": {
    "mbounds": [
     [
-     -25.0,
-     -25.0,
+     -17.8,
+     -21.7,
      0.0
     ],
     [
-     25.0,
-     25.0,
-     35.0
+     17.8,
+     21.7,
+     40.3
     ]
    ],
    "slots": [
     "grass"
    ],
-   "estimated": true
+   "estimated": false
   },
   "/Game/LastBell/Environments/Props/CC0/NettlePlant/SM_LB_CC0_NettlePlant_01.SM_LB_CC0_NettlePlant_01": {
    "mbounds": [
@@ -4047,42 +4047,6 @@
      3.21,
      2.17,
      6.26
-    ]
-   ],
-   "slots": [
-    "nettle_plant"
-   ],
-   "estimated": false
-  },
-  "/Game/LastBell/Environments/Props/CC0/NettlePlant/SM_LB_CC0_NettlePlant_04.SM_LB_CC0_NettlePlant_04": {
-   "mbounds": [
-    [
-     -2.99,
-     -1.93,
-     0
-    ],
-    [
-     2.99,
-     1.93,
-     2.17
-    ]
-   ],
-   "slots": [
-    "nettle_plant"
-   ],
-   "estimated": false
-  },
-  "/Game/LastBell/Environments/Props/CC0/NettlePlant/SM_LB_CC0_NettlePlant_05.SM_LB_CC0_NettlePlant_05": {
-   "mbounds": [
-    [
-     -5.18,
-     -4.5,
-     0
-    ],
-    [
-     5.18,
-     4.5,
-     21.68
     ]
    ],
    "slots": [
@@ -18084,19 +18048,19 @@
    "group": "chain",
    "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Torture_Devices_Chains.SM_Torture_Devices_Chains",
    "loc": [
-    11820.0,
-    1780.0,
-    110.0
+    11824.0,
+    1783.0,
+    168.0
    ],
    "rot": [
-    80.2724,
-    180.0,
-    173.5731
+    80.7008,
+    -0.0,
+    -5.6033
    ],
    "scale": [
     1.0,
     1.0,
-    0.76097
+    0.74152
    ],
    "collision": "NoCollision",
    "folder": "Cloister/Dressing/Mech3",
@@ -18113,21 +18077,21 @@
     ]
    ],
    "aabb_min": [
-    11818.46,
-    1774.5,
-    105.3
+    11822.58,
+    1777.49,
+    149.33
    ],
    "aabb_max": [
-    11908.92,
-    1795.49,
-    129.68
+    11910.8,
+    1797.0,
+    172.69
    ],
    "mi_slots": {},
    "extras": {
     "run_from": [
-     11820.0,
-     1780.0,
-     110.0
+     11824.0,
+     1783.0,
+     168.0
     ],
     "run_to": [
      11995.0,
@@ -18135,7 +18099,7 @@
      140.0
     ]
    },
-   "note": "chain from the capstan drum to the wall eyelet (segment 1/2, run length 178.7)"
+   "note": "chain from the capstan drum to the wall eyelet (segment 1/2, run length 174.1)"
   },
   {
    "id": "CLA_Mech3_Chain_A_1",
@@ -18143,19 +18107,19 @@
    "group": "chain",
    "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Torture_Devices_Chains.SM_Torture_Devices_Chains",
    "loc": [
-    11907.5,
-    1790.0,
-    125.0
+    11909.5,
+    1791.5,
+    154.0
    ],
    "rot": [
-    80.2724,
-    180.0,
-    173.5731
+    80.7008,
+    -0.0,
+    -5.6033
    ],
    "scale": [
     1.0,
     1.0,
-    0.76097
+    0.74152
    ],
    "collision": "NoCollision",
    "folder": "Cloister/Dressing/Mech3",
@@ -18172,21 +18136,21 @@
     ]
    ],
    "aabb_min": [
-    11905.96,
-    1784.5,
-    120.3
+    11908.08,
+    1785.99,
+    135.33
    ],
    "aabb_max": [
-    11996.42,
-    1805.49,
-    144.68
+    11996.3,
+    1805.5,
+    158.69
    ],
    "mi_slots": {},
    "extras": {
     "run_from": [
-     11820.0,
-     1780.0,
-     110.0
+     11824.0,
+     1783.0,
+     168.0
     ],
     "run_to": [
      11995.0,
@@ -18194,7 +18158,7 @@
      140.0
     ]
    },
-   "note": "chain from the capstan drum to the wall eyelet (segment 2/2, run length 178.7)"
+   "note": "chain from the capstan drum to the wall eyelet (segment 2/2, run length 174.1)"
   },
   {
    "id": "CLA_Mech3_Chain_B_0",
@@ -18207,14 +18171,14 @@
     140.0
    ],
    "rot": [
-    -81.573,
+    -80.9097,
     -90.0,
     -0.0
    ],
    "scale": [
     1.0,
     1.0,
-    0.58123
+    0.53914
    ],
    "collision": "NoCollision",
    "folder": "Cloister/Dressing/Mech3",
@@ -18232,13 +18196,13 @@
    ],
    "aabb_min": [
     11989.48,
-    1799.21,
+    1799.16,
     125.41
    ],
    "aabb_max": [
     12000.52,
-    1868.2,
-    144.61
+    1863.25,
+    144.6
    ],
    "mi_slots": {},
    "extras": {
@@ -18249,11 +18213,11 @@
     ],
     "run_to": [
      11995.0,
-     1935.0,
+     1925.0,
      120.0
     ]
    },
-   "note": "chain along the wall to the latch box (segment 1/2, run length 136.5)"
+   "note": "chain along the wall to the latch box (segment 1/2, run length 126.6)"
   },
   {
    "id": "CLA_Mech3_Chain_B_1",
@@ -18262,18 +18226,18 @@
    "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Torture_Devices_Chains.SM_Torture_Devices_Chains",
    "loc": [
     11995.0,
-    1867.5,
+    1862.5,
     130.0
    ],
    "rot": [
-    -81.573,
+    -80.9097,
     -90.0,
     -0.0
    ],
    "scale": [
     1.0,
     1.0,
-    0.58123
+    0.53914
    ],
    "collision": "NoCollision",
    "folder": "Cloister/Dressing/Mech3",
@@ -18291,13 +18255,13 @@
    ],
    "aabb_min": [
     11989.48,
-    1866.71,
+    1861.66,
     115.41
    ],
    "aabb_max": [
     12000.52,
-    1935.7,
-    134.61
+    1925.75,
+    134.6
    ],
    "mi_slots": {},
    "extras": {
@@ -18308,11 +18272,11 @@
     ],
     "run_to": [
      11995.0,
-     1935.0,
+     1925.0,
      120.0
     ]
    },
-   "note": "chain along the wall to the latch box (segment 2/2, run length 136.5)"
+   "note": "chain along the wall to the latch box (segment 2/2, run length 126.6)"
   },
   {
    "id": "CLA_Mech3_LatchBox",
@@ -18321,7 +18285,7 @@
    "mesh": "/Engine/BasicShapes/Cube.Cube",
    "loc": [
     11995.0,
-    1935.0,
+    1925.0,
     120.0
    ],
    "rot": [
@@ -18350,12 +18314,12 @@
    ],
    "aabb_min": [
     11991.0,
-    1925.0,
+    1915.0,
     105.0
    ],
    "aabb_max": [
     11999.0,
-    1945.0,
+    1935.0,
     135.0
    ],
    "mi_slots": {
@@ -19853,7 +19817,7 @@
     ],
     [
      200.0,
-     25.0,
+     20.5,
      200.0
     ]
    ],
@@ -19864,13 +19828,11 @@
    ],
    "aabb_max": [
     11100.0,
-    1416.0,
+    1411.5,
     600.0
    ],
    "mi_slots": {},
-   "extras": {
-    "mbounds_estimated": true
-   },
+   "extras": {},
    "note": "dead ivy card on the garth-facing arcade wall, S row, Z 400-600"
   },
   {
@@ -19903,13 +19865,13 @@
     ],
     [
      200.0,
-     25.0,
+     20.5,
      200.0
     ]
    ],
    "aabb_min": [
     10800.0,
-    2184.0,
+    2188.5,
     400.0
    ],
    "aabb_max": [
@@ -19918,9 +19880,7 @@
     600.0
    ],
    "mi_slots": {},
-   "extras": {
-    "mbounds_estimated": true
-   },
+   "extras": {},
    "note": "dead ivy card on the garth-facing arcade wall, N row, Z 400-600"
   },
   {
@@ -19953,7 +19913,7 @@
     ],
     [
      200.0,
-     25.0,
+     20.5,
      200.0
     ]
    ],
@@ -19963,14 +19923,12 @@
     400.0
    ],
    "aabb_max": [
-    10316.0,
+    10311.5,
     2050.0,
     600.0
    ],
    "mi_slots": {},
-   "extras": {
-    "mbounds_estimated": true
-   },
+   "extras": {},
    "note": "dead ivy card on the garth-facing arcade wall, W column, Z 400-600"
   },
   {
@@ -20003,12 +19961,12 @@
     ],
     [
      200.0,
-     25.0,
+     20.5,
      200.0
     ]
    ],
    "aabb_min": [
-    11384.0,
+    11388.5,
     1650.0,
     400.0
    ],
@@ -20018,9 +19976,7 @@
     600.0
    ],
    "mi_slots": {},
-   "extras": {
-    "mbounds_estimated": true
-   },
+   "extras": {},
    "note": "dead ivy card on the garth-facing arcade wall, E column, Z 400-600"
   },
   {
@@ -21169,7 +21125,7 @@
     [
      60.0,
      45.0,
-     8.0
+     21.2
     ]
    ],
    "aabb_min": [
@@ -21180,14 +21136,12 @@
    "aabb_max": [
     12790.0,
     1597.5,
-    2280.73
+    2293.93
    ],
    "mi_slots": {
     "MAT_Slate": "MI_Kit_Slate"
    },
-   "extras": {
-    "mbounds_estimated": true
-   },
+   "extras": {},
    "note": "broken slates on landing 10, within 30 of the walls"
   },
   {
@@ -21221,7 +21175,7 @@
     [
      60.0,
      45.0,
-     8.0
+     21.2
     ]
    ],
    "aabb_min": [
@@ -21232,14 +21186,12 @@
    "aabb_max": [
     12862.84,
     1601.46,
-    2280.73
+    2293.93
    ],
    "mi_slots": {
     "MAT_Slate": "MI_Kit_Slate"
    },
-   "extras": {
-    "mbounds_estimated": true
-   },
+   "extras": {},
    "note": "broken slates on landing 10, within 30 of the walls"
   },
   {
@@ -21273,7 +21225,7 @@
     [
      60.0,
      45.0,
-     8.0
+     21.2
     ]
    ],
    "aabb_min": [
@@ -21284,14 +21236,12 @@
    "aabb_max": [
     12930.19,
     1600.51,
-    2280.73
+    2293.93
    ],
    "mi_slots": {
     "MAT_Slate": "MI_Kit_Slate"
    },
-   "extras": {
-    "mbounds_estimated": true
-   },
+   "extras": {},
    "note": "broken slates on landing 10, within 30 of the walls"
   },
   {
@@ -21325,7 +21275,7 @@
     [
      60.0,
      45.0,
-     8.0
+     21.2
     ]
    ],
    "aabb_min": [
@@ -21336,14 +21286,12 @@
    "aabb_max": [
     12955.5,
     1730.0,
-    2280.73
+    2293.93
    ],
    "mi_slots": {
     "MAT_Slate": "MI_Kit_Slate"
    },
-   "extras": {
-    "mbounds_estimated": true
-   },
+   "extras": {},
    "note": "broken slates on landing 10, within 30 of the walls"
   },
   {
@@ -21393,9 +21341,7 @@
    "mi_slots": {
     "MAT_Cobweb": "MI_Cobweb_Dungeon"
    },
-   "extras": {
-    "mbounds_estimated": true
-   },
+   "extras": {},
    "note": "cobweb card in the SE wall corner above landing 2 (Z top+150)"
   },
   {
@@ -21445,9 +21391,7 @@
    "mi_slots": {
     "MAT_Cobweb": "MI_Cobweb_Dungeon"
    },
-   "extras": {
-    "mbounds_estimated": true
-   },
+   "extras": {},
    "note": "cobweb card in the SW wall corner above landing 3 (Z top+185)"
   },
   {
@@ -21497,9 +21441,7 @@
    "mi_slots": {
     "MAT_Cobweb": "MI_Cobweb_Dungeon"
    },
-   "extras": {
-    "mbounds_estimated": true
-   },
+   "extras": {},
    "note": "cobweb card in the NE wall corner above landing 5 (Z top+220)"
   },
   {
@@ -21549,9 +21491,7 @@
    "mi_slots": {
     "MAT_Cobweb": "MI_Cobweb_Dungeon"
    },
-   "extras": {
-    "mbounds_estimated": true
-   },
+   "extras": {},
    "note": "cobweb card in the SE wall corner above landing 6 (Z top+150)"
   },
   {
@@ -21601,9 +21541,7 @@
    "mi_slots": {
     "MAT_Cobweb": "MI_Cobweb_Dungeon"
    },
-   "extras": {
-    "mbounds_estimated": true
-   },
+   "extras": {},
    "note": "cobweb card in the NW wall corner above landing 8 (Z top+185)"
   },
   {
@@ -21653,9 +21591,7 @@
    "mi_slots": {
     "MAT_Cobweb": "MI_Cobweb_Dungeon"
    },
-   "extras": {
-    "mbounds_estimated": true
-   },
+   "extras": {},
    "note": "cobweb card in the NE wall corner above landing 9 (Z top+220)"
   },
   {
@@ -21665,18 +21601,18 @@
    "mesh": "/Game/LastBell/Environments/Props/CC0/WeedPlant02/SM_LB_CC0_WeedPlant02_01.SM_LB_CC0_WeedPlant02_01",
    "loc": [
     8146.354,
-    1716.181,
+    1720.339,
     0.0
    ],
    "rot": [
     0.0,
-    15.1111,
+    127.1409,
     0.0
    ],
    "scale": [
-    1.0,
-    1.0,
-    1.0
+    3.563,
+    3.563,
+    3.563
    ],
    "collision": "NoCollision",
    "folder": "Courtyard/Passage",
@@ -21693,18 +21629,18 @@
     ]
    ],
    "aabb_min": [
-    8131.97,
-    1699.27,
+    8081.43,
+    1657.88,
     0.0
    ],
    "aabb_max": [
-    8160.74,
-    1733.09,
-    7.25
+    8211.28,
+    1782.8,
+    25.83
    ],
    "mi_slots": {},
    "extras": {},
-   "note": "weed at the base of the passage S wall (16 from the face)"
+   "note": "weed at the base of the passage S wall (20 from the face), scale 3.563"
   },
   {
    "id": "PSA_Weed_01",
@@ -21712,19 +21648,19 @@
    "group": "weed",
    "mesh": "/Game/LastBell/Environments/Props/CC0/WeedPlant02/SM_LB_CC0_WeedPlant02_02.SM_LB_CC0_WeedPlant02_02",
    "loc": [
-    7278.395,
-    2277.836,
+    8647.176,
+    2267.27,
     0.0
    ],
    "rot": [
     0.0,
-    305.5174,
+    91.978,
     0.0
    ],
    "scale": [
-    1.0,
-    1.0,
-    1.0
+    3.893,
+    3.893,
+    3.893
    ],
    "collision": "NoCollision",
    "folder": "Courtyard/Passage",
@@ -21741,18 +21677,18 @@
     ]
    ],
    "aabb_min": [
-    7264.86,
-    2264.43,
+    8607.28,
+    2229.44,
     0.0
    ],
    "aabb_max": [
-    7291.93,
-    2291.24,
-    6.77
+    8687.07,
+    2305.1,
+    26.36
    ],
    "mi_slots": {},
    "extras": {},
-   "note": "weed at the base of the passage N wall (22 from the face)"
+   "note": "weed at the base of the passage N wall (33 from the face), scale 3.893"
   },
   {
    "id": "PSA_Weed_02",
@@ -21760,56 +21696,8 @@
    "group": "weed",
    "mesh": "/Game/LastBell/Environments/Props/CC0/WeedPlant02/SM_LB_CC0_WeedPlant02_03.SM_LB_CC0_WeedPlant02_03",
    "loc": [
-    6980.239,
-    1718.044,
-    0.0
-   ],
-   "rot": [
-    0.0,
-    210.4211,
-    0.0
-   ],
-   "scale": [
-    1.0,
-    1.0,
-    1.0
-   ],
-   "collision": "NoCollision",
-   "folder": "Courtyard/Passage",
-   "mbounds": [
-    [
-     -7.12,
-     -7.17,
-     0
-    ],
-    [
-     7.12,
-     7.17,
-     5.49
-    ]
-   ],
-   "aabb_min": [
-    6970.47,
-    1708.26,
-    0.0
-   ],
-   "aabb_max": [
-    6990.01,
-    1727.83,
-    5.49
-   ],
-   "mi_slots": {},
-   "extras": {},
-   "note": "weed at the base of the passage S wall (18 from the face)"
-  },
-  {
-   "id": "PSA_Weed_03",
-   "cat": "dress",
-   "group": "weed",
-   "mesh": "/Game/LastBell/Environments/Props/CC0/WeedPlant02/SM_LB_CC0_WeedPlant02_04.SM_LB_CC0_WeedPlant02_04",
-   "loc": [
-    8326.945,
-    2283.055,
+    8037.17,
+    1730.093,
     0.0
    ],
    "rot": [
@@ -21818,9 +21706,57 @@
     0.0
    ],
    "scale": [
-    1.0,
-    1.0,
-    1.0
+    3.677,
+    3.677,
+    3.677
+   ],
+   "collision": "NoCollision",
+   "folder": "Courtyard/Passage",
+   "mbounds": [
+    [
+     -7.12,
+     -7.17,
+     0
+    ],
+    [
+     7.12,
+     7.17,
+     5.49
+    ]
+   ],
+   "aabb_min": [
+    8001.08,
+    1694.07,
+    0.0
+   ],
+   "aabb_max": [
+    8073.26,
+    1766.12,
+    20.19
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "weed at the base of the passage S wall (30 from the face), scale 3.677"
+  },
+  {
+   "id": "PSA_Weed_03",
+   "cat": "dress",
+   "group": "weed",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/WeedPlant02/SM_LB_CC0_WeedPlant02_04.SM_LB_CC0_WeedPlant02_04",
+   "loc": [
+    6748.294,
+    2267.413,
+    0.0
+   ],
+   "rot": [
+    0.0,
+    150.1507,
+    0.0
+   ],
+   "scale": [
+    4.79,
+    4.79,
+    4.79
    ],
    "collision": "NoCollision",
    "folder": "Courtyard/Passage",
@@ -21837,18 +21773,18 @@
     ]
    ],
    "aabb_min": [
-    8318.34,
-    2273.67,
+    6703.41,
+    2226.58,
     0.0
    ],
    "aabb_max": [
-    8335.55,
-    2292.44,
-    3.89
+    6793.18,
+    2308.25,
+    18.63
    ],
    "mi_slots": {},
    "extras": {},
-   "note": "weed at the base of the passage N wall (17 from the face)"
+   "note": "weed at the base of the passage N wall (33 from the face), scale 4.79"
   },
   {
    "id": "PSA_Weed_04",
@@ -21856,19 +21792,19 @@
    "group": "weed",
    "mesh": "/Game/LastBell/Environments/Props/CC0/WeedPlant02/SM_LB_CC0_WeedPlant02_05.SM_LB_CC0_WeedPlant02_05",
    "loc": [
-    6748.294,
-    1722.713,
+    9385.79,
+    1729.52,
     0.0
    ],
    "rot": [
     0.0,
-    309.6077,
+    60.3921,
     0.0
    ],
    "scale": [
-    1.0,
-    1.0,
-    1.0
+    4.186,
+    4.186,
+    4.186
    ],
    "collision": "NoCollision",
    "folder": "Courtyard/Passage",
@@ -21885,18 +21821,18 @@
     ]
    ],
    "aabb_min": [
-    6742.14,
-    1716.18,
+    9362.36,
+    1701.52,
     0.0
    ],
    "aabb_max": [
-    6754.44,
-    1729.25,
-    4.01
+    9409.22,
+    1757.52,
+    16.79
    ],
    "mi_slots": {},
    "extras": {},
-   "note": "weed at the base of the passage S wall (23 from the face)"
+   "note": "weed at the base of the passage S wall (30 from the face), scale 4.186"
   },
   {
    "id": "PSA_Weed_05",
@@ -21904,104 +21840,8 @@
    "group": "weed",
    "mesh": "/Game/LastBell/Environments/Props/CC0/WeedPlant02/SM_LB_CC0_WeedPlant02_01.SM_LB_CC0_WeedPlant02_01",
    "loc": [
-    7488.04,
-    2276.035,
-    0.0
-   ],
-   "rot": [
-    0.0,
-    228.4888,
-    0.0
-   ],
-   "scale": [
-    1.0,
-    1.0,
-    1.0
-   ],
-   "collision": "NoCollision",
-   "folder": "Courtyard/Passage",
-   "mbounds": [
-    [
-     -10.97,
-     -14.55,
-     0
-    ],
-    [
-     10.97,
-     14.55,
-     7.25
-    ]
-   ],
-   "aabb_min": [
-    7469.87,
-    2258.18,
-    0.0
-   ],
-   "aabb_max": [
-    7506.21,
-    2293.89,
-    7.25
-   ],
-   "mi_slots": {},
-   "extras": {},
-   "note": "weed at the base of the passage N wall (24 from the face)"
-  },
-  {
-   "id": "PSA_Weed_06",
-   "cat": "dress",
-   "group": "weed",
-   "mesh": "/Game/LastBell/Environments/Props/CC0/WeedPlant02/SM_LB_CC0_WeedPlant02_02.SM_LB_CC0_WeedPlant02_02",
-   "loc": [
-    7619.156,
-    1717.342,
-    0.0
-   ],
-   "rot": [
-    0.0,
-    67.2331,
-    0.0
-   ],
-   "scale": [
-    1.0,
-    1.0,
-    1.0
-   ],
-   "collision": "NoCollision",
-   "folder": "Courtyard/Passage",
-   "mbounds": [
-    [
-     -9.38,
-     -9.93,
-     0
-    ],
-    [
-     9.38,
-     9.93,
-     6.77
-    ]
-   ],
-   "aabb_min": [
-    7606.37,
-    1704.85,
-    0.0
-   ],
-   "aabb_max": [
-    7631.94,
-    1729.83,
-    6.77
-   ],
-   "mi_slots": {},
-   "extras": {},
-   "note": "weed at the base of the passage S wall (17 from the face)"
-  },
-  {
-   "id": "PSA_Weed_07",
-   "cat": "dress",
-   "group": "weed",
-   "mesh": "/Game/LastBell/Environments/Props/CC0/WeedPlant02/SM_LB_CC0_WeedPlant02_03.SM_LB_CC0_WeedPlant02_03",
-   "loc": [
-    8185.709,
-    2279.329,
+    6732.568,
+    2270.553,
     0.0
    ],
    "rot": [
@@ -22010,153 +21850,9 @@
     0.0
    ],
    "scale": [
-    1.0,
-    1.0,
-    1.0
-   ],
-   "collision": "NoCollision",
-   "folder": "Courtyard/Passage",
-   "mbounds": [
-    [
-     -7.12,
-     -7.17,
-     0
-    ],
-    [
-     7.12,
-     7.17,
-     5.49
-    ]
-   ],
-   "aabb_min": [
-    8175.65,
-    2269.26,
-    0.0
-   ],
-   "aabb_max": [
-    8195.77,
-    2289.4,
-    5.49
-   ],
-   "mi_slots": {},
-   "extras": {},
-   "note": "weed at the base of the passage N wall (21 from the face)"
-  },
-  {
-   "id": "PSA_Weed_08",
-   "cat": "dress",
-   "group": "weed",
-   "mesh": "/Game/LastBell/Environments/Props/CC0/WeedPlant02/SM_LB_CC0_WeedPlant02_04.SM_LB_CC0_WeedPlant02_04",
-   "loc": [
-    8838.118,
-    1716.01,
-    0.0
-   ],
-   "rot": [
-    0.0,
-    135.0849,
-    0.0
-   ],
-   "scale": [
-    1.0,
-    1.0,
-    1.0
-   ],
-   "collision": "NoCollision",
-   "folder": "Courtyard/Passage",
-   "mbounds": [
-    [
-     -7.7,
-     -5.41,
-     0
-    ],
-    [
-     7.7,
-     5.41,
-     3.89
-    ]
-   ],
-   "aabb_min": [
-    8828.85,
-    1706.74,
-    0.0
-   ],
-   "aabb_max": [
-    8847.39,
-    1725.28,
-    3.89
-   ],
-   "mi_slots": {},
-   "extras": {},
-   "note": "weed at the base of the passage S wall (16 from the face)"
-  },
-  {
-   "id": "PSA_Weed_09",
-   "cat": "dress",
-   "group": "weed",
-   "mesh": "/Game/LastBell/Environments/Props/CC0/WeedPlant02/SM_LB_CC0_WeedPlant02_05.SM_LB_CC0_WeedPlant02_05",
-   "loc": [
-    6705.987,
-    2279.704,
-    0.0
-   ],
-   "rot": [
-    0.0,
-    23.2084,
-    0.0
-   ],
-   "scale": [
-    1.0,
-    1.0,
-    1.0
-   ],
-   "collision": "NoCollision",
-   "folder": "Courtyard/Passage",
-   "mbounds": [
-    [
-     -5.96,
-     -3.05,
-     0
-    ],
-    [
-     5.96,
-     3.05,
-     4.01
-    ]
-   ],
-   "aabb_min": [
-    6699.31,
-    2274.55,
-    0.0
-   ],
-   "aabb_max": [
-    6712.67,
-    2284.86,
-    4.01
-   ],
-   "mi_slots": {},
-   "extras": {},
-   "note": "weed at the base of the passage N wall (20 from the face)"
-  },
-  {
-   "id": "PSA_Weed_10",
-   "cat": "dress",
-   "group": "weed",
-   "mesh": "/Game/LastBell/Environments/Props/CC0/WeedPlant02/SM_LB_CC0_WeedPlant02_01.SM_LB_CC0_WeedPlant02_01",
-   "loc": [
-    8110.527,
-    1716.628,
-    0.0
-   ],
-   "rot": [
-    0.0,
-    54.3261,
-    0.0
-   ],
-   "scale": [
-    1.0,
-    1.0,
-    1.0
+    4.376,
+    4.376,
+    4.376
    ],
    "collision": "NoCollision",
    "folder": "Courtyard/Passage",
@@ -22173,27 +21869,123 @@
     ]
    ],
    "aabb_min": [
-    8092.31,
-    1699.23,
+    6654.89,
+    2190.92,
     0.0
    ],
    "aabb_max": [
-    8128.74,
-    1734.02,
-    7.25
+    6810.24,
+    2350.19,
+    31.73
    ],
    "mi_slots": {},
    "extras": {},
-   "note": "weed at the base of the passage S wall (17 from the face)"
+   "note": "weed at the base of the passage N wall (29 from the face), scale 4.376"
   },
   {
-   "id": "PSA_Weed_11",
+   "id": "PSA_Weed_06",
    "cat": "dress",
    "group": "weed",
    "mesh": "/Game/LastBell/Environments/Props/CC0/WeedPlant02/SM_LB_CC0_WeedPlant02_02.SM_LB_CC0_WeedPlant02_02",
    "loc": [
-    7429.903,
-    2277.035,
+    8838.118,
+    1720.018,
+    0.0
+   ],
+   "rot": [
+    0.0,
+    64.3156,
+    0.0
+   ],
+   "scale": [
+    4.063,
+    4.063,
+    4.063
+   ],
+   "collision": "NoCollision",
+   "folder": "Courtyard/Passage",
+   "mbounds": [
+    [
+     -9.38,
+     -9.93,
+     0
+    ],
+    [
+     9.38,
+     9.93,
+     6.77
+    ]
+   ],
+   "aabb_min": [
+    8785.24,
+    1668.19,
+    0.0
+   ],
+   "aabb_max": [
+    8891.0,
+    1771.85,
+    27.51
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "weed at the base of the passage S wall (20 from the face), scale 4.063"
+  },
+  {
+   "id": "PSA_Weed_07",
+   "cat": "dress",
+   "group": "weed",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/WeedPlant02/SM_LB_CC0_WeedPlant02_03.SM_LB_CC0_WeedPlant02_03",
+   "loc": [
+    7881.414,
+    2279.033,
+    0.0
+   ],
+   "rot": [
+    0.0,
+    28.2768,
+    0.0
+   ],
+   "scale": [
+    4.41,
+    4.41,
+    4.41
+   ],
+   "collision": "NoCollision",
+   "folder": "Courtyard/Passage",
+   "mbounds": [
+    [
+     -7.12,
+     -7.17,
+     0
+    ],
+    [
+     7.12,
+     7.17,
+     5.49
+    ]
+   ],
+   "aabb_min": [
+    7838.78,
+    2236.31,
+    0.0
+   ],
+   "aabb_max": [
+    7924.05,
+    2321.75,
+    24.21
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "weed at the base of the passage N wall (21 from the face), scale 4.41"
+  },
+  {
+   "id": "PSA_Weed_08",
+   "cat": "dress",
+   "group": "weed",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/WeedPlant02/SM_LB_CC0_WeedPlant02_04.SM_LB_CC0_WeedPlant02_04",
+   "loc": [
+    6614.971,
+    1725.99,
     0.0
    ],
    "rot": [
@@ -22202,105 +21994,9 @@
     0.0
    ],
    "scale": [
-    1.0,
-    1.0,
-    1.0
-   ],
-   "collision": "NoCollision",
-   "folder": "Courtyard/Passage",
-   "mbounds": [
-    [
-     -9.38,
-     -9.93,
-     0
-    ],
-    [
-     9.38,
-     9.93,
-     6.77
-    ]
-   ],
-   "aabb_min": [
-    7417.39,
-    2264.23,
-    0.0
-   ],
-   "aabb_max": [
-    7442.42,
-    2289.84,
-    6.77
-   ],
-   "mi_slots": {},
-   "extras": {},
-   "note": "weed at the base of the passage N wall (23 from the face)"
-  },
-  {
-   "id": "PSA_Weed_12",
-   "cat": "dress",
-   "group": "weed",
-   "mesh": "/Game/LastBell/Environments/Props/CC0/WeedPlant02/SM_LB_CC0_WeedPlant02_03.SM_LB_CC0_WeedPlant02_03",
-   "loc": [
-    7365.545,
-    1718.738,
-    0.0
-   ],
-   "rot": [
-    0.0,
-    247.6887,
-    0.0
-   ],
-   "scale": [
-    1.0,
-    1.0,
-    1.0
-   ],
-   "collision": "NoCollision",
-   "folder": "Courtyard/Passage",
-   "mbounds": [
-    [
-     -7.12,
-     -7.17,
-     0
-    ],
-    [
-     7.12,
-     7.17,
-     5.49
-    ]
-   ],
-   "aabb_min": [
-    7356.21,
-    1709.43,
-    0.0
-   ],
-   "aabb_max": [
-    7374.88,
-    1728.05,
-    5.49
-   ],
-   "mi_slots": {},
-   "extras": {},
-   "note": "weed at the base of the passage S wall (19 from the face)"
-  },
-  {
-   "id": "PSA_Weed_13",
-   "cat": "dress",
-   "group": "weed",
-   "mesh": "/Game/LastBell/Environments/Props/CC0/WeedPlant02/SM_LB_CC0_WeedPlant02_04.SM_LB_CC0_WeedPlant02_04",
-   "loc": [
-    6573.002,
-    2278.296,
-    0.0
-   ],
-   "rot": [
-    0.0,
-    356.524,
-    0.0
-   ],
-   "scale": [
-    1.0,
-    1.0,
-    1.0
+    4.806,
+    4.806,
+    4.806
    ],
    "collision": "NoCollision",
    "folder": "Courtyard/Passage",
@@ -22317,38 +22013,38 @@
     ]
    ],
    "aabb_min": [
-    6564.99,
-    2272.43,
+    6570.74,
+    1687.58,
     0.0
    ],
    "aabb_max": [
-    6581.02,
-    2284.16,
-    3.89
+    6659.2,
+    1764.4,
+    18.7
    ],
    "mi_slots": {},
    "extras": {},
-   "note": "weed at the base of the passage N wall (22 from the face)"
+   "note": "weed at the base of the passage S wall (26 from the face), scale 4.806"
   },
   {
-   "id": "PSA_Weed_14",
+   "id": "PSA_Weed_09",
    "cat": "dress",
    "group": "weed",
    "mesh": "/Game/LastBell/Environments/Props/CC0/WeedPlant02/SM_LB_CC0_WeedPlant02_05.SM_LB_CC0_WeedPlant02_05",
    "loc": [
-    6128.425,
-    1716.139,
+    7365.545,
+    2274.867,
     0.0
    ],
    "rot": [
     0.0,
-    208.181,
+    49.7197,
     0.0
    ],
    "scale": [
-    1.0,
-    1.0,
-    1.0
+    4.532,
+    4.532,
+    4.532
    ],
    "collision": "NoCollision",
    "folder": "Courtyard/Passage",
@@ -22365,38 +22061,38 @@
     ]
    ],
    "aabb_min": [
-    6121.73,
-    1710.64,
+    7337.54,
+    2245.32,
     0.0
    ],
    "aabb_max": [
-    6135.12,
-    1721.64,
-    4.01
+    7393.55,
+    2304.41,
+    18.17
    ],
    "mi_slots": {},
    "extras": {},
-   "note": "weed at the base of the passage S wall (16 from the face)"
+   "note": "weed at the base of the passage N wall (25 from the face), scale 4.532"
   },
   {
-   "id": "PSA_Weed_15",
+   "id": "PSA_Weed_10",
    "cat": "dress",
    "group": "weed",
    "mesh": "/Game/LastBell/Environments/Props/CC0/WeedPlant02/SM_LB_CC0_WeedPlant02_01.SM_LB_CC0_WeedPlant02_01",
    "loc": [
-    8520.308,
-    2278.6,
+    8458.454,
+    1734.855,
     0.0
    ],
    "rot": [
     0.0,
-    282.4441,
+    6.2378,
     0.0
    ],
    "scale": [
-    1.0,
-    1.0,
-    1.0
+    3.504,
+    3.504,
+    3.504
    ],
    "collision": "NoCollision",
    "folder": "Courtyard/Passage",
@@ -22413,38 +22109,38 @@
     ]
    ],
    "aabb_min": [
-    8503.74,
-    2264.75,
+    8414.7,
+    1680.0,
     0.0
    ],
    "aabb_max": [
-    8536.88,
-    2292.45,
-    7.25
+    8502.2,
+    1789.71,
+    25.4
    ],
    "mi_slots": {},
    "extras": {},
-   "note": "weed at the base of the passage N wall (21 from the face)"
+   "note": "weed at the base of the passage S wall (35 from the face), scale 3.504"
   },
   {
-   "id": "PSA_Weed_16",
+   "id": "PSA_Weed_11",
    "cat": "dress",
    "group": "weed",
    "mesh": "/Game/LastBell/Environments/Props/CC0/WeedPlant02/SM_LB_CC0_WeedPlant02_02.SM_LB_CC0_WeedPlant02_02",
    "loc": [
-    7750.704,
-    1723.517,
+    8016.76,
+    2269.023,
     0.0
    ],
    "rot": [
     0.0,
-    258.0431,
+    282.4441,
     0.0
    ],
    "scale": [
-    1.0,
-    1.0,
-    1.0
+    4.512,
+    4.512,
+    4.512
    ],
    "collision": "NoCollision",
    "folder": "Courtyard/Passage",
@@ -22461,38 +22157,38 @@
     ]
    ],
    "aabb_min": [
-    7739.05,
-    1712.28,
+    7963.89,
+    2218.04,
     0.0
    ],
    "aabb_max": [
-    7762.36,
-    1734.75,
-    6.77
+    8069.63,
+    2320.01,
+    30.55
    ],
    "mi_slots": {},
    "extras": {},
-   "note": "weed at the base of the passage S wall (24 from the face)"
+   "note": "weed at the base of the passage N wall (31 from the face), scale 4.512"
   },
   {
-   "id": "PSA_Weed_17",
+   "id": "PSA_Weed_12",
    "cat": "dress",
    "group": "weed",
    "mesh": "/Game/LastBell/Environments/Props/CC0/WeedPlant02/SM_LB_CC0_WeedPlant02_03.SM_LB_CC0_WeedPlant02_03",
    "loc": [
-    7458.387,
-    2278.455,
+    7750.704,
+    1734.094,
     0.0
    ],
    "rot": [
     0.0,
-    158.7722,
+    146.8961,
     0.0
    ],
    "scale": [
-    1.0,
-    1.0,
-    1.0
+    4.575,
+    4.575,
+    4.575
    ],
    "collision": "NoCollision",
    "folder": "Courtyard/Passage",
@@ -22509,38 +22205,38 @@
     ]
    ],
    "aabb_min": [
-    7449.15,
-    2269.19,
+    7705.5,
+    1688.83,
     0.0
    ],
    "aabb_max": [
-    7467.62,
-    2287.72,
-    5.49
+    7795.91,
+    1779.36,
+    25.12
    ],
    "mi_slots": {},
    "extras": {},
-   "note": "weed at the base of the passage N wall (22 from the face)"
+   "note": "weed at the base of the passage S wall (34 from the face), scale 4.575"
   },
   {
-   "id": "PSA_Weed_18",
+   "id": "PSA_Weed_13",
    "cat": "dress",
    "group": "weed",
    "mesh": "/Game/LastBell/Environments/Props/CC0/WeedPlant02/SM_LB_CC0_WeedPlant02_04.SM_LB_CC0_WeedPlant02_04",
    "loc": [
-    7518.733,
-    1719.166,
+    8393.616,
+    2273.384,
     0.0
    ],
    "rot": [
     0.0,
-    324.5128,
+    142.4687,
     0.0
    ],
    "scale": [
-    1.0,
-    1.0,
-    1.0
+    4.14,
+    4.14,
+    4.14
    ],
    "collision": "NoCollision",
    "folder": "Courtyard/Passage",
@@ -22557,27 +22253,27 @@
     ]
    ],
    "aabb_min": [
-    7509.32,
-    1710.29,
+    8354.69,
+    2236.2,
     0.0
    ],
    "aabb_max": [
-    7528.14,
-    1728.04,
-    3.89
+    8432.54,
+    2310.57,
+    16.1
    ],
    "mi_slots": {},
    "extras": {},
-   "note": "weed at the base of the passage S wall (19 from the face)"
+   "note": "weed at the base of the passage N wall (27 from the face), scale 4.14"
   },
   {
-   "id": "PSA_Weed_19",
+   "id": "PSA_Weed_14",
    "cat": "dress",
    "group": "weed",
    "mesh": "/Game/LastBell/Environments/Props/CC0/WeedPlant02/SM_LB_CC0_WeedPlant02_05.SM_LB_CC0_WeedPlant02_05",
    "loc": [
-    7484.432,
-    2277.021,
+    9076.672,
+    1726.24,
     0.0
    ],
    "rot": [
@@ -22586,9 +22282,9 @@
     0.0
    ],
    "scale": [
-    1.0,
-    1.0,
-    1.0
+    4.809,
+    4.809,
+    4.809
    ],
    "collision": "NoCollision",
    "folder": "Courtyard/Passage",
@@ -22605,18 +22301,834 @@
     ]
    ],
    "aabb_min": [
-    7480.18,
-    2270.55,
+    9056.2,
+    1695.1,
     0.0
    ],
    "aabb_max": [
-    7488.69,
-    2283.5,
-    4.01
+    9097.14,
+    1757.38,
+    19.28
    ],
    "mi_slots": {},
    "extras": {},
-   "note": "weed at the base of the passage N wall (23 from the face)"
+   "note": "weed at the base of the passage S wall (26 from the face), scale 4.809"
+  },
+  {
+   "id": "PSA_Weed_15",
+   "cat": "dress",
+   "group": "weed",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/WeedPlant02/SM_LB_CC0_WeedPlant02_01.SM_LB_CC0_WeedPlant02_01",
+   "loc": [
+    6882.735,
+    2274.082,
+    0.0
+   ],
+   "rot": [
+    0.0,
+    47.0997,
+    0.0
+   ],
+   "scale": [
+    3.857,
+    3.857,
+    3.857
+   ],
+   "collision": "NoCollision",
+   "folder": "Courtyard/Passage",
+   "mbounds": [
+    [
+     -10.97,
+     -14.55,
+     0
+    ],
+    [
+     10.97,
+     14.55,
+     7.25
+    ]
+   ],
+   "aabb_min": [
+    6812.82,
+    2204.89,
+    0.0
+   ],
+   "aabb_max": [
+    6952.65,
+    2343.28,
+    27.96
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "weed at the base of the passage N wall (26 from the face), scale 3.857"
+  },
+  {
+   "id": "PSA_Weed_16",
+   "cat": "dress",
+   "group": "weed",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/WeedPlant02/SM_LB_CC0_WeedPlant02_02.SM_LB_CC0_WeedPlant02_02",
+   "loc": [
+    7928.211,
+    1721.358,
+    0.0
+   ],
+   "rot": [
+    0.0,
+    357.2863,
+    0.0
+   ],
+   "scale": [
+    3.654,
+    3.654,
+    3.654
+   ],
+   "collision": "NoCollision",
+   "folder": "Courtyard/Passage",
+   "mbounds": [
+    [
+     -9.38,
+     -9.93,
+     0
+    ],
+    [
+     9.38,
+     9.93,
+     6.77
+    ]
+   ],
+   "aabb_min": [
+    7892.26,
+    1683.49,
+    0.0
+   ],
+   "aabb_max": [
+    7964.17,
+    1759.22,
+    24.74
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "weed at the base of the passage S wall (21 from the face), scale 3.654"
+  },
+  {
+   "id": "PSA_Weed_17",
+   "cat": "dress",
+   "group": "weed",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/WeedPlant02/SM_LB_CC0_WeedPlant02_03.SM_LB_CC0_WeedPlant02_03",
+   "loc": [
+    9295.777,
+    2269.626,
+    0.0
+   ],
+   "rot": [
+    0.0,
+    352.5516,
+    0.0
+   ],
+   "scale": [
+    4.588,
+    4.588,
+    4.588
+   ],
+   "collision": "NoCollision",
+   "folder": "Courtyard/Passage",
+   "mbounds": [
+    [
+     -7.12,
+     -7.17,
+     0
+    ],
+    [
+     7.12,
+     7.17,
+     5.49
+    ]
+   ],
+   "aabb_min": [
+    9259.12,
+    2232.77,
+    0.0
+   ],
+   "aabb_max": [
+    9332.43,
+    2306.48,
+    25.19
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "weed at the base of the passage N wall (30 from the face), scale 4.588"
+  },
+  {
+   "id": "PSA_Weed_18",
+   "cat": "dress",
+   "group": "weed",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/WeedPlant02/SM_LB_CC0_WeedPlant02_04.SM_LB_CC0_WeedPlant02_04",
+   "loc": [
+    6348.985,
+    1730.072,
+    0.0
+   ],
+   "rot": [
+    0.0,
+    160.3434,
+    0.0
+   ],
+   "scale": [
+    4.837,
+    4.837,
+    4.837
+   ],
+   "collision": "NoCollision",
+   "folder": "Courtyard/Passage",
+   "mbounds": [
+    [
+     -7.7,
+     -5.41,
+     0
+    ],
+    [
+     7.7,
+     5.41,
+     3.89
+    ]
+   ],
+   "aabb_min": [
+    6305.11,
+    1692.9,
+    0.0
+   ],
+   "aabb_max": [
+    6392.86,
+    1767.24,
+    18.82
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "weed at the base of the passage S wall (30 from the face), scale 4.837"
+  },
+  {
+   "id": "PSA_Weed_19",
+   "cat": "dress",
+   "group": "weed",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/WeedPlant02/SM_LB_CC0_WeedPlant02_05.SM_LB_CC0_WeedPlant02_05",
+   "loc": [
+    6129.145,
+    2270.187,
+    0.0
+   ],
+   "rot": [
+    0.0,
+    117.6773,
+    0.0
+   ],
+   "scale": [
+    4.911,
+    4.911,
+    4.911
+   ],
+   "collision": "NoCollision",
+   "folder": "Courtyard/Passage",
+   "mbounds": [
+    [
+     -5.96,
+     -3.05,
+     0
+    ],
+    [
+     5.96,
+     3.05,
+     4.01
+    ]
+   ],
+   "aabb_min": [
+    6102.28,
+    2237.31,
+    0.0
+   ],
+   "aabb_max": [
+    6156.0,
+    2303.07,
+    19.69
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "weed at the base of the passage N wall (30 from the face), scale 4.911"
+  },
+  {
+   "id": "PSA_Weed_20",
+   "cat": "dress",
+   "group": "weed",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/WeedPlant02/SM_LB_CC0_WeedPlant02_01.SM_LB_CC0_WeedPlant02_01",
+   "loc": [
+    7169.026,
+    1732.782,
+    0.0
+   ],
+   "rot": [
+    0.0,
+    200.6615,
+    0.0
+   ],
+   "scale": [
+    4.281,
+    4.281,
+    4.281
+   ],
+   "collision": "NoCollision",
+   "folder": "Courtyard/Passage",
+   "mbounds": [
+    [
+     -10.97,
+     -14.55,
+     0
+    ],
+    [
+     10.97,
+     14.55,
+     7.25
+    ]
+   ],
+   "aabb_min": [
+    7103.11,
+    1657.93,
+    0.0
+   ],
+   "aabb_max": [
+    7234.95,
+    1807.63,
+    31.04
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "weed at the base of the passage S wall (33 from the face), scale 4.281"
+  },
+  {
+   "id": "PSA_Weed_21",
+   "cat": "dress",
+   "group": "weed",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/WeedPlant02/SM_LB_CC0_WeedPlant02_02.SM_LB_CC0_WeedPlant02_02",
+   "loc": [
+    8507.1,
+    2270.436,
+    0.0
+   ],
+   "rot": [
+    0.0,
+    311.4313,
+    0.0
+   ],
+   "scale": [
+    4.914,
+    4.914,
+    4.914
+   ],
+   "collision": "NoCollision",
+   "folder": "Courtyard/Passage",
+   "mbounds": [
+    [
+     -9.38,
+     -9.93,
+     0
+    ],
+    [
+     9.38,
+     9.93,
+     6.77
+    ]
+   ],
+   "aabb_min": [
+    8440.01,
+    2203.59,
+    0.0
+   ],
+   "aabb_max": [
+    8574.19,
+    2337.28,
+    33.27
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "weed at the base of the passage N wall (30 from the face), scale 4.914"
+  },
+  {
+   "id": "PSA_Weed_22",
+   "cat": "dress",
+   "group": "weed",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/WeedPlant02/SM_LB_CC0_WeedPlant02_03.SM_LB_CC0_WeedPlant02_03",
+   "loc": [
+    8457.2,
+    1720.698,
+    0.0
+   ],
+   "rot": [
+    0.0,
+    162.7469,
+    0.0
+   ],
+   "scale": [
+    4.435,
+    4.435,
+    4.435
+   ],
+   "collision": "NoCollision",
+   "folder": "Courtyard/Passage",
+   "mbounds": [
+    [
+     -7.12,
+     -7.17,
+     0
+    ],
+    [
+     7.12,
+     7.17,
+     5.49
+    ]
+   ],
+   "aabb_min": [
+    8417.61,
+    1680.96,
+    0.0
+   ],
+   "aabb_max": [
+    8496.79,
+    1760.43,
+    24.35
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "weed at the base of the passage S wall (21 from the face), scale 4.435"
+  },
+  {
+   "id": "PSA_Weed_23",
+   "cat": "dress",
+   "group": "weed",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/WeedPlant02/SM_LB_CC0_WeedPlant02_04.SM_LB_CC0_WeedPlant02_04",
+   "loc": [
+    8870.65,
+    2274.034,
+    0.0
+   ],
+   "rot": [
+    0.0,
+    111.0182,
+    0.0
+   ],
+   "scale": [
+    3.636,
+    3.636,
+    3.636
+   ],
+   "collision": "NoCollision",
+   "folder": "Courtyard/Passage",
+   "mbounds": [
+    [
+     -7.7,
+     -5.41,
+     0
+    ],
+    [
+     7.7,
+     5.41,
+     3.89
+    ]
+   ],
+   "aabb_min": [
+    8842.25,
+    2240.84,
+    0.0
+   ],
+   "aabb_max": [
+    8899.05,
+    2307.22,
+    14.14
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "weed at the base of the passage N wall (26 from the face), scale 3.636"
+  },
+  {
+   "id": "PSA_Weed_24",
+   "cat": "dress",
+   "group": "weed",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/WeedPlant02/SM_LB_CC0_WeedPlant02_05.SM_LB_CC0_WeedPlant02_05",
+   "loc": [
+    7259.774,
+    1724.548,
+    0.0
+   ],
+   "rot": [
+    0.0,
+    351.6245,
+    0.0
+   ],
+   "scale": [
+    3.653,
+    3.653,
+    3.653
+   ],
+   "collision": "NoCollision",
+   "folder": "Courtyard/Passage",
+   "mbounds": [
+    [
+     -5.96,
+     -3.05,
+     0
+    ],
+    [
+     5.96,
+     3.05,
+     4.01
+    ]
+   ],
+   "aabb_min": [
+    7236.61,
+    1710.35,
+    0.0
+   ],
+   "aabb_max": [
+    7282.94,
+    1738.74,
+    14.65
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "weed at the base of the passage S wall (25 from the face), scale 3.653"
+  },
+  {
+   "id": "PSA_Weed_25",
+   "cat": "dress",
+   "group": "weed",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/WeedPlant02/SM_LB_CC0_WeedPlant02_01.SM_LB_CC0_WeedPlant02_01",
+   "loc": [
+    9080.261,
+    2275.267,
+    0.0
+   ],
+   "rot": [
+    0.0,
+    210.1752,
+    0.0
+   ],
+   "scale": [
+    3.704,
+    3.704,
+    3.704
+   ],
+   "collision": "NoCollision",
+   "folder": "Courtyard/Passage",
+   "mbounds": [
+    [
+     -10.97,
+     -14.55,
+     0
+    ],
+    [
+     10.97,
+     14.55,
+     7.25
+    ]
+   ],
+   "aabb_min": [
+    9018.04,
+    2208.25,
+    0.0
+   ],
+   "aabb_max": [
+    9142.48,
+    2342.28,
+    26.85
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "weed at the base of the passage N wall (25 from the face), scale 3.704"
+  },
+  {
+   "id": "PSA_Weed_26",
+   "cat": "dress",
+   "group": "weed",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/WeedPlant02/SM_LB_CC0_WeedPlant02_02.SM_LB_CC0_WeedPlant02_02",
+   "loc": [
+    6984.482,
+    1734.507,
+    0.0
+   ],
+   "rot": [
+    0.0,
+    172.4617,
+    0.0
+   ],
+   "scale": [
+    4.896,
+    4.896,
+    4.896
+   ],
+   "collision": "NoCollision",
+   "folder": "Courtyard/Passage",
+   "mbounds": [
+    [
+     -9.38,
+     -9.93,
+     0
+    ],
+    [
+     9.38,
+     9.93,
+     6.77
+    ]
+   ],
+   "aabb_min": [
+    6932.58,
+    1680.28,
+    0.0
+   ],
+   "aabb_max": [
+    7036.39,
+    1788.73,
+    33.15
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "weed at the base of the passage S wall (35 from the face), scale 4.896"
+  },
+  {
+   "id": "PSA_Weed_27",
+   "cat": "dress",
+   "group": "weed",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/WeedPlant02/SM_LB_CC0_WeedPlant02_03.SM_LB_CC0_WeedPlant02_03",
+   "loc": [
+    6379.029,
+    2274.992,
+    0.0
+   ],
+   "rot": [
+    0.0,
+    51.5281,
+    0.0
+   ],
+   "scale": [
+    4.058,
+    4.058,
+    4.058
+   ],
+   "collision": "NoCollision",
+   "folder": "Courtyard/Passage",
+   "mbounds": [
+    [
+     -7.12,
+     -7.17,
+     0
+    ],
+    [
+     7.12,
+     7.17,
+     5.49
+    ]
+   ],
+   "aabb_min": [
+    6338.27,
+    2234.27,
+    0.0
+   ],
+   "aabb_max": [
+    6419.78,
+    2315.71,
+    22.28
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "weed at the base of the passage N wall (25 from the face), scale 4.058"
+  },
+  {
+   "id": "PSA_Weed_28",
+   "cat": "dress",
+   "group": "weed",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/WeedPlant02/SM_LB_CC0_WeedPlant02_04.SM_LB_CC0_WeedPlant02_04",
+   "loc": [
+    9002.501,
+    1734.59,
+    0.0
+   ],
+   "rot": [
+    0.0,
+    231.6845,
+    0.0
+   ],
+   "scale": [
+    4.039,
+    4.039,
+    4.039
+   ],
+   "collision": "NoCollision",
+   "folder": "Courtyard/Passage",
+   "mbounds": [
+    [
+     -7.7,
+     -5.41,
+     0
+    ],
+    [
+     7.7,
+     5.41,
+     3.89
+    ]
+   ],
+   "aabb_min": [
+    8966.07,
+    1696.64,
+    0.0
+   ],
+   "aabb_max": [
+    9038.93,
+    1772.54,
+    15.71
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "weed at the base of the passage S wall (35 from the face), scale 4.039"
+  },
+  {
+   "id": "PSA_Weed_29",
+   "cat": "dress",
+   "group": "weed",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/WeedPlant02/SM_LB_CC0_WeedPlant02_05.SM_LB_CC0_WeedPlant02_05",
+   "loc": [
+    8773.991,
+    2271.927,
+    0.0
+   ],
+   "rot": [
+    0.0,
+    249.7456,
+    0.0
+   ],
+   "scale": [
+    3.712,
+    3.712,
+    3.712
+   ],
+   "collision": "NoCollision",
+   "folder": "Courtyard/Passage",
+   "mbounds": [
+    [
+     -5.96,
+     -3.05,
+     0
+    ],
+    [
+     5.96,
+     3.05,
+     4.01
+    ]
+   ],
+   "aabb_min": [
+    8755.71,
+    2247.25,
+    0.0
+   ],
+   "aabb_max": [
+    8792.27,
+    2296.6,
+    14.89
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "weed at the base of the passage N wall (28 from the face), scale 3.712"
+  },
+  {
+   "id": "PSA_Weed_30",
+   "cat": "dress",
+   "group": "weed",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/WeedPlant02/SM_LB_CC0_WeedPlant02_01.SM_LB_CC0_WeedPlant02_01",
+   "loc": [
+    8029.757,
+    1726.004,
+    0.0
+   ],
+   "rot": [
+    0.0,
+    115.346,
+    0.0
+   ],
+   "scale": [
+    4.843,
+    4.843,
+    4.843
+   ],
+   "collision": "NoCollision",
+   "folder": "Courtyard/Passage",
+   "mbounds": [
+    [
+     -10.97,
+     -14.55,
+     0
+    ],
+    [
+     10.97,
+     14.55,
+     7.25
+    ]
+   ],
+   "aabb_min": [
+    7943.33,
+    1647.83,
+    0.0
+   ],
+   "aabb_max": [
+    8116.18,
+    1804.18,
+    35.11
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "weed at the base of the passage S wall (26 from the face), scale 4.843"
+  },
+  {
+   "id": "PSA_Weed_31",
+   "cat": "dress",
+   "group": "weed",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/WeedPlant02/SM_LB_CC0_WeedPlant02_02.SM_LB_CC0_WeedPlant02_02",
+   "loc": [
+    8261.413,
+    2272.393,
+    0.0
+   ],
+   "rot": [
+    0.0,
+    80.0277,
+    0.0
+   ],
+   "scale": [
+    3.695,
+    3.695,
+    3.695
+   ],
+   "collision": "NoCollision",
+   "folder": "Courtyard/Passage",
+   "mbounds": [
+    [
+     -9.38,
+     -9.93,
+     0
+    ],
+    [
+     9.38,
+     9.93,
+     6.77
+    ]
+   ],
+   "aabb_min": [
+    8219.27,
+    2231.9,
+    0.0
+   ],
+   "aabb_max": [
+    8303.55,
+    2312.88,
+    25.02
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "weed at the base of the passage N wall (28 from the face), scale 3.695"
   },
   {
    "id": "CLA_GarthGrass_00",
@@ -22624,49 +23136,47 @@
    "group": "garthveg",
    "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_01.SM_LB_CC0_GrassMedium02_01",
    "loc": [
-    10357.099,
-    1742.504,
-    102.889
+    11091.485,
+    1446.599,
+    102.122
    ],
    "rot": [
     0.0,
-    133.7489,
+    207.9886,
     0.0
    ],
    "scale": [
-    1.0,
-    1.0,
-    1.0
+    0.967,
+    0.967,
+    0.967
    ],
    "collision": "NoCollision",
    "folder": "Cloister/Dressing/Garth",
    "mbounds": [
     [
-     -25.0,
-     -25.0,
+     -6.0,
+     -6.0,
      0.0
     ],
     [
-     25.0,
-     25.0,
-     35.0
+     6.0,
+     6.0,
+     15.7
     ]
    ],
    "aabb_min": [
-    10321.75,
-    1707.16,
-    102.89
+    11083.64,
+    1438.75,
+    102.12
    ],
    "aabb_max": [
-    10392.45,
-    1777.85,
-    137.89
+    11099.33,
+    1454.45,
+    117.3
    ],
    "mi_slots": {},
-   "extras": {
-    "mbounds_estimated": true
-   },
-   "note": "garth vegetation (seed 1224)"
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 0.967"
   },
   {
    "id": "CLA_GarthGrass_01",
@@ -22684,39 +23194,37 @@
     0.0
    ],
    "scale": [
-    1.0,
-    1.0,
-    1.0
+    0.917,
+    0.917,
+    0.917
    ],
    "collision": "NoCollision",
    "folder": "Cloister/Dressing/Garth",
    "mbounds": [
     [
-     -25.0,
-     -25.0,
+     -13.1,
+     -12.5,
      0.0
     ],
     [
-     25.0,
-     25.0,
-     35.0
+     13.1,
+     12.5,
+     23.2
     ]
    ],
    "aabb_min": [
-    11015.23,
-    1412.15,
+    11033.96,
+    1430.9,
     103.23
    ],
    "aabb_max": [
-    11085.9,
-    1482.82,
-    138.23
+    11067.17,
+    1464.06,
+    124.5
    ],
    "mi_slots": {},
-   "extras": {
-    "mbounds_estimated": true
-   },
-   "note": "garth vegetation (seed 1224)"
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 0.917"
   },
   {
    "id": "CLA_GarthGrass_02",
@@ -22724,205 +23232,341 @@
    "group": "garthveg",
    "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_04.SM_LB_CC0_GrassMedium02_04",
    "loc": [
-    11269.397,
-    1812.609,
-    101.377
+    10481.806,
+    1514.721,
+    103.889
    ],
    "rot": [
     0.0,
-    294.0352,
+    322.4368,
     0.0
    ],
    "scale": [
-    1.0,
-    1.0,
-    1.0
+    0.944,
+    0.944,
+    0.944
    ],
    "collision": "NoCollision",
    "folder": "Cloister/Dressing/Garth",
    "mbounds": [
     [
-     -25.0,
-     -25.0,
+     -15.9,
+     -18.1,
      0.0
     ],
     [
-     25.0,
-     25.0,
-     35.0
+     15.9,
+     18.1,
+     26.0
     ]
    ],
    "aabb_min": [
-    11236.38,
-    1779.59,
-    101.38
+    10459.49,
+    1492.03,
+    103.89
    ],
    "aabb_max": [
-    11302.41,
-    1845.62,
-    136.38
+    10504.12,
+    1537.42,
+    128.43
    ],
    "mi_slots": {},
-   "extras": {
-    "mbounds_estimated": true
-   },
-   "note": "garth vegetation (seed 1224)"
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 0.944"
   },
   {
    "id": "CLA_GarthGrass_03",
    "cat": "dress",
    "group": "garthveg",
-   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_01.SM_LB_CC0_GrassMedium02_01",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_05.SM_LB_CC0_GrassMedium02_05",
    "loc": [
-    10757.772,
-    1957.887,
-    101.951
+    10451.054,
+    1444.678,
+    101.803
    ],
    "rot": [
     0.0,
-    244.7875,
+    21.3792,
     0.0
    ],
    "scale": [
-    1.0,
-    1.0,
-    1.0
+    1.102,
+    1.102,
+    1.102
    ],
    "collision": "NoCollision",
    "folder": "Cloister/Dressing/Garth",
    "mbounds": [
     [
-     -25.0,
-     -25.0,
+     -17.8,
+     -21.7,
      0.0
     ],
     [
-     25.0,
-     25.0,
-     35.0
+     17.8,
+     21.7,
+     40.3
     ]
    ],
    "aabb_min": [
-    10724.5,
-    1924.62,
-    101.95
+    10424.07,
+    1415.26,
+    101.8
    ],
    "aabb_max": [
-    10791.04,
-    1991.15,
-    136.95
+    10478.04,
+    1474.1,
+    146.21
    ],
    "mi_slots": {},
-   "extras": {
-    "mbounds_estimated": true
-   },
-   "note": "garth vegetation (seed 1224)"
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.102"
   },
   {
    "id": "CLA_GarthGrass_04",
    "cat": "dress",
    "group": "garthveg",
-   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_02.SM_LB_CC0_GrassMedium02_02",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_04.SM_LB_CC0_GrassMedium02_04",
    "loc": [
-    11174.004,
-    1768.093,
-    101.888
+    11310.157,
+    1873.989,
+    102.399
    ],
    "rot": [
     0.0,
-    59.1811,
+    188.8181,
     0.0
    ],
    "scale": [
-    1.0,
-    1.0,
-    1.0
+    0.929,
+    0.929,
+    0.929
    ],
    "collision": "NoCollision",
    "folder": "Cloister/Dressing/Garth",
    "mbounds": [
     [
-     -25.0,
-     -25.0,
+     -15.9,
+     -18.1,
      0.0
     ],
     [
-     25.0,
-     25.0,
-     35.0
+     15.9,
+     18.1,
+     26.0
     ]
    ],
    "aabb_min": [
-    11139.73,
-    1733.82,
-    101.89
+    11292.98,
+    1855.11,
+    102.4
    ],
    "aabb_max": [
-    11208.28,
-    1802.37,
-    136.89
+    11327.33,
+    1892.87,
+    126.55
    ],
    "mi_slots": {},
-   "extras": {
-    "mbounds_estimated": true
-   },
-   "note": "garth vegetation (seed 1224)"
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 0.929"
   },
   {
    "id": "CLA_GarthGrass_05",
    "cat": "dress",
    "group": "garthveg",
-   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_04.SM_LB_CC0_GrassMedium02_04",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_03.SM_LB_CC0_GrassMedium02_03",
    "loc": [
-    11159.749,
-    1778.072,
-    101.171
+    10619.017,
+    1513.972,
+    100.499
    ],
    "rot": [
     0.0,
-    92.8049,
+    305.8727,
     0.0
    ],
    "scale": [
-    1.0,
-    1.0,
-    1.0
+    1.274,
+    1.274,
+    1.274
    ],
    "collision": "NoCollision",
    "folder": "Cloister/Dressing/Garth",
    "mbounds": [
     [
-     -25.0,
-     -25.0,
+     -13.1,
+     -12.5,
      0.0
     ],
     [
-     25.0,
-     25.0,
-     35.0
+     13.1,
+     12.5,
+     23.2
     ]
    ],
    "aabb_min": [
-    11133.56,
-    1751.88,
-    101.17
+    10596.33,
+    1491.12,
+    100.5
    ],
    "aabb_max": [
-    11185.94,
-    1804.27,
-    136.17
+    10641.7,
+    1536.83,
+    130.06
    ],
    "mi_slots": {},
-   "extras": {
-    "mbounds_estimated": true
-   },
-   "note": "garth vegetation (seed 1224)"
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.274"
   },
   {
    "id": "CLA_GarthGrass_06",
    "cat": "dress",
    "group": "garthveg",
-   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_03.SM_LB_CC0_GrassMedium02_03",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_04.SM_LB_CC0_GrassMedium02_04",
+   "loc": [
+    10720.171,
+    1544.938,
+    103.342
+   ],
+   "rot": [
+    0.0,
+    177.6322,
+    0.0
+   ],
+   "scale": [
+    1.129,
+    1.129,
+    1.129
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -15.9,
+     -18.1,
+     0.0
+    ],
+    [
+     15.9,
+     18.1,
+     26.0
+    ]
+   ],
+   "aabb_min": [
+    10701.39,
+    1523.78,
+    103.34
+   ],
+   "aabb_max": [
+    10738.95,
+    1566.1,
+    132.7
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.129"
+  },
+  {
+   "id": "CLA_GarthGrass_07",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_04.SM_LB_CC0_GrassMedium02_04",
+   "loc": [
+    11139.149,
+    1862.533,
+    104.886
+   ],
+   "rot": [
+    0.0,
+    69.1539,
+    0.0
+   ],
+   "scale": [
+    0.986,
+    0.986,
+    0.986
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -15.9,
+     -18.1,
+     0.0
+    ],
+    [
+     15.9,
+     18.1,
+     26.0
+    ]
+   ],
+   "aabb_min": [
+    11116.89,
+    1841.53,
+    104.89
+   ],
+   "aabb_max": [
+    11161.41,
+    1883.53,
+    130.52
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 0.986"
+  },
+  {
+   "id": "CLA_GarthGrass_08",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_02.SM_LB_CC0_GrassMedium02_02",
+   "loc": [
+    11175.965,
+    1731.49,
+    101.469
+   ],
+   "rot": [
+    0.0,
+    285.1979,
+    0.0
+   ],
+   "scale": [
+    0.957,
+    0.957,
+    0.957
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -9.0,
+     -10.0,
+     0.0
+    ],
+    [
+     9.0,
+     10.0,
+     18.0
+    ]
+   ],
+   "aabb_min": [
+    11164.47,
+    1720.67,
+    101.47
+   ],
+   "aabb_max": [
+    11187.46,
+    1742.31,
+    118.7
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 0.957"
+  },
+  {
+   "id": "CLA_GarthGrass_09",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_04.SM_LB_CC0_GrassMedium02_04",
    "loc": [
     10865.649,
     1511.668,
@@ -22934,189 +23578,37 @@
     0.0
    ],
    "scale": [
-    1.0,
-    1.0,
-    1.0
+    1.231,
+    1.231,
+    1.231
    ],
    "collision": "NoCollision",
    "folder": "Cloister/Dressing/Garth",
    "mbounds": [
     [
-     -25.0,
-     -25.0,
+     -15.9,
+     -18.1,
      0.0
     ],
     [
-     25.0,
-     25.0,
-     35.0
+     15.9,
+     18.1,
+     26.0
     ]
    ],
    "aabb_min": [
-    10832.02,
-    1478.04,
+    10838.09,
+    1482.93,
     102.12
    ],
    "aabb_max": [
-    10899.27,
-    1545.29,
-    137.12
+    10893.2,
+    1540.41,
+    134.13
    ],
    "mi_slots": {},
-   "extras": {
-    "mbounds_estimated": true
-   },
-   "note": "garth vegetation (seed 1224)"
-  },
-  {
-   "id": "CLA_GarthGrass_07",
-   "cat": "dress",
-   "group": "garthveg",
-   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_05.SM_LB_CC0_GrassMedium02_05",
-   "loc": [
-    10751.558,
-    2066.532,
-    103.873
-   ],
-   "rot": [
-    0.0,
-    189.6787,
-    0.0
-   ],
-   "scale": [
-    1.0,
-    1.0,
-    1.0
-   ],
-   "collision": "NoCollision",
-   "folder": "Cloister/Dressing/Garth",
-   "mbounds": [
-    [
-     -25.0,
-     -25.0,
-     0.0
-    ],
-    [
-     25.0,
-     25.0,
-     35.0
-    ]
-   ],
-   "aabb_min": [
-    10722.71,
-    2037.68,
-    103.87
-   ],
-   "aabb_max": [
-    10780.41,
-    2095.38,
-    138.87
-   ],
-   "mi_slots": {},
-   "extras": {
-    "mbounds_estimated": true
-   },
-   "note": "garth vegetation (seed 1224)"
-  },
-  {
-   "id": "CLA_GarthGrass_08",
-   "cat": "dress",
-   "group": "garthveg",
-   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_02.SM_LB_CC0_GrassMedium02_02",
-   "loc": [
-    10679.083,
-    1869.686,
-    102.884
-   ],
-   "rot": [
-    0.0,
-    315.2061,
-    0.0
-   ],
-   "scale": [
-    1.0,
-    1.0,
-    1.0
-   ],
-   "collision": "NoCollision",
-   "folder": "Cloister/Dressing/Garth",
-   "mbounds": [
-    [
-     -25.0,
-     -25.0,
-     0.0
-    ],
-    [
-     25.0,
-     25.0,
-     35.0
-    ]
-   ],
-   "aabb_min": [
-    10643.73,
-    1834.33,
-    102.88
-   ],
-   "aabb_max": [
-    10714.44,
-    1905.04,
-    137.88
-   ],
-   "mi_slots": {},
-   "extras": {
-    "mbounds_estimated": true
-   },
-   "note": "garth vegetation (seed 1224)"
-  },
-  {
-   "id": "CLA_GarthGrass_09",
-   "cat": "dress",
-   "group": "garthveg",
-   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_02.SM_LB_CC0_GrassMedium02_02",
-   "loc": [
-    11101.404,
-    2123.089,
-    104.02
-   ],
-   "rot": [
-    0.0,
-    332.9971,
-    0.0
-   ],
-   "scale": [
-    1.0,
-    1.0,
-    1.0
-   ],
-   "collision": "NoCollision",
-   "folder": "Cloister/Dressing/Garth",
-   "mbounds": [
-    [
-     -25.0,
-     -25.0,
-     0.0
-    ],
-    [
-     25.0,
-     25.0,
-     35.0
-    ]
-   ],
-   "aabb_min": [
-    11067.78,
-    2089.46,
-    104.02
-   ],
-   "aabb_max": [
-    11135.03,
-    2156.71,
-    139.02
-   ],
-   "mi_slots": {},
-   "extras": {
-    "mbounds_estimated": true
-   },
-   "note": "garth vegetation (seed 1224)"
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.231"
   },
   {
    "id": "CLA_GarthGrass_10",
@@ -23124,152 +23616,386 @@
    "group": "garthveg",
    "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_05.SM_LB_CC0_GrassMedium02_05",
    "loc": [
-    10957.356,
-    1468.932,
-    101.948
+    10878.498,
+    1570.752,
+    102.136
    ],
    "rot": [
     0.0,
-    319.0395,
+    217.5235,
     0.0
    ],
    "scale": [
-    1.0,
-    1.0,
-    1.0
+    1.104,
+    1.104,
+    1.104
    ],
    "collision": "NoCollision",
    "folder": "Cloister/Dressing/Garth",
    "mbounds": [
     [
-     -25.0,
-     -25.0,
+     -17.8,
+     -21.7,
      0.0
     ],
     [
-     25.0,
-     25.0,
-     35.0
+     17.8,
+     21.7,
+     40.3
     ]
    ],
    "aabb_min": [
-    10922.09,
-    1433.66,
-    101.95
+    10848.32,
+    1539.78,
+    102.14
    ],
    "aabb_max": [
-    10992.62,
-    1504.2,
-    136.95
+    10908.68,
+    1601.72,
+    146.63
    ],
    "mi_slots": {},
-   "extras": {
-    "mbounds_estimated": true
-   },
-   "note": "garth vegetation (seed 1224)"
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.104"
   },
   {
    "id": "CLA_GarthGrass_11",
    "cat": "dress",
    "group": "garthveg",
-   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_05.SM_LB_CC0_GrassMedium02_05",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_03.SM_LB_CC0_GrassMedium02_03",
    "loc": [
-    10783.544,
-    1938.323,
-    102.741
+    10692.517,
+    1810.192,
+    104.532
    ],
    "rot": [
     0.0,
-    202.901,
+    116.9474,
     0.0
    ],
    "scale": [
-    1.0,
-    1.0,
-    1.0
+    1.281,
+    1.281,
+    1.281
    ],
    "collision": "NoCollision",
    "folder": "Cloister/Dressing/Garth",
    "mbounds": [
     [
-     -25.0,
-     -25.0,
+     -13.1,
+     -12.5,
      0.0
     ],
     [
-     25.0,
-     25.0,
-     35.0
+     13.1,
+     12.5,
+     23.2
     ]
    ],
    "aabb_min": [
-    10750.79,
-    1905.56,
-    102.74
+    10670.64,
+    1787.98,
+    104.53
    ],
    "aabb_max": [
-    10816.3,
-    1971.08,
-    137.74
+    10714.4,
+    1832.41,
+    134.25
    ],
    "mi_slots": {},
-   "extras": {
-    "mbounds_estimated": true
-   },
-   "note": "garth vegetation (seed 1224)"
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.281"
   },
   {
    "id": "CLA_GarthGrass_12",
    "cat": "dress",
    "group": "garthveg",
-   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_05.SM_LB_CC0_GrassMedium02_05",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_02.SM_LB_CC0_GrassMedium02_02",
    "loc": [
-    10914.971,
-    1660.762,
-    100.704
+    11301.811,
+    1789.679,
+    104.958
    ],
    "rot": [
     0.0,
-    175.6784,
+    265.3824,
     0.0
    ],
    "scale": [
-    1.0,
-    1.0,
-    1.0
+    1.338,
+    1.338,
+    1.338
    ],
    "collision": "NoCollision",
    "folder": "Cloister/Dressing/Garth",
    "mbounds": [
     [
-     -25.0,
-     -25.0,
+     -9.0,
+     -10.0,
      0.0
     ],
     [
-     25.0,
-     25.0,
-     35.0
+     9.0,
+     10.0,
+     18.0
     ]
    ],
    "aabb_min": [
-    10888.16,
-    1633.95,
-    100.7
+    11287.51,
+    1776.6,
+    104.96
    ],
    "aabb_max": [
-    10941.78,
-    1687.57,
-    135.7
+    11316.12,
+    1802.76,
+    129.04
    ],
    "mi_slots": {},
-   "extras": {
-    "mbounds_estimated": true
-   },
-   "note": "garth vegetation (seed 1224)"
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.338"
   },
   {
    "id": "CLA_GarthGrass_13",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_05.SM_LB_CC0_GrassMedium02_05",
+   "loc": [
+    11300.491,
+    1839.057,
+    103.884
+   ],
+   "rot": [
+    0.0,
+    207.9119,
+    0.0
+   ],
+   "scale": [
+    1.302,
+    1.302,
+    1.302
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -17.8,
+     -21.7,
+     0.0
+    ],
+    [
+     17.8,
+     21.7,
+     40.3
+    ]
+   ],
+   "aabb_min": [
+    11266.79,
+    1803.24,
+    103.88
+   ],
+   "aabb_max": [
+    11334.2,
+    1874.87,
+    156.35
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.302"
+  },
+  {
+   "id": "CLA_GarthGrass_14",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_05.SM_LB_CC0_GrassMedium02_05",
+   "loc": [
+    11285.85,
+    2051.016,
+    104.881
+   ],
+   "rot": [
+    0.0,
+    353.6724,
+    0.0
+   ],
+   "scale": [
+    1.343,
+    1.343,
+    1.343
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -17.8,
+     -21.7,
+     0.0
+    ],
+    [
+     17.8,
+     21.7,
+     40.3
+    ]
+   ],
+   "aabb_min": [
+    11258.88,
+    2019.42,
+    104.88
+   ],
+   "aabb_max": [
+    11312.82,
+    2082.62,
+    159.0
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.343"
+  },
+  {
+   "id": "CLA_GarthGrass_15",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_03.SM_LB_CC0_GrassMedium02_03",
+   "loc": [
+    11118.044,
+    1823.072,
+    104.958
+   ],
+   "rot": [
+    0.0,
+    173.2322,
+    0.0
+   ],
+   "scale": [
+    1.299,
+    1.299,
+    1.299
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -13.1,
+     -12.5,
+     0.0
+    ],
+    [
+     13.1,
+     12.5,
+     23.2
+    ]
+   ],
+   "aabb_min": [
+    11099.23,
+    1804.94,
+    104.96
+   ],
+   "aabb_max": [
+    11136.86,
+    1841.2,
+    135.09
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.299"
+  },
+  {
+   "id": "CLA_GarthGrass_16",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_02.SM_LB_CC0_GrassMedium02_02",
+   "loc": [
+    11312.78,
+    2023.917,
+    102.187
+   ],
+   "rot": [
+    0.0,
+    245.5214,
+    0.0
+   ],
+   "scale": [
+    1.285,
+    1.285,
+    1.285
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -9.0,
+     -10.0,
+     0.0
+    ],
+    [
+     9.0,
+     10.0,
+     18.0
+    ]
+   ],
+   "aabb_min": [
+    11296.29,
+    2008.07,
+    102.19
+   ],
+   "aabb_max": [
+    11329.27,
+    2039.77,
+    125.32
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.285"
+  },
+  {
+   "id": "CLA_GarthGrass_17",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_05.SM_LB_CC0_GrassMedium02_05",
+   "loc": [
+    11066.069,
+    1846.583,
+    101.584
+   ],
+   "rot": [
+    0.0,
+    50.6616,
+    0.0
+   ],
+   "scale": [
+    1.342,
+    1.342,
+    1.342
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -17.8,
+     -21.7,
+     0.0
+    ],
+    [
+     17.8,
+     21.7,
+     40.3
+    ]
+   ],
+   "aabb_min": [
+    11028.4,
+    1809.65,
+    101.58
+   ],
+   "aabb_max": [
+    11103.73,
+    1883.52,
+    155.67
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.342"
+  },
+  {
+   "id": "CLA_GarthGrass_18",
    "cat": "dress",
    "group": "garthveg",
    "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_04.SM_LB_CC0_GrassMedium02_04",
@@ -23284,145 +24010,283 @@
     0.0
    ],
    "scale": [
-    1.0,
-    1.0,
-    1.0
+    1.165,
+    1.165,
+    1.165
    ],
    "collision": "NoCollision",
    "folder": "Cloister/Dressing/Garth",
    "mbounds": [
     [
-     -25.0,
-     -25.0,
+     -15.9,
+     -18.1,
      0.0
     ],
     [
-     25.0,
-     25.0,
-     35.0
+     15.9,
+     18.1,
+     26.0
     ]
    ],
    "aabb_min": [
-    11264.97,
-    1691.47,
+    11272.13,
+    1698.95,
     103.14
    ],
    "aabb_max": [
-    11335.41,
-    1761.92,
-    138.14
+    11328.25,
+    1754.44,
+    133.43
    ],
    "mi_slots": {},
-   "extras": {
-    "mbounds_estimated": true
-   },
-   "note": "garth vegetation (seed 1224)"
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.165"
   },
   {
-   "id": "CLA_GarthGrass_14",
+   "id": "CLA_GarthGrass_19",
    "cat": "dress",
    "group": "garthveg",
    "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_03.SM_LB_CC0_GrassMedium02_03",
    "loc": [
-    11070.004,
-    1726.0,
-    100.667
+    11037.278,
+    1814.964,
+    103.096
    ],
    "rot": [
     0.0,
-    223.047,
+    282.2067,
     0.0
    ],
    "scale": [
-    1.0,
-    1.0,
-    1.0
+    1.219,
+    1.219,
+    1.219
    ],
    "collision": "NoCollision",
    "folder": "Cloister/Dressing/Garth",
    "mbounds": [
     [
-     -25.0,
-     -25.0,
+     -13.1,
+     -12.5,
      0.0
     ],
     [
-     25.0,
-     25.0,
-     35.0
+     13.1,
+     12.5,
+     23.2
     ]
    ],
    "aabb_min": [
-    11034.67,
-    1690.66,
-    100.67
+    11019.01,
+    1796.13,
+    103.1
    ],
    "aabb_max": [
-    11105.34,
-    1761.33,
-    135.67
+    11055.55,
+    1833.79,
+    131.38
    ],
    "mi_slots": {},
-   "extras": {
-    "mbounds_estimated": true
-   },
-   "note": "garth vegetation (seed 1224)"
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.219"
   },
   {
-   "id": "CLA_GarthGrass_15",
+   "id": "CLA_GarthGrass_20",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_03.SM_LB_CC0_GrassMedium02_03",
+   "loc": [
+    10414.515,
+    1681.127,
+    101.786
+   ],
+   "rot": [
+    0.0,
+    57.7637,
+    0.0
+   ],
+   "scale": [
+    1.25,
+    1.25,
+    1.25
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -13.1,
+     -12.5,
+     0.0
+    ],
+    [
+     13.1,
+     12.5,
+     23.2
+    ]
+   ],
+   "aabb_min": [
+    10392.56,
+    1658.94,
+    101.79
+   ],
+   "aabb_max": [
+    10436.47,
+    1703.31,
+    130.79
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.25"
+  },
+  {
+   "id": "CLA_GarthGrass_21",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_02.SM_LB_CC0_GrassMedium02_02",
+   "loc": [
+    11127.963,
+    1752.471,
+    102.163
+   ],
+   "rot": [
+    0.0,
+    56.5745,
+    0.0
+   ],
+   "scale": [
+    1.21,
+    1.21,
+    1.21
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -9.0,
+     -10.0,
+     0.0
+    ],
+    [
+     9.0,
+     10.0,
+     18.0
+    ]
+   ],
+   "aabb_min": [
+    11111.87,
+    1736.72,
+    102.16
+   ],
+   "aabb_max": [
+    11144.06,
+    1768.22,
+    123.94
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.21"
+  },
+  {
+   "id": "CLA_GarthGrass_22",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_03.SM_LB_CC0_GrassMedium02_03",
+   "loc": [
+    10348.197,
+    1827.285,
+    104.473
+   ],
+   "rot": [
+    0.0,
+    191.9206,
+    0.0
+   ],
+   "scale": [
+    1.085,
+    1.085,
+    1.085
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -13.1,
+     -12.5,
+     0.0
+    ],
+    [
+     13.1,
+     12.5,
+     23.2
+    ]
+   ],
+   "aabb_min": [
+    10331.49,
+    1811.08,
+    104.47
+   ],
+   "aabb_max": [
+    10364.91,
+    1843.49,
+    129.64
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.085"
+  },
+  {
+   "id": "CLA_GarthGrass_23",
    "cat": "dress",
    "group": "garthveg",
    "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_04.SM_LB_CC0_GrassMedium02_04",
    "loc": [
-    10711.303,
-    1772.352,
-    102.459
+    10810.244,
+    2143.441,
+    101.196
    ],
    "rot": [
     0.0,
-    9.5763,
+    183.0855,
     0.0
    ],
    "scale": [
-    1.0,
-    1.0,
-    1.0
+    1.328,
+    1.328,
+    1.328
    ],
    "collision": "NoCollision",
    "folder": "Cloister/Dressing/Garth",
    "mbounds": [
     [
-     -25.0,
-     -25.0,
+     -15.9,
+     -18.1,
      0.0
     ],
     [
-     25.0,
-     25.0,
-     35.0
+     15.9,
+     18.1,
+     26.0
     ]
    ],
    "aabb_min": [
-    10682.49,
-    1743.54,
-    102.46
+    10787.87,
+    2118.3,
+    101.2
    ],
    "aabb_max": [
-    10740.11,
-    1801.16,
-    137.46
+    10832.62,
+    2168.58,
+    135.72
    ],
    "mi_slots": {},
-   "extras": {
-    "mbounds_estimated": true
-   },
-   "note": "garth vegetation (seed 1224)"
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.328"
   },
   {
-   "id": "CLA_GarthGrass_16",
+   "id": "CLA_GarthGrass_24",
    "cat": "dress",
    "group": "garthveg",
-   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_05.SM_LB_CC0_GrassMedium02_05",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_03.SM_LB_CC0_GrassMedium02_03",
    "loc": [
     10401.437,
     1752.443,
@@ -23434,245 +24298,283 @@
     0.0
    ],
    "scale": [
-    1.0,
-    1.0,
-    1.0
+    1.262,
+    1.262,
+    1.262
    ],
    "collision": "NoCollision",
    "folder": "Cloister/Dressing/Garth",
    "mbounds": [
     [
-     -25.0,
-     -25.0,
+     -13.1,
+     -12.5,
      0.0
     ],
     [
-     25.0,
-     25.0,
-     35.0
+     13.1,
+     12.5,
+     23.2
     ]
    ],
    "aabb_min": [
-    10367.45,
-    1718.45,
+    10379.62,
+    1730.33,
     102.41
    ],
    "aabb_max": [
-    10435.43,
-    1786.43,
-    137.41
+    10423.25,
+    1774.55,
+    131.68
    ],
    "mi_slots": {},
-   "extras": {
-    "mbounds_estimated": true
-   },
-   "note": "garth vegetation (seed 1224)"
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.262"
   },
   {
-   "id": "CLA_GarthGrass_17",
+   "id": "CLA_GarthGrass_25",
    "cat": "dress",
    "group": "garthveg",
    "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_01.SM_LB_CC0_GrassMedium02_01",
    "loc": [
-    10576.367,
-    2129.206,
-    102.825
+    11351.983,
+    1485.451,
+    104.781
    ],
    "rot": [
     0.0,
-    32.9415,
+    87.0679,
     0.0
    ],
    "scale": [
-    1.0,
-    1.0,
-    1.0
+    1.327,
+    1.327,
+    1.327
    ],
    "collision": "NoCollision",
    "folder": "Cloister/Dressing/Garth",
    "mbounds": [
     [
-     -25.0,
-     -25.0,
+     -6.0,
+     -6.0,
      0.0
     ],
     [
-     25.0,
-     25.0,
-     35.0
+     6.0,
+     6.0,
+     15.7
     ]
    ],
    "aabb_min": [
-    10541.79,
-    2094.63,
-    102.82
+    11343.62,
+    1477.09,
+    104.78
    ],
    "aabb_max": [
-    10610.94,
-    2163.78,
-    137.82
+    11360.34,
+    1493.81,
+    125.61
    ],
    "mi_slots": {},
-   "extras": {
-    "mbounds_estimated": true
-   },
-   "note": "garth vegetation (seed 1224)"
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.327"
   },
   {
-   "id": "CLA_GarthGrass_18",
+   "id": "CLA_GarthGrass_26",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_05.SM_LB_CC0_GrassMedium02_05",
+   "loc": [
+    11052.48,
+    1722.803,
+    102.24
+   ],
+   "rot": [
+    0.0,
+    222.5968,
+    0.0
+   ],
+   "scale": [
+    1.389,
+    1.389,
+    1.389
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -17.8,
+     -21.7,
+     0.0
+    ],
+    [
+     17.8,
+     21.7,
+     40.3
+    ]
+   ],
+   "aabb_min": [
+    11013.88,
+    1683.88,
+    102.24
+   ],
+   "aabb_max": [
+    11091.08,
+    1761.73,
+    158.22
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.389"
+  },
+  {
+   "id": "CLA_GarthGrass_27",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_05.SM_LB_CC0_GrassMedium02_05",
+   "loc": [
+    10845.084,
+    1906.921,
+    102.611
+   ],
+   "rot": [
+    0.0,
+    27.971,
+    0.0
+   ],
+   "scale": [
+    0.902,
+    0.902,
+    0.902
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -17.8,
+     -21.7,
+     0.0
+    ],
+    [
+     17.8,
+     21.7,
+     40.3
+    ]
+   ],
+   "aabb_min": [
+    10821.72,
+    1882.1,
+    102.61
+   ],
+   "aabb_max": [
+    10868.44,
+    1931.74,
+    138.96
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 0.902"
+  },
+  {
+   "id": "CLA_GarthGrass_28",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_02.SM_LB_CC0_GrassMedium02_02",
+   "loc": [
+    10420.503,
+    1478.471,
+    103.146
+   ],
+   "rot": [
+    0.0,
+    305.0109,
+    0.0
+   ],
+   "scale": [
+    1.187,
+    1.187,
+    1.187
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -9.0,
+     -10.0,
+     0.0
+    ],
+    [
+     9.0,
+     10.0,
+     18.0
+    ]
+   ],
+   "aabb_min": [
+    10404.65,
+    1462.91,
+    103.15
+   ],
+   "aabb_max": [
+    10436.35,
+    1494.03,
+    124.51
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.187"
+  },
+  {
+   "id": "CLA_GarthGrass_29",
    "cat": "dress",
    "group": "garthveg",
    "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_01.SM_LB_CC0_GrassMedium02_01",
    "loc": [
-    10742.324,
-    2129.631,
-    103.175
+    11006.276,
+    1688.501,
+    103.71
    ],
    "rot": [
     0.0,
-    248.7667,
+    104.5803,
     0.0
    ],
    "scale": [
-    1.0,
-    1.0,
-    1.0
+    0.997,
+    0.997,
+    0.997
    ],
    "collision": "NoCollision",
    "folder": "Cloister/Dressing/Garth",
    "mbounds": [
     [
-     -25.0,
-     -25.0,
+     -6.0,
+     -6.0,
      0.0
     ],
     [
-     25.0,
-     25.0,
-     35.0
+     6.0,
+     6.0,
+     15.7
     ]
    ],
    "aabb_min": [
-    10709.97,
-    2097.27,
-    103.18
+    10998.98,
+    1681.21,
+    103.71
    ],
    "aabb_max": [
-    10774.68,
-    2161.99,
-    138.18
+    11013.57,
+    1695.8,
+    119.36
    ],
    "mi_slots": {},
-   "extras": {
-    "mbounds_estimated": true
-   },
-   "note": "garth vegetation (seed 1224)"
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 0.997"
   },
   {
-   "id": "CLA_GarthGrass_19",
+   "id": "CLA_GarthGrass_30",
    "cat": "dress",
    "group": "garthveg",
-   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_04.SM_LB_CC0_GrassMedium02_04",
-   "loc": [
-    10873.551,
-    1479.05,
-    103.774
-   ],
-   "rot": [
-    0.0,
-    206.423,
-    0.0
-   ],
-   "scale": [
-    1.0,
-    1.0,
-    1.0
-   ],
-   "collision": "NoCollision",
-   "folder": "Cloister/Dressing/Garth",
-   "mbounds": [
-    [
-     -25.0,
-     -25.0,
-     0.0
-    ],
-    [
-     25.0,
-     25.0,
-     35.0
-    ]
-   ],
-   "aabb_min": [
-    10840.04,
-    1445.54,
-    103.77
-   ],
-   "aabb_max": [
-    10907.06,
-    1512.56,
-    138.77
-   ],
-   "mi_slots": {},
-   "extras": {
-    "mbounds_estimated": true
-   },
-   "note": "garth vegetation (seed 1224)"
-  },
-  {
-   "id": "CLA_GarthGrass_20",
-   "cat": "dress",
-   "group": "garthveg",
-   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_01.SM_LB_CC0_GrassMedium02_01",
-   "loc": [
-    10585.063,
-    1467.179,
-    100.457
-   ],
-   "rot": [
-    0.0,
-    338.3069,
-    0.0
-   ],
-   "scale": [
-    1.0,
-    1.0,
-    1.0
-   ],
-   "collision": "NoCollision",
-   "folder": "Cloister/Dressing/Garth",
-   "mbounds": [
-    [
-     -25.0,
-     -25.0,
-     0.0
-    ],
-    [
-     25.0,
-     25.0,
-     35.0
-    ]
-   ],
-   "aabb_min": [
-    10552.59,
-    1434.71,
-    100.46
-   ],
-   "aabb_max": [
-    10617.53,
-    1499.65,
-    135.46
-   ],
-   "mi_slots": {},
-   "extras": {
-    "mbounds_estimated": true
-   },
-   "note": "garth vegetation (seed 1224)"
-  },
-  {
-   "id": "CLA_GarthGrass_21",
-   "cat": "dress",
-   "group": "garthveg",
-   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_03.SM_LB_CC0_GrassMedium02_03",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_05.SM_LB_CC0_GrassMedium02_05",
    "loc": [
     10548.677,
     1875.565,
@@ -23684,539 +24586,85 @@
     0.0
    ],
    "scale": [
-    1.0,
-    1.0,
-    1.0
+    1.107,
+    1.107,
+    1.107
    ],
    "collision": "NoCollision",
    "folder": "Cloister/Dressing/Garth",
    "mbounds": [
     [
-     -25.0,
-     -25.0,
+     -17.8,
+     -21.7,
      0.0
     ],
     [
-     25.0,
-     25.0,
-     35.0
+     17.8,
+     21.7,
+     40.3
     ]
    ],
    "aabb_min": [
-    10513.64,
-    1840.52,
+    10517.63,
+    1845.33,
     101.1
    ],
    "aabb_max": [
-    10583.72,
-    1910.61,
-    136.1
+    10579.73,
+    1905.8,
+    145.71
    ],
    "mi_slots": {},
-   "extras": {
-    "mbounds_estimated": true
-   },
-   "note": "garth vegetation (seed 1224)"
-  },
-  {
-   "id": "CLA_GarthGrass_22",
-   "cat": "dress",
-   "group": "garthveg",
-   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_03.SM_LB_CC0_GrassMedium02_03",
-   "loc": [
-    10621.544,
-    1491.78,
-    102.763
-   ],
-   "rot": [
-    0.0,
-    349.9663,
-    0.0
-   ],
-   "scale": [
-    1.0,
-    1.0,
-    1.0
-   ],
-   "collision": "NoCollision",
-   "folder": "Cloister/Dressing/Garth",
-   "mbounds": [
-    [
-     -25.0,
-     -25.0,
-     0.0
-    ],
-    [
-     25.0,
-     25.0,
-     35.0
-    ]
-   ],
-   "aabb_min": [
-    10592.57,
-    1462.81,
-    102.76
-   ],
-   "aabb_max": [
-    10650.52,
-    1520.75,
-    137.76
-   ],
-   "mi_slots": {},
-   "extras": {
-    "mbounds_estimated": true
-   },
-   "note": "garth vegetation (seed 1224)"
-  },
-  {
-   "id": "CLA_GarthGrass_23",
-   "cat": "dress",
-   "group": "garthveg",
-   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_05.SM_LB_CC0_GrassMedium02_05",
-   "loc": [
-    10992.33,
-    1840.006,
-    101.876
-   ],
-   "rot": [
-    0.0,
-    224.5629,
-    0.0
-   ],
-   "scale": [
-    1.0,
-    1.0,
-    1.0
-   ],
-   "collision": "NoCollision",
-   "folder": "Cloister/Dressing/Garth",
-   "mbounds": [
-    [
-     -25.0,
-     -25.0,
-     0.0
-    ],
-    [
-     25.0,
-     25.0,
-     35.0
-    ]
-   ],
-   "aabb_min": [
-    10956.98,
-    1804.65,
-    101.88
-   ],
-   "aabb_max": [
-    11027.68,
-    1875.36,
-    136.88
-   ],
-   "mi_slots": {},
-   "extras": {
-    "mbounds_estimated": true
-   },
-   "note": "garth vegetation (seed 1224)"
-  },
-  {
-   "id": "CLA_GarthGrass_24",
-   "cat": "dress",
-   "group": "garthveg",
-   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_05.SM_LB_CC0_GrassMedium02_05",
-   "loc": [
-    11033.308,
-    1464.673,
-    104.509
-   ],
-   "rot": [
-    0.0,
-    172.5212,
-    0.0
-   ],
-   "scale": [
-    1.0,
-    1.0,
-    1.0
-   ],
-   "collision": "NoCollision",
-   "folder": "Cloister/Dressing/Garth",
-   "mbounds": [
-    [
-     -25.0,
-     -25.0,
-     0.0
-    ],
-    [
-     25.0,
-     25.0,
-     35.0
-    ]
-   ],
-   "aabb_min": [
-    11005.27,
-    1436.63,
-    104.51
-   ],
-   "aabb_max": [
-    11061.35,
-    1492.71,
-    139.51
-   ],
-   "mi_slots": {},
-   "extras": {
-    "mbounds_estimated": true
-   },
-   "note": "garth vegetation (seed 1224)"
-  },
-  {
-   "id": "CLA_GarthGrass_25",
-   "cat": "dress",
-   "group": "garthveg",
-   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_03.SM_LB_CC0_GrassMedium02_03",
-   "loc": [
-    10765.911,
-    2014.303,
-    101.491
-   ],
-   "rot": [
-    0.0,
-    40.4698,
-    0.0
-   ],
-   "scale": [
-    1.0,
-    1.0,
-    1.0
-   ],
-   "collision": "NoCollision",
-   "folder": "Cloister/Dressing/Garth",
-   "mbounds": [
-    [
-     -25.0,
-     -25.0,
-     0.0
-    ],
-    [
-     25.0,
-     25.0,
-     35.0
-    ]
-   ],
-   "aabb_min": [
-    10730.67,
-    1979.06,
-    101.49
-   ],
-   "aabb_max": [
-    10801.16,
-    2049.55,
-    136.49
-   ],
-   "mi_slots": {},
-   "extras": {
-    "mbounds_estimated": true
-   },
-   "note": "garth vegetation (seed 1224)"
-  },
-  {
-   "id": "CLA_GarthGrass_26",
-   "cat": "dress",
-   "group": "garthveg",
-   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_04.SM_LB_CC0_GrassMedium02_04",
-   "loc": [
-    10367.431,
-    1705.896,
-    101.361
-   ],
-   "rot": [
-    0.0,
-    347.7197,
-    0.0
-   ],
-   "scale": [
-    1.0,
-    1.0,
-    1.0
-   ],
-   "collision": "NoCollision",
-   "folder": "Cloister/Dressing/Garth",
-   "mbounds": [
-    [
-     -25.0,
-     -25.0,
-     0.0
-    ],
-    [
-     25.0,
-     25.0,
-     35.0
-    ]
-   ],
-   "aabb_min": [
-    10337.69,
-    1676.15,
-    101.36
-   ],
-   "aabb_max": [
-    10397.18,
-    1735.64,
-    136.36
-   ],
-   "mi_slots": {},
-   "extras": {
-    "mbounds_estimated": true
-   },
-   "note": "garth vegetation (seed 1224)"
-  },
-  {
-   "id": "CLA_GarthGrass_27",
-   "cat": "dress",
-   "group": "garthveg",
-   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_01.SM_LB_CC0_GrassMedium02_01",
-   "loc": [
-    11133.854,
-    1479.443,
-    101.559
-   ],
-   "rot": [
-    0.0,
-    47.0367,
-    0.0
-   ],
-   "scale": [
-    1.0,
-    1.0,
-    1.0
-   ],
-   "collision": "NoCollision",
-   "folder": "Cloister/Dressing/Garth",
-   "mbounds": [
-    [
-     -25.0,
-     -25.0,
-     0.0
-    ],
-    [
-     25.0,
-     25.0,
-     35.0
-    ]
-   ],
-   "aabb_min": [
-    11098.52,
-    1444.11,
-    101.56
-   ],
-   "aabb_max": [
-    11169.19,
-    1514.78,
-    136.56
-   ],
-   "mi_slots": {},
-   "extras": {
-    "mbounds_estimated": true
-   },
-   "note": "garth vegetation (seed 1224)"
-  },
-  {
-   "id": "CLA_GarthGrass_28",
-   "cat": "dress",
-   "group": "garthveg",
-   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_02.SM_LB_CC0_GrassMedium02_02",
-   "loc": [
-    11182.529,
-    1445.705,
-    104.343
-   ],
-   "rot": [
-    0.0,
-    230.2808,
-    0.0
-   ],
-   "scale": [
-    1.0,
-    1.0,
-    1.0
-   ],
-   "collision": "NoCollision",
-   "folder": "Cloister/Dressing/Garth",
-   "mbounds": [
-    [
-     -25.0,
-     -25.0,
-     0.0
-    ],
-    [
-     25.0,
-     25.0,
-     35.0
-    ]
-   ],
-   "aabb_min": [
-    11147.32,
-    1410.5,
-    104.34
-   ],
-   "aabb_max": [
-    11217.73,
-    1480.91,
-    139.34
-   ],
-   "mi_slots": {},
-   "extras": {
-    "mbounds_estimated": true
-   },
-   "note": "garth vegetation (seed 1224)"
-  },
-  {
-   "id": "CLA_GarthGrass_29",
-   "cat": "dress",
-   "group": "garthveg",
-   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_03.SM_LB_CC0_GrassMedium02_03",
-   "loc": [
-    10745.231,
-    2013.831,
-    100.583
-   ],
-   "rot": [
-    0.0,
-    94.1751,
-    0.0
-   ],
-   "scale": [
-    1.0,
-    1.0,
-    1.0
-   ],
-   "collision": "NoCollision",
-   "folder": "Cloister/Dressing/Garth",
-   "mbounds": [
-    [
-     -25.0,
-     -25.0,
-     0.0
-    ],
-    [
-     25.0,
-     25.0,
-     35.0
-    ]
-   ],
-   "aabb_min": [
-    10718.48,
-    1987.08,
-    100.58
-   ],
-   "aabb_max": [
-    10771.98,
-    2040.58,
-    135.58
-   ],
-   "mi_slots": {},
-   "extras": {
-    "mbounds_estimated": true
-   },
-   "note": "garth vegetation (seed 1224)"
-  },
-  {
-   "id": "CLA_GarthGrass_30",
-   "cat": "dress",
-   "group": "garthveg",
-   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_02.SM_LB_CC0_GrassMedium02_02",
-   "loc": [
-    11328.283,
-    1821.506,
-    101.405
-   ],
-   "rot": [
-    0.0,
-    304.2836,
-    0.0
-   ],
-   "scale": [
-    1.0,
-    1.0,
-    1.0
-   ],
-   "collision": "NoCollision",
-   "folder": "Cloister/Dressing/Garth",
-   "mbounds": [
-    [
-     -25.0,
-     -25.0,
-     0.0
-    ],
-    [
-     25.0,
-     25.0,
-     35.0
-    ]
-   ],
-   "aabb_min": [
-    11293.54,
-    1786.77,
-    101.41
-   ],
-   "aabb_max": [
-    11363.02,
-    1856.24,
-    136.41
-   ],
-   "mi_slots": {},
-   "extras": {
-    "mbounds_estimated": true
-   },
-   "note": "garth vegetation (seed 1224)"
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.107"
   },
   {
    "id": "CLA_GarthGrass_31",
    "cat": "dress",
    "group": "garthveg",
-   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_05.SM_LB_CC0_GrassMedium02_05",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_03.SM_LB_CC0_GrassMedium02_03",
    "loc": [
-    10511.737,
-    1851.723,
-    101.431
+    10812.846,
+    2142.881,
+    100.56
    ],
    "rot": [
     0.0,
-    66.7122,
+    102.4112,
     0.0
    ],
    "scale": [
-    1.0,
-    1.0,
-    1.0
+    0.95,
+    0.95,
+    0.95
    ],
    "collision": "NoCollision",
    "folder": "Cloister/Dressing/Garth",
    "mbounds": [
     [
-     -25.0,
-     -25.0,
+     -13.1,
+     -12.5,
      0.0
     ],
     [
-     25.0,
-     25.0,
-     35.0
+     13.1,
+     12.5,
+     23.2
     ]
    ],
    "aabb_min": [
-    10478.89,
-    1818.88,
-    101.43
+    10798.57,
+    2128.17,
+    100.56
    ],
    "aabb_max": [
-    10544.58,
-    1884.57,
-    136.43
+    10827.12,
+    2157.59,
+    122.6
    ],
    "mi_slots": {},
-   "extras": {
-    "mbounds_estimated": true
-   },
-   "note": "garth vegetation (seed 1224)"
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 0.95"
   },
   {
    "id": "CLA_GarthGrass_32",
@@ -24224,49 +24672,47 @@
    "group": "garthveg",
    "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_01.SM_LB_CC0_GrassMedium02_01",
    "loc": [
-    10857.571,
-    1491.444,
-    104.059
+    10372.792,
+    2023.975,
+    101.884
    ],
    "rot": [
     0.0,
-    217.314,
+    199.4852,
     0.0
    ],
    "scale": [
-    1.0,
-    1.0,
-    1.0
+    1.274,
+    1.274,
+    1.274
    ],
    "collision": "NoCollision",
    "folder": "Cloister/Dressing/Garth",
    "mbounds": [
     [
-     -25.0,
-     -25.0,
+     -6.0,
+     -6.0,
      0.0
     ],
     [
-     25.0,
-     25.0,
-     35.0
+     6.0,
+     6.0,
+     15.7
     ]
    ],
    "aabb_min": [
-    10822.53,
-    1456.41,
-    104.06
+    10363.04,
+    2014.22,
+    101.88
    ],
    "aabb_max": [
-    10892.61,
-    1526.48,
-    139.06
+    10382.55,
+    2033.73,
+    121.89
    ],
    "mi_slots": {},
-   "extras": {
-    "mbounds_estimated": true
-   },
-   "note": "garth vegetation (seed 1224)"
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.274"
   },
   {
    "id": "CLA_GarthGrass_33",
@@ -24274,149 +24720,143 @@
    "group": "garthveg",
    "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_04.SM_LB_CC0_GrassMedium02_04",
    "loc": [
-    11028.193,
-    1802.38,
-    101.795
+    11046.599,
+    1825.658,
+    104.212
    ],
    "rot": [
     0.0,
-    329.5679,
+    115.9209,
     0.0
    ],
    "scale": [
-    1.0,
-    1.0,
-    1.0
+    1.219,
+    1.219,
+    1.219
    ],
    "collision": "NoCollision",
    "folder": "Cloister/Dressing/Garth",
    "mbounds": [
     [
-     -25.0,
-     -25.0,
+     -15.9,
+     -18.1,
      0.0
     ],
     [
-     25.0,
-     25.0,
-     35.0
+     15.9,
+     18.1,
+     26.0
     ]
    ],
    "aabb_min": [
-    10993.97,
-    1768.16,
-    101.79
+    11018.28,
+    1798.58,
+    104.21
    ],
    "aabb_max": [
-    11062.41,
-    1836.6,
-    136.79
+    11074.92,
+    1852.74,
+    135.91
    ],
    "mi_slots": {},
-   "extras": {
-    "mbounds_estimated": true
-   },
-   "note": "garth vegetation (seed 1224)"
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.219"
   },
   {
    "id": "CLA_GarthGrass_34",
    "cat": "dress",
    "group": "garthveg",
-   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_04.SM_LB_CC0_GrassMedium02_04",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_05.SM_LB_CC0_GrassMedium02_05",
    "loc": [
-    11018.966,
-    1448.897,
-    100.446
+    11057.668,
+    1860.408,
+    102.845
    ],
    "rot": [
     0.0,
-    78.2178,
+    186.3772,
     0.0
    ],
    "scale": [
-    1.0,
-    1.0,
-    1.0
+    1.144,
+    1.144,
+    1.144
    ],
    "collision": "NoCollision",
    "folder": "Cloister/Dressing/Garth",
    "mbounds": [
     [
-     -25.0,
-     -25.0,
+     -17.8,
+     -21.7,
      0.0
     ],
     [
-     25.0,
-     25.0,
-     35.0
+     17.8,
+     21.7,
+     40.3
     ]
    ],
    "aabb_min": [
-    10989.39,
-    1419.32,
-    100.45
+    11034.67,
+    1833.48,
+    102.85
    ],
    "aabb_max": [
-    11048.54,
-    1478.48,
-    135.45
+    11080.66,
+    1887.34,
+    148.95
    ],
    "mi_slots": {},
-   "extras": {
-    "mbounds_estimated": true
-   },
-   "note": "garth vegetation (seed 1224)"
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.144"
   },
   {
    "id": "CLA_GarthGrass_35",
    "cat": "dress",
    "group": "garthveg",
-   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_02.SM_LB_CC0_GrassMedium02_02",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_01.SM_LB_CC0_GrassMedium02_01",
    "loc": [
-    10952.407,
-    1539.331,
-    102.677
+    10934.001,
+    2116.203,
+    101.202
    ],
    "rot": [
     0.0,
-    290.3555,
+    54.2782,
     0.0
    ],
    "scale": [
-    1.0,
-    1.0,
-    1.0
+    1.174,
+    1.174,
+    1.174
    ],
    "collision": "NoCollision",
    "folder": "Cloister/Dressing/Garth",
    "mbounds": [
     [
-     -25.0,
-     -25.0,
+     -6.0,
+     -6.0,
      0.0
     ],
     [
-     25.0,
-     25.0,
-     35.0
+     6.0,
+     6.0,
+     15.7
     ]
    ],
    "aabb_min": [
-    10920.27,
-    1507.2,
-    102.68
+    10924.17,
+    2106.37,
+    101.2
    ],
    "aabb_max": [
-    10984.54,
-    1571.47,
-    137.68
+    10943.83,
+    2126.03,
+    119.63
    ],
    "mi_slots": {},
-   "extras": {
-    "mbounds_estimated": true
-   },
-   "note": "garth vegetation (seed 1224)"
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.174"
   },
   {
    "id": "CLA_GarthGrass_36",
@@ -24424,49 +24864,47 @@
    "group": "garthveg",
    "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_05.SM_LB_CC0_GrassMedium02_05",
    "loc": [
-    11334.671,
-    1717.472,
-    101.407
+    10524.124,
+    1802.478,
+    103.553
    ],
    "rot": [
     0.0,
-    278.3809,
+    242.2557,
     0.0
    ],
    "scale": [
-    1.0,
-    1.0,
-    1.0
+    1.345,
+    1.345,
+    1.345
    ],
    "collision": "NoCollision",
    "folder": "Cloister/Dressing/Garth",
    "mbounds": [
     [
-     -25.0,
-     -25.0,
+     -17.8,
+     -21.7,
      0.0
     ],
     [
-     25.0,
-     25.0,
-     35.0
+     17.8,
+     21.7,
+     40.3
     ]
    ],
    "aabb_min": [
-    11306.29,
-    1689.09,
-    101.41
+    10487.15,
+    1767.7,
+    103.55
    ],
    "aabb_max": [
-    11363.05,
-    1745.85,
-    136.41
+    10561.1,
+    1837.25,
+    157.76
    ],
    "mi_slots": {},
-   "extras": {
-    "mbounds_estimated": true
-   },
-   "note": "garth vegetation (seed 1224)"
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.345"
   },
   {
    "id": "CLA_GarthGrass_37",
@@ -24474,299 +24912,965 @@
    "group": "garthveg",
    "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_01.SM_LB_CC0_GrassMedium02_01",
    "loc": [
-    10345.126,
-    1699.153,
-    101.104
+    10644.991,
+    2170.42,
+    102.103
    ],
    "rot": [
     0.0,
-    278.7496,
+    281.5118,
     0.0
    ],
    "scale": [
-    1.0,
-    1.0,
-    1.0
+    1.317,
+    1.317,
+    1.317
    ],
    "collision": "NoCollision",
    "folder": "Cloister/Dressing/Garth",
    "mbounds": [
     [
-     -25.0,
-     -25.0,
+     -6.0,
+     -6.0,
      0.0
     ],
     [
-     25.0,
-     25.0,
-     35.0
+     6.0,
+     6.0,
+     15.7
     ]
    ],
    "aabb_min": [
-    10316.61,
-    1670.64,
-    101.1
+    10635.67,
+    2161.1,
+    102.1
    ],
    "aabb_max": [
-    10373.64,
-    1727.67,
-    136.1
+    10654.31,
+    2179.74,
+    122.78
    ],
    "mi_slots": {},
-   "extras": {
-    "mbounds_estimated": true
-   },
-   "note": "garth vegetation (seed 1224)"
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.317"
   },
   {
    "id": "CLA_GarthGrass_38",
    "cat": "dress",
    "group": "garthveg",
-   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_01.SM_LB_CC0_GrassMedium02_01",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_03.SM_LB_CC0_GrassMedium02_03",
    "loc": [
-    11203.656,
-    1809.282,
-    101.385
+    10745.621,
+    1951.205,
+    100.531
    ],
    "rot": [
     0.0,
-    302.658,
+    346.2345,
     0.0
    ],
    "scale": [
-    1.0,
-    1.0,
-    1.0
+    1.246,
+    1.246,
+    1.246
    ],
    "collision": "NoCollision",
    "folder": "Cloister/Dressing/Garth",
    "mbounds": [
     [
-     -25.0,
-     -25.0,
+     -13.1,
+     -12.5,
      0.0
     ],
     [
-     25.0,
-     25.0,
-     35.0
+     13.1,
+     12.5,
+     23.2
     ]
    ],
    "aabb_min": [
-    11169.12,
-    1774.74,
-    101.38
+    10726.06,
+    1932.19,
+    100.53
    ],
    "aabb_max": [
-    11238.19,
-    1843.82,
-    136.38
+    10765.18,
+    1970.22,
+    129.44
    ],
    "mi_slots": {},
-   "extras": {
-    "mbounds_estimated": true
-   },
-   "note": "garth vegetation (seed 1224)"
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.246"
   },
   {
    "id": "CLA_GarthGrass_39",
    "cat": "dress",
    "group": "garthveg",
-   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_05.SM_LB_CC0_GrassMedium02_05",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_01.SM_LB_CC0_GrassMedium02_01",
    "loc": [
-    11335.393,
-    1451.274,
-    103.316
+    10418.677,
+    2063.27,
+    100.439
    ],
    "rot": [
     0.0,
-    86.865,
+    19.2261,
     0.0
    ],
    "scale": [
-    1.0,
-    1.0,
-    1.0
+    0.941,
+    0.941,
+    0.941
    ],
    "collision": "NoCollision",
    "folder": "Cloister/Dressing/Garth",
    "mbounds": [
     [
-     -25.0,
-     -25.0,
+     -6.0,
+     -6.0,
      0.0
     ],
     [
-     25.0,
-     25.0,
-     35.0
+     6.0,
+     6.0,
+     15.7
     ]
    ],
    "aabb_min": [
-    11309.06,
-    1424.94,
-    103.32
+    10411.49,
+    2056.08,
+    100.44
    ],
    "aabb_max": [
-    11361.72,
-    1477.6,
-    138.32
+    10425.87,
+    2070.46,
+    115.21
    ],
    "mi_slots": {},
-   "extras": {
-    "mbounds_estimated": true
-   },
-   "note": "garth vegetation (seed 1224)"
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 0.941"
   },
   {
-   "id": "CLA_GarthNettle_00",
+   "id": "CLA_GarthGrass_40",
    "cat": "dress",
    "group": "garthveg",
-   "mesh": "/Game/LastBell/Environments/Props/CC0/NettlePlant/SM_LB_CC0_NettlePlant_04.SM_LB_CC0_NettlePlant_04",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_02.SM_LB_CC0_GrassMedium02_02",
    "loc": [
-    10367.612,
-    1489.215,
-    100.964
+    10889.564,
+    1695.863,
+    102.953
    ],
    "rot": [
     0.0,
-    100.1133,
+    248.114,
     0.0
    ],
    "scale": [
-    1.0,
-    1.0,
-    1.0
+    1.21,
+    1.21,
+    1.21
    ],
    "collision": "NoCollision",
    "folder": "Cloister/Dressing/Garth",
    "mbounds": [
     [
-     -2.99,
-     -1.93,
-     0
+     -9.0,
+     -10.0,
+     0.0
     ],
     [
-     2.99,
-     1.93,
-     2.17
+     9.0,
+     10.0,
+     18.0
     ]
    ],
    "aabb_min": [
-    10365.19,
-    1485.93,
-    100.96
+    10874.28,
+    1681.25,
+    102.95
    ],
    "aabb_max": [
-    10370.04,
-    1492.5,
-    103.13
+    10904.85,
+    1710.48,
+    124.73
    ],
    "mi_slots": {},
    "extras": {},
-   "note": "garth vegetation (seed 1224)"
+   "note": "garth vegetation (seed 1224), scale 1.21"
   },
   {
-   "id": "CLA_GarthNettle_01",
+   "id": "CLA_GarthGrass_41",
    "cat": "dress",
    "group": "garthveg",
-   "mesh": "/Game/LastBell/Environments/Props/CC0/NettlePlant/SM_LB_CC0_NettlePlant_01.SM_LB_CC0_NettlePlant_01",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_03.SM_LB_CC0_GrassMedium02_03",
    "loc": [
-    11336.962,
-    1451.133,
-    103.721
+    10369.342,
+    1735.563,
+    101.397
    ],
    "rot": [
     0.0,
-    93.1879,
+    31.5134,
     0.0
    ],
    "scale": [
-    1.0,
-    1.0,
-    1.0
+    1.04,
+    1.04,
+    1.04
    ],
    "collision": "NoCollision",
    "folder": "Cloister/Dressing/Garth",
    "mbounds": [
     [
-     -3.86,
-     -4.45,
-     0
+     -13.1,
+     -12.5,
+     0.0
     ],
     [
-     3.86,
-     4.45,
-     13.15
+     13.1,
+     12.5,
+     23.2
     ]
    ],
    "aabb_min": [
-    11332.3,
-    1447.03,
-    103.72
+    10350.93,
+    1717.36,
+    101.4
    ],
    "aabb_max": [
-    11341.62,
-    1455.23,
-    116.87
+    10387.75,
+    1753.77,
+    125.53
    ],
    "mi_slots": {},
    "extras": {},
-   "note": "garth vegetation (seed 1224)"
+   "note": "garth vegetation (seed 1224), scale 1.04"
   },
   {
-   "id": "CLA_GarthNettle_02",
+   "id": "CLA_GarthGrass_42",
    "cat": "dress",
    "group": "garthveg",
-   "mesh": "/Game/LastBell/Environments/Props/CC0/NettlePlant/SM_LB_CC0_NettlePlant_02.SM_LB_CC0_NettlePlant_02",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_02.SM_LB_CC0_GrassMedium02_02",
    "loc": [
-    10350.342,
-    1719.999,
-    104.487
+    10573.363,
+    1446.613,
+    100.349
    ],
    "rot": [
     0.0,
-    262.599,
+    102.6786,
     0.0
    ],
    "scale": [
-    1.0,
-    1.0,
-    1.0
+    1.291,
+    1.291,
+    1.291
    ],
    "collision": "NoCollision",
    "folder": "Cloister/Dressing/Garth",
    "mbounds": [
     [
-     -3.27,
-     -3.31,
-     0
+     -9.0,
+     -10.0,
+     0.0
     ],
     [
-     3.27,
-     3.31,
-     10.46
+     9.0,
+     10.0,
+     18.0
     ]
    ],
    "aabb_min": [
-    10346.64,
-    1716.33,
-    104.49
+    10558.22,
+    1432.44,
+    100.35
    ],
    "aabb_max": [
-    10354.05,
-    1723.67,
-    114.95
+    10588.51,
+    1460.78,
+    123.59
    ],
    "mi_slots": {},
    "extras": {},
-   "note": "garth vegetation (seed 1224)"
+   "note": "garth vegetation (seed 1224), scale 1.291"
   },
   {
-   "id": "CLA_GarthNettle_03",
+   "id": "CLA_GarthGrass_43",
    "cat": "dress",
    "group": "garthveg",
-   "mesh": "/Game/LastBell/Environments/Props/CC0/NettlePlant/SM_LB_CC0_NettlePlant_03.SM_LB_CC0_NettlePlant_03",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_02.SM_LB_CC0_GrassMedium02_02",
+   "loc": [
+    10543.687,
+    1914.013,
+    101.028
+   ],
+   "rot": [
+    0.0,
+    296.9016,
+    0.0
+   ],
+   "scale": [
+    1.1,
+    1.1,
+    1.1
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -9.0,
+     -10.0,
+     0.0
+    ],
+    [
+     9.0,
+     10.0,
+     18.0
+    ]
+   ],
+   "aabb_min": [
+    10529.4,
+    1900.21,
+    101.03
+   ],
+   "aabb_max": [
+    10557.98,
+    1927.82,
+    120.83
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.1"
+  },
+  {
+   "id": "CLA_GarthGrass_44",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_01.SM_LB_CC0_GrassMedium02_01",
+   "loc": [
+    11122.86,
+    1539.532,
+    101.62
+   ],
+   "rot": [
+    0.0,
+    103.5348,
+    0.0
+   ],
+   "scale": [
+    0.928,
+    0.928,
+    0.928
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -6.0,
+     -6.0,
+     0.0
+    ],
+    [
+     6.0,
+     6.0,
+     15.7
+    ]
+   ],
+   "aabb_min": [
+    11116.14,
+    1532.82,
+    101.62
+   ],
+   "aabb_max": [
+    11129.58,
+    1546.25,
+    116.19
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 0.928"
+  },
+  {
+   "id": "CLA_GarthGrass_45",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_04.SM_LB_CC0_GrassMedium02_04",
+   "loc": [
+    10853.32,
+    1692.807,
+    104.577
+   ],
+   "rot": [
+    0.0,
+    241.7539,
+    0.0
+   ],
+   "scale": [
+    1.246,
+    1.246,
+    1.246
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -15.9,
+     -18.1,
+     0.0
+    ],
+    [
+     15.9,
+     18.1,
+     26.0
+    ]
+   ],
+   "aabb_min": [
+    10824.08,
+    1664.68,
+    104.58
+   ],
+   "aabb_max": [
+    10882.56,
+    1720.93,
+    136.97
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.246"
+  },
+  {
+   "id": "CLA_GarthGrass_46",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_04.SM_LB_CC0_GrassMedium02_04",
+   "loc": [
+    10971.703,
+    1921.145,
+    100.19
+   ],
+   "rot": [
+    0.0,
+    32.1052,
+    0.0
+   ],
+   "scale": [
+    0.982,
+    0.982,
+    0.982
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -15.9,
+     -18.1,
+     0.0
+    ],
+    [
+     15.9,
+     18.1,
+     26.0
+    ]
+   ],
+   "aabb_min": [
+    10949.03,
+    1897.79,
+    100.19
+   ],
+   "aabb_max": [
+    10994.38,
+    1944.5,
+    125.72
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 0.982"
+  },
+  {
+   "id": "CLA_GarthGrass_47",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_02.SM_LB_CC0_GrassMedium02_02",
+   "loc": [
+    10693.366,
+    1491.526,
+    100.866
+   ],
+   "rot": [
+    0.0,
+    314.1165,
+    0.0
+   ],
+   "scale": [
+    1.384,
+    1.384,
+    1.384
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -9.0,
+     -10.0,
+     0.0
+    ],
+    [
+     9.0,
+     10.0,
+     18.0
+    ]
+   ],
+   "aabb_min": [
+    10674.76,
+    1472.95,
+    100.87
+   ],
+   "aabb_max": [
+    10711.97,
+    1510.1,
+    125.78
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.384"
+  },
+  {
+   "id": "CLA_GarthGrass_48",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_05.SM_LB_CC0_GrassMedium02_05",
+   "loc": [
+    10586.641,
+    2147.5,
+    101.957
+   ],
+   "rot": [
+    0.0,
+    101.2816,
+    0.0
+   ],
+   "scale": [
+    1.199,
+    1.199,
+    1.199
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -17.8,
+     -21.7,
+     0.0
+    ],
+    [
+     17.8,
+     21.7,
+     40.3
+    ]
+   ],
+   "aabb_min": [
+    10556.95,
+    2121.48,
+    101.96
+   ],
+   "aabb_max": [
+    10616.33,
+    2173.52,
+    150.28
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.199"
+  },
+  {
+   "id": "CLA_GarthGrass_49",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_04.SM_LB_CC0_GrassMedium02_04",
+   "loc": [
+    10388.799,
+    1728.989,
+    103.783
+   ],
+   "rot": [
+    0.0,
+    103.7532,
+    0.0
+   ],
+   "scale": [
+    0.932,
+    0.932,
+    0.932
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -15.9,
+     -18.1,
+     0.0
+    ],
+    [
+     15.9,
+     18.1,
+     26.0
+    ]
+   ],
+   "aabb_min": [
+    10368.89,
+    1710.58,
+    103.78
+   ],
+   "aabb_max": [
+    10408.71,
+    1747.39,
+    128.02
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 0.932"
+  },
+  {
+   "id": "CLA_GarthGrass_50",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_03.SM_LB_CC0_GrassMedium02_03",
+   "loc": [
+    10383.012,
+    1764.69,
+    101.319
+   ],
+   "rot": [
+    0.0,
+    296.8646,
+    0.0
+   ],
+   "scale": [
+    1.112,
+    1.112,
+    1.112
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -13.1,
+     -12.5,
+     0.0
+    ],
+    [
+     13.1,
+     12.5,
+     23.2
+    ]
+   ],
+   "aabb_min": [
+    10364.03,
+    1745.41,
+    101.32
+   ],
+   "aabb_max": [
+    10401.99,
+    1783.97,
+    127.12
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.112"
+  },
+  {
+   "id": "CLA_GarthGrass_51",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_04.SM_LB_CC0_GrassMedium02_04",
+   "loc": [
+    10862.947,
+    1630.494,
+    104.204
+   ],
+   "rot": [
+    0.0,
+    180.4164,
+    0.0
+   ],
+   "scale": [
+    0.922,
+    0.922,
+    0.922
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -15.9,
+     -18.1,
+     0.0
+    ],
+    [
+     15.9,
+     18.1,
+     26.0
+    ]
+   ],
+   "aabb_min": [
+    10848.17,
+    1613.7,
+    104.2
+   ],
+   "aabb_max": [
+    10877.73,
+    1647.29,
+    128.18
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 0.922"
+  },
+  {
+   "id": "CLA_GarthGrass_52",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_01.SM_LB_CC0_GrassMedium02_01",
+   "loc": [
+    10522.144,
+    1900.203,
+    100.225
+   ],
+   "rot": [
+    0.0,
+    32.786,
+    0.0
+   ],
+   "scale": [
+    1.204,
+    1.204,
+    1.204
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -6.0,
+     -6.0,
+     0.0
+    ],
+    [
+     6.0,
+     6.0,
+     15.7
+    ]
+   ],
+   "aabb_min": [
+    10512.16,
+    1890.22,
+    100.22
+   ],
+   "aabb_max": [
+    10532.13,
+    1910.19,
+    119.13
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.204"
+  },
+  {
+   "id": "CLA_GarthGrass_53",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_02.SM_LB_CC0_GrassMedium02_02",
+   "loc": [
+    10368.341,
+    1699.018,
+    103.523
+   ],
+   "rot": [
+    0.0,
+    317.1397,
+    0.0
+   ],
+   "scale": [
+    1.084,
+    1.084,
+    1.084
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -9.0,
+     -10.0,
+     0.0
+    ],
+    [
+     9.0,
+     10.0,
+     18.0
+    ]
+   ],
+   "aabb_min": [
+    10353.82,
+    1684.44,
+    103.52
+   ],
+   "aabb_max": [
+    10382.87,
+    1713.6,
+    123.03
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.084"
+  },
+  {
+   "id": "CLA_GarthGrass_54",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_01.SM_LB_CC0_GrassMedium02_01",
+   "loc": [
+    10454.129,
+    1925.892,
+    103.653
+   ],
+   "rot": [
+    0.0,
+    310.6795,
+    0.0
+   ],
+   "scale": [
+    1.029,
+    1.029,
+    1.029
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -6.0,
+     -6.0,
+     0.0
+    ],
+    [
+     6.0,
+     6.0,
+     15.7
+    ]
+   ],
+   "aabb_min": [
+    10445.42,
+    1917.19,
+    103.65
+   ],
+   "aabb_max": [
+    10462.84,
+    1934.6,
+    119.81
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.029"
+  },
+  {
+   "id": "CLA_GarthGrass_55",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_02.SM_LB_CC0_GrassMedium02_02",
+   "loc": [
+    10334.853,
+    1439.557,
+    103.894
+   ],
+   "rot": [
+    0.0,
+    322.653,
+    0.0
+   ],
+   "scale": [
+    1.349,
+    1.349,
+    1.349
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -9.0,
+     -10.0,
+     0.0
+    ],
+    [
+     9.0,
+     10.0,
+     18.0
+    ]
+   ],
+   "aabb_min": [
+    10317.02,
+    1421.47,
+    103.89
+   ],
+   "aabb_max": [
+    10352.69,
+    1457.65,
+    128.18
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.349"
+  },
+  {
+   "id": "CLA_GarthGrass_56",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_01.SM_LB_CC0_GrassMedium02_01",
+   "loc": [
+    11007.606,
+    1700.96,
+    100.361
+   ],
+   "rot": [
+    0.0,
+    128.1155,
+    0.0
+   ],
+   "scale": [
+    1.081,
+    1.081,
+    1.081
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -6.0,
+     -6.0,
+     0.0
+    ],
+    [
+     6.0,
+     6.0,
+     15.7
+    ]
+   ],
+   "aabb_min": [
+    10998.5,
+    1691.85,
+    100.36
+   ],
+   "aabb_max": [
+    11016.71,
+    1710.07,
+    117.33
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.081"
+  },
+  {
+   "id": "CLA_GarthGrass_57",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_03.SM_LB_CC0_GrassMedium02_03",
    "loc": [
     10608.775,
     1824.34,
@@ -24778,9 +25882,1593 @@
     0.0
    ],
    "scale": [
-    1.0,
-    1.0,
-    1.0
+    1.199,
+    1.199,
+    1.199
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -13.1,
+     -12.5,
+     0.0
+    ],
+    [
+     13.1,
+     12.5,
+     23.2
+    ]
+   ],
+   "aabb_min": [
+    10587.08,
+    1802.63,
+    104.17
+   ],
+   "aabb_max": [
+    10630.47,
+    1846.05,
+    131.99
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.199"
+  },
+  {
+   "id": "CLA_GarthGrass_58",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_02.SM_LB_CC0_GrassMedium02_02",
+   "loc": [
+    11188.168,
+    2129.0,
+    100.34
+   ],
+   "rot": [
+    0.0,
+    283.5736,
+    0.0
+   ],
+   "scale": [
+    1.119,
+    1.119,
+    1.119
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -9.0,
+     -10.0,
+     0.0
+    ],
+    [
+     9.0,
+     10.0,
+     18.0
+    ]
+   ],
+   "aabb_min": [
+    11174.93,
+    2116.58,
+    100.34
+   ],
+   "aabb_max": [
+    11201.41,
+    2141.42,
+    120.48
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.119"
+  },
+  {
+   "id": "CLA_GarthGrass_59",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_05.SM_LB_CC0_GrassMedium02_05",
+   "loc": [
+    11272.977,
+    2148.238,
+    104.63
+   ],
+   "rot": [
+    0.0,
+    87.6681,
+    0.0
+   ],
+   "scale": [
+    0.923,
+    0.923,
+    0.923
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -17.8,
+     -21.7,
+     0.0
+    ],
+    [
+     17.8,
+     21.7,
+     40.3
+    ]
+   ],
+   "aabb_min": [
+    11252.3,
+    2131.01,
+    104.63
+   ],
+   "aabb_max": [
+    11293.66,
+    2165.47,
+    141.83
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 0.923"
+  },
+  {
+   "id": "CLA_GarthGrass_60",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_03.SM_LB_CC0_GrassMedium02_03",
+   "loc": [
+    11103.447,
+    1687.427,
+    101.304
+   ],
+   "rot": [
+    0.0,
+    218.0225,
+    0.0
+   ],
+   "scale": [
+    0.969,
+    0.969,
+    0.969
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -13.1,
+     -12.5,
+     0.0
+    ],
+    [
+     13.1,
+     12.5,
+     23.2
+    ]
+   ],
+   "aabb_min": [
+    11085.99,
+    1670.07,
+    101.3
+   ],
+   "aabb_max": [
+    11120.91,
+    1704.79,
+    123.78
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 0.969"
+  },
+  {
+   "id": "CLA_GarthGrass_61",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_03.SM_LB_CC0_GrassMedium02_03",
+   "loc": [
+    10628.236,
+    1509.273,
+    100.841
+   ],
+   "rot": [
+    0.0,
+    245.0986,
+    0.0
+   ],
+   "scale": [
+    1.102,
+    1.102,
+    1.102
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -13.1,
+     -12.5,
+     0.0
+    ],
+    [
+     13.1,
+     12.5,
+     23.2
+    ]
+   ],
+   "aabb_min": [
+    10609.66,
+    1490.38,
+    100.84
+   ],
+   "aabb_max": [
+    10646.81,
+    1528.17,
+    126.41
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.102"
+  },
+  {
+   "id": "CLA_GarthGrass_62",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_04.SM_LB_CC0_GrassMedium02_04",
+   "loc": [
+    10879.218,
+    1597.362,
+    101.866
+   ],
+   "rot": [
+    0.0,
+    168.9669,
+    0.0
+   ],
+   "scale": [
+    1.09,
+    1.09,
+    1.09
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -15.9,
+     -18.1,
+     0.0
+    ],
+    [
+     15.9,
+     18.1,
+     26.0
+    ]
+   ],
+   "aabb_min": [
+    10858.43,
+    1574.68,
+    101.87
+   ],
+   "aabb_max": [
+    10900.0,
+    1620.04,
+    130.21
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.09"
+  },
+  {
+   "id": "CLA_GarthGrass_63",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_04.SM_LB_CC0_GrassMedium02_04",
+   "loc": [
+    10971.039,
+    1602.761,
+    101.909
+   ],
+   "rot": [
+    0.0,
+    355.7839,
+    0.0
+   ],
+   "scale": [
+    1.116,
+    1.116,
+    1.116
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -15.9,
+     -18.1,
+     0.0
+    ],
+    [
+     15.9,
+     18.1,
+     26.0
+    ]
+   ],
+   "aabb_min": [
+    10951.86,
+    1581.31,
+    101.91
+   ],
+   "aabb_max": [
+    10990.22,
+    1624.21,
+    130.92
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.116"
+  },
+  {
+   "id": "CLA_GarthGrass_64",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_04.SM_LB_CC0_GrassMedium02_04",
+   "loc": [
+    10416.651,
+    1688.093,
+    100.365
+   ],
+   "rot": [
+    0.0,
+    331.7158,
+    0.0
+   ],
+   "scale": [
+    1.264,
+    1.264,
+    1.264
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -15.9,
+     -18.1,
+     0.0
+    ],
+    [
+     15.9,
+     18.1,
+     26.0
+    ]
+   ],
+   "aabb_min": [
+    10388.11,
+    1658.42,
+    100.37
+   ],
+   "aabb_max": [
+    10445.19,
+    1717.76,
+    133.23
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.264"
+  },
+  {
+   "id": "CLA_GarthGrass_65",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_03.SM_LB_CC0_GrassMedium02_03",
+   "loc": [
+    10709.255,
+    1763.422,
+    102.926
+   ],
+   "rot": [
+    0.0,
+    271.9483,
+    0.0
+   ],
+   "scale": [
+    1.043,
+    1.043,
+    1.043
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -13.1,
+     -12.5,
+     0.0
+    ],
+    [
+     13.1,
+     12.5,
+     23.2
+    ]
+   ],
+   "aabb_min": [
+    10695.76,
+    1749.32,
+    102.93
+   ],
+   "aabb_max": [
+    10722.75,
+    1777.52,
+    127.12
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.043"
+  },
+  {
+   "id": "CLA_GarthGrass_66",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_01.SM_LB_CC0_GrassMedium02_01",
+   "loc": [
+    10703.832,
+    2109.703,
+    100.818
+   ],
+   "rot": [
+    0.0,
+    280.9863,
+    0.0
+   ],
+   "scale": [
+    1.003,
+    1.003,
+    1.003
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -6.0,
+     -6.0,
+     0.0
+    ],
+    [
+     6.0,
+     6.0,
+     15.7
+    ]
+   ],
+   "aabb_min": [
+    10696.78,
+    2102.65,
+    100.82
+   ],
+   "aabb_max": [
+    10710.89,
+    2116.76,
+    116.57
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.003"
+  },
+  {
+   "id": "CLA_GarthGrass_67",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_04.SM_LB_CC0_GrassMedium02_04",
+   "loc": [
+    10746.159,
+    1954.2,
+    104.937
+   ],
+   "rot": [
+    0.0,
+    250.8354,
+    0.0
+   ],
+   "scale": [
+    1.265,
+    1.265,
+    1.265
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -15.9,
+     -18.1,
+     0.0
+    ],
+    [
+     15.9,
+     18.1,
+     26.0
+    ]
+   ],
+   "aabb_min": [
+    10717.93,
+    1927.68,
+    104.94
+   ],
+   "aabb_max": [
+    10774.39,
+    1980.71,
+    137.83
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.265"
+  },
+  {
+   "id": "CLA_GarthGrass_68",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_02.SM_LB_CC0_GrassMedium02_02",
+   "loc": [
+    11064.054,
+    1628.678,
+    104.83
+   ],
+   "rot": [
+    0.0,
+    358.2259,
+    0.0
+   ],
+   "scale": [
+    1.307,
+    1.307,
+    1.307
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -9.0,
+     -10.0,
+     0.0
+    ],
+    [
+     9.0,
+     10.0,
+     18.0
+    ]
+   ],
+   "aabb_min": [
+    11051.89,
+    1615.25,
+    104.83
+   ],
+   "aabb_max": [
+    11076.22,
+    1642.11,
+    128.36
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.307"
+  },
+  {
+   "id": "CLA_GarthGrass_69",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_02.SM_LB_CC0_GrassMedium02_02",
+   "loc": [
+    11251.04,
+    1711.268,
+    100.516
+   ],
+   "rot": [
+    0.0,
+    219.5159,
+    0.0
+   ],
+   "scale": [
+    1.297,
+    1.297,
+    1.297
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -9.0,
+     -10.0,
+     0.0
+    ],
+    [
+     9.0,
+     10.0,
+     18.0
+    ]
+   ],
+   "aabb_min": [
+    11233.78,
+    1693.84,
+    100.52
+   ],
+   "aabb_max": [
+    11268.3,
+    1728.7,
+    123.86
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.297"
+  },
+  {
+   "id": "CLA_GarthGrass_70",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_01.SM_LB_CC0_GrassMedium02_01",
+   "loc": [
+    10414.495,
+    1901.865,
+    100.33
+   ],
+   "rot": [
+    0.0,
+    226.4916,
+    0.0
+   ],
+   "scale": [
+    1.365,
+    1.365,
+    1.365
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -6.0,
+     -6.0,
+     0.0
+    ],
+    [
+     6.0,
+     6.0,
+     15.7
+    ]
+   ],
+   "aabb_min": [
+    10402.92,
+    1890.29,
+    100.33
+   ],
+   "aabb_max": [
+    10426.07,
+    1913.44,
+    121.76
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.365"
+  },
+  {
+   "id": "CLA_GarthGrass_71",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_04.SM_LB_CC0_GrassMedium02_04",
+   "loc": [
+    10725.058,
+    1964.66,
+    101.758
+   ],
+   "rot": [
+    0.0,
+    166.8075,
+    0.0
+   ],
+   "scale": [
+    1.039,
+    1.039,
+    1.039
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -15.9,
+     -18.1,
+     0.0
+    ],
+    [
+     15.9,
+     18.1,
+     26.0
+    ]
+   ],
+   "aabb_min": [
+    10704.68,
+    1942.58,
+    101.76
+   ],
+   "aabb_max": [
+    10745.43,
+    1986.74,
+    128.77
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.039"
+  },
+  {
+   "id": "CLA_GarthGrass_72",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_05.SM_LB_CC0_GrassMedium02_05",
+   "loc": [
+    11069.892,
+    1741.634,
+    100.931
+   ],
+   "rot": [
+    0.0,
+    90.7287,
+    0.0
+   ],
+   "scale": [
+    0.916,
+    0.916,
+    0.916
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -17.8,
+     -21.7,
+     0.0
+    ],
+    [
+     17.8,
+     21.7,
+     40.3
+    ]
+   ],
+   "aabb_min": [
+    11049.81,
+    1725.08,
+    100.93
+   ],
+   "aabb_max": [
+    11089.97,
+    1758.19,
+    137.85
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 0.916"
+  },
+  {
+   "id": "CLA_GarthGrass_73",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_04.SM_LB_CC0_GrassMedium02_04",
+   "loc": [
+    10878.302,
+    1516.114,
+    101.793
+   ],
+   "rot": [
+    0.0,
+    318.1506,
+    0.0
+   ],
+   "scale": [
+    1.11,
+    1.11,
+    1.11
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -15.9,
+     -18.1,
+     0.0
+    ],
+    [
+     15.9,
+     18.1,
+     26.0
+    ]
+   ],
+   "aabb_min": [
+    10851.75,
+    1489.37,
+    101.79
+   ],
+   "aabb_max": [
+    10904.85,
+    1542.86,
+    130.65
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.11"
+  },
+  {
+   "id": "CLA_GarthGrass_74",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_05.SM_LB_CC0_GrassMedium02_05",
+   "loc": [
+    10881.626,
+    1474.218,
+    103.676
+   ],
+   "rot": [
+    0.0,
+    12.8761,
+    0.0
+   ],
+   "scale": [
+    1.02,
+    1.02,
+    1.02
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -17.8,
+     -21.7,
+     0.0
+    ],
+    [
+     17.8,
+     21.7,
+     40.3
+    ]
+   ],
+   "aabb_min": [
+    10858.99,
+    1448.59,
+    103.68
+   ],
+   "aabb_max": [
+    10904.26,
+    1499.84,
+    144.78
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.02"
+  },
+  {
+   "id": "CLA_GarthGrass_75",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_04.SM_LB_CC0_GrassMedium02_04",
+   "loc": [
+    10994.537,
+    1672.304,
+    103.878
+   ],
+   "rot": [
+    0.0,
+    310.0338,
+    0.0
+   ],
+   "scale": [
+    0.937,
+    0.937,
+    0.937
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -15.9,
+     -18.1,
+     0.0
+    ],
+    [
+     15.9,
+     18.1,
+     26.0
+    ]
+   ],
+   "aabb_min": [
+    10971.97,
+    1649.99,
+    103.88
+   ],
+   "aabb_max": [
+    11017.11,
+    1694.62,
+    128.24
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 0.937"
+  },
+  {
+   "id": "CLA_GarthGrass_76",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_05.SM_LB_CC0_GrassMedium02_05",
+   "loc": [
+    10642.429,
+    1911.388,
+    104.94
+   ],
+   "rot": [
+    0.0,
+    299.5617,
+    0.0
+   ],
+   "scale": [
+    1.19,
+    1.19,
+    1.19
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -17.8,
+     -21.7,
+     0.0
+    ],
+    [
+     17.8,
+     21.7,
+     40.3
+    ]
+   ],
+   "aabb_min": [
+    10609.52,
+    1880.22,
+    104.94
+   ],
+   "aabb_max": [
+    10675.34,
+    1942.55,
+    152.9
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.19"
+  },
+  {
+   "id": "CLA_GarthGrass_77",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_03.SM_LB_CC0_GrassMedium02_03",
+   "loc": [
+    10352.108,
+    1481.674,
+    100.175
+   ],
+   "rot": [
+    0.0,
+    142.9101,
+    0.0
+   ],
+   "scale": [
+    1.053,
+    1.053,
+    1.053
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -13.1,
+     -12.5,
+     0.0
+    ],
+    [
+     13.1,
+     12.5,
+     23.2
+    ]
+   ],
+   "aabb_min": [
+    10333.17,
+    1462.86,
+    100.17
+   ],
+   "aabb_max": [
+    10371.05,
+    1500.49,
+    124.6
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.053"
+  },
+  {
+   "id": "CLA_GarthGrass_78",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_02.SM_LB_CC0_GrassMedium02_02",
+   "loc": [
+    10671.648,
+    1458.948,
+    103.02
+   ],
+   "rot": [
+    0.0,
+    89.5685,
+    0.0
+   ],
+   "scale": [
+    1.209,
+    1.209,
+    1.209
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -9.0,
+     -10.0,
+     0.0
+    ],
+    [
+     9.0,
+     10.0,
+     18.0
+    ]
+   ],
+   "aabb_min": [
+    10659.48,
+    1447.98,
+    103.02
+   ],
+   "aabb_max": [
+    10683.82,
+    1469.92,
+    124.78
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.209"
+  },
+  {
+   "id": "CLA_GarthGrass_79",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_01.SM_LB_CC0_GrassMedium02_01",
+   "loc": [
+    11139.65,
+    1499.029,
+    102.856
+   ],
+   "rot": [
+    0.0,
+    191.6436,
+    0.0
+   ],
+   "scale": [
+    1.364,
+    1.364,
+    1.364
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -6.0,
+     -6.0,
+     0.0
+    ],
+    [
+     6.0,
+     6.0,
+     15.7
+    ]
+   ],
+   "aabb_min": [
+    11129.98,
+    1489.36,
+    102.86
+   ],
+   "aabb_max": [
+    11149.32,
+    1508.7,
+    124.27
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.364"
+  },
+  {
+   "id": "CLA_GarthGrass_80",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_04.SM_LB_CC0_GrassMedium02_04",
+   "loc": [
+    10736.427,
+    2020.345,
+    102.875
+   ],
+   "rot": [
+    0.0,
+    156.7693,
+    0.0
+   ],
+   "scale": [
+    1.379,
+    1.379,
+    1.379
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -15.9,
+     -18.1,
+     0.0
+    ],
+    [
+     15.9,
+     18.1,
+     26.0
+    ]
+   ],
+   "aabb_min": [
+    10706.43,
+    1988.76,
+    102.87
+   ],
+   "aabb_max": [
+    10766.42,
+    2051.93,
+    138.73
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.379"
+  },
+  {
+   "id": "CLA_GarthGrass_81",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_01.SM_LB_CC0_GrassMedium02_01",
+   "loc": [
+    11095.725,
+    1736.457,
+    100.569
+   ],
+   "rot": [
+    0.0,
+    249.2884,
+    0.0
+   ],
+   "scale": [
+    1.234,
+    1.234,
+    1.234
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -6.0,
+     -6.0,
+     0.0
+    ],
+    [
+     6.0,
+     6.0,
+     15.7
+    ]
+   ],
+   "aabb_min": [
+    11086.18,
+    1726.91,
+    100.57
+   ],
+   "aabb_max": [
+    11105.27,
+    1746.0,
+    119.94
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.234"
+  },
+  {
+   "id": "CLA_GarthGrass_82",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_02.SM_LB_CC0_GrassMedium02_02",
+   "loc": [
+    10779.145,
+    1528.237,
+    102.659
+   ],
+   "rot": [
+    0.0,
+    123.4444,
+    0.0
+   ],
+   "scale": [
+    1.242,
+    1.242,
+    1.242
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -9.0,
+     -10.0,
+     0.0
+    ],
+    [
+     9.0,
+     10.0,
+     18.0
+    ]
+   ],
+   "aabb_min": [
+    10762.62,
+    1512.06,
+    102.66
+   ],
+   "aabb_max": [
+    10795.67,
+    1544.41,
+    125.01
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.242"
+  },
+  {
+   "id": "CLA_GarthGrass_83",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_02.SM_LB_CC0_GrassMedium02_02",
+   "loc": [
+    11203.482,
+    1687.729,
+    103.47
+   ],
+   "rot": [
+    0.0,
+    231.5773,
+    0.0
+   ],
+   "scale": [
+    1.006,
+    1.006,
+    1.006
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -9.0,
+     -10.0,
+     0.0
+    ],
+    [
+     9.0,
+     10.0,
+     18.0
+    ]
+   ],
+   "aabb_min": [
+    11189.97,
+    1674.38,
+    103.47
+   ],
+   "aabb_max": [
+    11216.99,
+    1701.07,
+    121.58
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.006"
+  },
+  {
+   "id": "CLA_GarthGrass_84",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_05.SM_LB_CC0_GrassMedium02_05",
+   "loc": [
+    11300.463,
+    2043.15,
+    100.763
+   ],
+   "rot": [
+    0.0,
+    304.1001,
+    0.0
+   ],
+   "scale": [
+    1.27,
+    1.27,
+    1.27
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -17.8,
+     -21.7,
+     0.0
+    ],
+    [
+     17.8,
+     21.7,
+     40.3
+    ]
+   ],
+   "aabb_min": [
+    11264.97,
+    2008.98,
+    100.76
+   ],
+   "aabb_max": [
+    11335.96,
+    2077.32,
+    151.94
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.27"
+  },
+  {
+   "id": "CLA_GarthGrass_85",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_02.SM_LB_CC0_GrassMedium02_02",
+   "loc": [
+    10499.517,
+    2140.354,
+    104.097
+   ],
+   "rot": [
+    0.0,
+    155.6804,
+    0.0
+   ],
+   "scale": [
+    1.105,
+    1.105,
+    1.105
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -9.0,
+     -10.0,
+     0.0
+    ],
+    [
+     9.0,
+     10.0,
+     18.0
+    ]
+   ],
+   "aabb_min": [
+    10485.9,
+    2126.19,
+    104.1
+   ],
+   "aabb_max": [
+    10513.13,
+    2154.52,
+    123.99
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.105"
+  },
+  {
+   "id": "CLA_GarthGrass_86",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_04.SM_LB_CC0_GrassMedium02_04",
+   "loc": [
+    10359.946,
+    1973.708,
+    104.145
+   ],
+   "rot": [
+    0.0,
+    180.9256,
+    0.0
+   ],
+   "scale": [
+    1.163,
+    1.163,
+    1.163
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -15.9,
+     -18.1,
+     0.0
+    ],
+    [
+     15.9,
+     18.1,
+     26.0
+    ]
+   ],
+   "aabb_min": [
+    10341.12,
+    1952.36,
+    104.15
+   ],
+   "aabb_max": [
+    10378.78,
+    1995.05,
+    134.38
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.163"
+  },
+  {
+   "id": "CLA_GarthGrass_87",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_03.SM_LB_CC0_GrassMedium02_03",
+   "loc": [
+    11115.57,
+    1691.461,
+    104.999
+   ],
+   "rot": [
+    0.0,
+    114.4148,
+    0.0
+   ],
+   "scale": [
+    1.076,
+    1.076,
+    1.076
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -13.1,
+     -12.5,
+     0.0
+    ],
+    [
+     13.1,
+     12.5,
+     23.2
+    ]
+   ],
+   "aabb_min": [
+    11097.5,
+    1673.07,
+    105.0
+   ],
+   "aabb_max": [
+    11133.64,
+    1709.86,
+    129.96
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.076"
+  },
+  {
+   "id": "CLA_GarthGrass_88",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_03.SM_LB_CC0_GrassMedium02_03",
+   "loc": [
+    10432.667,
+    1843.729,
+    101.888
+   ],
+   "rot": [
+    0.0,
+    320.6287,
+    0.0
+   ],
+   "scale": [
+    1.133,
+    1.133,
+    1.133
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -13.1,
+     -12.5,
+     0.0
+    ],
+    [
+     13.1,
+     12.5,
+     23.2
+    ]
+   ],
+   "aabb_min": [
+    10412.21,
+    1823.37,
+    101.89
+   ],
+   "aabb_max": [
+    10453.12,
+    1864.09,
+    128.17
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.133"
+  },
+  {
+   "id": "CLA_GarthGrass_89",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/GrassMedium02/SM_LB_CC0_GrassMedium02_03.SM_LB_CC0_GrassMedium02_03",
+   "loc": [
+    11362.673,
+    1665.202,
+    100.202
+   ],
+   "rot": [
+    0.0,
+    254.6298,
+    0.0
+   ],
+   "scale": [
+    1.244,
+    1.244,
+    1.244
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -13.1,
+     -12.5,
+     0.0
+    ],
+    [
+     13.1,
+     12.5,
+     23.2
+    ]
+   ],
+   "aabb_min": [
+    11343.36,
+    1645.37,
+    100.2
+   ],
+   "aabb_max": [
+    11381.99,
+    1685.04,
+    129.06
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.244"
+  },
+  {
+   "id": "CLA_GarthNettle_00",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/NettlePlant/SM_LB_CC0_NettlePlant_03.SM_LB_CC0_NettlePlant_03",
+   "loc": [
+    11346.618,
+    1886.618,
+    101.87
+   ],
+   "rot": [
+    0.0,
+    243.4421,
+    0.0
+   ],
+   "scale": [
+    4.34,
+    4.34,
+    4.34
    ],
    "collision": "NoCollision",
    "folder": "Cloister/Dressing/Garth",
@@ -24797,134 +27485,38 @@
     ]
    ],
    "aabb_min": [
-    10604.98,
-    1820.52,
-    104.17
+    11331.97,
+    1869.95,
+    101.87
    ],
    "aabb_max": [
-    10612.57,
-    1828.16,
-    110.43
+    11361.27,
+    1903.29,
+    129.04
    ],
    "mi_slots": {},
    "extras": {},
-   "note": "garth vegetation (seed 1224)"
+   "note": "garth vegetation (seed 1224), scale 4.34"
   },
   {
-   "id": "CLA_GarthNettle_04",
-   "cat": "dress",
-   "group": "garthveg",
-   "mesh": "/Game/LastBell/Environments/Props/CC0/NettlePlant/SM_LB_CC0_NettlePlant_02.SM_LB_CC0_NettlePlant_02",
-   "loc": [
-    10784.581,
-    2035.637,
-    101.107
-   ],
-   "rot": [
-    0.0,
-    294.8496,
-    0.0
-   ],
-   "scale": [
-    1.0,
-    1.0,
-    1.0
-   ],
-   "collision": "NoCollision",
-   "folder": "Cloister/Dressing/Garth",
-   "mbounds": [
-    [
-     -3.27,
-     -3.31,
-     0
-    ],
-    [
-     3.27,
-     3.31,
-     10.46
-    ]
-   ],
-   "aabb_min": [
-    10780.2,
-    2031.28,
-    101.11
-   ],
-   "aabb_max": [
-    10788.96,
-    2039.99,
-    111.57
-   ],
-   "mi_slots": {},
-   "extras": {},
-   "note": "garth vegetation (seed 1224)"
-  },
-  {
-   "id": "CLA_GarthNettle_05",
-   "cat": "dress",
-   "group": "garthveg",
-   "mesh": "/Game/LastBell/Environments/Props/CC0/NettlePlant/SM_LB_CC0_NettlePlant_01.SM_LB_CC0_NettlePlant_01",
-   "loc": [
-    10957.2,
-    2124.948,
-    104.184
-   ],
-   "rot": [
-    0.0,
-    130.8052,
-    0.0
-   ],
-   "scale": [
-    1.0,
-    1.0,
-    1.0
-   ],
-   "collision": "NoCollision",
-   "folder": "Cloister/Dressing/Garth",
-   "mbounds": [
-    [
-     -3.86,
-     -4.45,
-     0
-    ],
-    [
-     3.86,
-     4.45,
-     13.15
-    ]
-   ],
-   "aabb_min": [
-    10951.31,
-    2119.12,
-    104.18
-   ],
-   "aabb_max": [
-    10963.09,
-    2130.78,
-    117.33
-   ],
-   "mi_slots": {},
-   "extras": {},
-   "note": "garth vegetation (seed 1224)"
-  },
-  {
-   "id": "CLA_GarthNettle_06",
+   "id": "CLA_GarthNettle_01",
    "cat": "dress",
    "group": "garthveg",
    "mesh": "/Game/LastBell/Environments/Props/CC0/NettlePlant/SM_LB_CC0_NettlePlant_06.SM_LB_CC0_NettlePlant_06",
    "loc": [
-    11335.7,
-    2123.7,
-    101.218
+    10690.336,
+    1998.448,
+    100.545
    ],
    "rot": [
     0.0,
-    227.5072,
+    187.4152,
     0.0
    ],
    "scale": [
-    1.0,
-    1.0,
-    1.0
+    3.51,
+    3.51,
+    3.51
    ],
    "collision": "NoCollision",
    "folder": "Cloister/Dressing/Garth",
@@ -24941,230 +27533,38 @@
     ]
    ],
    "aabb_min": [
-    11329.43,
-    2117.47,
-    101.22
+    10673.85,
+    1980.12,
+    100.55
    ],
    "aabb_max": [
-    11341.97,
-    2129.93,
-    120.49
+    10706.82,
+    2016.78,
+    168.18
    ],
    "mi_slots": {},
    "extras": {},
-   "note": "garth vegetation (seed 1224)"
+   "note": "garth vegetation (seed 1224), scale 3.51"
   },
   {
-   "id": "CLA_GarthNettle_07",
-   "cat": "dress",
-   "group": "garthveg",
-   "mesh": "/Game/LastBell/Environments/Props/CC0/NettlePlant/SM_LB_CC0_NettlePlant_03.SM_LB_CC0_NettlePlant_03",
-   "loc": [
-    11090.762,
-    1458.367,
-    101.308
-   ],
-   "rot": [
-    0.0,
-    266.0764,
-    0.0
-   ],
-   "scale": [
-    1.0,
-    1.0,
-    1.0
-   ],
-   "collision": "NoCollision",
-   "folder": "Cloister/Dressing/Garth",
-   "mbounds": [
-    [
-     -3.21,
-     -2.17,
-     0
-    ],
-    [
-     3.21,
-     2.17,
-     6.26
-    ]
-   ],
-   "aabb_min": [
-    11088.38,
-    1455.02,
-    101.31
-   ],
-   "aabb_max": [
-    11093.15,
-    1461.72,
-    107.57
-   ],
-   "mi_slots": {},
-   "extras": {},
-   "note": "garth vegetation (seed 1224)"
-  },
-  {
-   "id": "CLA_GarthNettle_08",
-   "cat": "dress",
-   "group": "garthveg",
-   "mesh": "/Game/LastBell/Environments/Props/CC0/NettlePlant/SM_LB_CC0_NettlePlant_03.SM_LB_CC0_NettlePlant_03",
-   "loc": [
-    10464.736,
-    1704.89,
-    102.189
-   ],
-   "rot": [
-    0.0,
-    37.3378,
-    0.0
-   ],
-   "scale": [
-    1.0,
-    1.0,
-    1.0
-   ],
-   "collision": "NoCollision",
-   "folder": "Cloister/Dressing/Garth",
-   "mbounds": [
-    [
-     -3.21,
-     -2.17,
-     0
-    ],
-    [
-     3.21,
-     2.17,
-     6.26
-    ]
-   ],
-   "aabb_min": [
-    10460.87,
-    1701.22,
-    102.19
-   ],
-   "aabb_max": [
-    10468.6,
-    1708.56,
-    108.45
-   ],
-   "mi_slots": {},
-   "extras": {},
-   "note": "garth vegetation (seed 1224)"
-  },
-  {
-   "id": "CLA_GarthNettle_09",
-   "cat": "dress",
-   "group": "garthveg",
-   "mesh": "/Game/LastBell/Environments/Props/CC0/NettlePlant/SM_LB_CC0_NettlePlant_01.SM_LB_CC0_NettlePlant_01",
-   "loc": [
-    10628.236,
-    1509.273,
-    100.841
-   ],
-   "rot": [
-    0.0,
-    245.0986,
-    0.0
-   ],
-   "scale": [
-    1.0,
-    1.0,
-    1.0
-   ],
-   "collision": "NoCollision",
-   "folder": "Cloister/Dressing/Garth",
-   "mbounds": [
-    [
-     -3.86,
-     -4.45,
-     0
-    ],
-    [
-     3.86,
-     4.45,
-     13.15
-    ]
-   ],
-   "aabb_min": [
-    10622.57,
-    1503.9,
-    100.84
-   ],
-   "aabb_max": [
-    10633.9,
-    1514.65,
-    113.99
-   ],
-   "mi_slots": {},
-   "extras": {},
-   "note": "garth vegetation (seed 1224)"
-  },
-  {
-   "id": "CLA_GarthNettle_10",
-   "cat": "dress",
-   "group": "garthveg",
-   "mesh": "/Game/LastBell/Environments/Props/CC0/NettlePlant/SM_LB_CC0_NettlePlant_04.SM_LB_CC0_NettlePlant_04",
-   "loc": [
-    10722.127,
-    1832.751,
-    102.634
-   ],
-   "rot": [
-    0.0,
-    189.9232,
-    0.0
-   ],
-   "scale": [
-    1.0,
-    1.0,
-    1.0
-   ],
-   "collision": "NoCollision",
-   "folder": "Cloister/Dressing/Garth",
-   "mbounds": [
-    [
-     -2.99,
-     -1.93,
-     0
-    ],
-    [
-     2.99,
-     1.93,
-     2.17
-    ]
-   ],
-   "aabb_min": [
-    10718.85,
-    1830.33,
-    102.63
-   ],
-   "aabb_max": [
-    10725.41,
-    1835.17,
-    104.8
-   ],
-   "mi_slots": {},
-   "extras": {},
-   "note": "garth vegetation (seed 1224)"
-  },
-  {
-   "id": "CLA_GarthNettle_11",
+   "id": "CLA_GarthNettle_02",
    "cat": "dress",
    "group": "garthveg",
    "mesh": "/Game/LastBell/Environments/Props/CC0/NettlePlant/SM_LB_CC0_NettlePlant_02.SM_LB_CC0_NettlePlant_02",
    "loc": [
-    10975.026,
-    1544.722,
-    101.122
+    10834.232,
+    2060.512,
+    101.796
    ],
    "rot": [
     0.0,
-    155.2344,
+    350.1693,
     0.0
    ],
    "scale": [
-    1.0,
-    1.0,
-    1.0
+    3.242,
+    3.242,
+    3.242
    ],
    "collision": "NoCollision",
    "folder": "Cloister/Dressing/Garth",
@@ -25181,18 +27581,1314 @@
     ]
    ],
    "aabb_min": [
-    10970.67,
-    1540.35,
-    101.12
+    10821.95,
+    2048.13,
+    101.8
    ],
    "aabb_max": [
-    10979.38,
-    1549.1,
-    111.58
+    10846.51,
+    2072.9,
+    135.71
    ],
    "mi_slots": {},
    "extras": {},
-   "note": "garth vegetation (seed 1224)"
+   "note": "garth vegetation (seed 1224), scale 3.242"
+  },
+  {
+   "id": "CLA_GarthNettle_03",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/NettlePlant/SM_LB_CC0_NettlePlant_03.SM_LB_CC0_NettlePlant_03",
+   "loc": [
+    10347.199,
+    1448.216,
+    100.781
+   ],
+   "rot": [
+    0.0,
+    268.6393,
+    0.0
+   ],
+   "scale": [
+    2.931,
+    2.931,
+    2.931
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -3.21,
+     -2.17,
+     0
+    ],
+    [
+     3.21,
+     2.17,
+     6.26
+    ]
+   ],
+   "aabb_min": [
+    10340.62,
+    1438.66,
+    100.78
+   ],
+   "aabb_max": [
+    10353.78,
+    1457.77,
+    119.13
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 2.931"
+  },
+  {
+   "id": "CLA_GarthNettle_04",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/NettlePlant/SM_LB_CC0_NettlePlant_02.SM_LB_CC0_NettlePlant_02",
+   "loc": [
+    11207.51,
+    1479.342,
+    104.17
+   ],
+   "rot": [
+    0.0,
+    31.084,
+    0.0
+   ],
+   "scale": [
+    3.636,
+    3.636,
+    3.636
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -3.27,
+     -3.31,
+     0
+    ],
+    [
+     3.27,
+     3.31,
+     10.46
+    ]
+   ],
+   "aabb_min": [
+    11191.11,
+    1462.9,
+    104.17
+   ],
+   "aabb_max": [
+    11223.91,
+    1495.79,
+    142.2
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 3.636"
+  },
+  {
+   "id": "CLA_GarthNettle_05",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/NettlePlant/SM_LB_CC0_NettlePlant_01.SM_LB_CC0_NettlePlant_01",
+   "loc": [
+    11315.504,
+    1721.72,
+    100.128
+   ],
+   "rot": [
+    0.0,
+    242.382,
+    0.0
+   ],
+   "scale": [
+    2.85,
+    2.85,
+    2.85
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -3.86,
+     -4.45,
+     0
+    ],
+    [
+     3.86,
+     4.45,
+     13.15
+    ]
+   ],
+   "aabb_min": [
+    11299.17,
+    1706.09,
+    100.13
+   ],
+   "aabb_max": [
+    11331.84,
+    1737.35,
+    137.61
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 2.85"
+  },
+  {
+   "id": "CLA_GarthNettle_06",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/NettlePlant/SM_LB_CC0_NettlePlant_06.SM_LB_CC0_NettlePlant_06",
+   "loc": [
+    10717.95,
+    1870.468,
+    104.502
+   ],
+   "rot": [
+    0.0,
+    77.1879,
+    0.0
+   ],
+   "scale": [
+    3.525,
+    3.525,
+    3.525
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -4.12,
+     -4.73,
+     0
+    ],
+    [
+     4.12,
+     4.73,
+     19.27
+    ]
+   ],
+   "aabb_min": [
+    10698.47,
+    1852.61,
+    104.5
+   ],
+   "aabb_max": [
+    10737.43,
+    1888.33,
+    172.43
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 3.525"
+  },
+  {
+   "id": "CLA_GarthNettle_07",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/NettlePlant/SM_LB_CC0_NettlePlant_01.SM_LB_CC0_NettlePlant_01",
+   "loc": [
+    10536.327,
+    1780.179,
+    100.554
+   ],
+   "rot": [
+    0.0,
+    236.6333,
+    0.0
+   ],
+   "scale": [
+    4.257,
+    4.257,
+    4.257
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -3.86,
+     -4.45,
+     0
+    ],
+    [
+     3.86,
+     4.45,
+     13.15
+    ]
+   ],
+   "aabb_min": [
+    10511.47,
+    1756.04,
+    100.55
+   ],
+   "aabb_max": [
+    10561.19,
+    1804.32,
+    156.53
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 4.257"
+  },
+  {
+   "id": "CLA_GarthNettle_08",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/NettlePlant/SM_LB_CC0_NettlePlant_03.SM_LB_CC0_NettlePlant_03",
+   "loc": [
+    10448.753,
+    1714.062,
+    103.388
+   ],
+   "rot": [
+    0.0,
+    155.2573,
+    0.0
+   ],
+   "scale": [
+    3.066,
+    3.066,
+    3.066
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -3.21,
+     -2.17,
+     0
+    ],
+    [
+     3.21,
+     2.17,
+     6.26
+    ]
+   ],
+   "aabb_min": [
+    10437.03,
+    1703.9,
+    103.39
+   ],
+   "aabb_max": [
+    10460.48,
+    1724.22,
+    122.58
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 3.066"
+  },
+  {
+   "id": "CLA_GarthNettle_09",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/NettlePlant/SM_LB_CC0_NettlePlant_02.SM_LB_CC0_NettlePlant_02",
+   "loc": [
+    11236.429,
+    1747.376,
+    100.873
+   ],
+   "rot": [
+    0.0,
+    300.2263,
+    0.0
+   ],
+   "scale": [
+    3.381,
+    3.381,
+    3.381
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -3.27,
+     -3.31,
+     0
+    ],
+    [
+     3.27,
+     3.31,
+     10.46
+    ]
+   ],
+   "aabb_min": [
+    11221.19,
+    1732.19,
+    100.87
+   ],
+   "aabb_max": [
+    11251.66,
+    1762.56,
+    136.24
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 3.381"
+  },
+  {
+   "id": "CLA_GarthNettle_10",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/NettlePlant/SM_LB_CC0_NettlePlant_06.SM_LB_CC0_NettlePlant_06",
+   "loc": [
+    11038.136,
+    1470.901,
+    100.274
+   ],
+   "rot": [
+    0.0,
+    17.987,
+    0.0
+   ],
+   "scale": [
+    4.076,
+    4.076,
+    4.076
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -4.12,
+     -4.73,
+     0
+    ],
+    [
+     4.12,
+     4.73,
+     19.27
+    ]
+   ],
+   "aabb_min": [
+    11016.21,
+    1447.38,
+    100.27
+   ],
+   "aabb_max": [
+    11060.06,
+    1494.42,
+    178.82
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 4.076"
+  },
+  {
+   "id": "CLA_GarthNettle_11",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/NettlePlant/SM_LB_CC0_NettlePlant_01.SM_LB_CC0_NettlePlant_01",
+   "loc": [
+    10855.879,
+    2049.8,
+    100.097
+   ],
+   "rot": [
+    0.0,
+    307.1199,
+    0.0
+   ],
+   "scale": [
+    3.818,
+    3.818,
+    3.818
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -3.86,
+     -4.45,
+     0
+    ],
+    [
+     3.86,
+     4.45,
+     13.15
+    ]
+   ],
+   "aabb_min": [
+    10833.44,
+    2027.8,
+    100.1
+   ],
+   "aabb_max": [
+    10878.32,
+    2071.8,
+    150.3
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 3.818"
+  },
+  {
+   "id": "CLA_GarthNettle_12",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/NettlePlant/SM_LB_CC0_NettlePlant_02.SM_LB_CC0_NettlePlant_02",
+   "loc": [
+    11139.082,
+    1765.431,
+    101.432
+   ],
+   "rot": [
+    0.0,
+    71.0107,
+    0.0
+   ],
+   "scale": [
+    4.367,
+    4.367,
+    4.367
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -3.27,
+     -3.31,
+     0
+    ],
+    [
+     3.27,
+     3.31,
+     10.46
+    ]
+   ],
+   "aabb_min": [
+    11120.77,
+    1747.22,
+    101.43
+   ],
+   "aabb_max": [
+    11157.4,
+    1783.64,
+    147.11
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 4.367"
+  },
+  {
+   "id": "CLA_GarthNettle_13",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/NettlePlant/SM_LB_CC0_NettlePlant_03.SM_LB_CC0_NettlePlant_03",
+   "loc": [
+    10652.707,
+    2161.217,
+    101.156
+   ],
+   "rot": [
+    0.0,
+    57.7672,
+    0.0
+   ],
+   "scale": [
+    2.924,
+    2.924,
+    2.924
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -3.21,
+     -2.17,
+     0
+    ],
+    [
+     3.21,
+     2.17,
+     6.26
+    ]
+   ],
+   "aabb_min": [
+    10642.33,
+    2149.89,
+    101.16
+   ],
+   "aabb_max": [
+    10663.08,
+    2172.54,
+    119.46
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 2.924"
+  },
+  {
+   "id": "CLA_GarthNettle_14",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/NettlePlant/SM_LB_CC0_NettlePlant_02.SM_LB_CC0_NettlePlant_02",
+   "loc": [
+    10725.768,
+    2060.007,
+    103.063
+   ],
+   "rot": [
+    0.0,
+    97.2991,
+    0.0
+   ],
+   "scale": [
+    4.263,
+    4.263,
+    4.263
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -3.27,
+     -3.31,
+     0
+    ],
+    [
+     3.27,
+     3.31,
+     10.46
+    ]
+   ],
+   "aabb_min": [
+    10710.0,
+    2044.39,
+    103.06
+   ],
+   "aabb_max": [
+    10741.54,
+    2075.63,
+    147.65
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 4.263"
+  },
+  {
+   "id": "CLA_GarthNettle_15",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/NettlePlant/SM_LB_CC0_NettlePlant_02.SM_LB_CC0_NettlePlant_02",
+   "loc": [
+    10581.003,
+    1456.995,
+    104.292
+   ],
+   "rot": [
+    0.0,
+    238.06,
+    0.0
+   ],
+   "scale": [
+    2.81,
+    2.81,
+    2.81
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -3.27,
+     -3.31,
+     0
+    ],
+    [
+     3.27,
+     3.31,
+     10.46
+    ]
+   ],
+   "aabb_min": [
+    10568.25,
+    1444.28,
+    104.29
+   ],
+   "aabb_max": [
+    10593.76,
+    1469.71,
+    133.68
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 2.81"
+  },
+  {
+   "id": "CLA_GarthNettle_16",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/NettlePlant/SM_LB_CC0_NettlePlant_02.SM_LB_CC0_NettlePlant_02",
+   "loc": [
+    11193.217,
+    2151.995,
+    100.563
+   ],
+   "rot": [
+    0.0,
+    136.2996,
+    0.0
+   ],
+   "scale": [
+    3.087,
+    3.087,
+    3.087
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -3.27,
+     -3.31,
+     0
+    ],
+    [
+     3.27,
+     3.31,
+     10.46
+    ]
+   ],
+   "aabb_min": [
+    11178.86,
+    2137.63,
+    100.56
+   ],
+   "aabb_max": [
+    11207.57,
+    2166.36,
+    132.85
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 3.087"
+  },
+  {
+   "id": "CLA_GarthNettle_17",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/NettlePlant/SM_LB_CC0_NettlePlant_02.SM_LB_CC0_NettlePlant_02",
+   "loc": [
+    11324.442,
+    1859.738,
+    100.254
+   ],
+   "rot": [
+    0.0,
+    286.8167,
+    0.0
+   ],
+   "scale": [
+    3.114,
+    3.114,
+    3.114
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -3.27,
+     -3.31,
+     0
+    ],
+    [
+     3.27,
+     3.31,
+     10.46
+    ]
+   ],
+   "aabb_min": [
+    11311.63,
+    1847.01,
+    100.25
+   ],
+   "aabb_max": [
+    11337.25,
+    1872.47,
+    132.83
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 3.114"
+  },
+  {
+   "id": "CLA_GarthNettle_18",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/NettlePlant/SM_LB_CC0_NettlePlant_02.SM_LB_CC0_NettlePlant_02",
+   "loc": [
+    11361.987,
+    1708.967,
+    104.868
+   ],
+   "rot": [
+    0.0,
+    220.2299,
+    0.0
+   ],
+   "scale": [
+    3.012,
+    3.012,
+    3.012
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -3.27,
+     -3.31,
+     0
+    ],
+    [
+     3.27,
+     3.31,
+     10.46
+    ]
+   ],
+   "aabb_min": [
+    11348.03,
+    1694.99,
+    104.87
+   ],
+   "aabb_max": [
+    11375.95,
+    1722.94,
+    136.37
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 3.012"
+  },
+  {
+   "id": "CLA_GarthNettle_19",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/NettlePlant/SM_LB_CC0_NettlePlant_06.SM_LB_CC0_NettlePlant_06",
+   "loc": [
+    11103.283,
+    2142.864,
+    104.186
+   ],
+   "rot": [
+    0.0,
+    83.6342,
+    0.0
+   ],
+   "scale": [
+    4.359,
+    4.359,
+    4.359
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -4.12,
+     -4.73,
+     0
+    ],
+    [
+     4.12,
+     4.73,
+     19.27
+    ]
+   ],
+   "aabb_min": [
+    11080.8,
+    2122.73,
+    104.19
+   ],
+   "aabb_max": [
+    11125.77,
+    2163.0,
+    188.18
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 4.359"
+  },
+  {
+   "id": "CLA_GarthNettle_20",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/NettlePlant/SM_LB_CC0_NettlePlant_02.SM_LB_CC0_NettlePlant_02",
+   "loc": [
+    10976.018,
+    2104.976,
+    100.284
+   ],
+   "rot": [
+    0.0,
+    344.2307,
+    0.0
+   ],
+   "scale": [
+    3.371,
+    3.371,
+    3.371
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -3.27,
+     -3.31,
+     0
+    ],
+    [
+     3.27,
+     3.31,
+     10.46
+    ]
+   ],
+   "aabb_min": [
+    10962.38,
+    2091.24,
+    100.28
+   ],
+   "aabb_max": [
+    10989.66,
+    2118.71,
+    135.55
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 3.371"
+  },
+  {
+   "id": "CLA_GarthNettle_21",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/NettlePlant/SM_LB_CC0_NettlePlant_03.SM_LB_CC0_NettlePlant_03",
+   "loc": [
+    10875.772,
+    1911.241,
+    103.866
+   ],
+   "rot": [
+    0.0,
+    248.5827,
+    0.0
+   ],
+   "scale": [
+    4.281,
+    4.281,
+    4.281
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -3.21,
+     -2.17,
+     0
+    ],
+    [
+     3.21,
+     2.17,
+     6.26
+    ]
+   ],
+   "aabb_min": [
+    10862.11,
+    1895.06,
+    103.87
+   ],
+   "aabb_max": [
+    10889.44,
+    1927.43,
+    130.66
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 4.281"
+  },
+  {
+   "id": "CLA_GarthNettle_22",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/NettlePlant/SM_LB_CC0_NettlePlant_01.SM_LB_CC0_NettlePlant_01",
+   "loc": [
+    10862.537,
+    1620.83,
+    104.155
+   ],
+   "rot": [
+    0.0,
+    148.0245,
+    0.0
+   ],
+   "scale": [
+    4.199,
+    4.199,
+    4.199
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -3.86,
+     -4.45,
+     0
+    ],
+    [
+     3.86,
+     4.45,
+     13.15
+    ]
+   ],
+   "aabb_min": [
+    10838.89,
+    1596.4,
+    104.16
+   ],
+   "aabb_max": [
+    10886.18,
+    1645.26,
+    159.37
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 4.199"
+  },
+  {
+   "id": "CLA_GarthNettle_23",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/NettlePlant/SM_LB_CC0_NettlePlant_06.SM_LB_CC0_NettlePlant_06",
+   "loc": [
+    10458.683,
+    1677.88,
+    100.9
+   ],
+   "rot": [
+    0.0,
+    197.2909,
+    0.0
+   ],
+   "scale": [
+    3.065,
+    3.065,
+    3.065
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -4.12,
+     -4.73,
+     0
+    ],
+    [
+     4.12,
+     4.73,
+     19.27
+    ]
+   ],
+   "aabb_min": [
+    10442.32,
+    1660.28,
+    100.9
+   ],
+   "aabb_max": [
+    10475.05,
+    1695.48,
+    159.96
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 3.065"
+  },
+  {
+   "id": "CLA_GarthNettle_24",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/NettlePlant/SM_LB_CC0_NettlePlant_03.SM_LB_CC0_NettlePlant_03",
+   "loc": [
+    11158.23,
+    1761.617,
+    102.524
+   ],
+   "rot": [
+    0.0,
+    245.5836,
+    0.0
+   ],
+   "scale": [
+    3.063,
+    3.063,
+    3.063
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -3.21,
+     -2.17,
+     0
+    ],
+    [
+     3.21,
+     2.17,
+     6.26
+    ]
+   ],
+   "aabb_min": [
+    11148.11,
+    1749.92,
+    102.52
+   ],
+   "aabb_max": [
+    11168.35,
+    1773.32,
+    121.7
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 3.063"
+  },
+  {
+   "id": "CLA_GarthNettle_25",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/NettlePlant/SM_LB_CC0_NettlePlant_03.SM_LB_CC0_NettlePlant_03",
+   "loc": [
+    10398.839,
+    1736.415,
+    100.982
+   ],
+   "rot": [
+    0.0,
+    57.9243,
+    0.0
+   ],
+   "scale": [
+    3.335,
+    3.335,
+    3.335
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -3.21,
+     -2.17,
+     0
+    ],
+    [
+     3.21,
+     2.17,
+     6.26
+    ]
+   ],
+   "aabb_min": [
+    10387.02,
+    1723.5,
+    100.98
+   ],
+   "aabb_max": [
+    10410.66,
+    1749.33,
+    121.86
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 3.335"
+  },
+  {
+   "id": "CLA_GarthNettle_26",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/NettlePlant/SM_LB_CC0_NettlePlant_01.SM_LB_CC0_NettlePlant_01",
+   "loc": [
+    10353.929,
+    1539.373,
+    104.594
+   ],
+   "rot": [
+    0.0,
+    262.3069,
+    0.0
+   ],
+   "scale": [
+    4.312,
+    4.312,
+    4.312
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -3.86,
+     -4.45,
+     0
+    ],
+    [
+     3.86,
+     4.45,
+     13.15
+    ]
+   ],
+   "aabb_min": [
+    10332.68,
+    1520.31,
+    104.59
+   ],
+   "aabb_max": [
+    10375.17,
+    1558.44,
+    161.3
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 4.312"
+  },
+  {
+   "id": "CLA_GarthNettle_27",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/NettlePlant/SM_LB_CC0_NettlePlant_06.SM_LB_CC0_NettlePlant_06",
+   "loc": [
+    10367.655,
+    2150.749,
+    101.524
+   ],
+   "rot": [
+    0.0,
+    225.0899,
+    0.0
+   ],
+   "scale": [
+    3.825,
+    3.825,
+    3.825
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -4.12,
+     -4.73,
+     0
+    ],
+    [
+     4.12,
+     4.73,
+     19.27
+    ]
+   ],
+   "aabb_min": [
+    10343.72,
+    2126.81,
+    101.52
+   ],
+   "aabb_max": [
+    10391.59,
+    2174.68,
+    175.23
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 3.825"
+  },
+  {
+   "id": "CLA_GarthNettle_28",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/NettlePlant/SM_LB_CC0_NettlePlant_02.SM_LB_CC0_NettlePlant_02",
+   "loc": [
+    11318.134,
+    2039.206,
+    101.614
+   ],
+   "rot": [
+    0.0,
+    101.8589,
+    0.0
+   ],
+   "scale": [
+    4.007,
+    4.007,
+    4.007
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -3.27,
+     -3.31,
+     0
+    ],
+    [
+     3.27,
+     3.31,
+     10.46
+    ]
+   ],
+   "aabb_min": [
+    11302.46,
+    2023.66,
+    101.61
+   ],
+   "aabb_max": [
+    11333.81,
+    2054.75,
+    143.53
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 4.007"
+  },
+  {
+   "id": "CLA_GarthNettle_29",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/NettlePlant/SM_LB_CC0_NettlePlant_01.SM_LB_CC0_NettlePlant_01",
+   "loc": [
+    10754.867,
+    1912.044,
+    103.449
+   ],
+   "rot": [
+    0.0,
+    109.8033,
+    0.0
+   ],
+   "scale": [
+    3.794,
+    3.794,
+    3.794
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -3.86,
+     -4.45,
+     0
+    ],
+    [
+     3.86,
+     4.45,
+     13.15
+    ]
+   ],
+   "aabb_min": [
+    10734.02,
+    1892.55,
+    103.45
+   ],
+   "aabb_max": [
+    10775.71,
+    1931.54,
+    153.34
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 3.794"
   },
   {
    "id": "CLA_GarthFern_00",
@@ -25200,19 +28896,19 @@
    "group": "garthveg",
    "mesh": "/Game/LastBell/Environments/Props/CC0/Fern02/SM_LB_CC0_Fern02_02.SM_LB_CC0_Fern02_02",
    "loc": [
-    10703.832,
-    2109.703,
-    100.818
+    10715.868,
+    1784.588,
+    101.422
    ],
    "rot": [
     0.0,
-    280.9863,
+    22.4726,
     0.0
    ],
    "scale": [
-    1.0,
-    1.0,
-    1.0
+    1.017,
+    1.017,
+    1.017
    ],
    "collision": "NoCollision",
    "folder": "Cloister/Dressing/Garth",
@@ -25229,326 +28925,38 @@
     ]
    ],
    "aabb_min": [
-    10650.54,
-    2052.61,
-    100.82
+    10651.99,
+    1723.36,
+    101.42
    ],
    "aabb_max": [
-    10757.12,
-    2166.8,
-    143.59
+    10779.75,
+    1845.82,
+    144.92
    ],
    "mi_slots": {},
    "extras": {},
-   "note": "garth vegetation (seed 1224)"
+   "note": "garth vegetation (seed 1224), scale 1.017"
   },
   {
    "id": "CLA_GarthFern_01",
    "cat": "dress",
    "group": "garthveg",
-   "mesh": "/Game/LastBell/Environments/Props/CC0/Fern02/SM_LB_CC0_Fern02_04.SM_LB_CC0_Fern02_04",
-   "loc": [
-    11155.834,
-    1725.548,
-    103.514
-   ],
-   "rot": [
-    0.0,
-    355.4505,
-    0.0
-   ],
-   "scale": [
-    1.0,
-    1.0,
-    1.0
-   ],
-   "collision": "NoCollision",
-   "folder": "Cloister/Dressing/Garth",
-   "mbounds": [
-    [
-     -28.64,
-     -29.66,
-     0
-    ],
-    [
-     28.64,
-     29.66,
-     21.31
-    ]
-   ],
-   "aabb_min": [
-    11124.93,
-    1693.71,
-    103.51
-   ],
-   "aabb_max": [
-    11186.74,
-    1757.39,
-    124.82
-   ],
-   "mi_slots": {},
-   "extras": {},
-   "note": "garth vegetation (seed 1224)"
-  },
-  {
-   "id": "CLA_GarthFern_02",
-   "cat": "dress",
-   "group": "garthveg",
-   "mesh": "/Game/LastBell/Environments/Props/CC0/Fern02/SM_LB_CC0_Fern02_02.SM_LB_CC0_Fern02_02",
-   "loc": [
-    11161.519,
-    1769.841,
-    102.646
-   ],
-   "rot": [
-    0.0,
-    313.5566,
-    0.0
-   ],
-   "scale": [
-    1.0,
-    1.0,
-    1.0
-   ],
-   "collision": "NoCollision",
-   "folder": "Cloister/Dressing/Garth",
-   "mbounds": [
-    [
-     -49.49,
-     -44.68,
-     0
-    ],
-    [
-     49.49,
-     44.68,
-     42.77
-    ]
-   ],
-   "aabb_min": [
-    11095.04,
-    1703.19,
-    102.65
-   ],
-   "aabb_max": [
-    11228.0,
-    1836.49,
-    145.42
-   ],
-   "mi_slots": {},
-   "extras": {},
-   "note": "garth vegetation (seed 1224)"
-  },
-  {
-   "id": "CLA_GarthFern_03",
-   "cat": "dress",
-   "group": "garthveg",
-   "mesh": "/Game/LastBell/Environments/Props/CC0/Fern02/SM_LB_CC0_Fern02_04.SM_LB_CC0_Fern02_04",
-   "loc": [
-    10966.352,
-    1512.355,
-    102.571
-   ],
-   "rot": [
-    0.0,
-    240.6252,
-    0.0
-   ],
-   "scale": [
-    1.0,
-    1.0,
-    1.0
-   ],
-   "collision": "NoCollision",
-   "folder": "Cloister/Dressing/Garth",
-   "mbounds": [
-    [
-     -28.64,
-     -29.66,
-     0
-    ],
-    [
-     28.64,
-     29.66,
-     21.31
-    ]
-   ],
-   "aabb_min": [
-    10926.46,
-    1472.85,
-    102.57
-   ],
-   "aabb_max": [
-    11006.25,
-    1551.86,
-    123.88
-   ],
-   "mi_slots": {},
-   "extras": {},
-   "note": "garth vegetation (seed 1224)"
-  },
-  {
-   "id": "CLA_GarthFern_04",
-   "cat": "dress",
-   "group": "garthveg",
-   "mesh": "/Game/LastBell/Environments/Props/CC0/Fern02/SM_LB_CC0_Fern02_03.SM_LB_CC0_Fern02_03",
-   "loc": [
-    10587.146,
-    1789.945,
-    103.391
-   ],
-   "rot": [
-    0.0,
-    193.4161,
-    0.0
-   ],
-   "scale": [
-    1.0,
-    1.0,
-    1.0
-   ],
-   "collision": "NoCollision",
-   "folder": "Cloister/Dressing/Garth",
-   "mbounds": [
-    [
-     -43.72,
-     -38.26,
-     0
-    ],
-    [
-     43.72,
-     38.26,
-     34.9
-    ]
-   ],
-   "aabb_min": [
-    10535.74,
-    1742.58,
-    103.39
-   ],
-   "aabb_max": [
-    10638.55,
-    1837.3,
-    138.29
-   ],
-   "mi_slots": {},
-   "extras": {},
-   "note": "garth vegetation (seed 1224)"
-  },
-  {
-   "id": "CLA_GarthFern_05",
-   "cat": "dress",
-   "group": "garthveg",
-   "mesh": "/Game/LastBell/Environments/Props/CC0/Fern02/SM_LB_CC0_Fern02_04.SM_LB_CC0_Fern02_04",
-   "loc": [
-    10878.302,
-    1516.114,
-    101.793
-   ],
-   "rot": [
-    0.0,
-    318.1506,
-    0.0
-   ],
-   "scale": [
-    1.0,
-    1.0,
-    1.0
-   ],
-   "collision": "NoCollision",
-   "folder": "Cloister/Dressing/Garth",
-   "mbounds": [
-    [
-     -28.64,
-     -29.66,
-     0
-    ],
-    [
-     28.64,
-     29.66,
-     21.31
-    ]
-   ],
-   "aabb_min": [
-    10837.18,
-    1474.91,
-    101.79
-   ],
-   "aabb_max": [
-    10919.42,
-    1557.32,
-    123.1
-   ],
-   "mi_slots": {},
-   "extras": {},
-   "note": "garth vegetation (seed 1224)"
-  },
-  {
-   "id": "CLA_GarthFern_06",
-   "cat": "dress",
-   "group": "garthveg",
-   "mesh": "/Game/LastBell/Environments/Props/CC0/Fern02/SM_LB_CC0_Fern02_02.SM_LB_CC0_Fern02_02",
-   "loc": [
-    10966.739,
-    1633.595,
-    100.922
-   ],
-   "rot": [
-    0.0,
-    198.0754,
-    0.0
-   ],
-   "scale": [
-    1.0,
-    1.0,
-    1.0
-   ],
-   "collision": "NoCollision",
-   "folder": "Cloister/Dressing/Garth",
-   "mbounds": [
-    [
-     -49.49,
-     -44.68,
-     0
-    ],
-    [
-     49.49,
-     44.68,
-     42.77
-    ]
-   ],
-   "aabb_min": [
-    10905.83,
-    1575.77,
-    100.92
-   ],
-   "aabb_max": [
-    11027.65,
-    1691.43,
-    143.69
-   ],
-   "mi_slots": {},
-   "extras": {},
-   "note": "garth vegetation (seed 1224)"
-  },
-  {
-   "id": "CLA_GarthFern_07",
-   "cat": "dress",
-   "group": "garthveg",
    "mesh": "/Game/LastBell/Environments/Props/CC0/Fern02/SM_LB_CC0_Fern02_01.SM_LB_CC0_Fern02_01",
    "loc": [
-    10994.537,
-    1672.304,
-    103.878
+    10864.659,
+    1551.041,
+    103.998
    ],
    "rot": [
     0.0,
-    310.0338,
+    132.2059,
     0.0
    ],
    "scale": [
-    1.0,
-    1.0,
-    1.0
+    1.05,
+    1.05,
+    1.05
    ],
    "collision": "NoCollision",
    "folder": "Cloister/Dressing/Garth",
@@ -25565,18 +28973,882 @@
     ]
    ],
    "aabb_min": [
-    10953.3,
-    1631.44,
-    103.88
+    10821.34,
+    1507.94,
+    104.0
    ],
    "aabb_max": [
-    11035.77,
-    1713.16,
-    132.56
+    10907.98,
+    1594.14,
+    134.11
    ],
    "mi_slots": {},
    "extras": {},
-   "note": "garth vegetation (seed 1224)"
+   "note": "garth vegetation (seed 1224), scale 1.05"
+  },
+  {
+   "id": "CLA_GarthFern_02",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/Fern02/SM_LB_CC0_Fern02_02.SM_LB_CC0_Fern02_02",
+   "loc": [
+    10413.606,
+    1882.188,
+    102.45
+   ],
+   "rot": [
+    0.0,
+    220.2554,
+    0.0
+   ],
+   "scale": [
+    1.095,
+    1.095,
+    1.095
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -49.49,
+     -44.68,
+     0
+    ],
+    [
+     49.49,
+     44.68,
+     42.77
+    ]
+   ],
+   "aabb_min": [
+    10340.63,
+    1809.83,
+    102.45
+   ],
+   "aabb_max": [
+    10486.58,
+    1954.54,
+    149.28
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.095"
+  },
+  {
+   "id": "CLA_GarthFern_03",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/Fern02/SM_LB_CC0_Fern02_03.SM_LB_CC0_Fern02_03",
+   "loc": [
+    10814.972,
+    2116.574,
+    100.139
+   ],
+   "rot": [
+    0.0,
+    163.5035,
+    0.0
+   ],
+   "scale": [
+    0.997,
+    0.997,
+    0.997
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -43.72,
+     -38.26,
+     0
+    ],
+    [
+     43.72,
+     38.26,
+     34.9
+    ]
+   ],
+   "aabb_min": [
+    10762.35,
+    2067.62,
+    100.14
+   ],
+   "aabb_max": [
+    10867.6,
+    2165.53,
+    134.93
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 0.997"
+  },
+  {
+   "id": "CLA_GarthFern_04",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/Fern02/SM_LB_CC0_Fern02_04.SM_LB_CC0_Fern02_04",
+   "loc": [
+    10391.971,
+    2099.949,
+    104.023
+   ],
+   "rot": [
+    0.0,
+    203.301,
+    0.0
+   ],
+   "scale": [
+    0.801,
+    0.801,
+    0.801
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -28.64,
+     -29.66,
+     0
+    ],
+    [
+     28.64,
+     29.66,
+     21.31
+    ]
+   ],
+   "aabb_min": [
+    10361.5,
+    2069.05,
+    104.02
+   ],
+   "aabb_max": [
+    10422.44,
+    2130.84,
+    121.09
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 0.801"
+  },
+  {
+   "id": "CLA_GarthFern_05",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/Fern02/SM_LB_CC0_Fern02_02.SM_LB_CC0_Fern02_02",
+   "loc": [
+    11167.889,
+    1718.91,
+    100.655
+   ],
+   "rot": [
+    0.0,
+    341.707,
+    0.0
+   ],
+   "scale": [
+    1.065,
+    1.065,
+    1.065
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -49.49,
+     -44.68,
+     0
+    ],
+    [
+     49.49,
+     44.68,
+     42.77
+    ]
+   ],
+   "aabb_min": [
+    11102.91,
+    1657.19,
+    100.65
+   ],
+   "aabb_max": [
+    11232.87,
+    1780.63,
+    146.2
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.065"
+  },
+  {
+   "id": "CLA_GarthFern_06",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/Fern02/SM_LB_CC0_Fern02_03.SM_LB_CC0_Fern02_03",
+   "loc": [
+    10816.666,
+    1530.705,
+    100.791
+   ],
+   "rot": [
+    0.0,
+    68.3416,
+    0.0
+   ],
+   "scale": [
+    0.919,
+    0.919,
+    0.919
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -43.72,
+     -38.26,
+     0
+    ],
+    [
+     43.72,
+     38.26,
+     34.9
+    ]
+   ],
+   "aabb_min": [
+    10769.16,
+    1480.39,
+    100.79
+   ],
+   "aabb_max": [
+    10864.17,
+    1581.02,
+    132.86
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 0.919"
+  },
+  {
+   "id": "CLA_GarthFern_07",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/Fern02/SM_LB_CC0_Fern02_01.SM_LB_CC0_Fern02_01",
+   "loc": [
+    10625.704,
+    1448.57,
+    100.749
+   ],
+   "rot": [
+    0.0,
+    272.703,
+    0.0
+   ],
+   "scale": [
+    0.805,
+    0.805,
+    0.805
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -27.6,
+     -30.67,
+     0
+    ],
+    [
+     27.6,
+     30.67,
+     28.68
+    ]
+   ],
+   "aabb_min": [
+    10599.99,
+    1425.21,
+    100.75
+   ],
+   "aabb_max": [
+    10651.41,
+    1471.93,
+    123.84
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 0.805"
+  },
+  {
+   "id": "CLA_GarthFern_08",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/Fern02/SM_LB_CC0_Fern02_02.SM_LB_CC0_Fern02_02",
+   "loc": [
+    10875.096,
+    2131.325,
+    103.776
+   ],
+   "rot": [
+    0.0,
+    138.038,
+    0.0
+   ],
+   "scale": [
+    0.916,
+    0.916,
+    0.916
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -49.49,
+     -44.68,
+     0
+    ],
+    [
+     49.49,
+     44.68,
+     42.77
+    ]
+   ],
+   "aabb_min": [
+    10814.02,
+    2070.58,
+    103.78
+   ],
+   "aabb_max": [
+    10936.17,
+    2192.07,
+    142.95
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 0.916"
+  },
+  {
+   "id": "CLA_GarthFern_09",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/Fern02/SM_LB_CC0_Fern02_03.SM_LB_CC0_Fern02_03",
+   "loc": [
+    10974.051,
+    1703.251,
+    102.285
+   ],
+   "rot": [
+    0.0,
+    336.3069,
+    0.0
+   ],
+   "scale": [
+    0.944,
+    0.944,
+    0.944
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -43.72,
+     -38.26,
+     0
+    ],
+    [
+     43.72,
+     38.26,
+     34.9
+    ]
+   ],
+   "aabb_min": [
+    10921.74,
+    1653.59,
+    102.28
+   ],
+   "aabb_max": [
+    11026.36,
+    1752.91,
+    135.23
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 0.944"
+  },
+  {
+   "id": "CLA_GarthFern_10",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/Fern02/SM_LB_CC0_Fern02_03.SM_LB_CC0_Fern02_03",
+   "loc": [
+    10821.578,
+    2072.805,
+    101.659
+   ],
+   "rot": [
+    0.0,
+    168.2219,
+    0.0
+   ],
+   "scale": [
+    1.011,
+    1.011,
+    1.011
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -43.72,
+     -38.26,
+     0
+    ],
+    [
+     43.72,
+     38.26,
+     34.9
+    ]
+   ],
+   "aabb_min": [
+    10770.41,
+    2025.92,
+    101.66
+   ],
+   "aabb_max": [
+    10872.74,
+    2119.69,
+    136.94
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.011"
+  },
+  {
+   "id": "CLA_GarthFern_11",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/Fern02/SM_LB_CC0_Fern02_03.SM_LB_CC0_Fern02_03",
+   "loc": [
+    11171.626,
+    2085.565,
+    101.133
+   ],
+   "rot": [
+    0.0,
+    131.9693,
+    0.0
+   ],
+   "scale": [
+    1.048,
+    1.048,
+    1.048
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -43.72,
+     -38.26,
+     0
+    ],
+    [
+     43.72,
+     38.26,
+     34.9
+    ]
+   ],
+   "aabb_min": [
+    11111.17,
+    2024.68,
+    101.13
+   ],
+   "aabb_max": [
+    11232.08,
+    2146.45,
+    137.71
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.048"
+  },
+  {
+   "id": "CLA_GarthFern_12",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/Fern02/SM_LB_CC0_Fern02_01.SM_LB_CC0_Fern02_01",
+   "loc": [
+    11095.344,
+    1513.032,
+    102.301
+   ],
+   "rot": [
+    0.0,
+    156.7353,
+    0.0
+   ],
+   "scale": [
+    0.834,
+    0.834,
+    0.834
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -27.6,
+     -30.67,
+     0
+    ],
+    [
+     27.6,
+     30.67,
+     28.68
+    ]
+   ],
+   "aabb_min": [
+    11064.09,
+    1480.44,
+    102.3
+   ],
+   "aabb_max": [
+    11126.59,
+    1545.62,
+    126.22
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 0.834"
+  },
+  {
+   "id": "CLA_GarthFern_13",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/Fern02/SM_LB_CC0_Fern02_01.SM_LB_CC0_Fern02_01",
+   "loc": [
+    10544.97,
+    1903.019,
+    104.507
+   ],
+   "rot": [
+    0.0,
+    265.1589,
+    0.0
+   ],
+   "scale": [
+    1.055,
+    1.055,
+    1.055
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -27.6,
+     -30.67,
+     0
+    ],
+    [
+     27.6,
+     30.67,
+     28.68
+    ]
+   ],
+   "aabb_min": [
+    10510.27,
+    1871.27,
+    104.51
+   ],
+   "aabb_max": [
+    10579.67,
+    1934.76,
+    134.76
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.055"
+  },
+  {
+   "id": "CLA_GarthFern_14",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/Fern02/SM_LB_CC0_Fern02_01.SM_LB_CC0_Fern02_01",
+   "loc": [
+    11136.756,
+    2113.372,
+    100.668
+   ],
+   "rot": [
+    0.0,
+    18.2056,
+    0.0
+   ],
+   "scale": [
+    0.908,
+    0.908,
+    0.908
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -27.6,
+     -30.67,
+     0
+    ],
+    [
+     27.6,
+     30.67,
+     28.68
+    ]
+   ],
+   "aabb_min": [
+    11104.25,
+    2079.09,
+    100.67
+   ],
+   "aabb_max": [
+    11169.26,
+    2147.66,
+    126.71
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 0.908"
+  },
+  {
+   "id": "CLA_GarthFern_15",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/Fern02/SM_LB_CC0_Fern02_04.SM_LB_CC0_Fern02_04",
+   "loc": [
+    11081.209,
+    1848.393,
+    100.453
+   ],
+   "rot": [
+    0.0,
+    242.8375,
+    0.0
+   ],
+   "scale": [
+    1.074,
+    1.074,
+    1.074
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -28.64,
+     -29.66,
+     0
+    ],
+    [
+     28.64,
+     29.66,
+     21.31
+    ]
+   ],
+   "aabb_min": [
+    11038.82,
+    1806.48,
+    100.45
+   ],
+   "aabb_max": [
+    11123.59,
+    1890.3,
+    123.34
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.074"
+  },
+  {
+   "id": "CLA_GarthFern_16",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/Fern02/SM_LB_CC0_Fern02_03.SM_LB_CC0_Fern02_03",
+   "loc": [
+    11011.7,
+    1821.498,
+    101.738
+   ],
+   "rot": [
+    0.0,
+    118.0248,
+    0.0
+   ],
+   "scale": [
+    0.987,
+    0.987,
+    0.987
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -43.72,
+     -38.26,
+     0
+    ],
+    [
+     43.72,
+     38.26,
+     34.9
+    ]
+   ],
+   "aabb_min": [
+    10958.09,
+    1765.66,
+    101.74
+   ],
+   "aabb_max": [
+    11065.31,
+    1877.33,
+    136.18
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 0.987"
+  },
+  {
+   "id": "CLA_GarthFern_17",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/Fern02/SM_LB_CC0_Fern02_01.SM_LB_CC0_Fern02_01",
+   "loc": [
+    10466.572,
+    1861.135,
+    102.26
+   ],
+   "rot": [
+    0.0,
+    238.0655,
+    0.0
+   ],
+   "scale": [
+    0.871,
+    0.871,
+    0.871
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -27.6,
+     -30.67,
+     0
+    ],
+    [
+     27.6,
+     30.67,
+     28.68
+    ]
+   ],
+   "aabb_min": [
+    10431.19,
+    1826.6,
+    102.26
+   ],
+   "aabb_max": [
+    10501.96,
+    1895.67,
+    127.24
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 0.871"
+  },
+  {
+   "id": "CLA_GarthFern_18",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/Fern02/SM_LB_CC0_Fern02_02.SM_LB_CC0_Fern02_02",
+   "loc": [
+    10655.864,
+    1532.992,
+    104.673
+   ],
+   "rot": [
+    0.0,
+    137.516,
+    0.0
+   ],
+   "scale": [
+    0.887,
+    0.887,
+    0.887
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -49.49,
+     -44.68,
+     0
+    ],
+    [
+     49.49,
+     44.68,
+     42.77
+    ]
+   ],
+   "aabb_min": [
+    10596.72,
+    1474.12,
+    104.67
+   ],
+   "aabb_max": [
+    10715.0,
+    1591.87,
+    142.61
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 0.887"
+  },
+  {
+   "id": "CLA_GarthFern_19",
+   "cat": "dress",
+   "group": "garthveg",
+   "mesh": "/Game/LastBell/Environments/Props/CC0/Fern02/SM_LB_CC0_Fern02_01.SM_LB_CC0_Fern02_01",
+   "loc": [
+    11191.887,
+    2098.173,
+    102.442
+   ],
+   "rot": [
+    0.0,
+    310.0344,
+    0.0
+   ],
+   "scale": [
+    1.01,
+    1.01,
+    1.01
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Garth",
+   "mbounds": [
+    [
+     -27.6,
+     -30.67,
+     0
+    ],
+    [
+     27.6,
+     30.67,
+     28.68
+    ]
+   ],
+   "aabb_min": [
+    11150.24,
+    2056.9,
+    102.44
+   ],
+   "aabb_max": [
+    11233.54,
+    2139.44,
+    131.41
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "garth vegetation (seed 1224), scale 1.01"
   },
   {
    "id": "L_Cl_Bells",

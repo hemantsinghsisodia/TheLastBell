@@ -790,9 +790,11 @@ CHAIN = existing(DUNGEON, "SM_Torture_Devices_Chains")
 HOLDER = existing(DUNGEON, "SM_Dungeon_chain_holder")
 add("CLA_Mech3_Eyelet", "dress", "mech3chain", HOLDER, (11995.0, 1800.0, 140.0), (0.0, 180.0, 0.0), (1, 1, 1), "NoCollision", "Cloister/Dressing/Mech3",
     note="iron wall eyelet at the tower wall (chain holder, +x out of the wall)")
-chain_run("CLA_Mech3_Chain_A", (11820.0, 1780.0, 110.0), (11995.0, 1800.0, 140.0), "Cloister/Dressing/Mech3", "chain from the capstan drum to the wall eyelet")
-chain_run("CLA_Mech3_Chain_B", (11995.0, 1800.0, 140.0), (11995.0, 1935.0, 120.0), "Cloister/Dressing/Mech3", "chain along the wall to the latch box")
-add("CLA_Mech3_LatchBox", "dress", "mech3chain", CUBE, (11995.0, 1935.0, 120.0), (0, 0, 0), (0.08, 0.20, 0.30), "NoCollision", "Cloister/Dressing/Mech3",
+# D1.20: on the drum surface (r 34, facing the eyelet), between the lower iron band (Z 154-158) and the capstan bars (Z 185-190); the D1.18 start was inside the pedestal (Z 50-150)
+chain_run("CLA_Mech3_Chain_A", (11824.0, 1783.0, 168.0), (11995.0, 1800.0, 140.0), "Cloister/Dressing/Mech3", "chain from the capstan drum to the wall eyelet")
+# D1.20: 8 cm clear of the open Door_Tower leaf (Y >= 1943.3)
+chain_run("CLA_Mech3_Chain_B", (11995.0, 1800.0, 140.0), (11995.0, 1925.0, 120.0), "Cloister/Dressing/Mech3", "chain along the wall to the latch box")
+add("CLA_Mech3_LatchBox", "dress", "mech3chain", CUBE, (11995.0, 1925.0, 120.0), (0, 0, 0), (0.08, 0.20, 0.30), "NoCollision", "Cloister/Dressing/Mech3",
     mi={"0": "MI_Crypt_Iron"}, note="iron box 8 deep x 20 wide x 30 tall on the wall beside the door (D1.7 lists 20 x 8 x 30; depth taken as 8)")
 
 # ---- collapse rubble (N walk east bay)
@@ -885,7 +887,7 @@ for i, (wl, along, mi, hh) in enumerate(DECAL_DEFS):
         extras={"decal": {"mi": mi, "size": [12.0, 100.0, hh], "wall": wl}})
 
 # ---- ivy on the garth-facing arcade wall (cards: back at local y 0 on the wall, leaves out to +y)
-IVY_C = existing(IVY, "SM_LB_Prop_Ivy_Creep_400x200_Dead", mb=((-200.0, 0.0, 0.0), (200.0, 25.0, 200.0)), slots=["Ivy"], est=True)
+IVY_C = existing(IVY, "SM_LB_Prop_Ivy_Creep_400x200_Dead", mb=((-200.0, 0.0, 0.0), (200.0, 20.5, 200.0)), slots=["Ivy"])
 for i, (x, y, yaw, note) in enumerate(((10900.0, 1391.0, 0.0, "S row"), (11000.0, 2209.0, 180.0, "N row"), (10291.0, 1850.0, -90.0, "W column"),
                                        (11409.0, 1850.0, 90.0, "E column"))):
     add(f"CLA_Ivy_{i}", "dress", "ivy", IVY_C, (x, y, 400.0), (0.0, yaw, 0.0), (1, 1, 1), "NoCollision", "Cloister/Dressing/Ivy",
@@ -931,12 +933,12 @@ lantern("TWA_Lantern_Bell", "BellTower/Art/Belfry", 12255.0, 1865.0, 2700.0, 122
 ROPE_COIL = existing(DUNGEON, "SM_Torture_Devices_Rope_00")
 add("TWA_RopeCoil", "dress", "towerdress", ROPE_COIL, (12307.0, 2000.0, 450.0), (0.0, 90.0, 0.0), (1, 1, 1), "NoCollision", "BellTower/Art/Dressing",
     note="coil of rope on the shaft base's top rim (W side), inside the 35-thick rim")
-SLATES = existing(CHAPEL, "SM_LB_Prop_SlateShards_A", mb=((-60.0, -45.0, 0.0), (60.0, 45.0, 8.0)), slots=["MAT_Slate"], est=True)
+SLATES = existing(CHAPEL, "SM_LB_Prop_SlateShards_A", mb=((-60.0, -45.0, 0.0), (60.0, 45.0, 21.2)), slots=["MAT_Slate"])
 top10 = LANDINGS[10][3]
 for k, (sx, sy, syaw) in enumerate(((12760.0, 1575.0, 0.0), (12830.0, 1575.0, 8.0), (12898.0, 1575.0, -6.0), (12933.0, 1700.0, 90.0))):
     add(f"TWA_Slates_{k}", "dress", "towerdress", SLATES, (sx, sy, top10), (0.0, syaw, 0.0), (0.5, 0.5, 1.0), "NoCollision", "BellTower/Art/Dressing",
         mi=mi_for(["MAT_Slate"]), note="broken slates on landing 10, within 30 of the walls")
-COBWEB = existing(CHAPEL, "SM_LB_Prop_Cobweb_Corner_A", mb=((-60.0, -60.0, 0.0), (60.0, 60.0, 120.0)), slots=["MAT_Cobweb"], est=True)
+COBWEB = existing(CHAPEL, "SM_LB_Prop_Cobweb_Corner_A", mb=((-60.0, -60.0, 0.0), (60.0, 60.0, 120.0)), slots=["MAT_Cobweb"])
 for k, n in enumerate((2, 3, 5, 6, 8, 9)):
     corner, pt, yaw, top = LANDINGS[n]
     (cx, cy), cyaw = WALLCORNER[corner]
@@ -945,19 +947,23 @@ for k, n in enumerate((2, 3, 5, 6, 8, 9)):
     add(f"TWA_Cobweb_{n:02d}", "dress", "towerdress", COBWEB, (org[0], org[1], top + 150.0 + 35.0 * (k % 3)), (0.0, cyaw, 0.0), (1, 1, 1), "NoCollision",
         "BellTower/Art/Dressing", mi={"MAT_Cobweb": "MI_Cobweb_Dungeon"}, note=f"cobweb card in the {corner} wall corner above landing {n} (Z top+{150 + 35 * (k % 3)})")
 
-# ---- passage weeds (20, within 40 of the wall bases)
+# ---- passage weeds (32, within 35 of the wall bases)
+# D1.20: WeedPlant02 is 4-7 cm tall at scale 1; x3.5-5 as the P7-FIX3 courtyard ("Weed x5")
 wrng = random.Random(1402)
-for i in range(20):
+for i in range(32):
     nm = f"SM_LB_CC0_WeedPlant02_{1 + (i % 5):02d}"
     mesh = existing(CC0 + "WeedPlant02/", nm)
     south = i % 2 == 0
     x = wrng.uniform(6120.0, 9400.0)
-    d = wrng.uniform(16.0, 24.0)
+    d = wrng.uniform(20.0, 35.0)
+    s = round(wrng.uniform(3.5, 5.0), 3)
+    yaw = wrng.uniform(0, 360)
     y = 1700.0 + d if south else 2300.0 - d
-    add(f"PSA_Weed_{i:02d}", "dress", "weed", mesh, (x, y, 0.0), (0.0, wrng.uniform(0, 360), 0.0), (1, 1, 1), "NoCollision", "Courtyard/Passage",
-        note=f"weed at the base of the passage {'S' if south else 'N'} wall ({d:.0f} from the face)")
+    add(f"PSA_Weed_{i:02d}", "dress", "weed", mesh, (x, y, 0.0), (0.0, yaw, 0.0), (s, s, s), "NoCollision", "Courtyard/Passage",
+        note=f"weed at the base of the passage {'S' if south else 'N'} wall ({d:.0f} from the face), scale {s}")
 
-# ---- garth vegetation (seed 1224): 40 grass, 12 nettles, 8 ferns, keep 50 clear of the cross base, slabs and Note_Cloister
+# ---- garth vegetation (seed 1224): 90 grass, 30 nettles, 20 ferns, keep 20 clear of the cross base, 15 of the slabs and small crosses, 70 of Note_Cloister
+# D1.20: visible and overgrown (P7-FIX3 lesson): nettles x2.8-4.4, grass up to 1.4, growth up to the slabs
 grng = random.Random(1224)
 GR = (10320.0, 1420.0, 11380.0, 2180.0)
 
@@ -968,30 +974,34 @@ def rot_rect_dist(px, py, cx, cy, yaw, hx, hy):
     return math.hypot(max(abs(lx) - hx, 0.0), max(abs(ly) - hy, 0.0))
 
 
-GRASS = [existing(CC0 + "GrassMedium02/", f"SM_LB_CC0_GrassMedium02_{i:02d}", mb=((-25.0, -25.0, 0.0), (25.0, 25.0, 35.0)), slots=["grass"], est=True) for i in range(1, 6)]
-NETTLE = [existing(CC0 + "NettlePlant/", f"SM_LB_CC0_NettlePlant_{i:02d}") for i in range(1, 7)]
+GRASS_MB = (((-6.0, -6.0, 0.0), (6.0, 6.0, 15.7)), ((-9.0, -10.0, 0.0), (9.0, 10.0, 18.0)), ((-13.1, -12.5, 0.0), (13.1, 12.5, 23.2)),
+            ((-15.9, -18.1, 0.0), (15.9, 18.1, 26.0)), ((-17.8, -21.7, 0.0), (17.8, 21.7, 40.3)))     # D1.20: live StaticMeshTools.get_bounds, _01 .. _05
+GRASS = [existing(CC0 + "GrassMedium02/", f"SM_LB_CC0_GrassMedium02_{i:02d}", mb=GRASS_MB[i - 1], slots=["grass"]) for i in range(1, 6)]
+NETTLE = [existing(CC0 + "NettlePlant/", f"SM_LB_CC0_NettlePlant_{i:02d}") for i in (1, 2, 3, 6)]      # D1.20: _04 is 2.2 cm tall, _05 unused
 FERN = [existing(CC0 + "Fern02/", f"SM_LB_CC0_Fern02_{i:02d}") for i in range(1, 5)]
-for kind, lst, count in (("Grass", GRASS, 40), ("Nettle", NETTLE, 12), ("Fern", FERN, 8)):
+VEG_SCALE = {"Grass": (0.9, 1.4), "Nettle": (2.8, 4.4), "Fern": (0.8, 1.1)}
+for kind, lst, count in (("Grass", GRASS, 90), ("Nettle", NETTLE, 30), ("Fern", FERN, 20)):
     for k in range(count):
         mesh = lst[grng.randrange(len(lst))]
+        s = round(grng.uniform(*VEG_SCALE[kind]), 3)
         mb = mbounds_of(mesh)
-        rad = 0.5 * max(mb[1][0] - mb[0][0], mb[1][1] - mb[0][1])
-        for _try in range(400):
+        rad = 0.5 * max(mb[1][0] - mb[0][0], mb[1][1] - mb[0][1]) * s
+        for _try in range(600):
             x, y = grng.uniform(GR[0], GR[2]), grng.uniform(GR[1], GR[3])
             if x - rad < GR[0] or x + rad > GR[2] or y - rad < GR[1] or y + rad > GR[3]:
                 continue
-            ok = rot_rect_dist(x, y, 10850.0, 1800.0, 15.0, 60.0, 60.0) - rad >= 50.0
+            ok = rot_rect_dist(x, y, 10850.0, 1800.0, 15.0, 60.0, 60.0) - rad >= 20.0
             ok = ok and math.hypot(x - 10750.0, y - 1425.0) - rad >= 50.0 + 20.0
             for i2, (gx, gy) in enumerate(GRAVES):
-                ok = ok and rot_rect_dist(x, y, gx, gy, SLAB_ROT[i2][1], 100.0, 40.0) - rad >= 50.0
+                ok = ok and rot_rect_dist(x, y, gx, gy, SLAB_ROT[i2][1], 100.0, 40.0) - rad >= 15.0
             for (gx, gy) in ((10450.0, 1500.0), (11250.0, 1500.0), (10450.0, 2100.0), (11250.0, 2100.0)):
-                ok = ok and math.hypot(x - gx, y - gy) - rad >= 50.0
+                ok = ok and math.hypot(x - gx, y - gy) - rad >= 15.0
             if ok:
                 break
         else:
             raise RuntimeError("garth vegetation: no spot")
-        add(f"CLA_Garth{kind}_{k:02d}", "dress", "garthveg", mesh, (x, y, 100.0 + grng.uniform(0.0, 5.0)), (0.0, grng.uniform(0.0, 360.0), 0.0), (1, 1, 1), "NoCollision",
-            "Cloister/Dressing/Garth", note="garth vegetation (seed 1224)")
+        add(f"CLA_Garth{kind}_{k:02d}", "dress", "garthveg", mesh, (x, y, 100.0 + grng.uniform(0.0, 5.0)), (0.0, grng.uniform(0.0, 360.0), 0.0), (s, s, s), "NoCollision",
+            "Cloister/Dressing/Garth", note=f"garth vegetation (seed 1224), scale {s}")
 
 
 # =====================================================================================================
@@ -1856,9 +1866,9 @@ MD += [f"## Dressing ({len(rest)} listed here, plus {len(big)} garth vegetation 
        "| Label | Mesh | Location | Rotation | Scale | Collision | Note |", "|---|---|---|---|---|---|---|"]
 for r in rest:
     MD.append(f"| {r['id']} | {short(r['mesh'])} | {fmt(r['loc'])} | {fmt(r['rot'])} | {fmt(r['scale'], 4)} | {r['collision']} | {r['note']} |")
-MD += ["", "Garth vegetation (seed 1224): " + str(sum(1 for r in big if r['group'] == 'garthveg')) + " actors `CLA_GarthGrass_00..39`, `CLA_GarthNettle_00..11`, `CLA_GarthFern_00..07` "
-       "(Z 100-105, inside X 10320-11380, Y 1420-2180, >= 50 clear of the cross base, slabs, small crosses and Note_Cloister). Passage weeds (seed 1402): 20 actors `PSA_Weed_00..19` "
-       "within 24 of the passage wall bases.", ""]
+MD += ["", "Garth vegetation (seed 1224): " + str(sum(1 for r in big if r['group'] == 'garthveg')) + " actors `CLA_GarthGrass_00..89`, `CLA_GarthNettle_00..29`, `CLA_GarthFern_00..19` "
+       "(Z 100-105, inside X 10320-11380, Y 1420-2180, scale grass 0.9-1.4, nettles 2.8-4.4, ferns 0.8-1.1; >= 20 clear of the cross base, >= 15 of the slabs and small crosses, >= 70 of Note_Cloister). "
+       "Passage weeds (seed 1402): 32 actors `PSA_Weed_00..31`, scale 3.5-5, 20-35 from the passage wall faces.", ""]
 MD += ["## Lights (D1.8)", "", "Delete: " + ", ".join(LIGHTS_PLAN["delete"]) + ". Keep and tune `Light_TowerExt_0..2` to 200-400 lm. Fog volume `LFV_Tower` X 12040-12960, Y 1540-2460, Z 0-3500. "
        "All new lights are PointLights, shadowless.", "",
        "| Label | Location | Lumens | Radius | Colour | Note |", "|---|---|---|---|---|---|"]
