@@ -35,7 +35,11 @@ def world_box(actor, chain):
     # accumulate in actor-local space (component rotations are 0, so only scale + location compose)
     loc = [0.0, 0.0, 0.0]
     sc = [1.0, 1.0, 1.0]
+    # D1.21: a root component's relative transform IS the actor transform, so skip it (it was counted twice before)
+    root = props(actor, ["rootComponent"])["rootComponent"]["refPath"].rsplit(".", 1)[-1]
     for n in chain:
+        if n == root:
+            continue
         p = props(comp(actor, n), ["relativeLocation", "relativeScale3D"])
         rl, rs = p["relativeLocation"], p["relativeScale3D"]
         for i, k in enumerate("xyz"):
