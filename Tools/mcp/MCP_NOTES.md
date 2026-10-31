@@ -136,3 +136,45 @@ For C++ API names, read `Source/LastBell/`; for architecture, read `Docs/TECHNIC
 13. **Simple collision on imported Blender props (D1.27).** A mesh without UCX gets no simple collision, so the interaction trace misses it. Add a 1-hull convex (`StaticMeshTools`); never use complex as simple on moving parts.
 14. **Gobos and lighting channels (D1.23, D1.30).** A light is masked by hidden actors (`bHiddenInGame`, `bCastHiddenShadow`, lighting Channel1 only) on spots that use channels 0+1. Simulate ignores `bHiddenInGame`, so gobos show there as bright shapes; judge them in normal Play. Static actors ignore `set_actor_transform` in PIE: to A/B a gobo, toggle `castShadow` on its components.
 15. **Volumetric fog stepping (D1.30).** Stepped slabs along spot-light beams come from `bCastVolumetricShadow`, not from the scattering amount. Turn it off on beam lights that pass bars or grates (G1/G2 now do).
+
+## Bell tower and cloister (P10)
+1. **Foreground captures (D1.22).**
+   - While the Unreal Editor is not the foreground window, every viewport call resets after about 19 s, including `SetCameraTransform`, not only `CaptureViewport`.
+   - While the editor is throttled in the background, `CaptureEditorImage` returns a stale frame.
+   - So a capture run needs the owner: they bring Unreal to the front and leave the PC alone.
+   - Use `Tools/crypt/capture_session.py`. It waits for the foreground before each attempt and restores the throttle.
+2. **Slow first frames (D1.22).** The first views of new material permutations took up to 60 s each. Use `--timeout 15 --settle 3` (the `capture_session.py` defaults).
+3. **PIE Simulate for lighting judgement (D1.24).**
+   - Simulate captures show no editor sprites and give the true exposure, so judge lighting and luma only on them.
+   - Use `capture_session.py --mode simulate --luma <json> [--plaque <pose>]`.
+   - Use editor-mode captures (`--mode editor --suffix _ed`) for geometry and dressing only.
+4. **`capture_session.py` reference** (`python Tools/crypt/capture_session.py <poses.json> <out_dir> --prefix P [options]`).
+   - Options: `--suffix S` (default none), `--mode simulate|editor` (default simulate), `--only a,b`, `--force`, `--max-wait 3600`, `--fg-wait 1800`, `--attempts 5`, `--timeout 15`, `--settle 3`, `--log-dir DIR` (default `Saved\Logs\captures`), `--luma JSON_OUT`, `--plaque POSE`, `--dry-run` (prints the plan and the command lines; never imports `ue` or contacts the editor).
+   - Poses whose PNG exists are skipped unless `--force`. Each attempt runs `capture_poses.py --double --raise --force` on the poses not yet captured in this session; the circuit breaker (exit 3 of `capture_poses.py`) rests 60 s and allows one single-pose test, and a second trip stops the session.
+   - Exit codes: 0 every pose captured in this session (or nothing to capture); 1 some missing (`missing: a,b,...`); 2 the editor never became the foreground window (no captures taken); 3 editor mode and PIE is running (nothing changed); 4 unknown pose name in `--only`.
+   - The throttle is restored to the value read at the start; PIE is stopped only if the session started it.
+   - Status: dry-run validated in P10-8a; first live session pending. The lead updates this line after the first live run.
+5. **`set_properties` `values` is a JSON string** (`json.dumps({...})`), not an object. This applies to every `ObjectTools.set_properties` call.
+6. **Root-component world box (D1.21).**
+   - For an actor's root component, `relativeLocation` / `relativeRotation` / `relativeScale3D` already are the world transform.
+   - When composing a component's world box from the parent chain, never apply the root's relative transform on top of the actor transform.
+   - In P10-6a the double-counted root put the capstan chain start about 50 cm above the drum. The fix is in `Tools/belltower/p10_6b_checks.world_box`; reuse that function.
+7. **Light component paths.** `<map>.<map>:PersistentLevel.<Actor>.LightComponent0` covers point, spot and directional lights. Sky light: `.SkyLightComponent0`; height fog: `.HeightFogComponent0`.
+8. **No console or CVar setter over MCP** (only `SearchCVars`). `r.*` settings, `scalability` and `stat` commands are typed by the owner in a PIE window.
+9. **`Tools/belltower` scripts** (editor on `L_Monastery`, no PIE, one editor-touching process at a time):
+   - `gen_tower_layout.py`: the generator. It writes `Docs/plans/p10_d1_layout.json` and `p10_d1_tables.md` (never hand-edit them) and runs 54 checks, including the lane checks.
+   - `place_tower.py`:
+     - `--cats` (the order `block wall tower stair arcade vault roof floor garth door doorleaf dress`), `--only`, `--check`, `--fix-collision`;
+     - `--hide-greybox` / `--verify-greybox`, `--ground`, `--perim`.
+   - `place_lighting_p10.py`: `greybox | lights | lfv | pp | shafts | check`. `lights` places point and spot records; `check` gave 51/51 after P10-7b.
+   - `bp_swap.py`: the dump and diff for child-BP swaps (D-071 procedure).
+   - `p10_6a_checks.py` (dressing checks, 29 lines) and `p10_6b_checks.py` (the swap readouts and `world_box`).
+   - `import_p10.py` (the P10-4 imports).
+   - Pose files: `Tools/belltower/poses/`.
+10. **Moon beams through openings (D1.24).**
+    - The courtyard moon travels along d = (0.6455, 0.4520, −0.6157) (`DirectionalLight` pitch −38, yaw 35). Only openings that face it get a beam: here the S and W faces and the SW roof collapse.
+    - **Pattern:** a shadowed `SpotLight` 150–200 cm back along −d from the opening's inner centre, rotation (−38, 35, 0), with `bCastVolumetricShadow` and scattering 0.8.
+    - **Shaft card:** an engine `Cylinder` with `MI_LightShaft_Crypt`, NoCollision and no shadow. It runs from the opening + 5·d, traced along d.
+    - Implementation: `place_lighting_p10.py shafts`.
+11. **Door leaves in pointed or gabled openings (D1.19).** Check both faces for light wedges at the leaf's top corners. `Door_Shortcut` needed leaf scale Z 1.30.
+12. **Lighting a dark interior (D1.24).** If a wall 40 cm from a lantern glows saturated orange, the lantern is too strong. Fix it in lumens, not in exposure. Raise exposure only for the walk floors (`PP_Cloister` EV100 0.65).
