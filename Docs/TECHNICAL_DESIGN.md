@@ -165,7 +165,13 @@ These live in `Content/LastBell/Blueprints/`:
   - `BP_Lever`, `BP_RitualMechanism`, `BP_TagInteractable` (pickups, candles, bell), `BP_TagTrigger`, `BP_TagVisibility`, `BP_KillVolume`.
   - Warden stand-ins (Phase 2): `BP_WardenSilhouette` (stages 1–3, no AI) and `BP_WardenPlaceholderKill` (stages 4–5).
   - All of these share the pattern: snap to state at BeginPlay, bind `OnStateChanged`, unbind at EndPlay. A shared base (`ALBTagReactiveActor`) was considered and deferred (D-032).
-- `Puzzles/` has one Blueprint per puzzle. They communicate only through WorldState tags.
+  - **Art children (D-071, D-076, D-081; Phases 8–10).** An area's art lives in child Blueprints: each child sets the art mesh, the collision and its per-instance values in its construction script, and the gameplay logic stays in the parent.
+    - Doors: `BP_Door_Base_Dungeon` (chapel main, sacristy, `Door_Tower`, `Door_Shortcut`).
+    - Mechanisms: `BP_RitualMechanism_ChapelBells`, `_CryptWinch` and `_TowerCapstan`.
+    - Others: `BP_TagInteractable_ChapelKey`, `_CryptCrank` and `_GreatBell`; `BP_TagVisibility_CryptGate` and `_CryptRubble`; `BP_DialLever_Crypt`; `BP_StainedGlassClue_Saints`; `BP_Inscription_Cloister`; `BP_SmallBell_Cloister`.
+    - The graph DSL can't call a parent's construction script, so most children copy the parent's body. If a parent's construction script changes, update its children (R-40 lists them).
+    - Placed instances don't pick up template edits; per-instance differences go in a child (`Tools/mcp/MCP_NOTES.md`).
+- `Puzzles/` has one Blueprint per puzzle. It also holds the puzzle props and their art children: `BP_SmallBell` → `_Cloister`, `BP_DialLever` → `_Crypt`, `BP_StainedGlassClue` → `_Saints`, `BP_Inscription` (whose child `BP_Inscription_Cloister` is in `Interactables/`), and `BP_PuzzleCandle`. They communicate only through WorldState tags.
 - Scripted beats live in small `BP_Event_*` actors, not in Level Blueprints.
 - UI: `WBP_HUD` (prompt and objective) from P1. `WBP_MainMenu`, `WBP_Ending` and `BP_EndingTrigger` from P2. `WBP_Pause` and `WBP_Settings` come later.
 
@@ -173,7 +179,11 @@ These live in `Content/LastBell/Blueprints/`:
 
 ## 11. Maps
 - `L_MainMenu` holds the menu (`BP_MenuGameMode`, `WBP_MainMenu`). It's the game's default map. Packaged builds cook exactly `L_MainMenu` and `L_Monastery` (`MapsToCook`), never the test maps.
-- `L_Monastery` is a **non-World-Partition** persistent level. In Phase 2 it's ONE level with Outliner folders per area (D-023). A split into per-area sublevels or level instances (D-013) is decided in Phase 6/7, once streaming needs can be measured. The greybox layout is in `GREYBOX_SPEC.md`.
+- `L_Monastery` is a **non-World-Partition** persistent level. In Phase 2 it's ONE level with Outliner folders per area (D-023). A split into per-area sublevels or level instances (D-013) is decided in Phase 6/7, once streaming needs can be measured.
+- **Greybox layout:** `GREYBOX_SPEC.md`.
+- **Art over the greybox (D-068, D-078):** from Phase 9, the greybox actors of an art-passed area keep their collision but are made not visible. This keeps navmesh, WalkPaths, RouteBot and the Warden routes on the tested collision.
+  - The visible art is a NoCollision layer, apart from the exceptions listed in those decisions.
+  - It is placed from generated layouts: `Docs/plans/p9_d1_layout.json` (crypt) and `p10_d1_layout.json` (cloister and bell tower), via `Tools/crypt/place_crypt.py` and `Tools/belltower/place_tower.py`.
 - `L_Test_MicroSlice` is the Phase 1 proof map, kept afterwards as a regression map.
 
 ## 12. Rendering baseline (to be measured, not assumed)
