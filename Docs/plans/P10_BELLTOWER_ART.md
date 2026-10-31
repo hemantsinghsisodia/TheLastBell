@@ -1876,3 +1876,27 @@ The generator (P10-L) already holds the D1.7 dressing as 150 `dress` records in 
 - nothing changed in the courtyard (`MI_Prop_Earth` itself is unchanged).
 
 **Lead capture after P10-6e:** re-capture `dress_collapse_close`, `dress_garth_from_s`, `dress_garth_from_e`, `dress_garth_high`, `dress_note`, `dress_mech3_chain` and `dress_belfry_debris`, as `p10_6e_<pose>_ed.png`.
+
+### D1.22 P10-6e review: dressing pass complete (lead, 2026-10-31)
+**Accepted** (cacb196, c416405, ce8d6da, 0f4421c):
+- 278 dress actors;
+- `MI_Cl_GarthEarth`: child of `MI_Prop_Earth`, root `M_LB_Surface`, `Wetness` 0.08, `bGapGrowth` on with the Moss002 textures;
+- `p10_6e_checks.txt` 29/29;
+- suite 78/78 (`Saved/Logs/p10_6e_suite.log`);
+- the two clamps added for the belfry chunks and the rafter's yaw of −5°.
+
+**Captures** (`p10_6e_<pose>_ed.png`, all 7):
+- **Chain A** (`dress_mech3_chain`): **pass**. It leaves the drum at mid-height and runs to the eyelet and on to the latch box beside the tower door, so the capstan now reads as the door mechanism.
+- **Garth** (`dress_garth_from_s`, `_from_e`, `_high`, `dress_note`): **pass**. From the walks it reads as an overgrown bed around the cross and graves: tall grass tussocks, ferns, dark dry rooibos, nettles and two shrubs. The earth reads damp rather than tar-like.
+  - Earth still shows between the plants from above, with a few specular patches under the greybox lights. P10-7 re-judges the sheen under the final lights. If it still reads glossy, lower `MI_Cl_GarthEarth` `Wetness` to 0, an instance-only change.
+  - The note stays clear and readable.
+- **Belfry debris** (`dress_belfry_debris`): **pass**. Varied chunks are scattered along the W wall, one leaning, with the broken rafter rising onto the last one.
+- **Collapse** (`dress_collapse_close`): **pass**. The heap of mossy rubble and squared blocks, with the rafter leaning on the pier.
+
+**Capture lessons (for MCP_NOTES in P10-8):**
+- While the editor is not the foreground window, every viewport call resets after about 19 s, including `SetCameraTransform`. While it is throttled in the background, `CaptureEditorImage` returns a stale frame.
+- The first views of new material permutations (the garth) need `--timeout 15 --settle 3`. Each took up to 60 s.
+- The capture wrapper must wait for the foreground again before each attempt. If the owner touches the PC mid-run, the run then pauses instead of failing.
+- Scratch wrapper: `p10_6e_run_slow.py`. P10-8 moves it into `Tools/` as a reusable capture script.
+
+**Dressing pass complete.** Next is P10-7, lighting (D1.8). The lead writes its detailed spec first, and it needs the owner's go.
