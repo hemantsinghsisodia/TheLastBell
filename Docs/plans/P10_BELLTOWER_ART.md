@@ -1758,3 +1758,121 @@ The generator (P10-L) already holds the D1.7 dressing as 150 `dress` records in 
 **Lead review after P10-6a:** the lead and the owner run one capture session.
 - `p10_6a_poses.json` (20 poses), prefix `p10_6a_`.
 - The two D1.19 door poses (`door_shortcut_court`, `door_shortcut_pass` from `p10_6_poses.json`), prefix `p10_6d_`, with `--force`.
+
+### D1.21 P10-6a / P10-6d capture review; P10-6e fix spec (lead, 2026-10-31)
+**Accepted** (6e8b78b, 29dc26c, d69ffb3, c59e21a):
+- 242 dress actors, all passing `place_tower.py --check`;
+- `p10_6a_checks.py` 17/17;
+- suite 78/78;
+- the `expected_materials` slot-index fix.
+
+**Capture run.** The lead and the owner captured 21 of 22 views, with the editor in the foreground.
+- `Docs/ArtTest/belltower/p10_6a_<pose>_ed.png`: 18 of the 20 `p10_6a_poses.json` views. `dress_collapse_close` failed 3 × 6 attempts.
+- `p10_6d_door_shortcut_court/pass_ed.png`: both door views.
+
+**Verdicts:**
+
+| Item | Pose(s) | Verdict |
+|---|---|---|
+| `Door_Shortcut` (P10-6d) | `p10_6d_door_shortcut_court`, `_pass` | **Pass.** The light wedges are gone: from the courtyard the leaf's top now stands in front of the dark tympanum. From the passage, a 2–3 cm bright slit runs along the hinge edge (Y ≈ 1938–1941). It was already present in P10-6c and is at the limit; P10-7 re-judges it under the final lights. |
+| Collapse | `dress_collapse_along` | **Pass.** The heap, chunks and leaning rafter read as fallen vault. |
+| Note | `dress_note` | **Pass.** It still reads clearly among the plants. |
+| Ivy | `dress_ivy_s` | **Pass.** Dead leaves hang over the S arcade. |
+| Cells | `dress_cells_w` | **Pass.** Stool and bucket at the W cell door. |
+| Passage | `dress_passage_east`, `_west` | **Pass.** The weeds read along both wall bases. |
+| Lanterns | `dress_lantern_bells`, `dress_tower_lantern`, `dress_mech3_chain` | **Pass.** They are unlit until P10-7. |
+| Rope coil | `dress_tower_coil` | **Pass.** |
+| Decals | `dress_decal_s`, `dress_decal_e` | **Pass.** The damp and mould read at the wall bases. |
+| Chain B, eyelet, latch box | `dress_mech3_latch` | **Pass.** The box reads as a plain block, which is accepted. |
+| Slates | `dress_land10_slates` | **Pass for placement.** They read pale under the greybox light; P10-7 re-judges. |
+| Cobweb, landing 5 | `dress_cobweb_l5` | **Accepted.** The NE corner has a timber post, so the web reads as threads strung from the post to both walls. |
+| **Chain A** | `dress_mech3_chain` | **Fail (lead error).** The chain starts in the air about 18 cm above the drum's top. |
+| **Garth** | `dress_garth_from_s`, `_from_e`, `_high`, `dress_note` | **Fail: not overgrown.** The GrassMedium02 clumps at 0.9–1.4 are thin blades that barely show. The ferns read best. `MI_Prop_Earth` (`Wetness` 0.3) reads as glossy wet tar under the lights and dominates the bed. |
+| **Belfry debris** | `dress_belfry_debris` | **Fail.** Four identical chunks stand in a neat row with the rafter flat beside them. They read as placed blocks, not fallen debris. |
+
+**The lead's chain error (corrects D1.20).**
+- D1.20 placed the drum at Z 150–200. That came from `p10_6b_checks.py`'s `world_box`, which adds the root component's `relativeLocation` on top of the actor transform. For a root component, `relativeLocation` *is* the world location, so the root is counted twice.
+- Read live on 2026-10-31:
+  - `Pedestal` is the root of `Mech_Ritual3`, with relativeLocation (11790, 1780, 50) = the actor location, and mesh z −50…50, so world Z **0–100**;
+  - `Core` sits at relative (0, 0, 75), so the drum centre is at Z 125 and the drum at world Z **100–150**;
+  - the bands are at Z 104–108 and 142–146, and the bars at Z 135.5–140.5.
+- The D1.18 start, Z 110, was correct. **New start: (11824.0, 1783.0, 120.0).** It is on the drum surface, between the lower band and the bars, and the run crosses the pedestal's east face (X 11840) at Z ≈ 122, which is 22 above the pedestal top.
+
+**P10-6e steps** (environment-designer, [EDITOR]; commits "P10-6e: …"):
+0. **Fix `world_box`** in `Tools/belltower/p10_6b_checks.py`.
+   - When the first name in `chain` is the actor's root component (read `rootComponent`), start from loc (0, 0, 0) and scale (1, 1, 1) and skip that component's relative transform, because the actor transform already holds it.
+   - Run `p10_6b_checks.py capstan`. Expect Pedestal Z 0–100 and Core Z 100–150, with X/Y around (11790, 1780).
+   - If the numbers differ, stop and report them.
+   - Commit: `P10-6e: world_box no longer double-counts the root component`.
+1. **Generator** (`gen_tower_layout.py`; never hand-edit the outputs):
+   1. **Chain A start:** **(11824.0, 1783.0, 120.0)**. Comment: `# D1.21: drum is world Z 100-150 (Pedestal is the root, Z 0-100); between the lower band (104-108) and the bars (135.5-140.5)`. Update every other use of the old start, including the D1.20 comment.
+   2. **Garth vegetation** (same seed 1224, and the same draw order per plant: mesh, then scale, then position tries, then Z jitter, then yaw):
+      - **Grass:** 90 at scale **1.6–2.6**.
+      - **Nettle:** unchanged, 30 at 2.8–4.4.
+      - **Fern:** **35** at **0.9–1.3**.
+      - **New kind `Rooibos`:** **18** at **1.0–1.6**. Meshes `SM_LB_CC0_WildRooibos_01..05` (folder `CC0 + "WildRooibos/"`). Real bounds by mesh: `((-34.8, -42.2, 0.0), (34.8, 42.2, 53.9))`, `((-26.2, -23.7, 0.0), (26.2, 23.7, 54.1))`, `((-21.3, -23.6, 0.0), (21.3, 23.6, 44.8))`, `((-16.4, -19.2, 0.0), (16.4, 19.2, 42.0))`, `((-13.9, -8.3, 0.0), (13.9, 8.3, 30.6))`. Slots: the mesh's own (`MI_Foliage_WildRooibos`), with no override. Labels `CLA_GarthRooibos_00..17`.
+      - **Kind order:** Grass, Nettle, Fern, Rooibos.
+      - **Clearance from the 4 small crosses:** **40** (was 15), so the 60 cm crosses stay visible. The others stay as in D1.20: cross base 20, slabs 15, note 70.
+      - **Two shrubs at fixed spots**, placed after the random kinds and with no exclusion against them:
+
+        | Label | Mesh | Location | Yaw | Scale |
+        |---|---|---|---|---|
+        | `CLA_GarthShrub_0` | `SM_LB_CC0_SearsiaLucida_06` | (10950, 1500, 100) | 35 | 1.1 |
+        | `CLA_GarthShrub_1` | `SM_LB_CC0_SearsiaLucida_07` | (10750, 2100, 100) | 200 | 1.2 |
+
+        Real bounds `((-32.9, -24.2, 0.0), (32.9, 24.2, 73.9))` and `((-19.1, -16.2, 0.0), (19.1, 16.2, 78.7))`; own slots (`MI_Foliage_SearsiaLucida`); NoCollision; folder `Cloister/Dressing/Garth`.
+      - **Count:** the garth total is 90 + 30 + 35 + 18 + 2 = **175**.
+      - **Garth bed material:** `CLA_GarthBed` uses `mi={"MAT_Earth": "MI_Cl_GarthEarth"}`, with the `mi_paths` entry `/Game/LastBell/Environments/Cloister/Materials/MI_Cl_GarthEarth`.
+   3. **Belfry debris** (replaces `TWA_Debris_Chunk_0..3` and the rafter; seed `random.Random(1403)`).
+      - **The strip:** the W slab next to the tower W wall, X 12041–12130, Y 2170–2450, floor Z 2500.
+      - **Chunks:** five chunks `TWA_Debris_Chunk_0..4` with meshes `[Chunk_S, Chunk_M, Chunk_S, Chunk_S, Chunk_M]`.
+        - Per chunk, in this draw order: `s = uniform(0.35, 0.6)` (uniform xyz), `yaw = uniform(0, 360)`, footprint centre `cx = uniform(12065, 12100)`, `cy = 2190 + 60 * k + uniform(-15, 15)`.
+        - `loc` puts the rotated, scaled footprint centre at (cx, cy) and the bottom at Z 2500. The kit pivot is the min corner, so `loc = (cx, cy) − R(yaw) · (s · sx / 2, s · sy / 2)`.
+        - Chunk `k = 3` also gets pitch 12, so it leans.
+        - If the AABB min X is below 12041, shift +X by the difference. If the AABB max Y is above 2450, shift −Y.
+        - NoCollision, `MI_Kit_Rubble`.
+      - **`TWA_Debris_Rafter`** (`SM_LB_Prop_Rafter_Broken_15x10x260`, pivot at the bottom centre, long axis +Z). The wanted result:
+        - the long axis runs within ±8° of +Y in plan;
+        - its S end lies on the floor (bottom Z 2500–2502) at (12055 ± 5, 2185 ± 5);
+        - its N end is raised 20–30 cm, as if resting on chunk 4;
+        - its AABB is inside X 12041–12130, Y 2170–2450, Z 2500–2550.
+        - Derive the rotator, then confirm it with the generator's `world_aabb`. Record the rotator you chose in a comment.
+      - **Checks:** keep the `chamber debris` lane check passing (WP_TowerStairs clearance ≥ 60).
+   4. **Re-run.** It must exit 0 with all checks passing.
+      - The `dress` count is 242 + 35 (garth) + 1 (chunk) = **278**.
+      - Commit the generator and its outputs: `P10-6e: generator - chain at the drum, denser garth (rooibos, shrubs, bigger grass), random belfry debris (D1.21)`.
+2. **`MI_Cl_GarthEarth`.**
+   - Create it at `/Game/LastBell/Environments/Cloister/Materials/MI_Cl_GarthEarth` as a child of `MI_Prop_Earth`, then set `Wetness` = **0.08**.
+   - **Parent chain check.** Read `MI_Prop_Earth` → `MI_Brown_Mud_03_WA` → ….
+     - **If the root is `M_LB_Surface` and the static switch `bGapGrowth` exists:** turn it on in `MI_Cl_GarthEarth`.
+       - Copy `GrowthColorTex`, `GrowthNormalTex`, `GrowthRoughnessTex` and `GrowthTint` from `MI_Env_Floor_Puddled`.
+       - Set `GrowthLevel` 0.55, `GrowthNoiseAmount` 0.45 and `WallGrowthDistCm` 120. Leave the rest at default.
+     - **Otherwise:** set only `Wetness`, and report the chain.
+   - Save the MI (one package), check that it compiles without errors in the log, and read back every parameter you set.
+   - Commit: `P10-6e: MI_Cl_GarthEarth (matte, moss in the hollows)`.
+3. **Place.**
+   - `place_tower.py --cats garth --only CLA_GarthBed` (the material changes).
+   - `place_tower.py --cats dress` (all; idempotent).
+   - Then list every actor in the `dress` folders (`Cloister/Dressing/*`, `BellTower/Art/Dressing`, `BellTower/Art/Belfry`, `Cloister/Art/StairHouse`, `Courtyard/Passage`).
+     - A label that starts with `CLA_Garth`, `TWA_Debris_`, `PSA_Weed_` or `CLA_Collapse_` and is not a record id is an orphan: remove it and report it.
+     - Any other label that is not among the layout's record ids (all categories): report it and **never remove it**.
+   - Run `--cats dress --check` and `--cats garth --only CLA_GarthBed --check`. Everything must pass.
+4. **Update `p10_6a_checks.py`.**
+   - **Chain:** its `run_from` lies within the Core's world AABB from the fixed `world_box`, grown by 2 cm, and is ≥ 30 from the drum axis. Do not hard-code Z.
+   - **Counts:** grass 90, nettle 30, fern 35, rooibos 18, shrub 2, weeds 32.
+   - **Belfry:** every `TWA_Debris_*` AABB is inside X 12041–12130, Y 2170–2450, Z 2499–2560, and the rafter meets the rules in step 1.3.
+   - **Everything else** is unchanged (the gameplay overlap and the door swing boxes).
+   - Save the output to `Docs/ArtTest/belltower/p10_6e_checks.txt`. It must be ALL PASS.
+5. **Save, reload, re-check.** Save `L_Monastery` (one package), check `is_dirty` is false, run `load_level`, then re-run step 3's `--check` and the checks script.
+6. **Suite** with the command-line runner: **78/78**, with the same named tests as D1.20 step 6. If anything fails, stop and report.
+7. **Commit:** `P10-6e: dressing re-placed (278 dress), garth earth MI, checks, suite 78/78`, including `L_Monastery.umap`. Never stage `L_Throwaway_P9_4.umap`.
+
+**End state:**
+- the map is saved and not dirty;
+- PIE is stopped;
+- there are no `TMP_` actors;
+- the throttle is untouched;
+- no parent Blueprint was saved;
+- nothing changed in the courtyard (`MI_Prop_Earth` itself is unchanged).
+
+**Lead capture after P10-6e:** re-capture `dress_collapse_close`, `dress_garth_from_s`, `dress_garth_from_e`, `dress_garth_high`, `dress_note`, `dress_mech3_chain` and `dress_belfry_debris`, as `p10_6e_<pose>_ed.png`.
