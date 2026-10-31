@@ -11,8 +11,10 @@ Usage (editor open on L_Monastery; no PIE; one editor-touching process at a time
     python place_tower.py --ground                        # apply ground_materials (Ground_1..6) and read back the slab materials
     python place_tower.py --perim                         # apply perimeter_materials (Perim_N/E/S/W -> MI_Kit_Masonry); visibility and collision must stay unchanged
 
-Placed categories (P10-5): block wall tower stair arcade vault roof floor garth door doorleaf.
-NOT placed here: dress (P10-6a), light (P10-7), gameplay and every record with extras.skip_place (P10-6b: GP_*, TWA_GreatBell).
+Placed categories: block wall tower stair arcade vault roof floor garth door doorleaf (P10-5) and dress (P10-6a, D1.20).
+dress = static-mesh records (placed like the others) plus the 8 DecalActors (mesh "Point" with extras.decal: DecalActor, decalMaterial + decalSize,
+  verified by material, size, transform, forward vector into the wall (dot >= 0.999) and a trace_world across the decal box that must hit the wall 18-42 cm in).
+NOT placed here: light (P10-7), gameplay and every record with extras.skip_place (P10-6b: GP_*, TWA_GreatBell).
 Every placed actor: ONE full transform call (location+rotation+scale), label = id, outliner folder = record folder; collision per the record:
   NoCollision          -> bUseDefaultCollision=false + bodyInstance.collisionProfileName=NoCollision + collisionEnabled=NoCollision (MCP_NOTES)
   hidden-block         -> BlockAll (engine cube), StaticMeshComponent bVisible=false
@@ -39,7 +41,8 @@ SM = "editor_toolset.toolsets.static_mesh.StaticMeshTools"
 TOL = 3.0
 LOC_TOL = 0.5
 
-ORDER = ["block", "wall", "tower", "stair", "arcade", "vault", "roof", "floor", "garth", "door", "doorleaf"]
+ORDER = ["block", "wall", "tower", "stair", "arcade", "vault", "roof", "floor", "garth", "door", "doorleaf", "dress"]
+WALL_DIR = {"S": (0.0, -1.0, 0.0), "N": (0.0, 1.0, 0.0), "W": (-1.0, 0.0, 0.0), "E": (1.0, 0.0, 0.0)}   # decal forward must point into this wall
 GREYBOX_FOLDERS = ["Cloister", "BellTower", "BellTower/Stairs", "BellTower/Railings", "Courtyard"]   # Passage_S/N live in Courtyard
 
 
@@ -70,6 +73,7 @@ class Placer:
         self.fix_collision = False
         self.mesh_slots = {}      # mesh path -> [(slot name, current MI name)]
         self.folder_cache = {}    # folder -> {label: actor}
+        self.decal_rows = []      # (id, forward.wall dot, trace distance, material, size, status)
 
     def call(self, ts, tool, args=None, tries=4):
         for k in range(tries):
@@ -214,7 +218,11 @@ class Placer:
             # rotated off-axis): only an overhang beyond it counts (P9 rule)
             dev = max(max(e - g for g, e in zip(mn, exp_min)), max(g - e for g, e in zip(mx, exp_max)), 0.0)
         if dev > TOL:
-            issues.append("bounds dev %.1f (got %s..%s want %s..%s)" % (dev, [round(v, 1) for v in mn], [round(v, 1) for v in mx], exp_min, exp_max))
+            msg = "bounds dev %.1f (got %s..%s want %s..%s)" % (dev, [round(v, 1) for v in mn], [round(v, 1) for v in mx], exp_min, exp_max)
+            if (rec.get("extras") or {}).get("mbounds_estimated"):
+                print("  NOTE %s: estimated mesh bounds, measured instead: %s" % (rec["id"], msg), flush=True)
+            else:
+                issues.append(msg)
         t = self.call(A, "get_actor_transform", {"actor": a, "worldspace": True})
         loc, r, sc = t["location"], t["rotation"], t["scale"]
         dl = max(abs(loc[k] - rec["loc"]["xyz".index(k)]) for k in "xyz")
@@ -243,6 +251,62 @@ class Placer:
             if rec["collision"] != "hidden-block" and actual != want:
                 issues.append("slot %d material %s != %s" % (i, actual, want))
         return not issues, dev, "; ".join(issues)
+
+    # ---- decals (dress records with mesh "Point" and extras.decal; ported from Tools/crypt/place_crypt.py, D1.20)
+    @staticmethod
+    def is_decal(rec):
+        return rec["mesh"] == "Point" and "decal" in (rec.get("extras") or {})
+
+    def place_decal(self, rec):
+        rot = rec["rot"]
+        xf = {"location": dict(zip("xyz", rec["loc"])), "rotation": {"pitch": rot[0], "yaw": rot[1], "roll": rot[2]},
+              "scale": {"x": 1, "y": 1, "z": 1}}                       # the record's rotation exactly as given; scale stays 1
+        a = self.call(S, "add_to_scene_from_class", {"actor_type": {"refPath": "/Script/Engine.DecalActor"}, "name": rec["id"], "xform": xf}, tries=1)
+        if not a:
+            raise RuntimeError("decal spawn failed for " + rec["id"])
+        a = a if isinstance(a, dict) else {"refPath": a}
+        self.call(A, "set_actor_transform", {"actor": a, "xform": xf, "worldspace": True})
+        self.call(A, "set_label", {"actor": a, "label": rec["id"]})
+        self.call(S, "set_actor_folder", {"actor": a, "folder_path": rec["folder"]})
+        comp = {"refPath": a["refPath"] + ".NewDecalComponent"}
+        d = rec["extras"]["decal"]
+        sz = d["size"]
+        self.set_props(comp, {"decalMaterial": self.mi_path(d["mi"]), "decalSize": {"x": sz[0], "y": sz[1], "z": sz[2]}})
+        return a, comp
+
+    def verify_decal(self, rec, a, comp):
+        d = rec["extras"]["decal"]
+        p = self.props(comp, ["decalMaterial", "decalSize"])
+        mat = (p["decalMaterial"] or {}).get("refPath", "").split("/")[-1].split(".")[0]
+        sz = p["decalSize"]
+        issues = []
+        if mat != d["mi"]:
+            issues.append("material %s != %s" % (mat, d["mi"]))
+        e = d["size"]
+        if max(abs(sz["x"] - e[0]), abs(sz["y"] - e[1]), abs(sz["z"] - e[2])) > 0.01:
+            issues.append("decalSize %s != %s" % (sz, e))
+        t = self.call(A, "get_actor_transform", {"actor": a, "worldspace": True})
+        loc, r = t["location"], t["rotation"]
+        rot = rec["rot"]
+        dl = max(abs(loc[k] - rec["loc"]["xyz".index(k)]) for k in "xyz")
+        dr = max(abs(ang_diff(r["pitch"], rot[0])), abs(ang_diff(r["yaw"], rot[1])), abs(ang_diff(r["roll"], rot[2])))
+        if dl > 0.1 or dr > 0.1:
+            issues.append("transform dev loc %.2f rot %.2f" % (dl, dr))
+        # orientation by numbers: forward vector of the read-back rotator must point into the wall
+        fwd = rot_rows(r["pitch"], r["yaw"], r["roll"])[0]
+        wd = WALL_DIR[d["wall"]]
+        dot = sum(f * w for f, w in zip(fwd, wd))
+        if dot < 0.999:
+            issues.append("forward %s . wall %s = %.4f < 0.999" % ([round(v, 3) for v in fwd], d["wall"], dot))
+        # wall inside the box: trace from centre - 30 fwd to centre + 30 fwd must hit 18-42 cm in
+        c = rec["loc"]
+        s0 = {"x": c[0] - 30 * fwd[0], "y": c[1] - 30 * fwd[1], "z": c[2] - 30 * fwd[2]}
+        e0 = {"x": c[0] + 30 * fwd[0], "y": c[1] + 30 * fwd[1], "z": c[2] + 30 * fwd[2]}
+        dist = self.call(S, "trace_world", {"start": s0, "end": e0})
+        if dist is None or not (18.0 <= dist <= 42.0):
+            issues.append("wall trace hit %s (want 18-42)" % ("NONE" if dist is None else "%.1f" % dist))
+        self.decal_rows.append((rec["id"], dot, dist, mat, sz, "ok" if not issues else "FAIL"))
+        return not issues, dl, "; ".join(issues)
 
     def block_trace(self, rec):
         """hidden blocks must really block: trace across the thin axis through the centre of the AABB; returns (hit, note)"""
@@ -277,19 +341,19 @@ class Placer:
                         fails.append((r["id"], "missing"))
                         print("  FAIL %s: missing" % r["id"], flush=True)
                         continue
-                    comp = self.comp0(a)
+                    comp = {"refPath": (a["refPath"] if isinstance(a, dict) else a) + ".NewDecalComponent"} if self.is_decal(r) else self.comp0(a)
                     if self.fix_collision and r["collision"] == "NoCollision":
                         self.set_props(comp, {"bUseDefaultCollision": False,
                                               "bodyInstance": {"collisionProfileName": "NoCollision", "collisionEnabled": "NoCollision"}})
                 else:
                     try:
-                        a, comp = self.place_one(r)
+                        a, comp = self.place_decal(r) if self.is_decal(r) else self.place_one(r)
                     except Exception as e:   # one failed record must not abort the run
                         fails.append((r["id"], "place error: " + str(e)[:200]))
                         print("  FAIL %s: place error %s" % (r["id"], str(e)[:200]), flush=True)
                         continue
                 try:
-                    ok, dev, msg = self.verify(r, a, comp)
+                    ok, dev, msg = self.verify_decal(r, a, comp) if self.is_decal(r) else self.verify(r, a, comp)
                 except Exception as e:
                     ok, dev, msg = False, 0.0, "verify error: " + str(e)[:200]
                 if ok and r["collision"] == "hidden-block":
@@ -308,6 +372,11 @@ class Placer:
             print("   %s: %s %d, pass %d, fail %d, max bounds deviation %.2f cm" %
                   (cat, "checked" if check else "placed", len(rs), len(rs) - len(fails), len(fails), maxdev), flush=True)
             summary.append((cat, len(rs), len(rs) - len(fails), len(fails), maxdev))
+        if self.decal_rows:
+            print("\nDECALS (id, forward.wall dot, wall trace hit cm, material, decalSize, status)")
+            for rid, dot, dist, mat, sz, st in self.decal_rows:
+                print("  %-14s dot %.4f  hit %s  %-26s size (%g, %g, %g)  %s" %
+                      (rid, dot, "NONE" if dist is None else "%.1f" % dist, mat, sz["x"], sz["y"], sz["z"], st))
         print("\nSUMMARY (cat, n, pass, fail, max dev cm)")
         for s in summary:
             print("  %-9s %4d %4d %3d  %.2f" % s)
