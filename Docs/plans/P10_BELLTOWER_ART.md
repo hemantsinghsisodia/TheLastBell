@@ -2183,3 +2183,10 @@ All other poses are as in D1.24.
 | `lt_beam_south` | [12500, 2150, 900, −31, −75] | the F03 beam, from the shaft centre |
 | `lt_beam_west` | [12500, 2000, 1700, 14, 175] | the F08 beam |
 | `lt_beam_roof` | [12750, 2350, 2700, 20, −140] | the roof collapse beam |
+
+**Beam check result** (`p10_7c_*`, PIE Simulate):
+- `lt_beam_south`: **pass**. The S slit F03 glows, and a soft blue moon shaft crosses the dark shaft to the stair, with a cobweb lit beside it.
+- `lt_beam_west`: the W slit F08 glows. Its beam is short (1.6 m to the flight) and mostly hidden behind the rails. Accepted.
+- `lt_beam_roof`: the SW collapse reads clearly, with broken rafters against the night sky above the oak frame and bell. The roof beam lands on the E wall, as seen in `lt_bell_top`.
+
+**P10-7 lighting pass complete.** Next is P10-8 (docs, QA, the owner's GPU check and playtest, the phase report), after the owner's go.
