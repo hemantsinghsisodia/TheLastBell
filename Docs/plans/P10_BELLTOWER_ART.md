@@ -1586,3 +1586,175 @@ This is the D1.6 design, made exact, plus the D1.11 errata. The P9 lessons apply
 - `Door_ChapelMain` (P8) and `Door_Sacristy` (P9) use the same Dungeon leaf at the same scale Z 1.0818.
 - The P8 capture `Docs/ArtTest/chapel/r2b2_door_chapelmain_outside_W.png` shows small dark notches at the leaf's top corners under the head.
 - They were accepted in their phases and are not judged here. Re-checking them needs the owner's approval as a separate fix set.
+
+### D1.20 P10-6a spec: dressing (environment-designer, [EDITOR]; commits "P10-6a: …"), with P10-6d as step 0 (lead, 2026-10-31)
+The generator (P10-L) already holds the D1.7 dressing as 150 `dress` records in `Docs/plans/p10_d1_layout.json`. P10-6a corrects four things in the generator, teaches `place_tower.py` to place `dress` (including DecalActors), places everything, checks it, saves, runs the suite and writes the capture poses.
+
+**Lead findings that drive the corrections:**
+- **Chain start inside the pedestal.**
+  - `CLA_Mech3_Chain_A` starts at (11820, 1780, 110) (D1.18). That point is inside `Mech_Ritual3`'s stone pedestal (Z 50–150).
+  - The drum (`SM_LB_Crypt_CapstanDrum_80x50`: centre pivot, body r 34, iron bands at local z ±17…21, bars at local z 10.5…15.5) sits at world Z 150–200 around (11790, 1780).
+- **Invisible vegetation at scale 1.** These sizes come from live `StaticMeshTools.get_bounds`, read 2026-10-31:
+
+  | Mesh | Height at scale 1 |
+  |---|---|
+  | `SM_LB_CC0_WeedPlant02_*` | 3.9–7.2 cm |
+  | `SM_LB_CC0_NettlePlant_*` | 2.2–19.3 cm |
+  | `SM_LB_CC0_GrassMedium02_*` | 15.7–40.3 cm |
+
+  This is the P7-FIX3 lesson ("plants are invisible by size"); the courtyard uses weeds ×5 and nettles ×4. The garth is meant to be overgrown (D-077), yet 60 plants with 50 cm clearances leave it mostly bare.
+- **Estimated bounds that would fail the 3 cm bounds check:**
+
+  | Mesh | Estimate | Live |
+  |---|---|---|
+  | `SM_LB_Prop_SlateShards_A` | z 8 | z 21.2 |
+  | `SM_LB_Prop_Ivy_Creep_400x200_Dead` | y 25 | y 20.5 |
+  | `SM_LB_CC0_GrassMedium02_*` | 50 × 50 × 35 | see the table in step 1 |
+
+**Step 0: P10-6d** (D1.19, steps 1–8 there): the `Door_Shortcut` scale Z goes from 1.0818 to 1.30, with its own commit. Do it before anything else.
+
+**Step 1: generator corrections (no editor).** All edits are in `Tools/belltower/gen_tower_layout.py`. Never hand-edit the JSON or the tables.
+1. **Chain start** (the `chain_run("CLA_Mech3_Chain_A", …)` call, line ≈ 793):
+   - Change the start to **(11824.0, 1783.0, 168.0)**.
+   - Comment: `# D1.20: on the drum surface (r 34, facing the eyelet), between the lower iron band (Z 154-158) and the capstan bars (Z 185-190); the D1.18 start was inside the pedestal (Z 50-150)`.
+   - Grep the file for `11820` and update every other use of the old start the same way (check text, notes, the MD tables).
+   - Why this point: it is (11790, 1780) + 34 × the unit vector toward the eyelet (11995, 1800) = (11823.8, 1783.3).
+   - The run toward the eyelet then crosses the pedestal's east face (X 11840) at Z ≈ 165, which is 15 above the pedestal top.
+2. **Real bounds** (pass `mb=` and drop `est=True`):
+   - `GRASS`: per mesh, `((-6.0, -6.0, 0.0), (6.0, 6.0, 15.7))`, `((-9.0, -10.0, 0.0), (9.0, 10.0, 18.0))`, `((-13.1, -12.5, 0.0), (13.1, 12.5, 23.2))`, `((-15.9, -18.1, 0.0), (15.9, 18.1, 26.0))`, `((-17.8, -21.7, 0.0), (17.8, 21.7, 40.3))` for `_01` … `_05`;
+   - `IVY_C`: `((-200.0, 0.0, 0.0), (200.0, 20.5, 200.0))`;
+   - `SLATES`: `((-60.0, -45.0, 0.0), (60.0, 45.0, 21.2))`;
+   - `COBWEB`: keep its bounds and drop `est=True`.
+3. **Passage weeds** (the `# ---- passage weeds` block):
+   - count 20 → **32**;
+   - per weed, draw in this order from `wrng`: `x = uniform(6120, 9400)`, `d = uniform(20.0, 35.0)`, `s = round(uniform(3.5, 5.0), 3)`, `yaw = uniform(0, 360)`;
+   - scale `(s, s, s)`;
+   - the mesh still cycles `_01` … `_05`, the side still alternates S/N, and the note includes `scale {s}`;
+   - comment: `# D1.20: WeedPlant02 is 4-7 cm tall at scale 1; x3.5-5 as the P7-FIX3 courtyard ("Weed x5")`.
+4. **Garth vegetation** (the `# ---- garth vegetation` block):
+   - **Counts:** Grass **90**, Nettle **30**, Fern **20**.
+   - **`NETTLE` pool:** `_01`, `_02`, `_03`, `_06`. Drop `_04` (2.2 cm tall); `_05` is not used.
+   - **Scale:** right after picking the mesh, draw `s = round(grng.uniform(lo, hi), 3)`. Ranges: Grass 0.9–1.4, Nettle 2.8–4.4, Fern 0.8–1.1. Use `rad = 0.5 * max(footprint x, footprint y) * s`, and pass the scale `(s, s, s)` to `add()`.
+   - **Clearances (edge to edge, minus `rad`):** the cross base ≥ **20** (was 50), the grave slabs ≥ **15** (was 50), the small crosses ≥ **15** (was 50), `Note_Cloister` ≥ **70** (unchanged).
+   - **Tries:** 400 → **600** per plant. If a plant still finds no spot, the generator fails, as it does now: report it, do not loosen anything else.
+   - **Text:** the note reads `garth vegetation (seed 1224), scale {s}`. Update the MD text (line ≈ 1859) to the new counts and clearances.
+   - Comment: `# D1.20: visible and overgrown (P7-FIX3 lesson): nettles x2.8-4.4, grass up to 1.4, growth up to the slabs`.
+5. **Latch box clear of the open tower door.**
+   - When open, `Door_Tower`'s leaf lies along X 11920–12020 at Y 1943.3–1956.7 (D1.18). The latch box (Y 1925–1945, X 11991–11999, Z 105–135) would intersect it by 2 cm.
+   - Move `CLA_Mech3_LatchBox` to **(11995.0, 1925.0, 120.0)**, so it spans Y 1915–1935.
+   - Move the `CLA_Mech3_Chain_B` run end from (11995, 1935, 120) to **(11995.0, 1925.0, 120.0)**.
+   - Comment: `# D1.20: 8 cm clear of the open Door_Tower leaf (Y >= 1943.3)`.
+6. **Re-run** `python Tools/belltower/gen_tower_layout.py`.
+   - It must exit 0 with every check passing.
+   - Report the new `dress` count (expected 150 − 20 − 60 + 32 + 140 = **242**), the five lane worst cases and every check that changed.
+   - Commit the generator and all of its outputs (`p10_d1_layout.json`, `p10_d1_tables.md`, `d1_layout_plan.png`): `P10-6a: generator - chain on the drum, real bounds, visible vegetation (D1.20)`.
+
+**Step 2: `place_tower.py` places `dress`.**
+1. Add `dress` to the allowed categories (append it to `ORDER`). Update the docstring: `dress` is placed by P10-6a; `light` stays P10-7.
+2. **Decals:** a record whose `mesh` is `"Point"` and that has `extras.decal`.
+   - Port `place_decal` and `verify_decal` from `Tools/crypt/place_crypt.py` (lines ≈ 219–265), with these changes:
+     - resolve the MI from `layout["mi_paths"][mi]` (path + `.` + name) instead of searching folders;
+     - use the record's rotation exactly as given (no yaw add);
+     - leave the scale at 1.
+   - Set `NewDecalComponent.decalMaterial` and `decalSize` = `extras.decal.size` (x = depth half, y = vertical half, z = horizontal half; P9 convention).
+   - **Verify:**
+     - the material name and `decalSize` (±0.01);
+     - the location (±0.1) and rotation (±0.1°);
+     - **orientation, by numbers:** the actor's forward vector (from its rotator) must point into its wall (`extras.decal.wall`: S (0, −1, 0), N (0, 1, 0), W (−1, 0, 0), E (1, 0, 0)), with a dot product ≥ 0.999;
+     - **wall inside the box:** a `trace_world` from the decal centre − 30 × forward to the centre + 30 × forward must hit at a distance of 18–42 cm, so the wall face lies within ±12 of the decal centre.
+   - Print one row per decal.
+3. **Mesh records:** use the existing `place_one` and `verify` unchanged (one full transform call, label, folder, collision, material overrides, bounds TOL 3 cm, superset rule off-axis). The latch box (engine `Cube`) gets `MI_Crypt_Iron` on slot 0 through `expected_materials`.
+   - A record that still carries `mbounds_estimated` (there should be none after step 1) is reported with its measured bounds instead of failing.
+4. `--check` and `--only` work for `dress` like the other categories.
+5. Commit: `P10-6a: place_tower places dress + DecalActors (D1.20)`.
+
+**Step 3: place.**
+1. Confirm `L_Monastery` is loaded, PIE is stopped and the map is not dirty.
+2. Run `python Tools/belltower/place_tower.py --cats dress`, then `--cats dress --check`.
+   - Every record passes.
+   - `CLA_Collapse_Heap` is BlockAll with the mesh's own collision, read back.
+   - Every other mesh record is NoCollision with `collisionEnabled` NoCollision, read back.
+   - All 8 decals pass the step 2 checks.
+3. If a group fails, fix the cause and re-run with `--only <prefix>`; the script is idempotent.
+4. Do not move, change or save any gameplay actor or Blueprint.
+
+**Step 4: numeric checks.** Write the read-only script `Tools/belltower/p10_6a_checks.py`, which prints PASS/FAIL per line:
+1. **Chain on the drum.**
+   - `CLA_Mech3_Chain_A_0`'s `extras.run_from` must satisfy 150 ≤ Z ≤ 200, with its XY distance from (11790, 1780) between 30 and 38.
+   - `Mech_Ritual3`'s actor bounds must still be X 11735–11845, Y 1725–1835 (±1).
+2. **Collapse heap:** world bounds within 3 cm of X 11050–11370, Y 2295–2505, Z 0–65, collision BlockAll / QueryAndPhysics.
+3. **Vegetation read-back:**
+   - per folder, the count of `CLA_GarthGrass_*` (90), `CLA_GarthNettle_*` (30), `CLA_GarthFern_*` (20) and `PSA_Weed_*` (32);
+   - each actor's scale equals its record (±0.001);
+   - the min and max world-bounds height per group (expected roughly: weeds 14–36, nettles 17–85, grass 14–56, ferns 17–47).
+4. **No dress on the gameplay actors.**
+   - No dress actor's world bounds may intersect the bounds of these actors, each grown by 10 cm: `Mech_Ritual3`, `Bell_1..4`, `Clue_Inscription`, `Note_Cloister`, `Bell`.
+     - Exception: `CLA_Mech3_Chain_A_0` may touch `Mech_Ritual3`.
+     - Use the component-level bounds that `p10_6b_checks.py` explains wherever the actor-level bounds include editor sprites; `get_actor_bounds` is fine for dress meshes.
+   - **The doors' swing boxes, Z 0–300.** These boxes bound the swept quarter-disc plus the leaf thickness. No dress actor may intersect them:
+
+     | Door | Hinge, swing direction | Swing box |
+     |---|---|---|
+     | `Door_Tower` | (12020, 1950), opens toward −X | X 11913–12027, Y 1943–2057 |
+     | `Door_Shortcut` | (6020, 1941), opens toward −X | X 5895–6027, Y 1934–2066 |
+
+   - Report every hit, with the two boxes' coordinates.
+
+**Step 5: save, reload, re-check.**
+1. Save `L_Monastery` in one `save_assets` call containing only that package, and check that `is_dirty` is false.
+2. Run `load_level` on `/Game/LastBell/Maps/L_Monastery`, then `place_tower.py --cats dress --check` and `p10_6a_checks.py` again. Everything must pass.
+
+**Step 6: tests.**
+- Run the full suite with the command-line runner (`Tools/mcp/MCP_NOTES.md` line ≈ 66): **78/78**, including:
+  - `WalkPath.Monastery`: TowerStairs, CryptToCloister and the four Courtyard paths;
+  - `RouteBot.Monastery` Success;
+  - `Puzzles.Blueprints`;
+  - `Warden.MonasteryReachability` (the BlockAll heap changes the navmesh);
+  - `Warden.Monastery.StagesRelocateTheWarden`;
+  - the Save tests.
+- If anything fails:
+  - stop and report the log lines;
+  - say whether the failure could come from P10-6d (the door scale) or from the dressing;
+  - do not change gameplay.
+
+**Step 7: capture poses** (no captures in P10-6a). Write `Tools/belltower/poses/p10_6a_poses.json`, values `[x, y, z, pitch, yaw]`:
+
+| Pose | Value | Shows |
+|---|---|---|
+| `dress_collapse_along` | [10500, 2650, 170, −10, −19] | heap, chunks and rafter from the N walk |
+| `dress_collapse_close` | [10900, 2750, 170, −17, −49] | the heap close |
+| `dress_garth_from_s` | [10750, 1100, 200, −8, 85] | the garth vegetation through the S arcade |
+| `dress_garth_from_e` | [11700, 1800, 200, −7, 180] | the garth from the E walk |
+| `dress_garth_high` | [11300, 2150, 450, −32, −142] | the garth from above |
+| `dress_note` | [10750, 1600, 220, −34, −90] | the note still reads among the plants |
+| `dress_ivy_s` | [10900, 1900, 170, 25, −90] | ivy on the S arcade wall (garth face) |
+| `dress_cells_w` | [9800, 2700, 170, −25, 180] | stool and bucket at the W cell door |
+| `dress_passage_east` | [6300, 2000, 170, −12, 0] | passage weeds |
+| `dress_passage_west` | [9300, 2000, 170, −12, 180] | passage weeds and lantern |
+| `dress_mech3_chain` | [11650, 2050, 190, −7, −45] | capstan, chain and eyelet |
+| `dress_mech3_latch` | [11850, 1960, 170, −13, −32] | eyelet, the chain along the wall, latch box |
+| `dress_lantern_bells` | [11700, 2380, 200, 9, 0] | lantern above the inscription |
+| `dress_tower_coil` | [12160, 2150, 700, −49, −46] | rope coil on the shaft-base rim |
+| `dress_tower_lantern` | [12250, 2100, 190, 8, −131] | base lantern by the tower door |
+| `dress_land10_slates` | [12700, 1700, 2433, −41, −31] | slates on landing 10 |
+| `dress_cobweb_l5` | [12650, 2150, 1300, 18, 45] | cobweb in the NE corner above landing 5 |
+| `dress_belfry_debris` | [12300, 2300, 2670, −33, 175] | debris on the belfry W slab |
+| `dress_decal_s` | [10100, 1000, 150, −6, −90] | mould decal on the S wall |
+| `dress_decal_e` | [11600, 800, 150, −7, 0] | mould decal on the E wall |
+
+**Step 8: commit.**
+- Message: `P10-6a: dressing placed (242 dress actors incl. 8 decals), checks, suite 78/78`.
+- Include `L_Monastery.umap`, `p10_6a_checks.py` and its output saved as `Docs/ArtTest/belltower/p10_6a_checks.txt`, and the poses.
+- Never stage `L_Throwaway_P9_4.umap`.
+
+**End state:**
+- the map is saved and not dirty;
+- PIE is stopped;
+- there are no `TMP_` actors;
+- the throttle is untouched;
+- no parent Blueprint was saved;
+- `git status` shows only the untracked throwaway map.
+
+**Lead review after P10-6a:** the lead and the owner run one capture session.
+- `p10_6a_poses.json` (20 poses), prefix `p10_6a_`.
+- The two D1.19 door poses (`door_shortcut_court`, `door_shortcut_pass` from `p10_6_poses.json`), prefix `p10_6d_`, with `--force`.
