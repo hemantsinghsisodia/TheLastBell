@@ -15,8 +15,8 @@
   "vault": 10,
   "door": 5,
   "doorleaf": 5,
-  "dress": 278,
-  "light": 12
+  "dress": 283,
+  "light": 13
  },
  "group_counts": {
   "shell": 12,
@@ -62,11 +62,12 @@
   "cell": 2,
   "decal": 8,
   "ivy": 4,
-  "lantern": 21,
+  "lantern": 23,
+  "candle": 3,
   "towerdress": 11,
   "weed": 32,
   "garthveg": 175,
-  "light": 12
+  "light": 13
  },
  "checks": [
   {
@@ -325,7 +326,7 @@
    "group": "7 derived",
    "name": "record ids unique",
    "ok": true,
-   "detail": "528 records"
+   "detail": "534 records"
   },
   {
    "group": "7 derived",
@@ -349,13 +350,19 @@
    "group": "7 derived",
    "name": "every warm light except L_Cl_Cell and L_Tw_BellFill has a lantern",
    "ok": true,
-   "detail": "10 lanterns for 10 warm lights"
+   "detail": "11 lanterns for 11 warm lights"
   },
   {
    "group": "7 derived",
    "name": "cell-door leaf 250 tall (scale z 1.37)",
    "ok": true,
    "detail": "height 249.6"
+  },
+  {
+   "group": "7 derived",
+   "name": "D1.23: no cell candle AABB reaches Y >= 2998 (N wall inner face Y 3000)",
+   "ok": true,
+   "detail": "max Y [2978.61, 2976.61, 2987.69]"
   },
   {
    "group": "7 derived",
@@ -373,7 +380,7 @@
    "group": "7 derived",
    "name": "every new-folder mesh named in a record exists in the built-mesh reports (tower 33, cloister 40)",
    "ok": true,
-   "detail": "all 70 record meshes found"
+   "detail": "all 73 record meshes found"
   },
   {
    "group": "7 derived",
@@ -3773,6 +3780,60 @@
    ],
    "estimated": false
   },
+  "/Game/LastBell/ThirdParty/Fab/Dungeon/Candles/Meshes/SM_Candle_Melted_03.SM_Candle_Melted_03": {
+   "mbounds": [
+    [
+     -3.5102779865264893,
+     -3.6072959899902344,
+     0.07050895690917969
+    ],
+    [
+     3.510277509689331,
+     3.6072964668273926,
+     15.557713508605957
+    ]
+   ],
+   "slots": [
+    "lambert1"
+   ],
+   "estimated": false
+  },
+  "/Game/LastBell/ThirdParty/Fab/Dungeon/Candles/Meshes/SM_Candle_Melted_07.SM_Candle_Melted_07": {
+   "mbounds": [
+    [
+     -4.403076171875,
+     -4.928820610046387,
+     0.0704946517944336
+    ],
+    [
+     4.403076171875,
+     4.928820610046387,
+     7.969026565551758
+    ]
+   ],
+   "slots": [
+    "lambert1"
+   ],
+   "estimated": false
+  },
+  "/Game/LastBell/ThirdParty/Fab/Dungeon/Candles/Meshes/SM_Candle_Melted_09.SM_Candle_Melted_09": {
+   "mbounds": [
+    [
+     -2.2501397132873535,
+     -1.6795549392700195,
+     0.0575861930847168
+    ],
+    [
+     2.2501392364501953,
+     1.679548740386963,
+     15.706620693206787
+    ]
+   ],
+   "slots": [
+    "lambert1"
+   ],
+   "estimated": false
+  },
   "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Torture_Devices_Rope_00.SM_Torture_Devices_Rope_00": {
    "mbounds": [
     [
@@ -4603,23 +4664,128 @@
    "Light_Courtyard_7"
   ],
   "keep_and_tune": {
-   "Light_TowerExt_0": "tune to 200-400 lm so the W face reads against the sky from the gate",
-   "Light_TowerExt_1": "tune to 200-400 lm so the W face reads against the sky from the gate",
-   "Light_TowerExt_2": "tune to 200-400 lm so the W face reads against the sky from the gate"
+   "Light_TowerExt_0": "D1.23: stay at 300 lm (read back only)",
+   "Light_TowerExt_1": "D1.23: stay at 300 lm (read back only)",
+   "Light_TowerExt_2": "D1.23: stay at 300 lm (read back only)"
   },
-  "fog": {
-   "id": "LFV_Tower",
+  "fog": [
+   {
+    "id": "LFV_Tower_0",
+    "loc": [
+     12500.0,
+     2000.0,
+     460.0
+    ],
+    "scale": 0.92,
+    "radialFogExtinction": 0.12,
+    "heightFogExtinction": 0.0,
+    "fogPhaseG": 0.3,
+    "fogAlbedo": [
+     0.86,
+     0.87,
+     0.9
+    ],
+    "fogEmissive": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "folder": "Lighting/BellTower"
+   },
+   {
+    "id": "LFV_Tower_1",
+    "loc": [
+     12500.0,
+     2000.0,
+     1380.0
+    ],
+    "scale": 0.92,
+    "radialFogExtinction": 0.12,
+    "heightFogExtinction": 0.0,
+    "fogPhaseG": 0.3,
+    "fogAlbedo": [
+     0.86,
+     0.87,
+     0.9
+    ],
+    "fogEmissive": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "folder": "Lighting/BellTower"
+   },
+   {
+    "id": "LFV_Tower_2",
+    "loc": [
+     12500.0,
+     2000.0,
+     2300.0
+    ],
+    "scale": 0.92,
+    "radialFogExtinction": 0.12,
+    "heightFogExtinction": 0.0,
+    "fogPhaseG": 0.3,
+    "fogAlbedo": [
+     0.86,
+     0.87,
+     0.9
+    ],
+    "fogEmissive": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "folder": "Lighting/BellTower"
+   },
+   {
+    "id": "LFV_Tower_3",
+    "loc": [
+     12500.0,
+     2000.0,
+     3220.0
+    ],
+    "scale": 0.92,
+    "radialFogExtinction": 0.12,
+    "heightFogExtinction": 0.0,
+    "fogPhaseG": 0.3,
+    "fogAlbedo": [
+     0.86,
+     0.87,
+     0.9
+    ],
+    "fogEmissive": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "folder": "Lighting/BellTower"
+   }
+  ],
+  "pp": {
+   "id": "PP_Cloister",
    "box_min": [
-    12040,
-    1540,
-    0
+    6000,
+    -450,
+    -40
    ],
    "box_max": [
-    12960,
-    2460,
-    3500
+    13100,
+    3200,
+    4200
    ],
-   "note": "extinction low enough that slit and roof moonbeams read as shafts; P10-7 tunes it"
+   "bUnbound": false,
+   "priority": 1.0,
+   "blendRadius": 300.0,
+   "AutoExposureMinBrightness": 1.15,
+   "AutoExposureMaxBrightness": 1.15,
+   "ColorSaturationShadows": [
+    0.65,
+    0.65,
+    0.65,
+    1.0
+   ],
+   "folder": "Lighting/Cloister"
   },
   "moon": "keep DirectionalLight (pitch -38, yaw 35)"
  },
@@ -20543,6 +20709,102 @@
    "note": "iron bracket (chain holder, +x out of the wall) at the lantern's hook"
   },
   {
+   "id": "PSA_Lantern_W",
+   "cat": "dress",
+   "group": "lantern",
+   "mesh": "/Game/LastBell/ArtTest/Props/Wooden_Lantern_01/SM_Wooden_Lantern_01.SM_Wooden_Lantern_01",
+   "loc": [
+    6500.0,
+    2240.0,
+    258.1
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "scale": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "collision": "NoCollision",
+   "folder": "Courtyard/Passage",
+   "mbounds": [
+    [
+     -11.051704406738281,
+     -11.054381370544434,
+     -1.137510061264038
+    ],
+    [
+     11.053104400634766,
+     12.418060302734375,
+     51.87614440917969
+    ]
+   ],
+   "aabb_min": [
+    6488.95,
+    2228.95,
+    256.96
+   ],
+   "aabb_max": [
+    6511.05,
+    2252.42,
+    309.98
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "D1.23: passage west lantern (mirrors PSA_Lantern at X 9380); top hook point at Z 310, the light sits 10 cm below it"
+  },
+  {
+   "id": "PSA_LanternBracket_W",
+   "cat": "dress",
+   "group": "lantern",
+   "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Dungeon_chain_holder.SM_Dungeon_chain_holder",
+   "loc": [
+    6500.0,
+    2300.0,
+    310.0
+   ],
+   "rot": [
+    0.0,
+    -90.0,
+    0.0
+   ],
+   "scale": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "collision": "NoCollision",
+   "folder": "Courtyard/Passage",
+   "mbounds": [
+    [
+     -1.0246819257736206,
+     -7.759642124176025,
+     -8.29891586303711
+    ],
+    [
+     11.867844581604004,
+     7.204666614532471,
+     6.6653923988342285
+    ]
+   ],
+   "aabb_min": [
+    6492.24,
+    2288.13,
+    301.7
+   ],
+   "aabb_max": [
+    6507.2,
+    2301.02,
+    316.67
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "iron bracket (chain holder, +x out of the wall) at the lantern's hook"
+  },
+  {
    "id": "CLA_Lantern_West",
    "cat": "dress",
    "group": "lantern",
@@ -21224,6 +21486,150 @@
    "mi_slots": {},
    "extras": {},
    "note": "iron bracket (chain holder, +x out of the wall) at the lantern's hook"
+  },
+  {
+   "id": "CLA_Cell_Candle_0",
+   "cat": "dress",
+   "group": "candle",
+   "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Candles/Meshes/SM_Candle_Melted_03.SM_Candle_Melted_03",
+   "loc": [
+    9800.0,
+    2975.0,
+    0.0
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "scale": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Cells",
+   "mbounds": [
+    [
+     -3.5102779865264893,
+     -3.6072959899902344,
+     0.07050895690917969
+    ],
+    [
+     3.510277509689331,
+     3.6072964668273926,
+     15.557713508605957
+    ]
+   ],
+   "aabb_min": [
+    9796.49,
+    2971.39,
+    0.07
+   ],
+   "aabb_max": [
+    9803.51,
+    2978.61,
+    15.56
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "D1.23: cell candle beside the N cell door at X 9900, the mesh's own material"
+  },
+  {
+   "id": "CLA_Cell_Candle_1",
+   "cat": "dress",
+   "group": "candle",
+   "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Candles/Meshes/SM_Candle_Melted_07.SM_Candle_Melted_07",
+   "loc": [
+    9822.0,
+    2970.0,
+    0.0
+   ],
+   "rot": [
+    0.0,
+    40.0,
+    0.0
+   ],
+   "scale": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Cells",
+   "mbounds": [
+    [
+     -4.403076171875,
+     -4.928820610046387,
+     0.0704946517944336
+    ],
+    [
+     4.403076171875,
+     4.928820610046387,
+     7.969026565551758
+    ]
+   ],
+   "aabb_min": [
+    9815.46,
+    2963.39,
+    0.07
+   ],
+   "aabb_max": [
+    9828.54,
+    2976.61,
+    7.97
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "D1.23: cell candle beside the N cell door at X 9900, the mesh's own material"
+  },
+  {
+   "id": "CLA_Cell_Candle_2",
+   "cat": "dress",
+   "group": "candle",
+   "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Candles/Meshes/SM_Candle_Melted_09.SM_Candle_Melted_09",
+   "loc": [
+    9812.0,
+    2985.0,
+    0.0
+   ],
+   "rot": [
+    0.0,
+    110.0,
+    0.0
+   ],
+   "scale": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "collision": "NoCollision",
+   "folder": "Cloister/Dressing/Cells",
+   "mbounds": [
+    [
+     -2.2501397132873535,
+     -1.6795549392700195,
+     0.0575861930847168
+    ],
+    [
+     2.2501392364501953,
+     1.679548740386963,
+     15.706620693206787
+    ]
+   ],
+   "aabb_min": [
+    9809.65,
+    2982.31,
+    0.06
+   ],
+   "aabb_max": [
+    9814.35,
+    2987.69,
+    15.71
+   ],
+   "mi_slots": {},
+   "extras": {},
+   "note": "D1.23: cell candle beside the N cell door at X 9900, the mesh's own material"
   },
   {
    "id": "TWA_RopeCoil",
@@ -31757,10 +32163,17 @@
    "extras": {
     "light": {
      "type": "PointLight",
-     "lumens": 250,
+     "lumens": 400,
      "radius": 600,
      "shadows": false,
-     "temperature_K": 2200
+     "color_linear": [
+      1.0,
+      0.549,
+      0.2196
+     ],
+     "light_function": "MI_LF_Lantern",
+     "volumetric_scattering": 1.5,
+     "source_radius": 0
     }
    },
    "note": "lantern above the inscription"
@@ -31813,10 +32226,17 @@
    "extras": {
     "light": {
      "type": "PointLight",
-     "lumens": 200,
+     "lumens": 350,
      "radius": 500,
      "shadows": false,
-     "temperature_K": 2200
+     "color_linear": [
+      1.0,
+      0.549,
+      0.2196
+     ],
+     "light_function": "MI_LF_Lantern",
+     "volumetric_scattering": 1.5,
+     "source_radius": 0
     }
    },
    "note": "lantern beside the tower door"
@@ -31869,10 +32289,17 @@
    "extras": {
     "light": {
      "type": "PointLight",
-     "lumens": 150,
-     "radius": 450,
+     "lumens": 300,
+     "radius": 500,
      "shadows": false,
-     "temperature_K": 2200
+     "color_linear": [
+      1.0,
+      0.549,
+      0.2196
+     ],
+     "light_function": "MI_LF_Lantern",
+     "volumetric_scattering": 1.5,
+     "source_radius": 0
     }
    },
    "note": "stair-house lantern"
@@ -31925,10 +32352,17 @@
    "extras": {
     "light": {
      "type": "PointLight",
-     "lumens": 150,
-     "radius": 450,
+     "lumens": 300,
+     "radius": 500,
      "shadows": false,
-     "temperature_K": 2200
+     "color_linear": [
+      1.0,
+      0.549,
+      0.2196
+     ],
+     "light_function": "MI_LF_Lantern",
+     "volumetric_scattering": 1.5,
+     "source_radius": 0
     }
    },
    "note": "W walk, at the passage arch (lantern on the arch soffit)"
@@ -31939,9 +32373,9 @@
    "group": "light",
    "mesh": "Point",
    "loc": [
-    9900.0,
-    2970.0,
-    30.0
+    9812.0,
+    2972.0,
+    25.0
    ],
    "rot": [
     0.0,
@@ -31968,26 +32402,33 @@
     ]
    ],
    "aabb_min": [
-    9900.0,
-    2970.0,
-    30.0
+    9812.0,
+    2972.0,
+    25.0
    ],
    "aabb_max": [
-    9900.0,
-    2970.0,
-    30.0
+    9812.0,
+    2972.0,
+    25.0
    ],
    "mi_slots": {},
    "extras": {
     "light": {
      "type": "PointLight",
-     "lumens": 60,
-     "radius": 200,
+     "lumens": 120,
+     "radius": 250,
      "shadows": false,
-     "temperature_K": 1900
+     "color_linear": [
+      1.0,
+      0.576,
+      0.161
+     ],
+     "light_function": "MI_LF_Candle",
+     "volumetric_scattering": 1.0,
+     "source_radius": 2
     }
    },
-   "note": "candle cluster at the N-wall door at X 9900 (30 from the wall), Z 30 (no lantern)"
+   "note": "D1.23: candle cluster beside the N cell door at X 9900 (CLA_Cell_Candle_0..2), Z 25 (no lantern)"
   },
   {
    "id": "L_Ps_Lantern",
@@ -32037,13 +32478,83 @@
    "extras": {
     "light": {
      "type": "PointLight",
-     "lumens": 150,
+     "lumens": 300,
      "radius": 500,
      "shadows": false,
-     "temperature_K": 2200
+     "color_linear": [
+      1.0,
+      0.549,
+      0.2196
+     ],
+     "light_function": "MI_LF_Lantern",
+     "volumetric_scattering": 1.5,
+     "source_radius": 0
     }
    },
    "note": "passage, cloister end"
+  },
+  {
+   "id": "L_Ps_West",
+   "cat": "light",
+   "group": "light",
+   "mesh": "Point",
+   "loc": [
+    6500.0,
+    2240.0,
+    300.0
+   ],
+   "rot": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "scale": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "collision": "-",
+   "folder": "Lighting/Cloister",
+   "mbounds": [
+    [
+     0.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     0.0
+    ]
+   ],
+   "aabb_min": [
+    6500.0,
+    2240.0,
+    300.0
+   ],
+   "aabb_max": [
+    6500.0,
+    2240.0,
+    300.0
+   ],
+   "mi_slots": {},
+   "extras": {
+    "light": {
+     "type": "PointLight",
+     "lumens": 300,
+     "radius": 500,
+     "shadows": false,
+     "color_linear": [
+      1.0,
+      0.549,
+      0.2196
+     ],
+     "light_function": "MI_LF_Lantern",
+     "volumetric_scattering": 1.5,
+     "source_radius": 0
+    }
+   },
+   "note": "D1.23: passage west lantern (the W half of the passage was > 15 m from any warm pool)"
   },
   {
    "id": "L_Tw_Base",
@@ -32093,10 +32604,17 @@
    "extras": {
     "light": {
      "type": "PointLight",
-     "lumens": 150,
-     "radius": 450,
+     "lumens": 300,
+     "radius": 500,
      "shadows": false,
-     "temperature_K": 2200
+     "color_linear": [
+      1.0,
+      0.549,
+      0.2196
+     ],
+     "light_function": "MI_LF_Lantern",
+     "volumetric_scattering": 1.5,
+     "source_radius": 0
     }
    },
    "note": "tower base"
@@ -32149,10 +32667,17 @@
    "extras": {
     "light": {
      "type": "PointLight",
-     "lumens": 100,
-     "radius": 350,
+     "lumens": 200,
+     "radius": 400,
      "shadows": false,
-     "temperature_K": 2200
+     "color_linear": [
+      1.0,
+      0.549,
+      0.2196
+     ],
+     "light_function": "MI_LF_Lantern",
+     "volumetric_scattering": 1.5,
+     "source_radius": 0
     }
    },
    "note": "D1.11: moved to the lantern at the landing-4 wall corner (10 below the hook, landing top + 170)"
@@ -32205,10 +32730,17 @@
    "extras": {
     "light": {
      "type": "PointLight",
-     "lumens": 100,
-     "radius": 350,
+     "lumens": 200,
+     "radius": 400,
      "shadows": false,
-     "temperature_K": 2200
+     "color_linear": [
+      1.0,
+      0.549,
+      0.2196
+     ],
+     "light_function": "MI_LF_Lantern",
+     "volumetric_scattering": 1.5,
+     "source_radius": 0
     }
    },
    "note": "D1.11: moved to the lantern at the landing-7 wall corner (10 below the hook, landing top + 170)"
@@ -32261,10 +32793,17 @@
    "extras": {
     "light": {
      "type": "PointLight",
-     "lumens": 100,
-     "radius": 350,
+     "lumens": 200,
+     "radius": 400,
      "shadows": false,
-     "temperature_K": 2200
+     "color_linear": [
+      1.0,
+      0.549,
+      0.2196
+     ],
+     "light_function": "MI_LF_Lantern",
+     "volumetric_scattering": 1.5,
+     "source_radius": 0
     }
    },
    "note": "D1.11: moved to the lantern at the landing-10 wall corner (10 below the hook, landing top + 170)"
@@ -32317,10 +32856,17 @@
    "extras": {
     "light": {
      "type": "PointLight",
-     "lumens": 150,
-     "radius": 500,
+     "lumens": 400,
+     "radius": 600,
      "shadows": false,
-     "temperature_K": 2200
+     "color_linear": [
+      1.0,
+      0.549,
+      0.2196
+     ],
+     "light_function": "MI_LF_Lantern",
+     "volumetric_scattering": 1.5,
+     "source_radius": 0
     }
    },
    "note": "D1.11: moved out of the frame post, lantern on the post's -X face"
@@ -32373,17 +32919,20 @@
    "extras": {
     "light": {
      "type": "PointLight",
-     "lumens": 120,
-     "radius": 900,
+     "lumens": 200,
+     "radius": 1000,
      "shadows": false,
      "color_linear": [
       0.75,
       0.8,
       0.92
-     ]
+     ],
+     "light_function": null,
+     "volumetric_scattering": 0.0,
+     "source_radius": 0
     }
    },
-   "note": "moon fill (no lantern)"
+   "note": "moon fill (no lantern, no scattering)"
   }
  ]
 }

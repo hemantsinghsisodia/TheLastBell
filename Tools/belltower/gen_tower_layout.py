@@ -928,6 +928,7 @@ lantern("CLA_Lantern_Bells", "Cloister/Dressing/Lanterns", 11960.0, 2380.0, 330.
 lantern("CLA_Lantern_Door", "Cloister/Dressing/Lanterns", 11960.0, 1880.0, 310.0, 12000.0, 1880.0, 180.0, "beside the tower door", "L_Cl_Door")
 lantern("SHA_Lantern_Entry", "Cloister/Art/StairHouse", 10520.0, 300.0, 310.0, 10500.0, 300.0, 0.0, "stair-house lantern", "L_Cl_Entry")
 lantern("PSA_Lantern", "Courtyard/Passage", 9380.0, 2240.0, 310.0, 9380.0, 2300.0, -90.0, "passage, cloister end", "L_Ps_Lantern")
+lantern("PSA_Lantern_W", "Courtyard/Passage", 6500.0, 2240.0, 310.0, 6500.0, 2300.0, -90.0, "D1.23: passage west lantern (mirrors PSA_Lantern at X 9380)", "L_Ps_West")
 lantern("CLA_Lantern_West", "Cloister/Dressing/Lanterns", 9560.0, 2000.0, 330.0, 9500.0, 2000.0, 0.0, "W walk at the passage arch", "L_Cl_West")
 lantern("TWA_Lantern_Base", "BellTower/Art/Dressing", 12060.0, 1880.0, 270.0, 12040.0, 1880.0, 0.0, "tower base, on the W wall S of the door", "L_Tw_Base")
 # the passage arch has no wall at Z 330 (its soffit apex is Z 420): the west lantern hangs from the soffit on a short chain
@@ -943,6 +944,17 @@ for n in (4, 7, 10):                               # landing lanterns at the out
     byaw = 90.0 if syn > 0 else -90.0               # bracket on the N or S wall, +x out of the wall
     lantern(f"TWA_Lantern_Land{n}", "BellTower/Art/Dressing", lx, ly, top + 180.0, lx, wcy, byaw, f"{corner} wall corner above landing {n}", f"L_Tw_Land{n}")
 lantern("TWA_Lantern_Bell", "BellTower/Art/Belfry", 12255.0, 1865.0, 2700.0, 12267.5, 1865.0, 180.0, "hung from the -X face of the bell frame SW post", "L_Tw_Bell")
+
+# ---- D1.23: cell candles beside the N cell door at X 9900 (the L_Cl_Cell light sits among them); bounds read live from StaticMeshTools.get_bounds (P10-7)
+CANDLES = "/Game/LastBell/ThirdParty/Fab/Dungeon/Candles/Meshes/"
+CANDLE_MB = {"SM_Candle_Melted_03": ((-3.5102779865264893, -3.6072959899902344, 0.07050895690917969), (3.510277509689331, 3.6072964668273926, 15.557713508605957)),
+             "SM_Candle_Melted_07": ((-4.403076171875, -4.928820610046387, 0.0704946517944336), (4.403076171875, 4.928820610046387, 7.969026565551758)),
+             "SM_Candle_Melted_09": ((-2.2501397132873535, -1.6795549392700195, 0.0575861930847168), (2.2501392364501953, 1.679548740386963, 15.706620693206787))}
+for k, (cnm, cx, cy, cyaw) in enumerate((("SM_Candle_Melted_03", 9800.0, 2975.0, 0.0), ("SM_Candle_Melted_07", 9822.0, 2970.0, 40.0), ("SM_Candle_Melted_09", 9812.0, 2985.0, 110.0))):
+    cm = existing(CANDLES, cnm, mb=CANDLE_MB[cnm], slots=["lambert1"])
+    cr = add(f"CLA_Cell_Candle_{k}", "dress", "candle", cm, (cx, cy, 0.0), (0.0, cyaw, 0.0), (1, 1, 1), "NoCollision", "Cloister/Dressing/Cells",
+             note="D1.23: cell candle beside the N cell door at X 9900, the mesh's own material")
+    assert cr["aabb_max"][1] < 2998.0, "candle reaches the N wall inner face (Y 3000): %s" % cr["aabb_max"]
 
 # ---- tower dressing
 ROPE_COIL = existing(DUNGEON, "SM_Torture_Devices_Rope_00")
@@ -1032,31 +1044,44 @@ for k, (nm, mbs, (sx, sy, sz), syaw, ss) in enumerate((("SM_LB_CC0_SearsiaLucida
 # =====================================================================================================
 # D1.8  LIGHTS
 # =====================================================================================================
-def light(lid, loc, lm, radius, temp=None, color=None, folder="Lighting/Cloister", note=""):
-    ex = {"light": {"type": "PointLight", "lumens": lm, "radius": radius, "shadows": False}}
-    if temp:
-        ex["light"]["temperature_K"] = temp
-    if color:
-        ex["light"]["color_linear"] = list(color)
+# D1.23: courtyard lantern style (P7-FIX3 G6); L_Cl_Cell moved beside the N cell door with its candles; L_Ps_West added (passage W half was > 15 m from any warm pool)
+LANTERN_COLOR = (1.0, 0.549, 0.2196)
+CANDLE_COLOR = (1.0, 0.576, 0.161)
+MOON_COLOR = (0.75, 0.80, 0.92)
+
+
+def light(lid, loc, lm, radius, kind="lantern", folder="Lighting/Cloister", note=""):
+    if kind == "lantern":
+        col, lf, scat, src = LANTERN_COLOR, "MI_LF_Lantern", 1.5, 0
+    elif kind == "candle":
+        col, lf, scat, src = CANDLE_COLOR, "MI_LF_Candle", 1.0, 2
+    else:
+        col, lf, scat, src = MOON_COLOR, None, 0.0, 0
+    ex = {"light": {"type": "PointLight", "lumens": lm, "radius": radius, "shadows": False, "color_linear": list(col), "light_function": lf,
+                    "volumetric_scattering": scat, "source_radius": src}}
     add(lid, "light", "light", "Point", loc, (0, 0, 0), (1, 1, 1), "-", folder, note=note, extras=ex)
 
 
-light("L_Cl_Bells", LANTERN_LIGHT["L_Cl_Bells"], 250, 600, 2200, note="lantern above the inscription")
-light("L_Cl_Door", LANTERN_LIGHT["L_Cl_Door"], 200, 500, 2200, note="lantern beside the tower door")
-light("L_Cl_Entry", LANTERN_LIGHT["L_Cl_Entry"], 150, 450, 2200, note="stair-house lantern")
-light("L_Cl_West", LANTERN_LIGHT["L_Cl_West"], 150, 450, 2200, note="W walk, at the passage arch (lantern on the arch soffit)")
-light("L_Cl_Cell", (9900.0, 2970.0, 30.0), 60, 200, 1900, note="candle cluster at the N-wall door at X 9900 (30 from the wall), Z 30 (no lantern)")
-light("L_Ps_Lantern", LANTERN_LIGHT["L_Ps_Lantern"], 150, 500, 2200, folder="Lighting/Cloister", note="passage, cloister end")
-light("L_Tw_Base", LANTERN_LIGHT["L_Tw_Base"], 150, 450, 2200, folder="Lighting/BellTower", note="tower base")
+light("L_Cl_Bells", LANTERN_LIGHT["L_Cl_Bells"], 400, 600, note="lantern above the inscription")
+light("L_Cl_Door", LANTERN_LIGHT["L_Cl_Door"], 350, 500, note="lantern beside the tower door")
+light("L_Cl_Entry", LANTERN_LIGHT["L_Cl_Entry"], 300, 500, note="stair-house lantern")
+light("L_Cl_West", LANTERN_LIGHT["L_Cl_West"], 300, 500, note="W walk, at the passage arch (lantern on the arch soffit)")
+light("L_Cl_Cell", (9812.0, 2972.0, 25.0), 120, 250, kind="candle", note="D1.23: candle cluster beside the N cell door at X 9900 (CLA_Cell_Candle_0..2), Z 25 (no lantern)")
+light("L_Ps_Lantern", LANTERN_LIGHT["L_Ps_Lantern"], 300, 500, folder="Lighting/Cloister", note="passage, cloister end")
+light("L_Ps_West", LANTERN_LIGHT["L_Ps_West"], 300, 500, folder="Lighting/Cloister", note="D1.23: passage west lantern (the W half of the passage was > 15 m from any warm pool)")
+light("L_Tw_Base", LANTERN_LIGHT["L_Tw_Base"], 300, 500, folder="Lighting/BellTower", note="tower base")
 for n in (4, 7, 10):
-    light(f"L_Tw_Land{n}", LANTERN_LIGHT[f"L_Tw_Land{n}"], 100, 350, 2200, folder="Lighting/BellTower",
+    light(f"L_Tw_Land{n}", LANTERN_LIGHT[f"L_Tw_Land{n}"], 200, 400, folder="Lighting/BellTower",
           note=f"D1.11: moved to the lantern at the landing-{n} wall corner (10 below the hook, landing top + 170)")
-light("L_Tw_Bell", LANTERN_LIGHT["L_Tw_Bell"], 150, 500, 2200, folder="Lighting/BellTower", note="D1.11: moved out of the frame post, lantern on the post's -X face")
-light("L_Tw_BellFill", (12500.0, 2300.0, 3300.0), 120, 900, None, (0.75, 0.80, 0.92), folder="Lighting/BellTower", note="moon fill (no lantern)")
+light("L_Tw_Bell", LANTERN_LIGHT["L_Tw_Bell"], 400, 600, folder="Lighting/BellTower", note="D1.11: moved out of the frame post, lantern on the post's -X face")
+light("L_Tw_BellFill", (12500.0, 2300.0, 3300.0), 200, 1000, kind="moon", folder="Lighting/BellTower", note="moon fill (no lantern, no scattering)")
 LIGHTS_PLAN = {
     "delete": [f"Light_Cloister_{i}" for i in range(8)] + [f"Light_Tower_{i}" for i in range(6)] + ["Light_TowerBell", "Light_TowerTop_0", "Light_Courtyard_7"],
-    "keep_and_tune": {f"Light_TowerExt_{i}": "tune to 200-400 lm so the W face reads against the sky from the gate" for i in range(3)},
-    "fog": {"id": "LFV_Tower", "box_min": [12040, 1540, 0], "box_max": [12960, 2460, 3500], "note": "extinction low enough that slit and roof moonbeams read as shafts; P10-7 tunes it"},
+    "keep_and_tune": {f"Light_TowerExt_{i}": "D1.23: stay at 300 lm (read back only)" for i in range(3)},
+    "fog": [{"id": f"LFV_Tower_{i}", "loc": [12500.0, 2000.0, z], "scale": 0.92, "radialFogExtinction": 0.12, "heightFogExtinction": 0.0, "fogPhaseG": 0.3,
+             "fogAlbedo": [0.86, 0.87, 0.90], "fogEmissive": [0.0, 0.0, 0.0], "folder": "Lighting/BellTower"} for i, z in enumerate((460.0, 1380.0, 2300.0, 3220.0))],
+    "pp": {"id": "PP_Cloister", "box_min": [6000, -450, -40], "box_max": [13100, 3200, 4200], "bUnbound": False, "priority": 1.0, "blendRadius": 300.0,
+           "AutoExposureMinBrightness": 1.15, "AutoExposureMaxBrightness": 1.15, "ColorSaturationShadows": [0.65, 0.65, 0.65, 1.0], "folder": "Lighting/Cloister"},
     "moon": "keep DirectionalLight (pitch -38, yaw 35)",
 }
 
@@ -1738,6 +1763,8 @@ warm = sorted(r["id"] for r in RECS if r["cat"] == "light" and r["id"] not in ("
 chk("7 derived", "every warm light except L_Cl_Cell and L_Tw_BellFill has a lantern", lights_with_lantern == warm, "%d lanterns for %d warm lights" % (len(lights_with_lantern), len(warm)))
 cl = rec_by_id("CLA_CellLeaf_N9900")
 chk("7 derived", "cell-door leaf 250 tall (scale z 1.37)", abs(cl["aabb_max"][2] - cl["aabb_min"][2] - 250.0) <= 1.5, "height %.1f" % (cl["aabb_max"][2] - cl["aabb_min"][2]))
+cands = [rec_by_id(f"CLA_Cell_Candle_{k}") for k in range(3)]
+chk("7 derived", "D1.23: no cell candle AABB reaches Y >= 2998 (N wall inner face Y 3000)", all(c["aabb_max"][1] < 2998.0 for c in cands), "max Y %s" % [c["aabb_max"][1] for c in cands])
 bell_l = rec_by_id("L_Tw_Bell")
 post = rec_by_id("TWA_BellFrame")
 chk("7 derived", "L_Tw_Bell outside the SW frame post (X 12267.5-12292.5)", bell_l["loc"][0] < 12267.5, "light at %s" % bell_l["loc"])
@@ -1913,14 +1940,16 @@ MD += ["", "Garth vegetation (seed 1224): " + str(sum(1 for r in big if r['group
        "(Z 100-105, inside X 10320-11380, Y 1420-2180, scale grass 1.6-2.6, nettles 2.8-4.4, ferns 0.9-1.3, rooibos 1.0-1.6; >= 20 clear of the cross base, >= 15 of the slabs, >= 40 of the small crosses, >= 70 of Note_Cloister; "
        "the two shrubs sit at fixed spots with no exclusion). "
        "Passage weeds (seed 1402): 32 actors `PSA_Weed_00..31`, scale 3.5-5, 20-35 from the passage wall faces.", ""]
-MD += ["## Lights (D1.8)", "", "Delete: " + ", ".join(LIGHTS_PLAN["delete"]) + ". Keep and tune `Light_TowerExt_0..2` to 200-400 lm. Fog volume `LFV_Tower` X 12040-12960, Y 1540-2460, Z 0-3500. "
+MD += ["## Lights (D1.23, courtyard lantern style)", "", "Delete: " + ", ".join(LIGHTS_PLAN["delete"]) + ". `Light_TowerExt_0..2` stay at 300 lm. "
+       "Fog: `LFV_Tower_0..3` at (12500, 2000, Z 460 / 1380 / 2300 / 3220), scale 0.92, radial extinction 0.12, height extinction 0, phase 0.3. "
+       "`PP_Cloister`: X 6000-13100, Y -450..3200, Z -40..4200, EV100 1.15, saturation (shadows) 0.65, priority 1, blend radius 300. "
        "All new lights are PointLights, shadowless.", "",
-       "| Label | Location | Lumens | Radius | Colour | Note |", "|---|---|---|---|---|---|"]
+       "| Label | Location | Lumens | Radius | Colour | Light function | Scattering | Source radius | Note |", "|---|---|---|---|---|---|---|---|---|"]
 for r in RECS:
     if r["cat"] == "light":
         L = r["extras"]["light"]
-        col = f"{L['temperature_K']} K" if "temperature_K" in L else "linear " + fmt(L["color_linear"])
-        MD.append(f"| {r['id']} | {fmt(r['loc'])} | {L['lumens']} | {L['radius']} | {col} | {r['note']} |")
+        col = "linear " + fmt(L["color_linear"], 4)
+        MD.append(f"| {r['id']} | {fmt(r['loc'])} | {L['lumens']} | {L['radius']} | {col} | {L['light_function'] or 'none'} | {L['volumetric_scattering']} | {L['source_radius']} | {r['note']} |")
 MD.append("")
 with open(os.path.join(ROOT, "Docs", "plans", "p10_d1_tables.md"), "w", encoding="utf-8") as f:
     f.write("\n".join(MD))
