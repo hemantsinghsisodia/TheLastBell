@@ -1900,3 +1900,151 @@ The generator (P10-L) already holds the D1.7 dressing as 150 `dress` records in 
 - Scratch wrapper: `p10_6e_run_slow.py`. P10-8 moves it into `Tools/` as a reusable capture script.
 
 **Dressing pass complete.** Next is P10-7, lighting (D1.8). The lead writes its detailed spec first, and it needs the owner's go.
+
+### D1.23 P10-7 spec: lighting (lighting-vfx, [EDITOR]; commits "P10-7: …") (lead, 2026-10-31)
+This spec replaces D1.8's values with the courtyard's approved lantern style (P7-FIX3 G6). The lead read that style live on 2026-10-31:
+
+| Light | Lumens | Radius | `lightColor` | Light function | Scattering | Other |
+|---|---|---|---|---|---|---|
+| `Light_Route_Lantern_1` | 400 | 500 | (1, 0.549, 0.2196) | `MI_LF_Lantern` | 1.5 | no shadows |
+| `Light_Grave_Candle_A0` (candles) | 120 | 200 | (1, 0.576, 0.161) | `MI_LF_Candle` | 1.0 | `sourceRadius` 2 |
+
+D1.8's 100–250 lm at 2200 K would leave the vaulted walks far darker than the courtyard at the same exposure.
+
+**Current state, read live:**
+- The moon is `DirectionalLight` (`DirectionalLight_1`): 0.9 lux, colour (0.745, 0.804, 0.922), shadows on, volumetric scattering 1, pitch −38, yaw 35.
+- `Moon_Fill` 0.06; `SkyLight` 0.28 (specified cubemap).
+- Height fog: density 0.035, volumetric fog on.
+- **Post process:**
+  - The cloister and tower currently sit only under the unbound `PostProcess_Exposure` (EV100 3).
+  - `PP_Outdoor_Night` (EV100 1.15, `ColorSaturationShadows` 0.65, priority 1, blend 500) ends at X ≈ 5500.
+  - `PP_Crypt` (EV100 0.2) covers Z −1150…−40 only.
+- **Greybox lights:** `Light_Cloister_*` and `Light_Tower_*` are 3000 lm white, radius 900–1500; `Light_TowerTop_0` is 20000 lm.
+
+**Step 0: before you start.**
+- Read `CLAUDE.md`, `Tools/mcp/MCP_NOTES.md`, D1.8, D1.9 and this section.
+- Confirm that `L_Monastery` is loaded, PIE is stopped and the map is not dirty.
+- Read `Tools/crypt/place_lighting.py` (P9-7: greybox removal with a dump, the LFV and the PP) and the `light` category of `Tools/crypt/place_crypt.py` (light spawning and read-back). You port both.
+
+**Step 1: generator** (`Tools/belltower/gen_tower_layout.py`; never hand-edit its outputs).
+1. **The 13 light records.** Every light record's `extras.light` becomes `{"type": "PointLight", "lumens", "radius", "shadows": false, "color_linear", "light_function", "volumetric_scattering", "source_radius"}`, with no `temperature_K`.
+   - Lantern colour = (1.0, 0.549, 0.2196) with `light_function` `MI_LF_Lantern`.
+   - Candle colour = (1.0, 0.576, 0.161) with `MI_LF_Candle`.
+
+   | Label | Location | lm | Radius | Colour | Light function | Scattering | Source radius |
+   |---|---|---|---|---|---|---|---|
+   | `L_Cl_Bells` | (11960, 2380, 320) | 400 | 600 | lantern | Lantern | 1.5 | 0 |
+   | `L_Cl_Door` | (11960, 1880, 300) | 350 | 500 | lantern | Lantern | 1.5 | 0 |
+   | `L_Cl_Entry` | (10520, 300, 300) | 300 | 500 | lantern | Lantern | 1.5 | 0 |
+   | `L_Cl_West` | (9560, 2000, 320) | 300 | 500 | lantern | Lantern | 1.5 | 0 |
+   | `L_Cl_Cell` | **(9812, 2972, 25)** | 120 | 250 | candle | Candle | 1.0 | 2 |
+   | `L_Ps_Lantern` | (9380, 2240, 300) | 300 | 500 | lantern | Lantern | 1.5 | 0 |
+   | **`L_Ps_West`** (new) | (6500, 2240, 300) | 300 | 500 | lantern | Lantern | 1.5 | 0 |
+   | `L_Tw_Base` | (12060, 1880, 260) | 300 | 500 | lantern | Lantern | 1.5 | 0 |
+   | `L_Tw_Land4` | unchanged | 200 | 400 | lantern | Lantern | 1.5 | 0 |
+   | `L_Tw_Land7` | unchanged | 200 | 400 | lantern | Lantern | 1.5 | 0 |
+   | `L_Tw_Land10` | unchanged | 200 | 400 | lantern | Lantern | 1.5 | 0 |
+   | `L_Tw_Bell` | (12255, 1865, 2690) | 400 | 600 | lantern | Lantern | 1.5 | 0 |
+   | `L_Tw_BellFill` | (12500, 2300, 3300) | 200 | 1000 | (0.75, 0.80, 0.92) | none | **0** | 0 |
+
+   - `L_Ps_West` goes in folder `Lighting/Cloister`.
+   - Comment: `# D1.23: courtyard lantern style (P7-FIX3 G6); L_Cl_Cell moved beside the N cell door with its candles; L_Ps_West added (passage W half was > 15 m from any warm pool)`.
+2. **New `dress` records:**
+   - **Passage W lantern**, mirroring `PSA_LanternBracket` / `PSA_Lantern` at X 6500:
+     - `PSA_LanternBracket_W`: `SM_Dungeon_chain_holder` at (6500, 2300, 310), yaw −90;
+     - `PSA_Lantern_W`: `SM_Wooden_Lantern_01` at (6500, 2240, 258), yaw 0;
+     - both NoCollision, folder `Courtyard/Passage`.
+   - **Cell candles** (folder `Cloister/Dressing/Cells`, NoCollision, the mesh's own materials), meshes from `/Game/LastBell/ThirdParty/Fab/Dungeon/Candles/Meshes/`:
+     - `CLA_Cell_Candle_0` `SM_Candle_Melted_03` at (9800, 2975, 0), yaw 0;
+     - `CLA_Cell_Candle_1` `SM_Candle_Melted_07` at (9822, 2970, 0), yaw 40;
+     - `CLA_Cell_Candle_2` `SM_Candle_Melted_09` at (9812, 2985, 0), yaw 110.
+   - Read each candle mesh's bounds live (`StaticMeshTools.get_bounds`) and pass them as `mb`. Do not estimate.
+   - Check that no candle's AABB reaches Y ≥ 2998. The N wall inner face is Y 3000.
+3. **`lights_plan`:**
+   - **`fog`** becomes a list of 4 Local Fog Volumes, `LFV_Tower_0..3`, folder `Lighting/BellTower`:
+     - centres (12500, 2000, Z) for Z = 460, 1380, 2300, 3220, uniform scale 0.92 (radius 460);
+     - `radialFogExtinction` 0.12, `heightFogExtinction` 0.0, `fogPhaseG` 0.3, `fogAlbedo` (0.86, 0.87, 0.90), `fogEmissive` (0, 0, 0).
+   - **New `pp`:** `PP_Cloister`, a PostProcessVolume:
+     - world box X 6000–13100, Y −450…3200, Z −40…4200;
+     - `bUnbound` false, priority 1, `blendRadius` 300;
+     - overrides `AutoExposureMinBrightness` = `AutoExposureMaxBrightness` = 1.15 (as `PP_Outdoor_Night`) and `ColorSaturationShadows` (0.65, 0.65, 0.65, 1).
+   - **`delete`:** the same 17 labels.
+   - **`keep_and_tune`:** `Light_TowerExt_0..2` stay at 300 lm (read back only).
+4. **Re-run.** It must exit 0 with all checks passing.
+   - Report the `dress` count (expected 278 + 5 = **283**) and the light count (**13**).
+   - Commit the generator and its outputs: `P10-7: generator - courtyard-style lantern values, L_Ps_West, cell candles, LFV_Tower stack, PP_Cloister (D1.23)`.
+
+**Step 2: `Tools/belltower/place_lighting_p10.py`.** It is a new script adapted from `Tools/crypt/place_lighting.py` (P9-7) and the `light` category of `place_crypt.py`. It reads `p10_d1_layout.json`, and every action is idempotent (it removes its own labels first) and reads back what it set.
+1. **`greybox`:**
+   - Dump the 17 `lights_plan.delete` lights (class, transform, `LightComponent0` intensity / units / radius / colour / shadows) to `Docs/ArtTest/belltower/greybox_lights_before.json`.
+   - Then delete them and confirm that each label is gone.
+   - Never delete any other light.
+2. **`lights`:** spawn the 13 `cat == "light"` records as `/Script/Engine.PointLight`, with one full transform call, label = id and folder = record folder. Then set on `LightComponent0`:
+   - `intensityUnits` Lumens, `intensity`, `attenuationRadius`;
+   - `bUseTemperature` false, `lightColor` (the same 0–1 float form the component reads back);
+   - `castShadows` false, `volumetricScatteringIntensity`, `sourceRadius`;
+   - `lightFunctionMaterial` = `/Game/LastBell/Materials/Instances/<MI>.<MI>`, or none.
+   - Read every value back.
+3. **`lfv`:** spawn the 4 `LocalFogVolume` actors with the values in step 1.3 (port P9-7's `lfv`) and read them back.
+4. **`pp`:** spawn `PP_Cloister` (port P9-7's `pp`; the default brush is ±100, so scale = half-extent / 100) and set the values in step 1.3.
+   - Read back the actor bounds (±5 against the box), `bUnbound`, priority, `blendRadius` and every override.
+5. **`check`:** read back everything above.
+   - All 17 greybox lights are absent.
+   - The 7 `L_Cl_*` / `L_Ps_*` lights are in `Lighting/Cloister` and the 6 `L_Tw_*` lights are in `Lighting/BellTower`.
+   - Report any other light found in those two folders, and never delete it. `Light_TowerExt_0..2` may live there.
+   - The 4 LFVs and `PP_Cloister` are present.
+   - `Light_TowerExt_0..2` are untouched (300 lm).
+   - It prints PASS/FAIL per line and exits 1 on any FAIL.
+
+**Step 3: place.**
+1. `place_tower.py --cats dress --only PSA_Lantern` and `--only CLA_Cell_Candle`, then `--check` for both.
+2. `place_lighting_p10.py greybox`, then `lights`, then `lfv`, then `pp`, then `check`.
+3. Do not change `DirectionalLight`, `Moon_Fill`, `SkyLight`, `ExponentialHeightFog`, `PostProcess_Exposure`, `PP_Outdoor_Night`, `PP_Crypt` or any courtyard, chapel or crypt light.
+4. Do not change `MI_LB_BellBronze`: the lead judges the bronze in the P10-7 captures first.
+
+**Step 4: save, reload, re-check.**
+1. Save `L_Monastery` in one `save_assets` call and check that `is_dirty` is false.
+2. Run `load_level`, then `place_lighting_p10.py check` and both `place_tower.py --check` runs again. Everything must pass.
+
+**Step 5: tests.** Run the full suite with the command-line runner: **78/78**, with the named tests of D1.20 step 6. If anything fails, stop and report.
+
+**Step 6: capture poses** (no captures). Write `Tools/belltower/poses/p10_7_poses.json`:
+
+| Pose | Value | The lead checks |
+|---|---|---|
+| `lt_cl_s_entry` | [10650, 700, 170, 0, 90] | mean luma 0.04–0.08 |
+| `lt_inscription` | [11800, 2380, 170, 5, 0] | `luma_report.py --plaque` contrast ≥ 2.5 |
+| `lt_bells` | [11800, 2380, 160, −5, 0] | numerals I–IV legible |
+| `lt_tower_mid` | [12835, 1665, 1534, 10, 180] | mean 0.02–0.06, slit moonbeams visible |
+| `lt_tower_shaft_up` | [12150, 2000, 170, 70, 0] | light from the louvres and the broken roof |
+| `lt_bell_top` | [12165, 2000, 2660, 10, 0] | bell centre-10 % median ≥ 0.08; bronze not pink |
+| `lt_belfry_up_sw` | [12500, 2150, 2670, 25, −135] | moonlight through the broken SW roof corner |
+| `lt_gate` | [300, 0, 170, 10.67, 9.31] | the belfry and broken roof read against the sky |
+| `lt_garth` | [10750, 1100, 200, −8, 85] | garth earth sheen |
+| `lt_cl_ne` | [11850, 2900, 170, 0, 180] | N walk readable but dark |
+| `lt_door_tower_out` | [11700, 2000, 170, 0, 0] | the plank-slit light |
+| `lt_door_shortcut_pass` | [6400, 2000, 170, 0, 180] | the hinge slit |
+| `lt_passage_east` | [6300, 2000, 170, −12, 0] | passage readable (L_Ps_West pool) |
+| `lt_cell_candles` | [9700, 2700, 170, −26, 68] | candle pool at the N cell door |
+
+**Step 7: commit.**
+- Message: `P10-7: lighting placed (13 lights, 4 LFV, PP_Cloister; 17 greybox lights removed), checks, suite 78/78`.
+- Include `L_Monastery.umap`, the script, the before-dump and the poses.
+- Never stage `L_Throwaway_P9_4.umap`.
+
+**End state:**
+- the map is saved and not dirty;
+- PIE is stopped;
+- there are no `TMP_` actors;
+- the throttle is untouched;
+- no parent Blueprint was saved.
+
+**Lead review after P10-7** (with the owner):
+- Capture `p10_7_poses.json` in **PIE Simulate**, which shows no editor sprites and gives the true exposure and animated light functions. Use `--timeout 15 --settle 3` and the foreground-resilient wrapper.
+- Run `Tools/crypt/luma_report.py` against the targets above.
+- Tune by instance-only changes within these ranges:
+  - `PP_Cloister` EV100 0.2–2.0;
+  - lantern lumens ×0.5–×2;
+  - the LFV extinction;
+  - `MI_LB_BellBronze` tint, if it reads pink.
+- Each tuning round is a small Sonnet task followed by one more capture session.
