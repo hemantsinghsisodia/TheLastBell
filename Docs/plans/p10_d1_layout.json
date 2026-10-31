@@ -16,7 +16,7 @@
   "door": 5,
   "doorleaf": 5,
   "dress": 283,
-  "light": 13
+  "light": 17
  },
  "group_counts": {
   "shell": 12,
@@ -67,7 +67,7 @@
   "towerdress": 11,
   "weed": 32,
   "garthveg": 175,
-  "light": 13
+  "light": 17
  },
  "checks": [
   {
@@ -326,7 +326,7 @@
    "group": "7 derived",
    "name": "record ids unique",
    "ok": true,
-   "detail": "534 records"
+   "detail": "538 records"
   },
   {
    "group": "7 derived",
@@ -348,7 +348,7 @@
   },
   {
    "group": "7 derived",
-   "name": "every warm light except L_Cl_Cell and L_Tw_BellFill has a lantern",
+   "name": "every warm light except L_Cl_Cell, L_Tw_BellFill and the L_Tw_Moon* spots has a lantern",
    "ok": true,
    "detail": "11 lanterns for 11 warm lights"
   },
@@ -4777,8 +4777,8 @@
    "bUnbound": false,
    "priority": 1.0,
    "blendRadius": 300.0,
-   "AutoExposureMinBrightness": 1.15,
-   "AutoExposureMaxBrightness": 1.15,
+   "AutoExposureMinBrightness": 0.65,
+   "AutoExposureMaxBrightness": 0.65,
    "ColorSaturationShadows": [
     0.65,
     0.65,
@@ -32163,7 +32163,7 @@
    "extras": {
     "light": {
      "type": "PointLight",
-     "lumens": 400,
+     "lumens": 200,
      "radius": 600,
      "shadows": false,
      "color_linear": [
@@ -32176,7 +32176,7 @@
      "source_radius": 0
     }
    },
-   "note": "lantern above the inscription"
+   "note": "lantern above the inscription (D1.24: 400 -> 200 lm, over-lit the wall)"
   },
   {
    "id": "L_Cl_Door",
@@ -32226,7 +32226,7 @@
    "extras": {
     "light": {
      "type": "PointLight",
-     "lumens": 350,
+     "lumens": 180,
      "radius": 500,
      "shadows": false,
      "color_linear": [
@@ -32239,7 +32239,7 @@
      "source_radius": 0
     }
    },
-   "note": "lantern beside the tower door"
+   "note": "lantern beside the tower door (D1.24: 350 -> 180 lm)"
   },
   {
    "id": "L_Cl_Entry",
@@ -32415,7 +32415,7 @@
    "extras": {
     "light": {
      "type": "PointLight",
-     "lumens": 120,
+     "lumens": 80,
      "radius": 250,
      "shadows": false,
      "color_linear": [
@@ -32428,7 +32428,7 @@
      "source_radius": 2
     }
    },
-   "note": "D1.23: candle cluster beside the N cell door at X 9900 (CLA_Cell_Candle_0..2), Z 25 (no lantern)"
+   "note": "D1.23: candle cluster beside the N cell door at X 9900 (CLA_Cell_Candle_0..2), Z 25 (no lantern); D1.24: 120 -> 80 lm"
   },
   {
    "id": "L_Ps_Lantern",
@@ -32856,7 +32856,7 @@
    "extras": {
     "light": {
      "type": "PointLight",
-     "lumens": 400,
+     "lumens": 250,
      "radius": 600,
      "shadows": false,
      "color_linear": [
@@ -32869,7 +32869,7 @@
      "source_radius": 0
     }
    },
-   "note": "D1.11: moved out of the frame post, lantern on the post's -X face"
+   "note": "D1.11: moved out of the frame post, lantern on the post's -X face; D1.24: 400 -> 250 lm"
   },
   {
    "id": "L_Tw_BellFill",
@@ -32933,6 +32933,294 @@
     }
    },
    "note": "moon fill (no lantern, no scattering)"
+  },
+  {
+   "id": "L_Tw_MoonSlit_F03",
+   "cat": "light",
+   "group": "light",
+   "mesh": "Point",
+   "loc": [
+    12403.2,
+    1472.2,
+    810.4
+   ],
+   "rot": [
+    -38.0,
+    35.0,
+    0.0
+   ],
+   "scale": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "collision": "-",
+   "folder": "Lighting/BellTower",
+   "mbounds": [
+    [
+     0.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     0.0
+    ]
+   ],
+   "aabb_min": [
+    12403.2,
+    1472.2,
+    810.4
+   ],
+   "aabb_max": [
+    12403.2,
+    1472.2,
+    810.4
+   ],
+   "mi_slots": {},
+   "extras": {
+    "light": {
+     "type": "SpotLight",
+     "lumens": 600,
+     "radius": 1500,
+     "shadows": true,
+     "color_linear": [
+      0.745,
+      0.804,
+      0.922
+     ],
+     "light_function": null,
+     "volumetric_scattering": 0.8,
+     "source_radius": 0,
+     "inner_cone": 4,
+     "outer_cone": 8,
+     "volumetric_shadow": true
+    },
+    "opening": [
+     12500.0,
+     1540.0,
+     718.1
+    ],
+    "shaft_width_cm": 40
+   },
+   "note": "D1.24: moon spot outside S slit F03"
+  },
+  {
+   "id": "L_Tw_MoonSlit_F07",
+   "cat": "light",
+   "group": "light",
+   "mesh": "Point",
+   "loc": [
+    12403.2,
+    1472.2,
+    1719.6
+   ],
+   "rot": [
+    -38.0,
+    35.0,
+    0.0
+   ],
+   "scale": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "collision": "-",
+   "folder": "Lighting/BellTower",
+   "mbounds": [
+    [
+     0.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     0.0
+    ]
+   ],
+   "aabb_min": [
+    12403.2,
+    1472.2,
+    1719.6
+   ],
+   "aabb_max": [
+    12403.2,
+    1472.2,
+    1719.6
+   ],
+   "mi_slots": {},
+   "extras": {
+    "light": {
+     "type": "SpotLight",
+     "lumens": 600,
+     "radius": 1500,
+     "shadows": true,
+     "color_linear": [
+      0.745,
+      0.804,
+      0.922
+     ],
+     "light_function": null,
+     "volumetric_scattering": 0.8,
+     "source_radius": 0,
+     "inner_cone": 4,
+     "outer_cone": 8,
+     "volumetric_shadow": true
+    },
+    "opening": [
+     12500.0,
+     1540.0,
+     1627.3
+    ],
+    "shaft_width_cm": 40
+   },
+   "note": "D1.24: moon spot outside S slit F07"
+  },
+  {
+   "id": "L_Tw_MoonSlit_F08",
+   "cat": "light",
+   "group": "light",
+   "mesh": "Point",
+   "loc": [
+    11943.2,
+    1932.2,
+    1946.3
+   ],
+   "rot": [
+    -38.0,
+    35.0,
+    0.0
+   ],
+   "scale": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "collision": "-",
+   "folder": "Lighting/BellTower",
+   "mbounds": [
+    [
+     0.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     0.0
+    ]
+   ],
+   "aabb_min": [
+    11943.2,
+    1932.2,
+    1946.3
+   ],
+   "aabb_max": [
+    11943.2,
+    1932.2,
+    1946.3
+   ],
+   "mi_slots": {},
+   "extras": {
+    "light": {
+     "type": "SpotLight",
+     "lumens": 600,
+     "radius": 1500,
+     "shadows": true,
+     "color_linear": [
+      0.745,
+      0.804,
+      0.922
+     ],
+     "light_function": null,
+     "volumetric_scattering": 0.8,
+     "source_radius": 0,
+     "inner_cone": 4,
+     "outer_cone": 8,
+     "volumetric_shadow": true
+    },
+    "opening": [
+     12040.0,
+     2000.0,
+     1854.0
+    ],
+    "shaft_width_cm": 40
+   },
+   "note": "D1.24: moon spot outside W slit F08"
+  },
+  {
+   "id": "L_Tw_MoonRoof",
+   "cat": "light",
+   "group": "light",
+   "mesh": "Point",
+   "loc": [
+    12058.9,
+    1597.6,
+    4150.1
+   ],
+   "rot": [
+    -38.0,
+    35.0,
+    0.0
+   ],
+   "scale": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "collision": "-",
+   "folder": "Lighting/BellTower",
+   "mbounds": [
+    [
+     0.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     0.0
+    ]
+   ],
+   "aabb_min": [
+    12058.9,
+    1597.6,
+    4150.1
+   ],
+   "aabb_max": [
+    12058.9,
+    1597.6,
+    4150.1
+   ],
+   "mi_slots": {},
+   "extras": {
+    "light": {
+     "type": "SpotLight",
+     "lumens": 1500,
+     "radius": 2500,
+     "shadows": true,
+     "color_linear": [
+      0.745,
+      0.804,
+      0.922
+     ],
+     "light_function": null,
+     "volumetric_scattering": 0.8,
+     "source_radius": 0,
+     "inner_cone": 10,
+     "outer_cone": 20,
+     "volumetric_shadow": true
+    },
+    "opening": [
+     12188.0,
+     1688.0,
+     4027.0
+    ],
+    "shaft_width_cm": 200
+   },
+   "note": "D1.24: moon spot outside the SW roof collapse"
   }
  ]
 }
