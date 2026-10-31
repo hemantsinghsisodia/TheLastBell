@@ -1,12 +1,14 @@
-"""P10-6a numeric checks (D1.20 step 4). Read-only; prints PASS / FAIL per line, a summary, and exits 1 on any FAIL.
+"""P10-6a / P10-6e numeric checks (D1.20 step 4, updated by D1.21 step 4). Read-only; prints PASS / FAIL per line, a summary, and exits 1 on any FAIL.
 Editor open on L_Monastery, no PIE, one editor-touching process at a time.
 
-    python Tools/belltower/p10_6a_checks.py > Docs/ArtTest/belltower/p10_6a_checks.txt
+    python Tools/belltower/p10_6a_checks.py > Docs/ArtTest/belltower/p10_6e_checks.txt
 
-1. chain on the drum: CLA_Mech3_Chain_A_0 run_from (150 <= Z <= 200, XY distance 30..38 from (11790, 1780)); Mech_Ritual3 actor bounds
-   X 11735-11845, Y 1725-1835 (+-1)
+1. chain on the drum (D1.21): CLA_Mech3_Chain_A_0 run_from lies inside the Core's world AABB (p10_6b_checks.world_box, root component no longer double-counted)
+   grown by 2 cm and is >= 30 from the drum axis (11790, 1780); Mech_Ritual3 actor bounds X 11735-11845, Y 1725-1835 (+-1)
 2. CLA_Collapse_Heap world bounds X 11050-11370, Y 2295-2505, Z 0-65 (+-3), collision BlockAll / QueryAndPhysics
-3. vegetation: per-folder counts (90 grass, 30 nettle, 20 fern, 32 weeds), each actor's scale equals its record (+-0.001), min / max height per group
+3. vegetation: per-folder counts (90 grass, 30 nettle, 35 fern, 18 rooibos, 2 shrubs, 32 weeds), each actor's scale equals its record (+-0.001), min / max height per group
+3b. belfry debris (D1.21): every TWA_Debris_* AABB inside X 12041-12130, Y 2170-2450, Z 2499-2560; the rafter's axis within 8 deg of +Y, S end on the floor
+   at (12055, 2185) +-5, N end raised 20-30, AABB inside Z 2500-2550
 4. no dress actor intersects the gameplay actors (grown 10 cm) nor the two door swing boxes (Z 0-300)
 Gameplay component bounds are computed from the meshes' local bounds and the live component transforms (full parent chain), because the
 actor-level bounds include editor sprites; dress meshes use get_actor_bounds.
@@ -21,6 +23,7 @@ sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(HERE, "..", "mcp"))
 import bp_swap  # noqa: E402
 import place_tower  # noqa: E402
+import p10_6b_checks  # noqa: E402   (world_box: D1.21 root-component fix)
 
 S, A, O = bp_swap.S, bp_swap.A, bp_swap.O
 SM = place_tower.SM
@@ -143,21 +146,23 @@ def main():
         for lbl, a in P.folder_actors(f, refresh=True).items():
             if lbl in recs:
                 actors[lbl] = a
-    report(len(actors) == len(recs) == 242, "all dress records are placed", "%d actors found for %d records" % (len(actors), len(recs)))
+    report(len(actors) == len(recs) == 278, "all dress records are placed (278)", "%d actors found for %d records" % (len(actors), len(recs)))
 
     # ---- 1 chain on the drum
     print("\n== 1. Chain on the drum")
     r = recs["CLA_Mech3_Chain_A_0"]
     rf = r["extras"]["run_from"]
     dxy = math.hypot(rf[0] - 11790.0, rf[1] - 1780.0)
-    report(150 <= rf[2] <= 200 and 30 <= dxy <= 38, "CLA_Mech3_Chain_A_0 run_from %s: Z in 150-200, XY distance from (11790, 1780) in 30-38" % rf,
-           "Z %.1f, XY distance %.2f" % (rf[2], dxy))
+    mech = bp_swap.find_exact(ue, "Mech_Ritual3")
+    core_lo, core_hi = p10_6b_checks.world_box(mech, ["Pedestal", "Core"])
+    inside = all(core_lo[i] - 2.0 <= rf[i] <= core_hi[i] + 2.0 for i in range(3))
+    report(inside and dxy >= 30.0, "CLA_Mech3_Chain_A_0 run_from %s lies within the Core's world AABB grown by 2 cm and is >= 30 from the drum axis (11790, 1780)" % rf,
+           "Core AABB %s .. %s, XY distance from the axis %.2f" % (fmt(core_lo), fmt(core_hi), dxy))
     cl = actors.get("CLA_Mech3_Chain_A_0")
     if cl:
         t = P.call(A, "get_actor_transform", {"actor": cl, "worldspace": True})
         d = max(abs(t["location"][k] - rf[i]) for i, k in enumerate("xyz"))
         report(d <= 0.1, "placed CLA_Mech3_Chain_A_0 location equals run_from (+-0.1)", "max deviation %.3f" % d)
-    mech = bp_swap.find_exact(ue, "Mech_Ritual3")
     b = P.call(A, "get_actor_bounds", {"actor": mech})
     mn, mx = [b["min"][k] for k in "xyz"], [b["max"][k] for k in "xyz"]
     want = ((11735, 1725), (11845, 1835))
@@ -180,7 +185,7 @@ def main():
 
     # ---- 3 vegetation
     print("\n== 3. Vegetation read-back")
-    groups = [("CLA_GarthGrass_", 90), ("CLA_GarthNettle_", 30), ("CLA_GarthFern_", 20), ("PSA_Weed_", 32)]
+    groups = [("CLA_GarthGrass_", 90), ("CLA_GarthNettle_", 30), ("CLA_GarthFern_", 35), ("CLA_GarthRooibos_", 18), ("CLA_GarthShrub_", 2), ("PSA_Weed_", 32)]
     for pre, n in groups:
         ids = sorted(i for i in recs if i.startswith(pre))
         found = [i for i in ids if i in actors]
@@ -197,6 +202,32 @@ def main():
         report(worst_s <= 0.001, "%s* scale equals the record (+-0.001)" % pre, "worst deviation %.5f; scale range %.3f-%.3f" % (worst_s, min(scl), max(scl)) if scl else "")
         if hts:
             print("        world-bounds height: min %.1f max %.1f cm (%d actors)" % (min(hts), max(hts), len(hts)))
+
+    # ---- 3b belfry debris
+    print("\n== 3b. Belfry debris")
+    deb = sorted(i for i in recs if i.startswith("TWA_Debris_"))
+    report(len(deb) == 6 and all(i in actors for i in deb), "6 TWA_Debris_* actors placed (5 chunks + rafter)", "%d records, %d placed" % (len(deb), len([i for i in deb if i in actors])))
+    for i in deb:
+        if i not in actors:
+            continue
+        bn, bx = P.bounds(actors[i])
+        ok = bn[0] >= 12041 - 0.3 and bx[0] <= 12130 + 0.3 and bn[1] >= 2170 - 0.3 and bx[1] <= 2450 + 0.3 and bn[2] >= 2499 and bx[2] <= 2560
+        report(ok, "%s AABB inside X 12041-12130, Y 2170-2450, Z 2499-2560 (+-0.3 in plan)" % i, "%s .. %s" % (fmt(bn), fmt(bx)))
+    if "TWA_Debris_Rafter" in actors:
+        ra = actors["TWA_Debris_Rafter"]
+        t = P.call(A, "get_actor_transform", {"actor": ra, "worldspace": True})
+        rot = [t["rotation"][k] for k in ("pitch", "yaw", "roll")]
+        zax = place_tower.rot_rows(*rot)[2]                 # local +Z (the long axis; pivot at the S end) in world
+        plan = math.degrees(math.atan2(zax[0], zax[1]))
+        sc = t["scale"]["z"]
+        s_end = [t["location"][k] for k in "xyz"]
+        n_end = [s_end[i] + zax[i] * 260.0 * sc for i in range(3)]
+        bn, bx = P.bounds(ra)
+        rise = n_end[2] - s_end[2]
+        report(abs(plan) <= 8.0 and 2499.7 <= bn[2] <= 2502.3 and abs(s_end[0] - 12055) <= 5 and abs(s_end[1] - 2185) <= 5 and 20 <= rise <= 30
+               and bn[0] >= 12040.7 and bx[0] <= 12130.3 and bn[1] >= 2169.7 and bx[1] <= 2450.3 and bx[2] <= 2550,
+               "TWA_Debris_Rafter: axis within 8 deg of +Y, bottom Z 2500-2502, S end (12055, 2185) +-5, N end raised 20-30, AABB inside X 12041-12130, Y 2170-2450, Z <= 2550",
+               "plan angle %.2f deg, S end %s, N end %s, rise %.1f, AABB %s .. %s, rotator %s" % (plan, fmt(s_end), fmt(n_end), rise, fmt(bn), fmt(bx), [round(v, 3) for v in rot]))
 
     # ---- 4 no dress on the gameplay actors / door swings
     print("\n== 4. Dress vs gameplay actors and door swing boxes")
