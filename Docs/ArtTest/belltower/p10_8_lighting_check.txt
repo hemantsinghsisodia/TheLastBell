@@ -1,0 +1,55 @@
+PASS  greybox light Light_Cloister_0 is absent
+PASS  greybox light Light_Cloister_1 is absent
+PASS  greybox light Light_Cloister_2 is absent
+PASS  greybox light Light_Cloister_3 is absent
+PASS  greybox light Light_Cloister_4 is absent
+PASS  greybox light Light_Cloister_5 is absent
+PASS  greybox light Light_Cloister_6 is absent
+PASS  greybox light Light_Cloister_7 is absent
+PASS  greybox light Light_Tower_0 is absent
+PASS  greybox light Light_Tower_1 is absent
+PASS  greybox light Light_Tower_2 is absent
+PASS  greybox light Light_Tower_3 is absent
+PASS  greybox light Light_Tower_4 is absent
+PASS  greybox light Light_Tower_5 is absent
+PASS  greybox light Light_TowerBell is absent
+PASS  greybox light Light_TowerTop_0 is absent
+PASS  greybox light Light_Courtyard_7 is absent
+PASS  L_Cl_Bells 200 lm radius 600 color [1, 0.549, 0.22] lf MI_LF_Lantern scat 1.5 src 0 shadows False loc [11960, 2380, 320] folder Lighting/Cloister
+PASS  L_Cl_Door 180 lm radius 500 color [1, 0.549, 0.22] lf MI_LF_Lantern scat 1.5 src 0 shadows False loc [11960, 1880, 300] folder Lighting/Cloister
+PASS  L_Cl_Entry 300 lm radius 500 color [1, 0.549, 0.22] lf MI_LF_Lantern scat 1.5 src 0 shadows False loc [10520, 300, 300] folder Lighting/Cloister
+PASS  L_Cl_West 300 lm radius 500 color [1, 0.549, 0.22] lf MI_LF_Lantern scat 1.5 src 0 shadows False loc [9560, 2000, 320] folder Lighting/Cloister
+PASS  L_Cl_Cell 80 lm radius 250 color [1, 0.576, 0.161] lf MI_LF_Candle scat 1 src 2 shadows False loc [9812, 2972, 25] folder Lighting/Cloister
+PASS  L_Ps_Lantern 300 lm radius 500 color [1, 0.549, 0.22] lf MI_LF_Lantern scat 1.5 src 0 shadows False loc [9380, 2240, 300] folder Lighting/Cloister
+PASS  L_Ps_West 300 lm radius 500 color [1, 0.549, 0.22] lf MI_LF_Lantern scat 1.5 src 0 shadows False loc [6500, 2240, 300] folder Lighting/Cloister
+PASS  L_Tw_Base 300 lm radius 500 color [1, 0.549, 0.22] lf MI_LF_Lantern scat 1.5 src 0 shadows False loc [12060, 1880, 260] folder Lighting/BellTower
+PASS  L_Tw_Land4 200 lm radius 400 color [1, 0.549, 0.22] lf MI_LF_Lantern scat 1.5 src 0 shadows False loc [12054, 2446, 1079.1] folder Lighting/BellTower
+PASS  L_Tw_Land7 200 lm radius 400 color [1, 0.549, 0.22] lf MI_LF_Lantern scat 1.5 src 0 shadows False loc [12054, 1554, 1760.9] folder Lighting/BellTower
+PASS  L_Tw_Land10 200 lm radius 400 color [1, 0.549, 0.22] lf MI_LF_Lantern scat 1.5 src 0 shadows False loc [12946, 1554, 2442.7] folder Lighting/BellTower
+PASS  L_Tw_Bell 250 lm radius 600 color [1, 0.549, 0.22] lf MI_LF_Lantern scat 1.5 src 0 shadows False loc [12255, 1865, 2690] folder Lighting/BellTower
+PASS  L_Tw_BellFill 200 lm radius 1000 color [0.749, 0.8, 0.922] lf none scat 0 src 0 shadows False loc [12500, 2300, 3300] folder Lighting/BellTower
+PASS  L_Tw_MoonSlit_F03 600 lm radius 1500 color [0.745, 0.804, 0.922] lf none scat 0.800000011920929 src 0 shadows True loc [12403.2, 1472.2, 810.4] folder Lighting/BellTower
+PASS  L_Tw_MoonSlit_F07 600 lm radius 1500 color [0.745, 0.804, 0.922] lf none scat 0.800000011920929 src 0 shadows True loc [12403.2, 1472.2, 1719.6] folder Lighting/BellTower
+PASS  L_Tw_MoonSlit_F08 600 lm radius 1500 color [0.745, 0.804, 0.922] lf none scat 0.800000011920929 src 0 shadows True loc [11943.2, 1932.2, 1946.3] folder Lighting/BellTower
+PASS  L_Tw_MoonRoof 1500 lm radius 2500 color [0.745, 0.804, 0.922] lf none scat 0.800000011920929 src 0 shadows True loc [12058.9, 1597.6, 4150.1] folder Lighting/BellTower
+PASS  17 light records in the layout (13 PointLights + 4 moon SpotLights)
+PASS  7 L_Cl_/L_Ps_ records are in Lighting/Cloister
+PASS  6 L_Tw_ PointLight records are in Lighting/BellTower
+PASS  4 L_Tw_Moon* SpotLight records are in Lighting/BellTower
+INFO  Lighting/Cloister other residents: expected [('PP_Cloister', 'PostProcessVolume')]; UNEXPECTED []
+INFO  Lighting/BellTower other residents: expected [('Light_TowerExt_0', 'PointLight'), ('Light_TowerExt_1', 'PointLight'), ('Light_TowerExt_2', 'PointLight'), ('LFV_Tower_0', 'LocalFogVolume'), ('LFV_Tower_1', 'LocalFogVolume'), ('LFV_Tower_2', 'LocalFogVolume'), ('LFV_Tower_3', 'LocalFogVolume'), ('SA_Tower_F03', 'StaticMeshActor'), ('SA_Tower_F07', 'StaticMeshActor'), ('SA_Tower_F08', 'StaticMeshActor'), ('SA_Tower_Roof', 'StaticMeshActor')]; UNEXPECTED []
+PASS  SA_Tower_F03 present: castShadow False, collision NoCollision/NoCollision, mat ['MI_LightShaft_Crypt'], folder Lighting/BellTower, bounds [12478.4, 1516.6, 438.8]..[12797.9, 1756.9, 733.9]
+PASS  SA_Tower_F07 present: castShadow False, collision NoCollision/NoCollision, mat ['MI_LightShaft_Crypt'], folder Lighting/BellTower, bounds [12478.4, 1516.6, 1347.9]..[12798.0, 1757.0, 1643.1]
+PASS  SA_Tower_F08 present: castShadow False, collision NoCollision/NoCollision, mat ['MI_LightShaft_Crypt'], folder Lighting/BellTower, bounds [12018.4, 1976.6, 1737.5]..[12167.2, 2097.4, 1869.8]
+PASS  SA_Tower_Roof present: castShadow False, collision NoCollision/NoCollision, mat ['MI_LightShaft_Crypt'], folder Lighting/BellTower, bounds [12080.2, 1570.8, 3461.2]..[12806.4, 2162.8, 4105.8]
+PASS  LFV_Tower_0 at [12500, 2000, 460] scale [0.92, 0.92, 0.92] {'radialFogExtinction': 0.11999999731779099, 'heightFogExtinction': 0, 'fogPhaseG': 0.30000001192092896, 'fogAlbedo': {'r': 0.8600000143051147, 'g': 0.8700000047683716, 'b': 0.8999999761581421, 'a': 1}, 'fogEmissive': {'r': 0, 'g': 0, 'b': 0, 'a': 1}} folder Lighting/BellTower
+PASS  LFV_Tower_1 at [12500, 2000, 1380] scale [0.92, 0.92, 0.92] {'radialFogExtinction': 0.11999999731779099, 'heightFogExtinction': 0, 'fogPhaseG': 0.30000001192092896, 'fogAlbedo': {'r': 0.8600000143051147, 'g': 0.8700000047683716, 'b': 0.8999999761581421, 'a': 1}, 'fogEmissive': {'r': 0, 'g': 0, 'b': 0, 'a': 1}} folder Lighting/BellTower
+PASS  LFV_Tower_2 at [12500, 2000, 2300] scale [0.92, 0.92, 0.92] {'radialFogExtinction': 0.11999999731779099, 'heightFogExtinction': 0, 'fogPhaseG': 0.30000001192092896, 'fogAlbedo': {'r': 0.8600000143051147, 'g': 0.8700000047683716, 'b': 0.8999999761581421, 'a': 1}, 'fogEmissive': {'r': 0, 'g': 0, 'b': 0, 'a': 1}} folder Lighting/BellTower
+PASS  LFV_Tower_3 at [12500, 2000, 3220] scale [0.92, 0.92, 0.92] {'radialFogExtinction': 0.11999999731779099, 'heightFogExtinction': 0, 'fogPhaseG': 0.30000001192092896, 'fogAlbedo': {'r': 0.8600000143051147, 'g': 0.8700000047683716, 'b': 0.8999999761581421, 'a': 1}, 'fogEmissive': {'r': 0, 'g': 0, 'b': 0, 'a': 1}} folder Lighting/BellTower
+PASS  PP_Cloister bounds [6000, -450, -40]..[13100, 3200, 4200] {'bUnbound': False, 'priority': 1, 'blendRadius': 300} min 0.6499999761581421 max 0.6499999761581421 satShadows {'x': 0.65, 'y': 0.65, 'z': 0.65, 'w': 1} folder Lighting/Cloister
+PASS  PP_Cloister EV100 min 0.6499999761581421 max 0.6499999761581421 (want 0.65)
+PASS  Light_TowerExt_0 untouched: {'intensity': 300, 'intensityUnits': 'Lumens', 'attenuationRadius': 3500, 'castShadows': False}
+PASS  Light_TowerExt_1 untouched: {'intensity': 300, 'intensityUnits': 'Lumens', 'attenuationRadius': 3500, 'castShadows': False}
+PASS  Light_TowerExt_2 untouched: {'intensity': 300, 'intensityUnits': 'Lumens', 'attenuationRadius': 3500, 'castShadows': False}
+CHECK SUMMARY: 51 PASS, 0 FAIL
+RESULT check OK

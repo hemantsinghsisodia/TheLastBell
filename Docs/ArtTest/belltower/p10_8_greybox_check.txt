@@ -1,0 +1,11 @@
+greybox actors found 280 / 280, missing []
+greybox read-back: 280 actors, still visible or no collision: 0, collision changed vs before: n/a, profiles {'BlockAll': 280}
+  trace Stair_F01_05 top                   vertical at (12455, 2335): hit z 97.40 (expected 97.4) OK
+  trace Stair_F06_07 top                   vertical at (12835, 1985): hit z 1266.23 (expected 1266.2) OK
+  trace Stair_F11_13 top                   vertical at (12305, 1665): hit z 2500.00 (expected 2500.0) OK
+  trace Tw_Landing_05 top                  vertical at (12835, 2335): hit z 1136.36 (expected 1136.4) OK
+  trace Garth top                          vertical at (10850, 1800): hit z 100.00 (expected 100.0) OK
+  trace Tw_Core W face                     horizontal along X at (y 2000, z 1200) from the W ring: hit after 140.00 (expected 140.00) OK
+  trace Cl_N                               horizontal axis Y from the min side at z 400: hit after 60.00 (expected 60.00) OK
+  trace Passage_S                          horizontal axis Y from the min side at z 400: hit after 60.00 (expected 60.00) OK
+trace checks: all hit

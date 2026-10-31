@@ -1,0 +1,76 @@
+== block: 8 records (removed 0 existing)
+  trace Tw_Block_UnderStair: hit at 30.0 (expected 30.0)
+  trace Tw_Block_BrokenTread_F03: hit at 30.0 (expected 30.0)
+  trace Tw_Block_BrokenTread_F06: hit at 30.0 (expected 30.0)
+  trace Tw_Block_BrokenTread_F09: hit at 30.0 (expected 30.0)
+  trace Cl_Block_PierSW: hit at 30.0 (expected 30.0)
+  trace Cl_Block_PierSE: hit at 30.0 (expected 30.0)
+  trace Cl_Block_PierNW: hit at 30.0 (expected 30.0)
+  trace Cl_Block_PierNE: hit at 30.0 (expected 30.0)
+   block: checked 8, pass 8, fail 0, max bounds deviation 0.00 cm
+== wall: 65 records (removed 0 existing)
+  ..20/65
+  ..40/65
+  ..60/65
+   wall: checked 65, pass 65, fail 0, max bounds deviation 0.01 cm
+== tower: 32 records (removed 0 existing)
+  ..20/32
+   tower: checked 32, pass 32, fail 0, max bounds deviation 0.00 cm
+== stair: 32 records (removed 0 existing)
+  ..20/32
+   stair: checked 32, pass 32, fail 0, max bounds deviation 0.01 cm
+== arcade: 28 records (removed 0 existing)
+  ..20/28
+   arcade: checked 28, pass 28, fail 0, max bounds deviation 0.00 cm
+== vault: 10 records (removed 0 existing)
+   vault: checked 10, pass 10, fail 0, max bounds deviation 0.00 cm
+== roof: 15 records (removed 0 existing)
+   roof: checked 15, pass 15, fail 0, max bounds deviation 0.00 cm
+== floor: 7 records (removed 0 existing)
+   floor: checked 7, pass 7, fail 0, max bounds deviation 0.00 cm
+== garth: 16 records (removed 0 existing)
+   garth: checked 16, pass 16, fail 0, max bounds deviation 0.00 cm
+== door: 5 records (removed 0 existing)
+   door: checked 5, pass 5, fail 0, max bounds deviation 0.00 cm
+== doorleaf: 5 records (removed 0 existing)
+   doorleaf: checked 5, pass 5, fail 0, max bounds deviation 0.01 cm
+== dress: 283 records (removed 0 existing)
+  ..20/283
+  ..40/283
+  ..60/283
+  ..80/283
+  ..100/283
+  ..120/283
+  ..140/283
+  ..160/283
+  ..180/283
+  ..200/283
+  ..220/283
+  ..240/283
+  ..260/283
+  ..280/283
+   dress: checked 283, pass 283, fail 0, max bounds deviation 0.10 cm
+
+DECALS (id, forward.wall dot, wall trace hit cm, material, decalSize, status)
+  CLA_Decal_S0   dot 1.0000  hit 30.0  MI_Decal_Mould             size (12, 100, 140)  ok
+  CLA_Decal_S1   dot 1.0000  hit 30.0  MI_Decal_Leaking004_Wall   size (12, 100, 90)  ok
+  CLA_Decal_N2   dot 1.0000  hit 30.0  MI_Decal_Mould             size (12, 100, 140)  ok
+  CLA_Decal_N3   dot 1.0000  hit 30.0  MI_Decal_Leaking004_Wall   size (12, 100, 90)  ok
+  CLA_Decal_W4   dot 1.0000  hit 30.0  MI_Decal_Mould             size (12, 100, 150)  ok
+  CLA_Decal_W5   dot 1.0000  hit 30.0  MI_Decal_Mould             size (12, 100, 120)  ok
+  CLA_Decal_E6   dot 1.0000  hit 30.0  MI_Decal_Mould             size (12, 100, 140)  ok
+  CLA_Decal_E7   dot 1.0000  hit 30.0  MI_Decal_Leaking004_Wall   size (12, 100, 90)  ok
+
+SUMMARY (cat, n, pass, fail, max dev cm)
+  block        8    8   0  0.00
+  wall        65   65   0  0.01
+  tower       32   32   0  0.00
+  stair       32   32   0  0.01
+  arcade      28   28   0  0.00
+  vault       10   10   0  0.00
+  roof        15   15   0  0.00
+  floor        7    7   0  0.00
+  garth       16   16   0  0.00
+  door         5    5   0  0.00
+  doorleaf     5    5   0  0.01
+  dress      283  283   0  0.10
