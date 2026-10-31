@@ -136,7 +136,7 @@ def do_capstan():
 
 
 def do_doors():
-    for label, scale in (("Door_Tower", {"x": 1, "y": 1, "z": 1.036}), ("Door_Shortcut", {"x": 1, "y": 1.18, "z": 1.0818})):
+    for label, scale in (("Door_Tower", {"x": 1, "y": 1, "z": 1.036}), ("Door_Shortcut", {"x": 1, "y": 1.18, "z": 1.30})):   # P10-6d (D1.19)
         before = load_before(label)
         b = before["actor"]
         vals = {k: b[k] for k in ("openStateTag", "autoOpenTag", "openYaw", "openDuration", "bInteractable")}   # openSign is not settable (read-only var, value 1 = old value; the diff verifies it)
