@@ -2190,3 +2190,316 @@ All other poses are as in D1.24.
 - `lt_beam_roof`: the SW collapse reads clearly, with broken rafters against the night sky above the oak frame and bell. The roof beam lands on the E wall, as seen in `lt_bell_top`.
 
 **P10-7 lighting pass complete.** Next is P10-8 (docs, QA, the owner's GPU check and playtest, the phase report), after the owner's go.
+
+### D1.26 P10-8 plan: docs, capture tool, QA, owner review (lead, 2026-11-01)
+The owner gave the go for P10-8 on 2026-11-01. It follows the P9-8 pattern (P9 D1.18):
+- **P10-8a** (docs and the capture tool) and **P10-8b** (QA) run in parallel. 8a never touches the editor; 8b only reads from it.
+- Then the lead reviews both and posts **"PHASE 10 READY FOR YOUR REVIEW"** with the owner checklist (**P10-8c**).
+- Nothing merges until the owner says "approve and merge".
+
+Both agents are spawned with `model: "sonnet", effort: "high"`.
+
+**Shared rules for 8a and 8b:**
+- Work on `claude/phase-10-belltower`. Check `git branch --show-current` first; never switch, merge or push.
+- Stage only your own files by explicit path; never `git add -A` or `git add .`.
+- Never stage `Content/LastBell/Maps/L_Throwaway_P9_4.umap`.
+- If `.git/index.lock` exists or a commit fails on the lock, wait 5 s and retry, at most 12 times.
+- Commit trailer: `Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>`.
+- Never save anything in Unreal and never edit `.uasset`/`.umap` files.
+- Python: `C:\Users\heman\AppData\Local\Python\pythoncore-3.14-64\python.exe`.
+- 8b re-runs the generator in parallel, so 8a reads the layout only through `git show HEAD:Docs/plans/p10_d1_layout.json`, never from the working file.
+
+---
+
+#### P10-8a: docs and the capture tool (general-purpose; no editor; commit "P10-8a: Phase 10 docs, capture_session.py")
+**Read first:**
+- `CLAUDE.md`;
+- `Tools/mcp/MCP_NOTES.md` (all of it);
+- this plan's sections D1.17–D1.26;
+- the two lead scratch wrappers that the new tool replaces (read-only references, outside the repo):
+  - `C:\Users\heman\AppData\Local\Temp\claude\C--Hemant-Prj-Learning-TheLastBell\be0022a0-87e7-4517-81e3-bd2aaebbbccb\scratchpad\p10_6e_run_slow.py` (editor-viewport captures);
+  - `...\scratchpad\p10_7_run.py` (PIE Simulate captures plus luma);
+- the docstring of `Tools/crypt/capture_poses.py`.
+
+**1. New tool `Tools/crypt/capture_session.py`.** It goes next to `capture_poses.py` and `luma_report.py`, which it calls as subprocesses (never import them).
+
+Module docstring: usage, flags, exit codes, and "P10-8a (D1.26): replaces the lead's scratch wrappers".
+
+**CLI:**
+```
+python Tools/crypt/capture_session.py <poses.json> <out_dir> --prefix P [--suffix S] [--mode simulate|editor]
+       [--only a,b] [--force] [--max-wait 3600] [--fg-wait 1800] [--attempts 5] [--timeout 15] [--settle 3]
+       [--log-dir DIR] [--luma JSON_OUT] [--plaque POSE] [--dry-run]
+```
+- **Defaults:**
+  - `--mode simulate`;
+  - `--suffix ""`;
+  - `--only`: every pose in the JSON, in file order;
+  - `--max-wait 3600` (s to wait for the editor to come to the front before the session starts);
+  - `--fg-wait 1800` (s to wait before each attempt);
+  - `--attempts 5`, `--timeout 15`, `--settle 3`;
+  - `--log-dir <project>\Saved\Logs\captures` (create it).
+- Use `argparse`. The project root is two levels above the script: `os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))`.
+- For `capture_poses.py` and `luma_report.py`, use `sys.executable`.
+
+**Behaviour, in this order:**
+1. **Pose list.** Load `<poses.json>`. Unknown names in `--only` → exit 4 with the unknown names listed.
+   - The output file of a pose is `<out_dir>\<prefix><pose><suffix>.png`.
+   - Without `--force`, drop every pose whose file already exists and print `skipped (exists): <name>` for each.
+   - If nothing is left, print that and exit 0.
+2. **`--dry-run`.** Print:
+   - the mode;
+   - the remaining poses;
+   - the exact `capture_poses.py` command line of attempt 0;
+   - the luma command lines that would run.
+
+   Exit 0. Dry-run must not import `ue` or contact the editor, so import `ue` lazily, after this step.
+3. **Wait for the foreground.** Same `fg_title()` / `wait_fg(limit)` as the wrappers: the foreground window title ends with `Unreal Editor`, polled every 2 s.
+   - If it isn't in front within `--max-wait`, print `Unreal Editor never became the foreground window (last: <title>); no captures taken` and exit 2.
+   - Then sleep 3 s.
+4. **Editor-mode PIE check.** In `editor` mode, if `EditorAppToolset.IsPIERunning` is true, print `PIE is running; stop it before an editor-mode session` and exit 3. Nothing has been changed at this point.
+5. **Throttle.** Read the current `bThrottleCPUWhenNotForeground` from `/Script/UnrealEd.Default__EditorPerformanceSettings` (`get_properties`) and keep it as the original. Set it to false (`set_properties`, with `values` as a JSON string).
+6. **Everything from here runs in `try` / `finally`.**
+   - **Simulate mode:** if PIE isn't running, call `StartPIE {"options": {"bSimulate": true, "playMode": "PlayMode_InViewPort", "warmupSeconds": 5}}` and set `started = True`.
+     - Poll `IsPIERunning` every 2 s, for at most 120 s, else raise `RuntimeError("PIE Simulate did not start")`.
+     - Then sleep 8 s.
+   - **Attempt loop** (`for attempt in range(attempts)`):
+     1. `remaining` = the poses whose file does not exist or has an mtime earlier than the session start time (`time.time()` taken at step 1). Stop the loop when `remaining` is empty.
+     2. `wait_fg(fg_wait)`. On a timeout, print `lost the foreground for <fg_wait> s; stopping` and stop the loop. Then sleep 3 s.
+     3. Run `capture_poses.py <poses> <out_dir> --double --raise --force --timeout T --settle S --prefix P [--suffix S] --only <remaining joined by ,> --log <log_dir>\cap_<prefix><attempt>.log`, adding `--editor` in editor mode.
+        - `--force` is safe because `--only` holds only the poses not captured in this session.
+        - Use `cwd` = the project root and `capture_output=True, text=True`.
+        - Print the stdout lines containing `saved`, `MISSING`, `finished` or `abort` (case-insensitive), at most the last 60. If none match, print the last 800 chars of stdout and stderr.
+     4. **Circuit breaker** (MCP_NOTES "Crypt and Phase 9" §2 and the `capture_poses.py` docstring). If `capture_poses.py` exits with code 3:
+        - print `breaker tripped; resting 60 s`;
+        - sleep 60 s;
+        - set a flag so the next attempt runs with `--only <the first remaining pose>` (a single-pose test).
+        - If that single-pose attempt also leaves its pose missing, or exits 3 again, print `breaker tripped twice; stopping` and stop the loop.
+        - If it succeeds, clear the flag and continue normally.
+   - **`finally`:**
+     1. If `started` and `IsPIERunning`: call `StopPIE` and print `PIE stopped`. Catch and print any exception.
+     2. Restore the throttle to the **original value read in step 5**, not to a hard-coded true.
+     3. Print the read-back.
+7. **Luma.**
+   - If `--luma` is given, run `luma_report.py --json <JSON_OUT> <every file written in this session>` and print the last 6000 chars.
+   - If `--plaque POSE` is given and that pose's file exists, run `luma_report.py --plaque <file>` and print it.
+8. **Exit code:**
+   - 0: every pose was captured in this session;
+   - 1: some are missing. Print `missing: a,b,...`.
+
+   Codes 2, 3 and 4 are as above.
+
+**Validation.** No live run; the lead runs the first live session with the owner. Paste every output in your report.
+- `python -m py_compile Tools/crypt/capture_session.py`;
+- `python Tools/crypt/capture_session.py --help`;
+- `python Tools/crypt/capture_session.py Tools/belltower/poses/p10_7c_poses.json Docs/ArtTest/belltower --prefix p10_7c_ --dry-run` → all 3 poses are `skipped (exists)` and it exits 0;
+- the same with `--force` → the 3 poses and a simulate-mode command line, exit 0;
+- the same with `--force --mode editor --suffix _ed` → `--editor` and `--suffix _ed` appear in the command line;
+- `--only lt_beam_south,nope --force --dry-run` → exit 4, naming `nope`.
+
+**2. `Tools/mcp/MCP_NOTES.md`.** Append a section `## Bell tower and cloister (P10)`, in the numbered style of the "Crypt and Phase 9 fix sets" section. One fact per item and how to apply it.
+1. **Foreground captures (D1.22).**
+   - While the Unreal Editor is not the foreground window, every viewport call resets after about 19 s, including `SetCameraTransform`, not only `CaptureViewport`.
+   - While the editor is throttled in the background, `CaptureEditorImage` returns a stale frame.
+   - So a capture run needs the owner: they bring Unreal to the front and leave the PC alone.
+   - Use `Tools/crypt/capture_session.py`. It waits for the foreground before each attempt and restores the throttle.
+2. **Slow first frames (D1.22).** The first views of new material permutations took up to 60 s each. Use `--timeout 15 --settle 3` (the `capture_session.py` defaults).
+3. **PIE Simulate for lighting judgement (D1.24).**
+   - Simulate captures show no editor sprites and give the true exposure, so judge lighting and luma only on them.
+   - Use `capture_session.py --mode simulate --luma <json> [--plaque <pose>]`.
+   - Use editor-mode captures (`--mode editor --suffix _ed`) for geometry and dressing only.
+4. **`capture_session.py` reference.**
+   - The CLI and its exit codes (copy them from the docstring).
+   - Status: "dry-run validated in P10-8a; first live session pending". The lead updates this line after the first live run.
+5. **`set_properties` `values` is a JSON string** (`json.dumps({...})`), not an object. This applies to every `ObjectTools.set_properties` call.
+6. **Root-component world box (D1.21).**
+   - For an actor's root component, `relativeLocation` / `relativeRotation` / `relativeScale3D` already are the world transform.
+   - When composing a component's world box from the parent chain, never apply the root's relative transform on top of the actor transform.
+   - In P10-6a the double-counted root put the capstan chain start about 50 cm above the drum. The fix is in `Tools/belltower/p10_6b_checks.world_box`; reuse that function.
+7. **Light component paths.** `<map>.<map>:PersistentLevel.<Actor>.LightComponent0` covers point, spot and directional lights. Sky light: `.SkyLightComponent0`; height fog: `.HeightFogComponent0`.
+8. **No console or CVar setter over MCP** (only `SearchCVars`). `r.*` settings, `scalability` and `stat` commands are typed by the owner in a PIE window.
+9. **`Tools/belltower` scripts** (editor on `L_Monastery`, no PIE, one editor-touching process at a time):
+   - `gen_tower_layout.py`: the generator. It writes `Docs/plans/p10_d1_layout.json` and `p10_d1_tables.md` (never hand-edit them) and runs 54 checks, including the lane checks.
+   - `place_tower.py`:
+     - `--cats` (the order `block wall tower stair arcade vault roof floor garth door doorleaf dress`), `--only`, `--check`, `--fix-collision`;
+     - `--hide-greybox` / `--verify-greybox`, `--ground`, `--perim`.
+   - `place_lighting_p10.py`: `greybox | lights | lfv | pp | shafts | check`. `lights` places point and spot records; `check` gave 51/51 after P10-7b.
+   - `bp_swap.py`: the dump and diff for child-BP swaps (D-071 procedure).
+   - `p10_6a_checks.py` (dressing checks, 29 lines) and `p10_6b_checks.py` (the swap readouts and `world_box`).
+   - `import_p10.py` (the P10-4 imports).
+   - Pose files: `Tools/belltower/poses/`.
+10. **Moon beams through openings (D1.24).**
+    - The courtyard moon travels along d = (0.6455, 0.4520, −0.6157) (`DirectionalLight` pitch −38, yaw 35). Only openings that face it get a beam: here the S and W faces and the SW roof collapse.
+    - **Pattern:** a shadowed `SpotLight` 150–200 cm back along −d from the opening's inner centre, rotation (−38, 35, 0), with `bCastVolumetricShadow` and scattering 0.8.
+    - **Shaft card:** an engine `Cylinder` with `MI_LightShaft_Crypt`, NoCollision and no shadow. It runs from the opening + 5·d, traced along d.
+    - Implementation: `place_lighting_p10.py shafts`.
+11. **Door leaves in pointed or gabled openings (D1.19).** Check both faces for light wedges at the leaf's top corners. `Door_Shortcut` needed leaf scale Z 1.30.
+12. **Lighting a dark interior (D1.24).** If a wall 40 cm from a lantern glows saturated orange, the lantern is too strong. Fix it in lumens, not in exposure. Raise exposure only for the walk floors (`PP_Cloister` EV100 0.65).
+
+**3. `Docs/PERFORMANCE_BUDGET.md`.** Add one row to "Measurements":
+- **Date:** 2026-11-01.
+- **Build / where:** "Phase 10 cloister + bell tower (1a47a69, after P10-7b)".
+- **GPU column:** "RTX 4050 6 GB, High, 1920×1080 window (owner)". **GPU total:** "**owner measurement pending (P10-8c)**". **Key passes:** "—".
+- **Notes:**
+  - the counts from `Docs/plans/p10_d1_layout.json` `counts`, read by script, in this form: `tower 32, floor 7, stair 32, gameplay 15, roof 15, block 8, wall 65, arcade 28, garth 16, vault 10, door 5, doorleaf 5, dress 283, light 17 (538 records)`. If the script disagrees with these numbers, write the script's numbers and report the difference;
+  - the light makeup: 11 lanterns (shadowless, `MI_LF_Lantern`, scattering 1.5), 1 cell candle, 1 bell fill (r 1000, scattering 0), and 4 shadowed moon spots (3 slit spots at 600 lm and the roof spot at 1500 lm, scattering 0.8). `Light_TowerExt_0..2` (300 lm) are kept;
+  - 4 shaft cards, 4 LFVs (`LFV_Tower_0..3`), `PP_Cloister` EV100 0.65;
+  - "measure in the cloister S walk, the garth, the tower mid-stair and the belfry".
+- Verify the light makeup by script from the `placements` records with `cat == "light"`: print id, `extras.light.type`, lumens and `castShadows`. Report any mismatch with the list above; don't change the generator.
+
+**4. `Docs/ASSET_REGISTRY.md`.**
+- **Rope 003** row: in the Unreal-path column, replace "not yet imported (P10-4)" with `/Game/LastBell/Environments/BellTower/Textures/T_Rope003_BC, _N, _R` → `MI_LB_Rope` (P10-4).
+- **Metal 058 B** row: replace it with `/Game/LastBell/Environments/BellTower/Textures/T_Metal058B_BC, _N, _R, _M` → `MI_LB_BellBronze` (P10-4; old-bronze values P10-7b, D1.24).
+- **Usage check by script:**
+  - Collect every distinct `mesh` in `placements` that contains `/ThirdParty/` or `/Environments/Props/CC0/`.
+  - For each, find the registry row that covers it (match by the asset or pack name).
+  - Append `; P10 cloister/tower: <short use>` to that row's usage column, unless the row already mentions P10. Take `<short use>` from the record's `group`, e.g. "garth vegetation", "cell candles", "chains".
+- **Missing rows:** list any mesh without a row in your report. Add a row only from the facts in `ExternalAssets/Incoming/<folder>/` and the existing download records, and never invent a licence. Fab assets added by the owner have no Incoming folder; report them instead of adding rows.
+
+**5. `Docs/RISKS.md`** (edit the rows in place and keep the table format):
+- **R-39:** add to the mitigation: "P10: viewport calls also reset when the editor is merely not the foreground window; `Tools/crypt/capture_session.py` waits for the foreground before each attempt; capture runs are scheduled with the owner at the PC". The status stays Open.
+- **R-40:** add `BP_SmallBell_Cloister`, `BP_Inscription_Cloister`, `BP_RitualMechanism_TowerCapstan` and `BP_TagInteractable_GreatBell`, but only those whose construction script copies the parent's body.
+  - Check each one in D1.17 ("P10-6b") and in `Docs/ArtTest/belltower/blueprints_dsl_p10.json` or the `Tools/belltower/p10_6b_dsl/` files.
+  - Report the evidence for each (copied or not).
+- **R-42:** status **Mitigated**, with the evidence: tread tops within 0.0009 cm of the greybox steps (D1.11), and WalkPath TowerStairs PASS plus RouteBot Success in every suite since P10-5. Add "Closed after the owner walks the stairs (P10-8c)".
+- **R-43:** status **Mitigated**, with the evidence: the D-071 swaps had 0 differences on re-dump after reload (D1.18); `Door_Shortcut` 0 differences after P10-6d (D1.19); RouteBot, Puzzles.Blueprints and the Save tests in the suite at 78/78. Add "owner playtest confirms (P10-8c)".
+- **R-44:** stays **Open**. Add "owner stat gpu pending (P10-8c)".
+- **R-45:** status **Mitigated**, with the evidence:
+  - numerals II and III legible in the captures, while I and IV sit partly behind their bells (D1.24);
+  - inscription plaque contrast 2.52 (D1.25);
+  - "owner judges at 2 m (P10-8c)".
+
+**6. `Docs/DECISIONS.md`.** Append one row in the table's format:
+- **ID:** **D-083**.
+- **Date:** 2026-11-01.
+- **Context:** "Cloister and bell-tower lighting outcome (P10-7, P10-7b; D1.23–D1.25)".
+- **Decision:**
+  - the courtyard lantern style (`MI_LF_Lantern`, scattering 1.5, shadowless) with the final lumens: `L_Cl_Bells` 200, `L_Cl_Door` 180, `L_Cl_Entry` 300, `L_Cl_West` 300, `L_Ps_Lantern` 300, `L_Ps_West` 300, `L_Tw_Base` 300, `L_Tw_Land4/7/10` 200, `L_Tw_Bell` 250;
+  - `L_Cl_Cell` candle 80 lm; `L_Tw_BellFill` 200 lm, r 1000, moon colour, scattering 0;
+  - the moon spots `L_Tw_MoonSlit_F03/F07/F08` (600 lm, cones 4/8) and `L_Tw_MoonRoof` (1500 lm, cones 10/20), rotation (−38, 35, 0), shadowed, scattering 0.8, with the shaft cards `SA_Tower_*`;
+  - `LFV_Tower_0..3`;
+  - `PP_Cloister` EV100 0.65, `ColorSaturationShadows` 0.65, blend 300;
+  - `MI_LB_BellBronze` old bronze (tint (0.46, 0.42, 0.34), BrightnessMul 0.42, Metallic 0.75, Roughness 0.55–0.85);
+  - the 17 greybox lights removed (dump `Docs/ArtTest/belltower/greybox_lights_before.json`).
+- **Alternatives:** "D1.8's original values; raising exposure only".
+- **Reasoning:** "Matches the approved courtyard style; walk floors readable at EV 0.65 without hot lantern walls; moonbeams only where the moon can enter".
+- **Implications:**
+  - accepted: `lt_cl_s_entry` mean 0.038 (target 0.04, 0.002 under);
+  - accepted: the W slit beam is short and mostly hidden behind the rails;
+  - owner stat gpu pending (P10-8c).
+
+**7. `Docs/IMPLEMENTATION_PLAN.md`** (Phase 10 table):
+- Replace the `P10-8` row with three rows:
+  - `| P10-8a | Docs (MCP_NOTES P10 section, PERFORMANCE_BUDGET, ASSET_REGISTRY, RISKS, D-083) and Tools/crypt/capture_session.py (D1.26) | general-purpose (no editor) | P10-7b |`
+  - `| P10-8b | QA: suite, live checks, logs, generator lane re-check, git/asset hygiene (D1.26) | qa-reviewer [EDITOR read-only] | P10-7b |`
+  - `| P10-8c | Owner stat gpu + playtest; PHASE 10 READY FOR YOUR REVIEW | lead + owner | P10-8a, P10-8b |`
+- In the status line, replace the final `Next: P10-8.` with `P10-8 started 2026-11-01 (D1.26): 8a docs and 8b QA in parallel, then the owner review (P10-8c).`
+
+**8. Drift check, report only.** Grep `Docs/TECHNICAL_DESIGN.md` for `Tower`, `Cloister`, `Mechanism 3`, `SmallBell`, `Inscription`, `Door_Base_Dungeon` and `child`. List every statement that the P10 implementation contradicts (D1.17 child BPs, the doors on `BP_Door_Base_Dungeon`, D-078 visible-false greybox), with line numbers. **Do not edit TECHNICAL_DESIGN**; the lead decides.
+
+**Commit:** stage exactly `Tools/crypt/capture_session.py`, `Tools/mcp/MCP_NOTES.md`, `Docs/PERFORMANCE_BUDGET.md`, `Docs/ASSET_REGISTRY.md`, `Docs/RISKS.md`, `Docs/DECISIONS.md` and `Docs/IMPLEMENTATION_PLAN.md`. Message: `P10-8a: Phase 10 docs, capture_session.py`.
+
+**Report:**
+- the validation outputs;
+- the PERFORMANCE_BUDGET script output;
+- the registry rows touched and any missing;
+- the R-40 evidence;
+- the drift list;
+- the commit hash.
+
+---
+
+#### P10-8b: QA (qa-reviewer; editor read-only; commit "P10-8b: QA report")
+**Read first:** `CLAUDE.md`, `Tools/mcp/MCP_NOTES.md`, and this plan's sections D1.20 step 6 and D1.25.
+
+**Allowed in the editor** (via `Tools/mcp/ue.py`):
+- reads only: `get_properties`, `find_actors`, `get_current_level`, `is_dirty`, `GetLogEntries`, `trace_world`, `get_actor_bounds`;
+- the read-only check scripts named below, **one at a time**.
+
+**Forbidden:** any `set_*`, spawn, remove, save, compile, PIE, and `load_level`. If the editor isn't on `L_Monastery`, stop and report; don't load it.
+
+**Steps.** Record every command and its output in the report.
+1. **Git.** Run:
+   - `git branch --show-current` (must be `claude/phase-10-belltower`);
+   - `git status --short` (only the throwaway umap untracked, plus 8a's work in progress if present);
+   - `git log --oneline main..HEAD | wc -l` and `git log --oneline main..HEAD | head -5`.
+2. **Editor state:**
+   - `SceneTools.get_current_level` ends with `L_Monastery`;
+   - `EditorAppToolset.IsPIERunning` is false;
+   - `AssetTools.is_dirty` on `/Game/LastBell/Maps/L_Monastery` and `/Game/LastBell/Environments/BellTower/Materials/MI_LB_BellBronze` (expect false);
+   - `SceneTools.find_actors {"name": "TMP_", "tag": "", "collision_channels": []}` (expect none).
+3. **Live checks** (each writes to a file under `Docs/ArtTest/belltower/`):
+   - `python Tools/belltower/place_tower.py --cats block wall tower stair arcade vault roof floor garth door doorleaf dress --check > Docs/ArtTest/belltower/p10_8_place_check.txt`: exit 0 and no FAIL lines; report the per-category summary.
+   - `python Tools/belltower/place_tower.py --verify-greybox > Docs/ArtTest/belltower/p10_8_greybox_check.txt`: exit 0.
+   - `python Tools/belltower/place_lighting_p10.py check > Docs/ArtTest/belltower/p10_8_lighting_check.txt`: expect 51/51 (D1.25).
+   - `python Tools/belltower/p10_6a_checks.py > Docs/ArtTest/belltower/p10_8_6a_checks.txt`: expect every line PASS (29 in D1.22).
+4. **Generator and lane re-check** (offline):
+   - Run `python Tools/belltower/gen_tower_layout.py`. Exit 0; `all_checks_pass` true; 54 checks.
+   - Report the lane-check lines (TowerStairs, the patrol route, search points, `WSpawn`, chamber debris) with their worst clearance. Each must be ≥ 60 cm.
+   - Then `git status --short Docs/ Tools/` must show **no change** to `Docs/plans/p10_d1_layout.json`, `Docs/plans/p10_d1_tables.md` or any other file. If something changed:
+     - report `git diff --stat`;
+     - restore those files with `git restore <paths>`;
+     - flag it as a determinism finding.
+5. **Suite.** Use the command-line runner in `Tools/mcp/MCP_NOTES.md` ("Running tests"), with the log `C:\Hemant\Prj\Learning\TheLastBell\Saved\Logs\p10_8_suite.log`.
+   - Report the totals: **78/78** expected.
+   - Report each of these results:
+     - `WalkPath.Monastery`, with its TowerStairs, CryptToCloister and the four Courtyard paths;
+     - `RouteBot.Monastery`;
+     - `Puzzles.Blueprints`;
+     - `Warden.MonasteryReachability`;
+     - `Warden.Monastery.StagesRelocateTheWarden`;
+     - every `Save` test.
+   - On any failure, quote the log lines; don't re-run more than once.
+6. **Editor log.** `LogsToolset.GetLogEntries` must always be filtered: `{"category": "", "pattern": "Error", "maxEntries": 200}`, then `"Warning"` the same way.
+   - Group by category; leave out the known benign `LogCrowdFollowing` RecastNavMesh warning.
+   - List each distinct message once (first 160 chars) with its count.
+   - Mark anything that names `L_Monastery`, `BellTower`, `Cloister`, a `BP_` asset, a material, or `MI_`.
+7. **Asset hygiene** (git only):
+   - **Content root:** `git diff --name-only main...HEAD -- Content | grep -v '^Content/LastBell/'` must be empty.
+   - **Naming:** for `git diff --name-only --diff-filter=A main...HEAD -- Content/LastBell`, check each basename's prefix against CLAUDE.md's naming list. Kit and art meshes are `SM_`; textures `T_`. List any violations.
+   - **Parent Blueprints:** `git diff --name-only main...HEAD` must contain none of `BP_SmallBell`, `BP_SequencePuzzle`, `BP_Inscription`, `BP_RitualMechanism`, `BP_Door_Base`, `BP_TagInteractable`, `BP_TagTrigger`, `BP_EndingTrigger`, `BP_Inspectable_Note`, `BP_Door_Base_Dungeon` and `BP_RitualMechanism_CryptWinch`, as exact `.uasset` basenames.
+   - **In memory:** report `is_dirty` for those 11 parents. This is info only; some may be dirty in memory, which is known.
+   - **Source:** report `git diff --stat main...HEAD -- Source Config`.
+8. **Report file** `Docs/ArtTest/belltower/p10_8_qa.md`:
+   - a verdict table (step, expected, actual, PASS/FAIL);
+   - then the details;
+   - then "Findings" (anything abnormal, with evidence; no fixes).
+
+**Commit:** stage exactly `Docs/ArtTest/belltower/p10_8_qa.md` and the four `p10_8_*_check*.txt` files. Message: `P10-8b: QA report`.
+
+**Report:** the verdict table, the findings and the commit hash.
+
+---
+
+#### P10-8c: owner review (in the "PHASE 10 READY FOR YOUR REVIEW" report)
+The lead posts this after reviewing 8a and 8b.
+1. **Performance.**
+   - Play in a **New Editor Window (PIE)**. In the console, type `scalability 2`, `r.SetRes 1920x1080w`, `stat unit` and `stat gpu`.
+   - Measure the GPU total at four places:
+     1. the cloister S walk at the bells and inscription;
+     2. the garth, seen from the E walk;
+     3. the tower mid-stair (landing 6);
+     4. the belfry beside the great bell.
+   - Right-click → **Play From Here** is fine for these spots. The budget is **≤ 16.6 ms**.
+   - **If over**, the lead cuts in this order:
+     1. shadows off on `L_Tw_MoonSlit_F07/F08` (F03 and the roof spot keep theirs);
+     2. `LFV_Tower` from 4 to 2;
+     3. lantern volumetric scattering from 1.5 to 0.
+2. **Playtest** (from the start, or from the crypt exit):
+   1. Enter the cloister from the crypt stair and read `Note_Cloister`.
+   2. Read the inscription at 2 m.
+   3. Strike the four small bells in the right order. The capstan turns (Mechanism 3), and the tower door and the shortcut door open.
+   4. Watch the shortcut door swing: it must not cut into the arch. Walk the passage both ways.
+   5. Climb the tower stairs. Your feet should stay on the treads, with no floating or sinking.
+   6. Ring the great bell. The ending plays.
+3. **Judge:**
+   - the darkness in the walks and the tower;
+   - the moonbeams (the S slit; the roof collapse on the belfry wall);
+   - the old-bronze bells;
+   - the garth;
+   - the `Door_Shortcut` hinge slit (accepted in D1.19/D1.24).
+4. **Outside Phase 10**, for the owner to decide:
+   - the `Gobo_Moon_*` sky specks (P8);
+   - the `Door_ChapelMain` / `Door_Sacristy` top corners;
+   - the Phase 9 dress bounds mismatches (118).
+5. **Then** "approve and merge", or a fix list. A fix list becomes D1.27.
