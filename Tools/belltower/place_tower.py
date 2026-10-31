@@ -144,8 +144,8 @@ class Placer:
         slots = self.slots_of(rec["mesh"])
         want = rec.get("mi_slots") or {}
         ov, eff = [], []
-        for s, cur in slots:
-            mi = want.get(s)
+        for i, (s, cur) in enumerate(slots):
+            mi = want.get(s) or want.get(str(i))      # keyed by slot name, or by slot index (e.g. the engine Cube: {"0": "MI_Crypt_Iron"})
             if mi and mi != cur:
                 ov.append(mi)
                 eff.append(mi)

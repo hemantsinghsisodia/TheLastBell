@@ -1,0 +1,57 @@
+PASS  all dress records are placed
+        242 actors found for 242 records
+
+== 1. Chain on the drum
+PASS  CLA_Mech3_Chain_A_0 run_from [11824.0, 1783.0, 168.0]: Z in 150-200, XY distance from (11790, 1780) in 30-38
+        Z 168.0, XY distance 34.13
+PASS  placed CLA_Mech3_Chain_A_0 location equals run_from (+-0.1)
+        max deviation 0.000
+PASS  Mech_Ritual3 actor bounds X 11735-11845, Y 1725-1835 (+-1)
+        min (11735.0, 1725.0, 0.0) max (11845.0, 1835.0, 205.0)
+
+== 2. Collapse heap
+PASS  CLA_Collapse_Heap world bounds within 3 cm of X 11050-11370, Y 2295-2505, Z 0-65
+        min (11050.0, 2295.0, 0.0) max (11370.0, 2505.0, 65.0), max deviation 0.00
+PASS  CLA_Collapse_Heap collision BlockAll / QueryAndPhysics (the mesh's own collision)
+        profile BlockAll, collisionEnabled QueryAndPhysics, useDefault True
+
+== 3. Vegetation read-back
+PASS  CLA_GarthGrass_*: 90 actors in Cloister/Dressing/Garth
+        records 90, placed 90
+PASS  CLA_GarthGrass_* scale equals the record (+-0.001)
+        worst deviation 0.00000; scale range 0.902-1.389
+        world-bounds height: min 14.6 max 56.0 cm (90 actors)
+PASS  CLA_GarthNettle_*: 30 actors in Cloister/Dressing/Garth
+        records 30, placed 30
+PASS  CLA_GarthNettle_* scale equals the record (+-0.001)
+        worst deviation 0.00000; scale range 2.810-4.367
+        world-bounds height: min 18.3 max 84.0 cm (30 actors)
+PASS  CLA_GarthFern_*: 20 actors in Cloister/Dressing/Garth
+        records 20, placed 20
+PASS  CLA_GarthFern_* scale equals the record (+-0.001)
+        worst deviation 0.00000; scale range 0.801-1.095
+        world-bounds height: min 17.1 max 46.8 cm (20 actors)
+PASS  PSA_Weed_*: 32 actors in Courtyard/Passage
+        records 32, placed 32
+PASS  PSA_Weed_* scale equals the record (+-0.001)
+        worst deviation 0.00000; scale range 3.504-4.914
+        world-bounds height: min 14.2 max 35.1 cm (32 actors)
+
+== 4. Dress vs gameplay actors and door swing boxes
+  Mech_Ritual3: 3 mesh components, union (11735.0, 1725.0, 0.0) .. (11845.0, 1835.0, 205.0)
+  Bell_1: 5 mesh components, union (11959.4, 2183.0, 70.0) .. (12000.0, 2217.0, 167.0)
+  Bell_2: 5 mesh components, union (11961.2, 2303.0, 70.0) .. (12000.0, 2337.0, 167.0)
+  Bell_3: 5 mesh components, union (11963.0, 2423.0, 70.0) .. (12000.0, 2457.0, 167.0)
+  Bell_4: 5 mesh components, union (11964.8, 2543.0, 70.0) .. (12000.0, 2577.0, 167.0)
+  Clue_Inscription: 1 mesh components, union (11990.0, 2230.0, 162.5) .. (12000.0, 2530.0, 237.5)
+  Note_Cloister: 1 mesh components, union (10736.7, 1408.9, 100.1) .. (10763.3, 1441.1, 100.4)
+  Bell: 1 mesh components, union (12315.2, 1895.0, 2640.0) .. (12525.0, 2105.0, 2860.0)
+PASS  no dress actor (bounds) intersects Mech_Ritual3, Bell_1..4, Clue_Inscription, Note_Cloister, Bell grown by 10 cm (except Chain_A_0 / Mech_Ritual3)
+        242 dress actors x 26 gameplay mesh components
+  (info) CLA_Mech3_Chain_A_0 (11822.6, 1777.5, 149.3)..(11910.8, 1797.0, 172.7) touches Mech_Ritual3 (grown 10): True
+PASS  no dress actor intersects the Door_Tower swing box X 11913-12027, Y 1943-2057, Z 0-300
+        242 dress actors tested
+PASS  no dress actor intersects the Door_Shortcut swing box X 5895-6027, Y 1934-2066, Z 0-300
+        242 dress actors tested
+
+SUMMARY: 17 checks, 17 PASS, 0 FAIL -> ALL PASS
