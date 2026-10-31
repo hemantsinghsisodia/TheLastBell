@@ -146,7 +146,8 @@ def main():
         for lbl, a in P.folder_actors(f, refresh=True).items():
             if lbl in recs:
                 actors[lbl] = a
-    report(len(actors) == len(recs) == 278, "all dress records are placed (278)", "%d actors found for %d records" % (len(actors), len(recs)))
+    # P10-8 (D1.26 QA F1): compare with the layout's dress count (278 after P10-6e, 283 after P10-7) instead of a constant
+    report(len(actors) == len(recs), "all %d dress records are placed" % len(recs), "%d actors found for %d records" % (len(actors), len(recs)))
 
     # ---- 1 chain on the drum
     print("\n== 1. Chain on the drum")

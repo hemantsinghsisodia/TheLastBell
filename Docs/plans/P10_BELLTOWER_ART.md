@@ -2503,3 +2503,34 @@ The lead posts this after reviewing 8a and 8b.
    - the `Door_ChapelMain` / `Door_Sacristy` top corners;
    - the Phase 9 dress bounds mismatches (118).
 5. **Then** "approve and merge", or a fix list. A fix list becomes D1.27.
+
+#### P10-8a / P10-8b review (lead, 2026-11-01)
+**P10-8a accepted** (43490a1):
+- **`Tools/crypt/capture_session.py`:** dry-run validated (help, skip-existing, `--force`, editor mode with suffix, luma/plaque lines, unknown pose → exit 4). The first live session is still pending; it needs the owner at the PC.
+- **MCP_NOTES:** section "Bell tower and cloister (P10)", 12 items.
+- **PERFORMANCE_BUDGET:** Phase 10 row. The counts (538) and the 17 light records were verified by script, with no mismatch. GPU pending (P10-8c).
+- **ASSET_REGISTRY:** the Rope003 and Metal058B paths; P10 use added to 14 rows; no missing rows.
+- **RISKS:** R-39 and R-40 updated (the 4 P10 children copy their parents' construction scripts, with evidence from the `p10_6b_dsl` files); R-42, R-43 and R-45 Mitigated; R-44 Open.
+- **D-083:** the lighting outcome.
+
+**Drift:** TECHNICAL_DESIGN §10 and §11 did not mention the art child Blueprints or the art over the invisible greybox. The lead fixed both (584af02).
+
+**P10-8b accepted** (65992e5, `Docs/ArtTest/belltower/p10_8_qa.md`):
+
+| Check | Result |
+|---|---|
+| Suite | 78/78: every WalkPath (TowerStairs, CryptToCloister, 4 Courtyard), RouteBot, Puzzles.Blueprints, the Warden tests and all 10 Save tests |
+| `place_tower --check` | 538/538 |
+| `--verify-greybox` | 280/280 hidden, BlockAll, 8/8 traces |
+| Lighting check | 51/51 |
+| Generator | 54/54, deterministic |
+| Lanes | worst 70.3 cm (patrol), 77.0 (TowerStairs) |
+| Asset hygiene | no Content-root or naming violations; no parent BP changed (none dirty in memory); no Source/Config changes |
+| Logs | nothing project-related apart from F2 and F3 |
+
+**Findings:**
+- **F1:** `p10_6a_checks.py` had a hard-coded 278 (283 since P10-7's cell candles). The lead changed it to compare with the layout count. Re-run 29/29 (`p10_8_6a_checks_rerun.txt`).
+- **F2:** an old log line from a lookup of `MI_LB_BellBronze` at a wrong path (no file uses that path). Info only.
+- **F3:** the "staticMesh could not be read" log noise from `p10_6a_checks.py`. Noted in MCP_NOTES.
+
+**Next: P10-8c**, the owner review. The checklist is in D1.26 and in the "PHASE 10 READY FOR YOUR REVIEW" report.

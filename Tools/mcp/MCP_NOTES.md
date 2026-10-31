@@ -168,7 +168,7 @@ For C++ API names, read `Source/LastBell/`; for architecture, read `Docs/TECHNIC
      - `--hide-greybox` / `--verify-greybox`, `--ground`, `--perim`.
    - `place_lighting_p10.py`: `greybox | lights | lfv | pp | shafts | check`. `lights` places point and spot records; `check` gave 51/51 after P10-7b.
    - `bp_swap.py`: the dump and diff for child-BP swaps (D-071 procedure).
-   - `p10_6a_checks.py` (dressing checks, 29 lines) and `p10_6b_checks.py` (the swap readouts and `world_box`).
+   - `p10_6a_checks.py` (dressing checks, 29 lines; it logs about 29 harmless `staticMesh could not be read` warnings, because it asks non-mesh components for `staticMesh`) and `p10_6b_checks.py` (the swap readouts and `world_box`).
    - `import_p10.py` (the P10-4 imports).
    - Pose files: `Tools/belltower/poses/`.
 10. **Moon beams through openings (D1.24).**
