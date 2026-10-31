@@ -244,10 +244,12 @@ Branch `claude/phase-10-belltower`. Spec: `Docs/plans/P10_BELLTOWER_ART.md` (D-0
 | P10-5d | Re-capture the roof/perimeter-affected poses with the editor in the foreground; review | lead + owner [EDITOR] | P10-5c |
 | P10-6a | Dressing: garth, cells, rubble, timber debris, bell rope, lanterns, grime | environment-designer [EDITOR] | P10-5 |
 | P10-6b | Child BPs: small bells, inscription, Mech 3, great bell, tower and shortcut doors | unreal-blueprint-engineer [EDITOR] | P10-4 |
+| P10-6c | Capture the 12 Mech 3 / door / great bell / note views with the editor in the foreground; review (D1.19) | lead + owner [EDITOR] | P10-6b |
+| P10-6d | `Door_Shortcut` leaf Z scale 1.0818 → 1.30 to close the light wedges under the tympanum (D1.19); step 0 of P10-6a | environment-designer [EDITOR] | P10-6c |
 | P10-7 | Lighting: moon through the fallen roof and louvres, lanterns, candles, tower slit light; luma targets | lighting-vfx [EDITOR] | P10-6a, P10-6b |
 | P10-8 | Docs, QA, owner stat gpu + playtest; PHASE 10 READY FOR YOUR REVIEW | lead + qa + owner | all |
 
-Status 2026-10-30: P10-0…P10-4 done (P10-3a ba1f0e6/27ae1dc, P10-3b b22300f/42307f1, P10-L final 0e621ec, P10-4 8733d97). P10-5 structure (4919443…2e3a379) plus the roof-valley fix set (D1.14–D1.16, D-082): P10-5b fda215d/1b8d2f3, P10-5c 291c4f5/54b0326, P10-5d captures (lead + owner); suite 78/78. Structure pass complete; P10-6b (child BPs) next, then P10-6a, P10-7.
+Status 2026-10-30: P10-0…P10-4 done (P10-3a ba1f0e6/27ae1dc, P10-3b b22300f/42307f1, P10-L final 0e621ec, P10-4 8733d97). P10-5 structure (4919443…2e3a379) plus the roof-valley fix set (D1.14–D1.16, D-082): P10-5b fda215d/1b8d2f3, P10-5c 291c4f5/54b0326, P10-5d captures (lead + owner); suite 78/78. Structure pass complete. P10-6b child BPs (1ac66e2…6a22bf7, D1.17/D1.18; suite 78/78). P10-6c captures and review (D1.19): everything passes except the `Door_Shortcut` light wedges, fixed by P10-6d. Next: P10-6d + P10-6a, then P10-7.
 
 ## Deferred to Phase 14–15 (Lighting, VFX: storm work)
 Items the owner asked to fold into the storm pass. Plan them in detail (Docs/plans/) when Phase 14–15 starts.

@@ -1504,3 +1504,85 @@ This is the D1.6 design, made exact, plus the D1.11 errata. The P9 lessons apply
   - the check text uses the constant;
   - the D1.7 chain start moves from the drum at (11810, 1760, 110) to (11820, 1780, 110).
   - Re-run: exit 0, with the Mech 3 lane check passing.
+
+### D1.19 P10-6c capture review and P10-6d (lead, 2026-10-31)
+**Capture run.** The lead captured all 12 `p10_6_poses.json` views in editor mode, with the editor in the foreground (`--editor --double --raise --timeout 4 --settle 1.5`).
+- Output: `Docs/ArtTest/belltower/p10_6c_<pose>_ed.png`; 12 saved, 0 missing. The throttle was restored to true afterwards.
+- Editor sprites, arrows and trigger outlines in the images exist only in the editor.
+- The lighting is still the greybox set (`Light_Tower_*` and the courtyard lights), which P10-7 replaces.
+
+**Verdicts (against D1.6 and D1.17):**
+
+| Item | Pose(s) | Verdict |
+|---|---|---|
+| Small bells | `m3_bells_2m`, `m3_bells_close` | **Pass.** `Bell_1` is clearly the largest and the sizes step down. The bands read red, ochre, teal and pale. The plaque numerals I–IV are legible at 2 m. The bronze reads dark and warm, with patina. |
+| Inscription | `m3_inscription_2m` | **Pass.** Both lines ("STRIKE AS THE DEAD RECALL", "III · I · IV · II") are legible at 2 m. The letters read as a dark inlay rather than cut stone, which is accepted. The white specks on the tablet frame are `MI_Kit_Masonry` highlights under the close greybox light; P10-7 re-judges them. |
+| Capstan | `m3_capstan`, `m3_capstan_door` | **Pass as specified** (D1.4: the crypt capstan drum on the stone pedestal). It reads as a winch. The link to the tower door comes from P10-6a's chain and latch box, so P10-6a's `m3_capstan_door` capture re-judges whether it reads as the door mechanism. |
+| `Door_Tower` | `door_tower_out`, `door_tower_in` | **Pass.** The leaf fills the gabled opening, and the jamb gaps are D1.1's 2 cm. Above Z ≈ 208, three slits about 1–2 cm wide between the plank tips show the over-bright greybox interior. That is at the limit; P10-7 re-judges it under the final lights. |
+| `Door_Shortcut` | `door_shortcut_court`, `door_shortcut_pass` | **Fail.** There are two light wedges, each about 20 cm wide × 30 cm tall, between the leaf's top corners (Z ≈ 205) and the bottom of `KW_ShortcutTympanum` (Z 240). They show from both the courtyard and the passage. |
+| Great bell | `greatbell_from_stairs`, `greatbell_corner` | **Pass for form.** The enormous cracked bell hangs in the oak frame with its wheel and rope. Under the close greybox point light in `greatbell_from_stairs`, the bronze reads pink-copper, which misses D1.5's target. P10-7's bronze tuning, already in its scope, re-judges it under the final lights. |
+| `Note_Cloister` | `note_cloister` | **Pass.** The note reads as paper lying on the garth kerb. |
+
+**Why `Door_Shortcut` leaks.**
+- **The leaf:** `SM_Dungeon_door` has a stepped, pointed top. In the leaf's local frame (before the actor scale), its corners stop at Z ≈ 189.5 and the apex is at Z 220.
+  - The P7 leaf was a box 238 tall, so it met the tympanum (bottom at Z 240) square.
+  - At D1.17's actor scale Z 1.0818, the Dungeon leaf's corners stop at Z ≈ 205, which leaves two triangles under the tympanum.
+  - The light shows through the triangles from both sides (measured on `p10_6c_door_shortcut_court/pass_ed.png`).
+- **The opening** is the kit `Doorway_Pointed_400x60x400`:
+  - clear Y 1940–2060, jambs to Z 240;
+  - a two-centred arch (R 120) to an apex at Z ≈ 344;
+  - an outer order 10 cm wider (span 140) over X 6000–6012.5;
+  - the tympanum, a cube with `MI_Weathered_Planks_WA`, at X 6034–6046, Y 1940–2060, Z 240–340, filling the head behind the leaf.
+- The leaf lies at X 6013.3–6026.7, Y 1941–2059.
+
+**Decision: P10-6d raises the `Door_Shortcut` leaf.** The actor scale changes from (1, 1.18, 1.0818) to **(1, 1.18, 1.30)**. The location (6020, 1941, 0) and yaw 0 stay. This amends D1.17 §4.
+- **Fit:** the leaf corners rise to Z ≈ 246, at least 6 cm above the tympanum's bottom, and the apex rises to Z 286. The leaf stays inside the arch:
+
+  | Y | Arch soffit Z | Leaf top Z |
+  |---|---|---|
+  | 1941 | ≈ 255 | ≈ 246 |
+  | 1950 | ≈ 288 | ≈ 259 |
+  | 1967 | ≈ 316 | ≈ 281 |
+  | 2000 | ≈ 344 | 286 |
+
+  The Y 2059 side mirrors Y 1941.
+- **No light:**
+  - Everything of the leaf above Z 240 lies in front of the tympanum. That includes any slits between the plank tips, which only open above the backing's top at Z ≈ 244.
+  - Below Z 240, the leaf's `backing` plane (local Z 2–188, world Z up to ≈ 244) closes the plank gaps.
+- **Swing unchanged:**
+  - The leaf turns toward the courtyard (−X), about the hinge at (6020, 1941).
+  - Its top passes through the outer order (clear to Z ≈ 294 at Y 1941) and out past the wall face at X 6000.
+- **Warden and navmesh unchanged:**
+  - The clear head under the tympanum stays 240.
+  - So the Warden's route through the passage is unchanged (D-038: agent 42/220, visual 2.9 m stooping), and so is the navmesh.
+- **Texture stretch:** the leaf texture's vertical stretch, relative to its width, rises from 6 % to 27.5 %. The tower door is at 20 %. Accepted.
+- **Rejected:**
+  - lowering the tympanum or adding a lintel: a 196 cm head would clip the Warden, and collision there would change the navmesh;
+  - a custom pointed leaf: its head would cut into the arch as it swings.
+
+**P10-6d is done by the P10-6a implementer as its step 0, before any dressing.** It is a separate commit. It shares P10-6a's final suite run.
+1. **Before you start.** Read `Tools/mcp/MCP_NOTES.md`. Confirm that `/Game/LastBell/Maps/L_Monastery` is loaded, PIE is stopped and the map is not dirty.
+2. **Before dump.** Dump `Door_Shortcut` with `Tools/belltower/bp_swap.py` to `Docs/ArtTest/belltower/p10_6d/Door_Shortcut_before.json`.
+   - Check that the transform is (6020, 1941, 0), yaw 0, scale (1, 1.18, 1.0818).
+   - If it is not, stop and report.
+3. **Set the transform.** Call `set_actor_transform` on `Door_Shortcut` with location (6020, 1941, 0), rotation (0, 0, 0) and scale (1, 1.18, 1.30). Pass all three. Read the transform back.
+4. **After dump and diff.** Dump to `Door_Shortcut_after.json` and diff it against `_before`.
+   - The only allowed difference is `transform.scale.z`, 1.0818 → 1.3.
+   - Anything else: stop and report.
+5. **Save.** Save `L_Monastery` in one `save_assets` call that contains only that package. Check that `is_dirty` is false.
+   - Never save `BP_Door_Base_Dungeon` or any parent Blueprint.
+6. **Reload check.** Run `load_level` on `L_Monastery`, dump to `Door_Shortcut_reload.json` and diff against `_after`. There must be 0 differences.
+7. **Script.** In `Tools/belltower/p10_6b_swap.py`, line 139, set `Door_Shortcut`'s scale to `{"x": 1, "y": 1.18, "z": 1.30}` and add the comment `# P10-6d (D1.19)`, so that a re-run reproduces the map.
+8. **Commit** on `claude/phase-10-belltower` only:
+   - stage the three dumps, `p10_6b_swap.py` and `L_Monastery.umap`;
+   - never stage `L_Throwaway_P9_4.umap`;
+   - message `P10-6d: Door_Shortcut leaf Z scale 1.0818 -> 1.30 (D1.19)`, with the trailer `Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>`.
+- **Tests:** P10-6a's final suite covers this step (78/78, including `WalkPath.Monastery`'s CourtyardShortcut path). If that suite fails, the report states which tests failed so the lead can tell the two changes apart.
+- **No captures in P10-6d.** The lead re-captures `door_shortcut_court` and `door_shortcut_pass` with `--force`, as `p10_6d_<pose>_ed.png`, in the owner capture session that follows P10-6a.
+  - Pass: seen from either side, no light wedge or slit above 2 cm between the leaf and the tympanum or the jambs.
+- **Owner check in the P10-8 playtest:** after Ritual 3 the shortcut door swings open without visibly cutting into the arch, and the passage can be walked both ways.
+
+**Note outside Phase 10:**
+- `Door_ChapelMain` (P8) and `Door_Sacristy` (P9) use the same Dungeon leaf at the same scale Z 1.0818.
+- The P8 capture `Docs/ArtTest/chapel/r2b2_door_chapelmain_outside_W.png` shows small dark notches at the leaf's top corners under the head.
+- They were accepted in their phases and are not judged here. Re-checking them needs the owner's approval as a separate fix set.
