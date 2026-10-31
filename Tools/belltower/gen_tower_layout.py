@@ -43,6 +43,7 @@ MI_PATHS = {   # existing MIs (materials_list_p10.json); new P10-4 MIs live in t
     "MI_Chapel_Floor_Puddled": "/Game/LastBell/Environments/Chapel/Materials/MI_Chapel_Floor_Puddled",
     "MI_Prop_Wood_Weathered": "/Game/LastBell/Environments/Courtyard/Materials/MI_Prop_Wood_Weathered",
     "MI_Prop_Earth": "/Game/LastBell/Environments/Courtyard/Materials/MI_Prop_Earth",
+    "MI_Cl_GarthEarth": "/Game/LastBell/Environments/Cloister/Materials/MI_Cl_GarthEarth",     # D1.21: matte garth bed with moss in the hollows (created by P10-6e)
     "MI_Crypt_Iron": "/Game/LastBell/Environments/Crypt/Materials/MI_Crypt_Iron",
     "MI_Decal_Mould": "/Game/LastBell/Materials/Instances/MI_Decal_Mould",
     "MI_Decal_Leaking004_Wall": "/Game/LastBell/Environments/Crypt/Materials/MI_Decal_Leaking004_Wall",
@@ -587,7 +588,7 @@ for gid, mesh, org, yaw in (("S", "1100", (10300.0, 1400.0), 0.0), ("N", "1100",
         "Cloister/Art/Garth", mi=mi_for(MASONRY2), note="retaining wall flush with the Garth block, top exactly Z 100 (Note_Cloister rests on the S coping)")
 GRAVES = [(10500.0, 1600.0), (10500.0, 2000.0), (10700.0, 1650.0), (11000.0, 2000.0), (11200.0, 1600.0), (11200.0, 1950.0)]
 add("CLA_GarthBed", "garth", "garthbed", PIECES["SM_LB_Cl_GarthBed_1100x800"]["path"], (10300.0, 1400.0, 100.0), (0, 0, 0), (1, 1, 1), "NoCollision",
-    "Cloister/Art/Garth", mi={"MAT_Earth": "MI_Prop_Earth"}, note="earth surface on the Garth top (Z 100)",
+    "Cloister/Art/Garth", mi={"MAT_Earth": "MI_Cl_GarthEarth"}, note="earth surface on the Garth top (Z 100); D1.21: MI_Cl_GarthEarth (matte, moss in the hollows)",
     extras={"hollows_bed_local": [[gx - 10300.0, gy - 1400.0] for gx, gy in GRAVES]})
 jit = random.Random(1223)
 SLAB_ROT = []
@@ -790,8 +791,9 @@ CHAIN = existing(DUNGEON, "SM_Torture_Devices_Chains")
 HOLDER = existing(DUNGEON, "SM_Dungeon_chain_holder")
 add("CLA_Mech3_Eyelet", "dress", "mech3chain", HOLDER, (11995.0, 1800.0, 140.0), (0.0, 180.0, 0.0), (1, 1, 1), "NoCollision", "Cloister/Dressing/Mech3",
     note="iron wall eyelet at the tower wall (chain holder, +x out of the wall)")
-# D1.20: on the drum surface (r 34, facing the eyelet), between the lower iron band (Z 154-158) and the capstan bars (Z 185-190); the D1.18 start was inside the pedestal (Z 50-150)
-chain_run("CLA_Mech3_Chain_A", (11824.0, 1783.0, 168.0), (11995.0, 1800.0, 140.0), "Cloister/Dressing/Mech3", "chain from the capstan drum to the wall eyelet")
+# D1.21: drum is world Z 100-150 (Pedestal is the root, Z 0-100); between the lower band (104-108) and the bars (135.5-140.5)
+# (D1.20 used Z 168, from a double-counted root component in world_box: the chain then floated above the drum)
+chain_run("CLA_Mech3_Chain_A", (11824.0, 1783.0, 120.0), (11995.0, 1800.0, 140.0), "Cloister/Dressing/Mech3", "chain from the capstan drum to the wall eyelet")
 # D1.20: 8 cm clear of the open Door_Tower leaf (Y >= 1943.3)
 chain_run("CLA_Mech3_Chain_B", (11995.0, 1800.0, 140.0), (11995.0, 1925.0, 120.0), "Cloister/Dressing/Mech3", "chain along the wall to the latch box")
 add("CLA_Mech3_LatchBox", "dress", "mech3chain", CUBE, (11995.0, 1925.0, 120.0), (0, 0, 0), (0.08, 0.20, 0.30), "NoCollision", "Cloister/Dressing/Mech3",
@@ -837,35 +839,48 @@ add("CLA_Collapse_Rafter", "dress", "collapse", RAFTER, (11300.0, 2330.0, 0.0), 
     note=f"broken rafter leaning from the floor (11300, 2330) toward the arcade line Y 2290; a 260 rafter cannot reach the arcade wall top Z 620, "
          f"so it rests against the arcade face at Z {260 * math.cos(math.radians(lean_p)):.0f} (D1 note)")
 
-# ---- derive-from-AABB helper (rafter debris in the bell chamber)
-def fit_to_aabb(mb, rot, tmin, tmax):
+# ---- belfry debris: 5 random chunks + 1 rafter on the W slab strip (D1.21; seed 1403)
+DEB_X0, DEB_X1, DEB_Y0, DEB_Y1, DEB_Z = 12041.0, 12130.0, 2170.0, 2450.0, 2500.0
+drng = random.Random(1403)
+DEB_MESH = [CH_S, CH_M, CH_S, CH_S, CH_M]
+for k in range(5):
+    mesh = DEB_MESH[k]
+    mb = mbounds_of(mesh)
+    s_ = drng.uniform(0.35, 0.6)
+    yaw = drng.uniform(0.0, 360.0)
+    cx = drng.uniform(12065.0, 12100.0)
+    cy = 2190.0 + 60.0 * k + drng.uniform(-15.0, 15.0)
+    rot = (12.0 if k == 3 else 0.0, yaw, 0.0)             # chunk 3 leans (pitch 12)
+    # kit pivot = min corner: put the rotated, scaled footprint centre at (cx, cy)
     rows = rot_rows(*rot)
-    scale = [1.0, 1.0, 1.0]
-    wax = []
-    for k in range(3):                                  # local axis k -> world axis (largest abs component of row k)
-        w = max(range(3), key=lambda a: abs(rows[k][a]))
-        wax.append((w, 1.0 if rows[k][w] > 0 else -1.0))
-        ext = mb[1][k] - mb[0][k]
-        scale[k] = (tmax[w] - tmin[w]) / ext
-    loc = [0.0, 0.0, 0.0]
-    for k in range(3):
-        w, sg = wax[k]
-        a, b = mb[0][k] * scale[k] * sg, mb[1][k] * scale[k] * sg
-        lo_local = min(a, b)
-        loc[w] = tmin[w] - lo_local
-    return tuple(loc), tuple(scale)
-
-
-tgt_min, tgt_max = (12045.0, 2190.0, 2500.0), (12060.0, 2450.0, 2515.0)
-loc_, sc_ = fit_to_aabb(mbounds_of(RAFTER), (0.0, 0.0, 90.0), tgt_min, tgt_max)
-add("TWA_Debris_Rafter", "dress", "chamberdebris", RAFTER, loc_, (0.0, 0.0, 90.0), sc_, "NoCollision", "BellTower/Art/Dressing",
-    mi=mi_for(["MAT_Wood"]), note="broken rafter lying along the W wall in the NW corner of the W slab; derived from the target AABB (cross-section scaled to fit 15 x 15)",
-    extras={"target_min": list(tgt_min), "target_max": list(tgt_max)})
-for k in range(4):
-    sx_, sy_, sz_ = 0.55, 0.9, 0.4          # chunk S 60x50x40 -> 33 x 45 x 16
-    y0 = 2255.0 + 48.0 * k
-    add(f"TWA_Debris_Chunk_{k}", "dress", "chamberdebris", CH_S, (12045.0, y0, 2500.0), (0, 0, 0), (sx_, sy_, sz_), "NoCollision", "BellTower/Art/Dressing",
-        mi=mi_for(["MAT_Trim", "MAT_Rubble"]), note="kit rubble chunk, 16 tall, within 35 of the W wall (X 12045-12078)")
+    lc = ((mb[0][0] + mb[1][0]) / 2.0 * s_, (mb[0][1] + mb[1][1]) / 2.0 * s_, (mb[0][2] + mb[1][2]) / 2.0 * s_)
+    off = tuple(lc[0] * rows[0][i] + lc[1] * rows[1][i] + lc[2] * rows[2][i] for i in range(3))
+    loc = [cx - off[0], cy - off[1], 0.0]
+    mn, mx = world_aabb(mb, loc, rot, (s_, s_, s_))
+    loc[2] = DEB_Z - mn[2]                                 # bottom exactly on the slab
+    mn, mx = world_aabb(mb, loc, rot, (s_, s_, s_))
+    if mn[0] < DEB_X0:
+        loc[0] += DEB_X0 - mn[0]
+    if mx[1] > DEB_Y1:
+        loc[1] -= mx[1] - DEB_Y1
+    # the two clamps below are not in the D1.21 text (it lists only min X and max Y) but the strip rule X 12041-12130, Y 2170-2450 needs them for every chunk edge
+    if mx[0] > DEB_X1:
+        loc[0] -= mx[0] - DEB_X1
+    if mn[1] < DEB_Y0:
+        loc[1] += DEB_Y0 - mn[1]
+    add(f"TWA_Debris_Chunk_{k}", "dress", "chamberdebris", mesh, tuple(loc), rot, (s_, s_, s_), "NoCollision", "BellTower/Art/Dressing",
+        mi=mi_for(["MAT_Trim", "MAT_Rubble"]), note=f"fallen rubble chunk on the belfry W slab, scale {s_:.3f}, yaw {yaw:.1f}" + (", pitch 12 (leaning)" if k == 3 else "") + " (D1.21, seed 1403)")
+RAFTER_PITCH_UP = math.degrees(math.asin(25.0 / 260.0))      # N end raised 25 cm
+# D1.21 rafter rotator, chosen: (pitch 0, yaw -5, roll 90 - a) = (0, -5, 84.48) with a = asin(25/260) = 5.52 deg.
+# With pitch 0 the local +Z axis (the long axis; the pivot is the S end) is (-sin(roll) sin(yaw), cos(yaw) sin(roll), cos(roll)) = (0.087, 0.991, 0.096):
+# 5 deg off +Y in plan (drifting toward +X, away from the W wall) and rising 25 cm over the 260 cm length.
+RAFTER_ROT = (0.0, -5.0, 90.0 - RAFTER_PITCH_UP)
+_loc = [12055.0, 2185.0, 0.0]
+_mn, _mx = world_aabb(mbounds_of(RAFTER), _loc, RAFTER_ROT, (1, 1, 1))
+_loc[2] = DEB_Z + 0.5 - _mn[2]                                # S end bottom 0.5 above the slab
+add("TWA_Debris_Rafter", "dress", "chamberdebris", RAFTER, tuple(_loc), RAFTER_ROT, (1, 1, 1), "NoCollision", "BellTower/Art/Dressing",
+    mi=mi_for(["MAT_Wood"]), note="broken rafter lying along the W wall on the belfry slab: S end on the floor at (12055, 2185), N end raised 25 resting on chunk 4; rotator (0, -5, 84.48) (D1.21)",
+    extras={"rafter_s_end": [12055.0, 2185.0], "rafter_rise": 25.0})
 
 # ---- cells
 STOOL = existing(ARTTEST + "Wooden_Stool_01/", "SM_Wooden_Stool_01")
@@ -962,8 +977,9 @@ for i in range(32):
     add(f"PSA_Weed_{i:02d}", "dress", "weed", mesh, (x, y, 0.0), (0.0, yaw, 0.0), (s, s, s), "NoCollision", "Courtyard/Passage",
         note=f"weed at the base of the passage {'S' if south else 'N'} wall ({d:.0f} from the face), scale {s}")
 
-# ---- garth vegetation (seed 1224): 90 grass, 30 nettles, 20 ferns, keep 20 clear of the cross base, 15 of the slabs and small crosses, 70 of Note_Cloister
-# D1.20: visible and overgrown (P7-FIX3 lesson): nettles x2.8-4.4, grass up to 1.4, growth up to the slabs
+# ---- garth vegetation (seed 1224): 90 grass, 30 nettles, 35 ferns, 18 rooibos, 2 fixed shrubs; keep 20 clear of the cross base, 15 of the slabs, 40 of the small crosses, 70 of Note_Cloister
+# D1.20: visible and overgrown (P7-FIX3 lesson): nettles x2.8-4.4, growth up to the slabs
+# D1.21: still too thin: grass x1.6-2.6, 35 ferns, 18 wild rooibos, 2 searsia shrubs; 40 clear of the small crosses so the 60 cm crosses stay visible
 grng = random.Random(1224)
 GR = (10320.0, 1420.0, 11380.0, 2180.0)
 
@@ -979,8 +995,11 @@ GRASS_MB = (((-6.0, -6.0, 0.0), (6.0, 6.0, 15.7)), ((-9.0, -10.0, 0.0), (9.0, 10
 GRASS = [existing(CC0 + "GrassMedium02/", f"SM_LB_CC0_GrassMedium02_{i:02d}", mb=GRASS_MB[i - 1], slots=["grass"]) for i in range(1, 6)]
 NETTLE = [existing(CC0 + "NettlePlant/", f"SM_LB_CC0_NettlePlant_{i:02d}") for i in (1, 2, 3, 6)]      # D1.20: _04 is 2.2 cm tall, _05 unused
 FERN = [existing(CC0 + "Fern02/", f"SM_LB_CC0_Fern02_{i:02d}") for i in range(1, 5)]
-VEG_SCALE = {"Grass": (0.9, 1.4), "Nettle": (2.8, 4.4), "Fern": (0.8, 1.1)}
-for kind, lst, count in (("Grass", GRASS, 90), ("Nettle", NETTLE, 30), ("Fern", FERN, 20)):
+ROOIBOS_MB = (((-34.8, -42.2, 0.0), (34.8, 42.2, 53.9)), ((-26.2, -23.7, 0.0), (26.2, 23.7, 54.1)), ((-21.3, -23.6, 0.0), (21.3, 23.6, 44.8)),
+              ((-16.4, -19.2, 0.0), (16.4, 19.2, 42.0)), ((-13.9, -8.3, 0.0), (13.9, 8.3, 30.6)))      # D1.21: live StaticMeshTools.get_bounds, _01 .. _05
+ROOIBOS = [existing(CC0 + "WildRooibos/", f"SM_LB_CC0_WildRooibos_{i:02d}", mb=ROOIBOS_MB[i - 1], slots=["WildRooibos"]) for i in range(1, 6)]
+VEG_SCALE = {"Grass": (1.6, 2.6), "Nettle": (2.8, 4.4), "Fern": (0.9, 1.3), "Rooibos": (1.0, 1.6)}
+for kind, lst, count in (("Grass", GRASS, 90), ("Nettle", NETTLE, 30), ("Fern", FERN, 35), ("Rooibos", ROOIBOS, 18)):
     for k in range(count):
         mesh = lst[grng.randrange(len(lst))]
         s = round(grng.uniform(*VEG_SCALE[kind]), 3)
@@ -995,13 +1014,19 @@ for kind, lst, count in (("Grass", GRASS, 90), ("Nettle", NETTLE, 30), ("Fern", 
             for i2, (gx, gy) in enumerate(GRAVES):
                 ok = ok and rot_rect_dist(x, y, gx, gy, SLAB_ROT[i2][1], 100.0, 40.0) - rad >= 15.0
             for (gx, gy) in ((10450.0, 1500.0), (11250.0, 1500.0), (10450.0, 2100.0), (11250.0, 2100.0)):
-                ok = ok and math.hypot(x - gx, y - gy) - rad >= 15.0
+                ok = ok and math.hypot(x - gx, y - gy) - rad >= 40.0
             if ok:
                 break
         else:
             raise RuntimeError("garth vegetation: no spot")
         add(f"CLA_Garth{kind}_{k:02d}", "dress", "garthveg", mesh, (x, y, 100.0 + grng.uniform(0.0, 5.0)), (0.0, grng.uniform(0.0, 360.0), 0.0), (s, s, s), "NoCollision",
             "Cloister/Dressing/Garth", note=f"garth vegetation (seed 1224), scale {s}")
+# D1.21: two fixed shrubs, placed after the random kinds with no exclusion against them
+for k, (nm, mbs, (sx, sy, sz), syaw, ss) in enumerate((("SM_LB_CC0_SearsiaLucida_06", ((-32.9, -24.2, 0.0), (32.9, 24.2, 73.9)), (10950.0, 1500.0, 100.0), 35.0, 1.1),
+                                                       ("SM_LB_CC0_SearsiaLucida_07", ((-19.1, -16.2, 0.0), (19.1, 16.2, 78.7)), (10750.0, 2100.0, 100.0), 200.0, 1.2))):
+    shrub = existing(CC0 + "SearsiaLucida/", nm, mb=mbs, slots=["SearsiaLucida"])
+    add(f"CLA_GarthShrub_{k}", "dress", "garthveg", shrub, (sx, sy, sz), (0.0, syaw, 0.0), (ss, ss, ss), "NoCollision", "Cloister/Dressing/Garth",
+        note=f"searsia shrub at a fixed spot, scale {ss} (D1.21)")
 
 
 # =====================================================================================================
@@ -1404,10 +1429,28 @@ heap = rec_by_id("CLA_Collapse_Heap")
 tgt = heap["extras"]
 dev = max(abs(heap["aabb_min"][k] - tgt["target_min"][k]) for k in range(3)) + max(abs(heap["aabb_max"][k] - tgt["target_max"][k]) for k in range(3))
 chk("7 derived", "rubble heap AABB = target X 11050-11370, Y 2295-2505, Z 0-65", dev <= 1.0, f"sum of deviations {dev:.3f} cm")
+def fmt_v(v):
+    return "(" + ", ".join("%.1f" % c for c in v) + ")"
+
+
 raf = rec_by_id("TWA_Debris_Rafter")
-tgt = raf["extras"]
-dev = max(abs(raf["aabb_min"][k] - tgt["target_min"][k]) for k in range(3)) + max(abs(raf["aabb_max"][k] - tgt["target_max"][k]) for k in range(3))
-chk("7 derived", "chamber rafter AABB = target X 12045-12060, Y 2190-2450, Z 2500-2515", dev <= 1.0, f"sum of deviations {dev:.3f} cm; scale {raf['scale']}")
+_rr = rot_rows(*raf["rot"])
+_zax = _rr[2]                                                   # long axis (local +Z) in world
+_plan = math.degrees(math.atan2(_zax[0], _zax[1]))             # angle of the long axis from +Y in plan
+_dbmn = [r["aabb_min"] for r in RECS if r["group"] == "chamberdebris"]
+_dbmx = [r["aabb_max"] for r in RECS if r["group"] == "chamberdebris"]
+_inside = (min(m[0] for m in _dbmn) >= DEB_X0 and max(m[0] for m in _dbmx) <= DEB_X1 and min(m[1] for m in _dbmn) >= DEB_Y0 and max(m[1] for m in _dbmx) <= DEB_Y1
+           and min(m[2] for m in _dbmn) >= DEB_Z - 1.0 and max(m[2] for m in _dbmx) <= DEB_Z + 60.0)
+_s_end = xf_point(raf["loc"], raf["rot"], raf["scale"], (0.0, 0.0, 0.0))
+_n_end = xf_point(raf["loc"], raf["rot"], raf["scale"], (0.0, 0.0, 260.0))
+_ok = (abs(_plan) <= 8.0 and 2500.0 <= raf["aabb_min"][2] <= 2502.0 and abs(_s_end[0] - 12055.0) <= 5.0 and abs(_s_end[1] - 2185.0) <= 5.0
+       and 20.0 <= _n_end[2] - _s_end[2] <= 30.0 and raf["aabb_min"][0] >= DEB_X0 and raf["aabb_max"][0] <= DEB_X1 and raf["aabb_min"][1] >= DEB_Y0
+       and raf["aabb_max"][1] <= DEB_Y1 and raf["aabb_min"][2] >= 2500.0 and raf["aabb_max"][2] <= 2550.0)
+chk("7 derived", "belfry rafter: axis within 8 deg of +Y, S end on the floor at (12055, 2185) +-5, N end raised 20-30, AABB in X 12041-12130, Y 2170-2450, Z 2500-2550", _ok,
+    f"plan angle {_plan:.2f} deg, S end {fmt_v(_s_end)}, N end rise {_n_end[2] - _s_end[2]:.1f}, AABB {fmt_v(raf['aabb_min'])} .. {fmt_v(raf['aabb_max'])}, rotator {raf['rot']}")
+chk("7 derived", "belfry debris: all 6 AABBs inside X 12041-12130, Y 2170-2450, Z 2500-2560", _inside and n_group("chamberdebris") == 6,
+    f"{n_group('chamberdebris')} records; X {min(m[0] for m in _dbmn):.1f}..{max(m[0] for m in _dbmx):.1f}, Y {min(m[1] for m in _dbmn):.1f}..{max(m[1] for m in _dbmx):.1f}, "
+    f"Z {min(m[2] for m in _dbmn):.1f}..{max(m[2] for m in _dbmx):.1f}")
 bad = []
 for r in RECS:
     if r["group"] == "block":
@@ -1866,8 +1909,9 @@ MD += [f"## Dressing ({len(rest)} listed here, plus {len(big)} garth vegetation 
        "| Label | Mesh | Location | Rotation | Scale | Collision | Note |", "|---|---|---|---|---|---|---|"]
 for r in rest:
     MD.append(f"| {r['id']} | {short(r['mesh'])} | {fmt(r['loc'])} | {fmt(r['rot'])} | {fmt(r['scale'], 4)} | {r['collision']} | {r['note']} |")
-MD += ["", "Garth vegetation (seed 1224): " + str(sum(1 for r in big if r['group'] == 'garthveg')) + " actors `CLA_GarthGrass_00..89`, `CLA_GarthNettle_00..29`, `CLA_GarthFern_00..19` "
-       "(Z 100-105, inside X 10320-11380, Y 1420-2180, scale grass 0.9-1.4, nettles 2.8-4.4, ferns 0.8-1.1; >= 20 clear of the cross base, >= 15 of the slabs and small crosses, >= 70 of Note_Cloister). "
+MD += ["", "Garth vegetation (seed 1224): " + str(sum(1 for r in big if r['group'] == 'garthveg')) + " actors `CLA_GarthGrass_00..89`, `CLA_GarthNettle_00..29`, `CLA_GarthFern_00..34`, `CLA_GarthRooibos_00..17`, `CLA_GarthShrub_0..1` "
+       "(Z 100-105, inside X 10320-11380, Y 1420-2180, scale grass 1.6-2.6, nettles 2.8-4.4, ferns 0.9-1.3, rooibos 1.0-1.6; >= 20 clear of the cross base, >= 15 of the slabs, >= 40 of the small crosses, >= 70 of Note_Cloister; "
+       "the two shrubs sit at fixed spots with no exclusion). "
        "Passage weeds (seed 1402): 32 actors `PSA_Weed_00..31`, scale 3.5-5, 20-35 from the passage wall faces.", ""]
 MD += ["## Lights (D1.8)", "", "Delete: " + ", ".join(LIGHTS_PLAN["delete"]) + ". Keep and tune `Light_TowerExt_0..2` to 200-400 lm. Fog volume `LFV_Tower` X 12040-12960, Y 1540-2460, Z 0-3500. "
        "All new lights are PointLights, shadowless.", "",
