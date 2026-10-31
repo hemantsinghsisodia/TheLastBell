@@ -2151,3 +2151,35 @@ D1.8's 100–250 lm at 2200 K would leave the vaulted walks far darker than the 
 - `lt_tower_mid` and `lt_tower_shaft_up`: moonbeams visible.
 - `lt_bell_top`: median ≥ 0.08 and the bronze reads old, not copper.
 - `lt_belfry_up_sw`: a moonlit patch.
+
+### D1.25 P10-7b capture review (lead, 2026-11-01)
+**Accepted** (12b47ba, b5fd53b, 44a5d19):
+- `PP_Cloister` EV 0.65;
+- the lanterns at 200 / 180 / 250 / 80 lm;
+- `MI_LB_BellBronze` old-bronze values;
+- `L_Tw_MoonSlit_F03/F07/F08` and `L_Tw_MoonRoof`, with the shaft cards `SA_Tower_*`;
+- check 51/51 and suite 78/78;
+- the agent's two notes: the lantern check now excludes the moon spots, and each card starts at its opening.
+
+**Captures** (PIE Simulate, `p10_7b_<pose>.png`, all 14), B2 luma:
+
+| Pose | P10-7 | P10-7b | Target | Verdict |
+|---|---|---|---|---|
+| `lt_cl_s_entry` | 0.030 | **0.038** | 0.04–0.08 | **Accepted at 0.002 under.** The arcade and the moonlit garth read, and the walk floor stays dark. |
+| `lt_inscription` | 2.41 | **2.52** | ≥ 2.5 | **Pass.** |
+| `lt_tower_mid` | 0.027 | **0.039** | 0.02–0.06 | **Pass on luma.** This pose looks away from the slit beams, so beam visibility is checked with the new poses below. |
+| `lt_bell_top` | 0.233 | **0.233** | ≥ 0.08 | **Pass.** The roof moon spot now throws cool light and frame shadows across the E belfry wall behind the bell, the moonlight through the SW collapse. The great bell reads matte, warm, aged bronze with patina under the lantern; it no longer reads pink copper. The small bells read dark old bronze. |
+| `lt_door_tower_out` | 0.217 | **0.194** | — | Warm pool at the tower door. Less hot, still strongly orange; accepted as the puzzle focal point. |
+| `lt_cl_ne` | 0.041 | 0.054 | — | **Pass.** |
+| `lt_passage_east` | 0.067 | 0.087 | — | **Pass.** |
+| `lt_garth` | 0.023 | 0.029 | — | **Pass.** |
+
+All other poses are as in D1.24.
+
+**Beam check.** `lt_tower_mid` and `lt_belfry_up_sw` look away from the beam paths. The lead added `Tools/belltower/poses/p10_7c_poses.json`, captured in PIE Simulate as `p10_7c_*`:
+
+| Pose | Value | Looks at |
+|---|---|---|
+| `lt_beam_south` | [12500, 2150, 900, −31, −75] | the F03 beam, from the shaft centre |
+| `lt_beam_west` | [12500, 2000, 1700, 14, 175] | the F08 beam |
+| `lt_beam_roof` | [12750, 2350, 2700, 20, −140] | the roof collapse beam |
