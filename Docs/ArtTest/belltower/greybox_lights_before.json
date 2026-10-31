@@ -1,0 +1,648 @@
+[
+ {
+  "label": "Light_Cloister_0",
+  "class": {
+   "refPath": "/Script/Engine.PointLight"
+  },
+  "actor": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.PointLight_43",
+  "folder": "Lighting/Cloister",
+  "location": [
+   10000,
+   1000,
+   500
+  ],
+  "rotation": [
+   0,
+   0,
+   0
+  ],
+  "scale": [
+   1,
+   1,
+   1
+  ],
+  "light": {
+   "mobility": "Movable",
+   "intensityUnits": "Lumens",
+   "intensity": 3000,
+   "attenuationRadius": 1500,
+   "bUseTemperature": false,
+   "temperature": 6500,
+   "lightColor": {
+    "r": 1,
+    "g": 1,
+    "b": 1,
+    "a": 1
+   },
+   "castShadows": false
+  }
+ },
+ {
+  "label": "Light_Cloister_1",
+  "class": {
+   "refPath": "/Script/Engine.PointLight"
+  },
+  "actor": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.PointLight_44",
+  "folder": "Lighting/Cloister",
+  "location": [
+   11000,
+   900,
+   500
+  ],
+  "rotation": [
+   0,
+   0,
+   0
+  ],
+  "scale": [
+   1,
+   1,
+   1
+  ],
+  "light": {
+   "mobility": "Movable",
+   "intensityUnits": "Lumens",
+   "intensity": 3000,
+   "attenuationRadius": 1500,
+   "bUseTemperature": false,
+   "temperature": 6500,
+   "lightColor": {
+    "r": 1,
+    "g": 1,
+    "b": 1,
+    "a": 1
+   },
+   "castShadows": false
+  }
+ },
+ {
+  "label": "Light_Cloister_2",
+  "class": {
+   "refPath": "/Script/Engine.PointLight"
+  },
+  "actor": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.PointLight_45",
+  "folder": "Lighting/Cloister",
+  "location": [
+   10000,
+   2600,
+   500
+  ],
+  "rotation": [
+   0,
+   0,
+   0
+  ],
+  "scale": [
+   1,
+   1,
+   1
+  ],
+  "light": {
+   "mobility": "Movable",
+   "intensityUnits": "Lumens",
+   "intensity": 3000,
+   "attenuationRadius": 1500,
+   "bUseTemperature": false,
+   "temperature": 6500,
+   "lightColor": {
+    "r": 1,
+    "g": 1,
+    "b": 1,
+    "a": 1
+   },
+   "castShadows": false
+  }
+ },
+ {
+  "label": "Light_Cloister_3",
+  "class": {
+   "refPath": "/Script/Engine.PointLight"
+  },
+  "actor": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.PointLight_46",
+  "folder": "Lighting/Cloister",
+  "location": [
+   11000,
+   2750,
+   500
+  ],
+  "rotation": [
+   0,
+   0,
+   0
+  ],
+  "scale": [
+   1,
+   1,
+   1
+  ],
+  "light": {
+   "mobility": "Movable",
+   "intensityUnits": "Lumens",
+   "intensity": 3000,
+   "attenuationRadius": 1500,
+   "bUseTemperature": false,
+   "temperature": 6500,
+   "lightColor": {
+    "r": 1,
+    "g": 1,
+    "b": 1,
+    "a": 1
+   },
+   "castShadows": false
+  }
+ },
+ {
+  "label": "Light_Cloister_4",
+  "class": {
+   "refPath": "/Script/Engine.PointLight"
+  },
+  "actor": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.PointLight_47",
+  "folder": "Lighting/Cloister",
+  "location": [
+   11700,
+   1000,
+   500
+  ],
+  "rotation": [
+   0,
+   0,
+   0
+  ],
+  "scale": [
+   1,
+   1,
+   1
+  ],
+  "light": {
+   "mobility": "Movable",
+   "intensityUnits": "Lumens",
+   "intensity": 3000,
+   "attenuationRadius": 1500,
+   "bUseTemperature": false,
+   "temperature": 6500,
+   "lightColor": {
+    "r": 1,
+    "g": 1,
+    "b": 1,
+    "a": 1
+   },
+   "castShadows": false
+  }
+ },
+ {
+  "label": "Light_Cloister_5",
+  "class": {
+   "refPath": "/Script/Engine.PointLight"
+  },
+  "actor": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.PointLight_48",
+  "folder": "Lighting/Cloister",
+  "location": [
+   11700,
+   2700,
+   500
+  ],
+  "rotation": [
+   0,
+   0,
+   0
+  ],
+  "scale": [
+   1,
+   1,
+   1
+  ],
+  "light": {
+   "mobility": "Movable",
+   "intensityUnits": "Lumens",
+   "intensity": 3000,
+   "attenuationRadius": 1500,
+   "bUseTemperature": false,
+   "temperature": 6500,
+   "lightColor": {
+    "r": 1,
+    "g": 1,
+    "b": 1,
+    "a": 1
+   },
+   "castShadows": false
+  }
+ },
+ {
+  "label": "Light_Cloister_6",
+  "class": {
+   "refPath": "/Script/Engine.PointLight"
+  },
+  "actor": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.PointLight_49",
+  "folder": "Lighting/Cloister",
+  "location": [
+   10650,
+   300,
+   200
+  ],
+  "rotation": [
+   0,
+   0,
+   0
+  ],
+  "scale": [
+   1,
+   1,
+   1
+  ],
+  "light": {
+   "mobility": "Movable",
+   "intensityUnits": "Lumens",
+   "intensity": 3000,
+   "attenuationRadius": 1500,
+   "bUseTemperature": false,
+   "temperature": 6500,
+   "lightColor": {
+    "r": 1,
+    "g": 1,
+    "b": 1,
+    "a": 1
+   },
+   "castShadows": false
+  }
+ },
+ {
+  "label": "Light_Cloister_7",
+  "class": {
+   "refPath": "/Script/Engine.PointLight"
+  },
+  "actor": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.PointLight_50",
+  "folder": "Lighting/Cloister",
+  "location": [
+   9900,
+   2000,
+   400
+  ],
+  "rotation": [
+   0,
+   0,
+   0
+  ],
+  "scale": [
+   1,
+   1,
+   1
+  ],
+  "light": {
+   "mobility": "Movable",
+   "intensityUnits": "Lumens",
+   "intensity": 3000,
+   "attenuationRadius": 1500,
+   "bUseTemperature": false,
+   "temperature": 6500,
+   "lightColor": {
+    "r": 1,
+    "g": 1,
+    "b": 1,
+    "a": 1
+   },
+   "castShadows": false
+  }
+ },
+ {
+  "label": "Light_Tower_0",
+  "class": {
+   "refPath": "/Script/Engine.PointLight"
+  },
+  "actor": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.PointLight_51",
+  "folder": "Lighting/BellTower",
+  "location": [
+   12165,
+   2000,
+   300
+  ],
+  "rotation": [
+   0,
+   0,
+   0
+  ],
+  "scale": [
+   1,
+   1,
+   1
+  ],
+  "light": {
+   "mobility": "Movable",
+   "intensityUnits": "Lumens",
+   "intensity": 3000,
+   "attenuationRadius": 900,
+   "bUseTemperature": false,
+   "temperature": 6500,
+   "lightColor": {
+    "r": 1,
+    "g": 1,
+    "b": 1,
+    "a": 1
+   },
+   "castShadows": false
+  }
+ },
+ {
+  "label": "Light_Tower_1",
+  "class": {
+   "refPath": "/Script/Engine.PointLight"
+  },
+  "actor": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.PointLight_52",
+  "folder": "Lighting/BellTower",
+  "location": [
+   12165,
+   2000,
+   900
+  ],
+  "rotation": [
+   0,
+   0,
+   0
+  ],
+  "scale": [
+   1,
+   1,
+   1
+  ],
+  "light": {
+   "mobility": "Movable",
+   "intensityUnits": "Lumens",
+   "intensity": 3000,
+   "attenuationRadius": 900,
+   "bUseTemperature": false,
+   "temperature": 6500,
+   "lightColor": {
+    "r": 1,
+    "g": 1,
+    "b": 1,
+    "a": 1
+   },
+   "castShadows": false
+  }
+ },
+ {
+  "label": "Light_Tower_2",
+  "class": {
+   "refPath": "/Script/Engine.PointLight"
+  },
+  "actor": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.PointLight_53",
+  "folder": "Lighting/BellTower",
+  "location": [
+   12165,
+   2000,
+   1500
+  ],
+  "rotation": [
+   0,
+   0,
+   0
+  ],
+  "scale": [
+   1,
+   1,
+   1
+  ],
+  "light": {
+   "mobility": "Movable",
+   "intensityUnits": "Lumens",
+   "intensity": 3000,
+   "attenuationRadius": 900,
+   "bUseTemperature": false,
+   "temperature": 6500,
+   "lightColor": {
+    "r": 1,
+    "g": 1,
+    "b": 1,
+    "a": 1
+   },
+   "castShadows": false
+  }
+ },
+ {
+  "label": "Light_Tower_3",
+  "class": {
+   "refPath": "/Script/Engine.PointLight"
+  },
+  "actor": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.PointLight_54",
+  "folder": "Lighting/BellTower",
+  "location": [
+   12165,
+   2000,
+   2100
+  ],
+  "rotation": [
+   0,
+   0,
+   0
+  ],
+  "scale": [
+   1,
+   1,
+   1
+  ],
+  "light": {
+   "mobility": "Movable",
+   "intensityUnits": "Lumens",
+   "intensity": 3000,
+   "attenuationRadius": 900,
+   "bUseTemperature": false,
+   "temperature": 6500,
+   "lightColor": {
+    "r": 1,
+    "g": 1,
+    "b": 1,
+    "a": 1
+   },
+   "castShadows": false
+  }
+ },
+ {
+  "label": "Light_Tower_4",
+  "class": {
+   "refPath": "/Script/Engine.PointLight"
+  },
+  "actor": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.PointLight_55",
+  "folder": "Lighting/BellTower",
+  "location": [
+   12165,
+   2000,
+   2750
+  ],
+  "rotation": [
+   0,
+   0,
+   0
+  ],
+  "scale": [
+   1,
+   1,
+   1
+  ],
+  "light": {
+   "mobility": "Movable",
+   "intensityUnits": "Lumens",
+   "intensity": 3000,
+   "attenuationRadius": 900,
+   "bUseTemperature": false,
+   "temperature": 6500,
+   "lightColor": {
+    "r": 1,
+    "g": 1,
+    "b": 1,
+    "a": 1
+   },
+   "castShadows": false
+  }
+ },
+ {
+  "label": "Light_Tower_5",
+  "class": {
+   "refPath": "/Script/Engine.PointLight"
+  },
+  "actor": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.PointLight_56",
+  "folder": "Lighting/BellTower",
+  "location": [
+   12165,
+   2000,
+   3200
+  ],
+  "rotation": [
+   0,
+   0,
+   0
+  ],
+  "scale": [
+   1,
+   1,
+   1
+  ],
+  "light": {
+   "mobility": "Movable",
+   "intensityUnits": "Lumens",
+   "intensity": 3000,
+   "attenuationRadius": 900,
+   "bUseTemperature": false,
+   "temperature": 6500,
+   "lightColor": {
+    "r": 1,
+    "g": 1,
+    "b": 1,
+    "a": 1
+   },
+   "castShadows": false
+  }
+ },
+ {
+  "label": "Light_TowerBell",
+  "class": {
+   "refPath": "/Script/Engine.PointLight"
+  },
+  "actor": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.PointLight_57",
+  "folder": "Lighting/BellTower",
+  "location": [
+   12600,
+   2300,
+   2900
+  ],
+  "rotation": [
+   0,
+   0,
+   0
+  ],
+  "scale": [
+   1,
+   1,
+   1
+  ],
+  "light": {
+   "mobility": "Movable",
+   "intensityUnits": "Lumens",
+   "intensity": 3000,
+   "attenuationRadius": 900,
+   "bUseTemperature": false,
+   "temperature": 6500,
+   "lightColor": {
+    "r": 1,
+    "g": 1,
+    "b": 1,
+    "a": 1
+   },
+   "castShadows": false
+  }
+ },
+ {
+  "label": "Light_TowerTop_0",
+  "class": {
+   "refPath": "/Script/Engine.PointLight"
+  },
+  "actor": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.PointLight_61",
+  "folder": "Lighting/BellTower",
+  "location": [
+   12500,
+   2000,
+   3700
+  ],
+  "rotation": [
+   0,
+   0,
+   0
+  ],
+  "scale": [
+   1,
+   1,
+   1
+  ],
+  "light": {
+   "mobility": "Movable",
+   "intensityUnits": "Lumens",
+   "intensity": 20000,
+   "attenuationRadius": 3000,
+   "bUseTemperature": false,
+   "temperature": 6500,
+   "lightColor": {
+    "r": 1,
+    "g": 1,
+    "b": 1,
+    "a": 1
+   },
+   "castShadows": false
+  }
+ },
+ {
+  "label": "Light_Courtyard_7",
+  "class": {
+   "refPath": "/Script/Engine.PointLight"
+  },
+  "actor": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.PointLight_16",
+  "folder": "Lighting/Courtyard",
+  "location": [
+   7700,
+   2000,
+   400
+  ],
+  "rotation": [
+   0,
+   0,
+   0
+  ],
+  "scale": [
+   1,
+   1,
+   1
+  ],
+  "light": {
+   "mobility": "Movable",
+   "intensityUnits": "Lumens",
+   "intensity": 3000,
+   "attenuationRadius": 1500,
+   "bUseTemperature": false,
+   "temperature": 6500,
+   "lightColor": {
+    "r": 1,
+    "g": 1,
+    "b": 1,
+    "a": 1
+   },
+   "castShadows": false
+  }
+ }
+]
