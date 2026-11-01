@@ -2895,3 +2895,38 @@ The 256 px thumbnails could not settle the text direction, so F7 decides.
 - **Saves and suite:** the BP and map saved one per call, both clean; suite 78/78.
 
 **Next:** F7, the first live `capture_session.py` run (PIE Simulate, 15 poses, owner at the PC); then F8 and F9.
+
+#### F7 capture review (lead, 2026-11-01)
+**Run:** the first live `capture_session.py` run (PIE Simulate, `p10_8d_poses.json`) gave 15/15 poses with 0 missing. It stopped PIE and restored the throttle to its original value, so the tool is validated live.
+
+**Pass:**
+- **Text direction:** the tablet reads correctly in game (`HERE REST THE BROTHERS OF THE BELL`, `BR. TOMAS` second), so the F1 handedness choice is confirmed.
+- **Lanterns:** `lt_arch_lantern` and `lt_passage_lantern` show the arch lantern hanging plumb under its soffit ring and the passage lantern on its R60 arm.
+- **`lt_court_start`:** no hot dot on the tower W face, no speck at the roof top, and the lancets are dim. The chapel west-front square is gone (F6 hypothesis confirmed). The four `Gobo_Moon` sky specks show only because Simulate ignores `bHiddenInGame`; they are P8, known.
+- **`lt_belfry_up_sw`:** no double moon shadows, and the belfry is lantern-lit.
+- **`lt_graves_w`:** the garth is very dark (mean 0.028). The named slabs are flavour and are not meant to be read from the walk.
+
+**Fail (fix F7b):**
+1. **Inscription legibility.** The plaque metric is 2.62, but by eye the carving is camouflaged: the tablet's `MI_Kit_Trim` prints the Medieval Blocks mortar grid and coarse grain across the field. P9 had the same problem ("the face reads as one dressed stone slab: no block or mortar grid", P9 D1.17 F7b); its accepted answer is `MI_Crypt_PlaqueSlate`: flat-tinted `T_LB_White_Gray`, `T_Rock_064_N` at `NormalStrength` 0.4, world-aligned 250.
+2. **Slit beam.** In `lt_tower_mid` (luma 0.039 → 0.090, mostly the new beam in view), the F07 beam has a stair-stepped top edge near the slit. This is the D1.30 lesson: the stepping comes from `bCastVolumetricShadow`. The spot now sits inside the slit, so nothing needs to clip its beam.
+
+#### F7b: tablet stone, carve depth colour, slit beams (lighting-vfx [EDITOR]; commit "P10-8d-F7b: …")
+1. **`MI_Cl_TabletStone`.** `AssetTools.duplicate` `/Game/LastBell/Environments/Crypt/Materials/MI_Crypt_PlaqueSlate` → `/Game/LastBell/Environments/Cloister/Materials/MI_Cl_TabletStone`. Never edit `MI_Crypt_PlaqueSlate`.
+   - Set `BaseColorTint` (0.62, 0.58, 0.50) and `NormalStrength` 0.30. Everything else stays: `Desaturation` 1, `BrightnessMul` 1, `UVScale` 0.25, `MacroStrength` 0.3, `RoughnessMin` 0.7, `RoughnessMax` 0.95, `WorldTileSizeCm` 250 and the textures.
+   - Read it back, save it alone, and check `is_dirty` is false.
+2. **`MI_Cl_CarveDirt`:** `BrightnessMul` 0.30 → **0.10**. Read it back and save it alone.
+3. **`BP_Inscription_Cloister`:** in its construction script, change only the slot-0 `SetMaterial` from `MI_Kit_Trim` to `MI_Cl_TabletStone`.
+   - Update `Tools/belltower/p10_6b_dsl/BP_Inscription_Cloister.dsl`, replace the graph cleanly as F5 did, and read it back.
+   - Compile with `warnings_as_errors`, then save the BP alone.
+   - Dump `Clue_Inscription` before and after with `bp_swap.py` (`Docs/ArtTest/belltower/p10_8d/Clue_Inscription_f7b_*.json`). Allowed difference: Plaque `overrideMaterials[0]`.
+   - Save `L_Monastery` if it is dirty, then reload, re-dump and diff (0 differences).
+   - Never edit or save `BP_Inscription` or any parent Blueprint.
+4. **Slit spots.** In `gen_tower_layout.py`'s `moon_spot`, set `volumetric_shadow` **False** for `L_Tw_MoonSlit_F03/F07/F08` (comment `# D1.27 F7b: no volumetric shadow (D1.30 stepping)`).
+   - Re-run the generator: all checks pass. Then run `place_lighting_p10.py lights` and `check`: all pass, with `bCastVolumetricShadow` false read back on the 3 spots.
+   - Save `L_Monastery` alone, reload, and re-run `check`.
+5. **Suite:** 78/78, with `RouteBot.Monastery`, `Puzzles.Blueprints`, the `WalkPath`s and the Save tests.
+6. **Commit:** the 2 MIs, the BP, the DSL, the dumps, the generator plus outputs, and the map. Never stage `L_Throwaway_P9_4.umap`.
+
+**Re-capture afterwards** (lead, `capture_session.py --only lt_inscription,lt_bells,lt_tower_mid,lt_beam_south,lt_beam_west --prefix p10_8e_ --plaque lt_inscription`):
+- the tablet reads as one pale dressed slab with dark carved letters, and every row is legible by eye at the 1.9 m pose;
+- no stepped beam edge.
