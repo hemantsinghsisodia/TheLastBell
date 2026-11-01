@@ -2949,3 +2949,11 @@ The 256 px thumbnails could not settle the text direction, so F7 decides.
 - **`lt_bells`, `lt_beam_west`:** unchanged and fine.
 
 **Next: F8**, the real C++ build with the editor closed, then **F9**, the owner re-test.
+
+#### F8: real build (lead, 2026-11-01)
+- The owner closed Unreal. `Tools/build_and_test.ps1` on the real project: build exit 0 (`Result: Succeeded`), **79 tests passed**, invalid tags 0.
+- That includes `LastBell.Interaction.ConsumedShowsNoPrompt` and `RouteBot.Monastery` Success. The log has one benign "very large delta" automation-tick note.
+- `L_Throwaway_P9_4.umap` was deleted with Unreal closed. It was never tracked, as the owner asked earlier.
+- MCP_NOTES: `capture_session.py` is marked validated live; P10-8d lessons 13–17 added (carved text handedness, inscription MI, moon spots inside openings, outside shadowless lights, stale `place_tower` actors).
+
+**Next: F9, the owner re-test** (the checklist is in the lead's message).

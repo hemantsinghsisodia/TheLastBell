@@ -153,7 +153,7 @@ For C++ API names, read `Source/LastBell/`; for architecture, read `Docs/TECHNIC
    - Poses whose PNG exists are skipped unless `--force`. Each attempt runs `capture_poses.py --double --raise --force` on the poses not yet captured in this session; the circuit breaker (exit 3 of `capture_poses.py`) rests 60 s and allows one single-pose test, and a second trip stops the session.
    - Exit codes: 0 every pose captured in this session (or nothing to capture); 1 some missing (`missing: a,b,...`); 2 the editor never became the foreground window (no captures taken); 3 editor mode and PIE is running (nothing changed); 4 unknown pose name in `--only`.
    - The throttle is restored to the value read at the start; PIE is stopped only if the session started it.
-   - Status: dry-run validated in P10-8a; first live session pending. The lead updates this line after the first live run.
+   - Status: validated live in P10-8d (F7: 15/15 poses; re-capture 5/5; PIE stopped and the throttle restored to its original value both times). Expect 1-4 failed attempts per pose on slow frames; the tool retries them.
 5. **`set_properties` `values` is a JSON string** (`json.dumps({...})`), not an object. This applies to every `ObjectTools.set_properties` call.
 6. **Root-component world box (D1.21).**
    - For an actor's root component, `relativeLocation` / `relativeRotation` / `relativeScale3D` already are the world transform.
@@ -178,3 +178,15 @@ For C++ API names, read `Source/LastBell/`; for architecture, read `Docs/TECHNIC
     - Implementation: `place_lighting_p10.py shafts`.
 11. **Door leaves in pointed or gabled openings (D1.19).** Check both faces for light wedges at the leaf's top corners. `Door_Shortcut` needed leaf scale Z 1.30.
 12. **Lighting a dark interior (D1.24).** If a wall 40 cm from a lantern glows saturated orange, the lantern is too strong. Fix it in lumens, not in exposure. Raise exposure only for the walk floors (`PP_Cloister` EV100 0.65).
+13. **Carved text from Blender (P10-8d).** Authoring coordinates equal Unreal's numerically, but Unreal is left-handed, so the in-game picture is the mirror of Blender's native view.
+    - Build text cutters pre-mirrored (`UE_VIEW = True` in `build_cloister.py`) and judge them in the mirrored review camera.
+    - The in-game capture is the final proof. A 256 px `CaptureAssetImage` thumbnail is too small to read letters.
+14. **Readable carved inscriptions (P10-8d, as in P9).**
+    - Never put an inscription on a block-textured kit MI: the mortar grid and grain hide the letters.
+    - Use a flat-tinted dressed-stone MI (`MI_Cl_TabletStone`, from `MI_Crypt_PlaqueSlate`) with dark groove faces (`MI_Cl_CarveDirt`, `BrightnessMul` 0.10).
+    - `luma_report.py --plaque` is not a valid gate for dark-on-light carving; judge by eye.
+15. **Moon spots at openings (P10-8d).**
+    - Put the spot just inside the opening (opening + 10·d), not outside. An outside spot whose cone is wider than the slit paints a hot disc on the exterior stone that shows from far away.
+    - Don't add a second shadowed moon source where the directional moon already enters; it gives double shadow sets.
+16. **Shadowless lights outside a wall** light the whole interior through it (`Light_TowerExt_0..2`, removed in P10-8d). An exterior silhouette light needs shadows, or a radius that can't reach inside.
+17. **`place_tower.py` leaves stale actors.** `--cats` / `--only` remove only the labels present in the layout, so an actor whose record was dropped from the layout stays in the level. Remove it explicitly (P10-8d: `CLA_LanternBracket_West`).
