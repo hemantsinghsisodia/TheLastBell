@@ -2569,3 +2569,271 @@ The lead posts this after reviewing 8a and 8b.
      - remove `L_Tw_MoonRoof`, so one moon lights the belfry. This also removes the roof speck of item 1. Keep `SA_Tower_Roof`, and judge whether the belfry still reads. `L_Tw_BellFill` stays.
      - remove `Light_TowerExt_0..2`, then check the tower silhouette from the gate and the courtyard. Only if it is lost, re-add one exterior light that cannot reach inside.
    - Item 1's slit spots still move inside their slits.
+
+### D1.27 P10-8d fix set from the owner review (lead, 2026-11-01)
+**Owner decisions (2026-11-01):**
+- "B, go": inscription option B (memorial roll) and fix the review list.
+- Findings 1, 2, 5, 6, 7 and 8 of the P10-8c list are fixed here.
+- Finding 3 (the chapel-front square) is identified separately by the lead and added as **F6** once known.
+
+All implementers are spawned with `model: "sonnet", effort: "high"`. Commit prefix `P10-8d-<task>: `, on `claude/phase-10-belltower`.
+
+**Shared rules:**
+- Check `git branch --show-current`; never switch, merge or push.
+- Stage only your own paths. Never stage `L_Throwaway_P9_4.umap`. On an index lock, wait 5 s and retry, at most 12 times.
+- Trailer: `Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>`.
+- **Editor:**
+  - one package per `save_assets` call;
+  - stop all editor calls after a 180 s hang;
+  - never save a parent Blueprint (the CLAUDE.md list, plus `BP_Door_Base_Dungeon` and `BP_RitualMechanism_CryptWinch`);
+  - `[EDITOR]` tasks never overlap.
+
+**Task order:**
+
+| Task | What | Runs |
+|---|---|---|
+| **F1** | Blender | parallel with F2 |
+| **F2** | C++ in the mirror | parallel with F1 |
+| **F3** | imports | after F1 |
+| **F4** | generator, placement and lights | after F3 |
+| **F5** | inscription Blueprint | after F4 |
+| **F7** | lead captures with the owner | |
+| **F8** | real C++ build with the editor closed | |
+| **F9** | owner re-test | |
+
+**The memorial text** (owner choice B; the bell order is still III, I, IV, II):
+
+| Row | Text | Cap height (world cm) |
+|---|---|---|
+| 1 | `HERE REST THE BROTHERS OF THE BELL` | 6.0 |
+| 2 (4 columns, left → right as seen from the front) | `BR. ANSELM` · `BR. TOMAS` · `BR. EDWIN` · `BR. OSRIC` | 5.5 |
+| 3 (same columns) | `OB. 1341` · `OB. 1344` · `OB. 1348` · `OB. 1351` | 4.0 |
+| 4 (same columns) | `III` · `I` · `IV` · `II` | 9.0 |
+| 5 | `RING FOR THEM AS THEY FELL` | 5.0 |
+
+"OB." (obiit, died) is the traditional memorial abbreviation. The years rise left to right, so the reading order is the order of death, which is the strike order.
+
+**Font:** Roboto Bold, Apache 2.0, from the engine install: `C:\Program Files\Epic Games\UE_5.8\Engine\Content\Slate\Fonts\Roboto-Bold.ttf`. Load it from that path; don't copy it into the repo. Add an ASSET_REGISTRY row in F3.
+
+---
+
+#### F1: Blender pieces (technical-artist; no editor; commit "P10-8d-F1: lantern brackets, memorial tablet, named grave slabs")
+Read `Tools/blender/belltower/README_cloister.md`, `build_cloister.py`, `verify_cloister.py` and `render_cloister.py`.
+
+Add 8 pieces to `build_cloister.py` (`table()` or `TABLE_EXTRA`), using the existing helpers (`K.box`, `K.bevel_all`, `K.combine`, `K.boolean_diff`, `CP`). Export to `SourceArt/Cloister/` like the others. Existing pieces must stay byte-identical: don't change their builders or seeds.
+
+1. **Lantern brackets `SM_LB_Prop_LanternBracket_R20`, `_R40`, `_R60`** (reach R = 20 / 40 / 60; seeds 1305 / 1306 / 1307). Slot `MAT_Iron` (index 0) only; no UCX.
+   - **Pivot:** (0, 0, 0) is on the wall face (x 0) at the lateral centre, at the **height of the lantern's hook point**. +x points out of the wall.
+   - **Wall plate:** x 0…1.5, y −4…4, z −14…18, bevel 0.3. Two bolt heads (cylinders r 0.9, x 1.5…2.1) at (y 0, z −10) and (y 0, z 14).
+   - **Arm:** a square bar 2 × 2, x 1.5…R+2, y −1…1, z 13…15. Finial: a sphere r 1.4 at (R+2.5, 0, 14).
+   - **Brace:** a square bar 1.5 × 1.5 from (1.5, 0, −10) to (0.6·R, 0, 13.25), plus a small decorative C-scroll (a torus quarter, r 3, bar 1.0) at the brace's lower third.
+   - **Hanger:** a vertical link (cylinder r 0.5) at x R from z 13 down to z 6. A ring (torus major r 2.6, minor 0.5, in the xz plane) centred at (R, 0, 3.1), so its **lowest point is z 0.0 ± 0.1**. That is where the lantern's top touches.
+   - **Expected mbounds** (±0.5): [[0, −4, −14], [R+3.9, 4, 18]].
+2. **`SM_LB_Prop_InscriptionTablet_Memorial`** (seed 1308). Build exactly `build_plaque("InscriptionTablet_Memorial", 120.0, 30.0, 4.0, 3.0, 1.2, 1308)`, so the slab is identical to `_A`: pivot at the back centre, front faces +x, the field face at x 2.8, the border at x 4.0. Then cut the memorial text into the **field face**.
+   - **Units:** the tablet is placed at root scale 2.5, so **local = world ÷ 2.5**. The field is y −57…57, z −12…12 local.
+   - **Rows** (local cap heights and baseline-centre z): row 1: 2.40 at z +9.0; row 2: 2.20 at +4.6; row 3: 1.60 at +1.3; row 4: 3.60 at −3.4; row 5: 2.00 at −9.3. Rows 1 and 5 are centred at y 0.
+   - **Columns** for rows 2–4: centred at y = −42.75, −14.25, +14.25, +42.75 local, with ANSELM first **at the viewer's left when facing the front face**.
+     - In Blender, a viewer at +x looking toward −x has +y on the right. The export's Y mirror and UE's left-handed frame cancel out, so a Blender render that reads correctly from the front reads correctly in UE.
+     - Prove it with the render in step 5.
+   - **Cutter:** Blender text objects in the Roboto Bold font above. Letter spacing 1.15; extrude 0.24 local; bevel depth 0.10, bevel resolution 2 (a soft V edge).
+     - Convert to mesh and position the cutter so it removes **0.48 local (1.2 cm world)** into the field face, starting 0.3 above the face.
+     - Use `K.boolean_diff` (EXACT). The cutter carries material `MAT_Carve`, so the new groove faces get slot **`MAT_Carve` (index 1)**; the rest stays `MAT_Trim` (index 0).
+     - If the helper can't transfer materials, assign `MAT_Carve` to every face whose centre lies below the field face (x < 2.79) and inside the letter rows.
+   - **Expected mbounds:** [[0, −60, −15], [4, 60, 15]] (±0.1); slots `["MAT_Trim", "MAT_Carve"]`.
+3. **Named grave slabs `SM_LB_Cl_GraveSlab_200x80_Anselm`, `_Tomas`, `_Edwin`, `_Osric`.**
+   - Build exactly as `build_grave_slab("…", 1220)`: the same seed and the same cross relief and chips.
+   - Then cut two lines into the top face (z 8), carved as in item 2 (cut depth 0.8, extrude 0.4, bevel 0.12, `MAT_Carve`):
+     - line 1 `BR. <NAME>`, cap 7.0, centred at x −20;
+     - line 2 `OB. <YEAR>`, cap 5.0, centred at x −45.
+   - The text reads upright for a viewer at the foot (−x end) looking toward the head (+x, where the cross is): text "up" is +x and the reading direction is the viewer's right.
+   - **Names and years:** Anselm 1341, Tomas 1344, Edwin 1348, Osric 1351.
+   - **Expected mbounds:** [[−100, −40, 0], [100, 40, 8]] (±0.1). Slots: the base slab's slots plus `MAT_Carve` last.
+4. **Verification.** Add the 8 pieces to `verify_cloister.py` with the mbounds and slots above, and a triangle cap of 60 000 for the tablet, 20 000 per slab and 3 000 per bracket.
+   - Run it: all pieces pass, including every existing one, unchanged.
+   - Write the build report the generator reads. Use the same report mechanism as the existing pieces; read `gen_tower_layout.py` for the file it reads and its key format.
+5. **Renders** (`render_cloister.py`; output `Docs/ArtTest/belltower/p10_8d_<name>.png`):
+   - the tablet face-on from +x (orthographic, the field filling the frame). It must read left to right, unmirrored, with ANSELM on the left;
+   - the tablet at a 35° grazing angle with one warm light from above-left, the in-game condition;
+   - each slab from above the foot end;
+   - each bracket from the side, with the `SM_Wooden_Lantern_01` proxy box (22 × 22 × 53) hanging from the ring;
+   - LOOK at every render and iterate until the letters are crisp, evenly spaced and unmirrored.
+6. **Commit:**
+   - `build_cloister.py`, `verify_cloister.py` and `render_cloister.py` (only if changed);
+   - the 8 FBX files and the report under `SourceArt/Cloister/`;
+   - the renders.
+   - **Report:** per-piece triangle counts and mbounds; the verify output; the render paths; the material-transfer method used.
+
+---
+
+#### F2: used-mechanism prompt (gameplay-programmer; no editor; commit "P10-8d-F2: no prompt on a used single-use interactable")
+**Cause (D1.26 finding 5):** after a single-use mechanism is used, `ConsumedStateTag` is present. `CanInteract` is then false, and `ULBInteractorComponent::UpdateFocus` shows `DeniedPromptText` ("Something is missing").
+
+1. **`Source/LastBell/Components/LBInteractableComponent.h/.cpp`:**
+   - `bool IsConsumedBy(const FGameplayTagContainer& WorldState) const;` (public, not a UFUNCTION). It returns `bSingleUse && ConsumedStateTag.IsValid() && WorldState.HasTagExact(ConsumedStateTag)`.
+   - `UFUNCTION(BlueprintPure, Category = "LastBell|Interaction") bool IsConsumed() const;` It calls `IsConsumedBy` with the world-state subsystem's state, or returns false without a subsystem.
+   - In `Interact()`: if `IsConsumed()`, return **before** `OnInteractDenied.Broadcast`. A used mechanism is silent.
+   - Doc comments in the file's style.
+2. **`Source/LastBell/Components/LBInteractorComponent.h/.cpp`:**
+   - Add `static FText SelectPrompt(bool bConsumed, bool bCanInteract, const FText& PromptText, const FText& DeniedPromptText);`. It returns empty when consumed, else the prompt or the denied text.
+   - Use it in `UpdateFocus`. The focus itself (and `NotifyFocusBegin`/`End`) is unchanged.
+3. **Test** in `Source/LastBellTests/Tests/LBTests.cpp`, next to `FLBInteractableTest`, in its style:
+   - `IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBInteractableConsumedPromptTest, "LastBell.Interaction.ConsumedShowsNoPrompt", LB_TEST_FLAGS)`.
+   - A component with `bSingleUse` and `ConsumedStateTag` = an existing `State.Test.*` tag:
+     - `IsConsumedBy` is false without the tag and true with it;
+     - false when `bSingleUse` is false;
+     - `SelectPrompt(true, …)` is empty, `(false, true, …)` is the prompt, and `(false, false, …)` is the denied text.
+4. **Build and test in the mirror only** (the editor is open on the real project). Use `Tools/mirror_build_and_test.ps1` (read it first).
+   - Expect **79/79**: the 78 existing tests plus the new one, with `RouteBot.Monastery`, the `WalkPath`s, the Puzzles and the Save tests all passing.
+   - Never build the real project.
+5. **Commit:** only the 5 source files. **Report:** the build result, the suite totals with the new test's line, and the diff summary.
+
+---
+
+#### F3: imports and the carve MI (technical-artist [EDITOR]; after F1; commit "P10-8d-F3: import brackets, memorial tablet, named slabs; MI_Cl_CarveDirt")
+1. **Import** the 8 FBX files from `SourceArt/Cloister/` into `/Game/LastBell/Environments/Cloister/Meshes/` with `Tools/belltower/import_p10.py`. Extend its list; same options as the existing cloister pieces.
+   - **Nanite:** off for the 3 brackets (thin, small), on for the tablet and the 4 slabs.
+   - No collision on the brackets. The tablet keeps the same simple collision as `_A`; copy `_A`'s collision setup, which the BP relies on. The slabs keep the base slab's collision.
+2. **MI `/Game/LastBell/Environments/Cloister/Materials/MI_Cl_CarveDirt`:** parent `/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim`.
+   - Overrides: `BaseColorTint` (0.20, 0.18, 0.14), `BrightnessMul` 0.30, `RoughnessMin` 0.85, `RoughnessMax` 0.95.
+   - Read them back. Save the MI alone and check `is_dirty` is false.
+3. **Slot materials on the meshes** (the mesh defaults):
+   - brackets `MAT_Iron` → `MI_Crypt_Iron`;
+   - tablet `MAT_Trim` → `MI_Kit_Trim`, `MAT_Carve` → `MI_Cl_CarveDirt`;
+   - slabs: `MI_Kit_Masonry` / `MI_Kit_Trim` / `MI_Kit_Rubble` / `MI_Cl_CarveDirt`.
+   - Read `get_material_slots` first: UE drops unused slots.
+4. **Checks:** thumbnails (`CaptureAssetImage`) of the tablet and one slab to `Docs/ArtTest/belltower/p10_8d_thumb_*.png`; the letters must read unmirrored. Save one package per call. No material errors in the log.
+5. **`Docs/ASSET_REGISTRY.md`:** add a row for Roboto Bold. Source: the UE 5.8 install, `Engine/Content/Slate/Fonts/Roboto-Bold.ttf`; licence Apache 2.0 (see `Roboto.tps` next to it). Use: glyph outlines carved into the memorial tablet and the 4 named grave slabs (P10-8d).
+6. **Commit:** the 8 meshes, the MI, the thumbnails, `import_p10.py` and the registry.
+
+---
+
+#### F4: generator, placement and lights (environment-designer [EDITOR]; after F3; commit "P10-8d-F4: …")
+**Generator** (`Tools/belltower/gen_tower_layout.py`; comment `# D1.27` at each change). Re-run it: exit 0, every check passing. Commit it with its outputs.
+1. **Brackets.** In `lantern()`, add a `bracket` parameter (default `HOLDER`) and use these:
+   - `CLA_Lantern_Bells` and `CLA_Lantern_Door` → `SM_LB_Prop_LanternBracket_R40`;
+   - `SHA_Lantern_Entry` and `TWA_Lantern_Base` → `_R20`;
+   - `PSA_Lantern` and `PSA_Lantern_W` → `_R60`.
+
+   Bracket location, yaw and hook Z stay as they are, and lantern positions don't move. The landing and bell lanterns keep `HOLDER` (gaps ≤ 2 cm). Add a check: for every bracket, its ring point (bracket loc + R along its +x yaw) is within 1 cm of its lantern's XY, and the lantern top (loc z + 51.9) is within 0.5 cm of the hook Z.
+2. **Arch lantern `CLA_Lantern_West`:**
+   - lantern at **(9480, 2000)**, hook Z 330 (the archway thickness centre is X 9460–9500);
+   - **no wall bracket** (delete the `CLA_LanternBracket_West` record);
+   - soffit holder `CLA_Lantern_West_Soffit` at (9480, 2000, 420) with rotation **(−90, 0, 0)**, so its plate is on the soffit and its ring points down (ring tip about Z 408.1);
+   - `chain_run("CLA_Lantern_West_Chain", (9480, 2000, 408.0), (9480, 2000, 330.0), …)`. The record must come out vertical: pitch 0 and roll 0, scale Z = 78 / 117.62 ≈ 0.663;
+   - light `L_Cl_West` → (9480, 2000, 320).
+   - Check: the chain is vertical, and the lantern AABB (X 9469–9491, Z 277–330) lies inside the archway opening.
+3. **Graves:** `CLA_GraveSlab_0` → `SM_LB_Cl_GraveSlab_200x80_Anselm`, `_2` → `_Tomas`, `_3` → `_Edwin`, `_5` → `_Osric`.
+   - The transforms and the seed-1223 yaw/roll stay. Add `mi_slots` `MAT_Carve: MI_Cl_CarveDirt`.
+   - `_1` and `_4` stay plain.
+4. **Moon lights:**
+   - **Delete** the `L_Tw_MoonRoof` record. Keep its shaft card as a shaft-only entry, `LIGHTS_PLAN["shafts_extra"] = [{"id": "SA_Tower_Roof", "opening": [12188.0, 1688.0, 4027.0], "width": 200}]`.
+   - **Move** the three slit spots to opening + 10·d, with rotation, cones, lumens and shadows unchanged. Note: `D1.27: inside the slit, so only the interior is lit`.
+
+     | Spot | New location |
+     |---|---|
+     | `L_Tw_MoonSlit_F03` | (12506.5, 1544.5, 711.9) |
+     | `L_Tw_MoonSlit_F07` | (12506.5, 1544.5, 1621.1) |
+     | `L_Tw_MoonSlit_F08` | (12046.5, 2004.5, 1847.8) |
+
+   - **`LIGHTS_PLAN`:** move `Light_TowerExt_0..2` from `keep_and_tune` to a new list `"retire_p10_8d"`.
+   - The light record count becomes **16**; update that check.
+
+**`Tools/belltower/place_lighting_p10.py`:**
+- **New action `retire`:**
+  - for each label in `retire_p10_8d`, dump class, folder, transform and light properties (as `greybox()` does) to `Docs/ArtTest/belltower/p10_8d_retired_lights.json`, then `remove_from_scene`;
+  - also remove a stale `L_Tw_MoonRoof` actor (dump it to the same file first);
+  - idempotent.
+- **`shafts`:** iterate over the moon spot records plus `shafts_extra`. Card start = opening + 5·d, as now.
+- **`check`:**
+  - `Light_TowerExt_0..2` and `L_Tw_MoonRoof` are **absent**;
+  - 3 slit spots at the new locations (±1 cm);
+  - 4 cards present;
+  - every old check otherwise.
+
+**Placement** (editor on `L_Monastery`, no PIE), in this order:
+1. `place_tower.py --cats dress --only Lantern`, then `--only GraveSlab --cats garth` (use the category that holds the slab records; read the layout).
+2. `place_lighting_p10.py retire`, `lights`, `shafts`, `check`. All pass.
+3. `place_tower.py --cats dress garth --check`, then `p10_6a_checks.py`. All pass.
+4. Save `L_Monastery` alone and check `is_dirty` is false. Run `load_level`, then `check` again.
+5. Suite: 78/78, with the D1.20 step 6 named tests. The real-project binaries don't have F2 yet, so 78 is right here.
+
+**Report:**
+- the generator checks;
+- the bracket ring/lantern distances;
+- the arch chain record;
+- the retired-light dump path;
+- `check` output;
+- suite totals;
+- commit hashes.
+
+---
+
+#### F5: inscription Blueprint (unreal-blueprint-engineer [EDITOR]; after F4; commit "P10-8d-F5: BP_Inscription_Cloister memorial tablet")
+**Child only.** `BP_Inscription` (parent) is never edited or saved. Follow the D-071 procedure with `Tools/belltower/bp_swap.py` dumps (`Docs/ArtTest/belltower/p10_8d/`).
+1. Dump `Clue_Inscription` (before).
+2. Edit `BP_Inscription_Cloister`'s construction script (its DSL is `Tools/belltower/p10_6b_dsl/BP_Inscription_Cloister.dsl`; update that file and write it with the documented DSL flow; `write_graph_dsl` is additive, so replace the graph cleanly as P10-6b did):
+   - Plaque mesh → `/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Prop_InscriptionTablet_Memorial`. Same relative location (−2, 0, 0), rotation 0, scale 1.
+   - `SetMaterial` slot 0 `MI_Kit_Trim`, slot 1 `/Game/LastBell/Environments/Cloister/Materials/MI_Cl_CarveDirt`.
+   - `Engraving`: keep the copied parent body (SetText from `Text`), then add `SetVisibility(Engraving, false)`. The carved mesh replaces the text render.
+3. Compile with `warnings_as_errors`, then save the BP alone.
+4. **Instance:** set `Clue_Inscription.Text` to the memorial wording, rows joined with `|`:
+
+   `HERE REST THE BROTHERS OF THE BELL|BR. ANSELM  BR. TOMAS  BR. EDWIN  BR. OSRIC|OB. 1341  OB. 1344  OB. 1348  OB. 1351|III  I  IV  II|RING FOR THEM AS THEY FELL`
+
+   It isn't rendered; this keeps the record truthful. Read it back.
+5. **Dump after and diff.** Allowed differences: the `Plaque` mesh and materials, the `Engraving` visibility, and `Text`.
+6. **Checks:**
+   - Plaque world bounds X 11990–12000 (±1), Y 2230–2530, Z 162.5–237.5;
+   - `Engraving` not visible.
+7. Save `L_Monastery` alone, then `load_level`, re-dump and diff against after (0 differences).
+8. Suite 78/78.
+9. **Commit:** the BP, the map, the DSL file and the dumps.
+
+---
+
+#### F7: lead captures (lead + owner at the PC)
+The first live run of `Tools/crypt/capture_session.py --mode simulate --luma <json> --plaque lt_inscription`. The poses are in `Tools/belltower/poses/p10_8d_poses.json`, written by the lead.
+- **From `p10_7`:** `lt_inscription`, `lt_bells`, `lt_tower_mid`, `lt_bell_top`, `lt_belfry_up_sw`, `lt_gate`, `lt_door_tower_out`, `lt_passage_east`.
+- **From `p10_7c`:** `lt_beam_south`, `lt_beam_west`, `lt_beam_roof`.
+- **New:**
+  - `lt_court_start` [196, 65, 156, 11.4, 8.6]: the owner's screenshot. The tower dot and roof speck must be gone; judge the lancets;
+  - `lt_arch_lantern` [9800, 2120, 170, 22, 180];
+  - `lt_passage_lantern` [9000, 1900, 170, 14, 42];
+  - `lt_graves_w` [10250, 1800, 170, −15, 0].
+
+**Accept when:**
+- the inscription plaque contrast is ≥ 2.5 and reads as carved (if lower, darken `MI_Cl_CarveDirt` `BrightnessMul` to 0.15, an instance-only change);
+- the lanterns visibly hang from brackets and the arch chain is vertical;
+- the belfry shows a single set of moon shadows;
+- the bell median is ≥ 0.08;
+- the tower still reads against the sky from `lt_gate` and `lt_court_start`.
+
+If the tower silhouette is lost without `Light_TowerExt`, the lead specifies one replacement in D1.28 and asks the owner. The same applies if the belfry is too dark without the roof spot.
+
+**F8: real C++ build.** The owner closes Unreal (Don't Save). The lead runs `Tools/build_and_test.ps1` (read it first) on the real project: 79/79. The owner reopens Unreal.
+
+**F9: owner re-test.**
+- Finished mechanisms show no prompt.
+- Read the memorial tablet at 2 m.
+- Check the lanterns, the tower lights and the belfry shadows.
+
+#### F6: chapel west-front see-through gap (part of F4, same agent and commit)
+**Lead finding.** The owner's square, traced from the PIE eye, lands on the chapel's kit west front at about (6000, 242, 907) ± 70. That is the vertical seam at Y 200 between `StaticMeshActor_658` (`SM_LB_Kit_Wall_400x60x800_A`, Y −200…200, Z 400–1200) and `StaticMeshActor_674` (`Wall_100x60x400`, Y 200–300, Z 800–1200), just above the `_659` / `_674` seam at Z 800.
+
+Every west-front window is `_Blind` (no opening), so a bright square there is the lit nave seen through a hairline gap between kit pieces.
+
+**Fix:** three hidden backing plates inside the 60 cm wall core. They are invisible unless a gap exists, and then they show stone instead of the nave.
+- **Mesh and settings:** engine `/Engine/BasicShapes/Cube` (100 cm, centred) with material `MI_Kit_Masonry`; `bodyInstance.collisionProfileName` and `collisionEnabled` set to `NoCollision` with `bUseDefaultCollision` false (MCP_NOTES P9 §3); cast shadow on.
+- **Folder:** `Chapel/Art/WestFrontBacking`.
+
+| Label | Location | Rotation | Scale | Covers |
+|---|---|---|---|---|
+| `KC_WestFront_Backing_0` | (6030, 0, 800) | (0, 0, 0) | (0.04, 15.8, 8.0) | X 6028–6032, Y −790…790, Z 400–1200 |
+| `KC_WestFront_Backing_1` | (6030, 495, 430) | (0, 0, 0) | (0.04, 5.9, 7.4) | Y 200…790, Z 60–800 |
+| `KC_WestFront_Backing_2` | (6030, −495, 430) | (0, 0, 0) | (0.04, 5.9, 7.4) | Y −790…−200, Z 60–800 |
+
+The doorway (Y −200…200, Z 0–400) stays clear.
+
+**Steps:** place them with a small script, `Tools/belltower/p10_8d_backing.py` (idempotent: it removes existing labels first). Read back the bounds and collision. It runs in F4 before the map save.
+
+**Verification:** F7 pose `lt_court_start`. The square must be gone; if it isn't, the hypothesis is wrong and the lead re-investigates.
