@@ -256,6 +256,21 @@ Branch `claude/phase-10-belltower`. Spec: `Docs/plans/P10_BELLTOWER_ART.md` (D-0
 
 Status 2026-10-30: P10-0…P10-4 done (P10-3a ba1f0e6/27ae1dc, P10-3b b22300f/42307f1, P10-L final 0e621ec, P10-4 8733d97). P10-5 structure (4919443…2e3a379) plus the roof-valley fix set (D1.14–D1.16, D-082): P10-5b fda215d/1b8d2f3, P10-5c 291c4f5/54b0326, P10-5d captures (lead + owner); suite 78/78. Structure pass complete. P10-6b child BPs (1ac66e2…6a22bf7, D1.17/D1.18; suite 78/78). P10-6c captures and review (D1.19): everything passes except the `Door_Shortcut` light wedges, fixed by P10-6d. P10-6d + P10-6a done (6e8b78b…c59e21a; 242 dress, suite 78/78); capture review D1.21: door fixed, chain/garth/belfry debris fail. P10-6e done (cacb196…0f4421c; 278 dress, suite 78/78; captures accepted, D1.22). Dressing pass complete. P10-7 placed (f58d697, 61b9f38; suite 78/78); PIE Simulate review D1.24. P10-7b done (12b47ba…44a5d19; suite 78/78); captures D1.25 accepted (luma on target, tower moonbeams visible). Lighting pass complete. P10-8 (D1.26): 8a docs 43490a1 + TECHNICAL_DESIGN drift fix 584af02; 8b QA 65992e5 (suite 78/78, 538/538 placements, lighting 51/51, greybox 280/280, generator 54/54, lanes >= 70.3 cm; F1 stale count fixed, re-run 29/29). P10-8c owner review: findings fixed in P10-8d (D1.27; F1 9de5059, F2 5827489, F3 1943ba7, F4/F6 c1a6cc4…1997daa, F5 c00e0ae, F7b f7e2b14; real build 79/79). **Phase 10 approved by the owner 2026-11-01** and merged to main. Open: stat gpu figure (R-44).
 
+## Phase 11 — Materials: task breakdown
+Branch `claude/phase-11-materials`. Spec: `Docs/plans/P11_MATERIALS.md` (D-085). Owner approved the plan on 2026-11-02; the chapel and sacristy door corners and the `Gobo_Moon` specks stay out of scope.
+
+| Task | Scope | Owner | Depends on |
+|---|---|---|---|
+| P11-0 | Plan approval; D-085, R-46, R-47, plan table | lead + owner | — |
+| P11-1 | GPU baseline: `stat gpu` at 6 spots | owner | P11-0 |
+| P11-2 | Census (read-only) and 24 baseline captures | technical-artist [EDITOR read-only], lead + owner | P11-0 |
+| P11-3 | Joint test in a separate test map; the owner chooses A or B (D-086) | asset-curator, technical-artist [EDITOR], lead + owner | P11-2 |
+| P11-4 | Apply the owner's choice across the game | technical-artist [EDITOR] | P11-3 |
+| P11-5 | Weathering layer `bWeathering` in `M_LB_Surface` and rollout | technical-artist [EDITOR] | P11-4 |
+| P11-6 | Decal retune; new crack decals and their placement | technical-artist, environment-designer [EDITOR] | P11-5 |
+| P11-7 | Glowing lantern glass | technical-artist [EDITOR] | P11-2 |
+| P11-8 | Brightness re-check, QA, docs, owner GPU and playtest; PHASE 11 READY FOR YOUR REVIEW | lead + qa-reviewer + owner | all |
+
 ## Deferred to Phase 14–15 (Lighting, VFX: storm work)
 Items the owner asked to fold into the storm pass. Plan them in detail (Docs/plans/) when Phase 14–15 starts.
 

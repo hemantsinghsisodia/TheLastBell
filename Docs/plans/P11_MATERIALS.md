@@ -1,6 +1,6 @@
 # Phase 11: Materials (surface polish): plan
 
-**Status:** proposed by the lead on 2026-11-02, waiting for the owner's approval. Nothing in this plan has started.
+**Status:** approved by the owner on 2026-11-02. P11-0 done; P11-1 is next. The door corners and `Gobo_Moon` specks stay out of scope.
 **Branch:** `claude/phase-11-materials`, from `main` (6dfa29d).
 **Rules:** D-048 applies. The lead plans in Opus 5.5 at xhigh effort; every implementer is spawned with `model: "sonnet", effort: "high"`.
 
