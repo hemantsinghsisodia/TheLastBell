@@ -1,6 +1,6 @@
 # Phase 11: Materials (surface polish): plan
 
-**Status:** approved by the owner on 2026-11-02. P11-0 done; P11-1 is next. The door corners and `Gobo_Moon` specks stay out of scope.
+**Status:** approved by the owner on 2026-11-02. P11-0 and P11-1 done; P11-2 in progress. The door corners and `Gobo_Moon` specks stay out of scope.
 **Branch:** `claude/phase-11-materials`, from `main` (6dfa29d).
 **Rules:** D-048 applies. The lead plans in Opus 5.5 at xhigh effort; every implementer is spawned with `model: "sonnet", effort: "high"`.
 
@@ -87,6 +87,19 @@ This is also the measurement missing from Phase 10 (R-44).
 
 If any spot is already over 16.6 ms, the lead reports it before material work adds cost.
 
+**Result (owner, 2026-11-02), GPU time at High, render 1664x846:**
+
+| Spot | GPU ms | Headroom to 16.6 |
+|---|---|---|
+| Courtyard garth | 13.95 | 2.65 |
+| Chapel, mid-nave | **15.32** | **1.28** |
+| Crypt ossuary | 14.22 | 2.38 |
+| Cloister, by the bells | 12.95 | 3.65 |
+| Tower mid-stair | 12.30 | 4.30 |
+| Belfry | 12.72 | 3.88 |
+
+All six pass. The chapel has the least room, so P11-5 adds one chapel reading (acceptance 5). R-44 stays Open until the P11-8 re-check.
+
 ### P11-2: census and baseline
 1. **Census script** `Tools/materials/census_p11.py` (read-only). Enumerate actors with `GetVisibleActors` from a high top-down camera (restore the camera afterwards), and write `Docs/ArtTest/materials/census_p11.json` and `census_p11.md`:
    - **every StaticMeshActor:** label, mesh, override materials, location, grouped by area from the X/Y ranges in `Docs/LEVEL_DESIGN.md`;
@@ -163,6 +176,7 @@ Roughness  = lerp(Roughness, StreakRoughness, wall * streak * StreakAmount)
 2. **Rollout:** `bWeathering` on for wall MIs only (the list comes from the census). Crypt MIs get their floor Z.
 3. **Tuning:** only `GrimeBaseAmount` 0.2–0.6, `StreakAmount` 0.15–0.45, `PatchAmount` 0.1–0.3.
 4. **Captures:** the 15 m tall-wall baseline poses show no visible repeat; streaks and the grime band read as weather, with no hard edges across wall pieces.
+5. **GPU (owner, 1 minute):** one reading at the chapel mid-nave spot after the rollout. Budget ≤ 16.6 ms. If it is over, use the P11-8 cut list before any decal work.
 
 ### P11-6: decals
 1. **Retune** (instance values only). D-046: leak decals were "too strong, hair-like". For each decal MI in the census, check one capture per area. Lower `Opacity` and adjust `Roughness` until it reads as a stain.
