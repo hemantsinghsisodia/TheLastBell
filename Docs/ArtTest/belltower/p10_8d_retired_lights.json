@@ -1,0 +1,164 @@
+[
+ {
+  "label": "Light_TowerExt_0",
+  "class": "/Script/Engine.PointLight",
+  "actor": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.PointLight_58",
+  "folder": "Lighting/BellTower",
+  "location": [
+   11500,
+   2000,
+   1200
+  ],
+  "rotation": [
+   0,
+   0,
+   0
+  ],
+  "scale": [
+   1,
+   1,
+   1
+  ],
+  "light": {
+   "mobility": "Movable",
+   "intensityUnits": "Lumens",
+   "intensity": 300,
+   "attenuationRadius": 3500,
+   "bUseTemperature": false,
+   "temperature": 6500,
+   "lightColor": {
+    "r": 0.7450980544090271,
+    "g": 0.803921639919281,
+    "b": 0.9215686917304993,
+    "a": 1
+   },
+   "castShadows": false,
+   "volumetricScatteringIntensity": 0,
+   "sourceRadius": 0,
+   "bCastVolumetricShadow": false,
+   "lightFunctionMaterial": "None"
+  }
+ },
+ {
+  "label": "Light_TowerExt_1",
+  "class": "/Script/Engine.PointLight",
+  "actor": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.PointLight_59",
+  "folder": "Lighting/BellTower",
+  "location": [
+   11500,
+   2000,
+   2400
+  ],
+  "rotation": [
+   0,
+   0,
+   0
+  ],
+  "scale": [
+   1,
+   1,
+   1
+  ],
+  "light": {
+   "mobility": "Movable",
+   "intensityUnits": "Lumens",
+   "intensity": 300,
+   "attenuationRadius": 3500,
+   "bUseTemperature": false,
+   "temperature": 6500,
+   "lightColor": {
+    "r": 0.7450980544090271,
+    "g": 0.803921639919281,
+    "b": 0.9215686917304993,
+    "a": 1
+   },
+   "castShadows": false,
+   "volumetricScatteringIntensity": 0,
+   "sourceRadius": 0,
+   "bCastVolumetricShadow": false,
+   "lightFunctionMaterial": "None"
+  }
+ },
+ {
+  "label": "Light_TowerExt_2",
+  "class": "/Script/Engine.PointLight",
+  "actor": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.PointLight_60",
+  "folder": "Lighting/BellTower",
+  "location": [
+   11500,
+   2000,
+   3300
+  ],
+  "rotation": [
+   0,
+   0,
+   0
+  ],
+  "scale": [
+   1,
+   1,
+   1
+  ],
+  "light": {
+   "mobility": "Movable",
+   "intensityUnits": "Lumens",
+   "intensity": 300,
+   "attenuationRadius": 3500,
+   "bUseTemperature": false,
+   "temperature": 6500,
+   "lightColor": {
+    "r": 0.7450980544090271,
+    "g": 0.803921639919281,
+    "b": 0.9215686917304993,
+    "a": 1
+   },
+   "castShadows": false,
+   "volumetricScatteringIntensity": 0,
+   "sourceRadius": 0,
+   "bCastVolumetricShadow": false,
+   "lightFunctionMaterial": "None"
+  }
+ },
+ {
+  "label": "L_Tw_MoonRoof",
+  "class": "/Script/Engine.SpotLight",
+  "actor": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.SpotLight_10",
+  "folder": "Lighting/BellTower",
+  "location": [
+   12058.9,
+   1597.6,
+   4150.1
+  ],
+  "rotation": [
+   -37.99999999999999,
+   35,
+   4.036181824811567e-15
+  ],
+  "scale": [
+   1,
+   1,
+   1
+  ],
+  "light": {
+   "mobility": "Movable",
+   "intensityUnits": "Lumens",
+   "intensity": 1500,
+   "attenuationRadius": 2500,
+   "bUseTemperature": false,
+   "temperature": 6500,
+   "lightColor": {
+    "r": 0.7450980544090271,
+    "g": 0.803921639919281,
+    "b": 0.9215686917304993,
+    "a": 1
+   },
+   "castShadows": true,
+   "volumetricScatteringIntensity": 0.800000011920929,
+   "sourceRadius": 0,
+   "bCastVolumetricShadow": true,
+   "lightFunctionMaterial": "None",
+   "innerConeAngle": 10,
+   "outerConeAngle": 20
+  }
+ }
+]
