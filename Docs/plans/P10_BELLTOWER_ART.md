@@ -2543,3 +2543,29 @@ The lead posts this after reviewing 8a and 8b.
 2. **Belfry lancets glow.** This is the roof moon spot on the E belfry wall, seen through the W louvres, and it is intended. Pending: the owner judges whether it reads as "lights on in the tower"; if so, lower `L_Tw_MoonRoof`.
 3. **A small bright square on the chapel west front.** It is not from P10. The trace hit is about (6000, 242, 907) ± 70. Not identified yet: PIE limits `find_actors`, so the lead identifies it with the editor world once Play stops.
 4. **Testing aid:** to stop the Warden killing the owner during the review, use `lb.Warden.Enabled 0` in the PIE console (`LBWardenBrainComponent`, checked each tick). It is in memory only and resets to 1 on an editor restart.
+5. **"Something is missing" on finished mechanisms** (owner: puzzles 1 and 2, the chapel bell wheel and the crypt winch; `Mech_Ritual3` behaves the same way).
+   - **Cause (code):** `ULBInteractorComponent::UpdateFocus` shows `DeniedPromptText` whenever `CanInteract` is false. After a single-use mechanism has been used, its `ConsumedStateTag` (`State.Ritual.N`) is present, so `PassesStateRequirements` returns false and the used mechanism says "Something is missing".
+   - **Proposed fix (C++, after the owner's go):** add `ULBInteractableComponent::IsConsumed()` (single-use and `ConsumedStateTag` present). For a consumed focus, `UpdateFocus` shows no prompt.
+   - Build and test in the `C:\lbb` mirror, then build the real project with the editor closed. Run the suite, plus a new automation check that a consumed interactable shows an empty prompt.
+6. **Mechanism 3 inscription** ("STRIKE AS THE DEAD RECALL / III I IV II"). The owner finds it unconvincing: flat text render on the tablet. Options for the owner:
+   - **(A)** the same words, carved: chiselled letters with dirt and moss in the cuts and worn edges, as a baked texture on the tablet;
+   - **(B)** a memorial roll: four dead brothers listed in order of death, each with his bell numeral, carved as in (A). This ties "the dead" to the place; the garth graves can repeat the names;
+   - **(C)** a faded wall painting: ochre letters with the four bell colours as roundels in the solution order.
+7. **Floating lanterns** (owner screenshot: the W walk archway).
+   - The `SM_Dungeon_chain_holder` brackets reach only about 12 cm from the wall, but the generator hangs the lanterns 20–60 cm off the wall, so they float: `PSA_Lantern` / `_W` about 48 cm, `CLA_Lantern_Bells` / `_Door` about 28 cm, `SHA_Lantern_Entry` / `TWA_Lantern_Base` about 8 cm.
+   - `CLA_Lantern_West` hangs from a diagonal chain (34° roll) from the soffit ring at (9500, 2000, 420) to a lantern 60 cm out, with an unused wall bracket beside it.
+   - **Proposed fix:**
+     - hang `CLA_Lantern_West` straight under the soffit ring with a vertical chain, and remove its wall bracket;
+     - give the wall lanterns a real iron arm bracket about 50 cm long (a new Blender prop `SM_LB_Prop_LanternBracket_A`: wall plate, arm, scroll brace, hook), so each lantern hangs from the arm tip;
+     - lights unchanged.
+8. **Several light sources and double shadows in the belfry** (owner screenshot looking up at the belfry lancets).
+   - Two moon sources reach the belfry, both shadowed:
+     - the courtyard `DirectionalLight_1` (0.9 lux, pitch −38, yaw 35) through the SW collapse and the louvres;
+     - `L_Tw_MoonRoof` (1500 lm), a point-source spot 2 m outside the collapse.
+     They come from the same direction but different distances, so the frame and bell cast two offset shadow sets.
+   - Also, `Light_TowerExt_0..2` (300 lm, radius 3500, **shadowless**, outside the W face at X 11500) leak through the walls into the whole tower interior (MCP_NOTES Phase 8).
+   - (The moon fill `DirectionalLight_0` is 0.06 lux and shadowless, so it is not a factor.)
+   - **Proposed fix:**
+     - remove `L_Tw_MoonRoof`, so one moon lights the belfry. This also removes the roof speck of item 1. Keep `SA_Tower_Roof`, and judge whether the belfry still reads. `L_Tw_BellFill` stays.
+     - remove `Light_TowerExt_0..2`, then check the tower silhouette from the gate and the courtyard. Only if it is lost, re-add one exterior light that cannot reach inside.
+   - Item 1's slit spots still move inside their slits.
