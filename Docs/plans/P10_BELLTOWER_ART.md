@@ -2837,3 +2837,25 @@ The doorway (Y −200…200, Z 0–400) stays clear.
 **Steps:** place them with a small script, `Tools/belltower/p10_8d_backing.py` (idempotent: it removes existing labels first). Read back the bounds and collision. It runs in F4 before the map save.
 
 **Verification:** F7 pose `lt_court_start`. The square must be gone; if it isn't, the hypothesis is wrong and the lead re-investigates.
+
+#### F1 / F2 review (lead, 2026-11-01)
+**F2 accepted** (5827489):
+- `IsConsumedBy` / `IsConsumed`;
+- a silent `Interact()` once consumed;
+- `SelectPrompt` in `UpdateFocus`;
+- new test `LastBell.Interaction.ConsumedShowsNoPrompt`;
+- the mirror build is clean and the suite passes **79/79**.
+
+The real-project binaries get it in F8.
+
+**F1 accepted** (9de5059):
+- the 8 pieces;
+- `verify_cloister.py` 50/50, with the 42 existing pieces unchanged;
+- 10 renders, `p10_8d_*.png`.
+
+The memorial tablet reads crisply in the face-on render with ANSELM leftmost and III, I, IV, II beneath. It reads as carved in the 35° grazing render.
+
+**Erratum to the F1 spec (lead error).** The spec said that a Blender render reading correctly from the front would also read correctly in UE. That is wrong for this pipeline.
+- Authoring coordinates equal UE coordinates numerically (the export Y flip and the importer's Y negation cancel). UE is left-handed, so the in-game picture is the mirror of Blender's native view (`README_cloister.md`: "the render camera is mirrored … and the text is pre-mirrored").
+- The agent built the cutters y-mirrored (`UE_VIEW = True` in `build_cloister.py`) and rendered with the mirrored review camera. This follows the project convention, and it is accepted.
+- **Final proof:** the F3 thumbnail and the F7 in-game capture. If either shows reversed text, set `UE_VIEW = False`, rebuild with the same `--only` command, and flip the sign of the tablet handedness check in `verify_cloister.py`.
