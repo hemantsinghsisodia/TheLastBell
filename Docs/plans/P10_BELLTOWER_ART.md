@@ -2534,3 +2534,12 @@ The lead posts this after reviewing 8a and 8b.
 - **F3:** the "staticMesh could not be read" log noise from `p10_6a_checks.py`. Noted in MCP_NOTES.
 
 **Next: P10-8c**, the owner review. The checklist is in D1.26 and in the "PHASE 10 READY FOR YOUR REVIEW" report.
+
+#### P10-8c owner review: findings so far (lead, 2026-11-01; the owner is still testing, so nothing is fixed yet)
+1. **Tower hot spots, seen from the courtyard start** (owner screenshot; PIE eye (196, 65, 156), yaw 8.6, pitch 11.4). Identified by projecting into the player camera: the relative positions match to about 1 px.
+   - **The dot on the tower W face** is slit F08. `L_Tw_MoonSlit_F08` sits 150 cm outside the wall, with an 8° cone (about 30 cm at the wall), so most of its 600 lm lands on the outer stone around the slit as a tiny, very bright disc. `F03` and `F07` do the same on the S face, hidden here by the chapel roof.
+   - **The speck at the top of the roof** is the SW collapse. `L_Tw_MoonRoof` sits 200 cm outside it and lights the slates around the hole. The `SA_Tower_Roof` card may also show through the hole.
+   - **Proposed fix (owner: "keep it in your list", do not fix yet):** move the 4 moon spots to just inside their openings (inner centre + a small step along d), so only the interior is lit. Keep the cones, the lumens and the cards. Re-check from the courtyard start and re-capture the `p10_7c` beam poses.
+2. **Belfry lancets glow.** This is the roof moon spot on the E belfry wall, seen through the W louvres, and it is intended. Pending: the owner judges whether it reads as "lights on in the tower"; if so, lower `L_Tw_MoonRoof`.
+3. **A small bright square on the chapel west front.** It is not from P10. The trace hit is about (6000, 242, 907) ± 70. Not identified yet: PIE limits `find_actors`, so the lead identifies it with the editor world once Play stops.
+4. **Testing aid:** to stop the Warden killing the owner during the review, use `lb.Warden.Enabled 0` in the PIE console (`LBWardenBrainComponent`, checked each tick). It is in memory only and resets to 1 on an editor restart.
