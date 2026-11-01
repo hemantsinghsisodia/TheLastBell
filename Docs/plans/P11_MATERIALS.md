@@ -149,6 +149,8 @@ Test assets live under `/Game/LastBell/ArtTest/P11/`. `MapsToCook` lists only `L
 - **Colour match:** `Tools/materials/p11_candidate_params.py` computes, for each candidate, linear mean RGB of the colour map, then `raw_c = medieval_c / candidate_c` with `medieval` = (0.1869, 0.1470, 0.0991) (`T_Medieval_Blocks_03_BC`). `BrightnessMul = max(raw_c)`, clamped to 0.5–2.5; `BaseColorTint = raw_c / max(raw_c)`. Only surface structure should differ between bays. Output: `Tools/materials/p11_candidate_params.json`, also recording each candidate's real-world size if the source gives one.
 - **Outputs:** `ExternalAssets/Incoming/<one folder each>/`; `Docs/ASSET_REGISTRY.md` rows; `Docs/ArtTest/materials/p11_candidates.png` (each colour map tiled 2 × 2).
 
+**Result (e368f49):** B1 = `polyhaven:rock_surface` (CC0, 200 cm; soft darker patches that visibly repeat, so watch for this on long walls). B2 = `polyhaven:rock_01` (CC0, 150 cm, so the tile clamps to 200 cm; faint horizontal bands). `worn_rock_natural_01` failed review: saturated yellow, with lichen specks. It stays on disk, git-ignored.
+
 #### P11-3b: no-groove test meshes (technical-artist, Blender only)
 - **Script:** `Tools/materials/build_p11_test_walls.py`. It imports `Tools/blender/kit/kit_lib.py` and `build_kit.py`, and wraps `K.relief_cutters` so every call has `h_grooves=False, vertical=False, recess_prob=0.0`, chips kept. Neither kit file is edited.
 - **Builds**, with the same seeds and builders as the originals, to `SourceArt/P11/`:
@@ -162,6 +164,8 @@ Test assets live under `/Game/LastBell/ArtTest/P11/`. `MapsToCook` lists only `L
   | `SM_LB_P11_NoGroove_Plinth_100x80x60` | `Trim_Plinth_100x80x60` |
 
 - **Acceptance:** bounds, pivot, material slots and UCX match the originals; a render `Docs/ArtTest/materials/p11_nogroove_render.png` shows original beside no-groove, with no joints on the no-groove pieces. `SourceArt/Kit` is byte-identical (`git status`).
+
+**Result (8d0d946):** all five built and verified. `Plinth_100x80x60` is identical to the original, because at 100 cm the original has no joints. Chip positions differ from the originals, because skipping the grooves uses fewer random numbers; count and size range are the same.
 
 #### P11-3c: materials, imports, test map (technical-artist [EDITOR])
 **Imports:**
