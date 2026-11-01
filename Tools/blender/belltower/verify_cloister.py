@@ -575,6 +575,81 @@ def chk_plaque(c, depth, step):
     c.notes.append("front faces +x (field %.1f, border %.1f)" % (depth - step, depth))
 
 
+# ---- P10-8d (D1.27 F1) -------------------------------------------------------------------------------------------
+def carve_pts(c, slot):
+    """Vertices (UE space) of every polygon in material slot `slot`."""
+    me = c.ob.data
+    return [c.pts[v] for poly in me.polygons if poly.material_index == slot for v in poly.vertices]
+
+
+def chk_lantern(c, R):
+    c.expect("ring lowest point z (= lantern top)", min(p.z for p in c.pts if abs(p.x - R) < 3.2), 0.0, 0.1)
+    c.expect("finial x max", c.mx.x, R + 3.9, 0.1)
+    tip = [p.z for p in c.pts if abs(p.x - (R + 2.0)) < 0.01 and abs(p.y) < 1.01]          # the arm bar's end face (z 13..15)
+    c.expect("arm end z top", max(tip) if tip else None, 15.0, 0.1)
+    c.expect("arm end z bottom", min(tip) if tip else None, 13.0, 0.1)
+    plate = [p for p in c.pts if p.x < 2.2]
+    c.expect("plate back x", min(p.x for p in plate), 0.0, 0.01)
+    c.expect("plate z min", min(p.z for p in plate), -14.0, 0.05)
+    c.expect("plate z max", max(p.z for p in plate), 18.0, 0.05)
+    c.notes.append("ring bottom z %.2f, R %g" % (min(p.z for p in c.pts if abs(p.x - R) < 3.2), R))
+
+
+def chk_memorial(c):
+    f = c.first((10.0, 0.0, 11.2), (-1, 0, 0))                       # field between row 1 and the top border
+    c.expect("field face x", f.x if f else None, 2.8, 0.05)
+    b = c.first((10.0, 0.0, c.mx.z - 1.5), (-1, 0, 0))
+    c.expect("border face x", b.x if b else None, 4.0, 0.05)
+    c.expect("back plane x", c.mn.x, 0.0, 0.01)
+    ink = carve_pts(c, 1)
+    if not ink:
+        c.fail("no MAT_Carve faces")
+        return
+    c.expect("groove floor x", min(p.x for p in ink), 2.8 - 0.48, 0.1)
+    c.expect("groove rim x", max(p.x for p in ink), 2.8, 0.05)
+    if max(abs(p.y) for p in ink) > 57.0 or max(abs(p.z) for p in ink) > 12.0:
+        c.fail("lettering outside the field (|y| %.2f, |z| %.2f)" % (max(abs(p.y) for p in ink), max(abs(p.z) for p in ink)))
+    # row 4 numerals: III under ANSELM, II under OSRIC.  In game ANSELM is at the viewer's LEFT; Unreal's viewer at +x facing -x has -y on the right, so ANSELM is at +y.
+    def inkcount(y0, y1, z0, z1):
+        return sum(1 for p in ink if y0 <= p.y <= y1 and z0 <= p.z <= z1)
+    left, right = inkcount(28, 57, -5.5, -1.5), inkcount(-57, -28, -5.5, -1.5)
+    if not left > right > 0:
+        c.fail("row 4 ink: III side (+y) %d vs II side (-y) %d" % (left, right))
+    # handedness: the last glyph in game is the L of FELL (rightmost = most negative y); its foot points to the viewer's right (-y), the stem is on the +y side
+    y_end = min(p.y for p in ink if -10.4 <= p.z <= -8.2)
+    foot = min(p.y for p in ink if -10.4 <= p.z <= -10.05 and p.y < y_end + 2.5)
+    top = min(p.y for p in ink if -8.6 <= p.z <= -8.25 and p.y < y_end + 2.5)
+    if not (top - foot > 0.5):
+        c.fail("text looks mirrored for the in-game view: foot of the final L reaches y %.2f, its stem top y %.2f" % (foot, top))
+    c.notes.append("%d groove faces, floor x %.2f; III side ink %d / II side ink %d; final-L foot %.2f stem %.2f (in-game reading: ANSELM at +y)" % (
+        sum(1 for poly in c.ob.data.polygons if poly.material_index == 1), min(p.x for p in ink), left, right, foot, top))
+
+
+def chk_named_slab(c, name, year):
+    c.expect("top z", c.mx.z, 8.0, 0.05)
+    ink = carve_pts(c, 3)
+    if not ink:
+        c.fail("no MAT_Carve faces")
+        return
+    c.expect("groove floor z", min(p.z for p in ink), 8.0 - 0.8, 0.1)
+    c.expect("groove rim z", max(p.z for p in ink), 8.0, 0.05)
+    xs = sorted(p.x for p in ink)
+    l2 = [p for p in ink if p.x < -33.0]
+    l1 = [p for p in ink if p.x >= -33.0]
+    if not l1 or not l2:
+        c.fail("expected two carved lines (x -23.5..-16.5 and -47.5..-42.5)")
+        return
+    c.expect("line 1 centre x", 0.5 * (min(p.x for p in l1) + max(p.x for p in l1)), -20.0, 0.6)
+    c.expect("line 2 centre x", 0.5 * (min(p.x for p in l2) + max(p.x for p in l2)), -45.0, 0.6)
+    c.expect("line 1 cap height", max(p.x for p in l1) - min(p.x for p in l1), 7.0, 0.8)
+    c.expect("line 2 cap height", max(p.x for p in l2) - min(p.x for p in l2), 5.0, 0.8)
+    wid = max(abs(p.y) for p in ink)
+    if wid > 36.0:
+        c.fail("lettering reaches |y| %.2f (> 36, too close to the slab edge)" % wid)
+    c.notes.append("%s %d: line 1 x %.1f..%.1f, line 2 x %.1f..%.1f, |y| max %.1f, groove floor z %.2f" % (
+        name, year, min(p.x for p in l1), max(p.x for p in l1), min(p.x for p in l2), max(p.x for p in l2), wid, min(p.z for p in ink)))
+
+
 # ----------------------------------------------------------------------------------------------
 # spec table
 # ----------------------------------------------------------------------------------------------
@@ -620,6 +695,12 @@ def spec():
     add(PP + "SmallBellBracket_A", (0, -11, -25), (34, 11, 22), ["MAT_Iron", "MAT_Wood"], 1500, check=chk_bracket)
     add(PP + "BellPlaque_A", (0, -17, -17), (4, 17, 17), ["MAT_Trim"], 400, check=lambda c: chk_plaque(c, 4.0, 1.0))
     add(PP + "InscriptionTablet_A", (0, -60, -15), (4, 60, 15), ["MAT_Trim"], 400, check=lambda c: chk_plaque(c, 4.0, 1.2))
+    # P10-8d (D1.27 F1)
+    for R in (20, 40, 60):
+        add(PP + "LanternBracket_R%d" % R, (0, -4, -14), (R + 3.9, 4, 18), ["MAT_Iron"], 3000, check=lambda c, R=R: chk_lantern(c, float(R)))
+    add(PP + "InscriptionTablet_Memorial", (0, -60, -15), (4, 60, 15), ["MAT_Trim", "MAT_Carve"], 60000, tol=0.1, check=chk_memorial)
+    for nm, yr in (("Anselm", 1341), ("Tomas", 1344), ("Edwin", 1348), ("Osric", 1351)):
+        add(P + "GraveSlab_200x80_" + nm, (-100, -40, 0), (100, 40, 8), KIT + ["MAT_Carve"], 20000, tol=0.1, check=lambda c, nm=nm, yr=yr: chk_named_slab(c, nm, yr))
     return S
 
 

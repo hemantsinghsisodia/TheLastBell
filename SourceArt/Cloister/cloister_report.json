@@ -1343,5 +1343,263 @@
   "ucx": 0,
   "seconds": 0.0,
   "note": "pivot back centre, front faces +x: 4 x 120 x 30, 3 cm moulded border (x 2.8..4), field recessed 1.2"
+ },
+ {
+  "name": "SM_LB_Prop_LanternBracket_R20",
+  "seed": 1305,
+  "min": [
+   0.0,
+   -4.0,
+   -14.0
+  ],
+  "max": [
+   23.9,
+   4.0,
+   18.0
+  ],
+  "dims": [
+   23.9,
+   8.0,
+   32.0
+  ],
+  "tris": 608,
+  "slots": [
+   "MAT_Iron"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 0,
+  "seconds": 0.3,
+  "note": "pivot on the wall face (x 0) at the lantern hook height, +x out of the wall; plate x 0..1.5 y +-4 z -14..18 with 2 bolt heads, arm 2x2 to x 22, finial r1.4, brace 1.5x1.5 to (12, 13.25), C-scroll, link + ring (lowest point z 0.0 = lantern top); reach R = 20"
+ },
+ {
+  "name": "SM_LB_Prop_LanternBracket_R40",
+  "seed": 1306,
+  "min": [
+   0.0,
+   -4.0,
+   -14.0
+  ],
+  "max": [
+   43.9,
+   4.0,
+   18.0
+  ],
+  "dims": [
+   43.9,
+   8.0,
+   32.0
+  ],
+  "tris": 608,
+  "slots": [
+   "MAT_Iron"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 0,
+  "seconds": 0.0,
+  "note": "pivot on the wall face (x 0) at the lantern hook height, +x out of the wall; plate x 0..1.5 y +-4 z -14..18 with 2 bolt heads, arm 2x2 to x 42, finial r1.4, brace 1.5x1.5 to (24, 13.25), C-scroll, link + ring (lowest point z 0.0 = lantern top); reach R = 40"
+ },
+ {
+  "name": "SM_LB_Prop_LanternBracket_R60",
+  "seed": 1307,
+  "min": [
+   0.0,
+   -4.0,
+   -14.0
+  ],
+  "max": [
+   63.9,
+   4.0,
+   18.0
+  ],
+  "dims": [
+   63.9,
+   8.0,
+   32.0
+  ],
+  "tris": 608,
+  "slots": [
+   "MAT_Iron"
+  ],
+  "slots_used": [
+   0
+  ],
+  "ucx": 0,
+  "seconds": 0.0,
+  "note": "pivot on the wall face (x 0) at the lantern hook height, +x out of the wall; plate x 0..1.5 y +-4 z -14..18 with 2 bolt heads, arm 2x2 to x 62, finial r1.4, brace 1.5x1.5 to (36, 13.25), C-scroll, link + ring (lowest point z 0.0 = lantern top); reach R = 60"
+ },
+ {
+  "name": "SM_LB_Prop_InscriptionTablet_Memorial",
+  "seed": 1308,
+  "min": [
+   0.0,
+   -60.0,
+   -15.0
+  ],
+  "max": [
+   4.0,
+   60.0,
+   15.0
+  ],
+  "dims": [
+   4.0,
+   120.0,
+   30.0
+  ],
+  "tris": 35733,
+  "slots": [
+   "MAT_Trim",
+   "MAT_Carve"
+  ],
+  "slots_used": [
+   0,
+   1
+  ],
+  "ucx": 0,
+  "seconds": 4.3,
+  "note": "build_plaque(120 x 30 x 4, border 3, step 1.2) + memorial roll carved 0.48 into the field face (x 2.8), Roboto Bold, spacing 1.15; rows 1/5 centred, rows 2-4 in four columns (ANSELM TOMAS EDWIN OSRIC, left to right as seen in game; ANSELM at +y); groove faces = MAT_Carve (slot 1); placed at root scale 2.5"
+ },
+ {
+  "name": "SM_LB_Cl_GraveSlab_200x80_Anselm",
+  "seed": 1220,
+  "min": [
+   -100.0,
+   -40.0,
+   0.0
+  ],
+  "max": [
+   100.0,
+   40.0,
+   8.0
+  ],
+  "dims": [
+   200.0,
+   80.0,
+   8.0
+  ],
+  "tris": 5000,
+  "slots": [
+   "MAT_Masonry",
+   "MAT_Trim",
+   "MAT_Rubble",
+   "MAT_Carve"
+  ],
+  "slots_used": [
+   0,
+   1,
+   2,
+   3
+  ],
+  "ucx": 0,
+  "seconds": 0.7,
+  "note": "build_grave_slab(..., 1220) + 'BR. ANSELM' (cap 7, centre x -20) and 'OB. 1341' (cap 5, centre x -45) carved 0.8 into the top face, Roboto Bold; text up = +x, reads from the foot (-x) end; groove faces = MAT_Carve (slot 3)"
+ },
+ {
+  "name": "SM_LB_Cl_GraveSlab_200x80_Tomas",
+  "seed": 1220,
+  "min": [
+   -100.0,
+   -40.0,
+   0.0
+  ],
+  "max": [
+   100.0,
+   40.0,
+   8.0
+  ],
+  "dims": [
+   200.0,
+   80.0,
+   8.0
+  ],
+  "tris": 5380,
+  "slots": [
+   "MAT_Masonry",
+   "MAT_Trim",
+   "MAT_Rubble",
+   "MAT_Carve"
+  ],
+  "slots_used": [
+   0,
+   1,
+   2,
+   3
+  ],
+  "ucx": 0,
+  "seconds": 0.7,
+  "note": "build_grave_slab(..., 1220) + 'BR. TOMAS' (cap 7, centre x -20) and 'OB. 1344' (cap 5, centre x -45) carved 0.8 into the top face, Roboto Bold; text up = +x, reads from the foot (-x) end; groove faces = MAT_Carve (slot 3)"
+ },
+ {
+  "name": "SM_LB_Cl_GraveSlab_200x80_Edwin",
+  "seed": 1220,
+  "min": [
+   -100.0,
+   -40.0,
+   0.0
+  ],
+  "max": [
+   100.0,
+   40.0,
+   8.0
+  ],
+  "dims": [
+   200.0,
+   80.0,
+   8.0
+  ],
+  "tris": 5284,
+  "slots": [
+   "MAT_Masonry",
+   "MAT_Trim",
+   "MAT_Rubble",
+   "MAT_Carve"
+  ],
+  "slots_used": [
+   0,
+   1,
+   2,
+   3
+  ],
+  "ucx": 0,
+  "seconds": 0.7,
+  "note": "build_grave_slab(..., 1220) + 'BR. EDWIN' (cap 7, centre x -20) and 'OB. 1348' (cap 5, centre x -45) carved 0.8 into the top face, Roboto Bold; text up = +x, reads from the foot (-x) end; groove faces = MAT_Carve (slot 3)"
+ },
+ {
+  "name": "SM_LB_Cl_GraveSlab_200x80_Osric",
+  "seed": 1220,
+  "min": [
+   -100.0,
+   -40.0,
+   0.0
+  ],
+  "max": [
+   100.0,
+   40.0,
+   8.0
+  ],
+  "dims": [
+   200.0,
+   80.0,
+   8.0
+  ],
+  "tris": 6552,
+  "slots": [
+   "MAT_Masonry",
+   "MAT_Trim",
+   "MAT_Rubble",
+   "MAT_Carve"
+  ],
+  "slots_used": [
+   0,
+   1,
+   2,
+   3
+  ],
+  "ucx": 0,
+  "seconds": 0.9,
+  "note": "build_grave_slab(..., 1220) + 'BR. OSRIC' (cap 7, centre x -20) and 'OB. 1351' (cap 5, centre x -45) carved 0.8 into the top face, Roboto Bold; text up = +x, reads from the foot (-x) end; groove faces = MAT_Carve (slot 3)"
  }
 ]

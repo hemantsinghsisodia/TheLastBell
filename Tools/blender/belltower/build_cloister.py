@@ -34,6 +34,7 @@ P_PROP = "SM_LB_Prop_"
 EXTRA_COLORS = {
     "MAT_Slate": (0.16, 0.17, 0.19, 1.0), "MAT_Wood": (0.34, 0.24, 0.15, 1.0), "MAT_Earth": (0.17, 0.12, 0.08, 1.0),
     "MAT_Iron": (0.10, 0.10, 0.11, 1.0), "MAT_Bronze": (0.42, 0.30, 0.17, 1.0), "MAT_Band": (0.55, 0.10, 0.08, 1.0),
+    "MAT_Carve": (0.13, 0.125, 0.115, 1.0),     # P10-8d: carved lettering (grooves in the tablet field / grave slab tops)
 }
 
 
@@ -1276,6 +1277,148 @@ def build_plaque(short, W, H, D, border, step, seed, field_wear=False):
               note="pivot back centre, front faces +x: %g x %g x %g, %g cm moulded border (x %g..%g), field recessed %g" % (D, W, H, border, D - step, D, step))
 
 
+# ==============================================================================================
+# P10-8d (D1.27 F1): lantern brackets, memorial tablet with carved text, named grave slabs
+# ==============================================================================================
+ROBOTO_BOLD = r"C:\Program Files\Epic Games\UE_5.8\Engine\Content\Slate\Fonts\Roboto-Bold.ttf"     # Apache 2.0, engine install; loaded from here, not copied
+CAP_PER_SIZE = 0.5339          # Roboto Bold cap height of a Blender text object per unit of `size` (measured on "H", Blender 5.2)
+# Handedness.  The FBX leaves Blender's Y mirrored once (kit_lib.export_piece_fbx) and Unreal's importer negates Y again, so the numbers in Unreal equal the
+# numbers here but Unreal is left-handed: the in-game picture is the MIRROR of the Blender-native picture (render_cloister.py mirrors its camera for the same
+# reason).  Text that reads correctly in game therefore has to be built y-mirrored.  Set to False for text that reads correctly in the native Blender view.
+UE_VIEW = True
+
+
+def cyl_x(r, x0, x1, y, z, segs=8, mat=0):
+    """Cylinder along +x from x0 to x1 (axis through y, z)."""
+    c = K.cylinder(r, x1 - x0, segs, mat)
+    for v in c.verts:
+        v.co = Vector((v.co.z + x0, v.co.x + y, v.co.y + z))
+    K._outward(c)
+    return c
+
+
+def build_lantern_bracket(short, R, seed):
+    """Wall bracket for a hanging lantern (D1.27 F1.1).  Pivot (0,0,0) on the wall face at the lantern's hook height, +x out of the wall; the hanger ring's
+    lowest point is z 0.0 (the top of the lantern).  Slot MAT_Iron only, no UCX."""
+    plate = K.box(0.0, 1.5, -4.0, 4.0, -14.0, 18.0, 0, 0.0)
+    K.bevel_all(plate, 0.3, 20.0)
+    parts = [plate, cyl_x(0.9, 1.5, 2.1, 0.0, -10.0), cyl_x(0.9, 1.5, 2.1, 0.0, 14.0)]            # bolt heads
+    parts.append(K.box(1.5, R + 2.0, -1.0, 1.0, 13.0, 15.0, 0, 0.0))                              # arm 2 x 2
+    parts.append(uvsphere(1.4, (R + 2.5, 0.0, 14.0), 0, 12, 8))                                   # finial
+    a, b = Vector((1.5, 0.0, -10.0)), Vector((0.6 * R, 0.0, 13.25))
+    parts.append(sweep([a, b], rect_prof(1.5, 1.5), 0, up=(0.0, 1.0, 0.0)))                        # brace 1.5 x 1.5
+    pt = a + (b - a) / 3.0                                                                         # C-scroll at the brace's lower third
+    cen = pt - Vector((0.0, 0.0, 3.0))
+    arc = [cen + Vector((3.0 * math.cos(math.radians(90.0 + 90.0 * i / 8.0)), 0.0, 3.0 * math.sin(math.radians(90.0 + 90.0 * i / 8.0)))) for i in range(9)]
+    parts.append(sweep(arc, circle_prof(0.5, 6), 0, up=(0.0, 1.0, 0.0)))
+    link = K.cylinder(0.5, 7.0, 6, 0)                                                              # hanger link z 6..13
+    translate(link, dx=R, dy=0.0, dz=6.0)
+    parts.append(link)
+    parts.append(torus_xz(2.6, 0.5, (R, 0.0, 3.1), 0, 16, 6))                                      # ring, lowest point z 0.0
+    out = K.combine(*parts)
+    free(*parts)
+    return CP(P_PROP + short, out, ["MAT_Iron"],
+              note="pivot on the wall face (x 0) at the lantern hook height, +x out of the wall; plate x 0..1.5 y +-4 z -14..18 with 2 bolt heads, arm 2x2 to x %g, finial r1.4, "
+                   "brace 1.5x1.5 to (%g, 13.25), C-scroll, link + ring (lowest point z 0.0 = lantern top); reach R = %g" % (R + 2, 0.6 * R, R))
+
+
+def text_cutter(items, depth, ext, bev, res, spacing=1.15, mat=1, resu=3, trim=0.0):
+    """Cutter solid for lines of Roboto Bold text, in text-plane coordinates: u = reading direction, v = up, w = out of the face (the face is w 0).
+    items = [(text, cap_height, centre_u, centre_v)].  The solid spans w -depth .. -depth + 2*(ext+bev).  Text curves get offset -bev so the bevel
+    does not fatten the strokes (stroke width = the glyph's outline at mid height)."""
+    font = bpy.data.fonts.load(ROBOTO_BOLD, check_existing=True)
+    out = bmesh.new()
+    for (txt, cap, cu_, cv_) in items:
+        cu = bpy.data.curves.new("_txt", 'FONT')
+        cu.font = font
+        cu.body = txt
+        cu.size = cap / CAP_PER_SIZE
+        cu.align_x = 'LEFT'
+        cu.extrude, cu.bevel_depth, cu.bevel_resolution, cu.offset = ext, bev, res, -bev - trim * cap
+        cu.space_character = spacing
+        cu.resolution_u = resu
+        ob = bpy.data.objects.new("_txt", cu)
+        bpy.context.scene.collection.objects.link(ob)
+        bpy.context.view_layer.update()
+        dg = bpy.context.evaluated_depsgraph_get()
+        me = bpy.data.meshes.new_from_object(ob.evaluated_get(dg), depsgraph=dg)
+        b = bmesh.new()
+        b.from_mesh(me)
+        bpy.data.objects.remove(ob)
+        bpy.data.meshes.remove(me)
+        bpy.data.curves.remove(cu)
+        mn, mx = K.bm_bounds(b)
+        du = cu_ - 0.5 * (mn[0] + mx[0])
+        dv = cv_ - cap / 2.0                         # baseline is v 0 in the curve, so the cap band is centred on cv_
+        dw = -depth + (ext + bev)
+        bmesh.ops.translate(b, vec=(du, dv, dw), verts=b.verts)
+        K.bm_set_mat(b, mat)
+        K.bm_append(out, b)
+        b.free()
+    return out
+
+
+def orient_cutter(bm, native_map, face_pos):
+    """Map text-plane (u, v, w) -> piece space with `native_map(u, v, w)` (reads correctly in the native Blender view) and, when UE_VIEW, mirror y (the in-game
+    picture is the mirror of the native one).  face_pos is added afterwards.  The face winding is reversed when the map flips handedness; bmesh's
+    recalc_face_normals is NOT used here: on text solids with counters (A, B, O, ...) it flips some inner walls depending on where the glyph sits, which makes the
+    exact boolean fill the counters (found in P10-8d)."""
+    def mp(u, v, w):
+        x, y, z = native_map(u, v, w)
+        return Vector((x, -y if UE_VIEW else y, z))
+    e = [mp(1, 0, 0) - mp(0, 0, 0), mp(0, 1, 0) - mp(0, 0, 0), mp(0, 0, 1) - mp(0, 0, 0)]
+    flip = e[0].cross(e[1]).dot(e[2]) < 0
+    for vv in bm.verts:
+        vv.co = mp(vv.co.x, vv.co.y, vv.co.z) + Vector(face_pos)
+    if flip:
+        bmesh.ops.reverse_faces(bm, faces=bm.faces)
+    return bm
+
+
+MEMORIAL_COLS = (-42.75, -14.25, 14.25, 42.75)
+MEMORIAL_NAMES = (("ANSELM", 1341, "III"), ("TOMAS", 1344, "I"), ("EDWIN", 1348, "IV"), ("OSRIC", 1351, "II"))
+
+
+def build_memorial_tablet(short, seed):
+    """InscriptionTablet_A geometry (build_plaque 120 x 30 x 4, seed 1308) with the memorial roll carved into the field face (x 2.8) -- D1.27 F1.2.
+    Slots MAT_Trim 0, MAT_Carve 1 (the groove faces).  Local units: the tablet is placed at root scale 2.5 (local = world / 2.5)."""
+    base = build_plaque(short, 120.0, 30.0, 4.0, 3.0, 1.2, seed)
+    items = [("HERE REST THE BROTHERS OF THE BELL", 2.40, 0.0, 9.0), ("RING FOR THEM AS THEY FELL", 2.00, 0.0, -9.3)]
+    for col, (nm, yr, num) in zip(MEMORIAL_COLS, MEMORIAL_NAMES):
+        items.append(("BR. " + nm, 2.20, col, 4.6))
+        items.append(("OB. %d" % yr, 1.60, col, 1.3))
+        items.append((num, 3.60, col, -3.4))
+    cut = text_cutter(items, 0.48, 0.24, 0.10, 2, 1.15, mat=1)
+    # native: viewer at +x looking -x sees +y on the right (u -> +y), up is +z, w -> +x
+    orient_cutter(cut, lambda u, v, w: (w, u, v), (2.8, 0.0, 0.0))
+    out = K.boolean_diff(base.bm, cut)
+    free(base.bm, cut)
+    return CP(P_PROP + short, out, ["MAT_Trim", "MAT_Carve"],
+              note="build_plaque(120 x 30 x 4, border 3, step 1.2) + memorial roll carved 0.48 into the field face (x 2.8), Roboto Bold, spacing 1.15; rows 1/5 centred, rows 2-4 in "
+                   "four columns (ANSELM TOMAS EDWIN OSRIC, left to right as seen in game; ANSELM at +y); groove faces = MAT_Carve (slot 1); placed at root scale 2.5")
+
+
+GRAVE_NAMES = (("Anselm", 1341), ("Tomas", 1344), ("Edwin", 1348), ("Osric", 1351))
+
+
+def build_named_grave_slab(short, name, year, seed):
+    """build_grave_slab(..., 1220) plus two carved lines on the top face (z 8): 'BR. NAME' cap 7 at x -20 and 'OB. YEAR' cap 5 at x -45 (D1.27 F1.3).
+    Text up is +x (toward the cross), reading direction is the viewer's right when standing at the foot (-x end).  Slots: kit slots + MAT_Carve (3)."""
+    base = build_grave_slab(short, seed)
+    cut = bmesh.new()
+    for (txt, cap, cx) in (("BR. " + name.upper(), 7.0, -20.0), ("OB. %d" % year, 5.0, -45.0)):
+        c = text_cutter([(txt, cap, 0.0, 0.0)], 0.8, 0.4, 0.12, 2, 1.15, mat=3)
+        # native: viewer at the foot (-x) looking +x from above: up = +x, right = -y (u -> -y), w -> +z
+        orient_cutter(c, lambda u, v, w: (v, -u, w), (cx, 0.0, 8.0))
+        K.bm_append(cut, c)
+        c.free()
+    out = K.boolean_diff(base.bm, cut)
+    free(base.bm, cut)
+    return CP(P + short, out, KIT_SLOTS + ["MAT_Carve"],
+              note="build_grave_slab(..., 1220) + 'BR. %s' (cap 7, centre x -20) and 'OB. %d' (cap 5, centre x -45) carved 0.8 into the top face, Roboto Bold; text up = +x, "
+                   "reads from the foot (-x) end; groove faces = MAT_Carve (slot 3)" % (name.upper(), year))
+
+
 # stair-house, cell frame etc. are above; props use the SM_LB_Prop_ prefix
 # ==============================================================================================
 # registry
@@ -1337,6 +1480,12 @@ def table():
 
 
 TABLE_EXTRA = []        # appended by later sections
+# P10-8d (D1.27 F1)
+for _R, _sd in ((20, 1305), (40, 1306), (60, 1307)):
+    TABLE_EXTRA.append(("SM_LB_Prop_LanternBracket_R%d" % _R, _sd, (lambda _R=_R, _sd=_sd: build_lantern_bracket("LanternBracket_R%d" % _R, float(_R), _sd))))
+TABLE_EXTRA.append(("SM_LB_Prop_InscriptionTablet_Memorial", 1308, lambda: build_memorial_tablet("InscriptionTablet_Memorial", 1308)))
+for _nm, _yr in GRAVE_NAMES:
+    TABLE_EXTRA.append(("GraveSlab_200x80_" + _nm, 1220, (lambda _nm=_nm, _yr=_yr: build_named_grave_slab("GraveSlab_200x80_" + _nm, _nm, _yr, 1220))))
 
 
 def full_name(short):

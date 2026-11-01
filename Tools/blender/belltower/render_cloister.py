@@ -31,6 +31,7 @@ PR = "SM_LB_Prop_"
 # args
 # ----------------------------------------------------------------------------------------------
 PROBE = False
+ONLY = []
 
 
 def parse():
@@ -43,6 +44,11 @@ def parse():
             i += 1
             while i < len(argv) and not argv[i].startswith("--"):
                 sets.append(argv[i])
+                i += 1
+        elif argv[i] == "--only":                    # P10-8d: substring filter on the image name
+            i += 1
+            while i < len(argv) and not argv[i].startswith("--"):
+                ONLY.append(argv[i])
                 i += 1
         elif argv[i] == "--quick":
             quick = True
@@ -781,9 +787,115 @@ def probe_roofs(sc, out, name):
     sc.render.filepath = old
 
 
+# ----------------------------------------------------------------------------------------------
+# P10-8d (D1.27 F1): the 8 new pieces on their own (lantern brackets, memorial tablet, named grave slabs)
+#   blender -b --factory-startup --python render_cloister.py -- --set p10_8d [--quick] [--only SUBSTR]
+# Reads SourceArt/Cloister/LB_Cloister_p10_8d.blend (build_cloister.py --only LanternBracket Tablet_Memorial 200x80_ --tag p10_8d) and writes
+# Docs/ArtTest/belltower/p10_8d_<name>.png.  Every view uses the usual mirrored camera, so the images show the IN-GAME (Unreal-handed) picture; the *_native
+# image is the same tablet seen by an un-mirrored camera (what Blender's own viewport shows: its lettering is mirrored by design, see UE_VIEW in build_cloister.py).
+# ----------------------------------------------------------------------------------------------
+BLEND_8D = os.path.join(REPO, "SourceArt", "Cloister", "LB_Cloister_p10_8d.blend")
+
+
+def add_sun_dir(name, to_light, strength, color=(1.0, 1.0, 1.0), angle_deg=2.0):
+    """Sun whose light arrives from the direction `to_light` (a vector from the subject toward the light)."""
+    l = bpy.data.lights.new(name, 'SUN')
+    l.energy = strength
+    l.color = color
+    l.angle = math.radians(angle_deg)
+    o = bpy.data.objects.new(name, l)
+    bpy.context.scene.collection.objects.link(o)
+    o.rotation_euler = (-Vector(to_light)).to_track_quat('-Z', 'Y').to_euler()
+    return o
+
+
+WARM = (1.0, 0.62, 0.32)
+
+
+def render_8d(out, quick, samples, only):
+    bpy.ops.wm.open_mainfile(filepath=BLEND_8D)
+    K.setup_scene_units()
+    for o in bpy.data.objects:
+        if o.type == 'MESH' and o.name.startswith("SM_LB_"):
+            SRC[o.name] = o
+            o.hide_render = True
+            o.hide_viewport = True
+    setup_materials()
+    mk_stone("MAT_Carve", (0.012, 0.012, 0.011, 1), (0.035, 0.034, 0.03, 1), 0.95, 0.05, 0.3)
+    dark = flat_mat("R_LanternProxy", (0.05, 0.035, 0.02, 1), 0.45, 0.6)
+    sc, cam = setup_render(quick, samples)
+    floor_m = bpy.data.materials["MAT_Earth"]
+
+    def clear_scene():
+        for o in list(PLACED):
+            bpy.data.objects.remove(o)
+        PLACED.clear()
+        clear_lights()
+
+    def shoot(name, w, h, loc, tgt, lens, exp, ortho=None, native=False):
+        if only and not any(s in name for s in only):
+            return
+        sc.render.resolution_x, sc.render.resolution_y = (w // 2, h // 2) if quick else (w, h)
+        if ortho:
+            cam.data.type = 'ORTHO'
+            cam.data.ortho_scale = ortho
+        else:
+            cam.data.type = 'PERSP'
+        sc.view_settings.exposure = exp
+        aim(cam, loc, tgt, lens)
+        if native:
+            cam.scale = (1.0, 1.0, 1.0)
+        sc.render.filepath = os.path.join(out, "p10_8d_" + name + ".png")
+        bpy.ops.render.render(write_still=True)
+        print("RENDERED", sc.render.filepath)
+        sys.stdout.flush()
+
+    # --- the tablet (root scale 2.5, as placed in game) -------------------------------------------------------------
+    TB = "SM_LB_Prop_InscriptionTablet_Memorial"
+    clear_scene()
+    place(TB, (0, 0, 0), 0, (2.5, 2.5, 2.5), group="p")
+    add_sun_dir("key", (0.78, 0.50, 0.62), 4.0, WARM)
+    add_sun_dir("fill", (1.0, -0.4, 0.3), 0.5, (0.6, 0.7, 1.0))
+    shoot("InscriptionTablet_Memorial_face", 1920, 540, (600, 0, 0), (0, 0, 0), 50, 0.8, ortho=304)
+    shoot("InscriptionTablet_Memorial_face_native", 1920, 540, (600, 0, 0), (0, 0, 0), 50, 0.8, ortho=304, native=True)
+    # 35 deg to the surface plane, one warm light above-left (in the picture) of the viewer
+    for o in list(bpy.data.objects):
+        if o.type == 'LIGHT':
+            bpy.data.objects.remove(o)
+    ang = math.radians(35.0)
+    dirv = Vector((math.sin(ang), math.cos(ang), 0.0))                  # tablet -> camera
+    camloc = dirv * 420.0 + Vector((0, 0, -10))
+    # picture-left in the mirrored camera = the +y side when the camera sits at +y looking toward -y... resolved by looking at the render
+    add_sun_dir("warm", (0.9, 0.9 * 0.0 + 0.55, 0.7), 4.5, WARM)
+    shoot("InscriptionTablet_Memorial_grazing", 1920, 1080, tuple(camloc), (0, 0, 0), 40, 0.9)
+
+    # --- the grave slabs, from above the foot (-x) end ---------------------------------------------------------------
+    for nm in ("Anselm", "Tomas", "Edwin", "Osric"):
+        clear_scene()
+        place("SM_LB_Cl_GraveSlab_200x80_" + nm, (0, 0, 0), 0, group="p")
+        box_obj("ground", -170, 170, -110, 110, -8, -0.01, floor_m, grp="p")
+        add_sun_dir("key", (-0.45, -0.75, 0.50), 4.0, WARM)
+        add_sun_dir("fill", (-0.6, 0.6, 0.6), 0.6, (0.6, 0.7, 1.0))
+        shoot("GraveSlab_" + nm, 1440, 810, (-150, 0, 150), (-32, 0, 6), 38, 0.8)
+
+    # --- the lantern brackets, from the side, with the lantern proxy hanging from the ring -----------------------------
+    for R in (20, 40, 60):
+        clear_scene()
+        place("SM_LB_Prop_LanternBracket_R%d" % R, (0, 0, 0), 0, group="p")
+        box_obj("wall", -40, 0, -70, 70, -100, 100, bpy.data.materials["MAT_Masonry"], grp="p")
+        box_obj("lantern_proxy", R - 11, R + 11, -11, 11, -53, 0, dark, grp="p")
+        add_sun_dir("key", (0.6, 0.8, 0.55), 4.0, WARM)
+        add_sun_dir("fill", (0.5, -0.7, 0.4), 1.0, (0.6, 0.7, 1.0))
+        shoot("LanternBracket_R%d" % R, 1440, 810, (R / 2.0 + 15.0, 400, -17), (R / 2.0 + 15.0, 0, -17), 50, 1.0, ortho=150)
+    sc.cycles.samples = sc.cycles.samples
+
+
 def main():
     sets, quick, samples, out = parse()
     os.makedirs(out, exist_ok=True)
+    if "p10_8d" in sets:
+        render_8d(out, quick, samples, ONLY)
+        return
     bpy.ops.wm.open_mainfile(filepath=BLEND)
     K.setup_scene_units()
     collect_sources()
