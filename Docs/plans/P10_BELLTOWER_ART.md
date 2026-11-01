@@ -2885,3 +2885,13 @@ The 256 px thumbnails could not settle the text direction, so F7 decides.
 3. The stale `CLA_LanternBracket_West` actor was removed by a one-off call.
 
 **Follow-up (tooling, low priority):** `place_tower.py --cats/--only` removes only the labels present in the layout, so a record dropped from the layout leaves its actor behind. Note it in MCP_NOTES at the phase end; a `--prune` option is optional.
+
+#### F5 review (lead, 2026-11-01)
+**F5 accepted** (c00e0ae).
+- **`BP_Inscription_Cloister` construction script:** replaced cleanly (17 nodes, one entry, no orphans). The Plaque is now `SM_LB_Prop_InscriptionTablet_Memorial` with slots `MI_Kit_Trim` / `MI_Cl_CarveDirt`, and `Engraving` is hidden.
+- **Compile:** clean with `warnings_as_errors`.
+- **Diffs:** before/after shows only the allowed differences (`Text`, `Engraving` text and visibility, Plaque mesh and materials); reload shows 0.
+- **Plaque bounds:** exactly X 11990–12000, Y 2230–2530, Z 162.5–237.5.
+- **Saves and suite:** the BP and map saved one per call, both clean; suite 78/78.
+
+**Next:** F7, the first live `capture_session.py` run (PIE Simulate, 15 poses, owner at the PC); then F8 and F9.
