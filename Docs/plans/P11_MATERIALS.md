@@ -1,6 +1,6 @@
 # Phase 11: Materials (surface polish): plan
 
-**Status:** approved by the owner on 2026-11-02. P11-0, P11-1 and P11-2 done; P11-3 waits for the owner's "go". The door corners and `Gobo_Moon` specks stay out of scope.
+**Status:** approved by the owner on 2026-11-02. P11-0, P11-1 and P11-2 done; P11-3 in progress (owner's "go", 2026-11-02). The door corners and `Gobo_Moon` specks stay out of scope.
 **Branch:** `claude/phase-11-materials`, from `main` (6dfa29d).
 **Rules:** D-048 applies. The lead plans in Opus 5.5 at xhigh effort; every implementer is spawned with `model: "sonnet", effort: "high"`.
 
@@ -138,23 +138,91 @@ All six pass. The chapel has the least room, so P11-5 adds one chapel reading (a
 **Capture settings:** the baseline runs with the editor at High (`sg.*` = 2, read with `SearchCVars`; set by the owner's `scalability 2` in this editor session) and the Warden off. P11-8 must read `sg.*` first and match them, because a restarted editor can return to another level.
 
 ### P11-3: joint test (separate map; `L_Monastery` untouched)
-1. **Downloads** (asset-curator, CC0 only, 2K, registry rows). Candidates found by the lead, unconfirmed as joint-free until the curator looks at them: `polyhaven:rock_surface` and `polyhaven:worn_rock_natural_01`. Reject any with block or mortar lines. A third candidate needs no download: the `MI_Cl_TabletStone` recipe (flat tint plus `T_Rock_064_N`).
-2. **Test meshes** (technical-artist, Blender): a no-groove copy of `SM_LB_Kit_Wall_400x60x800_A` and `SM_LB_Kit_Wall_100x60x800`, via `relief_cutters(h_grooves=False, vertical=False, recess_prob=0.0)` with chips kept. Import to `/Game/LastBell/ArtTest/P11/`, with new names. Existing meshes are not changed.
-3. **Test map** `/Game/LastBell/ArtTest/P11/L_Test_P11_Walls` (never cooked). The same conditions as the game:
-   - floor slabs, a directional moon at 0.9 lux (pitch −38, yaw 35), a sky light at 0.45;
-   - a post-process volume with EV100 0.65, `ColorSaturationShadows` 0.65;
-   - five wall bays, 6 m apart, each with one lantern 40 cm off the wall (shadowless, 200 lm, radius 600, colour (1.0, 0.549, 0.2196), `MI_LF_Lantern`):
+**Order:** P11-3a (downloads) and P11-3b (Blender) run together, with no editor. Then P11-3c (editor). Then P11-3d (lead and owner: captures, sheet, choice).
 
-   | Bay | Mesh | Masonry and trim material |
-   |---|---|---|
-   | 1 (today) | current | `MI_Kit_Masonry` / `MI_Kit_Trim` |
-   | 2 (A) | no-groove | `MI_Kit_Masonry` / joint-free trim |
-   | 3 (B1) | current | `rock_surface` |
-   | 4 (B2) | current | `worn_rock_natural_01` |
-   | 5 (B3) | current | `MI_Cl_TabletStone` recipe, with a slightly stronger normal |
+Test assets live under `/Game/LastBell/ArtTest/P11/`. `MapsToCook` lists only `L_MainMenu` and `L_Monastery`, so the test map is never cooked.
 
-4. **Captures** (lead + owner): each bay face-on at 3 m under the lantern, at a grazing angle at 1.5 m, and at 15 m in moonlight only. Contact sheet: `Docs/ArtTest/materials/p11_joint_test.png`.
-5. **Owner chooses.** D-086 records the choice.
+#### P11-3a: downloads (asset-curator; CC0 only, 2K)
+- **Candidates:** `polyhaven:rock_surface` (role B1), `polyhaven:worn_rock_natural_01` (role B2).
+- **Accept only if**, tiled at 300 cm on a wall, there are no block lines, mortar lines or regular patterns, no feature larger than about 30 cm (big cracks would cross the modelled joints), and no moss or sand.
+- **If one fails:** search `3d-assets-local` for CC0 Poly Haven or ambientCG stone or rock textures and replace it. Exactly two survive.
+- **Colour match:** `Tools/materials/p11_candidate_params.py` computes, for each candidate, linear mean RGB of the colour map, then `raw_c = medieval_c / candidate_c` with `medieval` = (0.1869, 0.1470, 0.0991) (`T_Medieval_Blocks_03_BC`). `BrightnessMul = max(raw_c)`, clamped to 0.5–2.5; `BaseColorTint = raw_c / max(raw_c)`. Only surface structure should differ between bays. Output: `Tools/materials/p11_candidate_params.json`, also recording each candidate's real-world size if the source gives one.
+- **Outputs:** `ExternalAssets/Incoming/<one folder each>/`; `Docs/ASSET_REGISTRY.md` rows; `Docs/ArtTest/materials/p11_candidates.png` (each colour map tiled 2 × 2).
+
+#### P11-3b: no-groove test meshes (technical-artist, Blender only)
+- **Script:** `Tools/materials/build_p11_test_walls.py`. It imports `Tools/blender/kit/kit_lib.py` and `build_kit.py`, and wraps `K.relief_cutters` so every call has `h_grooves=False, vertical=False, recess_prob=0.0`, chips kept. Neither kit file is edited.
+- **Builds**, with the same seeds and builders as the originals, to `SourceArt/P11/`:
+
+  | New mesh | Same as |
+  |---|---|
+  | `SM_LB_P11_NoGroove_Wall_400x60x800_A` | `Wall_400x60x800_A` |
+  | `SM_LB_P11_NoGroove_Wall_400x60x800_B` | `Wall_400x60x800_B` |
+  | `SM_LB_P11_NoGroove_Wall_100x60x800` | `Wall_100x60x800` |
+  | `SM_LB_P11_NoGroove_Plinth_400x80x60` | `Trim_Plinth_400x80x60` |
+  | `SM_LB_P11_NoGroove_Plinth_100x80x60` | `Trim_Plinth_100x80x60` |
+
+- **Acceptance:** bounds, pivot, material slots and UCX match the originals; a render `Docs/ArtTest/materials/p11_nogroove_render.png` shows original beside no-groove, with no joints on the no-groove pieces. `SourceArt/Kit` is byte-identical (`git status`).
+
+#### P11-3c: materials, imports, test map (technical-artist [EDITOR])
+**Imports:**
+- Textures to `/Game/LastBell/ArtTest/P11/Textures/`: `T_P11_B1_BC/_N/_ARM`, `T_P11_B2_BC/_N/_ARM`. Copy compression, sRGB and size settings from the matching `T_Medieval_Blocks_03_*`. Normal maps: the DirectX version.
+- Meshes to `/Game/LastBell/ArtTest/P11/Meshes/`, with the FBX rules in MCP_NOTES (Nanite on). Mesh default slots: `MI_Kit_Masonry`, `MI_Kit_Trim`, `MI_Kit_Rubble`.
+
+**Materials** in `/Game/LastBell/ArtTest/P11/Materials/`, parent `M_LB_Surface`:
+
+| MI | Base and normal | Switches | Scalars and tint |
+|---|---|---|---|
+| `MI_P11_B1_Masonry`, `MI_P11_B2_Masonry` | candidate BC, N, ARM | `bWorldAlignedUV` on, `bUseARM` on | `WorldTileSizeCm` = source size clamped to 200–400, else 300; `MacroStrength` 0.4; `WorldBlendSharpness` 4; `BrightnessMul` and `BaseColorTint` from the JSON |
+| `MI_P11_B1_Trim`, `MI_P11_B2_Trim` | candidate BC, N, ARM | `bWorldAlignedUV` off, `bUseARM` on | `UVScale` = 100 / tile size (UV0 is 1 unit per 100 cm); `MacroStrength` 0.4; `BrightnessMul` = masonry × 1.35; tint = masonry tint × (1, 0.95, 0.86) (the `MI_Kit_Trim` offsets) |
+| `MI_P11_B3_Masonry` | duplicate of `MI_Cl_TabletStone` | unchanged | `NormalStrength` 0.60, everything else as the original |
+| `MI_P11_B3_Trim` | duplicate of `MI_P11_B3_Masonry` | unchanged | `BrightnessMul` 1.35 |
+
+**Map:** `/Game/LastBell/ArtTest/P11/L_Test_P11_Walls`. Duplicate the smallest `L_Test_*` map with `AssetTools.duplicate`, load it, and remove every actor except `WorldSettings`. If duplicating a map is refused, stop and report. Scripted in `Tools/materials/build_p11_test_map.py`, with a read-back `--check`.
+
+**Light and post-process (values read from `L_Monastery` on 2026-11-02):**
+
+| Actor | Values |
+|---|---|
+| `P11_Floor` | `/Engine/BasicShapes/Cube` at (11250, −1000, −20), scale (255, 40, 0.4), `MI_Kit_Floor`. Top at Z 0 |
+| `P11_Moon` | DirectionalLight, pitch −38, yaw 35, intensity 0.9, colour (0.745098, 0.803922, 0.921569), shadows on |
+| `P11_MoonFill` | DirectionalLight, pitch −28, yaw −145, intensity 0.06, colour (0.72549, 0.784314, 0.882353), shadows off |
+| `P11_Sky` | SkyLight at Z 600, `SLS_SpecifiedCubemap`, `/Game/LastBell/ArtTest/Sky/HDRI_MoonlessGolf`, intensity 0.28, colour (0.882353, 0.862745, 0.843137), lower hemisphere (0.015, 0.02, 0.035), not black |
+| `P11_PP` | PostProcessVolume, unbound, `AutoExposureMinBrightness` and `MaxBrightness` 0.65, `ColorSaturationShadows` (0.65, 0.65, 0.65, 1), each with its override on |
+
+No fog and no sky dome: only the walls are being compared.
+
+**Bays.** A wall's front face is Y = 0, facing −Y, the side the moon lights. All yaw 0 unless stated. Slots are set per actor by slot name; `MAT_Rubble` is always `MI_Kit_Rubble`.
+
+| Bay | Index i | Meshes | `MAT_Masonry` | `MAT_Trim` |
+|---|---|---|---|---|
+| `Today` | 0 | current kit | `MI_Kit_Masonry` | `MI_Kit_Trim` |
+| `A` | 1 | no-groove | `MI_Kit_Masonry` | `MI_P11_B3_Trim` |
+| `B1` | 2 | current kit | `MI_P11_B1_Masonry` | `MI_P11_B1_Trim` |
+| `B2` | 3 | current kit | `MI_P11_B2_Masonry` | `MI_P11_B2_Trim` |
+| `B3` | 4 | current kit | `MI_P11_B3_Masonry` | `MI_P11_B3_Trim` |
+
+- **Lantern row**, X0 = 1500 × i, labels `P11_<Bay>_*`:
+  - walls: `400_A` at (X0, 0, 0), `100` at (X0 + 400, 0, 0), `400_B` at (X0 + 500, 0, 0);
+  - plinths: `400` at (X0, −10, 0), `100` at (X0 + 400, −10, 0), `400` at (X0 + 500, −10, 0);
+  - `SM_LB_Prop_LanternBracket_R40` at (X0 + 450, 0, 330), yaw −90;
+  - `SM_Wooden_Lantern_01` at (X0 + 450, −40, 278.1);
+  - PointLight at (X0 + 450, −40, 320): 200 lumens, radius 600, colour (1, 0.549020, 0.219608), shadows off, `MI_LF_Lantern`, scattering 1.5 (`L_Cl_Bells` values).
+- **Moonlight row**, no lanterns, X1 = 10000 + 2500 × i, labels `P11_Far_<Bay>_*`:
+  - walls `A, B, A, B, A` at (X1 + 400 × k, 0, 0), k = 0–4;
+  - plinths `400` at (X1 + 400 × k, −10, 0).
+
+**Finish:** save packages one at a time, then load `L_Monastery` back and confirm it is not dirty. Suite 79/79.
+
+#### P11-3d: captures and choice (lead + owner)
+Poses in `Tools/materials/poses/p11_joint_poses.json`, prefix `p11_jt_`, in PIE Simulate on the test map:
+
+| View | Pose [x, y, z, pitch, yaw] |
+|---|---|
+| Face-on, 3 m under the lantern | [X0 + 450, −300, 170, 5, 90] |
+| Grazing, 1.5 m off the wall | [X0 + 50, −150, 170, 3, 14] |
+| 15 m, moonlight only | [X1 + 1000, −1500, 170, 14, 90] |
+
+Contact sheet `Docs/ArtTest/materials/p11_joint_test.png`: 5 rows by 3 columns, labelled. If `B3` is far from `Today` in brightness, the lead corrects `MI_P11_B3_*` `BrightnessMul` once and re-captures that bay, so brightness doesn't decide the comparison. **The owner chooses.** D-086 records the choice. The editor returns to `L_Monastery` afterwards.
 
 ### P11-4: apply the choice
 The lead writes the exact steps after the choice, using the census numbers, in this file.
