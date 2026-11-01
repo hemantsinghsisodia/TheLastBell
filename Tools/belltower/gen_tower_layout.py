@@ -1112,17 +1112,18 @@ MOON_D = (0.6455, 0.4520, -0.6157)
 MOON_SPOT_COLOR = (0.745, 0.804, 0.922)
 
 
-def moon_spot(lid, loc, opening, lm, inner, outer, radius, width, note):
+def moon_spot(lid, loc, opening, lm, inner, outer, radius, width, note, volumetric_shadow=True):
     ex = {"light": {"type": "SpotLight", "lumens": lm, "radius": radius, "shadows": True, "color_linear": list(MOON_SPOT_COLOR), "light_function": None,
-                    "volumetric_scattering": 0.8, "source_radius": 0, "inner_cone": inner, "outer_cone": outer, "volumetric_shadow": True},
+                    "volumetric_scattering": 0.8, "source_radius": 0, "inner_cone": inner, "outer_cone": outer, "volumetric_shadow": volumetric_shadow},
           "opening": list(opening), "shaft_width_cm": width}
     add(lid, "light", "light", "Point", loc, (-38.0, 35.0, 0.0), (1, 1, 1), "-", "Lighting/BellTower", note=note, extras=ex)
 
 
+# D1.27 F7b: no volumetric shadow (D1.30 stepping) on the three slit spots (volumetric_shadow=False).
 # D1.27: inside the slit, so only the interior is lit: each slit spot sits at opening + 10 * MOON_D (the shaft cards still start at opening + 5 * MOON_D)
-moon_spot("L_Tw_MoonSlit_F03", (12506.5, 1544.5, 711.9), (12500.0, 1540.0, 718.1), 600, 4, 8, 1500, 40, "D1.24: moon spot outside S slit F03")
-moon_spot("L_Tw_MoonSlit_F07", (12506.5, 1544.5, 1621.1), (12500.0, 1540.0, 1627.3), 600, 4, 8, 1500, 40, "D1.24: moon spot outside S slit F07")
-moon_spot("L_Tw_MoonSlit_F08", (12046.5, 2004.5, 1847.8), (12040.0, 2000.0, 1854.0), 600, 4, 8, 1500, 40, "D1.24: moon spot outside W slit F08")
+moon_spot("L_Tw_MoonSlit_F03", (12506.5, 1544.5, 711.9), (12500.0, 1540.0, 718.1), 600, 4, 8, 1500, 40, "D1.24: moon spot outside S slit F03", volumetric_shadow=False)
+moon_spot("L_Tw_MoonSlit_F07", (12506.5, 1544.5, 1621.1), (12500.0, 1540.0, 1627.3), 600, 4, 8, 1500, 40, "D1.24: moon spot outside S slit F07", volumetric_shadow=False)
+moon_spot("L_Tw_MoonSlit_F08", (12046.5, 2004.5, 1847.8), (12040.0, 2000.0, 1854.0), 600, 4, 8, 1500, 40, "D1.24: moon spot outside W slit F08", volumetric_shadow=False)
 # D1.27: L_Tw_MoonRoof is deleted (it lit the belfry and doubled its shadows); its shaft card SA_Tower_Roof stays as a shaft-only entry in LIGHTS_PLAN["shafts_extra"]
 LIGHTS_PLAN = {
     "delete": [f"Light_Cloister_{i}" for i in range(8)] + [f"Light_Tower_{i}" for i in range(6)] + ["Light_TowerBell", "Light_TowerTop_0", "Light_Courtyard_7"],
@@ -1905,6 +1906,8 @@ for _n in ("F03", "F07", "F08"):
     if max(abs(_r["loc"][k] - _e[k]) for k in range(3)) > 0.1 or _r["rot"] != [-38.0, 35.0, 0.0]:
         _sl.append("BAD " + _n)
 chk("D1.27", "3 slit moon spots sit at opening + 10 d (+-0.1), rotation (-38, 35, 0) unchanged", not any(x.startswith("BAD") for x in _sl) and len(_sl) == 3, "; ".join(_sl))
+chk("D1.27", "F7b: the 3 slit moon spots have volumetric_shadow False (D1.30 stepping)",
+    all(rec_by_id("L_Tw_MoonSlit_" + n)["extras"]["light"]["volumetric_shadow"] is False for n in ("F03", "F07", "F08")), "volumetric_shadow False x3")
 chk("D1.27", "LIGHTS_PLAN: Light_TowerExt_0..2 in retire_p10_8d (not keep_and_tune); shafts_extra = SA_Tower_Roof at the roof opening, width 200",
     LIGHTS_PLAN["retire_p10_8d"] == ["Light_TowerExt_0", "Light_TowerExt_1", "Light_TowerExt_2"] and not LIGHTS_PLAN["keep_and_tune"]
     and LIGHTS_PLAN["shafts_extra"] == [{"id": "SA_Tower_Roof", "opening": [12188.0, 1688.0, 4027.0], "width": 200}], str(LIGHTS_PLAN["retire_p10_8d"]))

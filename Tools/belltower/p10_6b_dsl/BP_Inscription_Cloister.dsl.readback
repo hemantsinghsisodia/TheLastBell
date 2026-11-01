@@ -4,7 +4,7 @@
   (Components|StaticMesh|SetStaticMesh _plaque "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Prop_InscriptionTablet_Memorial.SM_LB_Prop_InscriptionTablet_Memorial")
   (Transformation|SetRelativeLocation _plaque (Math|Vector|MakeVector -2.0))
   (Transformation|SetRelativeScale3D _plaque (Math|Vector|MakeVector 1.0 1.0 1.0))
-  (Rendering|Material|SetMaterial _plaque 0 "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim")
+  (Rendering|Material|SetMaterial _plaque 0 "/Game/LastBell/Environments/Cloister/Materials/MI_Cl_TabletStone.MI_Cl_TabletStone")
   (Rendering|Material|SetMaterial _plaque 1 "/Game/LastBell/Environments/Cloister/Materials/MI_Cl_CarveDirt.MI_Cl_CarveDirt")
   (Rendering|Components|TextRender|SetTextRenderColor _engraving (Utilities|Struct|MakeColor 15 18 20 255))
   (Rendering|Components|TextRender|SetText _engraving (Utilities|Text|ToText(String) (Utilities|String|Replace (Variables|Default|GetText) "|" "

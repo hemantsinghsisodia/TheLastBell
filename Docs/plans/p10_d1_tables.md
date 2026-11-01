@@ -72,6 +72,7 @@ Counts by category: arcade 28, block 8, door 5, doorleaf 5, dress 282, floor 7, 
 | D1.27 | L_Cl_West is 10 cm below the arch hook: (9480, 2000, 320) | PASS | [9480.0, 2000.0, 320.0] |
 | D1.27 | 16 light records; L_Tw_MoonRoof is not among them | PASS | 16 light records |
 | D1.27 | 3 slit moon spots sit at opening + 10 d (+-0.1), rotation (-38, 35, 0) unchanged | PASS | F03 [12506.5, 1544.5, 711.9] (opening + 10d [12506.5, 1544.5, 711.9]); F07 [12506.5, 1544.5, 1621.1] (opening + 10d [12506.5, 1544.5, 1621.1]); F08 [12046.5, 2004.5, 1847.8] (opening + 10d [12046.5, 2004.5, 1847.8]) |
+| D1.27 | F7b: the 3 slit moon spots have volumetric_shadow False (D1.30 stepping) | PASS | volumetric_shadow False x3 |
 | D1.27 | LIGHTS_PLAN: Light_TowerExt_0..2 in retire_p10_8d (not keep_and_tune); shafts_extra = SA_Tower_Roof at the roof opening, width 200 | PASS | ['Light_TowerExt_0', 'Light_TowerExt_1', 'Light_TowerExt_2'] |
 | D1.27 | grave slabs 0/2/3/5 use the Anselm/Tomas/Edwin/Osric meshes with MAT_Carve -> MI_Cl_CarveDirt; 1 and 4 stay plain; seed-1223 yaw/roll unchanged | PASS | rot [[0.0, 3.59, 2.03], [0.0, -0.13, 2.44], [0.0, 2.76, 2.43], [0.0, -2.63, -2.11], [0.0, -2.37, -1.42], [0.0, -3.25, -2.9]] |
 

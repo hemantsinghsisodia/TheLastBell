@@ -444,6 +444,12 @@
   },
   {
    "group": "D1.27",
+   "name": "F7b: the 3 slit moon spots have volumetric_shadow False (D1.30 stepping)",
+   "ok": true,
+   "detail": "volumetric_shadow False x3"
+  },
+  {
+   "group": "D1.27",
    "name": "LIGHTS_PLAN: Light_TowerExt_0..2 in retire_p10_8d (not keep_and_tune); shafts_extra = SA_Tower_Roof at the roof opening, width 200",
    "ok": true,
    "detail": "['Light_TowerExt_0', 'Light_TowerExt_1', 'Light_TowerExt_2']"
@@ -33335,7 +33341,7 @@
      "source_radius": 0,
      "inner_cone": 4,
      "outer_cone": 8,
-     "volumetric_shadow": true
+     "volumetric_shadow": false
     },
     "opening": [
      12500.0,
@@ -33407,7 +33413,7 @@
      "source_radius": 0,
      "inner_cone": 4,
      "outer_cone": 8,
-     "volumetric_shadow": true
+     "volumetric_shadow": false
     },
     "opening": [
      12500.0,
@@ -33479,7 +33485,7 @@
      "source_radius": 0,
      "inner_cone": 4,
      "outer_cone": 8,
-     "volumetric_shadow": true
+     "volumetric_shadow": false
     },
     "opening": [
      12040.0,
