@@ -1,6 +1,6 @@
 # Phase 11: Materials (surface polish): plan
 
-**Status:** approved by the owner on 2026-11-02. P11-0 and P11-1 done; P11-2 in progress. The door corners and `Gobo_Moon` specks stay out of scope.
+**Status:** approved by the owner on 2026-11-02. P11-0 and P11-1 done; P11-2 census done (7b5941b), baseline captures in progress. The door corners and `Gobo_Moon` specks stay out of scope.
 **Branch:** `claude/phase-11-materials`, from `main` (6dfa29d).
 **Rules:** D-048 applies. The lead plans in Opus 5.5 at xhigh effort; every implementer is spawned with `model: "sonnet", effort: "high"`.
 
@@ -50,7 +50,7 @@ The lead proposes a side-by-side test (P11-3) so the owner chooses from real pic
 | **Change** | Rebuild the wall meshes without V-grooves; keep the block texture | Keep the meshes; swap masonry and trim to a joint-free stone |
 | **Look** | Photographic blocks with natural colour differences, but flat walls that rely on the normal map | Real depth under lanterns, and no 200 cm repeat, but every block has a similar tone unless P11-5 breaks it up |
 | **Repetition (R-26)** | The 200 cm repeat stays, so it depends on P11-5 | Joints stop repeating; only fine grain tiles |
-| **Risk** | Higher: up to 129 FBX files to check (46 kit, 50 cloister, 33 tower) and an in-place reimport | Lower: material instances only, and easy to undo |
+| **Risk** | Higher: 57 placed meshes to rebuild (374 actors; P11-2 census) and an in-place reimport | Lower: material instances only, and easy to undo |
 | **Owner work** | Probably a bulk Reimport | None beyond choosing |
 
 **The lead's expectation:** B is the safer and probably the better answer, but it can only be judged in pictures. Trim needs a joint-free stone under either option.
@@ -123,7 +123,17 @@ All six pass. The chapel has the least room, so P11-5 adds one chapel reading (a
    | `approach` | X < 300 |
    | `other` | anything else; the report lists these |
 
-2. **Baseline captures** (lead, `Tools/crypt/capture_session.py --mode simulate`, owner at the PC): 24 poses in `Tools/materials/poses/p11_poses.json`, 6 per area, each area with one tall wall at 15 m, one lantern-lit wall at 3 m and one grazing view. Prefix `p11_base_`. Save the luma report as the baseline for P11-8.
+2. **Baseline captures** (lead, `Tools/crypt/capture_session.py --mode simulate`, owner at the PC): 24 poses in `Tools/materials/poses/p11_poses.json`, 6 per area, each area with one tall wall at 15 m, one lantern-lit wall at 3 m and one grazing view. Prefix `p11_base_`. Save the luma report as the baseline for P11-8 (`Docs/ArtTest/materials/p11_base_luma.json`).
+
+**Census result (`Docs/ArtTest/materials/census_p11.md`):**
+- **Grooves:** 57 distinct grooved meshes are placed, on 374 actors (51 full, 5 vertical only, 1 horizontal only), not the 129 FBX first assumed. The mapping comes from reading the Blender scripts; nothing was rebuilt.
+- **Painted joints:** `T_Medieval_Blocks_03_BC` is on 7 placed MIs: `MI_Kit_Trim` (490 actors), `MI_Kit_Masonry` (257), `MI_Crypt_StoneWA` (42), `MI_Chapel_Masonry_Interior` (17, child of Masonry), `MI_Chapel_Trim_Dusty` (8, child of Trim), `MI_Env_TowerStone` (7, child of Masonry), `MI_Cl_CarveDirt` (5, child of Trim). Other textures are not yet judged by eye.
+- **Crypt:** its main walls are the Fab `SM_Wall_00/01` with `MI_Stone_00..03`, not grooved kit pieces, so the double-joint problem belongs to the courtyard, chapel, passage, cloister and tower. `MI_Crypt_StoneWA` is the exception to check.
+- **Lanterns:** 18, all `SM_Wooden_Lantern_01`, and every one has a light within 17 cm, so P11-7 needs no actor-level overrides. The current glass, `MI_Wooden_Lantern_01_Glass`, is a dark surface MI on `M_LB_Surface`.
+- **Hidden:** 414 StaticMeshActors are hidden stair and rail collision cubes on `WorldGridMaterial`; none needs stone work.
+- **Known limit:** the tower rule overlaps the cloister rule in X 11990–12040, so 25 placements count as `tower` (including the memorial tablet). This only affects area counts.
+
+**Capture settings:** the baseline runs with the editor at High (`sg.*` = 2, read with `SearchCVars`; set by the owner's `scalability 2` in this editor session) and the Warden off. P11-8 must read `sg.*` first and match them, because a restarted editor can return to another level.
 
 ### P11-3: joint test (separate map; `L_Monastery` untouched)
 1. **Downloads** (asset-curator, CC0 only, 2K, registry rows). Candidates found by the lead, unconfirmed as joint-free until the curator looks at them: `polyhaven:rock_surface` and `polyhaven:worn_rock_natural_01`. Reject any with block or mortar lines. A third candidate needs no download: the `MI_Cl_TabletStone` recipe (flat tint plus `T_Rock_064_N`).
