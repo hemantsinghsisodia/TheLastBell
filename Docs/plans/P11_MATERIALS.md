@@ -101,12 +101,28 @@ If any spot is already over 16.6 ms, the lead reports it before material work ad
 All six pass. The chapel has the least room, so P11-5 adds one chapel reading (acceptance 5). R-44 stays Open until the P11-8 re-check.
 
 ### P11-2: census and baseline
-1. **Census script** `Tools/materials/census_p11.py` (read-only). Enumerate actors with `GetVisibleActors` from a high top-down camera (restore the camera afterwards), and write `Docs/ArtTest/materials/census_p11.json` and `census_p11.md`:
-   - **every StaticMeshActor:** label, mesh, override materials, location, grouped by area from the X/Y ranges in `Docs/LEVEL_DESIGN.md`;
-   - **placed count per mesh**, and which meshes have relief grooves (from the `relief_cutters` callers in `Tools/blender/`);
-   - **every material instance using `M_LB_Surface`**: parent chain, textures, static switches, and how many actors use it;
+1. **Census script** `Tools/materials/census_p11.py` (read-only; the full spec is in the agent's brief). It writes `Docs/ArtTest/materials/census_p11.json` and `census_p11.md`:
+   - **Enumeration:** `find_actors` with an empty name (2943 actors on 2026-11-02), cross-checked by `GetVisibleActors` from a high top-down camera (restore the camera afterwards). Don't pass `actor_type` for StaticMeshActor: that call closed the connection twice. Tell classes apart by the object name in the path (`StaticMeshActor_12`).
+   - **every StaticMeshActor:** label, mesh, override materials, effective material per slot, transform, area;
+   - **every other actor with a mesh component** (Blueprints, ISM): the same per component;
+   - **placed count per mesh**, and which meshes have relief grooves (from the `relief_cutters` callers in `Tools/blender/kit/build_kit.py` and `Tools/blender/belltower/build_cloister.py`);
+   - **every material instance using `M_LB_Surface`**: parent chain, textures, static switches, slots it fills, and how many actors use it per area;
    - **every decal:** label, material, size, area, and counts per decal MI;
-   - **every lantern actor:** whether a light sits within 60 cm.
+   - **every lantern actor** (mesh name contains `Lantern`, not `Bracket`): the nearest light and its distance to the lantern's bounds, flagged if over 60 cm, and the material on its glass slot.
+
+   **Areas** (`Docs/LEVEL_DESIGN.md` has no ranges, so these are the rule; actor location in world cm, first match wins):
+
+   | Area | Rule |
+   |---|---|
+   | `crypt` | X ≥ 6300, −2950 ≤ Y ≤ 520, Z < −45 |
+   | `tower` | 11990 ≤ X ≤ 13010, 1490 ≤ Y ≤ 2510 |
+   | `cloister` | 9460 ≤ X ≤ 12040, 500 ≤ Y ≤ 3040 |
+   | `passage` | 6040 ≤ X < 9460, 1400 ≤ Y ≤ 2600 |
+   | `chapel` | 6000 ≤ X ≤ 9100, −1500 ≤ Y ≤ 850 |
+   | `courtyard` | 300 ≤ X < 6000, −2600 ≤ Y ≤ 2600 |
+   | `approach` | X < 300 |
+   | `other` | anything else; the report lists these |
+
 2. **Baseline captures** (lead, `Tools/crypt/capture_session.py --mode simulate`, owner at the PC): 24 poses in `Tools/materials/poses/p11_poses.json`, 6 per area, each area with one tall wall at 15 m, one lantern-lit wall at 3 m and one grazing view. Prefix `p11_base_`. Save the luma report as the baseline for P11-8.
 
 ### P11-3: joint test (separate map; `L_Monastery` untouched)
