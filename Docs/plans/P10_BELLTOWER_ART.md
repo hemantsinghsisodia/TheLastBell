@@ -2930,3 +2930,22 @@ The 256 px thumbnails could not settle the text direction, so F7 decides.
 **Re-capture afterwards** (lead, `capture_session.py --only lt_inscription,lt_bells,lt_tower_mid,lt_beam_south,lt_beam_west --prefix p10_8e_ --plaque lt_inscription`):
 - the tablet reads as one pale dressed slab with dark carved letters, and every row is legible by eye at the 1.9 m pose;
 - no stepped beam edge.
+
+#### F7b review and re-capture (lead, 2026-11-01)
+**F7b accepted** (f7e2b14):
+- **MIs:** `MI_Cl_TabletStone` (from `MI_Crypt_PlaqueSlate`, tint (0.62, 0.58, 0.50), `NormalStrength` 0.30); `MI_Cl_CarveDirt` `BrightnessMul` 0.10.
+- **BP:** slot 0 swapped; the diff shows the allowed difference only and the reload 0.
+- **Slit spots:** `bCastVolumetricShadow` false.
+- **Checks:** generator 65/65, lighting 55/55, suite 78/78.
+
+**Re-capture `p10_8e_*`** (`capture_session.py`, 5/5, PIE Simulate):
+- **`lt_inscription`: pass by eye.** The tablet is one pale dressed slab, and every row reads at 1.9 m, including the 4 cm `OB.` years and III · I · IV · II.
+  - The plaque metric dropped to 1.94 (p98 / median). It was designed for the old bright-text-on-plaque case, and a pale field with dark grooves lowers p98, so it is not used as the gate for carved text.
+- **`lt_beam_south`: pass.** A clean shaft from slit F03 lands as a moon pool on the landing (in P10-7c it was faint and partly occluded).
+  - The pool is close to white. Owner question in F9: keep it, or halve the slit spots to 300 lm.
+- **`lt_tower_mid`:** the F07 beam still shows froxel stepping right at the slit in this static close view. Removing the volumetric shadow did not change it, so it is the fog-grid resolution near a thin beam origin.
+  - In motion, temporal reprojection usually smooths it. Owner to judge in F9.
+  - If it still shows, the options are: scattering 0 on the slit spots with the shaft cards carrying the visible beam, or a wider inner cone.
+- **`lt_bells`, `lt_beam_west`:** unchanged and fine.
+
+**Next: F8**, the real C++ build with the editor closed, then **F9**, the owner re-test.
