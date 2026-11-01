@@ -271,6 +271,8 @@ Branch `claude/phase-11-materials`. Spec: `Docs/plans/P11_MATERIALS.md` (D-085).
 | P11-7 | Glowing lantern glass | technical-artist [EDITOR] | P11-2 |
 | P11-8 | Brightness re-check, QA, docs, owner GPU and playtest; PHASE 11 READY FOR YOUR REVIEW | lead + qa-reviewer + owner | all |
 
+Status 2026-11-02: P11-0…P11-2 done (GPU baseline: all 6 spots under budget, chapel 15.32 ms; census 7b5941b; 24 baseline captures). P11-3 waits for the owner's go.
+
 ## Deferred to Phase 14–15 (Lighting, VFX: storm work)
 Items the owner asked to fold into the storm pass. Plan them in detail (Docs/plans/) when Phase 14–15 starts.
 

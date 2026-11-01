@@ -1,6 +1,6 @@
 # Phase 11: Materials (surface polish): plan
 
-**Status:** approved by the owner on 2026-11-02. P11-0 and P11-1 done; P11-2 census done (7b5941b), baseline captures in progress. The door corners and `Gobo_Moon` specks stay out of scope.
+**Status:** approved by the owner on 2026-11-02. P11-0, P11-1 and P11-2 done; P11-3 waits for the owner's "go". The door corners and `Gobo_Moon` specks stay out of scope.
 **Branch:** `claude/phase-11-materials`, from `main` (6dfa29d).
 **Rules:** D-048 applies. The lead plans in Opus 5.5 at xhigh effort; every implementer is spawned with `model: "sonnet", effort: "high"`.
 
@@ -132,6 +132,8 @@ All six pass. The chapel has the least room, so P11-5 adds one chapel reading (a
 - **Lanterns:** 18, all `SM_Wooden_Lantern_01`, and every one has a light within 17 cm, so P11-7 needs no actor-level overrides. The current glass, `MI_Wooden_Lantern_01_Glass`, is a dark surface MI on `M_LB_Surface`.
 - **Hidden:** 414 StaticMeshActors are hidden stair and rail collision cubes on `WorldGridMaterial`; none needs stone work.
 - **Known limit:** the tower rule overlaps the cloister rule in X 11990–12040, so 25 placements count as `tower` (including the memorial tablet). This only affects area counts.
+
+**Baseline result:** 24 poses captured to `Docs/ArtTest/materials/p11_base_*.png`, luma in `p11_base_luma.json`. Three poses were re-aimed after the first review (`ch_graze_north`, `cl_graze_east`, `cl_tall_north_15m`) because the walls they were meant to show were in black shadow or blocked. The crypt poses read mostly black by design, so they serve as brightness checks, not joint evidence. The double joints show clearly in `cy_lantern_route1_3m`, `cy_lantern_gate_3m`, `cl_graze_east`, `cl_tall_north_15m` and `ps_lantern_joints`.
 
 **Capture settings:** the baseline runs with the editor at High (`sg.*` = 2, read with `SearchCVars`; set by the owner's `scalability 2` in this editor session) and the Warden off. P11-8 must read `sg.*` first and match them, because a restarted editor can return to another level.
 
