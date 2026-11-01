@@ -60,7 +60,7 @@ Input uses Enhanced Input. Phase 1 has `IA_Move`, `IA_Look` and `IA_Interact` in
 
 ## 5. Interaction
 There is a single path, **`ULBInteractableComponent`**. Adding it to any actor makes that actor interactable, and it's the only thing the player knows about.
-- Properties: `PromptText`, `DeniedPromptText` (shown when focused but not usable, P2), `bEnabled`, `RequiredStateTags` (all must be present), `GrantedStateTags` (added on interact, via `AddStates`), `bSingleUse`, `ConsumedStateTag` (persists single use as a tag), `bInspectOnInteract` (P3: interacting opens inspection; the grant happens on close if the inspectable is kept).
+- Properties: `PromptText`, `DeniedPromptText` (shown when focused but not usable, P2; a used single-use component shows no prompt and ignores presses, `IsConsumed`, D-084), `bEnabled`, `RequiredStateTags` (all must be present), `GrantedStateTags` (added on interact, via `AddStates`), `bSingleUse`, `ConsumedStateTag` (persists single use as a tag), `bInspectOnInteract` (P3: interacting opens inspection; the grant happens on close if the inspectable is kept).
 - `ULBInspectableComponent` (P3): `DisplayName`, `BodyText`, `bKeepOnClose`, `InitialInspectRotation`. The interactable's grant is the single grant path.
 - API: `CanInteract(Instigator)` (BlueprintNativeEvent) and `Interact(Instigator)`.
 - Delegates: `OnInteracted`, `OnInteractDenied`, `OnFocusBegin`, `OnFocusEnd`.

@@ -2957,3 +2957,9 @@ The 256 px thumbnails could not settle the text direction, so F7 decides.
 - MCP_NOTES: `capture_session.py` is marked validated live; P10-8d lessons 13–17 added (carved text handedness, inscription MI, moon spots inside openings, outside shadowless lights, stale `place_tower` actors).
 
 **Next: F9, the owner re-test** (the checklist is in the lead's message).
+
+#### Phase 10 close-out (lead, 2026-11-01)
+- **The owner said "approve and merge" after the re-test.** The lead merged the branch to main, pushed main and deleted the branch.
+- **Decided by the approval:** the F9 judgement calls stay as they are (the slit spots at 600 lm with their near-white landing pool, and the froxel stepping at the slit origin).
+- **Not measured:** no `stat gpu` figure was reported, so R-44 stays Open and the PERFORMANCE_BUDGET row stays pending. The moon-light changes in P10-8d removed one shadowed spot.
+- **Still open, outside Phase 10:** the `Gobo_Moon_*` sky specks in Simulate (P8; hidden in Play), the `Door_ChapelMain` / `Door_Sacristy` top corners, the Phase 9 dress `mbounds` mismatches (118).
