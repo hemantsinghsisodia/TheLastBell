@@ -3,6 +3,7 @@
 Run with the project's Python (see Tools/mcp/MCP_NOTES.md), e.g.
     python import_p10.py textures
     python import_p10.py mis
+    python import_p10.py carve            # D1.27 F3: MI_Cl_CarveDirt (before the F1 meshes)
     python import_p10.py meshes [--only substr] [--limit N]
     python import_p10.py check            # read-back of every mesh / MI (writes the JSON state)
     python import_p10.py report           # writes Docs/ArtTest/belltower/p10_4_import_report.md from the state
@@ -180,9 +181,10 @@ MI_PATH = {
     "Rope": MAT + "/MI_LB_Rope",
     "Sally": MAT + "/MI_LB_Sally",
     "Band": MAT + "/MI_LB_BellBand_III",
+    "Carve": G_CLOISTER + "/Materials/MI_Cl_CarveDirt",  # D1.27 F3
 }
 SLOT_KEY = {"MAT_Masonry": "Masonry", "MAT_Trim": "Trim", "MAT_Rubble": "Rubble", "MAT_Slate": "Slate", "MAT_Iron": "Iron",
-            "MAT_Earth": "Earth", "MAT_Bronze": "Bronze", "MAT_Rope": "Rope", "MAT_Sally": "Sally", "MAT_Band": "Band"}
+            "MAT_Earth": "Earth", "MAT_Bronze": "Bronze", "MAT_Rope": "Rope", "MAT_Sally": "Sally", "MAT_Band": "Band", "MAT_Carve": "Carve"}
 
 
 def mi_for(mesh, slot):
@@ -196,7 +198,9 @@ def mi_for(mesh, slot):
 
 
 NANITE_OFF = {"SM_LB_Tw_Louvre_130x450", "SM_LB_Tw_Louvre_130x450_Broken", "SM_LB_Prop_BellRope_2610",
-              "SM_LB_Prop_SmallBell_A", "SM_LB_Prop_SmallBellBracket_A", "SM_LB_Prop_BellPlaque_A", "SM_LB_Prop_InscriptionTablet_A"}
+              "SM_LB_Prop_SmallBell_A", "SM_LB_Prop_SmallBellBracket_A", "SM_LB_Prop_BellPlaque_A", "SM_LB_Prop_InscriptionTablet_A",
+              # D1.27 F3: thin small lantern brackets (tablet + slabs stay Nanite)
+              "SM_LB_Prop_LanternBracket_R20", "SM_LB_Prop_LanternBracket_R40", "SM_LB_Prop_LanternBracket_R60"}
 EXPECT_CONVEX = {"SM_LB_Tw_BellFrame_A": 4, "SM_LB_Prop_GreatBell_A": 1, "SM_LB_Prop_SmallBell_A": 1}
 
 
@@ -259,6 +263,37 @@ def do_meshes(only=None, limit=None):
         save(pkg)
 
 
+# ---------------------------------------------------------------- D1.27 F3: carve MI
+CARVE_MI = G_CLOISTER + "/Materials/MI_Cl_CarveDirt"
+CARVE_PARENT = "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim"
+CARVE_SCALAR = {"BrightnessMul": 0.30, "RoughnessMin": 0.85, "RoughnessMax": 0.95}
+CARVE_VECTOR = {"BaseColorTint": (0.20, 0.18, 0.14)}
+
+
+def do_carve():
+    folder, name = CARVE_MI.rsplit("/", 1)
+    if not ue.call(ASSET, "exists", {"path": CARVE_MI}):
+        r = ue.call(MI, "create", {"folder_path": folder, "asset_name": name, "parent": ref(CARVE_PARENT)})
+        log("created", name, r)
+    else:
+        log("exists", name)
+    inst = ref(CARVE_MI)
+    for p, v in CARVE_SCALAR.items():
+        ue.call(MI, "set_scalar_parameter", {"instance": inst, "name": p, "value": v})
+    for p, v in CARVE_VECTOR.items():
+        ue.call(MI, "set_vector_parameter", {"instance": inst, "name": p, "value": {"r": v[0], "g": v[1], "b": v[2], "a": 1.0}})
+    log("  parent", props(inst, ["Parent"]))
+    for p, v in CARVE_SCALAR.items():
+        g = ue.call(MI, "get_scalar_parameter", {"instance": inst, "name": p})
+        log("  ", name, p, g)
+        assert near(float(g), v), (p, g, v)
+    for p, v in CARVE_VECTOR.items():
+        g = ue.call(MI, "get_vector_parameter", {"instance": inst, "name": p})
+        log("  ", name, p, g)
+        assert all(near(g[c], x) for c, x in zip("rgb", v)), (p, g, v)
+    save(CARVE_MI)
+
+
 # ---------------------------------------------------------------- check / state
 def do_check():
     state = {}
@@ -311,6 +346,8 @@ if __name__ == "__main__":
         do_textures()
     elif cmd == "mis":
         do_mis(only)
+    elif cmd == "carve":
+        do_carve()
     elif cmd == "meshes":
         do_meshes(only, limit)
     elif cmd == "check":
