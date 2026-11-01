@@ -1,0 +1,668 @@
+{
+ "generated": "2026-11-02",
+ "method": "Static read of Tools/blender/kit/kit_lib.py relief_cutters (defaults vertical=True, h_grooves=True) and every caller; helper chains followed (relief_both, ashlar_body, cap_course, build_wall, face_relief_xy, pier_cutters). Per-piece 'groove' is the strongest groove type on the main masonry; 'parts' lists the type per sub-part where they differ (caps/copings use h_grooves=False = vertical_only). No call was executed in Blender.",
+ "definitions": {
+  "full": "horizontal and vertical joint grooves",
+  "vertical_only": "h_grooves=False",
+  "horizontal_only": "vertical=False",
+  "chips_only": "no joints, chips only",
+  "none": "no relief_cutters call",
+  "unknown": "could not be mapped with confidence"
+ },
+ "prefix_rules": [
+  {
+   "prefix": "SM_LB_Cl_GraveSlab_200x80_",
+   "groove": "none",
+   "source": "Tools/blender/belltower/build_cloister.py:1404 build_named_grave_slab (text-carve cutter, no relief_cutters; TABLE_EXTRA)"
+  },
+  {
+   "prefix": "SM_LB_Prop_",
+   "groove": "none",
+   "source": "Tools/blender/props/build_props.py (file has no relief_cutters call; imports kit_lib only, BK.hole_cutters at :2226 is unrelated)"
+  },
+  {
+   "prefix": "SM_LB_Crypt_",
+   "groove": "none",
+   "source": "Tools/blender/props/build_props.py:2294 CRYPT pieces (file has no relief_cutters call)"
+  },
+  {
+   "prefix": "SM_LB_Gobo_",
+   "groove": "none",
+   "source": "Tools/blender/props/build_props.py (gobo plane, no relief_cutters)"
+  },
+  {
+   "prefix": "SM_LB_Tw_",
+   "groove": "none",
+   "source": "Tools/blender/belltower/tw_timber.py / tw_bell.py / tw_roof.py (no relief_cutters or BK.ashlar_body call; only walls and ShaftBase are listed explicitly)"
+  }
+ ],
+ "meshes": {
+  "SM_LB_Kit_Wall_400x60x800_A": {
+   "groove": "full",
+   "source": "Tools/blender/kit/build_kit.py:185 build_wall -> ashlar_body:68 -> relief_both:58-59 -> Tools/blender/kit/kit_lib.py:444 (defaults); cap: Tools/blender/kit/build_kit.py:186 cap_course:80-83 (h_grooves=False)",
+   "parts": {
+    "body": "full",
+    "cap": "vertical_only"
+   }
+  },
+  "SM_LB_Kit_Wall_400x60x800_B": {
+   "groove": "full",
+   "source": "Tools/blender/kit/build_kit.py:185 build_wall -> ashlar_body:68 -> relief_both:58-59 -> Tools/blender/kit/kit_lib.py:444 (defaults); cap: Tools/blender/kit/build_kit.py:186 cap_course:80-83 (h_grooves=False)",
+   "parts": {
+    "body": "full",
+    "cap": "vertical_only"
+   }
+  },
+  "SM_LB_Kit_Wall_100x60x800": {
+   "groove": "full",
+   "source": "Tools/blender/kit/build_kit.py:185 build_wall -> ashlar_body:68 -> relief_both:58-59 -> Tools/blender/kit/kit_lib.py:444 (defaults); cap: Tools/blender/kit/build_kit.py:186 cap_course:80-83 (h_grooves=False)",
+   "parts": {
+    "body": "full",
+    "cap": "vertical_only"
+   }
+  },
+  "SM_LB_Kit_Wall_400x60x400": {
+   "groove": "full",
+   "source": "Tools/blender/kit/build_kit.py:185 build_wall -> ashlar_body:68 -> relief_both:58-59 -> Tools/blender/kit/kit_lib.py:444 (defaults); cap: Tools/blender/kit/build_kit.py:186 cap_course:80-83 (h_grooves=False)",
+   "parts": {
+    "body": "full",
+    "cap": "vertical_only"
+   }
+  },
+  "SM_LB_Kit_Wall_100x60x400": {
+   "groove": "full",
+   "source": "Tools/blender/kit/build_kit.py:185 build_wall -> ashlar_body:68 -> relief_both:58-59 -> Tools/blender/kit/kit_lib.py:444 (defaults); cap: Tools/blender/kit/build_kit.py:186 cap_course:80-83 (h_grooves=False)",
+   "parts": {
+    "body": "full",
+    "cap": "vertical_only"
+   }
+  },
+  "SM_LB_Kit_Wall_400x60x800_Broken": {
+   "groove": "full",
+   "source": "Tools/blender/kit/build_kit.py:185 build_wall -> ashlar_body:68 -> relief_both:58-59 -> Tools/blender/kit/kit_lib.py:444 (defaults); cap: Tools/blender/kit/build_kit.py:186 cap_course:80-83 (h_grooves=False)",
+   "parts": {
+    "body": "full",
+    "cap": "vertical_only"
+   }
+  },
+  "SM_LB_Kit_Wall_400x60x400_Broken": {
+   "groove": "full",
+   "source": "Tools/blender/kit/build_kit.py:185 build_wall -> ashlar_body:68 -> relief_both:58-59 -> Tools/blender/kit/kit_lib.py:444 (defaults); cap: Tools/blender/kit/build_kit.py:186 cap_course:80-83 (h_grooves=False)",
+   "parts": {
+    "body": "full",
+    "cap": "vertical_only"
+   }
+  },
+  "SM_LB_Kit_Well_Wall_450x50x250": {
+   "groove": "full",
+   "source": "Tools/blender/kit/build_kit.py:185 build_wall(cap=0) -> ashlar_body:68 -> relief_both:58-59 -> Tools/blender/kit/kit_lib.py:444 (defaults); no cap course",
+   "parts": {
+    "body": "full"
+   }
+  },
+  "SM_LB_Kit_Well_Wall_350x50x250": {
+   "groove": "full",
+   "source": "Tools/blender/kit/build_kit.py:185 build_wall(cap=0) -> ashlar_body:68 -> relief_both:58-59 -> Tools/blender/kit/kit_lib.py:444 (defaults); no cap course",
+   "parts": {
+    "body": "full"
+   }
+  },
+  "SM_LB_Kit_Well_Wall_100x50x250": {
+   "groove": "full",
+   "source": "Tools/blender/kit/build_kit.py:185 build_wall(cap=0) -> ashlar_body:68 -> relief_both:58-59 -> Tools/blender/kit/kit_lib.py:444 (defaults); no cap course",
+   "parts": {
+    "body": "full"
+   }
+  },
+  "SM_LB_Kit_Wall_Corner_60x60x800": {
+   "groove": "none",
+   "source": "Tools/blender/kit/build_kit.py:207 build_corner (stacked inset boxes, no relief_cutters)"
+  },
+  "SM_LB_Kit_Buttress_100x150x800": {
+   "groove": "full",
+   "source": "Tools/blender/kit/build_kit.py:254 and :265 relief_cutters(defaults) on 3 faces per stage",
+   "parts": {
+    "body": "full"
+   }
+  },
+  "SM_LB_Kit_Doorway_Pointed_400x60x400": {
+   "groove": "full",
+   "source": "Tools/blender/kit/build_kit.py:674 relief_both(defaults); cap cap_course:679",
+   "parts": {
+    "body": "full",
+    "cap": "vertical_only"
+   }
+  },
+  "SM_LB_Kit_Gate_Arch_1200x300x800": {
+   "groove": "full",
+   "source": "Tools/blender/kit/build_kit.py:694-699 relief_cutters(defaults, chips=8); cap cap_course:707",
+   "parts": {
+    "body": "full",
+    "cap": "vertical_only"
+   }
+  },
+  "SM_LB_Kit_Window_Lancet_200x60x400_Blind": {
+   "groove": "full",
+   "source": "Tools/blender/kit/build_kit.py:721 relief_both(wmin=55,wmax=100); cap cap_course:727",
+   "parts": {
+    "body": "full",
+    "cap": "vertical_only"
+   }
+  },
+  "SM_LB_Kit_Trim_Plinth_400x80x60": {
+   "groove": "vertical_only",
+   "source": "Tools/blender/kit/build_kit.py:279-282 relief_cutters(h_grooves=False, single course)"
+  },
+  "SM_LB_Kit_Trim_Plinth_100x80x60": {
+   "groove": "vertical_only",
+   "source": "Tools/blender/kit/build_kit.py:279-282 relief_cutters(h_grooves=False, single course)"
+  },
+  "SM_LB_Kit_Pier_100x100x500": {
+   "groove": "horizontal_only",
+   "source": "Tools/blender/kit/build_kit.py:297 pier_cutters relief_cutters(vertical=False), called build_pier:322"
+  },
+  "SM_LB_Kit_Pier_Broken_100x100x350": {
+   "groove": "horizontal_only",
+   "source": "Tools/blender/kit/build_kit.py:297 pier_cutters relief_cutters(vertical=False), called build_pier_broken:335"
+  },
+  "SM_LB_Kit_Floor_Slab_1000x1000x40": {
+   "groove": "none",
+   "source": "Tools/blender/kit/build_kit.py:357 build_floor (height-field relief, no relief_cutters)"
+  },
+  "SM_LB_Kit_Rubble_Chunk_S": {
+   "groove": "none",
+   "source": "Tools/blender/kit/build_kit.py:462/482 rubble hulls (no relief_cutters)"
+  },
+  "SM_LB_Kit_Rubble_Chunk_M": {
+   "groove": "none",
+   "source": "Tools/blender/kit/build_kit.py:462/482 rubble hulls (no relief_cutters)"
+  },
+  "SM_LB_Kit_Rubble_Chunk_L": {
+   "groove": "none",
+   "source": "Tools/blender/kit/build_kit.py:462/482 rubble hulls (no relief_cutters)"
+  },
+  "SM_LB_Kit_Rubble_Heap_400x300x130": {
+   "groove": "none",
+   "source": "Tools/blender/kit/build_kit.py:462/482 rubble hulls (no relief_cutters)"
+  },
+  "SM_LB_Kit_Cliff_Slab_500x300x600_A": {
+   "groove": "none",
+   "source": "Tools/blender/kit/build_kit.py:529 build_cliff (faceted rock, no relief_cutters)"
+  },
+  "SM_LB_Kit_Cliff_Slab_500x300x600_B": {
+   "groove": "none",
+   "source": "Tools/blender/kit/build_kit.py:529 build_cliff (faceted rock, no relief_cutters)"
+  },
+  "SM_LB_Kit_Cliff_Slab_500x300x300": {
+   "groove": "none",
+   "source": "Tools/blender/kit/build_kit.py:529 build_cliff (faceted rock, no relief_cutters)"
+  },
+  "SM_LB_Kit_Cliff_End_200x300x600": {
+   "groove": "none",
+   "source": "Tools/blender/kit/build_kit.py:529 build_cliff (faceted rock, no relief_cutters)"
+  },
+  "SM_LB_Kit_ArcadeBay_1000x60x400": {
+   "groove": "full",
+   "source": "Tools/blender/kit/build_kit.py:870-871 relief_cutters(ARC_COURSES, defaults) via build_arcade_intact:865; coping Tools/blender/kit/build_kit.py:963 cap_course",
+   "parts": {
+    "body": "full",
+    "cap": "vertical_only"
+   }
+  },
+  "SM_LB_Kit_ArcadeBay_1000x60x400_BrokenA": {
+   "groove": "full",
+   "source": "Tools/blender/kit/build_kit.py:870-871 relief_cutters(ARC_COURSES, defaults) via build_arcade_intact:865; coping Tools/blender/kit/build_kit.py:963 cap_course",
+   "parts": {
+    "body": "full",
+    "cap": "vertical_only"
+   }
+  },
+  "SM_LB_Kit_ArcadeBay_1000x60x400_BrokenB": {
+   "groove": "full",
+   "source": "Tools/blender/kit/build_kit.py:870-871 relief_cutters(ARC_COURSES, defaults) via build_arcade_intact:865; coping Tools/blender/kit/build_kit.py:963 cap_course",
+   "parts": {
+    "body": "full",
+    "cap": "vertical_only"
+   }
+  },
+  "SM_LB_Kit_ArcadeColumn_30x30x300": {
+   "groove": "none",
+   "source": "Tools/blender/kit/build_kit.py:1008 build_arcade_column (cylinder)"
+  },
+  "SM_LB_Kit_Kerb_200x30x40": {
+   "groove": "vertical_only",
+   "source": "Tools/blender/kit/build_kit.py:1033-1036 relief_cutters(h_grooves=False, single course)"
+  },
+  "SM_LB_Kit_Kerb_100x30x40": {
+   "groove": "vertical_only",
+   "source": "Tools/blender/kit/build_kit.py:1033-1036 relief_cutters(h_grooves=False, single course)"
+  },
+  "SM_LB_Kit_Kerb_Broken_200x30x40": {
+   "groove": "vertical_only",
+   "source": "Tools/blender/kit/build_kit.py:1033-1036 relief_cutters(h_grooves=False, single course)"
+  },
+  "SM_LB_Kit_KerbCorner_30x30x45": {
+   "groove": "none",
+   "source": "Tools/blender/kit/build_kit.py:1064 build_kerb_corner (hull)"
+  },
+  "SM_LB_Kit_NaveBay_1000x60x1200": {
+   "groove": "full",
+   "source": "Tools/blender/kit/build_kit.py:1161 ashlar_body(vary=True) -> relief_both:58-59 -> Tools/blender/kit/kit_lib.py:444 (defaults); cap cap_course:1210",
+   "parts": {
+    "body": "full",
+    "cap": "vertical_only"
+   }
+  },
+  "SM_LB_Kit_NaveBay_1000x60x1200_Door": {
+   "groove": "full",
+   "source": "Tools/blender/kit/build_kit.py:1161 ashlar_body(vary=True) -> relief_both:58-59 -> Tools/blender/kit/kit_lib.py:444 (defaults); cap cap_course:1210",
+   "parts": {
+    "body": "full",
+    "cap": "vertical_only"
+   }
+  },
+  "SM_LB_Kit_NaveBay_1000x60x1200_Clue": {
+   "groove": "full",
+   "source": "Tools/blender/kit/build_kit.py:1161 ashlar_body(vary=True) -> relief_both:58-59 -> Tools/blender/kit/kit_lib.py:444 (defaults); cap cap_course:1210",
+   "parts": {
+    "body": "full",
+    "cap": "vertical_only"
+   }
+  },
+  "SM_LB_Kit_EastWall_1620x60x1200": {
+   "groove": "full",
+   "source": "Tools/blender/kit/build_kit.py:1225 ashlar_body(vary=True) -> relief_both (defaults); cap cap_course:1248",
+   "parts": {
+    "body": "full",
+    "cap": "vertical_only"
+   }
+  },
+  "SM_LB_Kit_Gable_1620x60x1015": {
+   "groove": "full",
+   "source": "Tools/blender/kit/build_kit.py:1268-1269 relief_cutters(defaults)",
+   "parts": {
+    "body": "full"
+   }
+  },
+  "SM_LB_Kit_Corbel_40x60x60": {
+   "groove": "none",
+   "source": "Tools/blender/kit/build_kit.py:1301 build_corbel (prism, no relief_cutters)"
+  },
+  "SM_LB_Kit_Dais_460x1000x30": {
+   "groove": "none",
+   "source": "Tools/blender/kit/build_kit.py:1319 build_dais (no relief_cutters)"
+  },
+  "SM_LB_Kit_RoofSlab_1000x1322x20": {
+   "groove": "none",
+   "source": "Tools/blender/kit/build_kit.py:1336 build_roof_slab (own tile geometry, no relief_cutters)"
+  },
+  "SM_LB_Kit_RoofSlab_1000x1322x20_Broken": {
+   "groove": "none",
+   "source": "Tools/blender/kit/build_kit.py:1336 build_roof_slab (own tile geometry, no relief_cutters)"
+  },
+  "SM_LB_Kit_RidgeCap_1000x40x30": {
+   "groove": "none",
+   "source": "Tools/blender/kit/build_kit.py:1444 build_ridge_cap (own tile geometry, no relief_cutters)"
+  },
+  "SM_LB_Cl_Wall40_400x1300_A": {
+   "groove": "full",
+   "source": "Tools/blender/belltower/build_cloister.py:307 build_wall40 -> Tools/blender/kit/build_kit.py:185 build_wall -> ashlar_body -> relief_both -> Tools/blender/kit/kit_lib.py:444 (defaults); cap cap_course:80-83",
+   "parts": {
+    "body": "full",
+    "cap": "vertical_only"
+   }
+  },
+  "SM_LB_Cl_Wall40_400x1300_B": {
+   "groove": "full",
+   "source": "Tools/blender/belltower/build_cloister.py:307 build_wall40 -> Tools/blender/kit/build_kit.py:185 build_wall -> ashlar_body -> relief_both -> Tools/blender/kit/kit_lib.py:444 (defaults); cap cap_course:80-83",
+   "parts": {
+    "body": "full",
+    "cap": "vertical_only"
+   }
+  },
+  "SM_LB_Cl_Wall40_100x1300": {
+   "groove": "full",
+   "source": "Tools/blender/belltower/build_cloister.py:307 build_wall40 -> Tools/blender/kit/build_kit.py:185 build_wall -> ashlar_body -> relief_both -> Tools/blender/kit/kit_lib.py:444 (defaults); cap cap_course:80-83",
+   "parts": {
+    "body": "full",
+    "cap": "vertical_only"
+   }
+  },
+  "SM_LB_Cl_Wall40_400x800_A": {
+   "groove": "full",
+   "source": "Tools/blender/belltower/build_cloister.py:307 build_wall40 -> Tools/blender/kit/build_kit.py:185 build_wall -> ashlar_body -> relief_both -> Tools/blender/kit/kit_lib.py:444 (defaults); cap cap_course:80-83",
+   "parts": {
+    "body": "full",
+    "cap": "vertical_only"
+   }
+  },
+  "SM_LB_Cl_Wall40_400x800_B": {
+   "groove": "full",
+   "source": "Tools/blender/belltower/build_cloister.py:307 build_wall40 -> Tools/blender/kit/build_kit.py:185 build_wall -> ashlar_body -> relief_both -> Tools/blender/kit/kit_lib.py:444 (defaults); cap cap_course:80-83",
+   "parts": {
+    "body": "full",
+    "cap": "vertical_only"
+   }
+  },
+  "SM_LB_Cl_Wall40_100x800": {
+   "groove": "full",
+   "source": "Tools/blender/belltower/build_cloister.py:307 build_wall40 -> Tools/blender/kit/build_kit.py:185 build_wall -> ashlar_body -> relief_both -> Tools/blender/kit/kit_lib.py:444 (defaults); cap cap_course:80-83",
+   "parts": {
+    "body": "full",
+    "cap": "vertical_only"
+   }
+  },
+  "SM_LB_Cl_Wall40_400x450": {
+   "groove": "full",
+   "source": "Tools/blender/belltower/build_cloister.py:307 build_wall40 -> Tools/blender/kit/build_kit.py:185 build_wall -> ashlar_body -> relief_both -> Tools/blender/kit/kit_lib.py:444 (defaults); cap cap_course:80-83",
+   "parts": {
+    "body": "full",
+    "cap": "vertical_only"
+   }
+  },
+  "SM_LB_Cl_Wall40_100x450": {
+   "groove": "full",
+   "source": "Tools/blender/belltower/build_cloister.py:307 build_wall40 -> Tools/blender/kit/build_kit.py:185 build_wall -> ashlar_body -> relief_both -> Tools/blender/kit/kit_lib.py:444 (defaults); cap cap_course:80-83",
+   "parts": {
+    "body": "full",
+    "cap": "vertical_only"
+   }
+  },
+  "SM_LB_Cl_Archway_500x40x1300": {
+   "groove": "full",
+   "source": "Tools/blender/belltower/build_cloister.py:372 BK.relief_both(defaults); cap Tools/blender/belltower/build_cloister.py:381 BK.cap_course",
+   "parts": {
+    "body": "full",
+    "cap": "vertical_only"
+   }
+  },
+  "SM_LB_Cl_Archway_300x40x1300": {
+   "groove": "full",
+   "source": "Tools/blender/belltower/build_cloister.py:372 BK.relief_both(defaults); cap Tools/blender/belltower/build_cloister.py:381 BK.cap_course",
+   "parts": {
+    "body": "full",
+    "cap": "vertical_only"
+   }
+  },
+  "SM_LB_Cl_Pier_80x80x640": {
+   "groove": "full",
+   "source": "Tools/blender/belltower/build_cloister.py:433 face_relief_xy (called :450 and :467, no vertical/h_grooves overrides) -> relief_cutters defaults",
+   "parts": {
+    "shaft": "full",
+    "block": "full"
+   }
+  },
+  "SM_LB_Cl_PierCorner_130x80x640": {
+   "groove": "full",
+   "source": "Tools/blender/belltower/build_cloister.py:433 face_relief_xy (called :450 and :467, no vertical/h_grooves overrides) -> relief_cutters defaults",
+   "parts": {
+    "shaft": "full",
+    "block": "full"
+   }
+  },
+  "SM_LB_Cl_ArcadeArch_120x80": {
+   "groove": "full",
+   "source": "Tools/blender/belltower/build_cloister.py:489-490 relief_cutters(defaults)",
+   "parts": {
+    "body": "full"
+   }
+  },
+  "SM_LB_Cl_ArcadeArch_170x80": {
+   "groove": "full",
+   "source": "Tools/blender/belltower/build_cloister.py:489-490 relief_cutters(defaults)",
+   "parts": {
+    "body": "full"
+   }
+  },
+  "SM_LB_Cl_ArcadeArch_220x80": {
+   "groove": "full",
+   "source": "Tools/blender/belltower/build_cloister.py:489-490 relief_cutters(defaults)",
+   "parts": {
+    "body": "full"
+   }
+  },
+  "SM_LB_Cl_ArcadeArch_270x80": {
+   "groove": "full",
+   "source": "Tools/blender/belltower/build_cloister.py:489-490 relief_cutters(defaults)",
+   "parts": {
+    "body": "full"
+   }
+  },
+  "SM_LB_Cl_GarthWall_1100x100": {
+   "groove": "full",
+   "source": "Tools/blender/belltower/build_cloister.py:534 relief_cutters(defaults, courses unit=22); coping Tools/blender/belltower/build_cloister.py:536 BK.cap_course",
+   "parts": {
+    "body": "full",
+    "cap": "vertical_only"
+   }
+  },
+  "SM_LB_Cl_GarthWall_800x100": {
+   "groove": "full",
+   "source": "Tools/blender/belltower/build_cloister.py:534 relief_cutters(defaults, courses unit=22); coping Tools/blender/belltower/build_cloister.py:536 BK.cap_course",
+   "parts": {
+    "body": "full",
+    "cap": "vertical_only"
+   }
+  },
+  "SM_LB_Cl_GarthBed_1100x800": {
+   "groove": "none",
+   "source": "Tools/blender/belltower/build_cloister.py (builder makes no relief_cutters / BK.relief_both / ashlar_body call)"
+  },
+  "SM_LB_Cl_GraveSlab_200x80": {
+   "groove": "none",
+   "source": "Tools/blender/belltower/build_cloister.py (builder makes no relief_cutters / BK.relief_both / ashlar_body call)"
+  },
+  "SM_LB_Cl_GraveCross_60": {
+   "groove": "none",
+   "source": "Tools/blender/belltower/build_cloister.py (builder makes no relief_cutters / BK.relief_both / ashlar_body call)"
+  },
+  "SM_LB_Cl_GarthCross_350": {
+   "groove": "none",
+   "source": "Tools/blender/belltower/build_cloister.py (builder makes no relief_cutters / BK.relief_both / ashlar_body call)"
+  },
+  "SM_LB_Cl_Vault_Barrel_830x640": {
+   "groove": "none",
+   "source": "Tools/blender/belltower/build_cloister.py (builder makes no relief_cutters / BK.relief_both / ashlar_body call)"
+  },
+  "SM_LB_Cl_Vault_Barrel_770x640": {
+   "groove": "none",
+   "source": "Tools/blender/belltower/build_cloister.py (builder makes no relief_cutters / BK.relief_both / ashlar_body call)"
+  },
+  "SM_LB_Cl_Vault_Barrel_770x640_Broken": {
+   "groove": "none",
+   "source": "Tools/blender/belltower/build_cloister.py (builder makes no relief_cutters / BK.relief_both / ashlar_body call)"
+  },
+  "SM_LB_Cl_Vault_Barrel_770x980": {
+   "groove": "none",
+   "source": "Tools/blender/belltower/build_cloister.py (builder makes no relief_cutters / BK.relief_both / ashlar_body call)"
+  },
+  "SM_LB_Cl_Vault_Barrel_570x980": {
+   "groove": "none",
+   "source": "Tools/blender/belltower/build_cloister.py (builder makes no relief_cutters / BK.relief_both / ashlar_body call)"
+  },
+  "SM_LB_Cl_Vault_Groin_770x830": {
+   "groove": "none",
+   "source": "Tools/blender/belltower/build_cloister.py (builder makes no relief_cutters / BK.relief_both / ashlar_body call)"
+  },
+  "SM_LB_Cl_Vault_Groin_570x830": {
+   "groove": "none",
+   "source": "Tools/blender/belltower/build_cloister.py (builder makes no relief_cutters / BK.relief_both / ashlar_body call)"
+  },
+  "SM_LB_Cl_Vault_Groin_770x770": {
+   "groove": "none",
+   "source": "Tools/blender/belltower/build_cloister.py (builder makes no relief_cutters / BK.relief_both / ashlar_body call)"
+  },
+  "SM_LB_Cl_Vault_Groin_570x770": {
+   "groove": "none",
+   "source": "Tools/blender/belltower/build_cloister.py (builder makes no relief_cutters / BK.relief_both / ashlar_body call)"
+  },
+  "SM_LB_Cl_LeanTo_1000x1050": {
+   "groove": "none",
+   "source": "Tools/blender/belltower/build_cloister.py (builder makes no relief_cutters / BK.relief_both / ashlar_body call)"
+  },
+  "SM_LB_Cl_LeanTo_1000x1050_Hole": {
+   "groove": "none",
+   "source": "Tools/blender/belltower/build_cloister.py (builder makes no relief_cutters / BK.relief_both / ashlar_body call)"
+  },
+  "SM_LB_Cl_LeanTo_Valley_L_1000x1050": {
+   "groove": "none",
+   "source": "Tools/blender/belltower/build_cloister.py (builder makes no relief_cutters / BK.relief_both / ashlar_body call)"
+  },
+  "SM_LB_Cl_LeanTo_Valley_R_1000x1050": {
+   "groove": "none",
+   "source": "Tools/blender/belltower/build_cloister.py (builder makes no relief_cutters / BK.relief_both / ashlar_body call)"
+  },
+  "SM_LB_Cl_CellDoorFrame_150x270": {
+   "groove": "none",
+   "source": "Tools/blender/belltower/build_cloister.py (builder makes no relief_cutters / BK.relief_both / ashlar_body call)"
+  },
+  "SM_LB_Cl_StairHouseRoof_420x640": {
+   "groove": "none",
+   "source": "Tools/blender/belltower/build_cloister.py (builder makes no relief_cutters / BK.relief_both / ashlar_body call)"
+  },
+  "SM_LB_Cl_StairHouseGable_380x40x650": {
+   "groove": "full",
+   "source": "Tools/blender/belltower/build_cloister.py:1164 BK.relief_both(wmin=70,wmax=150)",
+   "parts": {
+    "body": "full"
+   }
+  },
+  "SM_LB_Prop_SmallBell_A": {
+   "groove": "none",
+   "source": "Tools/blender/belltower/build_cloister.py (prop builder, no relief_cutters)"
+  },
+  "SM_LB_Prop_SmallBellBracket_A": {
+   "groove": "none",
+   "source": "Tools/blender/belltower/build_cloister.py (prop builder, no relief_cutters)"
+  },
+  "SM_LB_Prop_BellPlaque_A": {
+   "groove": "none",
+   "source": "Tools/blender/belltower/build_cloister.py (prop builder, no relief_cutters)"
+  },
+  "SM_LB_Prop_InscriptionTablet_A": {
+   "groove": "none",
+   "source": "Tools/blender/belltower/build_cloister.py (prop builder, no relief_cutters)"
+  },
+  "SM_LB_Prop_InscriptionTablet_Memorial": {
+   "groove": "none",
+   "source": "Tools/blender/belltower/build_cloister.py (prop builder, no relief_cutters)"
+  },
+  "SM_LB_Prop_LanternBracket_R20": {
+   "groove": "none",
+   "source": "Tools/blender/belltower/build_cloister.py (prop builder, no relief_cutters)"
+  },
+  "SM_LB_Prop_LanternBracket_R40": {
+   "groove": "none",
+   "source": "Tools/blender/belltower/build_cloister.py (prop builder, no relief_cutters)"
+  },
+  "SM_LB_Prop_LanternBracket_R60": {
+   "groove": "none",
+   "source": "Tools/blender/belltower/build_cloister.py (prop builder, no relief_cutters)"
+  },
+  "SM_LB_Tw_ShaftBase_420x420x450": {
+   "groove": "full",
+   "source": "Tools/blender/belltower/tw_timber.py:158-159 BK.ashlar_body(vary=True) -> relief_both -> Tools/blender/kit/kit_lib.py:444 (defaults); no cap",
+   "parts": {
+    "body": "full"
+   }
+  },
+  "SM_LB_Tw_S1_W": {
+   "groove": "full",
+   "source": "Tools/blender/belltower/tw_walls.py:256 BK.ashlar_body(vary=True) -> relief_both -> Tools/blender/kit/kit_lib.py:444 (defaults); no cap",
+   "parts": {
+    "body": "full"
+   }
+  },
+  "SM_LB_Tw_S1_N": {
+   "groove": "full",
+   "source": "Tools/blender/belltower/tw_walls.py:256 BK.ashlar_body(vary=True) -> relief_both -> Tools/blender/kit/kit_lib.py:444 (defaults); no cap",
+   "parts": {
+    "body": "full"
+   }
+  },
+  "SM_LB_Tw_S1_E": {
+   "groove": "full",
+   "source": "Tools/blender/belltower/tw_walls.py:256 BK.ashlar_body(vary=True) -> relief_both -> Tools/blender/kit/kit_lib.py:444 (defaults); no cap",
+   "parts": {
+    "body": "full"
+   }
+  },
+  "SM_LB_Tw_S1_S": {
+   "groove": "full",
+   "source": "Tools/blender/belltower/tw_walls.py:256 BK.ashlar_body(vary=True) -> relief_both -> Tools/blender/kit/kit_lib.py:444 (defaults); no cap",
+   "parts": {
+    "body": "full"
+   }
+  },
+  "SM_LB_Tw_S2_W": {
+   "groove": "full",
+   "source": "Tools/blender/belltower/tw_walls.py:256 BK.ashlar_body(vary=True) -> relief_both -> Tools/blender/kit/kit_lib.py:444 (defaults); no cap",
+   "parts": {
+    "body": "full"
+   }
+  },
+  "SM_LB_Tw_S2_N": {
+   "groove": "full",
+   "source": "Tools/blender/belltower/tw_walls.py:256 BK.ashlar_body(vary=True) -> relief_both -> Tools/blender/kit/kit_lib.py:444 (defaults); no cap",
+   "parts": {
+    "body": "full"
+   }
+  },
+  "SM_LB_Tw_S2_E": {
+   "groove": "full",
+   "source": "Tools/blender/belltower/tw_walls.py:256 BK.ashlar_body(vary=True) -> relief_both -> Tools/blender/kit/kit_lib.py:444 (defaults); no cap",
+   "parts": {
+    "body": "full"
+   }
+  },
+  "SM_LB_Tw_S2_S": {
+   "groove": "full",
+   "source": "Tools/blender/belltower/tw_walls.py:256 BK.ashlar_body(vary=True) -> relief_both -> Tools/blender/kit/kit_lib.py:444 (defaults); no cap",
+   "parts": {
+    "body": "full"
+   }
+  },
+  "SM_LB_Tw_S3_W": {
+   "groove": "full",
+   "source": "Tools/blender/belltower/tw_walls.py:256 BK.ashlar_body(vary=True) -> relief_both -> Tools/blender/kit/kit_lib.py:444 (defaults); no cap",
+   "parts": {
+    "body": "full"
+   }
+  },
+  "SM_LB_Tw_S3_N": {
+   "groove": "full",
+   "source": "Tools/blender/belltower/tw_walls.py:256 BK.ashlar_body(vary=True) -> relief_both -> Tools/blender/kit/kit_lib.py:444 (defaults); no cap",
+   "parts": {
+    "body": "full"
+   }
+  },
+  "SM_LB_Tw_S3_E": {
+   "groove": "full",
+   "source": "Tools/blender/belltower/tw_walls.py:256 BK.ashlar_body(vary=True) -> relief_both -> Tools/blender/kit/kit_lib.py:444 (defaults); no cap",
+   "parts": {
+    "body": "full"
+   }
+  },
+  "SM_LB_Tw_S3_S": {
+   "groove": "full",
+   "source": "Tools/blender/belltower/tw_walls.py:256 BK.ashlar_body(vary=True) -> relief_both -> Tools/blender/kit/kit_lib.py:444 (defaults); no cap",
+   "parts": {
+    "body": "full"
+   }
+  },
+  "SM_LB_Tw_S3_W_BrokenSW": {
+   "groove": "full",
+   "source": "Tools/blender/belltower/tw_walls.py:256 BK.ashlar_body(vary=True) -> relief_both -> Tools/blender/kit/kit_lib.py:444 (defaults)",
+   "parts": {
+    "body": "full"
+   }
+  },
+  "SM_LB_Tw_S3_S_BrokenSW": {
+   "groove": "full",
+   "source": "Tools/blender/belltower/tw_walls.py:256 BK.ashlar_body(vary=True) -> relief_both -> Tools/blender/kit/kit_lib.py:444 (defaults)",
+   "parts": {
+    "body": "full"
+   }
+  }
+ }
+}
