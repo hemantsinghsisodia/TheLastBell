@@ -15,8 +15,8 @@
   "vault": 10,
   "door": 5,
   "doorleaf": 5,
-  "dress": 283,
-  "light": 17
+  "dress": 282,
+  "light": 16
  },
  "group_counts": {
   "shell": 12,
@@ -62,12 +62,12 @@
   "cell": 2,
   "decal": 8,
   "ivy": 4,
-  "lantern": 23,
+  "lantern": 22,
   "candle": 3,
   "towerdress": 11,
   "weed": 32,
   "garthveg": 175,
-  "light": 17
+  "light": 16
  },
  "checks": [
   {
@@ -326,7 +326,7 @@
    "group": "7 derived",
    "name": "record ids unique",
    "ok": true,
-   "detail": "538 records"
+   "detail": "536 records"
   },
   {
    "group": "7 derived",
@@ -380,7 +380,7 @@
    "group": "7 derived",
    "name": "every new-folder mesh named in a record exists in the built-mesh reports (tower 33, cloister 40)",
    "ok": true,
-   "detail": "all 73 record meshes found"
+   "detail": "all 80 record meshes found"
   },
   {
    "group": "7 derived",
@@ -393,6 +393,66 @@
    "name": "D1.12 cell leaves: front >= -8.0 and back <= -2.0 in the frame's local y (N11100 hangs rotated, excluded)",
    "ok": true,
    "detail": "N9900 back -2.52 front -7.88; N10500 back -2.52 front -7.88; N11100 back 8.31 front -14.73; W900 back -2.52 front -7.88; W2700 back -2.52 front -7.88"
+  },
+  {
+   "group": "D1.27",
+   "name": "lantern brackets: ring point within 1 cm of the lantern XY and lantern top within 0.5 cm of the hook Z (6 brackets R20/R40/R60)",
+   "ok": true,
+   "detail": "CLA_LanternBracket_Bells R40: ring->lantern XY 0.00, top->hook Z 0.00; CLA_LanternBracket_Door R40: ring->lantern XY 0.00, top->hook Z 0.00; SHA_LanternBracket_Entry R20: ring->lantern XY 0.00, top->hook Z 0.00; PSA_LanternBracket R60: ring->lantern XY 0.00, top->hook Z 0.00; PSA_LanternBracket_W R60: ring->lantern XY 0.00, top->hook Z 0.00; TWA_LanternBracket_Base R20: ring->lantern XY 0.00, top->hook Z 0.00"
+  },
+  {
+   "group": "D1.27",
+   "name": "bracket reach per lantern: Bells/Door R40, Entry/Base R20, PSA/PSA_W R60; landing and bell lanterns keep the chain holder",
+   "ok": true,
+   "detail": "{'CLA_LanternBracket_Bells': 'R40', 'CLA_LanternBracket_Door': 'R40', 'SHA_LanternBracket_Entry': 'R20', 'PSA_LanternBracket': 'R60', 'PSA_LanternBracket_W': 'R60', 'TWA_LanternBracket_Base': 'R20'}"
+  },
+  {
+   "group": "D1.27",
+   "name": "arch lantern: no wall bracket; chain is one vertical segment (pitch 0, roll 0, scale Z 78 / 117.4) from Z 408 to the hook at Z 330, at X 9480 Y 2000",
+   "ok": true,
+   "detail": "chain CLA_Lantern_West_Chain_0 rot [0.0, -90.0, 0.0] scale [1.0, 1.0, 0.6644] loc [9480.0, 2000.0, 408.0]"
+  },
+  {
+   "group": "D1.27",
+   "name": "arch soffit holder at (9480, 2000, 420) rot (-90, 0, 0): plate on the soffit (AABB top Z 420), ring tip within 1 cm of Z 408.1",
+   "ok": true,
+   "detail": "holder AABB Z 408.13..421.02, X 9471.7..9486.7, Y 1992.2..2007.2"
+  },
+  {
+   "group": "D1.27",
+   "name": "arch lantern AABB (X 9469-9491, Z 277-330) lies inside the archway opening (X 9460-9500, Y 1750-2250, below the soffit at Z 420), clear of the holder",
+   "ok": true,
+   "detail": "lantern AABB X 9469.0..9491.0 Y 1989.0..2012.4 Z 277.0..330.0"
+  },
+  {
+   "group": "D1.27",
+   "name": "L_Cl_West is 10 cm below the arch hook: (9480, 2000, 320)",
+   "ok": true,
+   "detail": "[9480.0, 2000.0, 320.0]"
+  },
+  {
+   "group": "D1.27",
+   "name": "16 light records; L_Tw_MoonRoof is not among them",
+   "ok": true,
+   "detail": "16 light records"
+  },
+  {
+   "group": "D1.27",
+   "name": "3 slit moon spots sit at opening + 10 d (+-0.1), rotation (-38, 35, 0) unchanged",
+   "ok": true,
+   "detail": "F03 [12506.5, 1544.5, 711.9] (opening + 10d [12506.5, 1544.5, 711.9]); F07 [12506.5, 1544.5, 1621.1] (opening + 10d [12506.5, 1544.5, 1621.1]); F08 [12046.5, 2004.5, 1847.8] (opening + 10d [12046.5, 2004.5, 1847.8])"
+  },
+  {
+   "group": "D1.27",
+   "name": "LIGHTS_PLAN: Light_TowerExt_0..2 in retire_p10_8d (not keep_and_tune); shafts_extra = SA_Tower_Roof at the roof opening, width 200",
+   "ok": true,
+   "detail": "['Light_TowerExt_0', 'Light_TowerExt_1', 'Light_TowerExt_2']"
+  },
+  {
+   "group": "D1.27",
+   "name": "grave slabs 0/2/3/5 use the Anselm/Tomas/Edwin/Osric meshes with MAT_Carve -> MI_Cl_CarveDirt; 1 and 4 stay plain; seed-1223 yaw/roll unchanged",
+   "ok": true,
+   "detail": "rot [[0.0, 3.59, 2.03], [0.0, -0.13, 2.44], [0.0, 2.76, 2.43], [0.0, -2.63, -2.11], [0.0, -2.37, -1.42], [0.0, -3.25, -2.9]]"
   }
  ],
  "warnings": [
@@ -402,7 +462,7 @@
   },
   {
    "id": "D1-N2 W lantern",
-   "detail": "L_Cl_West is in the arch opening (no wall at Z 330, soffit apex Z 420): the lantern hangs from a ring at the soffit on a 106 cm chain (D1.11 says 'nearest wall')."
+   "detail": "L_Cl_West is in the arch opening (no wall at Z 330, soffit apex Z 420): the lantern hangs at X 9480 (archway centre) from a soffit holder on a vertical 78 cm chain (D1.27; D1.11 says 'nearest wall')."
   },
   {
    "id": "D1-N3 landing lights moved",
@@ -429,6 +489,7 @@
   "MI_Prop_Wood_Weathered": "/Game/LastBell/Environments/Courtyard/Materials/MI_Prop_Wood_Weathered",
   "MI_Prop_Earth": "/Game/LastBell/Environments/Courtyard/Materials/MI_Prop_Earth",
   "MI_Cl_GarthEarth": "/Game/LastBell/Environments/Cloister/Materials/MI_Cl_GarthEarth",
+  "MI_Cl_CarveDirt": "/Game/LastBell/Environments/Cloister/Materials/MI_Cl_CarveDirt",
   "MI_Crypt_Iron": "/Game/LastBell/Environments/Crypt/Materials/MI_Crypt_Iron",
   "MI_Decal_Mould": "/Game/LastBell/Materials/Instances/MI_Decal_Mould",
   "MI_Decal_Leaking004_Wall": "/Game/LastBell/Environments/Crypt/Materials/MI_Decal_Leaking004_Wall",
@@ -451,7 +512,8 @@
   "MAT_Bronze": "MI_LB_BellBronze",
   "MAT_Rope": "MI_LB_Rope",
   "MAT_Sally": "MI_LB_Sally",
-  "MAT_Band": "MI_LB_BellBand_III"
+  "MAT_Band": "MI_LB_BellBand_III",
+  "MAT_Carve": "MI_Cl_CarveDirt"
  },
  "wood": {
   "tower": "MI_Chapel_Wood_Old",
@@ -3485,9 +3547,307 @@
    ],
    "built_tris": 220,
    "built_ucx": 0
+  },
+  "SM_LB_Prop_LanternBracket_R20": {
+   "path": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Prop_LanternBracket_R20.SM_LB_Prop_LanternBracket_R20",
+   "mbounds": [
+    [
+     0.0,
+     -4.0,
+     -14.0
+    ],
+    [
+     23.9,
+     4.0,
+     18.0
+    ]
+   ],
+   "slots": [
+    "MAT_Iron"
+   ],
+   "seed": 1305,
+   "pivot": "wall face at the lantern's hook height, +x out of the wall; hanger ring lowest point at local z 0, x = R",
+   "ucx": "none",
+   "note": "D1.27 F1: wall plate, arm, brace, hanger ring at reach 20",
+   "d1_mbounds": [
+    [
+     0.0,
+     -4.0,
+     -14.0
+    ],
+    [
+     23.9,
+     4.0,
+     18.0
+    ]
+   ],
+   "d1_slots": [
+    "MAT_Iron"
+   ],
+   "built_tris": 608,
+   "built_ucx": 0
+  },
+  "SM_LB_Prop_LanternBracket_R40": {
+   "path": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Prop_LanternBracket_R40.SM_LB_Prop_LanternBracket_R40",
+   "mbounds": [
+    [
+     0.0,
+     -4.0,
+     -14.0
+    ],
+    [
+     43.9,
+     4.0,
+     18.0
+    ]
+   ],
+   "slots": [
+    "MAT_Iron"
+   ],
+   "seed": 1306,
+   "pivot": "wall face at the lantern's hook height, +x out of the wall; hanger ring lowest point at local z 0, x = R",
+   "ucx": "none",
+   "note": "D1.27 F1: wall plate, arm, brace, hanger ring at reach 40",
+   "d1_mbounds": [
+    [
+     0.0,
+     -4.0,
+     -14.0
+    ],
+    [
+     43.9,
+     4.0,
+     18.0
+    ]
+   ],
+   "d1_slots": [
+    "MAT_Iron"
+   ],
+   "built_tris": 608,
+   "built_ucx": 0
+  },
+  "SM_LB_Prop_LanternBracket_R60": {
+   "path": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Prop_LanternBracket_R60.SM_LB_Prop_LanternBracket_R60",
+   "mbounds": [
+    [
+     0.0,
+     -4.0,
+     -14.0
+    ],
+    [
+     63.9,
+     4.0,
+     18.0
+    ]
+   ],
+   "slots": [
+    "MAT_Iron"
+   ],
+   "seed": 1307,
+   "pivot": "wall face at the lantern's hook height, +x out of the wall; hanger ring lowest point at local z 0, x = R",
+   "ucx": "none",
+   "note": "D1.27 F1: wall plate, arm, brace, hanger ring at reach 60",
+   "d1_mbounds": [
+    [
+     0.0,
+     -4.0,
+     -14.0
+    ],
+    [
+     63.9,
+     4.0,
+     18.0
+    ]
+   ],
+   "d1_slots": [
+    "MAT_Iron"
+   ],
+   "built_tris": 608,
+   "built_ucx": 0
+  },
+  "SM_LB_Cl_GraveSlab_200x80_Anselm": {
+   "path": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_GraveSlab_200x80_Anselm.SM_LB_Cl_GraveSlab_200x80_Anselm",
+   "mbounds": [
+    [
+     -100.0,
+     -40.0,
+     0.0
+    ],
+    [
+     100.0,
+     40.0,
+     8.0
+    ]
+   ],
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble",
+    "MAT_Carve"
+   ],
+   "seed": 1220,
+   "pivot": "as SM_LB_Cl_GraveSlab_200x80",
+   "ucx": "none",
+   "note": "D1.27 F1: the C11 slab with BR. ANSELM / OB. year carved into the top face",
+   "d1_mbounds": [
+    [
+     -100.0,
+     -40.0,
+     0.0
+    ],
+    [
+     100.0,
+     40.0,
+     8.0
+    ]
+   ],
+   "d1_slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble",
+    "MAT_Carve"
+   ],
+   "built_tris": 5000,
+   "built_ucx": 0
+  },
+  "SM_LB_Cl_GraveSlab_200x80_Tomas": {
+   "path": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_GraveSlab_200x80_Tomas.SM_LB_Cl_GraveSlab_200x80_Tomas",
+   "mbounds": [
+    [
+     -100.0,
+     -40.0,
+     0.0
+    ],
+    [
+     100.0,
+     40.0,
+     8.0
+    ]
+   ],
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble",
+    "MAT_Carve"
+   ],
+   "seed": 1220,
+   "pivot": "as SM_LB_Cl_GraveSlab_200x80",
+   "ucx": "none",
+   "note": "D1.27 F1: the C11 slab with BR. TOMAS / OB. year carved into the top face",
+   "d1_mbounds": [
+    [
+     -100.0,
+     -40.0,
+     0.0
+    ],
+    [
+     100.0,
+     40.0,
+     8.0
+    ]
+   ],
+   "d1_slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble",
+    "MAT_Carve"
+   ],
+   "built_tris": 5380,
+   "built_ucx": 0
+  },
+  "SM_LB_Cl_GraveSlab_200x80_Edwin": {
+   "path": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_GraveSlab_200x80_Edwin.SM_LB_Cl_GraveSlab_200x80_Edwin",
+   "mbounds": [
+    [
+     -100.0,
+     -40.0,
+     0.0
+    ],
+    [
+     100.0,
+     40.0,
+     8.0
+    ]
+   ],
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble",
+    "MAT_Carve"
+   ],
+   "seed": 1220,
+   "pivot": "as SM_LB_Cl_GraveSlab_200x80",
+   "ucx": "none",
+   "note": "D1.27 F1: the C11 slab with BR. EDWIN / OB. year carved into the top face",
+   "d1_mbounds": [
+    [
+     -100.0,
+     -40.0,
+     0.0
+    ],
+    [
+     100.0,
+     40.0,
+     8.0
+    ]
+   ],
+   "d1_slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble",
+    "MAT_Carve"
+   ],
+   "built_tris": 5284,
+   "built_ucx": 0
+  },
+  "SM_LB_Cl_GraveSlab_200x80_Osric": {
+   "path": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_GraveSlab_200x80_Osric.SM_LB_Cl_GraveSlab_200x80_Osric",
+   "mbounds": [
+    [
+     -100.0,
+     -40.0,
+     0.0
+    ],
+    [
+     100.0,
+     40.0,
+     8.0
+    ]
+   ],
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble",
+    "MAT_Carve"
+   ],
+   "seed": 1220,
+   "pivot": "as SM_LB_Cl_GraveSlab_200x80",
+   "ucx": "none",
+   "note": "D1.27 F1: the C11 slab with BR. OSRIC / OB. year carved into the top face",
+   "d1_mbounds": [
+    [
+     -100.0,
+     -40.0,
+     0.0
+    ],
+    [
+     100.0,
+     40.0,
+     8.0
+    ]
+   ],
+   "d1_slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble",
+    "MAT_Carve"
+   ],
+   "built_tris": 6552,
+   "built_ucx": 0
   }
  },
  "built_but_unplaced": [
+  "SM_LB_Prop_InscriptionTablet_Memorial",
   "SM_LB_Tw_S3_S",
   "SM_LB_Tw_S3_W"
  ],
@@ -4663,11 +5023,23 @@
    "Light_TowerTop_0",
    "Light_Courtyard_7"
   ],
-  "keep_and_tune": {
-   "Light_TowerExt_0": "D1.23: stay at 300 lm (read back only)",
-   "Light_TowerExt_1": "D1.23: stay at 300 lm (read back only)",
-   "Light_TowerExt_2": "D1.23: stay at 300 lm (read back only)"
-  },
+  "keep_and_tune": {},
+  "retire_p10_8d": [
+   "Light_TowerExt_0",
+   "Light_TowerExt_1",
+   "Light_TowerExt_2"
+  ],
+  "shafts_extra": [
+   {
+    "id": "SA_Tower_Roof",
+    "opening": [
+     12188.0,
+     1688.0,
+     4027.0
+    ],
+    "width": 200
+   }
+  ],
   "fog": [
    {
     "id": "LFV_Tower_0",
@@ -13689,7 +14061,7 @@
    "id": "CLA_GraveSlab_0",
    "cat": "garth",
    "group": "graveslab",
-   "mesh": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_GraveSlab_200x80.SM_LB_Cl_GraveSlab_200x80",
+   "mesh": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_GraveSlab_200x80_Anselm.SM_LB_Cl_GraveSlab_200x80_Anselm",
    "loc": [
     10500.0,
     1600.0,
@@ -13732,10 +14104,11 @@
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
     "MAT_Trim": "MI_Kit_Trim",
-    "MAT_Rubble": "MI_Kit_Rubble"
+    "MAT_Rubble": "MI_Kit_Rubble",
+    "MAT_Carve": "MI_Cl_CarveDirt"
    },
    "extras": {},
-   "note": "grave slab, yaw 0 +-4 deg and 1-3 deg roll (seed 1223)"
+   "note": "grave slab, yaw 0 +-4 deg and 1-3 deg roll (seed 1223); D1.27: carved BR. ANSELM"
   },
   {
    "id": "CLA_GraveSlab_1",
@@ -13793,7 +14166,7 @@
    "id": "CLA_GraveSlab_2",
    "cat": "garth",
    "group": "graveslab",
-   "mesh": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_GraveSlab_200x80.SM_LB_Cl_GraveSlab_200x80",
+   "mesh": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_GraveSlab_200x80_Tomas.SM_LB_Cl_GraveSlab_200x80_Tomas",
    "loc": [
     10700.0,
     1650.0,
@@ -13836,16 +14209,17 @@
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
     "MAT_Trim": "MI_Kit_Trim",
-    "MAT_Rubble": "MI_Kit_Rubble"
+    "MAT_Rubble": "MI_Kit_Rubble",
+    "MAT_Carve": "MI_Cl_CarveDirt"
    },
    "extras": {},
-   "note": "grave slab, yaw 0 +-4 deg and 1-3 deg roll (seed 1223)"
+   "note": "grave slab, yaw 0 +-4 deg and 1-3 deg roll (seed 1223); D1.27: carved BR. TOMAS"
   },
   {
    "id": "CLA_GraveSlab_3",
    "cat": "garth",
    "group": "graveslab",
-   "mesh": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_GraveSlab_200x80.SM_LB_Cl_GraveSlab_200x80",
+   "mesh": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_GraveSlab_200x80_Edwin.SM_LB_Cl_GraveSlab_200x80_Edwin",
    "loc": [
     11000.0,
     2000.0,
@@ -13888,10 +14262,11 @@
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
     "MAT_Trim": "MI_Kit_Trim",
-    "MAT_Rubble": "MI_Kit_Rubble"
+    "MAT_Rubble": "MI_Kit_Rubble",
+    "MAT_Carve": "MI_Cl_CarveDirt"
    },
    "extras": {},
-   "note": "grave slab, yaw 0 +-4 deg and 1-3 deg roll (seed 1223)"
+   "note": "grave slab, yaw 0 +-4 deg and 1-3 deg roll (seed 1223); D1.27: carved BR. EDWIN"
   },
   {
    "id": "CLA_GraveSlab_4",
@@ -13949,7 +14324,7 @@
    "id": "CLA_GraveSlab_5",
    "cat": "garth",
    "group": "graveslab",
-   "mesh": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_GraveSlab_200x80.SM_LB_Cl_GraveSlab_200x80",
+   "mesh": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_GraveSlab_200x80_Osric.SM_LB_Cl_GraveSlab_200x80_Osric",
    "loc": [
     11200.0,
     1950.0,
@@ -13992,10 +14367,11 @@
    "mi_slots": {
     "MAT_Masonry": "MI_Kit_Masonry",
     "MAT_Trim": "MI_Kit_Trim",
-    "MAT_Rubble": "MI_Kit_Rubble"
+    "MAT_Rubble": "MI_Kit_Rubble",
+    "MAT_Carve": "MI_Cl_CarveDirt"
    },
    "extras": {},
-   "note": "grave slab, yaw 0 +-4 deg and 1-3 deg roll (seed 1223)"
+   "note": "grave slab, yaw 0 +-4 deg and 1-3 deg roll (seed 1223); D1.27: carved BR. OSRIC"
   },
   {
    "id": "CLA_GraveCross_0",
@@ -20376,7 +20752,7 @@
    "id": "CLA_LanternBracket_Bells",
    "cat": "dress",
    "group": "lantern",
-   "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Dungeon_chain_holder.SM_Dungeon_chain_holder",
+   "mesh": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Prop_LanternBracket_R40.SM_LB_Prop_LanternBracket_R40",
    "loc": [
     12000.0,
     2380.0,
@@ -20396,29 +20772,31 @@
    "folder": "Cloister/Dressing/Lanterns",
    "mbounds": [
     [
-     -1.0246819257736206,
-     -7.759642124176025,
-     -8.29891586303711
+     0.0,
+     -4.0,
+     -14.0
     ],
     [
-     11.867844581604004,
-     7.204666614532471,
-     6.6653923988342285
+     43.9,
+     4.0,
+     18.0
     ]
    ],
    "aabb_min": [
-    11988.13,
-    2372.8,
-    321.7
+    11956.1,
+    2376.0,
+    316.0
    ],
    "aabb_max": [
-    12001.02,
-    2387.76,
-    336.67
+    12000.0,
+    2384.0,
+    348.0
    ],
-   "mi_slots": {},
+   "mi_slots": {
+    "MAT_Iron": "MI_Crypt_Iron"
+   },
    "extras": {},
-   "note": "iron bracket (chain holder, +x out of the wall) at the lantern's hook"
+   "note": "D1.27: iron wall bracket SM_LB_Prop_LanternBracket_R40, ring lowest point at the lantern's hook"
   },
   {
    "id": "CLA_Lantern_Door",
@@ -20472,7 +20850,7 @@
    "id": "CLA_LanternBracket_Door",
    "cat": "dress",
    "group": "lantern",
-   "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Dungeon_chain_holder.SM_Dungeon_chain_holder",
+   "mesh": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Prop_LanternBracket_R40.SM_LB_Prop_LanternBracket_R40",
    "loc": [
     12000.0,
     1880.0,
@@ -20492,29 +20870,31 @@
    "folder": "Cloister/Dressing/Lanterns",
    "mbounds": [
     [
-     -1.0246819257736206,
-     -7.759642124176025,
-     -8.29891586303711
+     0.0,
+     -4.0,
+     -14.0
     ],
     [
-     11.867844581604004,
-     7.204666614532471,
-     6.6653923988342285
+     43.9,
+     4.0,
+     18.0
     ]
    ],
    "aabb_min": [
-    11988.13,
-    1872.8,
-    301.7
+    11956.1,
+    1876.0,
+    296.0
    ],
    "aabb_max": [
-    12001.02,
-    1887.76,
-    316.67
+    12000.0,
+    1884.0,
+    328.0
    ],
-   "mi_slots": {},
+   "mi_slots": {
+    "MAT_Iron": "MI_Crypt_Iron"
+   },
    "extras": {},
-   "note": "iron bracket (chain holder, +x out of the wall) at the lantern's hook"
+   "note": "D1.27: iron wall bracket SM_LB_Prop_LanternBracket_R40, ring lowest point at the lantern's hook"
   },
   {
    "id": "SHA_Lantern_Entry",
@@ -20568,7 +20948,7 @@
    "id": "SHA_LanternBracket_Entry",
    "cat": "dress",
    "group": "lantern",
-   "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Dungeon_chain_holder.SM_Dungeon_chain_holder",
+   "mesh": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Prop_LanternBracket_R20.SM_LB_Prop_LanternBracket_R20",
    "loc": [
     10500.0,
     300.0,
@@ -20588,29 +20968,31 @@
    "folder": "Cloister/Art/StairHouse",
    "mbounds": [
     [
-     -1.0246819257736206,
-     -7.759642124176025,
-     -8.29891586303711
+     0.0,
+     -4.0,
+     -14.0
     ],
     [
-     11.867844581604004,
-     7.204666614532471,
-     6.6653923988342285
+     23.9,
+     4.0,
+     18.0
     ]
    ],
    "aabb_min": [
-    10498.98,
-    292.24,
-    301.7
+    10500.0,
+    296.0,
+    296.0
    ],
    "aabb_max": [
-    10511.87,
-    307.2,
-    316.67
+    10523.9,
+    304.0,
+    328.0
    ],
-   "mi_slots": {},
+   "mi_slots": {
+    "MAT_Iron": "MI_Crypt_Iron"
+   },
    "extras": {},
-   "note": "iron bracket (chain holder, +x out of the wall) at the lantern's hook"
+   "note": "D1.27: iron wall bracket SM_LB_Prop_LanternBracket_R20, ring lowest point at the lantern's hook"
   },
   {
    "id": "PSA_Lantern",
@@ -20664,7 +21046,7 @@
    "id": "PSA_LanternBracket",
    "cat": "dress",
    "group": "lantern",
-   "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Dungeon_chain_holder.SM_Dungeon_chain_holder",
+   "mesh": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Prop_LanternBracket_R60.SM_LB_Prop_LanternBracket_R60",
    "loc": [
     9380.0,
     2300.0,
@@ -20684,29 +21066,31 @@
    "folder": "Courtyard/Passage",
    "mbounds": [
     [
-     -1.0246819257736206,
-     -7.759642124176025,
-     -8.29891586303711
+     0.0,
+     -4.0,
+     -14.0
     ],
     [
-     11.867844581604004,
-     7.204666614532471,
-     6.6653923988342285
+     63.9,
+     4.0,
+     18.0
     ]
    ],
    "aabb_min": [
-    9372.24,
-    2288.13,
-    301.7
+    9376.0,
+    2236.1,
+    296.0
    ],
    "aabb_max": [
-    9387.2,
-    2301.02,
-    316.67
+    9384.0,
+    2300.0,
+    328.0
    ],
-   "mi_slots": {},
+   "mi_slots": {
+    "MAT_Iron": "MI_Crypt_Iron"
+   },
    "extras": {},
-   "note": "iron bracket (chain holder, +x out of the wall) at the lantern's hook"
+   "note": "D1.27: iron wall bracket SM_LB_Prop_LanternBracket_R60, ring lowest point at the lantern's hook"
   },
   {
    "id": "PSA_Lantern_W",
@@ -20760,7 +21144,7 @@
    "id": "PSA_LanternBracket_W",
    "cat": "dress",
    "group": "lantern",
-   "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Dungeon_chain_holder.SM_Dungeon_chain_holder",
+   "mesh": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Prop_LanternBracket_R60.SM_LB_Prop_LanternBracket_R60",
    "loc": [
     6500.0,
     2300.0,
@@ -20780,29 +21164,31 @@
    "folder": "Courtyard/Passage",
    "mbounds": [
     [
-     -1.0246819257736206,
-     -7.759642124176025,
-     -8.29891586303711
+     0.0,
+     -4.0,
+     -14.0
     ],
     [
-     11.867844581604004,
-     7.204666614532471,
-     6.6653923988342285
+     63.9,
+     4.0,
+     18.0
     ]
    ],
    "aabb_min": [
-    6492.24,
-    2288.13,
-    301.7
+    6496.0,
+    2236.1,
+    296.0
    ],
    "aabb_max": [
-    6507.2,
-    2301.02,
-    316.67
+    6504.0,
+    2300.0,
+    328.0
    ],
-   "mi_slots": {},
+   "mi_slots": {
+    "MAT_Iron": "MI_Crypt_Iron"
+   },
    "extras": {},
-   "note": "iron bracket (chain holder, +x out of the wall) at the lantern's hook"
+   "note": "D1.27: iron wall bracket SM_LB_Prop_LanternBracket_R60, ring lowest point at the lantern's hook"
   },
   {
    "id": "CLA_Lantern_West",
@@ -20810,7 +21196,7 @@
    "group": "lantern",
    "mesh": "/Game/LastBell/ArtTest/Props/Wooden_Lantern_01/SM_Wooden_Lantern_01.SM_Wooden_Lantern_01",
    "loc": [
-    9560.0,
+    9480.0,
     2000.0,
     278.1
    ],
@@ -20839,66 +21225,18 @@
     ]
    ],
    "aabb_min": [
-    9548.95,
+    9468.95,
     1988.95,
     276.96
    ],
    "aabb_max": [
-    9571.05,
+    9491.05,
     2012.42,
     329.98
    ],
    "mi_slots": {},
    "extras": {},
    "note": "W walk at the passage arch; top hook point at Z 330, the light sits 10 cm below it"
-  },
-  {
-   "id": "CLA_LanternBracket_West",
-   "cat": "dress",
-   "group": "lantern",
-   "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Dungeon_chain_holder.SM_Dungeon_chain_holder",
-   "loc": [
-    9500.0,
-    2000.0,
-    330.0
-   ],
-   "rot": [
-    0.0,
-    0.0,
-    0.0
-   ],
-   "scale": [
-    1.0,
-    1.0,
-    1.0
-   ],
-   "collision": "NoCollision",
-   "folder": "Cloister/Dressing/Lanterns",
-   "mbounds": [
-    [
-     -1.0246819257736206,
-     -7.759642124176025,
-     -8.29891586303711
-    ],
-    [
-     11.867844581604004,
-     7.204666614532471,
-     6.6653923988342285
-    ]
-   ],
-   "aabb_min": [
-    9498.98,
-    1992.24,
-    321.7
-   ],
-   "aabb_max": [
-    9511.87,
-    2007.2,
-    336.67
-   ],
-   "mi_slots": {},
-   "extras": {},
-   "note": "iron bracket (chain holder, +x out of the wall) at the lantern's hook"
   },
   {
    "id": "TWA_Lantern_Base",
@@ -20952,7 +21290,7 @@
    "id": "TWA_LanternBracket_Base",
    "cat": "dress",
    "group": "lantern",
-   "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Dungeon_chain_holder.SM_Dungeon_chain_holder",
+   "mesh": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Prop_LanternBracket_R20.SM_LB_Prop_LanternBracket_R20",
    "loc": [
     12040.0,
     1880.0,
@@ -20972,29 +21310,31 @@
    "folder": "BellTower/Art/Dressing",
    "mbounds": [
     [
-     -1.0246819257736206,
-     -7.759642124176025,
-     -8.29891586303711
+     0.0,
+     -4.0,
+     -14.0
     ],
     [
-     11.867844581604004,
-     7.204666614532471,
-     6.6653923988342285
+     23.9,
+     4.0,
+     18.0
     ]
    ],
    "aabb_min": [
-    12038.98,
-    1872.24,
-    261.7
+    12040.0,
+    1876.0,
+    256.0
    ],
    "aabb_max": [
-    12051.87,
-    1887.2,
-    276.67
+    12063.9,
+    1884.0,
+    288.0
    ],
-   "mi_slots": {},
+   "mi_slots": {
+    "MAT_Iron": "MI_Crypt_Iron"
+   },
    "extras": {},
-   "note": "iron bracket (chain holder, +x out of the wall) at the lantern's hook"
+   "note": "D1.27: iron wall bracket SM_LB_Prop_LanternBracket_R20, ring lowest point at the lantern's hook"
   },
   {
    "id": "CLA_Lantern_West_Chain_0",
@@ -21002,19 +21342,19 @@
    "group": "chain",
    "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Torture_Devices_Chains.SM_Torture_Devices_Chains",
    "loc": [
-    9500.0,
+    9480.0,
     2000.0,
-    418.0
+    408.0
    ],
    "rot": [
     0.0,
     -90.0,
-    -34.2869
+    0.0
    ],
    "scale": [
     1.0,
     1.0,
-    0.90723
+    0.6644
    ],
    "collision": "NoCollision",
    "folder": "Cloister/Dressing/Lanterns",
@@ -21031,29 +21371,29 @@
     ]
    ],
    "aabb_min": [
-    9495.34,
+    9474.48,
     1995.36,
-    326.87
+    329.98
    ],
    "aabb_max": [
-    9564.58,
+    9485.52,
     2004.64,
-    421.25
+    408.13
    ],
    "mi_slots": {},
    "extras": {
     "run_from": [
-     9500.0,
+     9480.0,
      2000.0,
-     418.0
+     408.0
     ],
     "run_to": [
-     9560.0,
+     9480.0,
      2000.0,
      330.0
     ]
    },
-   "note": "chain from the arch soffit to the lantern hook (segment 1/1, run length 106.5)"
+   "note": "chain from the arch soffit to the lantern hook (segment 1/1, run length 78.0)"
   },
   {
    "id": "CLA_Lantern_West_Soffit",
@@ -21061,12 +21401,12 @@
    "group": "lantern",
    "mesh": "/Game/LastBell/ThirdParty/Fab/Dungeon/Meshes/Props/SM_Dungeon_chain_holder.SM_Dungeon_chain_holder",
    "loc": [
-    9500.0,
+    9480.0,
     2000.0,
     420.0
    ],
    "rot": [
-    0.0,
+    -90.0,
     0.0,
     0.0
    ],
@@ -21090,18 +21430,18 @@
     ]
    ],
    "aabb_min": [
-    9498.98,
+    9471.7,
     1992.24,
-    411.7
+    408.13
    ],
    "aabb_max": [
-    9511.87,
+    9486.67,
     2007.2,
-    426.67
+    421.02
    ],
    "mi_slots": {},
    "extras": {},
-   "note": "iron ring at the apex of the W archway soffit (Z 420)"
+   "note": "D1.27: iron holder plate on the W archway soffit (Z 420, rotation pitch -90: +x points down), ring tip about Z 408.1"
   },
   {
    "id": "TWA_Lantern_Land4",
@@ -32310,7 +32650,7 @@
    "group": "light",
    "mesh": "Point",
    "loc": [
-    9560.0,
+    9480.0,
     2000.0,
     320.0
    ],
@@ -32339,12 +32679,12 @@
     ]
    ],
    "aabb_min": [
-    9560.0,
+    9480.0,
     2000.0,
     320.0
    ],
    "aabb_max": [
-    9560.0,
+    9480.0,
     2000.0,
     320.0
    ],
@@ -32940,9 +33280,9 @@
    "group": "light",
    "mesh": "Point",
    "loc": [
-    12403.2,
-    1472.2,
-    810.4
+    12506.5,
+    1544.5,
+    711.9
    ],
    "rot": [
     -38.0,
@@ -32969,14 +33309,14 @@
     ]
    ],
    "aabb_min": [
-    12403.2,
-    1472.2,
-    810.4
+    12506.5,
+    1544.5,
+    711.9
    ],
    "aabb_max": [
-    12403.2,
-    1472.2,
-    810.4
+    12506.5,
+    1544.5,
+    711.9
    ],
    "mi_slots": {},
    "extras": {
@@ -33012,9 +33352,9 @@
    "group": "light",
    "mesh": "Point",
    "loc": [
-    12403.2,
-    1472.2,
-    1719.6
+    12506.5,
+    1544.5,
+    1621.1
    ],
    "rot": [
     -38.0,
@@ -33041,14 +33381,14 @@
     ]
    ],
    "aabb_min": [
-    12403.2,
-    1472.2,
-    1719.6
+    12506.5,
+    1544.5,
+    1621.1
    ],
    "aabb_max": [
-    12403.2,
-    1472.2,
-    1719.6
+    12506.5,
+    1544.5,
+    1621.1
    ],
    "mi_slots": {},
    "extras": {
@@ -33084,9 +33424,9 @@
    "group": "light",
    "mesh": "Point",
    "loc": [
-    11943.2,
-    1932.2,
-    1946.3
+    12046.5,
+    2004.5,
+    1847.8
    ],
    "rot": [
     -38.0,
@@ -33113,14 +33453,14 @@
     ]
    ],
    "aabb_min": [
-    11943.2,
-    1932.2,
-    1946.3
+    12046.5,
+    2004.5,
+    1847.8
    ],
    "aabb_max": [
-    11943.2,
-    1932.2,
-    1946.3
+    12046.5,
+    2004.5,
+    1847.8
    ],
    "mi_slots": {},
    "extras": {
@@ -33149,78 +33489,6 @@
     "shaft_width_cm": 40
    },
    "note": "D1.24: moon spot outside W slit F08"
-  },
-  {
-   "id": "L_Tw_MoonRoof",
-   "cat": "light",
-   "group": "light",
-   "mesh": "Point",
-   "loc": [
-    12058.9,
-    1597.6,
-    4150.1
-   ],
-   "rot": [
-    -38.0,
-    35.0,
-    0.0
-   ],
-   "scale": [
-    1.0,
-    1.0,
-    1.0
-   ],
-   "collision": "-",
-   "folder": "Lighting/BellTower",
-   "mbounds": [
-    [
-     0.0,
-     0.0,
-     0.0
-    ],
-    [
-     0.0,
-     0.0,
-     0.0
-    ]
-   ],
-   "aabb_min": [
-    12058.9,
-    1597.6,
-    4150.1
-   ],
-   "aabb_max": [
-    12058.9,
-    1597.6,
-    4150.1
-   ],
-   "mi_slots": {},
-   "extras": {
-    "light": {
-     "type": "SpotLight",
-     "lumens": 1500,
-     "radius": 2500,
-     "shadows": true,
-     "color_linear": [
-      0.745,
-      0.804,
-      0.922
-     ],
-     "light_function": null,
-     "volumetric_scattering": 0.8,
-     "source_radius": 0,
-     "inner_cone": 10,
-     "outer_cone": 20,
-     "volumetric_shadow": true
-    },
-    "opening": [
-     12188.0,
-     1688.0,
-     4027.0
-    ],
-    "shaft_width_cm": 200
-   },
-   "note": "D1.24: moon spot outside the SW roof collapse"
   }
  ]
 }

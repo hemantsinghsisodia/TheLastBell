@@ -44,6 +44,7 @@ MI_PATHS = {   # existing MIs (materials_list_p10.json); new P10-4 MIs live in t
     "MI_Prop_Wood_Weathered": "/Game/LastBell/Environments/Courtyard/Materials/MI_Prop_Wood_Weathered",
     "MI_Prop_Earth": "/Game/LastBell/Environments/Courtyard/Materials/MI_Prop_Earth",
     "MI_Cl_GarthEarth": "/Game/LastBell/Environments/Cloister/Materials/MI_Cl_GarthEarth",     # D1.21: matte garth bed with moss in the hollows (created by P10-6e)
+    "MI_Cl_CarveDirt": "/Game/LastBell/Environments/Cloister/Materials/MI_Cl_CarveDirt",       # D1.27: dark dirt in carved letters (created by P10-8d-F3)
     "MI_Crypt_Iron": "/Game/LastBell/Environments/Crypt/Materials/MI_Crypt_Iron",
     "MI_Decal_Mould": "/Game/LastBell/Materials/Instances/MI_Decal_Mould",
     "MI_Decal_Leaking004_Wall": "/Game/LastBell/Environments/Crypt/Materials/MI_Decal_Leaking004_Wall",
@@ -60,6 +61,7 @@ SLOT_MI = {   # D1.5 slot mapping
     "MAT_Masonry": "MI_Kit_Masonry", "MAT_Trim": "MI_Kit_Trim", "MAT_Rubble": "MI_Kit_Rubble",
     "MAT_Iron": "MI_Crypt_Iron", "MAT_Slate": "MI_Kit_Slate", "MAT_Earth": "MI_Prop_Earth",
     "MAT_Bronze": "MI_LB_BellBronze", "MAT_Rope": "MI_LB_Rope", "MAT_Sally": "MI_LB_Sally", "MAT_Band": "MI_LB_BellBand_III",
+    "MAT_Carve": "MI_Cl_CarveDirt",     # D1.27: carved lettering groove (memorial tablet, named grave slabs)
 }
 WOOD_TOWER, WOOD_CLOISTER = "MI_Chapel_Wood_Old", "MI_Prop_Wood_Weathered"
 
@@ -500,6 +502,16 @@ piece("SM_LB_Prop_SmallBellBracket_A", CLM, ((0.0, -10.0, -25.0), (34.0, 10.0, 2
 piece("SM_LB_Prop_BellPlaque_A", CLM, ((0.0, -17.0, -17.0), (4.0, 17.0, 17.0)), ["MAT_Trim"], 1303, "back centre, front faces +x", "none", "M3 plaque 4x34x34")
 piece("SM_LB_Prop_InscriptionTablet_A", CLM, ((0.0, -60.0, -15.0), (4.0, 60.0, 15.0)), ["MAT_Trim"], 1304, "back centre, front faces +x", "none",
       "M4 tablet 4x120x30 (x 2.5 root scale = 10x300x75)")
+# D1.27 (P10-8d-F1): lantern brackets (reach R), placed by lantern(); the memorial tablet is placed by BP_Inscription_Cloister (F5), so it stays "built but not placed"
+BRACKET_R = {}     # bracket mesh path -> reach R (ring point = bracket location + R along its +x)
+for _R, _sd in ((20, 1305), (40, 1306), (60, 1307)):
+    _p = piece(f"SM_LB_Prop_LanternBracket_R{_R}", CLM, ((0.0, -4.0, -14.0), (_R + 3.9, 4.0, 18.0)), ["MAT_Iron"], _sd,
+               "wall face at the lantern's hook height, +x out of the wall; hanger ring lowest point at local z 0, x = R", "none",
+               f"D1.27 F1: wall plate, arm, brace, hanger ring at reach {_R}")
+    BRACKET_R[_p] = float(_R)
+for _nm in ("Anselm", "Tomas", "Edwin", "Osric"):
+    piece(f"SM_LB_Cl_GraveSlab_200x80_{_nm}", CLM, ((-100.0, -40.0, 0.0), (100.0, 40.0, 8.0)), ["MAT_Masonry", "MAT_Trim", "MAT_Rubble", "MAT_Carve"], 1220,
+          "as SM_LB_Cl_GraveSlab_200x80", "none", f"D1.27 F1: the C11 slab with BR. {_nm.upper()} / OB. year carved into the top face")
 
 # ------------------------------------------------------------------ wall runs
 RUNFR = {   # face-frame type -> yaw
@@ -592,11 +604,15 @@ add("CLA_GarthBed", "garth", "garthbed", PIECES["SM_LB_Cl_GarthBed_1100x800"]["p
     extras={"hollows_bed_local": [[gx - 10300.0, gy - 1400.0] for gx, gy in GRAVES]})
 jit = random.Random(1223)
 SLAB_ROT = []
+NAMED_SLABS = {0: "Anselm", 2: "Tomas", 3: "Edwin", 5: "Osric"}     # D1.27
 for i, (gx, gy) in enumerate(GRAVES):
     rot = (0.0, round(jit.uniform(-4.0, 4.0), 2), round(jit.choice((-1.0, 1.0)) * jit.uniform(1.0, 3.0), 2))
     SLAB_ROT.append(rot)
-    add(f"CLA_GraveSlab_{i}", "garth", "graveslab", PIECES["SM_LB_Cl_GraveSlab_200x80"]["path"], (gx, gy, 100.0), rot, (1, 1, 1), "NoCollision",
-        "Cloister/Art/Garth", mi=mi_for(["MAT_Masonry"]), note="grave slab, yaw 0 +-4 deg and 1-3 deg roll (seed 1223)")
+    # D1.27: slabs 0, 2, 3, 5 are the named brothers' graves (BR. ANSELM, TOMAS, EDWIN, OSRIC); 1 and 4 stay plain
+    _named = NAMED_SLABS.get(i)
+    add(f"CLA_GraveSlab_{i}", "garth", "graveslab", PIECES["SM_LB_Cl_GraveSlab_200x80" + ("_" + _named if _named else "")]["path"], (gx, gy, 100.0), rot, (1, 1, 1), "NoCollision",
+        "Cloister/Art/Garth", mi=mi_for(["MAT_Masonry"], overrides=({"MAT_Carve": "MI_Cl_CarveDirt"} if _named else None)),
+        note="grave slab, yaw 0 +-4 deg and 1-3 deg roll (seed 1223)" + ("; D1.27: carved BR. %s" % _named.upper() if _named else ""))
 for i, (gx, gy) in enumerate(((10450.0, 1500.0), (11250.0, 1500.0), (10450.0, 2100.0), (11250.0, 2100.0))):
     add(f"CLA_GraveCross_{i}", "garth", "gravecross", PIECES["SM_LB_Cl_GraveCross_60"]["path"], (gx, gy, 100.0), (0.0, 0.0, 0.0), (1, 1, 1), "NoCollision",
         "Cloister/Art/Garth", mi=mi_for(["MAT_Masonry"]), note="small stone cross")
@@ -916,25 +932,40 @@ LANT_TOP = 51.9
 LANTERN_LIGHT = {}      # light id -> (x, y, z) final light position
 
 
-def lantern(lid, folder, lx, ly, hook_z, bx, by, byaw, note, light_id):
+BRACKET_PAIRS = []      # D1.27: (lantern id, bracket id, reach R) for every lantern on a SM_LB_Prop_LanternBracket_R* (checked below)
+
+
+def lantern(lid, folder, lx, ly, hook_z, bx, by, byaw, note, light_id, bracket=HOLDER):
+    # D1.27: bracket = the bracket mesh (default the chain holder, whose gap to the lantern is <= 2 cm); None = no wall bracket (the arch lantern hangs from the soffit)
     add(lid, "dress", "lantern", LANTERN, (lx, ly, hook_z - LANT_TOP), (0, 0, 0), (1, 1, 1), "NoCollision", folder,
         note=note + "; top hook point at Z %.0f, the light sits 10 cm below it" % hook_z)
-    add(lid.replace("Lantern", "LanternBracket"), "dress", "lantern", HOLDER, (bx, by, hook_z), (0.0, byaw, 0.0), (1, 1, 1), "NoCollision", folder,
-        note="iron bracket (chain holder, +x out of the wall) at the lantern's hook")
+    if bracket is not None:
+        bid = lid.replace("Lantern", "LanternBracket")
+        add(bid, "dress", "lantern", bracket, (bx, by, hook_z), (0.0, byaw, 0.0), (1, 1, 1), "NoCollision", folder,
+            note=("iron bracket (chain holder, +x out of the wall) at the lantern's hook" if bracket == HOLDER else
+                  "D1.27: iron wall bracket SM_LB_Prop_LanternBracket_R%g, ring lowest point at the lantern's hook" % BRACKET_R[bracket]))
+        if bracket in BRACKET_R:
+            BRACKET_PAIRS.append((lid, bid, BRACKET_R[bracket]))
     LANTERN_LIGHT[light_id] = (lx, ly, hook_z - 10.0)
 
 
-lantern("CLA_Lantern_Bells", "Cloister/Dressing/Lanterns", 11960.0, 2380.0, 330.0, 12000.0, 2380.0, 180.0, "above the inscription", "L_Cl_Bells")
-lantern("CLA_Lantern_Door", "Cloister/Dressing/Lanterns", 11960.0, 1880.0, 310.0, 12000.0, 1880.0, 180.0, "beside the tower door", "L_Cl_Door")
-lantern("SHA_Lantern_Entry", "Cloister/Art/StairHouse", 10520.0, 300.0, 310.0, 10500.0, 300.0, 0.0, "stair-house lantern", "L_Cl_Entry")
-lantern("PSA_Lantern", "Courtyard/Passage", 9380.0, 2240.0, 310.0, 9380.0, 2300.0, -90.0, "passage, cloister end", "L_Ps_Lantern")
-lantern("PSA_Lantern_W", "Courtyard/Passage", 6500.0, 2240.0, 310.0, 6500.0, 2300.0, -90.0, "D1.23: passage west lantern (mirrors PSA_Lantern at X 9380)", "L_Ps_West")
-lantern("CLA_Lantern_West", "Cloister/Dressing/Lanterns", 9560.0, 2000.0, 330.0, 9500.0, 2000.0, 0.0, "W walk at the passage arch", "L_Cl_West")
-lantern("TWA_Lantern_Base", "BellTower/Art/Dressing", 12060.0, 1880.0, 270.0, 12040.0, 1880.0, 0.0, "tower base, on the W wall S of the door", "L_Tw_Base")
+def _br(r):
+    return PIECES[f"SM_LB_Prop_LanternBracket_R{r}"]["path"]       # D1.27
+
+
+lantern("CLA_Lantern_Bells", "Cloister/Dressing/Lanterns", 11960.0, 2380.0, 330.0, 12000.0, 2380.0, 180.0, "above the inscription", "L_Cl_Bells", bracket=_br(40))
+lantern("CLA_Lantern_Door", "Cloister/Dressing/Lanterns", 11960.0, 1880.0, 310.0, 12000.0, 1880.0, 180.0, "beside the tower door", "L_Cl_Door", bracket=_br(40))
+lantern("SHA_Lantern_Entry", "Cloister/Art/StairHouse", 10520.0, 300.0, 310.0, 10500.0, 300.0, 0.0, "stair-house lantern", "L_Cl_Entry", bracket=_br(20))
+lantern("PSA_Lantern", "Courtyard/Passage", 9380.0, 2240.0, 310.0, 9380.0, 2300.0, -90.0, "passage, cloister end", "L_Ps_Lantern", bracket=_br(60))
+lantern("PSA_Lantern_W", "Courtyard/Passage", 6500.0, 2240.0, 310.0, 6500.0, 2300.0, -90.0, "D1.23: passage west lantern (mirrors PSA_Lantern at X 9380)", "L_Ps_West", bracket=_br(60))
+# D1.27: the arch lantern hangs in the middle of the archway thickness (X 9460-9500 -> 9480) from the soffit holder on a vertical chain; no wall bracket
+lantern("CLA_Lantern_West", "Cloister/Dressing/Lanterns", 9480.0, 2000.0, 330.0, None, None, None, "W walk at the passage arch", "L_Cl_West", bracket=None)
+lantern("TWA_Lantern_Base", "BellTower/Art/Dressing", 12060.0, 1880.0, 270.0, 12040.0, 1880.0, 0.0, "tower base, on the W wall S of the door", "L_Tw_Base", bracket=_br(20))
 # the passage arch has no wall at Z 330 (its soffit apex is Z 420): the west lantern hangs from the soffit on a short chain
-chain_run("CLA_Lantern_West_Chain", (9500.0, 2000.0, 418.0), (9560.0, 2000.0, 330.0), "Cloister/Dressing/Lanterns", "chain from the arch soffit to the lantern hook")
-add("CLA_Lantern_West_Soffit", "dress", "lantern", HOLDER, (9500.0, 2000.0, 420.0), (0.0, 0.0, 0.0), (1, 1, 1), "NoCollision", "Cloister/Dressing/Lanterns",
-    note="iron ring at the apex of the W archway soffit (Z 420)")
+# D1.27: vertical run (pitch 0, roll 0) from the soffit holder's ring tip (about Z 408.1) down to the hook at Z 330
+chain_run("CLA_Lantern_West_Chain", (9480.0, 2000.0, 408.0), (9480.0, 2000.0, 330.0), "Cloister/Dressing/Lanterns", "chain from the arch soffit to the lantern hook")
+add("CLA_Lantern_West_Soffit", "dress", "lantern", HOLDER, (9480.0, 2000.0, 420.0), (-90.0, 0.0, 0.0), (1, 1, 1), "NoCollision", "Cloister/Dressing/Lanterns",
+    note="D1.27: iron holder plate on the W archway soffit (Z 420, rotation pitch -90: +x points down), ring tip about Z 408.1")
 for n in (4, 7, 10):                               # landing lanterns at the outer wall corner, hook Z = landing top + 180
     corner, pt, yaw, top = LANDINGS[n]
     (wcx, wcy), _ = WALLCORNER[corner]
@@ -1088,13 +1119,16 @@ def moon_spot(lid, loc, opening, lm, inner, outer, radius, width, note):
     add(lid, "light", "light", "Point", loc, (-38.0, 35.0, 0.0), (1, 1, 1), "-", "Lighting/BellTower", note=note, extras=ex)
 
 
-moon_spot("L_Tw_MoonSlit_F03", (12403.2, 1472.2, 810.4), (12500.0, 1540.0, 718.1), 600, 4, 8, 1500, 40, "D1.24: moon spot outside S slit F03")
-moon_spot("L_Tw_MoonSlit_F07", (12403.2, 1472.2, 1719.6), (12500.0, 1540.0, 1627.3), 600, 4, 8, 1500, 40, "D1.24: moon spot outside S slit F07")
-moon_spot("L_Tw_MoonSlit_F08", (11943.2, 1932.2, 1946.3), (12040.0, 2000.0, 1854.0), 600, 4, 8, 1500, 40, "D1.24: moon spot outside W slit F08")
-moon_spot("L_Tw_MoonRoof", (12058.9, 1597.6, 4150.1), (12188.0, 1688.0, 4027.0), 1500, 10, 20, 2500, 200, "D1.24: moon spot outside the SW roof collapse")
+# D1.27: inside the slit, so only the interior is lit: each slit spot sits at opening + 10 * MOON_D (the shaft cards still start at opening + 5 * MOON_D)
+moon_spot("L_Tw_MoonSlit_F03", (12506.5, 1544.5, 711.9), (12500.0, 1540.0, 718.1), 600, 4, 8, 1500, 40, "D1.24: moon spot outside S slit F03")
+moon_spot("L_Tw_MoonSlit_F07", (12506.5, 1544.5, 1621.1), (12500.0, 1540.0, 1627.3), 600, 4, 8, 1500, 40, "D1.24: moon spot outside S slit F07")
+moon_spot("L_Tw_MoonSlit_F08", (12046.5, 2004.5, 1847.8), (12040.0, 2000.0, 1854.0), 600, 4, 8, 1500, 40, "D1.24: moon spot outside W slit F08")
+# D1.27: L_Tw_MoonRoof is deleted (it lit the belfry and doubled its shadows); its shaft card SA_Tower_Roof stays as a shaft-only entry in LIGHTS_PLAN["shafts_extra"]
 LIGHTS_PLAN = {
     "delete": [f"Light_Cloister_{i}" for i in range(8)] + [f"Light_Tower_{i}" for i in range(6)] + ["Light_TowerBell", "Light_TowerTop_0", "Light_Courtyard_7"],
-    "keep_and_tune": {f"Light_TowerExt_{i}": "D1.23: stay at 300 lm (read back only)" for i in range(3)},
+    "keep_and_tune": {},      # D1.27: Light_TowerExt_0..2 moved to retire_p10_8d
+    "retire_p10_8d": [f"Light_TowerExt_{i}" for i in range(3)],      # D1.27: removed by place_lighting_p10.py retire (dumped first)
+    "shafts_extra": [{"id": "SA_Tower_Roof", "opening": [12188.0, 1688.0, 4027.0], "width": 200}],      # D1.27: shaft card without a spot
     "fog": [{"id": f"LFV_Tower_{i}", "loc": [12500.0, 2000.0, z], "scale": 0.92, "radialFogExtinction": 0.12, "heightFogExtinction": 0.0, "fogPhaseG": 0.3,
              "fogAlbedo": [0.86, 0.87, 0.90], "fogEmissive": [0.0, 0.0, 0.0], "folder": "Lighting/BellTower"} for i, z in enumerate((460.0, 1380.0, 2300.0, 3220.0))],
     "pp": {"id": "PP_Cloister", "box_min": [6000, -450, -40], "box_max": [13100, 3200, 4200], "bUnbound": False, "priority": 1.0, "blendRadius": 300.0,
@@ -1821,9 +1855,70 @@ for cid in ("N9900", "N10500", "N11100", "W900", "W2700"):
     if cid != "N11100" and not (front >= -8.0 and back <= -2.0):
         bad.append(cid)
 chk("7 derived", "D1.12 cell leaves: front >= -8.0 and back <= -2.0 in the frame's local y (N11100 hangs rotated, excluded)", not bad, "; ".join(nums))
+# ---- D1.27 checks (P10-8d-F4): lantern brackets, arch chain, moon lights, named slabs ---------------------------------
+_rows = []
+_bad = []
+for _lid, _bid, _R in BRACKET_PAIRS:
+    _l, _b = rec_by_id(_lid), rec_by_id(_bid)
+    _yaw = math.radians(_b["rot"][1])
+    _ring = (_b["loc"][0] + _R * math.cos(_yaw), _b["loc"][1] + _R * math.sin(_yaw))      # ring point = bracket location + R along its +x (yaw only)
+    _dxy = math.hypot(_ring[0] - _l["loc"][0], _ring[1] - _l["loc"][1])
+    _dz = abs((_l["loc"][2] + LANT_TOP) - _b["loc"][2])                                     # lantern top vs hook Z (= bracket pivot Z)
+    _rows.append("%s R%g: ring->lantern XY %.2f, top->hook Z %.2f" % (_bid, _R, _dxy, _dz))
+    if _dxy > 1.0 or _dz > 0.5:
+        _bad.append(_bid)
+chk("D1.27", "lantern brackets: ring point within 1 cm of the lantern XY and lantern top within 0.5 cm of the hook Z (6 brackets R20/R40/R60)", not _bad and len(BRACKET_PAIRS) == 6,
+    "; ".join(_rows) + ("; bad: " + ", ".join(_bad) if _bad else ""))
+_kinds = {_bid: rec_by_id(_bid)["mesh"].split("/")[-1].split(".")[0] for _l_, _bid, _R in BRACKET_PAIRS}
+_want = {"CLA_LanternBracket_Bells": "R40", "CLA_LanternBracket_Door": "R40", "SHA_LanternBracket_Entry": "R20", "TWA_LanternBracket_Base": "R20",
+         "PSA_LanternBracket": "R60", "PSA_LanternBracket_W": "R60"}
+chk("D1.27", "bracket reach per lantern: Bells/Door R40, Entry/Base R20, PSA/PSA_W R60; landing and bell lanterns keep the chain holder",
+    {k: v.rsplit("_", 1)[-1] for k, v in _kinds.items()} == _want and all(rec_by_id(f"TWA_LanternBracket_Land{n}")["mesh"] == HOLDER for n in (4, 7, 10))
+    and rec_by_id("TWA_LanternBracket_Bell")["mesh"] == HOLDER, str({k: v.rsplit("_", 1)[-1] for k, v in _kinds.items()}))
+_ids = {r["id"] for r in RECS}
+_lw = rec_by_id("CLA_Lantern_West")
+_ch = sorted((r for r in RECS if r["id"].startswith("CLA_Lantern_West_Chain_")), key=lambda r: r["id"])
+_so = rec_by_id("CLA_Lantern_West_Soffit")
+_c0 = _ch[0]
+chk("D1.27", "arch lantern: no wall bracket; chain is one vertical segment (pitch 0, roll 0, scale Z 78 / 117.4) from Z 408 to the hook at Z 330, at X 9480 Y 2000",
+    "CLA_LanternBracket_West" not in _ids and len(_ch) == 1 and abs(_c0["rot"][0]) < 0.01 and abs(_c0["rot"][2]) < 0.01
+    and abs(_c0["scale"][2] - 78.0 / 117.4) < 1e-4 and _c0["loc"] == [9480.0, 2000.0, 408.0] and _c0["extras"]["run_to"] == [9480.0, 2000.0, 330.0] and _lw["loc"][:2] == [9480.0, 2000.0],
+    "chain %s rot %s scale %s loc %s" % (_c0["id"], _c0["rot"], _c0["scale"], _c0["loc"]))
+chk("D1.27", "arch soffit holder at (9480, 2000, 420) rot (-90, 0, 0): plate on the soffit (AABB top Z 420), ring tip within 1 cm of Z 408.1",
+    _so["loc"] == [9480.0, 2000.0, 420.0] and _so["rot"] == [-90.0, 0.0, 0.0] and abs(_so["aabb_max"][2] - 420.0) < 1.5 and abs(_so["aabb_min"][2] - 408.1) <= 1.0,
+    "holder AABB Z %.2f..%.2f, X %.1f..%.1f, Y %.1f..%.1f" % (_so["aabb_min"][2], _so["aabb_max"][2], _so["aabb_min"][0], _so["aabb_max"][0], _so["aabb_min"][1], _so["aabb_max"][1]))
+chk("D1.27", "arch lantern AABB (X 9469-9491, Z 277-330) lies inside the archway opening (X 9460-9500, Y 1750-2250, below the soffit at Z 420), clear of the holder",
+    9460.0 <= _lw["aabb_min"][0] and _lw["aabb_max"][0] <= 9500.0 and 1750.0 <= _lw["aabb_min"][1] and _lw["aabb_max"][1] <= 2250.0 and _lw["aabb_max"][2] <= 420.0
+    and abs(_lw["aabb_min"][0] - 9469.0) <= 0.5 and abs(_lw["aabb_max"][0] - 9491.0) <= 0.5 and abs(_lw["aabb_min"][2] - 277.0) <= 1.0 and abs(_lw["aabb_max"][2] - 330.0) <= 0.5
+    and _lw["aabb_max"][2] <= _so["aabb_min"][2],
+    "lantern AABB X %.1f..%.1f Y %.1f..%.1f Z %.1f..%.1f" % (_lw["aabb_min"][0], _lw["aabb_max"][0], _lw["aabb_min"][1], _lw["aabb_max"][1], _lw["aabb_min"][2], _lw["aabb_max"][2]))
+_lwl = rec_by_id("L_Cl_West")
+chk("D1.27", "L_Cl_West is 10 cm below the arch hook: (9480, 2000, 320)", _lwl["loc"] == [9480.0, 2000.0, 320.0], str(_lwl["loc"]))
+_lrecs = [r for r in RECS if r["cat"] == "light"]
+chk("D1.27", "16 light records; L_Tw_MoonRoof is not among them", len(_lrecs) == 16 and "L_Tw_MoonRoof" not in _ids, "%d light records" % len(_lrecs))
+_sl = []
+for _n in ("F03", "F07", "F08"):
+    _r = rec_by_id("L_Tw_MoonSlit_" + _n)
+    _o = _r["extras"]["opening"]
+    _e = [_o[k] + 10.0 * MOON_D[k] for k in range(3)]
+    _sl.append("%s %s (opening + 10d %s)" % (_n, _r["loc"], [round(v, 1) for v in _e]))
+    if max(abs(_r["loc"][k] - _e[k]) for k in range(3)) > 0.1 or _r["rot"] != [-38.0, 35.0, 0.0]:
+        _sl.append("BAD " + _n)
+chk("D1.27", "3 slit moon spots sit at opening + 10 d (+-0.1), rotation (-38, 35, 0) unchanged", not any(x.startswith("BAD") for x in _sl) and len(_sl) == 3, "; ".join(_sl))
+chk("D1.27", "LIGHTS_PLAN: Light_TowerExt_0..2 in retire_p10_8d (not keep_and_tune); shafts_extra = SA_Tower_Roof at the roof opening, width 200",
+    LIGHTS_PLAN["retire_p10_8d"] == ["Light_TowerExt_0", "Light_TowerExt_1", "Light_TowerExt_2"] and not LIGHTS_PLAN["keep_and_tune"]
+    and LIGHTS_PLAN["shafts_extra"] == [{"id": "SA_Tower_Roof", "opening": [12188.0, 1688.0, 4027.0], "width": 200}], str(LIGHTS_PLAN["retire_p10_8d"]))
+_gs = {i: rec_by_id(f"CLA_GraveSlab_{i}") for i in range(6)}
+_gw = {0: "Anselm", 2: "Tomas", 3: "Edwin", 5: "Osric"}
+chk("D1.27", "grave slabs 0/2/3/5 use the Anselm/Tomas/Edwin/Osric meshes with MAT_Carve -> MI_Cl_CarveDirt; 1 and 4 stay plain; seed-1223 yaw/roll unchanged",
+    all(_gs[i]["mesh"].endswith("SM_LB_Cl_GraveSlab_200x80_%s.SM_LB_Cl_GraveSlab_200x80_%s" % (n, n)) and _gs[i]["mi_slots"].get("MAT_Carve") == "MI_Cl_CarveDirt" for i, n in _gw.items())
+    and all(_gs[i]["mesh"].endswith("SM_LB_Cl_GraveSlab_200x80.SM_LB_Cl_GraveSlab_200x80") and "MAT_Carve" not in _gs[i]["mi_slots"] for i in (1, 4))
+    and all([_gs[i]["rot"][0]] == [0.0] for i in range(6)) and [list(r) for r in SLAB_ROT] == [_gs[i]["rot"] for i in range(6)],
+    "rot " + str([_gs[i]["rot"] for i in range(6)]))
+
 # ---- notes (not failures)
 WARNINGS.append(("D1.11 accepted", "rafter leaning at Z 258, piers top at 620 (name stays ...x640), C11 bottom-centre pivots, latch box 8 x 20 x 30, routed wrap-around patrol method."))
-WARNINGS.append(("D1-N2 W lantern", "L_Cl_West is in the arch opening (no wall at Z 330, soffit apex Z 420): the lantern hangs from a ring at the soffit on a 106 cm chain (D1.11 says 'nearest wall')."))
+WARNINGS.append(("D1-N2 W lantern", "L_Cl_West is in the arch opening (no wall at Z 330, soffit apex Z 420): the lantern hangs at X 9480 (archway centre) from a soffit holder on a vertical 78 cm chain (D1.27; D1.11 says 'nearest wall')."))
 WARNINGS.append(("D1-N3 landing lights moved", "D1.11 puts the landing lanterns at the wall corner, Z = landing top + 180, so L_Tw_Land4/7/10 move from the landing centre to the corner (10 below the hook, top + 170)."))
 WARNINGS.append(("D1-N4 cobwebs", "cobwebs moved from landings 2,3,4,6,7,8 to 2,3,5,6,8,9 so they do not share the lantern corners of landings 4 and 7."))
 
@@ -1957,10 +2052,10 @@ MD += ["", "Garth vegetation (seed 1224): " + str(sum(1 for r in big if r['group
        "(Z 100-105, inside X 10320-11380, Y 1420-2180, scale grass 1.6-2.6, nettles 2.8-4.4, ferns 0.9-1.3, rooibos 1.0-1.6; >= 20 clear of the cross base, >= 15 of the slabs, >= 40 of the small crosses, >= 70 of Note_Cloister; "
        "the two shrubs sit at fixed spots with no exclusion). "
        "Passage weeds (seed 1402): 32 actors `PSA_Weed_00..31`, scale 3.5-5, 20-35 from the passage wall faces.", ""]
-MD += ["## Lights (D1.23, courtyard lantern style)", "", "Delete: " + ", ".join(LIGHTS_PLAN["delete"]) + ". `Light_TowerExt_0..2` stay at 300 lm. "
+MD += ["## Lights (D1.23, courtyard lantern style)", "", "Delete: " + ", ".join(LIGHTS_PLAN["delete"]) + ". D1.27: `Light_TowerExt_0..2` are retired (dumped to p10_8d_retired_lights.json, then removed). "
        "Fog: `LFV_Tower_0..3` at (12500, 2000, Z 460 / 1380 / 2300 / 3220), scale 0.92, radial extinction 0.12, height extinction 0, phase 0.3. "
        "`PP_Cloister`: X 6000-13100, Y -450..3200, Z -40..4200, EV100 0.65 (D1.24), saturation (shadows) 0.65, priority 1, blend radius 300. "
-       "All lights are shadowless PointLights except the four D1.24 moon SpotLights `L_Tw_MoonSlit_F03/F07/F08` and `L_Tw_MoonRoof` (shadow-casting, aimed pitch -38 yaw 35).", "",
+       "All lights are shadowless PointLights except the three D1.24 moon SpotLights `L_Tw_MoonSlit_F03/F07/F08` (shadow-casting, aimed pitch -38 yaw 35; D1.27: inside the slit at opening + 10 d; `L_Tw_MoonRoof` is deleted, its shaft card `SA_Tower_Roof` stays).", "",
        "| Label | Location | Lumens | Radius | Colour | Light function | Scattering | Source radius | Note |", "|---|---|---|---|---|---|---|---|---|"]
 for r in RECS:
     if r["cat"] == "light":
