@@ -1,0 +1,70 @@
+{
+  "B1": {
+    "id": "polyhaven:rock_surface",
+    "source_url": "https://polyhaven.com/a/rock_surface",
+    "license": "CC0",
+    "folder": "ExternalAssets/Incoming/polyhaven-rock_surface/",
+    "maps": {
+      "bc": "ExternalAssets/Incoming/polyhaven-rock_surface/rock_surface_diff_2k.jpg",
+      "n_dx": "ExternalAssets/Incoming/polyhaven-rock_surface/rock_surface_nor_dx_2k.jpg",
+      "arm": "ExternalAssets/Incoming/polyhaven-rock_surface/rock_surface_arm_2k.jpg"
+    },
+    "map_size_px": [
+      2048,
+      2048
+    ],
+    "mean_linear_rgb": [
+      0.16142,
+      0.11994,
+      0.08442
+    ],
+    "raw_ratio_medieval_over_candidate": [
+      1.15785,
+      1.22561,
+      1.17389
+    ],
+    "BrightnessMul": 1.22561,
+    "BrightnessMul_unclamped": 1.22561,
+    "BrightnessMul_clamped": false,
+    "BaseColorTint": [
+      0.94471,
+      1.0,
+      0.9578
+    ],
+    "real_world_size_cm": 200.0
+  },
+  "B2": {
+    "id": "polyhaven:rock_01",
+    "source_url": "https://polyhaven.com/a/rock_01",
+    "license": "CC0",
+    "folder": "ExternalAssets/Incoming/polyhaven-rock_01/",
+    "maps": {
+      "bc": "ExternalAssets/Incoming/polyhaven-rock_01/rock_01_diff_2k.jpg",
+      "n_dx": "ExternalAssets/Incoming/polyhaven-rock_01/rock_01_nor_dx_2k.jpg",
+      "arm": "ExternalAssets/Incoming/polyhaven-rock_01/rock_01_arm_2k.jpg"
+    },
+    "map_size_px": [
+      2048,
+      2048
+    ],
+    "mean_linear_rgb": [
+      0.18714,
+      0.15313,
+      0.11588
+    ],
+    "raw_ratio_medieval_over_candidate": [
+      0.99873,
+      0.95996,
+      0.85519
+    ],
+    "BrightnessMul": 0.99873,
+    "BrightnessMul_unclamped": 0.99873,
+    "BrightnessMul_clamped": false,
+    "BaseColorTint": [
+      1.0,
+      0.96117,
+      0.85627
+    ],
+    "real_world_size_cm": 150.0
+  }
+}
