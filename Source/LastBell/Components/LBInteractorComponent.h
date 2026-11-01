@@ -32,7 +32,10 @@ public:
 	UFUNCTION(BlueprintPure, Category = "LastBell|Interaction")
 	ULBInteractableComponent* GetFocusedComponent() const { return FocusedComponent.Get(); }
 
-	/** Prompt is empty when nothing is focused or the focused component cannot currently be used. */
+	/** Pure prompt choice: empty for a used-up (consumed) component, else the prompt if it can be used, else the denied text. */
+	static FText SelectPrompt(bool bConsumed, bool bCanInteract, const FText& PromptText, const FText& DeniedPromptText);
+
+	/** Prompt is empty when nothing is focused, the focused component is consumed, or it cannot currently be used (then its denied text, if any). */
 	UPROPERTY(BlueprintAssignable, Category = "LastBell|Interaction")
 	FLBFocusChangedSignature OnFocusChanged;
 

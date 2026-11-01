@@ -19,6 +19,17 @@ bool ULBInteractableComponent::PassesStateRequirements(const FGameplayTagContain
 	return WorldState.HasAllExact(RequiredStateTags);
 }
 
+bool ULBInteractableComponent::IsConsumedBy(const FGameplayTagContainer& WorldState) const
+{
+	return bSingleUse && ConsumedStateTag.IsValid() && WorldState.HasTagExact(ConsumedStateTag);
+}
+
+bool ULBInteractableComponent::IsConsumed() const
+{
+	const ULBWorldStateSubsystem* WorldState = ULBWorldStateSubsystem::Get(this);
+	return WorldState && IsConsumedBy(WorldState->GetStateRef());
+}
+
 bool ULBInteractableComponent::CanInteract_Implementation(AActor* Instigator)
 {
 	const ULBWorldStateSubsystem* WorldState = ULBWorldStateSubsystem::Get(this);
@@ -27,6 +38,11 @@ bool ULBInteractableComponent::CanInteract_Implementation(AActor* Instigator)
 
 void ULBInteractableComponent::Interact(AActor* Instigator)
 {
+	if (IsConsumed())
+	{
+		// A used single-use mechanism is finished: no denial feedback either.
+		return;
+	}
 	if (!CanInteract(Instigator))
 	{
 		OnInteractDenied.Broadcast(Instigator);

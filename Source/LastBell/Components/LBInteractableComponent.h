@@ -58,6 +58,13 @@ public:
 	/** Pure gating logic: enabled, all requirements present, consumed tag absent. */
 	bool PassesStateRequirements(const FGameplayTagContainer& WorldState) const;
 
+	/** Pure logic: a single-use component whose ConsumedStateTag is present in world state has been used up. */
+	bool IsConsumedBy(const FGameplayTagContainer& WorldState) const;
+
+	/** True once a single-use component has been used (its ConsumedStateTag is in the world state). A used component shows no prompt and ignores presses silently. */
+	UFUNCTION(BlueprintPure, Category = "LastBell|Interaction")
+	bool IsConsumed() const;
+
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "LastBell|Interaction")
 	bool CanInteract(AActor* Instigator);
 

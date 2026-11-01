@@ -63,6 +63,15 @@ bool ULBInteractorComponent::IsOwnerInspecting() const
 	return Inspection && Inspection->IsInspecting();
 }
 
+FText ULBInteractorComponent::SelectPrompt(bool bConsumed, bool bCanInteract, const FText& PromptText, const FText& DeniedPromptText)
+{
+	if (bConsumed)
+	{
+		return FText::GetEmpty();
+	}
+	return bCanInteract ? PromptText : DeniedPromptText;
+}
+
 void ULBInteractorComponent::UpdateFocus()
 {
 	// While inspecting nothing is interactable and no prompt is shown (focus is cleared, an empty prompt is broadcast).
@@ -86,7 +95,7 @@ void ULBInteractorComponent::UpdateFocus()
 	FText Prompt;
 	if (NewFocus)
 	{
-		Prompt = NewFocus->CanInteract(GetOwner()) ? NewFocus->PromptText : NewFocus->DeniedPromptText;
+		Prompt = SelectPrompt(NewFocus->IsConsumed(), NewFocus->CanInteract(GetOwner()), NewFocus->PromptText, NewFocus->DeniedPromptText);
 	}
 
 	if (bFocusChanged || !Prompt.EqualTo(LastPrompt))

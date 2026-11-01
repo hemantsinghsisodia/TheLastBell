@@ -7,6 +7,7 @@
 #include "Save/LBSaveGame.h"
 #include "Save/LBSaveIdRegistry.h"
 #include "Components/LBInteractableComponent.h"
+#include "Components/LBInteractorComponent.h"
 #include "LBGameplayTags.h"
 #include "Kismet/GameplayStatics.h"
 #include "Misc/PackageName.h"
@@ -169,7 +170,35 @@ bool FLBInteractableTest::RunTest(const FString& Parameters)
 	return true;
 }
 
-IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBAddStatesTest, "LastBell.WorldState.AddStates", LB_TEST_FLAGS)
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBInteractableConsumedPromptTest, "LastBell.Interaction.ConsumedShowsNoPrompt", LB_TEST_FLAGS)
+bool FLBInteractableConsumedPromptTest::RunTest(const FString& Parameters)
+{
+	ULBInteractableComponent* Comp = NewObject<ULBInteractableComponent>(GetTransientPackage());
+	FGameplayTagContainer State;
+
+	Comp->bSingleUse = true;
+	Comp->ConsumedStateTag = LBTags::State_Warden_Stage_2;
+	TestFalse(TEXT("Single use, tag absent: not consumed"), Comp->IsConsumedBy(State));
+	State.AddTag(LBTags::State_Warden_Stage_2);
+	TestTrue(TEXT("Single use, tag present: consumed"), Comp->IsConsumedBy(State));
+
+	Comp->bSingleUse = false;
+	TestFalse(TEXT("Not single use: never consumed"), Comp->IsConsumedBy(State));
+
+	Comp->bSingleUse = true;
+	Comp->ConsumedStateTag = FGameplayTag();
+	TestFalse(TEXT("No consumed tag: never consumed"), Comp->IsConsumedBy(State));
+
+	const FText Prompt = FText::FromString(TEXT("Pull"));
+	const FText Denied = FText::FromString(TEXT("Something is missing"));
+	TestTrue(TEXT("Consumed: empty prompt"), ULBInteractorComponent::SelectPrompt(true, false, Prompt, Denied).IsEmpty());
+	TestTrue(TEXT("Consumed (even if usable): empty prompt"), ULBInteractorComponent::SelectPrompt(true, true, Prompt, Denied).IsEmpty());
+	TestTrue(TEXT("Usable: the prompt"), ULBInteractorComponent::SelectPrompt(false, true, Prompt, Denied).EqualTo(Prompt));
+	TestTrue(TEXT("Blocked, not consumed: the denied text"), ULBInteractorComponent::SelectPrompt(false, false, Prompt, Denied).EqualTo(Denied));
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBAddStatesTest,"LastBell.WorldState.AddStates", LB_TEST_FLAGS)
 bool FLBAddStatesTest::RunTest(const FString& Parameters)
 {
 	ULBWorldStateSubsystem* Subsystem = NewObject<ULBWorldStateSubsystem>(NewObject<UGameInstance>(GetTransientPackage()));
