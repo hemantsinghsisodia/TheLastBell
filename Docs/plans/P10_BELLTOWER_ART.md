@@ -2859,3 +2859,29 @@ The memorial tablet reads crisply in the face-on render with ANSELM leftmost and
 - Authoring coordinates equal UE coordinates numerically (the export Y flip and the importer's Y negation cancel). UE is left-handed, so the in-game picture is the mirror of Blender's native view (`README_cloister.md`: "the render camera is mirrored … and the text is pre-mirrored").
 - The agent built the cutters y-mirrored (`UE_VIEW = True` in `build_cloister.py`) and rendered with the mirrored review camera. This follows the project convention, and it is accepted.
 - **Final proof:** the F3 thumbnail and the F7 in-game capture. If either shows reversed text, set `UE_VIEW = False`, rebuild with the same `--only` command, and flip the sign of the tablet handedness check in `verify_cloister.py`.
+
+#### F3 / F4 / F6 review (lead, 2026-11-01)
+**F3 accepted** (1943ba7):
+- the 8 meshes imported, with their slots and MIs;
+- Nanite off on the brackets;
+- no simple collision on the tablet and slabs, as on `_A` and the base slab (the inscription BP has no interaction);
+- `MI_Cl_CarveDirt` read back;
+- the Roboto registry row.
+
+The 256 px thumbnails could not settle the text direction, so F7 decides.
+
+**F4 + F6 accepted** (c1a6cc4, f0e160d, 1997daa):
+- **Generator:** 64/64 checks (10 new), 536 records.
+- **Brackets:** ring-to-lantern 0.00 cm and lantern top to hook 0.00 cm on all six.
+- **Arch lantern:** at X 9480 under the soffit holder (−90 pitch). Its chain is vertical (pitch 0, roll 0).
+- **Lights:** the retired lights are dumped (`p10_8d_retired_lights.json`) and removed; the slit spots are inside the slits; `SA_Tower_Roof` is kept via `shafts_extra`. Lighting check 55/55.
+- **Placement:** dress 282/282, garth 16/16, `p10_6a_checks` 29/29.
+- **F6:** the three backing plates read back NoCollision.
+- **Map and suite:** the map is saved and reloaded clean; suite 78/78.
+
+**Deviations accepted:**
+1. The chain scale is 0.6644 (the shared `chain_run` divides by 117.4); the chain end overlaps the hook by about 0.15 cm.
+2. The generator support registrations (`MI_PATHS`, `SLOT_MI`, `piece()`).
+3. The stale `CLA_LanternBracket_West` actor was removed by a one-off call.
+
+**Follow-up (tooling, low priority):** `place_tower.py --cats/--only` removes only the labels present in the layout, so a record dropped from the layout leaves its actor behind. Note it in MCP_NOTES at the phase end; a `--prune` option is optional.
