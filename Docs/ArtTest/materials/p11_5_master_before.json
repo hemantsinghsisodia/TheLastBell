@@ -1,0 +1,138 @@
+{
+ "material": "/Game/LastBell/Materials/Master/M_LB_Surface",
+ "expression_count": 164,
+ "parameter_count": 59,
+ "connections": {
+  "LinearInterpolate_12": [
+   {
+    "output_name": "",
+    "expression": {
+     "refPath": "Multiply_9"
+    },
+    "input_name": "A"
+   },
+   {
+    "output_name": "",
+    "expression": {
+     "refPath": "Multiply_13"
+    },
+    "input_name": "B"
+   },
+   {
+    "output_name": "",
+    "expression": {
+     "refPath": "Custom_0"
+    },
+    "input_name": "Alpha"
+   }
+  ],
+  "StaticSwitchParameter_11": [
+   {
+    "output_name": "",
+    "expression": {
+     "refPath": "LinearInterpolate_12"
+    },
+    "input_name": "True"
+   },
+   {
+    "output_name": "",
+    "expression": {
+     "refPath": "Multiply_9"
+    },
+    "input_name": "False"
+   }
+  ],
+  "LinearInterpolate_13": [
+   {
+    "output_name": "",
+    "expression": {
+     "refPath": "Clamp_0"
+    },
+    "input_name": "A"
+   },
+   {
+    "output_name": "R",
+    "expression": {
+     "refPath": "TextureSampleParameter2D_10"
+    },
+    "input_name": "B"
+   },
+   {
+    "output_name": "",
+    "expression": {
+     "refPath": "Custom_0"
+    },
+    "input_name": "Alpha"
+   }
+  ],
+  "StaticSwitchParameter_17": [
+   {
+    "output_name": "",
+    "expression": {
+     "refPath": "LinearInterpolate_13"
+    },
+    "input_name": "True"
+   },
+   {
+    "output_name": "",
+    "expression": {
+     "refPath": "Clamp_0"
+    },
+    "input_name": "False"
+   }
+  ]
+ },
+ "context": {
+  "Multiply_9": [
+   {
+    "output_name": "",
+    "expression": {
+     "refPath": "Multiply_5"
+    },
+    "input_name": "A"
+   },
+   {
+    "output_name": "",
+    "expression": {
+     "refPath": "LinearInterpolate_6"
+    },
+    "input_name": "B"
+   }
+  ],
+  "Clamp_0": [
+   {
+    "output_name": "",
+    "expression": {
+     "refPath": "LinearInterpolate_4"
+    },
+    "input_name": "None"
+   },
+   {
+    "output_name": "",
+    "expression": "None",
+    "input_name": "Min"
+   },
+   {
+    "output_name": "",
+    "expression": "None",
+    "input_name": "Max"
+   }
+  ]
+ },
+ "outputs": {
+  "MP_BaseColor": {
+   "output_name": "",
+   "expression": {
+    "refPath": "StaticSwitchParameter_14"
+   },
+   "input_name": ""
+  },
+  "MP_Roughness": {
+   "output_name": "",
+   "expression": {
+    "refPath": "StaticSwitchParameter_15"
+   },
+   "input_name": ""
+  }
+ }
+}
