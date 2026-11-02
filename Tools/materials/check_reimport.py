@@ -14,8 +14,8 @@ Mesh list: Tools/materials/p11_reimport_list.json (mesh, package, fbx, old_md5, 
   * these tags equal the snapshot: Materials, NaniteEnabled, CollisionPrims, CollisionComplexity, DefaultCollision;
   * the material slot names are equal and in the same order, and each slot's default material is the same;
   * is_nanite_enabled equals the snapshot;
-  * ApproxSize, per axis, is no larger than the snapshot's + 1 cm and no smaller than the FBX's dims in its build report - 1 cm.
-    (The old tags read larger than the real meshes, e.g. 435x77x802 for a 400x60x800 wall, whose actor bounds were exact.)
+  * StaticMeshTools.get_bounds equals the FBX's dims in its build report within 1 cm per axis.
+    (Not the ApproxSize tag: it reads larger than the real mesh and varies, e.g. 435x77x802 for a 400x60x800 wall whose actor bounds were exact.)
   * Vertices is fewer than or equal to the snapshot's.
 Whether the package is dirty is printed for information (a fresh Reimport leaves it dirty; the lead saves each mesh alone).
 Exit code 1 when any mesh fails.
@@ -61,6 +61,8 @@ def read_mesh(ue, e):
             m = as_json(ue.call(SMESH, "get_material", {"mesh": ref, "slot_name": s}))
             out["default_materials"][s] = m.get("refPath") if isinstance(m, dict) else m
         out["nanite"] = as_json(ue.call(SMESH, "is_nanite_enabled", {"mesh": ref}))
+        b = as_json(ue.call(SMESH, "get_bounds", {"mesh": ref}))
+        out["bounds_size"] = [b["max"][k] - b["min"][k] for k in "xyz"]
         out["dirty"] = as_json(ue.call(ASSET, "is_dirty", {"asset_path": pkg}))
     except Exception as ex:  # keep going: one unreadable mesh must show up as a FAIL, not stop the run
         out["error"] = "%s: %s" % (type(ex).__name__, str(ex)[:300])
@@ -79,13 +81,6 @@ def file_md5(tags):
         import re
         m = re.search(r'"FileMD5"\s*:\s*"([0-9a-fA-F]{32})"', aid)
         return m.group(1).lower() if m else None
-
-
-def parse_size(s):
-    try:
-        return [float(x) for x in str(s).split("x")]
-    except Exception:
-        return None
 
 
 _dims = {}
@@ -126,17 +121,14 @@ def check_one(before, now, e):
                 fails.append("default material of %s changed: %s -> %s" % (s, before["default_materials"].get(s), now["default_materials"].get(s)))
     if before.get("nanite") != now.get("nanite"):
         fails.append("is_nanite_enabled changed: %s -> %s" % (before.get("nanite"), now.get("nanite")))
-    a, b = parse_size(bt.get("ApproxSize")), parse_size(nt.get("ApproxSize"))
-    if not a or not b or len(a) != 3 or len(b) != 3:
-        fails.append("ApproxSize unreadable: %r / %r" % (bt.get("ApproxSize"), nt.get("ApproxSize")))
-    else:
-        dims = report_dims().get(e["mesh"])
-        if not dims:
-            fails.append("no build report dims for %s" % e["mesh"])
-        elif any(y > x + 1.0 for x, y in zip(a, b)):
-            fails.append("ApproxSize grew: %s -> %s" % (bt.get("ApproxSize"), nt.get("ApproxSize")))
-        elif any(y < d - 1.0 for d, y in zip(dims, b)):
-            fails.append("ApproxSize %s is smaller than the FBX dims %s" % (nt.get("ApproxSize"), dims))
+    dims = report_dims().get(e["mesh"])
+    size = now.get("bounds_size")
+    if not dims:
+        fails.append("no build report dims for %s" % e["mesh"])
+    elif not size:
+        fails.append("real bounds unreadable")
+    elif any(abs(d - s) > 1.0 for d, s in zip(dims, size)):
+        fails.append("real bounds %s differ from the FBX dims %s" % (size, dims))
     try:
         if int(nt.get("Vertices")) > int(bt.get("Vertices")):
             fails.append("Vertices grew: %s -> %s" % (bt.get("Vertices"), nt.get("Vertices")))

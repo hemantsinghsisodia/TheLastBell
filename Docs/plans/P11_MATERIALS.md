@@ -1,6 +1,6 @@
 # Phase 11: Materials (surface polish): plan
 
-**Status:** approved by the owner on 2026-11-02. P11-0, P11-1 and P11-2 done; P11-3 done: the owner chose A (D-086). P11-4a and P11-4b done; P11-4c (Reimport) in progress. The door corners and `Gobo_Moon` specks stay out of scope.
+**Status:** approved by the owner on 2026-11-02. P11-0, P11-1 and P11-2 done; P11-3 done: the owner chose A (D-086). P11-4a to P11-4c done; P11-4d in progress. The door corners and `Gobo_Moon` specks stay out of scope.
 **Branch:** `claude/phase-11-materials`, from `main` (6dfa29d).
 **Rules:** D-048 applies. The lead plans in Opus 5.5 at xhigh effort; every implementer is spawned with `model: "sonnet", effort: "high"`.
 
@@ -318,12 +318,36 @@ This step changes only test assets, so it needs no suite run.
 2. **Bulk:** the lead selects the meshes one folder at a time (3 folders), and the owner reimports each selection.
 3. **Check all 51,** then save each mesh alone, explicitly.
 
+**Result:** all 51 reimported, checked and saved one at a time; `L_Monastery` saved after a comparison with the census found 2943 actors and 2485 static mesh actors unchanged. Suite 79/79 on the mirror. R-48 closes.
+
+**What the proof on one mesh could not show, and what else was learned (for MCP_NOTES):**
+- **Reimport added collision.** The 29 cloister and tower meshes were imported through Interchange (`InterchangeAssetImportData`) with no collision by design. Reimport gave each a generated convex hull that fills arch and door openings. The kit meshes (`FbxStaticMeshImportData`, with UCX) don't have this problem. `StaticMeshTools.remove_collisions` clears it, and it must be run before saving. Any later reimport of these meshes needs the same step.
+- **Reimport marks `L_Monastery` dirty,** even though no actor changes.
+- **The `ApproxSize` tag isn't a size.** It reads larger than the mesh and varies between builds (435x77x802 for a 400x60x800 wall). `StaticMeshTools.get_bounds` is the real value; `check_reimport.py` now uses it.
+- **`SelectAssets` doesn't work** for selecting in the Content Browser here (no effect, or a timeout). The search box takes `Name==A OR Name==B`, which worked for all three folders.
+
 #### P11-4d: game materials (technical-artist [EDITOR])
-Written in full after P11-4c, using the census. In outline:
-- production textures in `/Game/LastBell/Environments/Kit/Textures/` (flattened blocks; `rock_01` for trim);
-- `MI_Kit_Masonry`: `BaseColorTex` flattened, `MacroStrength` 0.8; `MI_Kit_Trim`: `rock_01` with the `MI_P11_B2_Trim` values;
-- check the children (`MI_Chapel_Masonry_Interior`, `MI_Env_TowerStone`, `MI_Chapel_Trim_Dusty`, `MI_Cl_CarveDirt`) and `MI_Crypt_StoneWA`;
-- the memorial tablet stays legible; suite; affected baseline captures.
+**Textures,** new, in `/Game/LastBell/Environments/Kit/Textures/`. Compression, sRGB, group, size and virtual-texture settings are copied from the matching `/Game/LastBell/ArtTest/Materials/Medieval_Blocks_03/T_Medieval_Blocks_03_*`:
+
+| New texture | Source |
+|---|---|
+| `T_Kit_BlocksFlat_BC` | `SourceArt/P11/T_P11_FlatBlocks_BC.png` |
+| `T_Kit_TrimStone_BC` | `ExternalAssets/Incoming/polyhaven-rock_01/rock_01_diff_2k.jpg` |
+| `T_Kit_TrimStone_N` | `ExternalAssets/Incoming/polyhaven-rock_01/rock_01_nor_dx_2k.jpg` |
+| `T_Kit_TrimStone_ARM` | `ExternalAssets/Incoming/polyhaven-rock_01/rock_01_arm_2k.jpg` |
+
+**Materials,** in place:
+
+| MI | Change | Stays |
+|---|---|---|
+| `MI_Kit_Masonry` | `BaseColorTex` = `T_Kit_BlocksFlat_BC`; `MacroStrength` 0.8 | normal, ARM, `WorldTileSizeCm` 200, `WorldBlendSharpness` 4 |
+| `MI_Kit_Trim` | `BaseColorTex`, `NormalTex`, `ARMTex` = `T_Kit_TrimStone_*`; `UVScale` 0.5; `BrightnessMul` 1.34829; `BaseColorTint` (1.0, 0.91311, 0.73639) | `MacroStrength` 0.4, `Wetness` 0, `bWorldAlignedUV` off |
+
+**Children** (`MI_Chapel_Masonry_Interior`, `MI_Env_TowerStone`, `MI_Chapel_Trim_Dusty`, `MI_Cl_CarveDirt`) override no texture, so they inherit. They are not edited. Their effective textures are read back.
+
+**`MI_Crypt_StoneWA` stays as it is:** its 42 actors are crypt pieces with no modelled grooves, so they have no double joints.
+
+**Checks:** read-backs, suite 79/79. Then the lead captures all 24 baseline poses (`p11_a2_`) with the owner, and judges the memorial tablet at `cl_lantern_bells_3m`. Brightness corrections wait for P11-8.
 
 ### P11-5: weathering layer (`bWeathering`)
 Added to `M_LB_Surface` in **one** recompile (D-053: a GPU-crash risk on the 6 GB card, so close other GPU apps first).
