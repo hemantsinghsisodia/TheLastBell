@@ -1,6 +1,6 @@
 # Phase 11: Materials (surface polish): plan
 
-**Status:** approved by the owner on 2026-11-02. P11-0, P11-1 and P11-2 done; P11-3 captures done, waiting for the owner's choice (D-086). The door corners and `Gobo_Moon` specks stay out of scope.
+**Status:** approved by the owner on 2026-11-02. P11-0, P11-1 and P11-2 done; P11-3 done: the owner chose A (D-086). P11-4a in progress. The door corners and `Gobo_Moon` specks stay out of scope.
 **Branch:** `claude/phase-11-materials`, from `main` (6dfa29d).
 **Rules:** D-048 applies. The lead plans in Opus 5.5 at xhigh effort; every implementer is spawned with `model: "sonnet", effort: "high"`.
 
@@ -245,13 +245,42 @@ Contact sheet `Docs/ArtTest/materials/p11_joint_test.png`: 5 rows by 3 columns, 
 **Limits of the test:** no fog, no weathering, no game geometry around the walls. The owner chooses (D-086).
 
 ### P11-4: apply the choice
-The lead writes the exact steps after the choice, using the census numbers, in this file.
-- **If B:** new master-derived MIs for masonry and trim, by changing the textures on the existing MIs (`MI_Kit_Masonry`, `MI_Kit_Trim` and their children), so no placed actor changes. Save each MI alone.
-- **If A:**
-  - rebuild the walls with `relief_cutters` grooves off (existing bounds, slots and UCX must not change; `verify_kit.py`, `verify_cloister.py`, `verify_tower.py` must pass);
-  - prove Reimport on one mesh first (materials, Nanite, collision, placed actors unchanged);
-  - then the owner bulk-reimports. If Reimport fails the check, stop and report.
-- **Either way:** the suite, plus captures of the affected baseline poses.
+**The owner chose A on 2026-11-02 (D-086).** The order protects the fallback: `B2` stays available until P11-4b rebuilds the first mesh.
+
+| Step | Scope | Owner |
+|---|---|---|
+| **P11-4a** | Fix the 15 m repeat on the test map, with no game asset changed | technical-artist [EDITOR test map], lead + owner |
+| **P11-4b** | Rebuild the masonry meshes without grooves | technical-artist (Blender) |
+| **P11-4c** | Prove Reimport on one mesh without saving, then bulk Reimport | lead + owner |
+| **P11-4d** | Game materials: flattened blocks on masonry, joint-free stone on trim; suite; captures | technical-artist [EDITOR] |
+
+The lead writes P11-4b to P11-4d in full after P11-4a passes.
+
+#### P11-4a: repeat test
+**Why:** the 15 m row of the sheet shows pale blocks repeating every 200 cm. A trial outside Unreal (lead) shows these come mostly from the tone of individual blocks in the colour map. Dividing out the low-frequency tone cut that variation from 0.123 to 0.038 and kept the blocks' look up close. Whether the normal map also repeats can only be seen in Unreal.
+
+**Texture.** Script `Tools/materials/make_flat_blocks.py`:
+- input `ExternalAssets/Incoming/polyhaven-medieval_blocks_03/polyhaven-medieval_blocks_03/medieval_blocks_03_diff_2k.jpg`, output `SourceArt/P11/T_P11_FlatBlocks_BC.png` (2048 × 2048, 8-bit sRGB);
+- work in linear light. `grey` = mean of R, G, B. `low` = `grey` blurred with a Gaussian of sigma 100 pixels, wrapped at the edges so the tile stays seamless (FFT with numpy; scipy isn't installed). Multiply every channel by `grey.mean() / max(low, 0.001)`, then convert back to sRGB and clip;
+- it prints the low-frequency figure: `grey` blurred with sigma 60, wrapped, then its standard deviation divided by its mean. Expect about 0.038 against 0.123 for the original.
+
+Imported as `/Game/LastBell/ArtTest/P11/Textures/T_P11_FlatBlocks_BC`, with settings copied from `T_Medieval_Blocks_03_BC`. Registry row: own derivative of the CC0 `medieval_blocks_03`.
+
+**Materials**, each a duplicate of `MI_Kit_Masonry` in `/Game/LastBell/ArtTest/P11/Materials/`, with `BaseColorTex` = `T_P11_FlatBlocks_BC`. Normal and ARM stay as they are:
+
+| MI | Change on top of that | Tests |
+|---|---|---|
+| `MI_P11_A1_Masonry` | none | flattened tone alone |
+| `MI_P11_A2_Masonry` | `MacroStrength` 0.8 (from 0.4) | plus stronger large-scale variation |
+| `MI_P11_A3_Masonry` | `WorldTileSizeCm` 260 (from 200) | plus fewer repeats and larger blocks |
+
+**Map:** the `B1`, `B2` and `B3` bays give way to `A1`, `A2` and `A3` at the same indices (2, 3, 4), with the no-groove meshes and `MI_P11_B2_Trim`. `Today` and `A` don't change. `git` history keeps the B bays and their sheet stays in the repo.
+
+**Captures (lead + owner):** the three views of `A1`, `A2`, `A3`, prefix `p11_rp_`. Sheet `Docs/ArtTest/materials/p11_repeat_test.png`, rows `Today`, `A`, `A1`, `A2`, `A3`, reusing the `p11_jt_today_*` and `p11_jt_a_*` images.
+
+**Pass:** from 15 m the rows of pale blocks are gone or close to it, and up close the blocks still read as `A` does. P11-5's weathering still comes on top. **If nothing passes,** the lead reports it and the owner decides between accepting the repeat for now or `B2`.
+
+This step changes only test assets, so it needs no suite run.
 
 ### P11-5: weathering layer (`bWeathering`)
 Added to `M_LB_Surface` in **one** recompile (D-053: a GPU-crash risk on the 6 GB card, so close other GPU apps first).
