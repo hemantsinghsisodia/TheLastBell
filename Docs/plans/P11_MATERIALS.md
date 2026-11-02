@@ -1,6 +1,6 @@
 # Phase 11: Materials (surface polish): plan
 
-**Status:** approved by the owner on 2026-11-02. P11-0, P11-1 and P11-2 done; P11-3 done: the owner chose A (D-086). P11-4a passed; P11-4b waits for the owner's "go". The door corners and `Gobo_Moon` specks stay out of scope.
+**Status:** approved by the owner on 2026-11-02. P11-0, P11-1 and P11-2 done; P11-3 done: the owner chose A (D-086). P11-4a passed; P11-4b in progress (owner's "go": A2). The door corners and `Gobo_Moon` specks stay out of scope.
 **Branch:** `claude/phase-11-materials`, from `main` (6dfa29d).
 **Rules:** D-048 applies. The lead plans in Opus 5.5 at xhigh effort; every implementer is spawned with `model: "sonnet", effort: "high"`.
 
@@ -254,7 +254,7 @@ Contact sheet `Docs/ArtTest/materials/p11_joint_test.png`: 5 rows by 3 columns, 
 | **P11-4c** | Prove Reimport on one mesh without saving, then bulk Reimport | lead + owner |
 | **P11-4d** | Game materials: flattened blocks on masonry, joint-free stone on trim; suite; captures | technical-artist [EDITOR] |
 
-The lead writes P11-4b to P11-4d in full after P11-4a passes.
+P11-4b to P11-4d are written below, after P11-4a.
 
 #### P11-4a: repeat test
 **Why:** the 15 m row of the sheet shows pale blocks repeating every 200 cm. A trial outside Unreal (lead) shows these come mostly from the tone of individual blocks in the colour map. Dividing out the low-frequency tone cut that variation from 0.123 to 0.038 and kept the blocks' look up close. Whether the normal map also repeats can only be seen in Unreal.
@@ -290,7 +290,29 @@ This step changes only test assets, so it needs no suite run.
 | `A2` | As `A1`, about 5 % darker | The calmest wall on the sheet | Passes; best at distance |
 | `A3` | Blocks are visibly larger | The pattern is larger and easier to read than in `A1` | Rejected |
 
-**Lead's pick: `A2`** (flattened tone, `MacroStrength` 0.8), with the 5 % corrected through `BrightnessMul` in P11-8. Normal-map shading still repeats faintly, so P11-5's weathering has to carry the rest. The rebuild starts only after the owner's "go", because that is the point where the `B2` fallback stops being free.
+**The owner chose `A2`, the lead's pick** (flattened tone, `MacroStrength` 0.8), with the 5 % corrected through `BrightnessMul` in P11-8. Normal-map shading still repeats faintly, so P11-5's weathering has to carry the rest. The rebuild starts only after the owner's "go", because that is the point where the `B2` fallback stops being free.
+
+#### P11-4b: rebuild (technical-artist; Blender, plus one read-only snapshot from the editor)
+**Which meshes (`Tools/materials/p11_reimport_list.json`, checked by the lead on 2026-11-02):** of the 57 grooved meshes placed, **51 are rebuilt** (22 kit, 16 cloister, 13 tower; 218 placements). All have grooves in `MAT_Masonry`. The other 6 (`Kerb` ×3, `Trim_Plinth` ×2, `Kit_Pier`) use `MAT_Trim` only, and trim becomes joint-free, so their grooves become their only joints. They stay as they are. Every mesh's import source exists, and its MD5 matches what Unreal imported, so a reimport brings in nothing except this change.
+
+**Rule, in `Tools/blender/kit/kit_lib.py` `relief_cutters`:** a module constant `MASONRY_GROOVES = False` (comment: D-086, masonry carries its joints in the texture). At the top of the function: if `groove_mat == SLOT_MASONRY and not MASONRY_GROOVES`, then `h_grooves = vertical = False` and `recess_prob = 0.0`. Chips stay. Calls with `groove_mat=S1` (caps, plinths, kerbs, piers) are untouched. `Tools/materials/build_p11_test_walls.py` keeps working: it already passes these arguments.
+
+**Build only the 51,** with each builder's `--only`, into their current folders. Non-listed FBX files must stay byte-identical.
+
+**Checks:** `verify_kit.py`, `verify_cloister.py`, `verify_tower.py` pass, and `Tools/materials/verify_p11_rebuild.py` compares every rebuilt FBX with a copy taken before the build: bounds within 0.1 cm, the same used material slots in the same order, the same UCX count and bounds, and no long groove line left on masonry faces. Any slot difference stops the task, because Unreal drops unused slots.
+
+#### P11-4c: Reimport (lead + owner)
+`Tools/materials/check_reimport.py` snapshots each mesh's tags, slots and default materials before, then compares after, including `FileMD5` against the rebuilt FBX.
+1. **Proof, nothing saved:** the lead selects `SM_LB_Kit_Wall_400x60x800_A` in the Content Browser, the owner right-clicks and chooses Reimport, and the lead runs the check for that one mesh and takes a capture. If it fails: stop and report. Unreal is closed with **Don't Save**, which restores the old mesh.
+2. **Bulk:** the lead selects the meshes one folder at a time (3 folders), and the owner reimports each selection.
+3. **Check all 51,** then save each mesh alone, explicitly.
+
+#### P11-4d: game materials (technical-artist [EDITOR])
+Written in full after P11-4c, using the census. In outline:
+- production textures in `/Game/LastBell/Environments/Kit/Textures/` (flattened blocks; `rock_01` for trim);
+- `MI_Kit_Masonry`: `BaseColorTex` flattened, `MacroStrength` 0.8; `MI_Kit_Trim`: `rock_01` with the `MI_P11_B2_Trim` values;
+- check the children (`MI_Chapel_Masonry_Interior`, `MI_Env_TowerStone`, `MI_Chapel_Trim_Dusty`, `MI_Cl_CarveDirt`) and `MI_Crypt_StoneWA`;
+- the memorial tablet stays legible; suite; affected baseline captures.
 
 ### P11-5: weathering layer (`bWeathering`)
 Added to `M_LB_Surface` in **one** recompile (D-053: a GPU-crash risk on the 6 GB card, so close other GPU apps first).
