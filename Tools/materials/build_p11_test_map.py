@@ -4,6 +4,8 @@ Usage (editor open with /Game/LastBell/ArtTest/P11/L_Test_P11_Walls as the curre
     python build_p11_test_map.py            # place or update everything (idempotent), then run the read-back check
     python build_p11_test_map.py --check    # read-only: labels, transforms, slot overrides by slot NAME, lights, sky, post-process, bounds, traces
 The script refuses to run on any other level, so L_Monastery can never be touched. It never saves anything.
+P11-4a (Docs/plans/P11_MATERIALS.md, section "P11-4a"): bays B1-B3 were replaced by A1-A3 (flattened block texture; same indices 2-4).
+The MI_P11_B1_*, MI_P11_B2_Masonry and MI_P11_B3_* assets stay on disk as the fallback.
 
 Actors, all labelled and found by label (a re-run updates the existing actors instead of adding new ones):
     P11_Floor, P11_Moon, P11_MoonFill, P11_Sky, P11_PP
@@ -44,9 +46,9 @@ NG_SET = {"W400A": P11 + "Meshes/SM_LB_P11_NoGroove_Wall_400x60x800_A", "W400B":
 BAYS = [
     ("Today", 0, KIT_SET, KITMI + "MI_Kit_Masonry", KITMI + "MI_Kit_Trim"),
     ("A", 1, NG_SET, KITMI + "MI_Kit_Masonry", P11 + "Materials/MI_P11_B2_Trim"),
-    ("B1", 2, KIT_SET, P11 + "Materials/MI_P11_B1_Masonry", P11 + "Materials/MI_P11_B1_Trim"),
-    ("B2", 3, KIT_SET, P11 + "Materials/MI_P11_B2_Masonry", P11 + "Materials/MI_P11_B2_Trim"),
-    ("B3", 4, KIT_SET, P11 + "Materials/MI_P11_B3_Masonry", P11 + "Materials/MI_P11_B3_Trim"),
+    ("A1", 2, NG_SET, P11 + "Materials/MI_P11_A1_Masonry", P11 + "Materials/MI_P11_B2_Trim"),
+    ("A2", 3, NG_SET, P11 + "Materials/MI_P11_A2_Masonry", P11 + "Materials/MI_P11_B2_Trim"),
+    ("A3", 4, NG_SET, P11 + "Materials/MI_P11_A3_Masonry", P11 + "Materials/MI_P11_B2_Trim"),
 ]
 
 FLOOR = {"label": "P11_Floor", "mesh": CUBE, "loc": (11250, -1000, -20), "rot": (0, 0, 0), "scale": (255, 40, 0.4), "folder": "P11/Setup",
