@@ -1,6 +1,6 @@
 # Phase 11: Materials (surface polish): plan
 
-**Status:** approved by the owner on 2026-11-02. P11-0, P11-1 and P11-2 done; P11-3 done: the owner chose A (D-086). P11-0 to P11-4 done; P11-5 waits for the owner's "go". The door corners and `Gobo_Moon` specks stay out of scope.
+**Status:** approved by the owner on 2026-11-02. P11-0, P11-1 and P11-2 done; P11-3 done: the owner chose A (D-086). P11-0 to P11-4 done; P11-5 in progress. The door corners and `Gobo_Moon` specks stay out of scope.
 **Branch:** `claude/phase-11-materials`, from `main` (6dfa29d).
 **Rules:** D-048 applies. The lead plans in Opus 5.5 at xhigh effort; every implementer is spawned with `model: "sonnet", effort: "high"`.
 
@@ -354,45 +354,109 @@ This step changes only test assets, so it needs no suite run.
 **Added after review:** `MI_Kit_Trim` `RoughnessMin` 0.85, `RoughnessMax` 1.0. `rock_01` is far shinier than the stone it replaced (roughness mean 0.516 against 0.938), and the moon drew a thin bright line along a wall's cap (`cy_tall_south_15m`, max luma 0.152 before, 0.538 after, 0.173 with this fix). The memorial tablet stays legible at 3 m.
 
 ### P11-5: weathering layer (`bWeathering`)
-Added to `M_LB_Surface` in **one** recompile (D-053: a GPU-crash risk on the 6 GB card, so close other GPU apps first).
+**Started on the owner's "go", 2026-11-03,** with other GPU apps closed (R-47, D-053).
 
-**Static switch** `bWeathering`, default false. **Group** `Weathering`. **Defaults:**
-
-| Parameter | Default | Meaning |
+| Step | Scope | Owner |
 |---|---|---|
-| `WeatherFloorZ` | 0 | World Z of the local floor; set per MI where the floor differs (crypt) |
-| `GrimeBaseHeightCm` | 220 | Height of the base grime band |
-| `GrimeBaseAmount` | 0.45 | Band strength |
-| `GrimeNoiseScaleCm` | 180 | Breaks up the band's top edge |
-| `GrimeTint` (vector) | (0.30, 0.27, 0.22) | Grime colour multiplier |
-| `StreakScaleHCm` / `StreakScaleVCm` | 70 / 900 | Streak size across and down the wall |
-| `StreakThreshold` / `StreakAmount` | 0.55 / 0.30 | How many streaks, and how dark |
-| `StreakRoughness` | 0.35 | Roughness in streaks (wet look) |
-| `PatchScaleCm` / `PatchAmount` | 1100 / 0.18 | Large colour patches that hide repeats |
-| `PatchTint` (vector) | (0.82, 0.86, 0.80) | Patch colour |
+| **P11-5a** | Add the layer to `M_LB_Surface`, switch off everywhere; one master recompile; suite | technical-artist [EDITOR] |
+| **P11-5b** | Regression captures against `p11_a2_` | lead + owner |
+| **P11-5c** | Rollout and tuning on the wall MIs; captures; owner's chapel GPU reading | lead + owner |
 
-**Mask, in one Custom node:** reuse the value-noise function from `LB_PuddleMask`.
+**Which MIs get it (from the census):** `MI_Kit_Masonry` and `MI_Kit_Trim`, so plinths and caps weather with their walls and no hard edge forms where they meet. Their children inherit, except `MI_Cl_CarveDirt`, which is set off so the memorial's lettering doesn't change.
+
+**The crypt stays out of this layer:** its main walls use `MI_Stone_00..03` on a different master, not `M_LB_Surface`. It keeps its Phase 9 grime decals. `MI_Kit_Rubble` stays off to save cost.
+
+**Where it goes:** straight after base colour and roughness, before growth, dust and puddles. `Multiply_9` is the finished base colour; `Clamp_0` is the finished roughness.
+
+#### P11-5a: nodes
+All parameters go in group `Weathering`.
+
+| Parameter | Type | Default | Meaning |
+|---|---|---|---|
+| `bWeathering` | static switch (two nodes, same name) | false | Layer on or off |
+| `WeatherFloorZ` | scalar | 0 | World Z of the local floor |
+| `GrimeBaseHeightCm` | scalar | 220 | Height of the base grime band |
+| `GrimeBaseAmount` | scalar | 0.45 | Band strength |
+| `GrimeNoiseScaleCm` | scalar | 180 | Breaks up the band's top edge |
+| `GrimeTint` | vector | (0.30, 0.27, 0.22) | Grime colour multiplier |
+| `StreakScaleHCm` | scalar | 70 | Streak width |
+| `StreakScaleVCm` | scalar | 900 | Streak length |
+| `StreakThreshold` | scalar | 0.55 | Higher means fewer streaks |
+| `StreakAmount` | scalar | 0.30 | Streak strength |
+| `StreakRoughness` | scalar | 0.35 | Roughness in streaks (wet look) |
+| `PatchScaleCm` | scalar | 1100 | Size of the large colour patches |
+| `PatchAmount` | scalar | 0.30 | Patch strength |
+| `PatchTint` | vector | (0.70, 0.74, 0.68) | Patch colour multiplier (stronger than first planned: at 0.82 a patch would change a wall by only about 3 %) |
+
+**Custom node** `LB_WeatherMask`, output `CMOT_Float3`. Inputs in this order: `WorldPos` (`WorldPosition_0` XYZ, as the other masks), `NormalWS` (`VertexNormalWS_2`), then each scalar above except `StreakRoughness`, named exactly as the parameter. `StreakRoughness` is used only in the roughness lerp.
+
+```hlsl
+float wall = saturate((1.0 - abs(NormalWS.z)) * 2.0);
+float u = WorldPos.x + WorldPos.y;
+float2 pg = float2(u, WorldPos.z) / max(GrimeNoiseScaleCm, 1.0) + float2(23.7, 5.1);
+float2 ig = floor(pg); float2 fg = frac(pg); float2 sg = fg * fg * (3.0 - 2.0 * fg);
+float g1 = frac(sin(dot(ig, float2(127.1, 311.7))) * 43758.5453);
+float g2 = frac(sin(dot(ig + float2(1.0, 0.0), float2(127.1, 311.7))) * 43758.5453);
+float g3 = frac(sin(dot(ig + float2(0.0, 1.0), float2(127.1, 311.7))) * 43758.5453);
+float g4 = frac(sin(dot(ig + float2(1.0, 1.0), float2(127.1, 311.7))) * 43758.5453);
+float gEdge = lerp(lerp(g1, g2, sg.x), lerp(g3, g4, sg.x), sg.y);
+float band = (1.0 - saturate((WorldPos.z - WeatherFloorZ) / max(GrimeBaseHeightCm, 1.0))) * lerp(0.6, 1.0, gEdge);
+float2 p1 = float2(u / max(StreakScaleHCm, 1.0), WorldPos.z / max(StreakScaleVCm, 1.0)) + float2(71.3, 13.9);
+float2 i1 = floor(p1); float2 f1 = frac(p1); float2 u1 = f1 * f1 * (3.0 - 2.0 * f1);
+float a1 = frac(sin(dot(i1, float2(127.1, 311.7))) * 43758.5453);
+float a2 = frac(sin(dot(i1 + float2(1.0, 0.0), float2(127.1, 311.7))) * 43758.5453);
+float a3 = frac(sin(dot(i1 + float2(0.0, 1.0), float2(127.1, 311.7))) * 43758.5453);
+float a4 = frac(sin(dot(i1 + float2(1.0, 1.0), float2(127.1, 311.7))) * 43758.5453);
+float sa = lerp(lerp(a1, a2, u1.x), lerp(a3, a4, u1.x), u1.y);
+float2 p2 = p1 * 2.37 + float2(0.37, 0.71);
+float2 i2 = floor(p2); float2 f2 = frac(p2); float2 u2 = f2 * f2 * (3.0 - 2.0 * f2);
+float b1 = frac(sin(dot(i2, float2(127.1, 311.7))) * 43758.5453);
+float b2 = frac(sin(dot(i2 + float2(1.0, 0.0), float2(127.1, 311.7))) * 43758.5453);
+float b3 = frac(sin(dot(i2 + float2(0.0, 1.0), float2(127.1, 311.7))) * 43758.5453);
+float b4 = frac(sin(dot(i2 + float2(1.0, 1.0), float2(127.1, 311.7))) * 43758.5453);
+float sb = lerp(lerp(b1, b2, u2.x), lerp(b3, b4, u2.x), u2.y);
+float streak = smoothstep(StreakThreshold, StreakThreshold + 0.15, sa * 0.6 + sb * 0.4);
+float2 pc = float2(u, WorldPos.z) / max(PatchScaleCm, 1.0) + float2(3.3, 57.7);
+float2 ic = floor(pc); float2 fc = frac(pc); float2 sc = fc * fc * (3.0 - 2.0 * fc);
+float c1 = frac(sin(dot(ic, float2(127.1, 311.7))) * 43758.5453);
+float c2 = frac(sin(dot(ic + float2(1.0, 0.0), float2(127.1, 311.7))) * 43758.5453);
+float c3 = frac(sin(dot(ic + float2(0.0, 1.0), float2(127.1, 311.7))) * 43758.5453);
+float c4 = frac(sin(dot(ic + float2(1.0, 1.0), float2(127.1, 311.7))) * 43758.5453);
+float blotch = lerp(lerp(c1, c2, sc.x), lerp(c3, c4, sc.x), sc.y);
+return float3(wall * saturate(band * GrimeBaseAmount + streak * StreakAmount), wall * blotch * PatchAmount, wall * streak * StreakAmount);
 ```
-wall   = saturate((1 - abs(N.z)) * 2)                         // N = vertex normal, world
-u      = WS.x + WS.y                                          // along the wall; walls here are axis-aligned
-band   = (1 - saturate((WS.z - WeatherFloorZ) / GrimeBaseHeightCm))
-         * lerp(0.6, 1.0, noise(WS.xy + WS.z, GrimeNoiseScaleCm))
-streak = smoothstep(StreakThreshold, StreakThreshold + 0.15,
-                    fbm2(float2(u / StreakScaleHCm, WS.z / StreakScaleVCm)))
-patch  = noise(float2(u, WS.z), PatchScaleCm)
-```
-**Apply** after macro variation and before TopDust, Growth, Puddles and Wetness:
-```
-BaseColor *= lerp(1, GrimeTint, wall * saturate(band * GrimeBaseAmount + streak * StreakAmount))
-BaseColor *= lerp(1, PatchTint, wall * patch * PatchAmount)
-Roughness  = lerp(Roughness, StreakRoughness, wall * streak * StreakAmount)
-```
-**Acceptance:**
-1. **Regression with the switch off:** ≤ 2/255 on `MI_Kit_Floor`, `MI_Kit_Masonry`, `MI_Kit_Cliff` and `MI_Medieval_Blocks_03`, comparing two recompiles in the same session (MCP_NOTES).
-2. **Rollout:** `bWeathering` on for wall MIs only (the list comes from the census). Crypt MIs get their floor Z.
-3. **Tuning:** only `GrimeBaseAmount` 0.2–0.6, `StreakAmount` 0.15–0.45, `PatchAmount` 0.1–0.3.
-4. **Captures:** the 15 m tall-wall baseline poses show no visible repeat; streaks and the grime band read as weather, with no hard edges across wall pieces.
-5. **GPU (owner, 1 minute):** one reading at the chapel mid-nave spot after the rollout. Budget ≤ 16.6 ms. If it is over, use the P11-8 cut list before any decal work.
+(`noise`, `sample` and `patch` are reserved words in HLSL, so the code avoids them.)
+
+**Wiring:**
+
+| New node | Inputs |
+|---|---|
+| `ComponentMask` R, G, B | each from `LB_WeatherMask` |
+| `Lerp_Grime` | A = `Constant3Vector` (1, 1, 1); B = `GrimeTint` RGB; Alpha = mask R |
+| `Lerp_Patch` | A = the same constant; B = `PatchTint` RGB; Alpha = mask G |
+| `Mul_1` | A = `Multiply_9`; B = `Lerp_Grime` |
+| `Mul_2` | A = `Mul_1`; B = `Lerp_Patch` |
+| `Switch_BaseColor` (`bWeathering`) | True = `Mul_2`; False = `Multiply_9` |
+| `Lerp_Rough` | A = `Clamp_0`; B = `StreakRoughness`; Alpha = mask B |
+| `Switch_Rough` (`bWeathering`) | True = `Lerp_Rough`; False = `Clamp_0` |
+
+**Rewire, last and together:**
+- `LinearInterpolate_12.A` and `StaticSwitchParameter_11.False` take `Switch_BaseColor` (they read `Multiply_9` today).
+- `LinearInterpolate_13.A` and `StaticSwitchParameter_17.False` take `Switch_Rough` (they read `Clamp_0` today).
+
+**Safety order:**
+1. Compile the same Custom node first on a small throwaway material, `/Game/LastBell/ArtTest/P11/Materials/M_P11_WeatherTest`, so an HLSL error can't reach the master.
+2. Only then edit the master, and recompile it **once**.
+3. If the editor crashes or the compile fails: stop. Nothing is saved until the check passes, and the git copy is the rollback.
+
+#### P11-5b: regression (lead + owner)
+A thumbnail comparison needs two recompiles (MCP_NOTES), which is an extra GPU risk. Instead, with every switch still off, the lead re-captures `cy_tall_north_15m`, `cy_west_front_15m`, `cl_lantern_bells_3m`, `ch_candle_altar_3m` and compares them with `p11_a2_`: mean absolute difference at most 2/255 per image.
+
+#### P11-5c: rollout and tuning (lead + owner)
+1. `bWeathering` on for `MI_Kit_Masonry` and `MI_Kit_Trim`; off on `MI_Cl_CarveDirt`.
+2. **Tuning, values only:** `GrimeBaseAmount` 0.2–0.6, `StreakAmount` 0.15–0.45, `PatchAmount` 0.1–0.5.
+3. **Captures:** the 24 poses. The 15 m views should show no wallpaper repeat; streaks and the grime band should read as weather, with no hard edge across wall pieces. The memorial stays legible.
+4. **GPU (owner, 1 minute):** one reading at the chapel mid-nave spot. Budget ≤ 16.6 ms. If over: the P11-8 cut list, before any decal work.
 
 ### P11-6: decals
 1. **Retune** (instance values only). D-046: leak decals were "too strong, hair-like". For each decal MI in the census, check one capture per area. Lower `Opacity` and adjust `Roughness` until it reads as a stain.
