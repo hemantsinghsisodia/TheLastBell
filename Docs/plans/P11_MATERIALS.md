@@ -1,6 +1,6 @@
 # Phase 11: Materials (surface polish): plan
 
-**Status:** approved by the owner on 2026-11-02. P11-0, P11-1 and P11-2 done; P11-3 done: the owner chose A (D-086). P11-4a passed; P11-4b in progress (owner's "go": A2). The door corners and `Gobo_Moon` specks stay out of scope.
+**Status:** approved by the owner on 2026-11-02. P11-0, P11-1 and P11-2 done; P11-3 done: the owner chose A (D-086). P11-4a and P11-4b done; P11-4c (Reimport) in progress. The door corners and `Gobo_Moon` specks stay out of scope.
 **Branch:** `claude/phase-11-materials`, from `main` (6dfa29d).
 **Rules:** D-048 applies. The lead plans in Opus 5.5 at xhigh effort; every implementer is spawned with `model: "sonnet", effort: "high"`.
 
@@ -302,6 +302,15 @@ This step changes only test assets, so it needs no suite run.
 **Build only the 51,** with each builder's `--only`, into their current folders. Non-listed FBX files must stay byte-identical.
 
 **Checks:** `verify_kit.py`, `verify_cloister.py`, `verify_tower.py` pass, and `Tools/materials/verify_p11_rebuild.py` compares every rebuilt FBX with a copy taken before the build: bounds within 0.1 cm, the same used material slots in the same order, the same UCX count and bounds, and no long groove line left on masonry faces. Any slot difference stops the task, because Unreal drops unused slots.
+
+**Result (7eb0232):** 51 FBX rebuilt. `verify_kit` 46/46, `verify_cloister` 50/50, `verify_tower` 33/33, `verify_p11_rebuild` 51/51. Used slots, bounds and UCX are unchanged; triangles 270055 to 87422 (−67.6 %). Nothing is imported yet, so the game looks the same.
+
+**The verifiers stopped this task three times:**
+1. **Chips moved** (see the rule above).
+2. **`chk_pier`** measured pier faces from vertices that only the grooves had put there. It now reads the band edges and is still proved non-vacuous.
+3. **Shading wedges:** a plain wall face is a few huge triangles, so a chip rim's tilted normal shaded across the whole face. `kit_lib.finalize` gained `hard_flat_slot`; `build_kit`, `build_cloister` and `tw_common` pass `SLOT_MASONRY`, and `build_props` doesn't. `verify_p11_rebuild.py` now fails any mesh with over 1 % of flat masonry area tilted more than 3 degrees; all 51 read 0.0 %.
+
+**Known limit:** `hard_flat_slot` means slot 0, and some kit and tower pieces (roof, timber) have another material in slot 0. None was rebuilt, so nothing changed, but a future rebuild of those pieces would hard-shade their large flat faces. Check this before rebuilding them.
 
 #### P11-4c: Reimport (lead + owner)
 `Tools/materials/check_reimport.py` snapshots each mesh's tags, slots and default materials before, then compares after, including `FileMD5` against the rebuilt FBX.
