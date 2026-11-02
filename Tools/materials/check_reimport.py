@@ -14,7 +14,8 @@ Mesh list: Tools/materials/p11_reimport_list.json (mesh, package, fbx, old_md5, 
   * these tags equal the snapshot: Materials, NaniteEnabled, CollisionPrims, CollisionComplexity, DefaultCollision;
   * the material slot names are equal and in the same order, and each slot's default material is the same;
   * is_nanite_enabled equals the snapshot;
-  * ApproxSize is within 1 cm per axis of the snapshot;
+  * ApproxSize, per axis, is no larger than the snapshot's + 1 cm and no smaller than the FBX's dims in its build report - 1 cm.
+    (The old tags read larger than the real meshes, e.g. 435x77x802 for a 400x60x800 wall, whose actor bounds were exact.)
   * Vertices is fewer than or equal to the snapshot's.
 Whether the package is dirty is printed for information (a fresh Reimport leaves it dirty; the lead saves each mesh alone).
 Exit code 1 when any mesh fails.
@@ -29,6 +30,7 @@ sys.path.insert(0, os.path.join(ROOT, "Tools", "mcp"))
 from ue import UE  # noqa: E402
 
 LIST = os.path.join(HERE, "p11_reimport_list.json")
+REPORTS = ("SourceArt/Kit/kit_report.json", "SourceArt/Cloister/cloister_report.json", "SourceArt/BellTower/tower_report.json")
 ASSET = "editor_toolset.toolsets.asset.AssetTools"
 SMESH = "editor_toolset.toolsets.static_mesh.StaticMeshTools"
 KEEP = ["AssetImportData", "Materials", "NaniteEnabled", "CollisionPrims", "CollisionComplexity", "DefaultCollision",
@@ -86,6 +88,18 @@ def parse_size(s):
         return None
 
 
+_dims = {}
+
+
+def report_dims():
+    if not _dims:
+        for rel in REPORTS:
+            with open(os.path.join(ROOT, rel), encoding="utf-8") as fh:
+                for r in json.load(fh):
+                    _dims[r["name"]] = r["dims"]
+    return _dims
+
+
 def check_one(before, now, e):
     """Return a list of failure strings (empty = PASS)."""
     if "error" in now:
@@ -115,8 +129,14 @@ def check_one(before, now, e):
     a, b = parse_size(bt.get("ApproxSize")), parse_size(nt.get("ApproxSize"))
     if not a or not b or len(a) != 3 or len(b) != 3:
         fails.append("ApproxSize unreadable: %r / %r" % (bt.get("ApproxSize"), nt.get("ApproxSize")))
-    elif any(abs(x - y) > 1.0 for x, y in zip(a, b)):
-        fails.append("ApproxSize changed by more than 1 cm: %s -> %s" % (bt.get("ApproxSize"), nt.get("ApproxSize")))
+    else:
+        dims = report_dims().get(e["mesh"])
+        if not dims:
+            fails.append("no build report dims for %s" % e["mesh"])
+        elif any(y > x + 1.0 for x, y in zip(a, b)):
+            fails.append("ApproxSize grew: %s -> %s" % (bt.get("ApproxSize"), nt.get("ApproxSize")))
+        elif any(y < d - 1.0 for d, y in zip(dims, b)):
+            fails.append("ApproxSize %s is smaller than the FBX dims %s" % (nt.get("ApproxSize"), dims))
     try:
         if int(nt.get("Vertices")) > int(bt.get("Vertices")):
             fails.append("Vertices grew: %s -> %s" % (bt.get("Vertices"), nt.get("Vertices")))
