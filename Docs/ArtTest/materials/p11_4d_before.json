@@ -1,0 +1,85 @@
+{
+ "task": "P11-4d",
+ "note": "State of MI_Kit_Masonry and MI_Kit_Trim before P11-4d, read from the editor on 2026-11-02. 'override_*' are the parameters the instance itself overrides; 'effective' includes values inherited from M_LB_Surface. To undo: set the listed textures and values back; a parameter absent from override_* (e.g. UVScale on both) was inherited, so after undoing, clear that override with set_parameter_override(false) or set the effective value.",
+ "instances": {
+  "MI_Kit_Masonry": {
+   "path": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry",
+   "parent": "/Game/LastBell/Materials/Master/M_LB_Surface.M_LB_Surface",
+   "textures": {
+    "BaseColorTex": "/Game/LastBell/ArtTest/Materials/Medieval_Blocks_03/T_Medieval_Blocks_03_BC.T_Medieval_Blocks_03_BC",
+    "NormalTex": "/Game/LastBell/ArtTest/Materials/Medieval_Blocks_03/T_Medieval_Blocks_03_N.T_Medieval_Blocks_03_N",
+    "ARMTex": "/Game/LastBell/ArtTest/Materials/Medieval_Blocks_03/T_Medieval_Blocks_03_ARM.T_Medieval_Blocks_03_ARM"
+   },
+   "MacroStrength": 0.4000000059604645,
+   "UVScale": 1,
+   "UVScale_was_overridden": false,
+   "BrightnessMul": 1,
+   "BrightnessMul_was_overridden": false,
+   "BaseColorTint": [
+    1,
+    1,
+    1
+   ],
+   "BaseColorTint_was_overridden": false,
+   "WorldTileSizeCm": 200,
+   "WorldBlendSharpness": 4,
+   "Wetness": 0,
+   "bUseARM": true,
+   "bWorldAlignedUV": true,
+   "override_scalars": {
+    "MacroStrength": 0.4000000059604645,
+    "WorldTileSizeCm": 200,
+    "WorldBlendSharpness": 4
+   },
+   "override_vectors": {},
+   "override_textures": {
+    "BaseColorTex": "/Game/LastBell/ArtTest/Materials/Medieval_Blocks_03/T_Medieval_Blocks_03_BC.T_Medieval_Blocks_03_BC",
+    "NormalTex": "/Game/LastBell/ArtTest/Materials/Medieval_Blocks_03/T_Medieval_Blocks_03_N.T_Medieval_Blocks_03_N",
+    "ARMTex": "/Game/LastBell/ArtTest/Materials/Medieval_Blocks_03/T_Medieval_Blocks_03_ARM.T_Medieval_Blocks_03_ARM"
+   }
+  },
+  "MI_Kit_Trim": {
+   "path": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim",
+   "parent": "/Game/LastBell/Materials/Master/M_LB_Surface.M_LB_Surface",
+   "textures": {
+    "BaseColorTex": "/Game/LastBell/ArtTest/Materials/Medieval_Blocks_03/T_Medieval_Blocks_03_BC.T_Medieval_Blocks_03_BC",
+    "NormalTex": "/Game/LastBell/ArtTest/Materials/Medieval_Blocks_03/T_Medieval_Blocks_03_N.T_Medieval_Blocks_03_N",
+    "ARMTex": "/Game/LastBell/ArtTest/Materials/Medieval_Blocks_03/T_Medieval_Blocks_03_ARM.T_Medieval_Blocks_03_ARM"
+   },
+   "MacroStrength": 0.4000000059604645,
+   "UVScale": 1,
+   "UVScale_was_overridden": false,
+   "BrightnessMul": 1.350000023841858,
+   "BrightnessMul_was_overridden": true,
+   "BaseColorTint": [
+    1,
+    0.949999988079071,
+    0.8600000143051147
+   ],
+   "BaseColorTint_was_overridden": true,
+   "WorldTileSizeCm": 200,
+   "WorldBlendSharpness": 4,
+   "Wetness": 0,
+   "bUseARM": true,
+   "bWorldAlignedUV": false,
+   "override_scalars": {
+    "MacroStrength": 0.4000000059604645,
+    "Wetness": 0,
+    "BrightnessMul": 1.350000023841858
+   },
+   "override_vectors": {
+    "BaseColorTint": {
+     "r": 1,
+     "g": 0.949999988079071,
+     "b": 0.8600000143051147,
+     "a": 1
+    }
+   },
+   "override_textures": {
+    "BaseColorTex": "/Game/LastBell/ArtTest/Materials/Medieval_Blocks_03/T_Medieval_Blocks_03_BC.T_Medieval_Blocks_03_BC",
+    "NormalTex": "/Game/LastBell/ArtTest/Materials/Medieval_Blocks_03/T_Medieval_Blocks_03_N.T_Medieval_Blocks_03_N",
+    "ARMTex": "/Game/LastBell/ArtTest/Materials/Medieval_Blocks_03/T_Medieval_Blocks_03_ARM.T_Medieval_Blocks_03_ARM"
+   }
+  }
+ }
+}
