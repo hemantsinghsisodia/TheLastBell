@@ -1,6 +1,6 @@
 # Phase 11: Materials (surface polish): plan
 
-**Status:** approved by the owner on 2026-11-02. P11-0, P11-1 and P11-2 done; P11-3 done: the owner chose A (D-086). P11-4a to P11-4c done; P11-4d in progress. The door corners and `Gobo_Moon` specks stay out of scope.
+**Status:** approved by the owner on 2026-11-02. P11-0, P11-1 and P11-2 done; P11-3 done: the owner chose A (D-086). P11-0 to P11-4 done; P11-5 waits for the owner's "go". The door corners and `Gobo_Moon` specks stay out of scope.
 **Branch:** `claude/phase-11-materials`, from `main` (6dfa29d).
 **Rules:** D-048 applies. The lead plans in Opus 5.5 at xhigh effort; every implementer is spawned with `model: "sonnet", effort: "high"`.
 
@@ -348,6 +348,10 @@ This step changes only test assets, so it needs no suite run.
 **`MI_Crypt_StoneWA` stays as it is:** its 42 actors are crypt pieces with no modelled grooves, so they have no double joints.
 
 **Checks:** read-backs, suite 79/79. Then the lead captures all 24 baseline poses (`p11_a2_`) with the owner, and judges the memorial tablet at `cl_lantern_bells_3m`. Brightness corrections wait for P11-8.
+
+**Result (6f3b899, 38bbc53):** applied; suite 79/79 before the roughness correction below, which only changes two values on one MI. 24 captures, prefix `p11_a2_`, luma in `p11_a2_luma.json`. Brightness against the baseline (mean): 0.91 to 1.01; lowest `cl_lantern_bells_3m` 0.91, then `tw_mid_stair`, `ch_sacristy_3m`, `ps_lantern_joints` and `cy_lantern_gate_3m` at 0.94. The crypt is unchanged. P11-8 corrects this through `BrightnessMul`.
+
+**Added after review:** `MI_Kit_Trim` `RoughnessMin` 0.85, `RoughnessMax` 1.0. `rock_01` is far shinier than the stone it replaced (roughness mean 0.516 against 0.938), and the moon drew a thin bright line along a wall's cap (`cy_tall_south_15m`, max luma 0.152 before, 0.538 after, 0.173 with this fix). The memorial tablet stays legible at 3 m.
 
 ### P11-5: weathering layer (`bWeathering`)
 Added to `M_LB_Surface` in **one** recompile (D-053: a GPU-crash risk on the 6 GB card, so close other GPU apps first).
