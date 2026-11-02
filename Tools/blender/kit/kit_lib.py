@@ -363,6 +363,10 @@ def boolean_diff(target, cutter):
 # ----------------------------------------------------------------------------------------------
 # face frames and masonry relief cutters
 # ----------------------------------------------------------------------------------------------
+# D-086: masonry carries its joints in the texture; modelled grooves stay on trim only.
+MASONRY_GROOVES = False
+
+
 class FaceFrame:
     """A wall face in world space.  u = direction along the face, n = outward normal, q = depth into the
     wall (q > 0 inside), z = world height."""
@@ -446,6 +450,9 @@ def relief_cutters(frame, u0, u1, z0, z1, courses, seed, *, joint_depth=1.5, joi
                    end_open=True, groove_mat=SLOT_MASONRY, chip_mat=SLOT_RUBBLE, h_grooves=True):
     """Cutter solids that carve ashlar relief (V-grooves between courses and blocks, shallow weathered
     recesses, small chips) into the face at u in [u0,u1], z in [z0,z1]."""
+    # D-086: with MASONRY_GROOVES off, every loop below still runs and draws the same random numbers (so the chips
+    # keep their positions and the used material slots stay the same), but the groove and recess cutters are not appended.
+    skip = groove_mat == SLOT_MASONRY and not MASONRY_GROOVES
     rng = random.Random(seed)
     cut = bmesh.new()
     d, hw = joint_depth, joint_w * 0.5
@@ -465,7 +472,8 @@ def relief_cutters(frame, u0, u1, z0, z1, courses, seed, *, joint_depth=1.5, joi
             e2 = (jd + 1.0) / jd
             tri = [(-1.0, z - hw * e2), (-1.0, z + hw * e2), (jd, z)]
             lps = [[(ua, q, zz) for q, zz in tri], [(ub, q, zz) for q, zz in tri]]
-            bm_append(cut, _mk(frame, lps, groove_mat))
+            if not skip:
+                bm_append(cut, _mk(frame, lps, groove_mat))
     # vertical joints per course
     rows = stagger_joints(L, courses, seed + 1, wmin, wmax)
     blocks = []
@@ -480,7 +488,8 @@ def relief_cutters(frame, u0, u1, z0, z1, courses, seed, *, joint_depth=1.5, joi
                 e2 = (jd + 1.0) / jd
                 tri = [(x - hw * e2, -1.0), (x + hw * e2, -1.0), (x, jd)]
                 lps = [[(uu, q, za) for uu, q in tri], [(uu, q, zc) for uu, q in tri]]
-                bm_append(cut, _mk(frame, lps, groove_mat))
+                if not skip:
+                    bm_append(cut, _mk(frame, lps, groove_mat))
     # weathered recesses
     for (ba, bb, za, zc) in blocks:
         if rng.random() < recess_prob and (bb - ba) > 30 and (zc - za) > 30:
@@ -491,7 +500,8 @@ def relief_cutters(frame, u0, u1, z0, z1, courses, seed, *, joint_depth=1.5, joi
                 continue
             lo = [(x0 - 1.0, -1.0, y0 - 1.0), (x1 + 1.0, -1.0, y0 - 1.0), (x1 + 1.0, -1.0, y1 + 1.0), (x0 - 1.0, -1.0, y1 + 1.0)]
             hi = [(x0 + dd, dd, y0 + dd), (x1 - dd, dd, y0 + dd), (x1 - dd, dd, y1 - dd), (x0 + dd, dd, y1 - dd)]
-            bm_append(cut, _mk(frame, [lo, hi], groove_mat))
+            if not skip:
+                bm_append(cut, _mk(frame, [lo, hi], groove_mat))
     # chips at block corners
     corners = []
     for (ba, bb, za, zc) in blocks:
@@ -671,7 +681,7 @@ def quoin_stones(x_face0, x_face1, y_face0, y_face1, z0, z1, courses, corner, lo
 # ----------------------------------------------------------------------------------------------
 # finishing: UV0 (box projection), vertex colour, smoothing, collision
 # ----------------------------------------------------------------------------------------------
-def finalize(bm, smooth_deg=30.0, keep_uv=False):
+def finalize(bm, smooth_deg=30.0, keep_uv=False, hard_flat_slot=None):
     bm.normal_update()
     bm.faces.ensure_lookup_table()
     uv = bm.loops.layers.uv.get("UVMap") or bm.loops.layers.uv.new("UVMap")
@@ -698,6 +708,12 @@ def finalize(bm, smooth_deg=30.0, keep_uv=False):
     for e in bm.edges:
         if len(e.link_faces) == 2:
             e.smooth = e.calc_face_angle(0.0) <= lim
+            # D-086: without grooves a wall face is a few huge triangles, so a tilted chip-rim normal would shade across all of it.
+            # hard_flat_slot (a material slot index, or None for no change) keeps edges next to a large flat face of that slot hard.
+            if hard_flat_slot is not None and any(
+                    f.material_index == hard_flat_slot and f.calc_area() > 150.0 and max(abs(f.normal.x), abs(f.normal.y), abs(f.normal.z)) > 0.9999
+                    for f in e.link_faces):
+                e.smooth = False
         else:
             e.smooth = True
     return bm

@@ -1570,7 +1570,7 @@ def run():
         t = time.time()
         pc = fn()
         mn, mx = K.bm_bounds(pc.bm)
-        K.finalize(pc.bm, smooth_deg=getattr(pc, 'smooth', 30.0))
+        K.finalize(pc.bm, smooth_deg=getattr(pc, 'smooth', 30.0), hard_flat_slot=K.SLOT_MASONRY)
         for u in pc.ucx:
             pass
         K.export_piece_fbx(pc.name, pc.bm, pc.ucx, os.path.join(out_dir, "FBX", pc.name + ".fbx"), mats_for(pc.slots))

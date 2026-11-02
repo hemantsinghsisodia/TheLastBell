@@ -219,7 +219,7 @@ def beam_between(p0, p1, w, h, mat, up=(0, 0, 1), bevel=0.4):
 
 
 def finish(tp, smooth=None):
-    K.finalize(tp.bm, smooth_deg=tp.smooth if smooth is None else smooth, keep_uv=tp.keep_uv)
+    K.finalize(tp.bm, smooth_deg=tp.smooth if smooth is None else smooth, keep_uv=tp.keep_uv, hard_flat_slot=K.SLOT_MASONRY)
     return tp
 
 

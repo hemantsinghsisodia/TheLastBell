@@ -17,7 +17,7 @@
    46.0,
    1300.0
   ],
-  "tris": 3880,
+  "tris": 272,
   "slots": [
    "MAT_Masonry",
    "MAT_Trim",
@@ -29,7 +29,7 @@
    2
   ],
   "ucx": 0,
-  "seconds": 2.7,
+  "seconds": 0.3,
   "note": "T 40, inner face y 0; drip course y -6..0 at z 1210..1230 (inner face only)"
  },
  {
@@ -50,7 +50,7 @@
    46.0,
    1300.0
   ],
-  "tris": 3706,
+  "tris": 232,
   "slots": [
    "MAT_Masonry",
    "MAT_Trim",
@@ -62,7 +62,7 @@
    2
   ],
   "ucx": 0,
-  "seconds": 0.9,
+  "seconds": 0.0,
   "note": "T 40, inner face y 0; drip course y -6..0 at z 1210..1230 (inner face only)"
  },
  {
@@ -115,7 +115,7 @@
    40.0,
    800.0
   ],
-  "tris": 2478,
+  "tris": 222,
   "slots": [
    "MAT_Masonry",
    "MAT_Trim",
@@ -127,7 +127,7 @@
    2
   ],
   "ucx": 0,
-  "seconds": 0.5,
+  "seconds": 0.0,
   "note": "T 40, inner face y 0"
  },
  {
@@ -148,7 +148,7 @@
    40.0,
    800.0
   ],
-  "tris": 2444,
+  "tris": 214,
   "slots": [
    "MAT_Masonry",
    "MAT_Trim",
@@ -160,7 +160,7 @@
    2
   ],
   "ucx": 0,
-  "seconds": 0.5,
+  "seconds": 0.0,
   "note": "T 40, inner face y 0"
  },
  {
@@ -213,7 +213,7 @@
    40.0,
    450.0
   ],
-  "tris": 1476,
+  "tris": 216,
   "slots": [
    "MAT_Masonry",
    "MAT_Trim",
@@ -225,7 +225,7 @@
    2
   ],
   "ucx": 0,
-  "seconds": 0.3,
+  "seconds": 0.0,
   "note": "T 40, inner face y 0"
  },
  {
@@ -278,7 +278,7 @@
    46.0,
    1000.0
   ],
-  "tris": 5156,
+  "tris": 1908,
   "slots": [
    "MAT_Masonry",
    "MAT_Trim",
@@ -290,7 +290,7 @@
    2
   ],
   "ucx": 0,
-  "seconds": 1.3,
+  "seconds": 0.2,
   "note": "tympanum of a full-width four-centred opening: springing z 300 at x 0 and 500, apex z 420; lower radius 87.5 (span/4 = 125.0), upper radius 2958.8, apex slope 9.0 deg; ring radial width 40; drip y -6..0 at z 1210..1230 (cloister face only); no mesh below the springing line"
  },
  {
@@ -311,7 +311,7 @@
    46.0,
    970.0
   ],
-  "tris": 3479,
+  "tris": 1704,
   "slots": [
    "MAT_Masonry",
    "MAT_Trim",
@@ -323,7 +323,7 @@
    2
   ],
   "ucx": 0,
-  "seconds": 0.8,
+  "seconds": 0.2,
   "note": "tympanum of a full-width four-centred opening: springing z 330 at x 0 and 300, apex z 450; lower radius 75.0 (span/4 = 75.0), upper radius 226.5, apex slope 9.0 deg; ring radial width 40; drip y -6..0 at z 1210..1230 (cloister face only); no mesh below the springing line"
  },
  {
@@ -344,7 +344,7 @@
    96.0,
    620.0
   ],
-  "tris": 788,
+  "tris": 252,
   "slots": [
    "MAT_Masonry",
    "MAT_Trim",
@@ -355,7 +355,7 @@
    1
   ],
   "ucx": 0,
-  "seconds": 0.1,
+  "seconds": 0.0,
   "note": "pivot bottom centre; base +4, shaft faces at +-40/+-40 z 25..300, capital +8, block z 330..600, coping +5 z 600..620, top z 620 (name keeps x640, D1.11)"
  },
  {
@@ -376,7 +376,7 @@
    96.0,
    620.0
   ],
-  "tris": 898,
+  "tris": 280,
   "slots": [
    "MAT_Masonry",
    "MAT_Trim",
@@ -388,7 +388,7 @@
    2
   ],
   "ucx": 0,
-  "seconds": 0.1,
+  "seconds": 0.0,
   "note": "pivot bottom centre; base +4, shaft faces at +-65/+-40 z 25..300, capital +8, block z 330..600, coping +5 z 600..620, top z 620 (name keeps x640, D1.11)"
  },
  {
@@ -409,7 +409,7 @@
    90.0,
    290.0
   ],
-  "tris": 898,
+  "tris": 717,
   "slots": [
    "MAT_Masonry",
    "MAT_Trim",
@@ -421,7 +421,7 @@
    2
   ],
   "ucx": 0,
-  "seconds": 0.2,
+  "seconds": 0.1,
   "note": "pivot = left springing point, x 0..120, two-centred R 96.0, intrados apex z 88.99, spandrel top 270, coping 270..290 (+5)"
  },
  {
@@ -442,7 +442,7 @@
    90.0,
    290.0
   ],
-  "tris": 1146,
+  "tris": 876,
   "slots": [
    "MAT_Masonry",
    "MAT_Trim",
@@ -453,7 +453,7 @@
    1
   ],
   "ucx": 0,
-  "seconds": 0.4,
+  "seconds": 0.1,
   "note": "pivot = left springing point, x 0..170, two-centred R 136.0, intrados apex z 126.08, spandrel top 270, coping 270..290 (+5)"
  },
  {
@@ -474,7 +474,7 @@
    90.0,
    290.0
   ],
-  "tris": 1370,
+  "tris": 1110,
   "slots": [
    "MAT_Masonry",
    "MAT_Trim",
@@ -486,7 +486,7 @@
    2
   ],
   "ucx": 0,
-  "seconds": 0.4,
+  "seconds": 0.1,
   "note": "pivot = left springing point, x 0..220, two-centred R 176.0, intrados apex z 163.16, spandrel top 270, coping 270..290 (+5)"
  },
  {
@@ -507,7 +507,7 @@
    90.0,
    290.0
   ],
-  "tris": 1672,
+  "tris": 1372,
   "slots": [
    "MAT_Masonry",
    "MAT_Trim",
@@ -518,7 +518,7 @@
    1
   ],
   "ucx": 0,
-  "seconds": 0.6,
+  "seconds": 0.2,
   "note": "pivot = left springing point, x 0..270, two-centred R 216.0, intrados apex z 200.24, spandrel top 270, coping 270..290 (+5)"
  },
  {
@@ -539,7 +539,7 @@
    34.0,
    100.0
   ],
-  "tris": 878,
+  "tris": 290,
   "slots": [
    "MAT_Masonry",
    "MAT_Trim",
@@ -551,7 +551,7 @@
    2
   ],
   "ucx": 0,
-  "seconds": 0.2,
+  "seconds": 0.1,
   "note": "y 0 = walk-facing face, body to y +15, coping y -4..+30 at z 88..100 (top exactly 100)"
  },
  {
@@ -572,7 +572,7 @@
    34.0,
    100.0
   ],
-  "tris": 678,
+  "tris": 224,
   "slots": [
    "MAT_Masonry",
    "MAT_Trim",
@@ -584,7 +584,7 @@
    2
   ],
   "ucx": 0,
-  "seconds": 0.2,
+  "seconds": 0.0,
   "note": "y 0 = walk-facing face, body to y +15, coping y -4..+30 at z 88..100 (top exactly 100)"
  },
  {
@@ -1176,7 +1176,7 @@
    40.0,
    650.0
   ],
-  "tris": 1896,
+  "tris": 152,
   "slots": [
    "MAT_Masonry",
    "MAT_Trim",
@@ -1188,7 +1188,7 @@
    2
   ],
   "ucx": 0,
-  "seconds": 0.4,
+  "seconds": 0.0,
   "note": "380 x 40 x 650 gable: ashlar to a rake from z 450 at the ends to 650 at the centre, 13 cm trim coping along the rake (flush, chamfered); inner face y 0"
  },
  {

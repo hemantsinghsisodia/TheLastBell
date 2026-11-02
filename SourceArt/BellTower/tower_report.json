@@ -16,7 +16,7 @@
    50.0,
    800.0
   ],
-  "tris": 7451,
+  "tris": 1986,
   "slots": [
    "MAT_Masonry",
    "MAT_Trim",
@@ -29,7 +29,7 @@
   ],
   "ucx": 0,
   "note": "",
-  "seconds": 1.9,
+  "seconds": 0.6,
   "extra": {
    "seed": 1001
   }
@@ -51,7 +51,7 @@
    50.0,
    800.0
   ],
-  "tris": 4825,
+  "tris": 291,
   "slots": [
    "MAT_Masonry",
    "MAT_Trim",
@@ -64,7 +64,7 @@
   ],
   "ucx": 0,
   "note": "slit F01 at x 460 z 263.6",
-  "seconds": 1.2,
+  "seconds": 0.2,
   "extra": {
    "seed": 1002
   }
@@ -86,7 +86,7 @@
    50.0,
    800.0
   ],
-  "tris": 7016,
+  "tris": 1784,
   "slots": [
    "MAT_Masonry",
    "MAT_Trim",
@@ -99,7 +99,7 @@
   ],
   "ucx": 0,
   "note": "slit F02 at x 500 z 490.9",
-  "seconds": 1.6,
+  "seconds": 0.3,
   "extra": {
    "seed": 1003
   }
@@ -121,7 +121,7 @@
    50.0,
    800.0
   ],
-  "tris": 4789,
+  "tris": 249,
   "slots": [
    "MAT_Masonry",
    "MAT_Trim",
@@ -134,7 +134,7 @@
   ],
   "ucx": 0,
   "note": "slit F03 at x 460 z 718.1",
-  "seconds": 1.3,
+  "seconds": 0.1,
   "extra": {
    "seed": 1004
   }
@@ -156,7 +156,7 @@
    50.0,
    1700.0
   ],
-  "tris": 15729,
+  "tris": 3608,
   "slots": [
    "MAT_Masonry",
    "MAT_Trim",
@@ -169,7 +169,7 @@
   ],
   "ucx": 0,
   "note": "slit F08 at x 500 z 1054",
-  "seconds": 3.5,
+  "seconds": 0.5,
   "extra": {
    "seed": 1005
   }
@@ -191,7 +191,7 @@
    50.0,
    1700.0
   ],
-  "tris": 12298,
+  "tris": 525,
   "slots": [
    "MAT_Masonry",
    "MAT_Trim",
@@ -204,7 +204,7 @@
   ],
   "ucx": 0,
   "note": "slit F05 at x 460 z 372.7; slit F09 at x 460 z 1281.8",
-  "seconds": 3.2,
+  "seconds": 0.3,
   "extra": {
    "seed": 1006
   }
@@ -226,7 +226,7 @@
    50.0,
    1700.0
   ],
-  "tris": 16165,
+  "tris": 4008,
   "slots": [
    "MAT_Masonry",
    "MAT_Trim",
@@ -239,7 +239,7 @@
   ],
   "ucx": 0,
   "note": "slit F06 at x 500 z 600; slit F10 at x 500 z 1509.1",
-  "seconds": 3.9,
+  "seconds": 0.6,
   "extra": {
    "seed": 1007
   }
@@ -261,7 +261,7 @@
    50.0,
    1700.0
   ],
-  "tris": 11552,
+  "tris": 334,
   "slots": [
    "MAT_Masonry",
    "MAT_Trim",
@@ -274,7 +274,7 @@
   ],
   "ucx": 0,
   "note": "slit F07 at x 460 z 827.3",
-  "seconds": 3.0,
+  "seconds": 0.2,
   "extra": {
    "seed": 1008
   }
@@ -331,7 +331,7 @@
    55.0,
    1040.0
   ],
-  "tris": 11274,
+  "tris": 4604,
   "slots": [
    "MAT_Masonry",
    "MAT_Trim",
@@ -344,7 +344,7 @@
   ],
   "ucx": 0,
   "note": "",
-  "seconds": 2.6,
+  "seconds": 0.7,
   "extra": {
    "seed": 1009
   }
@@ -366,7 +366,7 @@
    55.0,
    1040.0
   ],
-  "tris": 7319,
+  "tris": 1789,
   "slots": [
    "MAT_Masonry",
    "MAT_Trim",
@@ -379,7 +379,7 @@
   ],
   "ucx": 0,
   "note": "",
-  "seconds": 1.7,
+  "seconds": 0.3,
   "extra": {
    "seed": 1010
   }
@@ -401,7 +401,7 @@
    55.0,
    1040.0
   ],
-  "tris": 10970,
+  "tris": 3873,
   "slots": [
    "MAT_Masonry",
    "MAT_Trim",
@@ -414,7 +414,7 @@
   ],
   "ucx": 0,
   "note": "",
-  "seconds": 2.4,
+  "seconds": 0.5,
   "extra": {
    "seed": 1011
   }
@@ -471,7 +471,7 @@
    55.0,
    1040.0
   ],
-  "tris": 8444,
+  "tris": 2456,
   "slots": [
    "MAT_Masonry",
    "MAT_Trim",
@@ -484,7 +484,7 @@
   ],
   "ucx": 0,
   "note": "",
-  "seconds": 2.0,
+  "seconds": 0.3,
   "extra": {
    "seed": 1012
   }
@@ -597,7 +597,7 @@
    420.0,
    450.0
   ],
-  "tris": 6934,
+  "tris": 2394,
   "slots": [
    "MAT_Masonry",
    "MAT_Trim",
@@ -612,7 +612,7 @@
   ],
   "ucx": 0,
   "note": "pivot bottom centre; hollow square 420 outer / 35 walls z 0..430 + coping 430..450 (3 cm inward only); rubble floor z 0..40, 2 broken treads; NO collision",
-  "seconds": 0.5
+  "seconds": 0.1
  },
  {
   "name": "SM_LB_Tw_ShaftPost_20x20x2015",

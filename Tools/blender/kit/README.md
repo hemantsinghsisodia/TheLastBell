@@ -58,7 +58,7 @@ set B="C:\Program Files\Blender Foundation\Blender 5.2\blender.exe"
   opening free; rubble chunks use their convex hull).
 - **Masonry relief:** 3 cm V-grooves (about 1.5 cm deep) between 25-75 cm courses and staggered blocks, shallow weathered recesses and chips
   on slot 0 faces. These are modelled; if they fight the scanned material's own joints in Unreal, re-run with fewer or no joints
-  (`relief_cutters(vertical=..., h_grooves=..., recess_prob=...)` in `kit_lib.py`).
+  (`relief_cutters(vertical=..., h_grooves=..., recess_prob=...)` in `kit_lib.py`). **Since D-086 masonry grooves are off, see P11-4b at the end.**
 
 ## P8-3 chapel pieces (10 pieces; plan `Docs/plans/P8_CHAPEL_ART.md` section 2 P8-3 + amendment C1)
 ```
@@ -70,3 +70,6 @@ set B="C:\Program Files\Blender Foundation\Blender 5.2\blender.exe"
 - `NaveBay_Clue` mesh spans local Y -8..60 (inner hood moulding + sill ledge project 8 cm into the nave, C1-1): `ORIGIN` entry (0, -8, 0), spec dims 1000 x 68 x 1200; place the actor at the wall's inner face as for the other bays.
 - New slot names: roof pieces `MAT_Slate` / `MAT_Wood`, `RidgeCap` `MAT_Slate`, `Corbel` / `Dais` `MAT_Trim` only (`SLOTS` table in build_kit.py / verify_kit.py).
 - `verify_kit.py`: CLEAR rectangles for every opening (lancet, doorway + lancet, clue, east window) + `RAY_RECTS` (east window: only the two lights are ray-tested, the tracery is real geometry).
+
+## P11-4b: masonry grooves off (D-086)
+Masonry carries its joints in the texture, so `kit_lib.MASONRY_GROOVES = False`: `relief_cutters` still runs every groove, joint and recess loop (it draws the same random numbers, so chips and the used material slots stay where they were) but appends no cutter when `groove_mat` is the masonry slot. Trim calls (`groove_mat=S1`) are unchanged. With no grooves a wall face is a few huge triangles, so `finalize(..., hard_flat_slot=K.SLOT_MASONRY)` (passed by `build_kit.py`, `build_cloister.py` and `tw_common.py`; default `None` = unchanged, `build_props.py` does not pass it) keeps edges next to a large flat face of that slot hard, so a chip-rim normal cannot shade across the whole wall. The 51 placed masonry FBX (22 kit, 16 cloister, 13 tower) were rebuilt in place with `--only` (the kit filter takes short names such as `Wall_400x60x800_A`; the cloister and tower filters take the full `SM_LB_...` names). `Tools/materials/verify_p11_rebuild.py` compares them with the pre-rebuild copies and `Tools/materials/check_reimport.py` checks the Unreal side after a Reimport. Unplaced kit FBX and the 6 trim-only pieces were not rebuilt and pick this up on their next build (note that `hard_flat_slot` hardens slot 0 whatever it holds, so check the roof and timber pieces, whose slot 0 is not masonry, when they are next built).

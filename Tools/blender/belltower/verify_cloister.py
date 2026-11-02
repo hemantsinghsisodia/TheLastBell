@@ -148,12 +148,17 @@ def chk_archway(c, span, spring, apex):
 
 def chk_pier(c, hx, hy):
     pts = c.pts
-    shaft = [p for p in pts if 30 < p.z < 295]
-    block = [p for p in pts if 335 < p.z < 595]
-    c.expect("shaft face x", max(abs(p.x) for p in shaft), hx, 0.05)
-    c.expect("shaft face y", max(abs(p.y) for p in shaft), hy, 0.05)
-    c.expect("block face x", max(abs(p.x) for p in block), hx, 0.05)
-    c.expect("block face y", max(abs(p.y) for p in block), hy, 0.05)
+    # D-086: masonry grooves are gone, so a plain face has vertices only at its band edges, not inside the band.
+    shaft = [p for p in pts if 24.95 <= p.z <= 300.05]
+    block = [p for p in pts if 329.95 <= p.z <= 600.05]
+
+    def nearest(sel, axis, target):
+        return min((abs(getattr(p, axis)) for p in sel), key=lambda v: abs(v - target))
+
+    c.expect("shaft face x", nearest(shaft, "x", hx), hx, 0.05)
+    c.expect("shaft face y", nearest(shaft, "y", hy), hy, 0.05)
+    c.expect("block face x", nearest(block, "x", hx), hx, 0.05)
+    c.expect("block face y", nearest(block, "y", hy), hy, 0.05)
     for lab, lo, hi, pr in (("base", 1, 24, 4.0), ("capital", 301, 330.05, 8.0), ("coping", 601, 619, 5.0)):
         sel = [p for p in pts if lo <= p.z <= hi]
         c.expect(lab + " proud x", max(abs(p.x) for p in sel) - hx, pr, 0.05)
@@ -164,6 +169,9 @@ def chk_pier(c, hx, hy):
             break
     # chamfered shaft corners
     cor = [p for p in shaft if abs(abs(p.x) - hx) < 0.05 and abs(p.y) > hy - 5.9]
+    xface = [p for p in shaft if abs(abs(p.x) - hx) < 0.05]
+    c.notes.append("chamfer check examined %d shaft vertices on the x face; widest |y| there %.2f (an unchamfered corner would be %.1f)" % (
+        len(xface), max((abs(p.y) for p in xface), default=0.0), hy))
     if cor:
         c.fail("shaft corners not chamfered 6 cm (%d verts)" % len(cor))
     c.expect("top z (D1.11: tops at 620)", c.mx.z, 620.0, 0.05)

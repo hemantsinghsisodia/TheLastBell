@@ -1,0 +1,1470 @@
+{
+ "count": 51,
+ "meshes": [
+  {
+   "mesh": "SM_LB_Cl_ArcadeArch_120x80",
+   "package": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_ArcadeArch_120x80",
+   "tags": {
+    "AssetImportData": "[{ \"RelativeFilename\" : \"../../../../../SourceArt/Cloister/SM_LB_Cl_ArcadeArch_120x80.fbx\", \"Timestamp\" : \"1793301500\", \"FileMD5\" : \"5e295bc096c1ad7e662a5b01616e2b65\", \"DisplayLabelName\" : \"\" }]",
+    "Materials": "3",
+    "NaniteEnabled": "True",
+    "CollisionPrims": "0",
+    "CollisionComplexity": "CTF_UseSimpleAndComplex",
+    "DefaultCollision": "BlockAll",
+    "ApproxSize": "129x90x290",
+    "StaticMaterials": "MAT_Masonry,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry'>MAT_Trim,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim'>MAT_Rubble,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble'>",
+    "SectionsWithCollision": "3",
+    "Vertices": "779",
+    "Triangles": "434"
+   },
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble"
+   ],
+   "default_materials": {
+    "MAT_Masonry": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry",
+    "MAT_Trim": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim",
+    "MAT_Rubble": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble"
+   },
+   "nanite": true,
+   "dirty": false
+  },
+  {
+   "mesh": "SM_LB_Cl_ArcadeArch_170x80",
+   "package": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_ArcadeArch_170x80",
+   "tags": {
+    "AssetImportData": "[{ \"RelativeFilename\" : \"../../../../../SourceArt/Cloister/SM_LB_Cl_ArcadeArch_170x80.fbx\", \"Timestamp\" : \"1793301500\", \"FileMD5\" : \"950761b7633687928d357455db8b994c\", \"DisplayLabelName\" : \"\" }]",
+    "Materials": "2",
+    "NaniteEnabled": "True",
+    "CollisionPrims": "0",
+    "CollisionComplexity": "CTF_UseSimpleAndComplex",
+    "DefaultCollision": "BlockAll",
+    "ApproxSize": "184x98x290",
+    "StaticMaterials": "MAT_Masonry,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry'>MAT_Trim,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim'>",
+    "SectionsWithCollision": "2",
+    "Vertices": "1078",
+    "Triangles": "592"
+   },
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Trim"
+   ],
+   "default_materials": {
+    "MAT_Masonry": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry",
+    "MAT_Trim": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim"
+   },
+   "nanite": true,
+   "dirty": false
+  },
+  {
+   "mesh": "SM_LB_Cl_ArcadeArch_220x80",
+   "package": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_ArcadeArch_220x80",
+   "tags": {
+    "AssetImportData": "[{ \"RelativeFilename\" : \"../../../../../SourceArt/Cloister/SM_LB_Cl_ArcadeArch_220x80.fbx\", \"Timestamp\" : \"1793301500\", \"FileMD5\" : \"8c69ae06398c9e8f05dca6c7ae6a6076\", \"DisplayLabelName\" : \"\" }]",
+    "Materials": "3",
+    "NaniteEnabled": "True",
+    "CollisionPrims": "0",
+    "CollisionComplexity": "CTF_UseSimpleAndComplex",
+    "DefaultCollision": "BlockAll",
+    "ApproxSize": "228x98x290",
+    "StaticMaterials": "MAT_Masonry,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry'>MAT_Trim,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim'>MAT_Rubble,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble'>",
+    "SectionsWithCollision": "3",
+    "Vertices": "1214",
+    "Triangles": "650"
+   },
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble"
+   ],
+   "default_materials": {
+    "MAT_Masonry": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry",
+    "MAT_Trim": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim",
+    "MAT_Rubble": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble"
+   },
+   "nanite": true,
+   "dirty": false
+  },
+  {
+   "mesh": "SM_LB_Cl_ArcadeArch_270x80",
+   "package": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_ArcadeArch_270x80",
+   "tags": {
+    "AssetImportData": "[{ \"RelativeFilename\" : \"../../../../../SourceArt/Cloister/SM_LB_Cl_ArcadeArch_270x80.fbx\", \"Timestamp\" : \"1793301501\", \"FileMD5\" : \"3da91b14b3c0a3cb0d537d7655201d74\", \"DisplayLabelName\" : \"\" }]",
+    "Materials": "2",
+    "NaniteEnabled": "True",
+    "CollisionPrims": "0",
+    "CollisionComplexity": "CTF_UseSimpleAndComplex",
+    "DefaultCollision": "BlockAll",
+    "ApproxSize": "283x104x290",
+    "StaticMaterials": "MAT_Masonry,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry'>MAT_Trim,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim'>",
+    "SectionsWithCollision": "2",
+    "Vertices": "1472",
+    "Triangles": "738"
+   },
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Trim"
+   ],
+   "default_materials": {
+    "MAT_Masonry": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry",
+    "MAT_Trim": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim"
+   },
+   "nanite": true,
+   "dirty": false
+  },
+  {
+   "mesh": "SM_LB_Cl_Archway_300x40x1300",
+   "package": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_Archway_300x40x1300",
+   "tags": {
+    "AssetImportData": "[{ \"RelativeFilename\" : \"../../../../../SourceArt/Cloister/SM_LB_Cl_Archway_300x40x1300.fbx\", \"Timestamp\" : \"1793301499\", \"FileMD5\" : \"59bf7764c632c4a0121a9d43048c7eec\", \"DisplayLabelName\" : \"\" }]",
+    "Materials": "3",
+    "NaniteEnabled": "True",
+    "CollisionPrims": "0",
+    "CollisionComplexity": "CTF_UseSimpleAndComplex",
+    "DefaultCollision": "BlockAll",
+    "ApproxSize": "324x67x970",
+    "StaticMaterials": "MAT_Masonry,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry'>MAT_Trim,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim'>MAT_Rubble,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble'>",
+    "SectionsWithCollision": "3",
+    "Vertices": "1573",
+    "Triangles": "865"
+   },
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble"
+   ],
+   "default_materials": {
+    "MAT_Masonry": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry",
+    "MAT_Trim": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim",
+    "MAT_Rubble": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble"
+   },
+   "nanite": true,
+   "dirty": false
+  },
+  {
+   "mesh": "SM_LB_Cl_Archway_500x40x1300",
+   "package": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_Archway_500x40x1300",
+   "tags": {
+    "AssetImportData": "[{ \"RelativeFilename\" : \"../../../../../SourceArt/Cloister/SM_LB_Cl_Archway_500x40x1300.fbx\", \"Timestamp\" : \"1793301498\", \"FileMD5\" : \"1c9c7e94ad4b5d6e8436152ddfcb77db\", \"DisplayLabelName\" : \"\" }]",
+    "Materials": "3",
+    "NaniteEnabled": "True",
+    "CollisionPrims": "0",
+    "CollisionComplexity": "CTF_UseSimpleAndComplex",
+    "DefaultCollision": "BlockAll",
+    "ApproxSize": "537x92x1014",
+    "StaticMaterials": "MAT_Masonry,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry'>MAT_Trim,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim'>MAT_Rubble,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble'>",
+    "SectionsWithCollision": "3",
+    "Vertices": "2119",
+    "Triangles": "1241"
+   },
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble"
+   ],
+   "default_materials": {
+    "MAT_Masonry": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry",
+    "MAT_Trim": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim",
+    "MAT_Rubble": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble"
+   },
+   "nanite": true,
+   "dirty": false
+  },
+  {
+   "mesh": "SM_LB_Cl_GarthWall_1100x100",
+   "package": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_GarthWall_1100x100",
+   "tags": {
+    "AssetImportData": "[{ \"RelativeFilename\" : \"../../../../../SourceArt/Cloister/SM_LB_Cl_GarthWall_1100x100.fbx\", \"Timestamp\" : \"1793301501\", \"FileMD5\" : \"6045a537499f63fda0de72c85c18eb5f\", \"DisplayLabelName\" : \"\" }]",
+    "Materials": "3",
+    "NaniteEnabled": "True",
+    "CollisionPrims": "0",
+    "CollisionComplexity": "CTF_UseSimpleAndComplex",
+    "DefaultCollision": "BlockAll",
+    "ApproxSize": "1112x36x101",
+    "StaticMaterials": "MAT_Masonry,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry'>MAT_Trim,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim'>MAT_Rubble,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble'>",
+    "SectionsWithCollision": "3",
+    "Vertices": "753",
+    "Triangles": "424"
+   },
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble"
+   ],
+   "default_materials": {
+    "MAT_Masonry": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry",
+    "MAT_Trim": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim",
+    "MAT_Rubble": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble"
+   },
+   "nanite": true,
+   "dirty": false
+  },
+  {
+   "mesh": "SM_LB_Cl_GarthWall_800x100",
+   "package": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_GarthWall_800x100",
+   "tags": {
+    "AssetImportData": "[{ \"RelativeFilename\" : \"../../../../../SourceArt/Cloister/SM_LB_Cl_GarthWall_800x100.fbx\", \"Timestamp\" : \"1793301501\", \"FileMD5\" : \"40c4ce48392876b74dcd1682a71e5106\", \"DisplayLabelName\" : \"\" }]",
+    "Materials": "3",
+    "NaniteEnabled": "True",
+    "CollisionPrims": "0",
+    "CollisionComplexity": "CTF_UseSimpleAndComplex",
+    "DefaultCollision": "BlockAll",
+    "ApproxSize": "802x36x100",
+    "StaticMaterials": "MAT_Masonry,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry'>MAT_Trim,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim'>MAT_Rubble,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble'>",
+    "SectionsWithCollision": "3",
+    "Vertices": "683",
+    "Triangles": "390"
+   },
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble"
+   ],
+   "default_materials": {
+    "MAT_Masonry": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry",
+    "MAT_Trim": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim",
+    "MAT_Rubble": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble"
+   },
+   "nanite": true,
+   "dirty": false
+  },
+  {
+   "mesh": "SM_LB_Cl_PierCorner_130x80x640",
+   "package": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_PierCorner_130x80x640",
+   "tags": {
+    "AssetImportData": "[{ \"RelativeFilename\" : \"../../../../../SourceArt/Cloister/SM_LB_Cl_PierCorner_130x80x640.fbx\", \"Timestamp\" : \"1793301499\", \"FileMD5\" : \"5e16ac1adcdcc5bf3c2422df3c21757e\", \"DisplayLabelName\" : \"\" }]",
+    "Materials": "3",
+    "NaniteEnabled": "True",
+    "CollisionPrims": "0",
+    "CollisionComplexity": "CTF_UseSimpleAndComplex",
+    "DefaultCollision": "BlockAll",
+    "ApproxSize": "147x97x620",
+    "StaticMaterials": "MAT_Masonry,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry'>MAT_Trim,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim'>MAT_Rubble,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble'>",
+    "SectionsWithCollision": "3",
+    "Vertices": "865",
+    "Triangles": "496"
+   },
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble"
+   ],
+   "default_materials": {
+    "MAT_Masonry": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry",
+    "MAT_Trim": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim",
+    "MAT_Rubble": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble"
+   },
+   "nanite": true,
+   "dirty": false
+  },
+  {
+   "mesh": "SM_LB_Cl_Pier_80x80x640",
+   "package": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_Pier_80x80x640",
+   "tags": {
+    "AssetImportData": "[{ \"RelativeFilename\" : \"../../../../../SourceArt/Cloister/SM_LB_Cl_Pier_80x80x640.fbx\", \"Timestamp\" : \"1793301499\", \"FileMD5\" : \"95d4fde9ee2ca9c62aa7f29dbe4706c3\", \"DisplayLabelName\" : \"\" }]",
+    "Materials": "2",
+    "NaniteEnabled": "True",
+    "CollisionPrims": "0",
+    "CollisionComplexity": "CTF_UseSimpleAndComplex",
+    "DefaultCollision": "BlockAll",
+    "ApproxSize": "98x99x620",
+    "StaticMaterials": "MAT_Masonry,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry'>MAT_Trim,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim'>",
+    "SectionsWithCollision": "2",
+    "Vertices": "877",
+    "Triangles": "498"
+   },
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Trim"
+   ],
+   "default_materials": {
+    "MAT_Masonry": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry",
+    "MAT_Trim": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim"
+   },
+   "nanite": true,
+   "dirty": false
+  },
+  {
+   "mesh": "SM_LB_Cl_StairHouseGable_380x40x650",
+   "package": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_StairHouseGable_380x40x650",
+   "tags": {
+    "AssetImportData": "[{ \"RelativeFilename\" : \"../../../../../SourceArt/Cloister/SM_LB_Cl_StairHouseGable_380x40x650.fbx\", \"Timestamp\" : \"1793301503\", \"FileMD5\" : \"0628def276e96e5913503b2a03a60b95\", \"DisplayLabelName\" : \"\" }]",
+    "Materials": "3",
+    "NaniteEnabled": "True",
+    "CollisionPrims": "0",
+    "CollisionComplexity": "CTF_UseSimpleAndComplex",
+    "DefaultCollision": "BlockAll",
+    "ApproxSize": "400x57x664",
+    "StaticMaterials": "MAT_Masonry,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry'>MAT_Trim,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim'>MAT_Rubble,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble'>",
+    "SectionsWithCollision": "3",
+    "Vertices": "1084",
+    "Triangles": "620"
+   },
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble"
+   ],
+   "default_materials": {
+    "MAT_Masonry": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry",
+    "MAT_Trim": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim",
+    "MAT_Rubble": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble"
+   },
+   "nanite": true,
+   "dirty": false
+  },
+  {
+   "mesh": "SM_LB_Cl_Wall40_400x1300_A",
+   "package": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_Wall40_400x1300_A",
+   "tags": {
+    "AssetImportData": "[{ \"RelativeFilename\" : \"../../../../../SourceArt/Cloister/SM_LB_Cl_Wall40_400x1300_A.fbx\", \"Timestamp\" : \"1793301495\", \"FileMD5\" : \"eac117e6e96a1e544191834e93a153dc\", \"DisplayLabelName\" : \"\" }]",
+    "Materials": "3",
+    "NaniteEnabled": "True",
+    "CollisionPrims": "0",
+    "CollisionComplexity": "CTF_UseSimpleAndComplex",
+    "DefaultCollision": "BlockAll",
+    "ApproxSize": "417x68x1302",
+    "StaticMaterials": "MAT_Masonry,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry'>MAT_Trim,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim'>MAT_Rubble,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble'>",
+    "SectionsWithCollision": "3",
+    "Vertices": "1949",
+    "Triangles": "1152"
+   },
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble"
+   ],
+   "default_materials": {
+    "MAT_Masonry": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry",
+    "MAT_Trim": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim",
+    "MAT_Rubble": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble"
+   },
+   "nanite": true,
+   "dirty": false
+  },
+  {
+   "mesh": "SM_LB_Cl_Wall40_400x1300_B",
+   "package": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_Wall40_400x1300_B",
+   "tags": {
+    "AssetImportData": "[{ \"RelativeFilename\" : \"../../../../../SourceArt/Cloister/SM_LB_Cl_Wall40_400x1300_B.fbx\", \"Timestamp\" : \"1793301496\", \"FileMD5\" : \"67b8f5385660504b31d9d677fca31827\", \"DisplayLabelName\" : \"\" }]",
+    "Materials": "3",
+    "NaniteEnabled": "True",
+    "CollisionPrims": "0",
+    "CollisionComplexity": "CTF_UseSimpleAndComplex",
+    "DefaultCollision": "BlockAll",
+    "ApproxSize": "438x64x1345",
+    "StaticMaterials": "MAT_Masonry,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry'>MAT_Trim,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim'>MAT_Rubble,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble'>",
+    "SectionsWithCollision": "3",
+    "Vertices": "1884",
+    "Triangles": "1060"
+   },
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble"
+   ],
+   "default_materials": {
+    "MAT_Masonry": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry",
+    "MAT_Trim": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim",
+    "MAT_Rubble": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble"
+   },
+   "nanite": true,
+   "dirty": false
+  },
+  {
+   "mesh": "SM_LB_Cl_Wall40_400x450",
+   "package": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_Wall40_400x450",
+   "tags": {
+    "AssetImportData": "[{ \"RelativeFilename\" : \"../../../../../SourceArt/Cloister/SM_LB_Cl_Wall40_400x450.fbx\", \"Timestamp\" : \"1793301497\", \"FileMD5\" : \"436f2a213cbfc9129ceb2f8862029be0\", \"DisplayLabelName\" : \"\" }]",
+    "Materials": "3",
+    "NaniteEnabled": "True",
+    "CollisionPrims": "0",
+    "CollisionComplexity": "CTF_UseSimpleAndComplex",
+    "DefaultCollision": "BlockAll",
+    "ApproxSize": "412x54x455",
+    "StaticMaterials": "MAT_Masonry,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry'>MAT_Trim,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim'>MAT_Rubble,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble'>",
+    "SectionsWithCollision": "3",
+    "Vertices": "1164",
+    "Triangles": "686"
+   },
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble"
+   ],
+   "default_materials": {
+    "MAT_Masonry": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry",
+    "MAT_Trim": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim",
+    "MAT_Rubble": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble"
+   },
+   "nanite": true,
+   "dirty": false
+  },
+  {
+   "mesh": "SM_LB_Cl_Wall40_400x800_A",
+   "package": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_Wall40_400x800_A",
+   "tags": {
+    "AssetImportData": "[{ \"RelativeFilename\" : \"../../../../../SourceArt/Cloister/SM_LB_Cl_Wall40_400x800_A.fbx\", \"Timestamp\" : \"1793301496\", \"FileMD5\" : \"d8afad9084ed3c36d2d15ab6bcf17f97\", \"DisplayLabelName\" : \"\" }]",
+    "Materials": "3",
+    "NaniteEnabled": "True",
+    "CollisionPrims": "0",
+    "CollisionComplexity": "CTF_UseSimpleAndComplex",
+    "DefaultCollision": "BlockAll",
+    "ApproxSize": "418x60x822",
+    "StaticMaterials": "MAT_Masonry,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry'>MAT_Trim,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim'>MAT_Rubble,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble'>",
+    "SectionsWithCollision": "3",
+    "Vertices": "1334",
+    "Triangles": "782"
+   },
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble"
+   ],
+   "default_materials": {
+    "MAT_Masonry": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry",
+    "MAT_Trim": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim",
+    "MAT_Rubble": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble"
+   },
+   "nanite": true,
+   "dirty": false
+  },
+  {
+   "mesh": "SM_LB_Cl_Wall40_400x800_B",
+   "package": "/Game/LastBell/Environments/Cloister/Meshes/SM_LB_Cl_Wall40_400x800_B",
+   "tags": {
+    "AssetImportData": "[{ \"RelativeFilename\" : \"../../../../../SourceArt/Cloister/SM_LB_Cl_Wall40_400x800_B.fbx\", \"Timestamp\" : \"1793301497\", \"FileMD5\" : \"72804742b357eabb57e33b8460cb905e\", \"DisplayLabelName\" : \"\" }]",
+    "Materials": "3",
+    "NaniteEnabled": "True",
+    "CollisionPrims": "0",
+    "CollisionComplexity": "CTF_UseSimpleAndComplex",
+    "DefaultCollision": "BlockAll",
+    "ApproxSize": "409x60x805",
+    "StaticMaterials": "MAT_Masonry,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry'>MAT_Trim,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim'>MAT_Rubble,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble'>",
+    "SectionsWithCollision": "3",
+    "Vertices": "1394",
+    "Triangles": "814"
+   },
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble"
+   ],
+   "default_materials": {
+    "MAT_Masonry": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry",
+    "MAT_Trim": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim",
+    "MAT_Rubble": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble"
+   },
+   "nanite": true,
+   "dirty": false
+  },
+  {
+   "mesh": "SM_LB_Kit_ArcadeBay_1000x60x400",
+   "package": "/Game/LastBell/Environments/Kit/SM_LB_Kit_ArcadeBay_1000x60x400",
+   "tags": {
+    "AssetImportData": "[{ \"RelativeFilename\" : \"../../../../SourceArt/Kit/FBX/SM_LB_Kit_ArcadeBay_1000x60x400.fbx\", \"Timestamp\" : \"1792892032\", \"FileMD5\" : \"e3ecdaafa28a414a6d5c82e944e07e91\", \"DisplayLabelName\" : \"\" }]",
+    "Materials": "3",
+    "NaniteEnabled": "True",
+    "CollisionPrims": "4",
+    "CollisionComplexity": "CTF_UseSimpleAndComplex",
+    "DefaultCollision": "BlockAll",
+    "ApproxSize": "1052x115x421",
+    "StaticMaterials": "MAT_Masonry,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry'>MAT_Trim,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim'>MAT_Rubble,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble'>",
+    "SectionsWithCollision": "3",
+    "Vertices": "1479",
+    "Triangles": "793"
+   },
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble"
+   ],
+   "default_materials": {
+    "MAT_Masonry": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry",
+    "MAT_Trim": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim",
+    "MAT_Rubble": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble"
+   },
+   "nanite": true,
+   "dirty": false
+  },
+  {
+   "mesh": "SM_LB_Kit_ArcadeBay_1000x60x400_BrokenA",
+   "package": "/Game/LastBell/Environments/Kit/SM_LB_Kit_ArcadeBay_1000x60x400_BrokenA",
+   "tags": {
+    "AssetImportData": "[{ \"RelativeFilename\" : \"../../../../SourceArt/Kit/FBX/SM_LB_Kit_ArcadeBay_1000x60x400_BrokenA.fbx\", \"Timestamp\" : \"1792892052\", \"FileMD5\" : \"d4b88dd7a2ee5ee2c60eb30cdeb1406c\", \"DisplayLabelName\" : \"\" }]",
+    "Materials": "3",
+    "NaniteEnabled": "True",
+    "CollisionPrims": "4",
+    "CollisionComplexity": "CTF_UseSimpleAndComplex",
+    "DefaultCollision": "BlockAll",
+    "ApproxSize": "694x107x414",
+    "StaticMaterials": "MAT_Masonry,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry'>MAT_Trim,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim'>MAT_Rubble,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble'>",
+    "SectionsWithCollision": "3",
+    "Vertices": "1735",
+    "Triangles": "933"
+   },
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble"
+   ],
+   "default_materials": {
+    "MAT_Masonry": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry",
+    "MAT_Trim": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim",
+    "MAT_Rubble": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble"
+   },
+   "nanite": true,
+   "dirty": false
+  },
+  {
+   "mesh": "SM_LB_Kit_ArcadeBay_1000x60x400_BrokenB",
+   "package": "/Game/LastBell/Environments/Kit/SM_LB_Kit_ArcadeBay_1000x60x400_BrokenB",
+   "tags": {
+    "AssetImportData": "[{ \"RelativeFilename\" : \"../../../../SourceArt/Kit/FBX/SM_LB_Kit_ArcadeBay_1000x60x400_BrokenB.fbx\", \"Timestamp\" : \"1792892077\", \"FileMD5\" : \"c6e2858b914df2305a57283c290f696b\", \"DisplayLabelName\" : \"\" }]",
+    "Materials": "3",
+    "NaniteEnabled": "True",
+    "CollisionPrims": "4",
+    "CollisionComplexity": "CTF_UseSimpleAndComplex",
+    "DefaultCollision": "BlockAll",
+    "ApproxSize": "693x100x421",
+    "StaticMaterials": "MAT_Masonry,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry'>MAT_Trim,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim'>MAT_Rubble,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble'>",
+    "SectionsWithCollision": "3",
+    "Vertices": "1611",
+    "Triangles": "868"
+   },
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble"
+   ],
+   "default_materials": {
+    "MAT_Masonry": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry",
+    "MAT_Trim": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim",
+    "MAT_Rubble": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble"
+   },
+   "nanite": true,
+   "dirty": false
+  },
+  {
+   "mesh": "SM_LB_Kit_Buttress_100x150x800",
+   "package": "/Game/LastBell/Environments/Kit/SM_LB_Kit_Buttress_100x150x800",
+   "tags": {
+    "AssetImportData": "[{ \"RelativeFilename\" : \"../../../../SourceArt/Kit/FBX/SM_LB_Kit_Buttress_100x150x800.fbx\", \"Timestamp\" : \"1792777443\", \"FileMD5\" : \"8bffafe95d16d256f90a71d52721aca4\", \"DisplayLabelName\" : \"\" }]",
+    "Materials": "3",
+    "NaniteEnabled": "True",
+    "CollisionPrims": "2",
+    "CollisionComplexity": "CTF_UseSimpleAndComplex",
+    "DefaultCollision": "BlockAll",
+    "ApproxSize": "110x158x802",
+    "StaticMaterials": "MAT_Masonry,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry'>MAT_Trim,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim'>MAT_Rubble,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble'>",
+    "SectionsWithCollision": "3",
+    "Vertices": "832",
+    "Triangles": "468"
+   },
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble"
+   ],
+   "default_materials": {
+    "MAT_Masonry": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry",
+    "MAT_Trim": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim",
+    "MAT_Rubble": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble"
+   },
+   "nanite": true,
+   "dirty": false
+  },
+  {
+   "mesh": "SM_LB_Kit_Doorway_Pointed_400x60x400",
+   "package": "/Game/LastBell/Environments/Kit/SM_LB_Kit_Doorway_Pointed_400x60x400",
+   "tags": {
+    "AssetImportData": "[{ \"RelativeFilename\" : \"../../../../SourceArt/Kit/FBX/SM_LB_Kit_Doorway_Pointed_400x60x400.fbx\", \"Timestamp\" : \"1792777447\", \"FileMD5\" : \"36942f5f7b6ddb64aeb442b720710392\", \"DisplayLabelName\" : \"\" }]",
+    "Materials": "3",
+    "NaniteEnabled": "True",
+    "CollisionPrims": "3",
+    "CollisionComplexity": "CTF_UseSimpleAndComplex",
+    "DefaultCollision": "BlockAll",
+    "ApproxSize": "415x86x409",
+    "StaticMaterials": "MAT_Masonry,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry'>MAT_Trim,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim'>MAT_Rubble,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble'>",
+    "SectionsWithCollision": "3",
+    "Vertices": "4013",
+    "Triangles": "2128"
+   },
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble"
+   ],
+   "default_materials": {
+    "MAT_Masonry": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry",
+    "MAT_Trim": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim",
+    "MAT_Rubble": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble"
+   },
+   "nanite": true,
+   "dirty": false
+  },
+  {
+   "mesh": "SM_LB_Kit_EastWall_1620x60x1200",
+   "package": "/Game/LastBell/Environments/Kit/SM_LB_Kit_EastWall_1620x60x1200",
+   "tags": {
+    "AssetImportData": "[{ \"RelativeFilename\" : \"../../../../SourceArt/Kit/FBX/SM_LB_Kit_EastWall_1620x60x1200.fbx\", \"Timestamp\" : \"1792950842\", \"FileMD5\" : \"033f7be14bce6b6c2302c1b4f1b17238\", \"DisplayLabelName\" : \"\" }]",
+    "Materials": "3",
+    "NaniteEnabled": "True",
+    "CollisionPrims": "4",
+    "CollisionComplexity": "CTF_UseSimpleAndComplex",
+    "DefaultCollision": "BlockAll",
+    "ApproxSize": "1686x114x1200",
+    "StaticMaterials": "MAT_Masonry,'/Game/LastBell/Environments/Chapel/Materials/MI_Chapel_Masonry_Interior.MI_Chapel_Masonry_Interior'>MAT_Trim,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim'>MAT_Rubble,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble'>",
+    "SectionsWithCollision": "3",
+    "Vertices": "6687",
+    "Triangles": "3702"
+   },
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble"
+   ],
+   "default_materials": {
+    "MAT_Masonry": "/Game/LastBell/Environments/Chapel/Materials/MI_Chapel_Masonry_Interior.MI_Chapel_Masonry_Interior",
+    "MAT_Trim": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim",
+    "MAT_Rubble": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble"
+   },
+   "nanite": true,
+   "dirty": false
+  },
+  {
+   "mesh": "SM_LB_Kit_Gable_1620x60x1015",
+   "package": "/Game/LastBell/Environments/Kit/SM_LB_Kit_Gable_1620x60x1015",
+   "tags": {
+    "AssetImportData": "[{ \"RelativeFilename\" : \"../../../../SourceArt/Kit/FBX/SM_LB_Kit_Gable_1620x60x1015.fbx\", \"Timestamp\" : \"1792950845\", \"FileMD5\" : \"a1a48f1a2297816f9d55605f947cc232\", \"DisplayLabelName\" : \"\" }]",
+    "Materials": "3",
+    "NaniteEnabled": "True",
+    "CollisionPrims": "5",
+    "CollisionComplexity": "CTF_UseSimpleAndComplex",
+    "DefaultCollision": "BlockAll",
+    "ApproxSize": "1670x86x1043",
+    "StaticMaterials": "MAT_Masonry,'/Game/LastBell/Environments/Chapel/Materials/MI_Chapel_Masonry_Interior.MI_Chapel_Masonry_Interior'>MAT_Trim,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim'>MAT_Rubble,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble'>",
+    "SectionsWithCollision": "3",
+    "Vertices": "2931",
+    "Triangles": "1627"
+   },
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble"
+   ],
+   "default_materials": {
+    "MAT_Masonry": "/Game/LastBell/Environments/Chapel/Materials/MI_Chapel_Masonry_Interior.MI_Chapel_Masonry_Interior",
+    "MAT_Trim": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim",
+    "MAT_Rubble": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble"
+   },
+   "nanite": true,
+   "dirty": false
+  },
+  {
+   "mesh": "SM_LB_Kit_Gate_Arch_1200x300x800",
+   "package": "/Game/LastBell/Environments/Kit/SM_LB_Kit_Gate_Arch_1200x300x800",
+   "tags": {
+    "AssetImportData": "[{ \"RelativeFilename\" : \"../../../../SourceArt/Kit/FBX/SM_LB_Kit_Gate_Arch_1200x300x800.fbx\", \"Timestamp\" : \"1792777457\", \"FileMD5\" : \"022bc4b7c1a407b48b34cd7803921199\", \"DisplayLabelName\" : \"\" }]",
+    "Materials": "3",
+    "NaniteEnabled": "True",
+    "CollisionPrims": "3",
+    "CollisionComplexity": "CTF_UseSimpleAndComplex",
+    "DefaultCollision": "BlockAll",
+    "ApproxSize": "1251x372x815",
+    "StaticMaterials": "MAT_Masonry,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry'>MAT_Trim,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim'>MAT_Rubble,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble'>",
+    "SectionsWithCollision": "3",
+    "Vertices": "7082",
+    "Triangles": "3754"
+   },
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble"
+   ],
+   "default_materials": {
+    "MAT_Masonry": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry",
+    "MAT_Trim": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim",
+    "MAT_Rubble": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble"
+   },
+   "nanite": true,
+   "dirty": false
+  },
+  {
+   "mesh": "SM_LB_Kit_NaveBay_1000x60x1200",
+   "package": "/Game/LastBell/Environments/Kit/SM_LB_Kit_NaveBay_1000x60x1200",
+   "tags": {
+    "AssetImportData": "[{ \"RelativeFilename\" : \"../../../../SourceArt/Kit/FBX/SM_LB_Kit_NaveBay_1000x60x1200.fbx\", \"Timestamp\" : \"1792950830\", \"FileMD5\" : \"14eaec4b3343112d93983badad8f1a5b\", \"DisplayLabelName\" : \"\" }]",
+    "Materials": "3",
+    "NaniteEnabled": "True",
+    "CollisionPrims": "4",
+    "CollisionComplexity": "CTF_UseSimpleAndComplex",
+    "DefaultCollision": "BlockAll",
+    "ApproxSize": "1063x88x1211",
+    "StaticMaterials": "MAT_Masonry,'/Game/LastBell/Environments/Chapel/Materials/MI_Chapel_Masonry_Interior.MI_Chapel_Masonry_Interior'>MAT_Trim,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim'>MAT_Rubble,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble'>",
+    "SectionsWithCollision": "3",
+    "Vertices": "3983",
+    "Triangles": "2346"
+   },
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble"
+   ],
+   "default_materials": {
+    "MAT_Masonry": "/Game/LastBell/Environments/Chapel/Materials/MI_Chapel_Masonry_Interior.MI_Chapel_Masonry_Interior",
+    "MAT_Trim": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim",
+    "MAT_Rubble": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble"
+   },
+   "nanite": true,
+   "dirty": false
+  },
+  {
+   "mesh": "SM_LB_Kit_NaveBay_1000x60x1200_Clue",
+   "package": "/Game/LastBell/Environments/Kit/SM_LB_Kit_NaveBay_1000x60x1200_Clue",
+   "tags": {
+    "AssetImportData": "[{ \"RelativeFilename\" : \"../../../../SourceArt/Kit/FBX/SM_LB_Kit_NaveBay_1000x60x1200_Clue.fbx\", \"Timestamp\" : \"1792950838\", \"FileMD5\" : \"a7fad98e50ff7ff4e263677e942f45dd\", \"DisplayLabelName\" : \"\" }]",
+    "Materials": "3",
+    "NaniteEnabled": "True",
+    "CollisionPrims": "5",
+    "CollisionComplexity": "CTF_UseSimpleAndComplex",
+    "DefaultCollision": "BlockAll",
+    "ApproxSize": "1062x104x1200",
+    "StaticMaterials": "MAT_Masonry,'/Game/LastBell/Environments/Chapel/Materials/MI_Chapel_Masonry_Interior.MI_Chapel_Masonry_Interior'>MAT_Trim,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim'>MAT_Rubble,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble'>",
+    "SectionsWithCollision": "3",
+    "Vertices": "4818",
+    "Triangles": "2728"
+   },
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble"
+   ],
+   "default_materials": {
+    "MAT_Masonry": "/Game/LastBell/Environments/Chapel/Materials/MI_Chapel_Masonry_Interior.MI_Chapel_Masonry_Interior",
+    "MAT_Trim": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim",
+    "MAT_Rubble": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble"
+   },
+   "nanite": true,
+   "dirty": false
+  },
+  {
+   "mesh": "SM_LB_Kit_NaveBay_1000x60x1200_Door",
+   "package": "/Game/LastBell/Environments/Kit/SM_LB_Kit_NaveBay_1000x60x1200_Door",
+   "tags": {
+    "AssetImportData": "[{ \"RelativeFilename\" : \"../../../../SourceArt/Kit/FBX/SM_LB_Kit_NaveBay_1000x60x1200_Door.fbx\", \"Timestamp\" : \"1792950835\", \"FileMD5\" : \"850e4ddbb91055bfe409ef4fd255b2a2\", \"DisplayLabelName\" : \"\" }]",
+    "Materials": "3",
+    "NaniteEnabled": "True",
+    "CollisionPrims": "6",
+    "CollisionComplexity": "CTF_UseSimpleAndComplex",
+    "DefaultCollision": "BlockAll",
+    "ApproxSize": "1044x98x1208",
+    "StaticMaterials": "MAT_Masonry,'/Game/LastBell/Environments/Chapel/Materials/MI_Chapel_Masonry_Interior.MI_Chapel_Masonry_Interior'>MAT_Trim,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim'>MAT_Rubble,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble'>",
+    "SectionsWithCollision": "3",
+    "Vertices": "4986",
+    "Triangles": "2770"
+   },
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble"
+   ],
+   "default_materials": {
+    "MAT_Masonry": "/Game/LastBell/Environments/Chapel/Materials/MI_Chapel_Masonry_Interior.MI_Chapel_Masonry_Interior",
+    "MAT_Trim": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim",
+    "MAT_Rubble": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble"
+   },
+   "nanite": true,
+   "dirty": false
+  },
+  {
+   "mesh": "SM_LB_Kit_Wall_100x60x400",
+   "package": "/Game/LastBell/Environments/Kit/SM_LB_Kit_Wall_100x60x400",
+   "tags": {
+    "AssetImportData": "[{ \"RelativeFilename\" : \"../../../../SourceArt/Kit/FBX/SM_LB_Kit_Wall_100x60x400.fbx\", \"Timestamp\" : \"1792777441\", \"FileMD5\" : \"1cf70ed9850ae4028afdb56dbadb8a7e\", \"DisplayLabelName\" : \"\" }]",
+    "Materials": "2",
+    "NaniteEnabled": "True",
+    "CollisionPrims": "1",
+    "CollisionComplexity": "CTF_UseSimpleAndComplex",
+    "DefaultCollision": "BlockAll",
+    "ApproxSize": "102x60x400",
+    "StaticMaterials": "MAT_Masonry,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry'>MAT_Trim,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim'>",
+    "SectionsWithCollision": "2",
+    "Vertices": "388",
+    "Triangles": "256"
+   },
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Trim"
+   ],
+   "default_materials": {
+    "MAT_Masonry": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry",
+    "MAT_Trim": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim"
+   },
+   "nanite": true,
+   "dirty": false
+  },
+  {
+   "mesh": "SM_LB_Kit_Wall_100x60x800",
+   "package": "/Game/LastBell/Environments/Kit/SM_LB_Kit_Wall_100x60x800",
+   "tags": {
+    "AssetImportData": "[{ \"RelativeFilename\" : \"../../../../SourceArt/Kit/FBX/SM_LB_Kit_Wall_100x60x800.fbx\", \"Timestamp\" : \"1792777441\", \"FileMD5\" : \"231451f81f08436b27ec47c3a4fe4215\", \"DisplayLabelName\" : \"\" }]",
+    "Materials": "2",
+    "NaniteEnabled": "True",
+    "CollisionPrims": "1",
+    "CollisionComplexity": "CTF_UseSimpleAndComplex",
+    "DefaultCollision": "BlockAll",
+    "ApproxSize": "106x68x800",
+    "StaticMaterials": "MAT_Masonry,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry'>MAT_Trim,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim'>",
+    "SectionsWithCollision": "2",
+    "Vertices": "640",
+    "Triangles": "432"
+   },
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Trim"
+   ],
+   "default_materials": {
+    "MAT_Masonry": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry",
+    "MAT_Trim": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim"
+   },
+   "nanite": true,
+   "dirty": false
+  },
+  {
+   "mesh": "SM_LB_Kit_Wall_400x60x400",
+   "package": "/Game/LastBell/Environments/Kit/SM_LB_Kit_Wall_400x60x400",
+   "tags": {
+    "AssetImportData": "[{ \"RelativeFilename\" : \"../../../../SourceArt/Kit/FBX/SM_LB_Kit_Wall_400x60x400.fbx\", \"Timestamp\" : \"1792777441\", \"FileMD5\" : \"6210e3c06ecc8139b52838286e3e2ffa\", \"DisplayLabelName\" : \"\" }]",
+    "Materials": "3",
+    "NaniteEnabled": "True",
+    "CollisionPrims": "1",
+    "CollisionComplexity": "CTF_UseSimpleAndComplex",
+    "DefaultCollision": "BlockAll",
+    "ApproxSize": "409x71x401",
+    "StaticMaterials": "MAT_Masonry,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry'>MAT_Trim,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim'>MAT_Rubble,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble'>",
+    "SectionsWithCollision": "3",
+    "Vertices": "1011",
+    "Triangles": "578"
+   },
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble"
+   ],
+   "default_materials": {
+    "MAT_Masonry": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry",
+    "MAT_Trim": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim",
+    "MAT_Rubble": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble"
+   },
+   "nanite": true,
+   "dirty": false
+  },
+  {
+   "mesh": "SM_LB_Kit_Wall_400x60x400_Broken",
+   "package": "/Game/LastBell/Environments/Kit/SM_LB_Kit_Wall_400x60x400_Broken",
+   "tags": {
+    "AssetImportData": "[{ \"RelativeFilename\" : \"../../../../SourceArt/Kit/FBX/SM_LB_Kit_Wall_400x60x400_Broken.fbx\", \"Timestamp\" : \"1792779775\", \"FileMD5\" : \"9c173e93f1082f0bb7af9ae884fc4574\", \"DisplayLabelName\" : \"\" }]",
+    "Materials": "3",
+    "NaniteEnabled": "True",
+    "CollisionPrims": "3",
+    "CollisionComplexity": "CTF_UseSimpleAndComplex",
+    "DefaultCollision": "BlockAll",
+    "ApproxSize": "404x69x404",
+    "StaticMaterials": "MAT_Masonry,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry'>MAT_Trim,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim'>MAT_Rubble,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble'>",
+    "SectionsWithCollision": "3",
+    "Vertices": "1393",
+    "Triangles": "946"
+   },
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble"
+   ],
+   "default_materials": {
+    "MAT_Masonry": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry",
+    "MAT_Trim": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim",
+    "MAT_Rubble": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble"
+   },
+   "nanite": true,
+   "dirty": false
+  },
+  {
+   "mesh": "SM_LB_Kit_Wall_400x60x800_A",
+   "package": "/Game/LastBell/Environments/Kit/SM_LB_Kit_Wall_400x60x800_A",
+   "tags": {
+    "AssetImportData": "[{ \"RelativeFilename\" : \"../../../../SourceArt/Kit/FBX/SM_LB_Kit_Wall_400x60x800_A.fbx\", \"Timestamp\" : \"1792777440\", \"FileMD5\" : \"3f1fe9a3c74d7df632a74edd49f8a54f\", \"DisplayLabelName\" : \"\" }]",
+    "Materials": "3",
+    "NaniteEnabled": "True",
+    "CollisionPrims": "1",
+    "CollisionComplexity": "CTF_UseSimpleAndComplex",
+    "DefaultCollision": "BlockAll",
+    "ApproxSize": "435x77x802",
+    "StaticMaterials": "MAT_Masonry,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry'>MAT_Trim,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim'>MAT_Rubble,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble'>",
+    "SectionsWithCollision": "3",
+    "Vertices": "1268",
+    "Triangles": "756"
+   },
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble"
+   ],
+   "default_materials": {
+    "MAT_Masonry": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry",
+    "MAT_Trim": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim",
+    "MAT_Rubble": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble"
+   },
+   "nanite": true,
+   "dirty": false
+  },
+  {
+   "mesh": "SM_LB_Kit_Wall_400x60x800_B",
+   "package": "/Game/LastBell/Environments/Kit/SM_LB_Kit_Wall_400x60x800_B",
+   "tags": {
+    "AssetImportData": "[{ \"RelativeFilename\" : \"../../../../SourceArt/Kit/FBX/SM_LB_Kit_Wall_400x60x800_B.fbx\", \"Timestamp\" : \"1792777441\", \"FileMD5\" : \"589c4e358affd52f5ff67b4e2d0c1da5\", \"DisplayLabelName\" : \"\" }]",
+    "Materials": "3",
+    "NaniteEnabled": "True",
+    "CollisionPrims": "1",
+    "CollisionComplexity": "CTF_UseSimpleAndComplex",
+    "DefaultCollision": "BlockAll",
+    "ApproxSize": "419x79x800",
+    "StaticMaterials": "MAT_Masonry,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry'>MAT_Trim,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim'>MAT_Rubble,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble'>",
+    "SectionsWithCollision": "3",
+    "Vertices": "1246",
+    "Triangles": "702"
+   },
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble"
+   ],
+   "default_materials": {
+    "MAT_Masonry": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry",
+    "MAT_Trim": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim",
+    "MAT_Rubble": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble"
+   },
+   "nanite": true,
+   "dirty": false
+  },
+  {
+   "mesh": "SM_LB_Kit_Wall_400x60x800_Broken",
+   "package": "/Game/LastBell/Environments/Kit/SM_LB_Kit_Wall_400x60x800_Broken",
+   "tags": {
+    "AssetImportData": "[{ \"RelativeFilename\" : \"../../../../SourceArt/Kit/FBX/SM_LB_Kit_Wall_400x60x800_Broken.fbx\", \"Timestamp\" : \"1792779775\", \"FileMD5\" : \"230c43aaa8d8fda9fa7b2006341c2790\", \"DisplayLabelName\" : \"\" }]",
+    "Materials": "3",
+    "NaniteEnabled": "True",
+    "CollisionPrims": "3",
+    "CollisionComplexity": "CTF_UseSimpleAndComplex",
+    "DefaultCollision": "BlockAll",
+    "ApproxSize": "407x79x804",
+    "StaticMaterials": "MAT_Masonry,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry'>MAT_Trim,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim'>MAT_Rubble,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble'>",
+    "SectionsWithCollision": "3",
+    "Vertices": "1266",
+    "Triangles": "836"
+   },
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble"
+   ],
+   "default_materials": {
+    "MAT_Masonry": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry",
+    "MAT_Trim": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim",
+    "MAT_Rubble": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble"
+   },
+   "nanite": true,
+   "dirty": false
+  },
+  {
+   "mesh": "SM_LB_Kit_Well_Wall_100x50x250",
+   "package": "/Game/LastBell/Environments/Kit/SM_LB_Kit_Well_Wall_100x50x250",
+   "tags": {
+    "AssetImportData": "[{ \"RelativeFilename\" : \"../../../../SourceArt/Kit/FBX/SM_LB_Kit_Well_Wall_100x50x250.fbx\", \"Timestamp\" : \"1792779794\", \"FileMD5\" : \"a11a930316604f0932736ed7800ce492\", \"DisplayLabelName\" : \"\" }]",
+    "Materials": "2",
+    "NaniteEnabled": "True",
+    "CollisionPrims": "1",
+    "CollisionComplexity": "CTF_UseSimpleAndComplex",
+    "DefaultCollision": "BlockAll",
+    "ApproxSize": "102x51x251",
+    "StaticMaterials": "MAT_Masonry,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry'>MAT_Rubble,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble'>",
+    "SectionsWithCollision": "2",
+    "Vertices": "447",
+    "Triangles": "374"
+   },
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Rubble"
+   ],
+   "default_materials": {
+    "MAT_Masonry": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry",
+    "MAT_Rubble": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble"
+   },
+   "nanite": true,
+   "dirty": false
+  },
+  {
+   "mesh": "SM_LB_Kit_Well_Wall_350x50x250",
+   "package": "/Game/LastBell/Environments/Kit/SM_LB_Kit_Well_Wall_350x50x250",
+   "tags": {
+    "AssetImportData": "[{ \"RelativeFilename\" : \"../../../../SourceArt/Kit/FBX/SM_LB_Kit_Well_Wall_350x50x250.fbx\", \"Timestamp\" : \"1792779794\", \"FileMD5\" : \"c24e7849117d389c733138b43f9760e1\", \"DisplayLabelName\" : \"\" }]",
+    "Materials": "2",
+    "NaniteEnabled": "True",
+    "CollisionPrims": "3",
+    "CollisionComplexity": "CTF_UseSimpleAndComplex",
+    "DefaultCollision": "BlockAll",
+    "ApproxSize": "351x54x251",
+    "StaticMaterials": "MAT_Masonry,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry'>MAT_Rubble,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble'>",
+    "SectionsWithCollision": "2",
+    "Vertices": "1019",
+    "Triangles": "740"
+   },
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Rubble"
+   ],
+   "default_materials": {
+    "MAT_Masonry": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry",
+    "MAT_Rubble": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble"
+   },
+   "nanite": true,
+   "dirty": false
+  },
+  {
+   "mesh": "SM_LB_Kit_Well_Wall_450x50x250",
+   "package": "/Game/LastBell/Environments/Kit/SM_LB_Kit_Well_Wall_450x50x250",
+   "tags": {
+    "AssetImportData": "[{ \"RelativeFilename\" : \"../../../../SourceArt/Kit/FBX/SM_LB_Kit_Well_Wall_450x50x250.fbx\", \"Timestamp\" : \"1792779794\", \"FileMD5\" : \"dbc4f8d4ee9f4239908d69cc0a725606\", \"DisplayLabelName\" : \"\" }]",
+    "Materials": "2",
+    "NaniteEnabled": "True",
+    "CollisionPrims": "3",
+    "CollisionComplexity": "CTF_UseSimpleAndComplex",
+    "DefaultCollision": "BlockAll",
+    "ApproxSize": "452x55x254",
+    "StaticMaterials": "MAT_Masonry,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry'>MAT_Rubble,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble'>",
+    "SectionsWithCollision": "2",
+    "Vertices": "1321",
+    "Triangles": "958"
+   },
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Rubble"
+   ],
+   "default_materials": {
+    "MAT_Masonry": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry",
+    "MAT_Rubble": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble"
+   },
+   "nanite": true,
+   "dirty": false
+  },
+  {
+   "mesh": "SM_LB_Kit_Window_Lancet_200x60x400_Blind",
+   "package": "/Game/LastBell/Environments/Kit/SM_LB_Kit_Window_Lancet_200x60x400_Blind",
+   "tags": {
+    "AssetImportData": "[{ \"RelativeFilename\" : \"../../../../SourceArt/Kit/FBX/SM_LB_Kit_Window_Lancet_200x60x400_Blind.fbx\", \"Timestamp\" : \"1792777458\", \"FileMD5\" : \"a0883f51345ef01092c83a3a34beef7f\", \"DisplayLabelName\" : \"\" }]",
+    "Materials": "3",
+    "NaniteEnabled": "True",
+    "CollisionPrims": "1",
+    "CollisionComplexity": "CTF_UseSimpleAndComplex",
+    "DefaultCollision": "BlockAll",
+    "ApproxSize": "206x72x403",
+    "StaticMaterials": "MAT_Masonry,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry'>MAT_Trim,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim'>MAT_Rubble,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble'>",
+    "SectionsWithCollision": "3",
+    "Vertices": "2427",
+    "Triangles": "1337"
+   },
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble"
+   ],
+   "default_materials": {
+    "MAT_Masonry": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry",
+    "MAT_Trim": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim",
+    "MAT_Rubble": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble"
+   },
+   "nanite": true,
+   "dirty": false
+  },
+  {
+   "mesh": "SM_LB_Tw_S1_E",
+   "package": "/Game/LastBell/Environments/BellTower/Meshes/SM_LB_Tw_S1_E",
+   "tags": {
+    "AssetImportData": "[{ \"RelativeFilename\" : \"../../../../../SourceArt/BellTower/SM_LB_Tw_S1_E.fbx\", \"Timestamp\" : \"1793301251\", \"FileMD5\" : \"c951b67b45cc47ff8c5bb4cbda1497d3\", \"DisplayLabelName\" : \"\" }]",
+    "Materials": "3",
+    "NaniteEnabled": "True",
+    "CollisionPrims": "0",
+    "CollisionComplexity": "CTF_UseSimpleAndComplex",
+    "DefaultCollision": "BlockAll",
+    "ApproxSize": "1052x70x828",
+    "StaticMaterials": "MAT_Masonry,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry'>MAT_Trim,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim'>MAT_Rubble,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble'>",
+    "SectionsWithCollision": "3",
+    "Vertices": "3491",
+    "Triangles": "1916"
+   },
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble"
+   ],
+   "default_materials": {
+    "MAT_Masonry": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry",
+    "MAT_Trim": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim",
+    "MAT_Rubble": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble"
+   },
+   "nanite": true,
+   "dirty": false
+  },
+  {
+   "mesh": "SM_LB_Tw_S1_N",
+   "package": "/Game/LastBell/Environments/BellTower/Meshes/SM_LB_Tw_S1_N",
+   "tags": {
+    "AssetImportData": "[{ \"RelativeFilename\" : \"../../../../../SourceArt/BellTower/SM_LB_Tw_S1_N.fbx\", \"Timestamp\" : \"1793301250\", \"FileMD5\" : \"0cc4a4c3cf8993dc2e2cb158d7aaaf96\", \"DisplayLabelName\" : \"\" }]",
+    "Materials": "3",
+    "NaniteEnabled": "True",
+    "CollisionPrims": "0",
+    "CollisionComplexity": "CTF_UseSimpleAndComplex",
+    "DefaultCollision": "BlockAll",
+    "ApproxSize": "1019x62x840",
+    "StaticMaterials": "MAT_Masonry,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry'>MAT_Trim,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim'>MAT_Rubble,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble'>",
+    "SectionsWithCollision": "3",
+    "Vertices": "2245",
+    "Triangles": "1309"
+   },
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble"
+   ],
+   "default_materials": {
+    "MAT_Masonry": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry",
+    "MAT_Trim": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim",
+    "MAT_Rubble": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble"
+   },
+   "nanite": true,
+   "dirty": false
+  },
+  {
+   "mesh": "SM_LB_Tw_S1_S",
+   "package": "/Game/LastBell/Environments/BellTower/Meshes/SM_LB_Tw_S1_S",
+   "tags": {
+    "AssetImportData": "[{ \"RelativeFilename\" : \"../../../../../SourceArt/BellTower/SM_LB_Tw_S1_S.fbx\", \"Timestamp\" : \"1793301253\", \"FileMD5\" : \"90e1ad6c55fb0fe9b678f488bf4171af\", \"DisplayLabelName\" : \"\" }]",
+    "Materials": "3",
+    "NaniteEnabled": "True",
+    "CollisionPrims": "0",
+    "CollisionComplexity": "CTF_UseSimpleAndComplex",
+    "DefaultCollision": "BlockAll",
+    "ApproxSize": "1016x67x809",
+    "StaticMaterials": "MAT_Masonry,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry'>MAT_Trim,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim'>MAT_Rubble,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble'>",
+    "SectionsWithCollision": "3",
+    "Vertices": "2282",
+    "Triangles": "1363"
+   },
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble"
+   ],
+   "default_materials": {
+    "MAT_Masonry": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry",
+    "MAT_Trim": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim",
+    "MAT_Rubble": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble"
+   },
+   "nanite": true,
+   "dirty": false
+  },
+  {
+   "mesh": "SM_LB_Tw_S1_W",
+   "package": "/Game/LastBell/Environments/BellTower/Meshes/SM_LB_Tw_S1_W",
+   "tags": {
+    "AssetImportData": "[{ \"RelativeFilename\" : \"../../../../../SourceArt/BellTower/SM_LB_Tw_S1_W.fbx\", \"Timestamp\" : \"1793301249\", \"FileMD5\" : \"16ba8fbc64ea46d437b4088b26097db1\", \"DisplayLabelName\" : \"\" }]",
+    "Materials": "3",
+    "NaniteEnabled": "True",
+    "CollisionPrims": "0",
+    "CollisionComplexity": "CTF_UseSimpleAndComplex",
+    "DefaultCollision": "BlockAll",
+    "ApproxSize": "1026x69x823",
+    "StaticMaterials": "MAT_Masonry,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry'>MAT_Trim,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim'>MAT_Rubble,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble'>",
+    "SectionsWithCollision": "3",
+    "Vertices": "3650",
+    "Triangles": "2107"
+   },
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble"
+   ],
+   "default_materials": {
+    "MAT_Masonry": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry",
+    "MAT_Trim": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim",
+    "MAT_Rubble": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble"
+   },
+   "nanite": true,
+   "dirty": false
+  },
+  {
+   "mesh": "SM_LB_Tw_S2_E",
+   "package": "/Game/LastBell/Environments/BellTower/Meshes/SM_LB_Tw_S2_E",
+   "tags": {
+    "AssetImportData": "[{ \"RelativeFilename\" : \"../../../../../SourceArt/BellTower/SM_LB_Tw_S2_E.fbx\", \"Timestamp\" : \"1793301263\", \"FileMD5\" : \"60eb8e56750a730721c9693f0e3f57ab\", \"DisplayLabelName\" : \"\" }]",
+    "Materials": "3",
+    "NaniteEnabled": "True",
+    "CollisionPrims": "0",
+    "CollisionComplexity": "CTF_UseSimpleAndComplex",
+    "DefaultCollision": "BlockAll",
+    "ApproxSize": "1102x87x1754",
+    "StaticMaterials": "MAT_Masonry,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry'>MAT_Trim,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim'>MAT_Rubble,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble'>",
+    "SectionsWithCollision": "3",
+    "Vertices": "7652",
+    "Triangles": "4252"
+   },
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble"
+   ],
+   "default_materials": {
+    "MAT_Masonry": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry",
+    "MAT_Trim": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim",
+    "MAT_Rubble": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble"
+   },
+   "nanite": true,
+   "dirty": false
+  },
+  {
+   "mesh": "SM_LB_Tw_S2_N",
+   "package": "/Game/LastBell/Environments/BellTower/Meshes/SM_LB_Tw_S2_N",
+   "tags": {
+    "AssetImportData": "[{ \"RelativeFilename\" : \"../../../../../SourceArt/BellTower/SM_LB_Tw_S2_N.fbx\", \"Timestamp\" : \"1793301259\", \"FileMD5\" : \"3adb1486466c47f3db3bb4491ee82974\", \"DisplayLabelName\" : \"\" }]",
+    "Materials": "3",
+    "NaniteEnabled": "True",
+    "CollisionPrims": "0",
+    "CollisionComplexity": "CTF_UseSimpleAndComplex",
+    "DefaultCollision": "BlockAll",
+    "ApproxSize": "1049x90x1726",
+    "StaticMaterials": "MAT_Masonry,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry'>MAT_Trim,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim'>MAT_Rubble,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble'>",
+    "SectionsWithCollision": "3",
+    "Vertices": "5612",
+    "Triangles": "3174"
+   },
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble"
+   ],
+   "default_materials": {
+    "MAT_Masonry": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry",
+    "MAT_Trim": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim",
+    "MAT_Rubble": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble"
+   },
+   "nanite": true,
+   "dirty": false
+  },
+  {
+   "mesh": "SM_LB_Tw_S2_S",
+   "package": "/Game/LastBell/Environments/BellTower/Meshes/SM_LB_Tw_S2_S",
+   "tags": {
+    "AssetImportData": "[{ \"RelativeFilename\" : \"../../../../../SourceArt/BellTower/SM_LB_Tw_S2_S.fbx\", \"Timestamp\" : \"1793301266\", \"FileMD5\" : \"34e31b6ea05cdc4dae9fabd313c9689e\", \"DisplayLabelName\" : \"\" }]",
+    "Materials": "3",
+    "NaniteEnabled": "True",
+    "CollisionPrims": "0",
+    "CollisionComplexity": "CTF_UseSimpleAndComplex",
+    "DefaultCollision": "BlockAll",
+    "ApproxSize": "1089x87x1756",
+    "StaticMaterials": "MAT_Masonry,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry'>MAT_Trim,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim'>MAT_Rubble,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble'>",
+    "SectionsWithCollision": "3",
+    "Vertices": "5286",
+    "Triangles": "2970"
+   },
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble"
+   ],
+   "default_materials": {
+    "MAT_Masonry": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry",
+    "MAT_Trim": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim",
+    "MAT_Rubble": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble"
+   },
+   "nanite": true,
+   "dirty": false
+  },
+  {
+   "mesh": "SM_LB_Tw_S2_W",
+   "package": "/Game/LastBell/Environments/BellTower/Meshes/SM_LB_Tw_S2_W",
+   "tags": {
+    "AssetImportData": "[{ \"RelativeFilename\" : \"../../../../../SourceArt/BellTower/SM_LB_Tw_S2_W.fbx\", \"Timestamp\" : \"1793301256\", \"FileMD5\" : \"398d4dedc0651b8e2c9cff63bbfab6dc\", \"DisplayLabelName\" : \"\" }]",
+    "Materials": "3",
+    "NaniteEnabled": "True",
+    "CollisionPrims": "0",
+    "CollisionComplexity": "CTF_UseSimpleAndComplex",
+    "DefaultCollision": "BlockAll",
+    "ApproxSize": "1089x104x1729",
+    "StaticMaterials": "MAT_Masonry,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry'>MAT_Trim,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim'>MAT_Rubble,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble'>",
+    "SectionsWithCollision": "3",
+    "Vertices": "7376",
+    "Triangles": "4091"
+   },
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble"
+   ],
+   "default_materials": {
+    "MAT_Masonry": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry",
+    "MAT_Trim": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim",
+    "MAT_Rubble": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble"
+   },
+   "nanite": true,
+   "dirty": false
+  },
+  {
+   "mesh": "SM_LB_Tw_S3_E",
+   "package": "/Game/LastBell/Environments/BellTower/Meshes/SM_LB_Tw_S3_E",
+   "tags": {
+    "AssetImportData": "[{ \"RelativeFilename\" : \"../../../../../SourceArt/BellTower/SM_LB_Tw_S3_E.fbx\", \"Timestamp\" : \"1793301275\", \"FileMD5\" : \"dea52f288a18be67c129dc530cd2c975\", \"DisplayLabelName\" : \"\" }]",
+    "Materials": "3",
+    "NaniteEnabled": "True",
+    "CollisionPrims": "0",
+    "CollisionComplexity": "CTF_UseSimpleAndComplex",
+    "DefaultCollision": "BlockAll",
+    "ApproxSize": "1051x76x1067",
+    "StaticMaterials": "MAT_Masonry,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry'>MAT_Trim,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim'>MAT_Rubble,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble'>",
+    "SectionsWithCollision": "3",
+    "Vertices": "4913",
+    "Triangles": "2752"
+   },
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble"
+   ],
+   "default_materials": {
+    "MAT_Masonry": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry",
+    "MAT_Trim": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim",
+    "MAT_Rubble": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble"
+   },
+   "nanite": true,
+   "dirty": false
+  },
+  {
+   "mesh": "SM_LB_Tw_S3_N",
+   "package": "/Game/LastBell/Environments/BellTower/Meshes/SM_LB_Tw_S3_N",
+   "tags": {
+    "AssetImportData": "[{ \"RelativeFilename\" : \"../../../../../SourceArt/BellTower/SM_LB_Tw_S3_N.fbx\", \"Timestamp\" : \"1793301273\", \"FileMD5\" : \"7f065b939aff450deafbacc5b6fdbece\", \"DisplayLabelName\" : \"\" }]",
+    "Materials": "3",
+    "NaniteEnabled": "True",
+    "CollisionPrims": "0",
+    "CollisionComplexity": "CTF_UseSimpleAndComplex",
+    "DefaultCollision": "BlockAll",
+    "ApproxSize": "1003x71x1071",
+    "StaticMaterials": "MAT_Masonry,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry'>MAT_Trim,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim'>MAT_Rubble,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble'>",
+    "SectionsWithCollision": "3",
+    "Vertices": "3064",
+    "Triangles": "1842"
+   },
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble"
+   ],
+   "default_materials": {
+    "MAT_Masonry": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry",
+    "MAT_Trim": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim",
+    "MAT_Rubble": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble"
+   },
+   "nanite": true,
+   "dirty": false
+  },
+  {
+   "mesh": "SM_LB_Tw_S3_S_BrokenSW",
+   "package": "/Game/LastBell/Environments/BellTower/Meshes/SM_LB_Tw_S3_S_BrokenSW",
+   "tags": {
+    "AssetImportData": "[{ \"RelativeFilename\" : \"../../../../../SourceArt/BellTower/SM_LB_Tw_S3_S_BrokenSW.fbx\", \"Timestamp\" : \"1793301279\", \"FileMD5\" : \"dabe3ac2e054dfeea3888a18f9f4fe04\", \"DisplayLabelName\" : \"\" }]",
+    "Materials": "3",
+    "NaniteEnabled": "True",
+    "CollisionPrims": "0",
+    "CollisionComplexity": "CTF_UseSimpleAndComplex",
+    "DefaultCollision": "BlockAll",
+    "ApproxSize": "978x66x1051",
+    "StaticMaterials": "MAT_Masonry,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry'>MAT_Trim,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim'>MAT_Rubble,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble'>",
+    "SectionsWithCollision": "3",
+    "Vertices": "3400",
+    "Triangles": "1999"
+   },
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble"
+   ],
+   "default_materials": {
+    "MAT_Masonry": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry",
+    "MAT_Trim": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim",
+    "MAT_Rubble": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble"
+   },
+   "nanite": true,
+   "dirty": false
+  },
+  {
+   "mesh": "SM_LB_Tw_S3_W_BrokenSW",
+   "package": "/Game/LastBell/Environments/BellTower/Meshes/SM_LB_Tw_S3_W_BrokenSW",
+   "tags": {
+    "AssetImportData": "[{ \"RelativeFilename\" : \"../../../../../SourceArt/BellTower/SM_LB_Tw_S3_W_BrokenSW.fbx\", \"Timestamp\" : \"1793301271\", \"FileMD5\" : \"04815842042dc8379f56b90b09946bed\", \"DisplayLabelName\" : \"\" }]",
+    "Materials": "3",
+    "NaniteEnabled": "True",
+    "CollisionPrims": "0",
+    "CollisionComplexity": "CTF_UseSimpleAndComplex",
+    "DefaultCollision": "BlockAll",
+    "ApproxSize": "1031x91x1066",
+    "StaticMaterials": "MAT_Masonry,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry'>MAT_Trim,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim'>MAT_Rubble,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble'>",
+    "SectionsWithCollision": "3",
+    "Vertices": "5006",
+    "Triangles": "2818"
+   },
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble"
+   ],
+   "default_materials": {
+    "MAT_Masonry": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry",
+    "MAT_Trim": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim",
+    "MAT_Rubble": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble"
+   },
+   "nanite": true,
+   "dirty": false
+  },
+  {
+   "mesh": "SM_LB_Tw_ShaftBase_420x420x450",
+   "package": "/Game/LastBell/Environments/BellTower/Meshes/SM_LB_Tw_ShaftBase_420x420x450",
+   "tags": {
+    "AssetImportData": "[{ \"RelativeFilename\" : \"../../../../../SourceArt/BellTower/SM_LB_Tw_ShaftBase_420x420x450.fbx\", \"Timestamp\" : \"1793301280\", \"FileMD5\" : \"5b50af25bcb0e1982eec8557a8ae12ca\", \"DisplayLabelName\" : \"\" }]",
+    "Materials": "4",
+    "NaniteEnabled": "True",
+    "CollisionPrims": "0",
+    "CollisionComplexity": "CTF_UseSimpleAndComplex",
+    "DefaultCollision": "BlockAll",
+    "ApproxSize": "462x460x496",
+    "StaticMaterials": "MAT_Masonry,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry'>MAT_Trim,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim'>MAT_Rubble,'/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble'>MAT_Wood,'/Game/LastBell/Environments/Chapel/Materials/MI_Chapel_Wood_Old.MI_Chapel_Wood_Old'>",
+    "SectionsWithCollision": "4",
+    "Vertices": "3096",
+    "Triangles": "1956"
+   },
+   "slots": [
+    "MAT_Masonry",
+    "MAT_Trim",
+    "MAT_Rubble",
+    "MAT_Wood"
+   ],
+   "default_materials": {
+    "MAT_Masonry": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry.MI_Kit_Masonry",
+    "MAT_Trim": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim.MI_Kit_Trim",
+    "MAT_Rubble": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble.MI_Kit_Rubble",
+    "MAT_Wood": "/Game/LastBell/Environments/Chapel/Materials/MI_Chapel_Wood_Old.MI_Chapel_Wood_Old"
+   },
+   "nanite": true,
+   "dirty": false
+  }
+ ]
+}

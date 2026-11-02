@@ -1540,7 +1540,7 @@ def run():
             continue
         t = time.time()
         pc = fn()
-        K.finalize(pc.bm, smooth_deg=pc.smooth)
+        K.finalize(pc.bm, smooth_deg=pc.smooth, hard_flat_slot=K.SLOT_MASONRY)
         rec = piece_report(pc, seed, 0.0)
         K.export_piece_fbx(pc.name, pc.bm, pc.ucx, os.path.join(out_dir, pc.name + ".fbx"), mats_for(pc.slots))
         rec['seconds'] = round(time.time() - t, 1)
