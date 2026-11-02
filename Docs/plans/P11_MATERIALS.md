@@ -1,6 +1,6 @@
 # Phase 11: Materials (surface polish): plan
 
-**Status:** approved by the owner on 2026-11-02. P11-0, P11-1 and P11-2 done; P11-3 done: the owner chose A (D-086). P11-4a in progress. The door corners and `Gobo_Moon` specks stay out of scope.
+**Status:** approved by the owner on 2026-11-02. P11-0, P11-1 and P11-2 done; P11-3 done: the owner chose A (D-086). P11-4a passed; P11-4b waits for the owner's "go". The door corners and `Gobo_Moon` specks stay out of scope.
 **Branch:** `claude/phase-11-materials`, from `main` (6dfa29d).
 **Rules:** D-048 applies. The lead plans in Opus 5.5 at xhigh effort; every implementer is spawned with `model: "sonnet", effort: "high"`.
 
@@ -281,6 +281,16 @@ Imported as `/Game/LastBell/ArtTest/P11/Textures/T_P11_FlatBlocks_BC`, with sett
 **Pass:** from 15 m the rows of pale blocks are gone or close to it, and up close the blocks still read as `A` does. P11-5's weathering still comes on top. **If nothing passes,** the lead reports it and the owner decides between accepting the repeat for now or `B2`.
 
 This step changes only test assets, so it needs no suite run.
+
+**Result (lead, 2026-11-02): `Docs/ArtTest/materials/p11_repeat_test.png`. It passes.** Brightness at 3 m (`central40`, `p11_rp_luma.json`): `A` 0.315, `A1` 0.318, `A2` 0.302, `A3` 0.316.
+
+| Bay | Up close | 15 m, moonlight | Verdict |
+|---|---|---|---|
+| `A1` | As good as `A` | The rows of pale blocks are gone; a faint regular pattern remains at full size, partly from the normal map | Passes |
+| `A2` | As `A1`, about 5 % darker | The calmest wall on the sheet | Passes; best at distance |
+| `A3` | Blocks are visibly larger | The pattern is larger and easier to read than in `A1` | Rejected |
+
+**Lead's pick: `A2`** (flattened tone, `MacroStrength` 0.8), with the 5 % corrected through `BrightnessMul` in P11-8. Normal-map shading still repeats faintly, so P11-5's weathering has to carry the rest. The rebuild starts only after the owner's "go", because that is the point where the `B2` fallback stops being free.
 
 ### P11-5: weathering layer (`bWeathering`)
 Added to `M_LB_Surface` in **one** recompile (D-053: a GPU-crash risk on the 6 GB card, so close other GPU apps first).
