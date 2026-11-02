@@ -43,7 +43,7 @@ NG_SET = {"W400A": P11 + "Meshes/SM_LB_P11_NoGroove_Wall_400x60x800_A", "W400B":
 # (bay, index, mesh set, MAT_Masonry, MAT_Trim)
 BAYS = [
     ("Today", 0, KIT_SET, KITMI + "MI_Kit_Masonry", KITMI + "MI_Kit_Trim"),
-    ("A", 1, NG_SET, KITMI + "MI_Kit_Masonry", P11 + "Materials/MI_P11_B3_Trim"),
+    ("A", 1, NG_SET, KITMI + "MI_Kit_Masonry", P11 + "Materials/MI_P11_B2_Trim"),
     ("B1", 2, KIT_SET, P11 + "Materials/MI_P11_B1_Masonry", P11 + "Materials/MI_P11_B1_Trim"),
     ("B2", 3, KIT_SET, P11 + "Materials/MI_P11_B2_Masonry", P11 + "Materials/MI_P11_B2_Trim"),
     ("B3", 4, KIT_SET, P11 + "Materials/MI_P11_B3_Masonry", P11 + "Materials/MI_P11_B3_Trim"),
@@ -52,7 +52,7 @@ BAYS = [
 FLOOR = {"label": "P11_Floor", "mesh": CUBE, "loc": (11250, -1000, -20), "rot": (0, 0, 0), "scale": (255, 40, 0.4), "folder": "P11/Setup",
          "slots_by_index": [FLOOR_MI]}
 MOON = {"label": "P11_Moon", "cls": "/Script/Engine.DirectionalLight", "loc": (11250, -1000, 2000), "rot": (-38, 35, 0), "folder": "P11/Setup",
-        "vals": {"intensity": 0.9, "lightColor": (0.745098, 0.803922, 0.921569), "castShadows": True}}
+        "vals": {"intensity": 0.9, "lightColor": (0.745098, 0.803922, 0.921569), "castShadows": True, "forwardShadingPriority": 1}}
 FILL = {"label": "P11_MoonFill", "cls": "/Script/Engine.DirectionalLight", "loc": (11250, -1000, 2100), "rot": (-28, -145, 0), "folder": "P11/Setup",
         "vals": {"intensity": 0.06, "lightColor": (0.72549, 0.784314, 0.882353), "castShadows": False}}
 SKY = {"label": "P11_Sky", "cls": "/Script/Engine.SkyLight", "loc": (11250, -1000, 600), "rot": (0, 0, 0), "folder": "P11/Setup"}

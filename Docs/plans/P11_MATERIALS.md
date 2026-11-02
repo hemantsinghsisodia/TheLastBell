@@ -1,6 +1,6 @@
 # Phase 11: Materials (surface polish): plan
 
-**Status:** approved by the owner on 2026-11-02. P11-0, P11-1 and P11-2 done; P11-3 in progress (owner's "go", 2026-11-02). The door corners and `Gobo_Moon` specks stay out of scope.
+**Status:** approved by the owner on 2026-11-02. P11-0, P11-1 and P11-2 done; P11-3 captures done, waiting for the owner's choice (D-086). The door corners and `Gobo_Moon` specks stay out of scope.
 **Branch:** `claude/phase-11-materials`, from `main` (6dfa29d).
 **Rules:** D-048 applies. The lead plans in Opus 5.5 at xhigh effort; every implementer is spawned with `model: "sonnet", effort: "high"`.
 
@@ -188,7 +188,7 @@ Test assets live under `/Game/LastBell/ArtTest/P11/`. `MapsToCook` lists only `L
 | Actor | Values |
 |---|---|
 | `P11_Floor` | `/Engine/BasicShapes/Cube` at (11250, −1000, −20), scale (255, 40, 0.4), `MI_Kit_Floor`. Top at Z 0 |
-| `P11_Moon` | DirectionalLight, pitch −38, yaw 35, intensity 0.9, colour (0.745098, 0.803922, 0.921569), shadows on |
+| `P11_Moon` | DirectionalLight, pitch −38, yaw 35, intensity 0.9, colour (0.745098, 0.803922, 0.921569), shadows on, `forwardShadingPriority` 1 (as in `L_Monastery`; without it Unreal prints a warning across every capture) |
 | `P11_MoonFill` | DirectionalLight, pitch −28, yaw −145, intensity 0.06, colour (0.72549, 0.784314, 0.882353), shadows off |
 | `P11_Sky` | SkyLight at Z 600, `SLS_SpecifiedCubemap`, `/Game/LastBell/ArtTest/Sky/HDRI_MoonlessGolf`, intensity 0.28, colour (0.882353, 0.862745, 0.843137), lower hemisphere (0.015, 0.02, 0.035), not black |
 | `P11_PP` | PostProcessVolume, unbound, `AutoExposureMinBrightness` and `MaxBrightness` 0.65, `ColorSaturationShadows` (0.65, 0.65, 0.65, 1), each with its override on |
@@ -200,7 +200,7 @@ No fog and no sky dome: only the walls are being compared.
 | Bay | Index i | Meshes | `MAT_Masonry` | `MAT_Trim` |
 |---|---|---|---|---|
 | `Today` | 0 | current kit | `MI_Kit_Masonry` | `MI_Kit_Trim` |
-| `A` | 1 | no-groove | `MI_Kit_Masonry` | `MI_P11_B3_Trim` |
+| `A` | 1 | no-groove | `MI_Kit_Masonry` | `MI_P11_B2_Trim` (changed from `B3_Trim` after the first captures: the B3 stone had already lost, and it made A's edge stone look wrong) |
 | `B1` | 2 | current kit | `MI_P11_B1_Masonry` | `MI_P11_B1_Trim` |
 | `B2` | 3 | current kit | `MI_P11_B2_Masonry` | `MI_P11_B2_Trim` |
 | `B3` | 4 | current kit | `MI_P11_B3_Masonry` | `MI_P11_B3_Trim` |
@@ -227,6 +227,22 @@ Poses in `Tools/materials/poses/p11_joint_poses.json`, prefix `p11_jt_`, in PIE 
 | 15 m, moonlight only | [X1 + 1000, −1500, 170, 14, 90] |
 
 Contact sheet `Docs/ArtTest/materials/p11_joint_test.png`: 5 rows by 3 columns, labelled. If `B3` is far from `Today` in brightness, the lead corrects `MI_P11_B3_*` `BrightnessMul` once and re-captures that bay, so brightness doesn't decide the comparison. **The owner chooses.** D-086 records the choice. The editor returns to `L_Monastery` afterwards.
+
+**Result (lead, 2026-11-02): `Docs/ArtTest/materials/p11_joint_test.png`.** Brightness at 3 m (`central40`, `p11_jt_luma.json`): `Today` 0.314, `A` 0.315, `B1` 0.324, `B2` 0.304, `B3` 0.346. The colour match worked, so brightness doesn't decide this; `B3` got no correction because it fails on structure.
+
+| Bay | 3 m and grazing, lantern | 15 m, moonlight | Verdict |
+|---|---|---|---|
+| `Today` | Dark lines cut through painted blocks | Wallpaper repeat every 200 cm | The problem |
+| `A` | Convincing rock-faced masonry with real-looking depth, and no conflict | The same wallpaper repeat as today | Best up close; needs a repeat fix |
+| `B1` | Flat stone with thin cut lines | Soft dark patches repeat | Worse than `B2` |
+| `B2` | Flat, smooth, like modern cladding; the recessed panels look artificial | Calm, no wallpaper repeat | Best at distance |
+| `B3` | Large lumps from `T_Rock_064_N` cross the joints | Grey, off-colour | Out |
+
+**New finding:** the modelled grooves don't line up where two wall pieces meet, because `Wall_400x60x800_B` uses different course heights (`vary=True`). `B1`, `B2` and `B3` expose this, since the grooves are their only joints. Fixing it would need a mesh rebuild too, which removes most of option B's advantage. `A` doesn't have this problem: its joints are world-aligned, so they run on across pieces.
+
+**The lead's recommendation changes from B to A,** reversing the expectation above. Players mostly see these walls at 1–5 m by lantern. If the owner chooses A, the repeat fix is tested on the test map before any mesh is rebuilt, so `B2` stays available as a fallback until then.
+
+**Limits of the test:** no fog, no weathering, no game geometry around the walls. The owner chooses (D-086).
 
 ### P11-4: apply the choice
 The lead writes the exact steps after the choice, using the census numbers, in this file.
