@@ -1,6 +1,6 @@
 # Phase 11: Materials (surface polish): plan
 
-**Status:** approved by the owner on 2026-11-02. P11-0, P11-1 and P11-2 done; P11-3 done: the owner chose A (D-086). P11-0 to P11-5 done (suite 79/79); P11-6 in progress (spec written, implementation next). The door corners and `Gobo_Moon` specks stay out of scope.
+**Status:** approved by the owner on 2026-11-02. P11-0, P11-1 and P11-2 done; P11-3 done: the owner chose A (D-086). P11-0 to P11-6 done (suite 79/79); P11-7 waits for the owner's "go". The door corners and `Gobo_Moon` specks stay out of scope.
 **Branch:** `claude/phase-11-materials`, from `main` (6dfa29d).
 **Rules:** D-048 applies. The lead plans in Opus 5.5 at xhigh effort; every implementer is spawned with `model: "sonnet", effort: "high"`.
 
@@ -500,7 +500,7 @@ Measured on same-size captures, the defaults change whole images by 2 to 5 % aga
 
 ### P11-6: decals
 
-**Status: spec written by the lead 2026-11-03 from 26 captures of the current decals (`p11_dc0_*`). Implementation below.**
+**Status: done 2026-11-03 (D-087). Written from 26 captures of the current decals (`p11_dc0_*`). Results in Step 3.**
 
 #### What the captures and the data showed
 | Decal | Finding | Cause | Fix |
@@ -643,6 +643,22 @@ GPU: 126 decals become 165. Decals cost by screen area, and these are small. The
 - Review poses stand further back, so the steep arcade views become what a player sees from the garth.
 
 Round 2 captures use PIE Simulate (no icons) for the entries that couldn't be judged: `co_arcn_crown, co_arcs_crown, co_arcn_brokena, co_arcn_brokenb, co_arcs_brokena, co_arcs_brokenb, co_gatecrown, cl_archs_crown, cr_cc_s, cr_fp_s, cr_fp_n, cr_sc_s, cr_wc_w, cr_nc_n, ch_e_base, ch_s_base, ch_doorcrown, sa_e_base, tw_e_base`.
+
+#### Step 3, second round and close (lead, 2026-11-03; `p11_ck2_*`, 19 views, PIE Simulate)
+Round 2 went in as listed (commit 569e991; `--check` 63/63, suite 79/79). Only `M_LB_Surface` is dirty, and it stays unsaved.
+
+| Cracks | Result |
+|---|---|
+| Broken-bay stubs (`co_arcn_brokena`, `co_arcs_brokena` looked at closely) | **Pass.** The crack runs through the band and arch ring and reads as a real fracture, subtle from the garth |
+| `ch_s_base`, `ch_doorcrown` | **Pass.** They rise from the plinth and the door like real cracks |
+| `cr_nc_n` | **Pass.** It lands on the stones, so the crypt's "same plane as an existing decal" method works |
+| `co_arcn_crown`, `co_gatecrown` | No fault, but too faint to see at this distance. Harmless; they may only read up close |
+| `cr_cc_s`, `cr_fp_s` | **Not sure.** The stones are deeply carved and have dark slashes of their own, so I can't tell the crack from them here |
+| `cr_sc_s`, `cr_wc_w`, `cr_fp_n`, `sa_e_base`, `tw_e_base` | **Not verified.** These walls are black without the player's light (mean luma 0 to 9 of 255) |
+
+**Exit condition "decals read as stains and cracks, not stickers or hair": met in every view that can be seen.** Nothing in these captures reads as a sticker or hair, and no crack is near a clue (enforced by `make_crack_placements.py`: 2 m from every clue, numeral and tablet, plus the no-go walls). **Still needs the owner's playtest:** the five dark views above and the two unsure ones, with the player's light.
+
+Left over, for phase end: `T_LB_Decal_Soot_A/_B` are unreferenced. Lessons for MCP_NOTES in P11-8: editor-mode captures draw each decal's icon over its centre, so use PIE Simulate to judge decals; small decals lose thin lines in the mips, so scale the decal rather than only raising opacity; `T_Leaking004` and `T_Leaking006` need roll 90 like every wall decal.
 
 #### Crack list
 | Label | MI | Location | Rotation (P, Y, R) | DecalSize | Where |
