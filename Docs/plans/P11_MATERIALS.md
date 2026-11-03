@@ -1,6 +1,6 @@
 # Phase 11: Materials (surface polish): plan
 
-**Status:** approved by the owner on 2026-11-02. P11-0, P11-1 and P11-2 done; P11-3 done: the owner chose A (D-086). P11-0 to P11-6 done (suite 79/79); P11-7 in progress. The door corners and `Gobo_Moon` specks stay out of scope.
+**Status:** approved by the owner on 2026-11-02. P11-0, P11-1 and P11-2 done; P11-3 done: the owner chose A (D-086). P11-0 to P11-7 done (suite 79/79); P11-8 waits for the owner's "go". The door corners and `Gobo_Moon` specks stay out of scope.
 **Branch:** `claude/phase-11-materials`, from `main` (6dfa29d).
 **Rules:** D-048 applies. The lead plans in Opus 5.5 at xhigh effort; every implementer is spawned with `model: "sonnet", effort: "high"`.
 
@@ -737,6 +737,29 @@ The poses look straight at the glass from about 10 m where the line of sight all
 **Tune** `--multiplier` between 1 and 4 by the result. Over the limit: lower it. Doesn't read at 10 m: raise it. **At most two rounds.** If one multiplier can't satisfy both the courtyard and the cloister (they differ by 0.5 EV), prefer no clipping, and report it. Never change a light for this.
 
 The glass is a flat, constant glow, while the lights behind it flicker. Making the glass flicker too would be new work for Phase 15's VFX pass, so it's noted here rather than done.
+
+#### Result (lead, 2026-11-03; commits 660212c, a5ca0f3; `p11_lg1_*`, `p11_lg2_*`)
+**Final value: `Color` = (1.7, 0.765, 0.17), which is base (1.0, 0.45, 0.10) x 1.7.** This isn't the plan's hue:
+
+| Round | `Color` | Glass, sRGB (`cl_bells_3m`) | Reading |
+|---|---|---|---|
+| 1 | (2.0, 1.098, 0.4392), the lights' hue x 2 | (246, 230, 199) | Reads as lit at 10 m, but as a pale flat panel |
+| 2 | (1.7, 0.765, 0.17) | (248, 222, 146) | Warm gold; still stands out from the wall its light brightens |
+
+Lowering the multiplier alone wasn't an option: the wall behind each lantern is lit nearly as bright, so a dimmer pane would stop reading as the source. The tonemapper desaturates bright colours, so the base hue has to be more saturated than the light's.
+
+**Checks:**
+- Maximum luma on the glass is 0.81–0.90 in the 10 views whose centre shows lit glass (limit 0.95), and nothing clips. At first `lantern_report.py` read a wider window and reported 7 views over the limit; those peaks came from the lit wall, not the glass (they didn't change between rounds). It now reads the glass only.
+- `co_route1` is partly hidden by a column, so its centre pixels aren't a clean glass reading. The crops show its glass is fine.
+- Courtyard (EV 1.15) and cloister (EV 0.65) both read well with the one value.
+- Suite 79/79 on the final value; `--check` 9/9. Only `M_LB_Surface` is dirty, and it stays unsaved.
+
+**Not verified:**
+- **`tw_base_3m` shows no lantern.** Both tower camera positions came out black, probably inside the stair mesh, which has no collision for the trace to catch. The tower's 5 lanterns share this mesh and MI, so they have the same glass, but nobody has looked at one. The P11-8 tower captures and the owner's playtest cover it.
+- `co_gate_close` failed its capture 3 times and is missing; `co_gate_3m` shows the same lantern.
+- At 3 m the pane is still a flat colour, because the master has no gradient input. It reads as a lit pane of horn or oiled paper rather than as clear glass. Nobody has judged it in play.
+
+**R-32 closed.**
 
 ### P11-8: close
 1. **Brightness:** re-capture the 24 baseline poses, plus the Phase 10 target poses (D1.25). New stone changes luma, so correct it through MI `BrightnessMul`, **never by changing lights**. The Phase 8–10 targets still apply.
