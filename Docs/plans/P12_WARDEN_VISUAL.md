@@ -1,6 +1,6 @@
 # Phase 12: Warden visual: plan
 
-**Status:** approved by the owner on 2026-11-04. P12-0 done; P12-1 and P12-2 in progress.
+**Status:** approved by the owner on 2026-11-04. P12-0 and P12-1 done (R-50 closed); P12-2 and P12-3 in progress.
 **Branch:** `claude/phase-12-warden-visual`, from `main` (0df20fc).
 **Rules:** D-048 applies. The lead plans in Opus 5.5 at xhigh effort; every implementer is spawned with `model: "sonnet", effort: "high"`. Nothing starts without the owner's "go".
 
@@ -132,6 +132,8 @@ Editor tasks never overlap. Each one saves one package per `save_assets` call an
 - Agents don't run captures. They stop and ask the lead, who tells the owner first, because Unreal must be in front.
 - Never use `read_graph_dsl` on a Blueprint you aren't editing: it marks it dirty (P8). Use `find_nodes` and `get_node_infos`.
 - Free assets only. Every new asset gets a row in `Docs/ASSET_REGISTRY.md`.
+- **Don't operate the owner's desktop:** no synthetic key presses or window focus changes. If the editor hangs on a dialog, stop and tell the lead.
+- **Don't try `BlueprintTools.create` with a class it may not support:** a refusal opens a modal dialog that freezes the editor and every MCP call until someone presses OK (P12-1).
 - **Never assign an existing project material or MI to a skeletal mesh.** Their parents have `bUsedWithSkeletalMesh` false, so the editor would set the flag itself, dirty the master and recompile it (R-47). Skeletal meshes use the default material or `M_LB_Character` children only.
 
 ---
@@ -171,6 +173,41 @@ Editor tasks never overlap. Each one saves one package per `save_assets` call an
 
 Remove temporary actors; never save `L_Monastery`. Commit scripts and the FBX. Lead adds the results here.
 
+**Result (technical-artist and lead, 2026-11-04; c9b5aa0, e53a570; `p12s_*`): the route works, first try, with no change to the starting settings except the axes below.** R-50 closed.
+
+| # | Check | Result |
+|---|---|---|
+| 1 | Import with animation and physics asset | Pass |
+| 2 | Bones | Pass: `root` first, no `Armature` bone, 41 of 41 |
+| 3 | Size | Pass: height 290 |
+| 4 | Orientation | Pass: nose on +Y, left on +X in mesh space. In the world, yaw −90 faces +X, which is what P12-8 uses |
+| 5 | The clip plays in Simulate | Pass (lead): `p12s_p12s_front_4m` shows it nearly upright, `p12s_p12s_side_left_4m` bent with the left arm raised; nothing stretches or flips. The two shots are moments of one looping clip |
+| 6 | Slots | Pass: both names survive |
+| 7 | Re-import | **A direct re-import is refused** ("already exists"). See below |
+| 8 | Normals | Pass, judged from a 256 px thumbnail and these two captures |
+
+**Settings that worked:** the plan's list plus `axis_forward='Y'`, `axis_up='Z'`, `use_mesh_modifiers=True`, `path_mode='AUTO'`. Scene unit scale 0.01, 1 unit = 1 cm, no manual mirror. Armature object named `Armature`. Blender −Y becomes mesh +Y; +X stays +X.
+
+**Re-import is delete and import again** (`Tools/warden/reimport_skeletal.py`, tested twice):
+1. Record slot materials, sockets, the physics asset and every reference to the mesh.
+2. `AssetTools.delete` the mesh. Skeleton, physics asset and clips stay.
+3. `import_file` at the same path with `skeleton` set, `import_animations=False`, `create_physics_asset=False`.
+4. Assign the physics asset again, re-add sockets, set materials by slot name.
+5. Re-point every Blueprint and actor reference, and compile.
+
+**So:** do the model's re-imports before `BP_Warden` references it (P12-8), or expect step 5 each time. Survival of a real MI through this hasn't been tested, because the spike used its own empty material; the script restores slots anyway. Renaming or re-parenting a bone hasn't been tested.
+
+**Clips:** a clip-only FBX is refused ("produced no assets"). Each clip ships with a mesh, one clip per FBX. Import it under a throwaway mesh name with `skeleton` set, move `<name>_Anim` to `AS_...`, delete the throwaway mesh and its physics asset. Tested end to end.
+
+**For the Phase 13 plan:**
+- **An Animation Blueprint can't be created through the tools.** `BlueprintTools.create` refuses and opens a modal dialog. It needs a short owner UI step, after which the tools can be tested on its graph.
+- **IK Rig and Retargeter assets can't be created either.** Also an owner UI step, if Phase 13 retargets at all.
+- `compatibleSkeletons` can be set through `set_properties`.
+
+**Disclosed:** that modal froze the editor during the spike. The agent cleared it by focusing Unreal's message window and sending Enter from PowerShell, which wasn't in its brief. A standing limit now forbids this. Temporary actor removed (2980 actors), PIE off, throttle restored; `L_Monastery` is dirty in memory only and must not be saved.
+
+Test assets: `SK_P12_Spike`, its skeleton and physics asset, `AS_P12_Clip`, `M_P12_SpikeTest` in `ArtTest/P12`, for the phase-end decision.
+
 ### P12-2: downloads and hand comparison (asset-curator, then technical-artist)
 **Download through `3d-assets-local`, one folder each in `ExternalAssets/Incoming/`:**
 | Asset | Files | Use |
@@ -186,6 +223,11 @@ Report each licence from `get_asset` and the source page, and add registry rows.
 2. a scripted hand: Skin modifier over a joint graph, subdivision, knuckle and tendon displacement.
 
 Sheet: `Docs/ArtTest/warden/p12_hands.png`. The lead picks the better one and logs why. If the base mesh is used, record that it's a heavily changed derivative.
+
+**Downloads result (asset-curator, e4f6280):** all three in place.
+- `hessian_230` maps are 2048 × 2036, so P12-6 must resize or crop them to 2048 × 2048 before import.
+- `brown_leather`'s colour map is named `_albedo_`, not `_diff_`.
+- **Licence of the base mesh:** BlenderKit's page allows commercial use and "higher-level derivative works", and forbids reselling the asset even when modified. It never mentions shipping inside a game. That looks permitted, but it's a reading rather than stated wording. **Lead's decision: none of this mesh ships unless it's clearly better than the scripted hand, and then only after the owner has been asked.**
 
 ### P12-3: concept blockouts (technical-artist; owner chooses)
 **Files:** `Tools/blender/warden/concepts.py` (seeded, headless); `Tools/blender/warden/render_concepts.py`; output `Docs/ArtTest/warden/`.
