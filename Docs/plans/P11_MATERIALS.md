@@ -1,6 +1,6 @@
 # Phase 11: Materials (surface polish): plan
 
-**Status:** approved by the owner on 2026-11-02. P11-0, P11-1 and P11-2 done; P11-3 done: the owner chose A (D-086). P11-0 to P11-5 done (suite 79/79); P11-6 waits for the owner's "go". The door corners and `Gobo_Moon` specks stay out of scope.
+**Status:** approved by the owner on 2026-11-02. P11-0, P11-1 and P11-2 done; P11-3 done: the owner chose A (D-086). P11-0 to P11-5 done (suite 79/79); P11-6 in progress (spec written, implementation next). The door corners and `Gobo_Moon` specks stay out of scope.
 **Branch:** `claude/phase-11-materials`, from `main` (6dfa29d).
 **Rules:** D-048 applies. The lead plans in Opus 5.5 at xhigh effort; every implementer is spawned with `model: "sonnet", effort: "high"`.
 
@@ -499,10 +499,157 @@ Measured on same-size captures, the defaults change whole images by 2 to 5 % aga
 **Game thread:** 14.84 ms now, 11.38 ms at baseline, with `Frame` at 16.75 ms against the 16.67 ms cap. A material change can't cost game-thread time, so this isn't from the layer, and it isn't explained yet. Check it again in the P11-8 readings.
 
 ### P11-6: decals
-1. **Retune** (instance values only). D-046: leak decals were "too strong, hair-like". For each decal MI in the census, check one capture per area. Lower `Opacity` and adjust `Roughness` until it reads as a stain.
-2. **Crack decals** (none exist; the CC0 sources have no suitable decal). Generate `T_LB_Decal_Crack_A/B/C` procedurally with a Python script in `Tools/materials/` (opacity, normal, 2K, seeded). Three MIs on `M_LB_Decal`. Registry rows ("own work").
-3. **Placement:** at most 40 across the game, where a crack makes structural sense: above arch crowns, near the broken bays and the collapse, at wall bases. The lead writes the exact list here after P11-4, using the census and the final walls.
-4. Never on a puzzle clue, numeral or the memorial tablet.
+
+**Status: spec written by the lead 2026-11-03 from 26 captures of the current decals (`p11_dc0_*`). Implementation below.**
+
+#### What the captures and the data showed
+| Decal | Finding | Cause | Fix |
+|---|---|---|---|
+| `Decal_Leak_N0..2, S0, S1, E0` (`MI_Decal_Leaking006_Wall`, courtyard) | Dark hair hanging in the middle of a wall, with a hard flat edge. **This is the D-046 "hair".** | **The actors have roll 0, not roll 90** (MCP_NOTES: this decal needs roll 90). The 512x2048 texture lies on its side and is squeezed, so its texels stretch into strands. The stain also starts mid-wall with no source. | Roll 90, new size, move up under the coping, softer values |
+| `MI_Decal_Leaking004_Wall` (crypt 9, cloister 3) | Thin black vertical bars at close range | `OpacityStrength` 1.6 and `OpacityContrast` 1.5 clip the strands to solid. The texture's top border has mean alpha 0.41, so the top edge is hard. | Softer values, more edge fade |
+| `MI_Chapel_DampStreak` (7) | Black, with jagged hair-like fringes against the lit reveal of the broken lancet | Inherits 1.6 and 1.5 | Softer values, more edge fade |
+| `MI_Decal_Soot_A/_B` (13) | A dark bar ending in a hard square bottom edge: a sticker | **In the texture.** The plume is densest at its bottom edge and never fades (bottom border mean alpha 0.13 and 0.16). No value on `M_LB_Decal_Grime` can hide that, because it has no edge fade. | Fade the bottom in the generator, new textures, slightly lower `Opacity` |
+| `MI_Decal_DustDrift` (12), `MI_Sa_Decal_DustDrift_Strong` (2) | Reads as earth, not hair, but heavy on the clean paving | Strength only | Lower `Opacity` |
+| `MI_Decal_Mould` (33) | Soft band; every wall decal's bottom edge is on the floor (checked from the census) | None | No change |
+| `WaterStain`, `WaxDrips`, `LeafLitter_A/B`, `DragMarks`, `MI_Sa_Decal_WaterStain_Strong`, `MI_Sa_Decal_WaxDrips_Strong` | Read as intended where they can be seen | None | No change |
+| Chalk, `MI_Decal_LightPool_Lancet` | Puzzle clue; light | Out of scope | Never touch |
+
+So the retune isn't "instance values only" as first planned: six actors and two textures change too, because values can't fix a rotated texture or a hard edge inside a texture. `cl_mould`, `cr_mould`, `cr_leaking004_wall` and `ch_chapel_dampstreak` are close to black in their views, so those four are judged with lifted views as well.
+
+#### Step 1: textures, no editor (technical-artist)
+**1a. Crack generator: new file `Tools/materials/gen_crack_textures.py`.** numpy and PIL only (no scipy), every random number from `numpy.random.default_rng(seed)`, the same result on every run.
+
+`python -I Tools/materials/gen_crack_textures.py [--out ExternalAssets/Generated/materials] [--preview Docs/ArtTest/materials]`
+
+| Set | Size (W x H) | Seed | Shape | Main stem | Branches `k` | `step` |
+|---|---|---|---|---|---|---|
+| A | 2048 x 2048 | 11101 | Long diagonal stepped crack | from (0.16, 0.10) toward (0.84, 0.90); 18 px at the start, 2 px at the end | 6 | 0.30 |
+| B | 1024 x 2048 | 11102 | Vertical crack rising from an arch crown, **thickest at the bottom** | from (0.50, 0.97) toward (0.50 ± 0.12, 0.06); 20 px to 2 px | 5 | 0.12 |
+| C | 2048 x 2048 | 11103 | Short fork | from (0.50, 0.93) straight up for 55 % of the height, 16 px to 6 px, then two prongs at ± 28–40° from it, each 35 % of the height, 6 px to 2 px | 3 | 0 |
+
+Coordinates are (u, v), v down. Draw on a 2x canvas (`Image` mode `L`) and reduce to final size with `Image.LANCZOS`. Pixel widths are final-size pixels.
+
+**The look that matters: a crack is angular, and hair is smooth.** Never smooth, spline or blur the path.
+- **Walker.** Each segment's length is uniform 22–60 px. Its heading is the direction to the target (or the start heading, if there's no target) plus an independent uniform offset of ± 28°. Offsets don't accumulate, so the line zig-zags without curling.
+- **Steps.** With probability `step`, a segment's heading is forced to horizontal ± 8° and its length is multiplied by 1.5, as if the crack ran along a bed joint for a moment.
+- **Width.** `w(s) = (w0 + (w1 - w0) * s ** 0.8) * uniform(0.75, 1.25)` per segment, s = fraction along the line. Each segment is a filled trapezoid, with a filled circle at each joint.
+- **Branches.** `k` stations uniform in s 0.15–0.85, at least 0.12 apart. Heading = local heading ± uniform(25, 55)°, sign random. Length uniform(0.15, 0.35) x main length. `w0` = 0.5 x `w(s)`, `w1` = 1.5 px. Offset ± 22° on branches. A branch longer than 0.22 x main gets one sub-branch: 0.35 x its length, `w0` = half the branch's width there.
+- **Hairlines.** 6–10 extra twigs on stem or branches, 30–90 px, width 1.5 to 1 px, drawn at value 0.6.
+- **Chips.** Along the main stem only, every uniform(120, 260) px: a polygon of 4–6 vertices, radius 4–14 px, on one side of the stem, drawn at value 0.7. These break the edge.
+
+Maps at final size (`core` = the drawing, 0–1):
+- `bleed = GaussianBlur(core, 14 px) * (0.45 + 0.9 * fbm)`, cell 90 px, 3 octaves.
+- `opacity = max(core, 0.22 * clip(bleed, 0, 1))`, multiplied by a border fade of `smoothstep(0, 0.03, min(u, 1 - u))` and the same for v.
+- `h = -GaussianBlur(core, 1.5 px) + 0.25 * GaussianBlur(core, 6 px)`.
+- Normal, DirectX convention (+Y down the image, as `T_Leaking006_N`): `n = normalize(-dh/dx * K, -dh/dy * K, 1)`, K = 6, written as `n * 0.5 + 0.5`. Multiply `h` by the same border fade first, so the map is flat at the edges.
+
+Writes `T_LB_Decal_Crack_{A,B,C}_Opacity.png` (8-bit `L`) and `T_LB_Decal_Crack_{A,B,C}_N.png` (RGB). Previews `Docs/ArtTest/materials/p11_crack_tex_{a,b,c}.png`, 1024 px on the long side: the crack (near-black, by opacity) over a mid-grey stone-like fbm, normal-lit from the upper left.
+
+Checks the script prints and enforces (exit 1 on failure): fraction of pixels with opacity > 0.5 is 0.3–2.5 %; the outer 3 % band has max opacity < 0.01; flat normal at the border; two runs give the same MD5 (run it twice and compare).
+
+**1b. Soot.** In `soot_texture()` of `Tools/textures/gen_chapel_textures.py`, after the line that applies `(1 - smoothstep(0.80, 1.0, t))`, add `a = a * smoothstep(0.0, 0.10, t)`. It uses no random numbers, so nothing else in the texture shifts. In `GRIME`, rename the two entries to `T_LB_Decal_SootSoft_A` and `T_LB_Decal_SootSoft_B` (same seeds and arguments). Run `--only` for those two. Check: bottom 4 rows mean alpha < 0.005; MD5 of every other PNG in `ExternalAssets/Generated/chapel/` unchanged.
+
+**Stop here and report.** The lead looks at the previews before anything goes into the editor.
+
+#### Step 2: editor (technical-artist) [EDITOR]
+New script `Tools/materials/apply_p11_decals.py`, in the style of `set_weathering.py`: `--snapshot FILE` (before-values of everything it changes), `--textures`, `--mis`, `--leaks`, `--cracks`, `--check` (read back everything; exit 1 on a mismatch), `--save`. Refuses to run while PIE runs (`IsPIERunning`). Idempotent by asset name and actor label. Spawn decals as `Tools/crypt/place_crypt.py` `place_decal` does (`add_to_scene_from_class` DecalActor, `set_actor_transform`, `set_label`, `set_actor_folder`, `NewDecalComponent`).
+
+**Snapshot first:** `Docs/ArtTest/materials/p11_6_before.json`.
+
+**Textures** (`--textures`, `TextureTools.import_file`):
+| Assets | Folder | Copy compression, sRGB, LOD group, address, virtual-texture and size settings from |
+|---|---|---|
+| `T_LB_Decal_Crack_{A,B,C}_Opacity` | `/Game/LastBell/Materials/Textures/` | `/Game/LastBell/ArtTest/Decals/Leaking006/T_Leaking006_Opacity` |
+| `T_LB_Decal_Crack_{A,B,C}_N` | same | `/Game/LastBell/ArtTest/Decals/Leaking006/T_Leaking006_N` |
+| `T_LB_Decal_SootSoft_A`, `_B` | `/Game/LastBell/Environments/Chapel/Textures/` | `/Game/LastBell/Environments/Chapel/Textures/T_LB_Decal_Soot_A` |
+
+These are new assets, so nothing overwrites an existing texture. `T_LB_Decal_Soot_A/_B` stay in place, unreferenced; clean-up is decided at phase end.
+
+**New MIs** (`--mis`), `/Game/LastBell/Materials/Instances/MI_Decal_Crack_{A,B,C}`, parent `/Game/LastBell/Materials/Master/M_LB_Decal`, all with explicit overrides:
+| Parameter | Value |
+|---|---|
+| `OpacityTex`, `NormalTex` | the set's two textures |
+| `BaseColorTint` | (0.030, 0.027, 0.024, 1) |
+| `OpacityStrength`, `OpacityContrast`, `NormalStrength` | 1.0, 1.0, 1.0 |
+| `RoughnessScale`, `DarkenStrength`, `DepthFade` | 0.9, 0.35, 0.3 |
+| `EdgeFadeU`, `EdgeFadeV` | 0.03, 0.03 |
+| `DecalHalfDepthCm` | 12 |
+
+`BaseColorTex` and `RoughnessTex` stay at the master's white defaults.
+
+**Retune** (`--mis`; set each as an explicit override, read each back):
+| MI | Parameter: old → new |
+|---|---|
+| `Environments/Courtyard/Materials/MI_Decal_Leaking006_Wall` | `OpacityStrength` 1.6 → 0.85; `OpacityContrast` 1.5 → 1.1; `DarkenStrength` 0.3 → 0.2; `EdgeFadeU` 0.12 → 0.22; `EdgeFadeV` 0.06 → 0.14 |
+| `Environments/Crypt/Materials/MI_Decal_Leaking004_Wall` | `OpacityStrength` 1.6 → 0.75; `OpacityContrast` 1.5 → 1.0; `DarkenStrength` 0.3 → 0.2; `EdgeFadeU` 0.12 → 0.22; `EdgeFadeV` 0.06 → 0.16 |
+| `Environments/Chapel/Materials/MI_Chapel_DampStreak` | `OpacityStrength` 1.6 → 0.6; `OpacityContrast` 1.5 → 1.0; `DarkenStrength` 0.3 → 0.18; `EdgeFadeU` 0.12 → 0.25; `EdgeFadeV` 0.06 → 0.14. `RoughnessScale` and the tint stay |
+| `Materials/Instances/MI_Decal_Soot_A`, `MI_Decal_Soot_B` | `GrimeTex` → `T_LB_Decal_SootSoft_A`, `_B`; `Opacity` 1 → 0.8 |
+| `Materials/Instances/MI_Decal_DustDrift` | `Opacity` 1 → 0.75 |
+| `Environments/Chapel/Materials/MI_Sa_Decal_DustDrift_Strong` | `Opacity` 2 → 1.4 |
+
+`MI_Chapel_DampStreak` is a child of `MI_Decal_Leaking006_Wall`, so set its overrides explicitly and check them after the parent's change. `MI_Leaking006` (ArtTest parent) doesn't change.
+
+**The six courtyard leaks** (`--leaks`): same X and Y and yaw as now. Rotation (0, yaw, **90**), `decalSize` (12, 200, 50), Z **600**. The wall was traced at these spots: it's there at Z 400, 600 and 790 and gone by 830, so the stain starts under the coping. Pass location, rotation and scale to `set_actor_transform`.
+
+**39 crack decals** (`--cracks`) from `Tools/materials/p11_crack_decals.json`, unchanged, as `DecalActor`, folder `Dressing/Decals/Cracks`, `sortOrder` 1 so they draw over stains, `fadeScreenSize` left at its default. No collision change. The table below is that file.
+
+**Never:** a crack within 2 m of a clue, numeral or tablet (`make_crack_placements.py` enforces this and the no-go walls: chapel north wall X 8000–9000, cloister bell wall Y 1950–2800, crypt lever wall X 10600–11200). A label not in the file. Any change to `MI_Decal_Mould`, chalk or light-pool MIs.
+
+**Save** (`--save`, one package per `save_assets`, 5 s apart): the 8 textures, 3 new MIs, the 6 retuned MIs and then `L_Monastery`. `M_LB_Surface` shows dirty and **must never be saved**. If anything else is dirty, report it and don't save it.
+
+**Then:** `--check`; Output Log clean; suite (79/79); registry rows (crack textures "own work", `Tools/materials/gen_crack_textures.py`, seeds 11101–11103; the soot row gains the two SootSoft names); commit to the current branch only. **No captures:** those need the owner at the PC.
+
+#### Step 3: review (lead, with the owner at the PC)
+1. `capture_session.py Tools/materials/poses/p11_crack_poses.json Docs/ArtTest/materials --prefix p11_ck1_ --mode editor`: all 39, fast, to check placement. The entries marked "check in capture" (gate, south archway, two cloister arcade arches, all six crypt) have no trace behind them, so a miss shows here.
+2. `capture_session.py Tools/materials/poses/p11_decal_poses.json Docs/ArtTest/materials --prefix p11_dc1_ --mode simulate`: the same 26 views as `p11_dc0_`, side by side.
+3. **Pass:** each decal reads as a stain or crack from play distance: no hard rectangle edge, no strands, no crack on a clue. A crack that reads as a hair or a scratch fails. Tune within: leak `OpacityStrength` 0.5–1.1, soot `Opacity` 0.6–1.0; cracks `OpacityStrength` 0.7–1.0, `NormalStrength` 0.5–1.5. A crack still wrong after one round is deleted from the list, not forced.
+4. Suite again, save only what changed, commit, close D-046, report, and ask for "go" before P11-7.
+
+GPU: 126 decals become 165. Decals cost by screen area, and these are small. The P11-8 reading at six spots covers it; "fewer decals" is already the third cut.
+
+#### Crack list
+
+| Label | MI | Location | Rotation (P, Y, R) | DecalSize | Where |
+|---|---|---|---|---|---|
+| `Crack_Co_ArcN_Crown` | C | 2500, 922, 650 | 0, 90, 90 | 12, 45, 45 | crown of the intact north bay, garth side |
+| `Crack_Co_ArcS_Crown` | C | 4500, -922, 650 | 0, -90, 270 | 12, 45, 45 | crown of the intact south bay, garth side |
+| `Crack_Co_ArcN_BrokenA` | A | 3170, 922, 630 | 0, 90, 90 | 12, 70, 70 | standing stub of the north bay 3000 |
+| `Crack_Co_ArcN_BrokenB` | A | 4830, 922, 630 | 0, 90, 270 | 12, 70, 70 | standing stub of the north bay 4000 |
+| `Crack_Co_ArcS_BrokenA` | A | 2170, -922, 630 | 0, -90, 75 | 12, 70, 70 | standing stub of the south bay 2000 |
+| `Crack_Co_ArcS_BrokenB` | A | 3830, -922, 630 | 0, -90, 255 | 12, 70, 70 | standing stub of the south bay 3000 |
+| `Crack_Co_WallN_05` | B | 2200, 2500, 400 | 0, 90, 90 | 12, 240, 120 | curtain wall west of the broken panel N_05 |
+| `Crack_Co_WallN_10` | A | 4840, 2500, 430 | 0, 90, 110 | 12, 170, 170 | curtain wall east of the broken panel N_10 |
+| `Crack_Co_WallS_03` | A | 2020, -2500, 430 | 0, -90, 75 | 12, 170, 170 | curtain wall east of the broken panel S_03 |
+| `Crack_Co_WallS_08` | B | 3410, -2500, 400 | 0, -90, 90 | 12, 240, 120 | curtain wall west of the broken panel S_08 |
+| `Crack_Co_GateCrown` | B | 300, 0, 720 | 0, 180, 90 | 12, 80, 40 | crown of the gate arch, courtyard side (check in capture) |
+| `Crack_Co_FrontCrown` | B | 6000, 0, 490 | 0, 0, 90 | 12, 120, 60 | above the chapel door, outside |
+| `Crack_Ch_S_HoleW` | A | 6210, -750, 620 | 0, -90, 80 | 12, 150, 150 | west of the broken lancet |
+| `Crack_Ch_S_HoleE` | B | 6800, -750, 500 | 0, -90, 90 | 12, 210, 105 | east of the broken lancet |
+| `Crack_Ch_DoorCrown` | C | 6060, -0, 440 | 0, 180, 90 | 12, 60, 60 | above the main door, inside |
+| `Crack_Ch_N_Base` | C | 7000, 750, 95 | 0, 90, 270 | 12, 60, 60 | base of the north wall |
+| `Crack_Ch_S_Base` | C | 8000, -750, 95 | 0, -90, 90 | 12, 60, 60 | base of the south wall |
+| `Crack_Ch_E_Base` | C | 8960, -640, 95 | 0, 0, 90 | 12, 60, 60 | base of the east wall, south corner |
+| `Crack_Ch_N_High` | A | 7000, 750, 830 | 0, 90, 100 | 12, 170, 170 | high on the north wall between the soot marks |
+| `Crack_Sa_E_Base` | C | 8960, -1200, 95 | 0, 0, 270 | 12, 55, 55 | base of the sacristy east wall |
+| `Crack_Cl_N_CollapseW` | A | 10640, 3000, 430 | 0, 90, 80 | 12, 170, 170 | north wall west of the vault collapse |
+| `Crack_Cl_N_CollapseE` | B | 11260, 3000, 400 | 0, 90, 90 | 12, 230, 115 | north wall east of the vault collapse |
+| `Crack_Cl_N_Base` | C | 10150, 3000, 95 | 0, 90, 90 | 12, 60, 60 | base of the north wall |
+| `Crack_Cl_W_Base` | C | 9500, 1000, 95 | 0, 180, 270 | 12, 60, 60 | base of the west wall |
+| `Crack_Cl_ArchW_Crown` | B | 9500, 2000, 560 | 0, 180, 90 | 12, 120, 60 | crown of the west archway, inside |
+| `Crack_Cl_ArchS_Crown` | B | 10650, 546, 455 | 0, -90, 90 | 12, 120, 60 | crown of the south archway, inside (check in capture) |
+| `Crack_Cl_ArcN_Crown` | C | 11050, 2205, 585 | 0, 90, 90 | 12, 40, 40 | arcade arch under the vault collapse, garth side (check in capture) |
+| `Crack_Cl_ArcS_Crown` | C | 10750, 1395, 585 | 0, -90, 270 | 12, 40, 40 | south arcade arch, garth side (check in capture) |
+| `Crack_Cr_WC_W` | A | 6300, -1750, -400 | 0, 180, 80 | 12, 120, 120 | west corridor, west wall (check in capture) |
+| `Crack_Cr_SC_S` | A | 6900, -2500, -400 | 0, -90, 255 | 12, 120, 120 | south corridor, south wall (check in capture) |
+| `Crack_Cr_FP_S` | B | 9360, -2460, -400 | 0, -90, 90 | 12, 170, 85 | flooded pit, south wall between the leaks (check in capture) |
+| `Crack_Cr_FP_N` | A | 9625, -2100, -400 | 0, 90, 100 | 12, 110, 110 | flooded pit, north wall between the leaks (check in capture) |
+| `Crack_Cr_CC_S` | A | 10700, -2500, -400 | 0, -90, 80 | 12, 130, 130 | winch chamber, south wall (check in capture) |
+| `Crack_Cr_NC_N` | C | 11150, -700, -420 | 0, 90, 90 | 12, 70, 70 | north chamber, north wall (check in capture) |
+| `Crack_Tw_SW_A` | A | 12300, 1540, 2900 | 0, -90, 80 | 12, 170, 170 | south wall beside the broken corner |
+| `Crack_Tw_SW_B` | B | 12040, 1800, 2900 | 0, 180, 90 | 12, 230, 115 | west wall beside the broken corner |
+| `Crack_Tw_E_Base` | C | 12960, 2000, 95 | 0, 0, 90 | 12, 60, 60 | base of the east wall |
+| `Crack_Tw_E_Mid` | A | 12960, 2200, 850 | 0, 0, 100 | 12, 150, 150 | east wall, lower stair |
+| `Crack_Tw_N_Mid` | B | 12500, 2460, 1550 | 0, 90, 270 | 12, 200, 100 | north wall, upper stair |
 
 ### P11-7: lantern glass (closes R-32)
 1. New MI `/Game/LastBell/Materials/Instances/MI_LB_LanternGlass_Lit`, parent `M_LB_UnlitEmissive`. `Color` = (1.0, 0.549, 0.2196) × 2.0.

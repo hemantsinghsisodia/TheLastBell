@@ -1,0 +1,821 @@
+[
+ {
+  "label": "Crack_Co_ArcN_Crown",
+  "mi": "MI_Decal_Crack_C",
+  "location": {
+   "x": 2500.0,
+   "y": 922.0,
+   "z": 650
+  },
+  "rotation": {
+   "pitch": 0,
+   "yaw": 90,
+   "roll": 90
+  },
+  "size": {
+   "x": 12,
+   "y": 45,
+   "z": 45
+  },
+  "plane": "",
+  "note": "crown of the intact north bay, garth side"
+ },
+ {
+  "label": "Crack_Co_ArcS_Crown",
+  "mi": "MI_Decal_Crack_C",
+  "location": {
+   "x": 4500.0,
+   "y": -922.0,
+   "z": 650
+  },
+  "rotation": {
+   "pitch": 0,
+   "yaw": -90,
+   "roll": 270
+  },
+  "size": {
+   "x": 12,
+   "y": 45,
+   "z": 45
+  },
+  "plane": "",
+  "note": "crown of the intact south bay, garth side"
+ },
+ {
+  "label": "Crack_Co_ArcN_BrokenA",
+  "mi": "MI_Decal_Crack_A",
+  "location": {
+   "x": 3170.0,
+   "y": 922.0,
+   "z": 630
+  },
+  "rotation": {
+   "pitch": 0,
+   "yaw": 90,
+   "roll": 90
+  },
+  "size": {
+   "x": 12,
+   "y": 70,
+   "z": 70
+  },
+  "plane": "",
+  "note": "standing stub of the north bay 3000"
+ },
+ {
+  "label": "Crack_Co_ArcN_BrokenB",
+  "mi": "MI_Decal_Crack_A",
+  "location": {
+   "x": 4830.0,
+   "y": 922.0,
+   "z": 630
+  },
+  "rotation": {
+   "pitch": 0,
+   "yaw": 90,
+   "roll": 270
+  },
+  "size": {
+   "x": 12,
+   "y": 70,
+   "z": 70
+  },
+  "plane": "",
+  "note": "standing stub of the north bay 4000"
+ },
+ {
+  "label": "Crack_Co_ArcS_BrokenA",
+  "mi": "MI_Decal_Crack_A",
+  "location": {
+   "x": 2170.0,
+   "y": -922.0,
+   "z": 630
+  },
+  "rotation": {
+   "pitch": 0,
+   "yaw": -90,
+   "roll": 75
+  },
+  "size": {
+   "x": 12,
+   "y": 70,
+   "z": 70
+  },
+  "plane": "",
+  "note": "standing stub of the south bay 2000"
+ },
+ {
+  "label": "Crack_Co_ArcS_BrokenB",
+  "mi": "MI_Decal_Crack_A",
+  "location": {
+   "x": 3830.0,
+   "y": -922.0,
+   "z": 630
+  },
+  "rotation": {
+   "pitch": 0,
+   "yaw": -90,
+   "roll": 255
+  },
+  "size": {
+   "x": 12,
+   "y": 70,
+   "z": 70
+  },
+  "plane": "",
+  "note": "standing stub of the south bay 3000"
+ },
+ {
+  "label": "Crack_Co_WallN_05",
+  "mi": "MI_Decal_Crack_B",
+  "location": {
+   "x": 2200.0,
+   "y": 2500.0,
+   "z": 400
+  },
+  "rotation": {
+   "pitch": 0,
+   "yaw": 90,
+   "roll": 90
+  },
+  "size": {
+   "x": 12,
+   "y": 240,
+   "z": 120
+  },
+  "plane": "",
+  "note": "curtain wall west of the broken panel N_05"
+ },
+ {
+  "label": "Crack_Co_WallN_10",
+  "mi": "MI_Decal_Crack_A",
+  "location": {
+   "x": 4840.0,
+   "y": 2500.0,
+   "z": 430
+  },
+  "rotation": {
+   "pitch": 0,
+   "yaw": 90,
+   "roll": 110
+  },
+  "size": {
+   "x": 12,
+   "y": 170,
+   "z": 170
+  },
+  "plane": "",
+  "note": "curtain wall east of the broken panel N_10"
+ },
+ {
+  "label": "Crack_Co_WallS_03",
+  "mi": "MI_Decal_Crack_A",
+  "location": {
+   "x": 2020.0,
+   "y": -2500.0,
+   "z": 430
+  },
+  "rotation": {
+   "pitch": 0,
+   "yaw": -90,
+   "roll": 75
+  },
+  "size": {
+   "x": 12,
+   "y": 170,
+   "z": 170
+  },
+  "plane": "",
+  "note": "curtain wall east of the broken panel S_03"
+ },
+ {
+  "label": "Crack_Co_WallS_08",
+  "mi": "MI_Decal_Crack_B",
+  "location": {
+   "x": 3410.0,
+   "y": -2500.0,
+   "z": 400
+  },
+  "rotation": {
+   "pitch": 0,
+   "yaw": -90,
+   "roll": 90
+  },
+  "size": {
+   "x": 12,
+   "y": 240,
+   "z": 120
+  },
+  "plane": "",
+  "note": "curtain wall west of the broken panel S_08"
+ },
+ {
+  "label": "Crack_Co_GateCrown",
+  "mi": "MI_Decal_Crack_B",
+  "location": {
+   "x": 300,
+   "y": 0,
+   "z": 720
+  },
+  "rotation": {
+   "pitch": 0,
+   "yaw": 180,
+   "roll": 90
+  },
+  "size": {
+   "x": 12,
+   "y": 80,
+   "z": 40
+  },
+  "plane": "bounds",
+  "note": "crown of the gate arch, courtyard side"
+ },
+ {
+  "label": "Crack_Co_FrontCrown",
+  "mi": "MI_Decal_Crack_B",
+  "location": {
+   "x": 6000.0,
+   "y": 0.0,
+   "z": 490
+  },
+  "rotation": {
+   "pitch": 0,
+   "yaw": 0,
+   "roll": 90
+  },
+  "size": {
+   "x": 12,
+   "y": 120,
+   "z": 60
+  },
+  "plane": "",
+  "note": "above the chapel door, outside"
+ },
+ {
+  "label": "Crack_Ch_S_HoleW",
+  "mi": "MI_Decal_Crack_A",
+  "location": {
+   "x": 6210.0,
+   "y": -750.0,
+   "z": 620
+  },
+  "rotation": {
+   "pitch": 0,
+   "yaw": -90,
+   "roll": 80
+  },
+  "size": {
+   "x": 12,
+   "y": 150,
+   "z": 150
+  },
+  "plane": "",
+  "note": "west of the broken lancet"
+ },
+ {
+  "label": "Crack_Ch_S_HoleE",
+  "mi": "MI_Decal_Crack_B",
+  "location": {
+   "x": 6800.0,
+   "y": -750.0,
+   "z": 500
+  },
+  "rotation": {
+   "pitch": 0,
+   "yaw": -90,
+   "roll": 90
+  },
+  "size": {
+   "x": 12,
+   "y": 210,
+   "z": 105
+  },
+  "plane": "",
+  "note": "east of the broken lancet"
+ },
+ {
+  "label": "Crack_Ch_DoorCrown",
+  "mi": "MI_Decal_Crack_C",
+  "location": {
+   "x": 6060.0,
+   "y": -0.0,
+   "z": 440
+  },
+  "rotation": {
+   "pitch": 0,
+   "yaw": 180,
+   "roll": 90
+  },
+  "size": {
+   "x": 12,
+   "y": 60,
+   "z": 60
+  },
+  "plane": "",
+  "note": "above the main door, inside"
+ },
+ {
+  "label": "Crack_Ch_N_Base",
+  "mi": "MI_Decal_Crack_C",
+  "location": {
+   "x": 7000.0,
+   "y": 750.0,
+   "z": 95
+  },
+  "rotation": {
+   "pitch": 0,
+   "yaw": 90,
+   "roll": 270
+  },
+  "size": {
+   "x": 12,
+   "y": 60,
+   "z": 60
+  },
+  "plane": "",
+  "note": "base of the north wall"
+ },
+ {
+  "label": "Crack_Ch_S_Base",
+  "mi": "MI_Decal_Crack_C",
+  "location": {
+   "x": 8000.0,
+   "y": -750.0,
+   "z": 95
+  },
+  "rotation": {
+   "pitch": 0,
+   "yaw": -90,
+   "roll": 90
+  },
+  "size": {
+   "x": 12,
+   "y": 60,
+   "z": 60
+  },
+  "plane": "",
+  "note": "base of the south wall"
+ },
+ {
+  "label": "Crack_Ch_E_Base",
+  "mi": "MI_Decal_Crack_C",
+  "location": {
+   "x": 8960.0,
+   "y": -640.0,
+   "z": 95
+  },
+  "rotation": {
+   "pitch": 0,
+   "yaw": 0,
+   "roll": 90
+  },
+  "size": {
+   "x": 12,
+   "y": 60,
+   "z": 60
+  },
+  "plane": "",
+  "note": "base of the east wall, south corner"
+ },
+ {
+  "label": "Crack_Ch_N_High",
+  "mi": "MI_Decal_Crack_A",
+  "location": {
+   "x": 7000.0,
+   "y": 750.0,
+   "z": 830
+  },
+  "rotation": {
+   "pitch": 0,
+   "yaw": 90,
+   "roll": 100
+  },
+  "size": {
+   "x": 12,
+   "y": 170,
+   "z": 170
+  },
+  "plane": "",
+  "note": "high on the north wall between the soot marks"
+ },
+ {
+  "label": "Crack_Sa_E_Base",
+  "mi": "MI_Decal_Crack_C",
+  "location": {
+   "x": 8960.0,
+   "y": -1200.0,
+   "z": 95
+  },
+  "rotation": {
+   "pitch": 0,
+   "yaw": 0,
+   "roll": 270
+  },
+  "size": {
+   "x": 12,
+   "y": 55,
+   "z": 55
+  },
+  "plane": "",
+  "note": "base of the sacristy east wall"
+ },
+ {
+  "label": "Crack_Cl_N_CollapseW",
+  "mi": "MI_Decal_Crack_A",
+  "location": {
+   "x": 10640.0,
+   "y": 3000.0,
+   "z": 430
+  },
+  "rotation": {
+   "pitch": 0,
+   "yaw": 90,
+   "roll": 80
+  },
+  "size": {
+   "x": 12,
+   "y": 170,
+   "z": 170
+  },
+  "plane": "",
+  "note": "north wall west of the vault collapse"
+ },
+ {
+  "label": "Crack_Cl_N_CollapseE",
+  "mi": "MI_Decal_Crack_B",
+  "location": {
+   "x": 11260.0,
+   "y": 3000.0,
+   "z": 400
+  },
+  "rotation": {
+   "pitch": 0,
+   "yaw": 90,
+   "roll": 90
+  },
+  "size": {
+   "x": 12,
+   "y": 230,
+   "z": 115
+  },
+  "plane": "",
+  "note": "north wall east of the vault collapse"
+ },
+ {
+  "label": "Crack_Cl_N_Base",
+  "mi": "MI_Decal_Crack_C",
+  "location": {
+   "x": 10150.0,
+   "y": 3000.0,
+   "z": 95
+  },
+  "rotation": {
+   "pitch": 0,
+   "yaw": 90,
+   "roll": 90
+  },
+  "size": {
+   "x": 12,
+   "y": 60,
+   "z": 60
+  },
+  "plane": "",
+  "note": "base of the north wall"
+ },
+ {
+  "label": "Crack_Cl_W_Base",
+  "mi": "MI_Decal_Crack_C",
+  "location": {
+   "x": 9500.0,
+   "y": 1000.0,
+   "z": 95
+  },
+  "rotation": {
+   "pitch": 0,
+   "yaw": 180,
+   "roll": 270
+  },
+  "size": {
+   "x": 12,
+   "y": 60,
+   "z": 60
+  },
+  "plane": "",
+  "note": "base of the west wall"
+ },
+ {
+  "label": "Crack_Cl_ArchW_Crown",
+  "mi": "MI_Decal_Crack_B",
+  "location": {
+   "x": 9500.0,
+   "y": 2000.0,
+   "z": 560
+  },
+  "rotation": {
+   "pitch": 0,
+   "yaw": 180,
+   "roll": 90
+  },
+  "size": {
+   "x": 12,
+   "y": 120,
+   "z": 60
+  },
+  "plane": "",
+  "note": "crown of the west archway, inside"
+ },
+ {
+  "label": "Crack_Cl_ArchS_Crown",
+  "mi": "MI_Decal_Crack_B",
+  "location": {
+   "x": 10650,
+   "y": 546,
+   "z": 455
+  },
+  "rotation": {
+   "pitch": 0,
+   "yaw": -90,
+   "roll": 90
+  },
+  "size": {
+   "x": 12,
+   "y": 120,
+   "z": 60
+  },
+  "plane": "bounds",
+  "note": "crown of the south archway, inside"
+ },
+ {
+  "label": "Crack_Cl_ArcN_Crown",
+  "mi": "MI_Decal_Crack_C",
+  "location": {
+   "x": 11050,
+   "y": 2205,
+   "z": 585
+  },
+  "rotation": {
+   "pitch": 0,
+   "yaw": 90,
+   "roll": 90
+  },
+  "size": {
+   "x": 12,
+   "y": 40,
+   "z": 40
+  },
+  "plane": "bounds",
+  "note": "arcade arch under the vault collapse, garth side"
+ },
+ {
+  "label": "Crack_Cl_ArcS_Crown",
+  "mi": "MI_Decal_Crack_C",
+  "location": {
+   "x": 10750,
+   "y": 1395,
+   "z": 585
+  },
+  "rotation": {
+   "pitch": 0,
+   "yaw": -90,
+   "roll": 270
+  },
+  "size": {
+   "x": 12,
+   "y": 40,
+   "z": 40
+  },
+  "plane": "bounds",
+  "note": "south arcade arch, garth side"
+ },
+ {
+  "label": "Crack_Cr_WC_W",
+  "mi": "MI_Decal_Crack_A",
+  "location": {
+   "x": 6300,
+   "y": -1750,
+   "z": -400
+  },
+  "rotation": {
+   "pitch": 0,
+   "yaw": 180,
+   "roll": 80
+  },
+  "size": {
+   "x": 12,
+   "y": 120,
+   "z": 120
+  },
+  "plane": "decal",
+  "note": "west corridor, west wall"
+ },
+ {
+  "label": "Crack_Cr_SC_S",
+  "mi": "MI_Decal_Crack_A",
+  "location": {
+   "x": 6900,
+   "y": -2500,
+   "z": -400
+  },
+  "rotation": {
+   "pitch": 0,
+   "yaw": -90,
+   "roll": 255
+  },
+  "size": {
+   "x": 12,
+   "y": 120,
+   "z": 120
+  },
+  "plane": "decal",
+  "note": "south corridor, south wall"
+ },
+ {
+  "label": "Crack_Cr_FP_S",
+  "mi": "MI_Decal_Crack_B",
+  "location": {
+   "x": 9360,
+   "y": -2460,
+   "z": -400
+  },
+  "rotation": {
+   "pitch": 0,
+   "yaw": -90,
+   "roll": 90
+  },
+  "size": {
+   "x": 12,
+   "y": 170,
+   "z": 85
+  },
+  "plane": "decal",
+  "note": "flooded pit, south wall between the leaks"
+ },
+ {
+  "label": "Crack_Cr_FP_N",
+  "mi": "MI_Decal_Crack_A",
+  "location": {
+   "x": 9625,
+   "y": -2100,
+   "z": -400
+  },
+  "rotation": {
+   "pitch": 0,
+   "yaw": 90,
+   "roll": 100
+  },
+  "size": {
+   "x": 12,
+   "y": 110,
+   "z": 110
+  },
+  "plane": "decal",
+  "note": "flooded pit, north wall between the leaks"
+ },
+ {
+  "label": "Crack_Cr_CC_S",
+  "mi": "MI_Decal_Crack_A",
+  "location": {
+   "x": 10700,
+   "y": -2500,
+   "z": -400
+  },
+  "rotation": {
+   "pitch": 0,
+   "yaw": -90,
+   "roll": 80
+  },
+  "size": {
+   "x": 12,
+   "y": 130,
+   "z": 130
+  },
+  "plane": "decal",
+  "note": "winch chamber, south wall"
+ },
+ {
+  "label": "Crack_Cr_NC_N",
+  "mi": "MI_Decal_Crack_C",
+  "location": {
+   "x": 11150,
+   "y": -700,
+   "z": -420
+  },
+  "rotation": {
+   "pitch": 0,
+   "yaw": 90,
+   "roll": 90
+  },
+  "size": {
+   "x": 12,
+   "y": 70,
+   "z": 70
+  },
+  "plane": "decal",
+  "note": "north chamber, north wall"
+ },
+ {
+  "label": "Crack_Tw_SW_A",
+  "mi": "MI_Decal_Crack_A",
+  "location": {
+   "x": 12300.0,
+   "y": 1540.0,
+   "z": 2900
+  },
+  "rotation": {
+   "pitch": 0,
+   "yaw": -90,
+   "roll": 80
+  },
+  "size": {
+   "x": 12,
+   "y": 170,
+   "z": 170
+  },
+  "plane": "",
+  "note": "south wall beside the broken corner"
+ },
+ {
+  "label": "Crack_Tw_SW_B",
+  "mi": "MI_Decal_Crack_B",
+  "location": {
+   "x": 12040.0,
+   "y": 1800.0,
+   "z": 2900
+  },
+  "rotation": {
+   "pitch": 0,
+   "yaw": 180,
+   "roll": 90
+  },
+  "size": {
+   "x": 12,
+   "y": 230,
+   "z": 115
+  },
+  "plane": "",
+  "note": "west wall beside the broken corner"
+ },
+ {
+  "label": "Crack_Tw_E_Base",
+  "mi": "MI_Decal_Crack_C",
+  "location": {
+   "x": 12960.0,
+   "y": 2000.0,
+   "z": 95
+  },
+  "rotation": {
+   "pitch": 0,
+   "yaw": 0,
+   "roll": 90
+  },
+  "size": {
+   "x": 12,
+   "y": 60,
+   "z": 60
+  },
+  "plane": "",
+  "note": "base of the east wall"
+ },
+ {
+  "label": "Crack_Tw_E_Mid",
+  "mi": "MI_Decal_Crack_A",
+  "location": {
+   "x": 12960.0,
+   "y": 2200.0,
+   "z": 850
+  },
+  "rotation": {
+   "pitch": 0,
+   "yaw": 0,
+   "roll": 100
+  },
+  "size": {
+   "x": 12,
+   "y": 150,
+   "z": 150
+  },
+  "plane": "",
+  "note": "east wall, lower stair"
+ },
+ {
+  "label": "Crack_Tw_N_Mid",
+  "mi": "MI_Decal_Crack_B",
+  "location": {
+   "x": 12500.0,
+   "y": 2460.0,
+   "z": 1550
+  },
+  "rotation": {
+   "pitch": 0,
+   "yaw": 90,
+   "roll": 270
+  },
+  "size": {
+   "x": 12,
+   "y": 200,
+   "z": 100
+  },
+  "plane": "",
+  "note": "north wall, upper stair"
+ }
+]
