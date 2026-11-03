@@ -452,11 +452,32 @@ return float3(wall * saturate(band * GrimeBaseAmount + streak * StreakAmount), w
 #### P11-5b: regression (lead + owner)
 A thumbnail comparison needs two recompiles (MCP_NOTES), which is an extra GPU risk. Instead, with every switch still off, the lead re-captures `cy_tall_north_15m`, `cy_west_front_15m`, `cl_lantern_bells_3m`, `ch_candle_altar_3m` and compares them with `p11_a2_`: mean absolute difference at most 2/255 per image.
 
+**Result (`p11_r5_*`, `Tools/materials/compare_captures.py`): three views pass; `cl_lantern_bells_3m` is over the literal limit at 3.61/255. Accepted by the lead as not a material change, for the reasons below.**
+
+The editor viewport had changed size between the two sets (1331x808 for `p11_a2_`, 1335x862 for `p11_r5_`, after the editor was reopened), so the comparison has to scale one image, and scaling alone creates a difference on sharp detail. The horizontal field of view is fixed, so `compare_captures.py` scales to the same width and centre-crops; the best scale from a search was 1.0000 of that, so the two sets line up.
+
+| View | Real difference | Control: the old image scaled only, no new render | 16x downsampled (area brightness only) |
+|---|---|---|---|
+| `cy_tall_north_15m` | 1.42 | 2.17 | 0.39 |
+| `cy_west_front_15m` | 1.73 | 2.33 | 0.52 |
+| `cl_lantern_bells_3m` | **3.61** | 5.19 | 0.53 |
+| `ch_candle_altar_3m` | 1.96 | 2.89 | 0.54 |
+
+In every view the real difference is below what scaling alone creates, the area brightness difference of the failing view matches the passing ones, and its difference picture lights up only at edges and fine stone detail, with no surface shifted. It is the highest because it is a close-up full of sharp, strongly lit texture.
+
+**The limit of this evidence:** no same-size comparison exists, because that would need the old master back. A small change hidden below the scaling noise can't be ruled out by these pictures. The static switch compiles only its False branch, so none is expected.
+
 #### P11-5c: rollout and tuning (lead + owner)
-1. `bWeathering` on for `MI_Kit_Masonry` and `MI_Kit_Trim`; off on `MI_Cl_CarveDirt`.
-2. **Tuning, values only:** `GrimeBaseAmount` 0.2–0.6, `StreakAmount` 0.15–0.45, `PatchAmount` 0.1–0.5.
-3. **Captures:** the 24 poses. The 15 m views should show no wallpaper repeat; streaks and the grime band should read as weather, with no hard edge across wall pieces. The memorial stays legible.
-4. **GPU (owner, 1 minute):** one reading at the chapel mid-nave spot. Budget ≤ 16.6 ms. If over: the P11-8 cut list, before any decal work.
+**Floor check:** `WeatherFloorZ` stays 0. Every wall piece that gets the layer starts at or above Z -30 (census), and the courtyard, chapel, cloister and passage floors are at about 0. Upper tower pieces are above the band, so they get streaks and patches only.
+
+**Parents (census):** `MI_Chapel_Masonry_Interior` and `MI_Env_TowerStone` inherit from `MI_Kit_Masonry`; `MI_Chapel_Trim_Dusty` and `MI_Cl_CarveDirt` from `MI_Kit_Trim`. `MI_Crypt_StoneWA` is directly on `M_LB_Surface` and `MI_Kit_Rubble` is on `MI_Rock_064`, so neither is reached.
+
+1. **Technical-artist [EDITOR]:** `Tools/materials/set_weathering.py`, then in this order: `bWeathering` off on `MI_Cl_CarveDirt` first, so the memorial never gets the layer; on for `MI_Kit_Masonry`; on for `MI_Kit_Trim`. **Nothing is saved yet.** A GPU crash on the first render of the new shaders then falls back to the switches being off, instead of a project that compiles them again on every load.
+2. **Lead + owner:** the 24 poses, prefix `p11_w1_`, with luma. The 15 m views should show no wallpaper repeat; streaks and the grime band should read as weather, with no hard edge across wall pieces. The memorial stays legible.
+3. **Tuning, values only,** same value on `MI_Kit_Masonry` and `MI_Kit_Trim` so no edge forms where they meet: `GrimeBaseAmount` 0.2–0.6, `StreakAmount` 0.15–0.45, `PatchAmount` 0.1–0.5. Re-capture only what is needed to judge the change.
+4. **Save** once the look is accepted: each changed MI alone, one package per `save_assets` call, `is_dirty` checked after each.
+5. **GPU (owner, 1 minute):** one reading at the chapel mid-nave spot. Budget ≤ 16.6 ms; baseline 15.32 ms. If over: the P11-8 cut list, before any decal work.
+6. **Suite** on the mirror, and report. P11-6 waits for the owner's "go".
 
 ### P11-6: decals
 1. **Retune** (instance values only). D-046: leak decals were "too strong, hair-like". For each decal MI in the census, check one capture per area. Lower `Opacity` and adjust `Roughness` until it reads as a stain.
