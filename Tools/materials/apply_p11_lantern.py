@@ -3,7 +3,7 @@
 Spec: Docs/plans/P11_MATERIALS.md, section "P11-7: lantern glass", "Step 1: editor". Run with -I, editor open on
 L_Monastery, no PIE (every mode refuses while PIE runs). Exactly one mode per run:
     --snapshot FILE   read-only: the glass slot's material, the mesh's slots, bounds, Nanite state, collision tags, dirty state
-    --apply           create MI_LB_LanternGlass_Lit (parent M_LB_UnlitEmissive), Color = (1, 0.549, 0.2196, 1) x 2.0, then
+    --apply           create MI_LB_LanternGlass_Lit (parent M_LB_UnlitEmissive), Color = BASE (1, 0.45, 0.10, 1) x 2.0, then
                       StaticMeshTools.set_material on the glass slot ONLY; read back
     --multiplier M    Color = base x M, 1 <= M <= 4 (refuses anything else); the MI must exist
     --check           read back everything; exit 1 on any mismatch (needs the snapshot file, see --snap-file)
@@ -40,8 +40,8 @@ NEW_PKG = f"{NEW_FOLDER}/{NEW_NAME}"
 MASTER_PKG = "/Game/LastBell/Materials/Master/M_LB_UnlitEmissive"
 GLASS_SLOT = "wooden_lantern_01_glass"
 FRAME_SLOT = "wooden_lantern_01"
-BASE = (1.0, 0.549, 0.2196, 1.0)     # (255, 140, 56) / 255, the lanterns' light colour
-DEFAULT_MULT = 2.0
+BASE = (1.0, 0.45, 0.10, 1.0)        # round 2 (lead): more saturated than the lanterns' light colour (255, 140, 56) / 255, so it does not tonemap to cream
+DEFAULT_MULT = 2.0   # --apply only; round 2 tuned with --multiplier 1.7
 CENSUS = os.path.join(ROOT, "Docs", "ArtTest", "materials", "census_p11.json")
 DEFAULT_SNAP = os.path.join(ROOT, "Docs", "ArtTest", "materials", "p11_7_before.json")
 PAUSE_S = 5
