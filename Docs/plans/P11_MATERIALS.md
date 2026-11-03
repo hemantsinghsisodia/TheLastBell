@@ -1,6 +1,6 @@
 # Phase 11: Materials (surface polish): plan
 
-**Status:** approved by the owner on 2026-11-02. P11-0, P11-1 and P11-2 done; P11-3 done: the owner chose A (D-086). P11-0 to P11-6 done (suite 79/79); P11-7 waits for the owner's "go". The door corners and `Gobo_Moon` specks stay out of scope.
+**Status:** approved by the owner on 2026-11-02. P11-0, P11-1 and P11-2 done; P11-3 done: the owner chose A (D-086). P11-0 to P11-6 done (suite 79/79); P11-7 in progress. The door corners and `Gobo_Moon` specks stay out of scope.
 **Branch:** `claude/phase-11-materials`, from `main` (6dfa29d).
 **Rules:** D-048 applies. The lead plans in Opus 5.5 at xhigh effort; every implementer is spawned with `model: "sonnet", effort: "high"`.
 
@@ -702,10 +702,41 @@ Left over, for phase end: `T_LB_Decal_Soot_A/_B` are unreferenced. Lessons for M
 | `Crack_Tw_N_Mid` | B | 12500, 2460, 1550 | 0, 90, 270 | 12, 200, 100 | north wall, upper stair |
 
 ### P11-7: lantern glass (closes R-32)
-1. New MI `/Game/LastBell/Materials/Instances/MI_LB_LanternGlass_Lit`, parent `M_LB_UnlitEmissive`. `Color` = (1.0, 0.549, 0.2196) × 2.0.
-2. Set it as the mesh default for slot `wooden_lantern_01_glass` on `SM_Wooden_Lantern_01`.
-3. **Check first:** the census list of lanterns. Any lantern with no light within 60 cm keeps today's glass, through an actor-level override.
-4. **Tune** `Color` multiplier between 1 and 4: the glass reads as lit at 10 m and doesn't clip (max luma ≤ 0.95) in the courtyard (EV 1.15) or the cloister (EV 0.65).
+
+**Checked (lead, 2026-11-03):**
+- 18 lanterns, all `StaticMeshActor`s on `SM_Wooden_Lantern_01`. None overrides the glass slot, and no Blueprint component uses this mesh. Each has a light within 17 cm, so **no lantern needs an override** (step 3 of the first plan falls away).
+- The mesh has two slots, `wooden_lantern_01` and `wooden_lantern_01_glass`. The glass slot's default is `MI_Wooden_Lantern_01_Glass`, on `M_LB_Surface`, which has no emissive.
+- **The mesh isn't Nanite**, and `M_LB_UnlitEmissive` isn't flagged for Nanite (opaque, unlit, two-sided, one parameter `Color`). So this needs no master recompile. If anything asks to recompile `M_LB_UnlitEmissive`, stop and report it.
+
+#### Step 1: editor (technical-artist) [EDITOR]
+New script `Tools/materials/apply_p11_lantern.py`, same style as `apply_p11_decals.py`: `--snapshot FILE`, `--apply`, `--multiplier M`, `--check`, `--save`, `--restore`. Refuses to run while PIE runs.
+
+1. `--snapshot Docs/ArtTest/materials/p11_7_before.json`: the glass slot's material, the mesh's slots, `get_bounds`, Nanite state, and its collision (read how `check_reimport.py` does this).
+2. `--apply`:
+   - Create `/Game/LastBell/Materials/Instances/MI_LB_LanternGlass_Lit`, parent `/Game/LastBell/Materials/Master/M_LB_UnlitEmissive`.
+   - `Color` = (1.0, 0.549, 0.2196, 1) x **2.0** = (2.0, 1.098, 0.4392, 1). The base hue is the lanterns' light colour (255, 140, 56).
+   - `StaticMeshTools.set_material {mesh, slot_name: "wooden_lantern_01_glass", material}` on `/Game/LastBell/ArtTest/Props/Wooden_Lantern_01/SM_Wooden_Lantern_01`. **Only that slot.**
+3. `--multiplier M`: sets `Color` to base x M, 1 ≤ M ≤ 4; refuses anything else.
+4. `--check`: MI parent and `Color`; glass slot = the new MI; the other slot still `MI_Wooden_Lantern_01`; slots, bounds, Nanite and collision match the snapshot; all 18 census actors have no override on the glass slot.
+5. `--restore`: puts `MI_Wooden_Lantern_01_Glass` back on the slot. Written and read, but only run if the lead asks.
+
+**Save** (`--save`, one package per `save_assets`, 5 s apart): the MI, then `SM_Wooden_Lantern_01`. `L_Monastery` shouldn't be dirty; if it is, report it and don't save it. `M_LB_Surface` stays unsaved. Don't reimport the mesh; `MI_Wooden_Lantern_01_Glass` stays on disk.
+
+**Then:** `--check`, Output Log clean, suite (79/79), registry unchanged (no new external asset), commit to the current branch. **No captures.**
+
+#### Step 2: review (lead, with the owner at the PC)
+`capture_session.py Tools/materials/poses/p11_lantern_poses.json Docs/ArtTest/materials --prefix p11_lg1_ --mode simulate`, then `lantern_report.py p11_lg1_`.
+
+The poses look straight at the glass from about 10 m where the line of sight allows (`co_chapeldoor`, `co_gate`, `co_route1`, `co_garden`, `cl_bells`, `ps_lantern`), closer in the west cloister (7 m) and tower (5 m), and at 3 m and closer for the shape. The courtyard exposure is EV 1.15 and the cloister's 0.65.
+
+**Pass:**
+- at 10 m the glass reads as a small lit source, in courtyard and cloister alike, and not as a dark box beside a light;
+- maximum luma in the window ≤ 0.95 in every view (`lantern_report.py`), so it doesn't clip to white and keeps its colour;
+- at 3 m the frame and glass read as separate parts, and it reads as glass with a flame's glow behind it, not as an orange plastic block.
+
+**Tune** `--multiplier` between 1 and 4 by the result. Over the limit: lower it. Doesn't read at 10 m: raise it. **At most two rounds.** If one multiplier can't satisfy both the courtyard and the cloister (they differ by 0.5 EV), prefer no clipping, and report it. Never change a light for this.
+
+The glass is a flat, constant glow, while the lights behind it flicker. Making the glass flicker too would be new work for Phase 15's VFX pass, so it's noted here rather than done.
 
 ### P11-8: close
 1. **Brightness:** re-capture the 24 baseline poses, plus the Phase 10 target poses (D1.25). New stone changes luma, so correct it through MI `BrightnessMul`, **never by changing lights**. The Phase 8–10 targets still apply.
