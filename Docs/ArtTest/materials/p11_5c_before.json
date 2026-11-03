@@ -1,0 +1,78 @@
+{
+ "expected_state": "off",
+ "rows": [
+  {
+   "name": "MI_Kit_Masonry",
+   "path": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry",
+   "role": "set",
+   "has_bWeathering": true,
+   "bWeathering": false,
+   "amounts": {
+    "GrimeBaseAmount": 0.44999998807907104,
+    "StreakAmount": 0.30000001192092896,
+    "PatchAmount": 0.30000001192092896
+   }
+  },
+  {
+   "name": "MI_Kit_Trim",
+   "path": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim",
+   "role": "set",
+   "has_bWeathering": true,
+   "bWeathering": false,
+   "amounts": {
+    "GrimeBaseAmount": 0.44999998807907104,
+    "StreakAmount": 0.30000001192092896,
+    "PatchAmount": 0.30000001192092896
+   }
+  },
+  {
+   "name": "MI_Cl_CarveDirt",
+   "path": "/Game/LastBell/Environments/Cloister/Materials/MI_Cl_CarveDirt",
+   "role": "set",
+   "has_bWeathering": true,
+   "bWeathering": false
+  },
+  {
+   "name": "MI_Chapel_Masonry_Interior",
+   "path": "/Game/LastBell/Environments/Chapel/Materials/MI_Chapel_Masonry_Interior",
+   "role": "inherits",
+   "has_bWeathering": true,
+   "bWeathering": false
+  },
+  {
+   "name": "MI_Env_TowerStone",
+   "path": "/Game/LastBell/Environments/Courtyard/Materials/MI_Env_TowerStone",
+   "role": "inherits",
+   "has_bWeathering": true,
+   "bWeathering": false
+  },
+  {
+   "name": "MI_Chapel_Trim_Dusty",
+   "path": "/Game/LastBell/Environments/Chapel/Materials/MI_Chapel_Trim_Dusty",
+   "role": "inherits",
+   "has_bWeathering": true,
+   "bWeathering": false
+  },
+  {
+   "name": "MI_Kit_Rubble",
+   "path": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble",
+   "role": "control",
+   "has_bWeathering": true,
+   "bWeathering": false
+  },
+  {
+   "name": "MI_Crypt_StoneWA",
+   "path": "/Game/LastBell/Environments/Crypt/Materials/MI_Crypt_StoneWA",
+   "role": "control",
+   "has_bWeathering": true,
+   "bWeathering": false
+  },
+  {
+   "name": "MI_Kit_Floor",
+   "path": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Floor",
+   "role": "control",
+   "has_bWeathering": true,
+   "bWeathering": false
+  }
+ ]
+}
