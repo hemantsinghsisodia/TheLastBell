@@ -1,0 +1,143 @@
+{
+ "taken": "2026-11-03 22:08:30",
+ "note": "values read before P11-8 step 1b changed anything",
+ "brightness": {
+  "MI_Kit_Masonry": {
+   "value": 1.0,
+   "overridden": false
+  },
+  "MI_Env_TowerStone": {
+   "value": 0.3499999940395355,
+   "overridden": true
+  },
+  "MI_Chapel_Masonry_Interior": {
+   "value": 0.6000000238418579,
+   "overridden": true
+  }
+ },
+ "weathering": [
+  {
+   "name": "MI_Kit_Masonry",
+   "path": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry",
+   "role": "set",
+   "has_bWeathering": true,
+   "bWeathering": true,
+   "amounts": {
+    "GrimeBaseAmount": 0.550000011920929,
+    "StreakAmount": 0.41999998688697815,
+    "PatchAmount": 0.4000000059604645
+   }
+  },
+  {
+   "name": "MI_Kit_Trim",
+   "path": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim",
+   "role": "set",
+   "has_bWeathering": true,
+   "bWeathering": true,
+   "amounts": {
+    "GrimeBaseAmount": 0.550000011920929,
+    "StreakAmount": 0.41999998688697815,
+    "PatchAmount": 0.4000000059604645
+   }
+  },
+  {
+   "name": "MI_Cl_CarveDirt",
+   "path": "/Game/LastBell/Environments/Cloister/Materials/MI_Cl_CarveDirt",
+   "role": "set",
+   "has_bWeathering": true,
+   "bWeathering": false,
+   "amounts": {
+    "GrimeBaseAmount": 0.550000011920929,
+    "StreakAmount": 0.41999998688697815,
+    "PatchAmount": 0.4000000059604645
+   }
+  },
+  {
+   "name": "MI_Chapel_Masonry_Interior",
+   "path": "/Game/LastBell/Environments/Chapel/Materials/MI_Chapel_Masonry_Interior",
+   "role": "inherits",
+   "has_bWeathering": true,
+   "bWeathering": true,
+   "amounts": {
+    "GrimeBaseAmount": 0.550000011920929,
+    "StreakAmount": 0.41999998688697815,
+    "PatchAmount": 0.4000000059604645
+   }
+  },
+  {
+   "name": "MI_Env_TowerStone",
+   "path": "/Game/LastBell/Environments/Courtyard/Materials/MI_Env_TowerStone",
+   "role": "inherits",
+   "has_bWeathering": true,
+   "bWeathering": true,
+   "amounts": {
+    "GrimeBaseAmount": 0.550000011920929,
+    "StreakAmount": 0.41999998688697815,
+    "PatchAmount": 0.4000000059604645
+   }
+  },
+  {
+   "name": "MI_Chapel_Trim_Dusty",
+   "path": "/Game/LastBell/Environments/Chapel/Materials/MI_Chapel_Trim_Dusty",
+   "role": "inherits",
+   "has_bWeathering": true,
+   "bWeathering": true,
+   "amounts": {
+    "GrimeBaseAmount": 0.550000011920929,
+    "StreakAmount": 0.41999998688697815,
+    "PatchAmount": 0.4000000059604645
+   }
+  },
+  {
+   "name": "MI_Kit_Rubble",
+   "path": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble",
+   "role": "control",
+   "has_bWeathering": true,
+   "bWeathering": false,
+   "amounts": {
+    "GrimeBaseAmount": 0.44999998807907104,
+    "StreakAmount": 0.30000001192092896,
+    "PatchAmount": 0.30000001192092896
+   }
+  },
+  {
+   "name": "MI_Crypt_StoneWA",
+   "path": "/Game/LastBell/Environments/Crypt/Materials/MI_Crypt_StoneWA",
+   "role": "control",
+   "has_bWeathering": true,
+   "bWeathering": false,
+   "amounts": {
+    "GrimeBaseAmount": 0.44999998807907104,
+    "StreakAmount": 0.30000001192092896,
+    "PatchAmount": 0.30000001192092896
+   }
+  },
+  {
+   "name": "MI_Kit_Floor",
+   "path": "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Floor",
+   "role": "control",
+   "has_bWeathering": true,
+   "bWeathering": false,
+   "amounts": {
+    "GrimeBaseAmount": 0.44999998807907104,
+    "StreakAmount": 0.30000001192092896,
+    "PatchAmount": 0.30000001192092896
+   }
+  }
+ ],
+ "dirty_before": {
+  "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry": false,
+  "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Trim": false,
+  "/Game/LastBell/Environments/Cloister/Materials/MI_Cl_CarveDirt": false,
+  "/Game/LastBell/Environments/Chapel/Materials/MI_Chapel_Masonry_Interior": false,
+  "/Game/LastBell/Environments/Courtyard/Materials/MI_Env_TowerStone": false,
+  "/Game/LastBell/Environments/Chapel/Materials/MI_Chapel_Trim_Dusty": false,
+  "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Rubble": false,
+  "/Game/LastBell/Environments/Crypt/Materials/MI_Crypt_StoneWA": false,
+  "/Game/LastBell/Environments/Kit/Materials/MI_Kit_Floor": false,
+  "/Game/LastBell/Materials/Master/M_LB_Surface": false,
+  "/Game/LastBell/Materials/Master/M_LB_Decal": false,
+  "/Game/LastBell/Materials/Master/M_LB_Decal_Grime": false,
+  "/Game/LastBell/Maps/L_Monastery": false
+ }
+}
