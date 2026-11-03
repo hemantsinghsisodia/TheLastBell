@@ -1,0 +1,165 @@
+{
+ "taken": "2026-11-03 16:22:08",
+ "note": "values read before P11-7 step 1 changed anything",
+ "mesh": "/Game/LastBell/ArtTest/Props/Wooden_Lantern_01/SM_Wooden_Lantern_01",
+ "glass_slot": "wooden_lantern_01_glass",
+ "glass_material_before": "/Game/LastBell/ArtTest/Props/Wooden_Lantern_01/MI_Wooden_Lantern_01_Glass.MI_Wooden_Lantern_01_Glass",
+ "slots": [
+  "wooden_lantern_01",
+  "wooden_lantern_01_glass"
+ ],
+ "materials": {
+  "wooden_lantern_01": "/Game/LastBell/ArtTest/Props/Wooden_Lantern_01/MI_Wooden_Lantern_01.MI_Wooden_Lantern_01",
+  "wooden_lantern_01_glass": "/Game/LastBell/ArtTest/Props/Wooden_Lantern_01/MI_Wooden_Lantern_01_Glass.MI_Wooden_Lantern_01_Glass"
+ },
+ "bounds": {
+  "min": [
+   -11.051704406738281,
+   -11.054381370544434,
+   -1.137510061264038
+  ],
+  "max": [
+   11.053104400634766,
+   12.418060302734375,
+   51.87614440917969
+  ]
+ },
+ "nanite": false,
+ "tags": {
+  "AssetImportData": "[{ \"RelativeFilename\" : \"../../../../../ExternalAssets/Incoming/polyhaven-wooden_lantern_01/polyhaven-wooden_lantern_01/wooden_lantern_01_2k.fbx\", \"Timestamp\" : \"1792751528\", \"FileMD5\" : \"89a7877eeddf5d522cba4235df4df432\", \"DisplayLabelName\" : \"\" }]",
+  "NaniteEnabled": "False",
+  "CollisionPrims": "1",
+  "CollisionComplexity": "CTF_UseSimpleAndComplex",
+  "DefaultCollision": "BlockAll",
+  "ApproxSize": "22x24x53",
+  "SectionsWithCollision": "2",
+  "Vertices": "6830",
+  "Triangles": "8321",
+  "Materials": "2",
+  "StaticMaterials": "wooden_lantern_01,'/Game/LastBell/ArtTest/Props/Wooden_Lantern_01/MI_Wooden_Lantern_01.MI_Wooden_Lantern_01'>wooden_lantern_01_glass,'/Game/LastBell/ArtTest/Props/Wooden_Lantern_01/MI_Wooden_Lantern_01_Glass.MI_Wooden_Lantern_01_Glass'>"
+ },
+ "new_mi_exists": false,
+ "old_mi_exists": true,
+ "master_exists": true,
+ "lanterns": [
+  {
+   "label": "KP_Lantern_Gate",
+   "mesh": "SM_Wooden_Lantern_01",
+   "n_overrides": 0,
+   "glass_override": null
+  },
+  {
+   "label": "KP_Lantern_Well",
+   "mesh": "SM_Wooden_Lantern_01",
+   "n_overrides": 0,
+   "glass_override": null
+  },
+  {
+   "label": "KP_Lantern_ChapelDoor",
+   "mesh": "SM_Wooden_Lantern_01",
+   "n_overrides": 0,
+   "glass_override": null
+  },
+  {
+   "label": "Garden_Lantern",
+   "mesh": "SM_Wooden_Lantern_01",
+   "n_overrides": 0,
+   "glass_override": null
+  },
+  {
+   "label": "KP_Lantern_Route_1",
+   "mesh": "SM_Wooden_Lantern_01",
+   "n_overrides": 0,
+   "glass_override": null
+  },
+  {
+   "label": "KP_Lantern_Route_2",
+   "mesh": "SM_Wooden_Lantern_01",
+   "n_overrides": 0,
+   "glass_override": null
+  },
+  {
+   "label": "KP_Lantern_Route_3",
+   "mesh": "SM_Wooden_Lantern_01",
+   "n_overrides": 0,
+   "glass_override": null
+  },
+  {
+   "label": "CLA_Lantern_Bells",
+   "mesh": "SM_Wooden_Lantern_01",
+   "n_overrides": 0,
+   "glass_override": null
+  },
+  {
+   "label": "CLA_Lantern_Door",
+   "mesh": "SM_Wooden_Lantern_01",
+   "n_overrides": 0,
+   "glass_override": null
+  },
+  {
+   "label": "SHA_Lantern_Entry",
+   "mesh": "SM_Wooden_Lantern_01",
+   "n_overrides": 0,
+   "glass_override": null
+  },
+  {
+   "label": "PSA_Lantern",
+   "mesh": "SM_Wooden_Lantern_01",
+   "n_overrides": 0,
+   "glass_override": null
+  },
+  {
+   "label": "PSA_Lantern_W",
+   "mesh": "SM_Wooden_Lantern_01",
+   "n_overrides": 0,
+   "glass_override": null
+  },
+  {
+   "label": "CLA_Lantern_West",
+   "mesh": "SM_Wooden_Lantern_01",
+   "n_overrides": 0,
+   "glass_override": null
+  },
+  {
+   "label": "TWA_Lantern_Base",
+   "mesh": "SM_Wooden_Lantern_01",
+   "n_overrides": 0,
+   "glass_override": null
+  },
+  {
+   "label": "TWA_Lantern_Land4",
+   "mesh": "SM_Wooden_Lantern_01",
+   "n_overrides": 0,
+   "glass_override": null
+  },
+  {
+   "label": "TWA_Lantern_Land7",
+   "mesh": "SM_Wooden_Lantern_01",
+   "n_overrides": 0,
+   "glass_override": null
+  },
+  {
+   "label": "TWA_Lantern_Land10",
+   "mesh": "SM_Wooden_Lantern_01",
+   "n_overrides": 0,
+   "glass_override": null
+  },
+  {
+   "label": "TWA_Lantern_Bell",
+   "mesh": "SM_Wooden_Lantern_01",
+   "n_overrides": 0,
+   "glass_override": null
+  }
+ ],
+ "dirty_before": {
+  "/Game/LastBell/Materials/Master/M_LB_Surface": true,
+  "/Game/LastBell/Materials/Master/M_LB_UnlitEmissive": false,
+  "/Game/LastBell/Maps/L_Monastery": false,
+  "/Game/LastBell/ArtTest/Props/Wooden_Lantern_01/MI_Wooden_Lantern_01_Glass": false,
+  "/Game/LastBell/ArtTest/Props/Wooden_Lantern_01/MI_Wooden_Lantern_01": false,
+  "/Game/LastBell/Materials/Master/M_LB_Decal": false,
+  "/Game/LastBell/Materials/Master/M_LB_Decal_Grime": false,
+  "/Game/LastBell/Materials/Instances/MI_LB_LanternGlass_Lit": null,
+  "/Game/LastBell/ArtTest/Props/Wooden_Lantern_01/SM_Wooden_Lantern_01": false
+ }
+}
