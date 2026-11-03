@@ -1,0 +1,80 @@
+{
+ "args": {
+  "out": "C:\\Hemant\\Prj\\Learning\\TheLastBell\\SourceArt\\Warden\\spike\\SK_P12_Spike.fbx",
+  "armature_name": "Armature",
+  "axis_forward": "Y",
+  "axis_up": "Z",
+  "scale_options": "FBX_SCALE_NONE",
+  "unit_scale": true,
+  "clip_only": false,
+  "tweak": false,
+  "clip_name": "Spike_Clip"
+ },
+ "bones": [
+  "root",
+  "pelvis",
+  "spine_01",
+  "spine_02",
+  "spine_03",
+  "spine_04",
+  "spine_05",
+  "neck_01",
+  "neck_02",
+  "head",
+  "mask",
+  "ik_foot_root",
+  "ik_hand_root",
+  "clavicle_l",
+  "upperarm_l",
+  "lowerarm_l",
+  "hand_l",
+  "index_metacarpal_l",
+  "index_01_l",
+  "index_02_l",
+  "index_03_l",
+  "thigh_l",
+  "calf_l",
+  "foot_l",
+  "ball_l",
+  "ik_foot_l",
+  "ik_hand_l",
+  "clavicle_r",
+  "upperarm_r",
+  "lowerarm_r",
+  "hand_r",
+  "index_metacarpal_r",
+  "index_01_r",
+  "index_02_r",
+  "index_03_r",
+  "thigh_r",
+  "calf_r",
+  "foot_r",
+  "ball_r",
+  "ik_foot_r",
+  "ik_hand_r"
+ ],
+ "bone_count": 41,
+ "bounds_cm": {
+  "min": [
+   -131.7435302734375,
+   -48.0,
+   0.0
+  ],
+  "max": [
+   149.7487335205078,
+   13.0,
+   290.0
+  ],
+  "size": [
+   281.4922637939453,
+   61.0,
+   290.0
+  ],
+  "centre": [
+   9.002601623535156,
+   -17.5,
+   145.0
+  ]
+ },
+ "tris": 420
+}
