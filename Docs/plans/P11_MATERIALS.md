@@ -1,6 +1,6 @@
 # Phase 11: Materials (surface polish): plan
 
-**Status:** approved by the owner on 2026-11-02. P11-0, P11-1 and P11-2 done; P11-3 done: the owner chose A (D-086). P11-0 to P11-7 done (suite 79/79); P11-8 waits for the owner's "go". The door corners and `Gobo_Moon` specks stay out of scope.
+**Status:** approved by the owner on 2026-11-02. P11-0, P11-1 and P11-2 done; P11-3 done: the owner chose A (D-086). P11-0 to P11-7 done (suite 79/79); P11-8 in progress. The door corners and `Gobo_Moon` specks stay out of scope.
 **Branch:** `claude/phase-11-materials`, from `main` (6dfa29d).
 **Rules:** D-048 applies. The lead plans in Opus 5.5 at xhigh effort; every implementer is spawned with `model: "sonnet", effort: "high"`.
 
@@ -762,6 +762,8 @@ Lowering the multiplier alone wasn't an option: the wall behind each lantern is 
 **R-32 closed.**
 
 ### P11-8: close
+
+**Plan as approved:**
 1. **Brightness:** re-capture the 24 baseline poses, plus the Phase 10 target poses (D1.25). New stone changes luma, so correct it through MI `BrightnessMul`, **never by changing lights**. The Phase 8–10 targets still apply.
 2. **QA** (qa-reviewer): suite 79/79, the placement and lighting checks of each area, log review, naming and folders, no parent Blueprint changed.
 3. **Docs:** MCP_NOTES lessons, PERFORMANCE_BUDGET, ASSET_REGISTRY, RISKS, DECISIONS, IMPLEMENTATION_PLAN. Update `ART_DIRECTION.md` and `MODULAR_KIT.md` to drop the vertex-colour contract (architecture drift).
@@ -770,6 +772,46 @@ Lowering the multiplier alone wasn't an option: the wall behind each lantern is 
    2. one streak octave;
    3. fewer decals.
 5. **"PHASE 11 READY FOR YOUR REVIEW".** Merge only on "approve and merge".
+
+`sg.*` = 2 (High), `sg.ResolutionQuality` 87, Warden on. The viewport is 1331x808, the same as the baseline set, so this comparison is same-size.
+
+#### Step 1 result: brightness (lead, 2026-11-03; `p11_f1_*` 24 views, `p11_t1_*` 33 views; `Tools/materials/brightness_report_p11.py`, written to `p11_8_brightness.md`)
+**Against the Phase 11 baseline** (final mean / baseline mean): lowest 0.86, median 0.95, highest 1.01.
+
+| Area | Ratio | Main stone MI |
+|---|---|---|
+| Crypt | 0.97–1.01 | not changed by this phase |
+| Chapel | 0.90–0.98, median 0.96 | `MI_Chapel_Masonry_Interior` |
+| Courtyard | 0.88–0.97 | `MI_Kit_Masonry` |
+| Cloister, passage | 0.87–0.93 | `MI_Kit_Masonry` |
+| Tower | 0.86, 0.94 | `MI_Env_TowerStone` |
+
+**Against the earlier phases' targets: 11 numbers miss. None comes from this phase.** Each was checked against the Phase 11 baseline or older captures:
+
+| View | Reading | Why it isn't Phase 11 |
+|---|---|---|
+| `t8_entrance`, `t8_midnave` | mean 0.20, 0.21 against 0.04–0.08; dark fraction 0.150, 0.065 against ≥ 0.15 | They were 0.10 on 2026-10-28. The chapel views measured by the baseline moved only 0.96–0.98, so the nave's fog already read this bright when Phase 11 began. Nobody has checked when it changed. **Flagged for the owner's playtest** |
+| `t7_courtyard_to_chapel` | mean 0.082 against 0.04–0.07 | 0.063 in Phase 7, before the chapel, cloister and tower existed in that view. The courtyard views measured here went down, not up |
+| `t10_lt_cl_s_entry` | mean 0.022 against 0.04–0.08 | 0.038 at P10-7b, but D-084 then removed moon lights (P10-8d). The nearest view with a Phase 11 baseline moved 0.88, which can't explain the drop to 0.57. **Flagged** |
+| `t9_02_landing`, `t9_09_puzzle_wall`, `t9_05` (p99), `t9_10` | near their bands, except `t9_10` | `t9_02` 0.047 (0.052 before), `t9_09` 0.0356 (0.0347), `t9_05` same mean as before. `t9_10_NC_gate` is 0.005 against 0.012–0.035: the view is now nearly black up the exit stair, while it was 0.050 on 2026-10-28 with moonlight down the stair. The shaft was rebuilt in Phase 10; the crypt stone didn't change. **Flagged** |
+
+**Not a fault:** the plaque contrast of 1.94 against ≥ 2.5 is the same as at P10-8e; P10 retired this metric for carved text. The memorial and the numerals II, III, I and IV read clearly in `t10_lt_bells`, and `t9_plaque_2m`, `t8_clue_window` and `t8_puzzle_candles` read. The white patch in `t10_lt_beam_west` is a moon pool.
+
+#### Step 1b: one correction (technical-artist [EDITOR])
+Only stone that lost brightness to this phase, and only as much as closes most of the gap. Display luma is roughly linear light to the power 1/2.2, so ×1.15 adds about 6.5 % on screen; a mean of 0.88 becomes about 0.94.
+
+| MI | `BrightnessMul` | Why |
+|---|---|---|
+| `/Game/LastBell/Environments/Kit/Materials/MI_Kit_Masonry` | 1.0 → **1.15** | Courtyard, cloister, passage |
+| `/Game/LastBell/Environments/Courtyard/Materials/MI_Env_TowerStone` | 0.35 → **0.40** | Tower (same factor) |
+
+**Not changed:** `MI_Chapel_Masonry_Interior` (median 0.96), `MI_Kit_Trim`, crypt MIs, every light, every other value.
+
+Both children of `MI_Kit_Masonry` have their own `BrightnessMul` override, so `MI_Env_TowerStone` and `MI_Chapel_Masonry_Interior` don't inherit this change. Read that back.
+
+New script `Tools/materials/apply_p11_brightness.py`, same style as `apply_p11_lantern.py`: `--snapshot Docs/ArtTest/materials/p11_8_before.json`, `--apply`, `--check`, `--save` (one package per call, 5 s apart), `--restore`. No PIE. `--check` also reads back `bWeathering`, `GrimeBaseAmount`, `StreakAmount` and `PatchAmount` (unchanged). Commit.
+
+**Lead, with the owner at the PC:** 11 views as `p11_f2_` (`cy_lantern_gate_3m, cy_lantern_route1_3m, cy_west_front_15m, cy_tall_north_15m, cy_graze_north, cl_lantern_bells_3m, cl_tall_north_15m, cl_graze_east, ps_lantern_joints, tw_mid_stair, tw_belfry`) and 3 as `p11_t2_` (`t10_lt_cl_s_entry, t10_lt_inscription, t10_lt_bell_top`), about 10 minutes. **Pass:** ratio 0.92–1.05 on these 11, memorial still legible, no new clipping on lantern-lit walls.
 
 ## Proposed log entries (added in P11-0, on approval)
 - **D-085:** vertex-colour contract dropped in favour of a world-space weathering layer.
