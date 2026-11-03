@@ -1,0 +1,452 @@
+{
+ "taken": "2026-11-03 14:17:18",
+ "note": "values read before P11-6 step 2 changed anything",
+ "textures_exist": {
+  "T_LB_Decal_Crack_A_Opacity": false,
+  "T_LB_Decal_Crack_B_Opacity": false,
+  "T_LB_Decal_Crack_C_Opacity": false,
+  "T_LB_Decal_Crack_A_N": false,
+  "T_LB_Decal_Crack_B_N": false,
+  "T_LB_Decal_Crack_C_N": false,
+  "T_LB_Decal_SootSoft_A": false,
+  "T_LB_Decal_SootSoft_B": false
+ },
+ "new_mis_exist": {
+  "MI_Decal_Crack_A": false,
+  "MI_Decal_Crack_B": false,
+  "MI_Decal_Crack_C": false
+ },
+ "reference_textures": {
+  "T_Leaking006_Opacity": {
+   "compressionSettings": "TC_Alpha",
+   "sRGB": false,
+   "lODGroup": "TEXTUREGROUP_WorldSpecular",
+   "addressX": "TA_Wrap",
+   "addressY": "TA_Wrap",
+   "virtualTextureStreaming": false,
+   "mipGenSettings": "TMGS_FromTextureGroup",
+   "filter": "TF_Default",
+   "neverStream": false,
+   "bFlipGreenChannel": false,
+   "compressionNoAlpha": false,
+   "maxTextureSize": 2048,
+   "lODBias": 0,
+   "bNormalizeNormals": true,
+   "powerOfTwoMode": "None",
+   "mipLoadOptions": "Default"
+  },
+  "T_Leaking006_N": {
+   "compressionSettings": "TC_Normalmap",
+   "sRGB": false,
+   "lODGroup": "TEXTUREGROUP_WorldNormalMap",
+   "addressX": "TA_Wrap",
+   "addressY": "TA_Wrap",
+   "virtualTextureStreaming": false,
+   "mipGenSettings": "TMGS_FromTextureGroup",
+   "filter": "TF_Default",
+   "neverStream": false,
+   "bFlipGreenChannel": false,
+   "compressionNoAlpha": false,
+   "maxTextureSize": 2048,
+   "lODBias": 0,
+   "bNormalizeNormals": true,
+   "powerOfTwoMode": "None",
+   "mipLoadOptions": "Default"
+  },
+  "T_LB_Decal_Soot_A": {
+   "compressionSettings": "TC_Default",
+   "sRGB": true,
+   "lODGroup": "TEXTUREGROUP_World",
+   "addressX": "TA_Clamp",
+   "addressY": "TA_Clamp",
+   "virtualTextureStreaming": false,
+   "mipGenSettings": "TMGS_FromTextureGroup",
+   "filter": "TF_Default",
+   "neverStream": false,
+   "bFlipGreenChannel": false,
+   "compressionNoAlpha": false,
+   "maxTextureSize": 1024,
+   "lODBias": 0,
+   "bNormalizeNormals": true,
+   "powerOfTwoMode": "None",
+   "mipLoadOptions": "Default"
+  }
+ },
+ "retune": {
+  "MI_Decal_Leaking006_Wall": {
+   "package": "/Game/LastBell/Environments/Courtyard/Materials/MI_Decal_Leaking006_Wall",
+   "effective": {
+    "OpacityStrength": 1.600000023841858,
+    "RoughnessScale": 0.3499999940395355,
+    "NormalStrength": 1.0,
+    "OpacityContrast": 1.5,
+    "EdgeFadeU": 0.11999999731779099,
+    "EdgeFadeV": 0.05999999865889549,
+    "DepthFade": 0.30000001192092896,
+    "DarkenStrength": 0.30000001192092896,
+    "DecalHalfDepthCm": 40.0
+   },
+   "tint": [
+    0.3499999940395355,
+    0.33000001311302185,
+    0.30000001192092896,
+    1
+   ],
+   "overridden": [
+    "DarkenStrength",
+    "DecalHalfDepthCm",
+    "DepthFade",
+    "EdgeFadeU",
+    "EdgeFadeV",
+    "OpacityStrength"
+   ],
+   "parent": {
+    "refPath": "/Game/LastBell/ArtTest/Decals/Leaking006/MI_Leaking006.MI_Leaking006"
+   }
+  },
+  "MI_Chapel_DampStreak": {
+   "package": "/Game/LastBell/Environments/Chapel/Materials/MI_Chapel_DampStreak",
+   "effective": {
+    "OpacityStrength": 1.600000023841858,
+    "RoughnessScale": 0.3499999940395355,
+    "NormalStrength": 1.0,
+    "OpacityContrast": 1.5,
+    "EdgeFadeU": 0.11999999731779099,
+    "EdgeFadeV": 0.05999999865889549,
+    "DepthFade": 0.30000001192092896,
+    "DarkenStrength": 0.30000001192092896,
+    "DecalHalfDepthCm": 40.0
+   },
+   "tint": [
+    0.11999999731779099,
+    0.15000000596046448,
+    0.10999999940395355,
+    1
+   ],
+   "overridden": [
+    "BaseColorTint",
+    "RoughnessScale"
+   ],
+   "parent": {
+    "refPath": "/Game/LastBell/Environments/Courtyard/Materials/MI_Decal_Leaking006_Wall.MI_Decal_Leaking006_Wall"
+   }
+  },
+  "MI_Decal_Leaking004_Wall": {
+   "package": "/Game/LastBell/Environments/Crypt/Materials/MI_Decal_Leaking004_Wall",
+   "effective": {
+    "OpacityStrength": 1.600000023841858,
+    "RoughnessScale": 0.3499999940395355,
+    "NormalStrength": 1.0,
+    "OpacityContrast": 1.5,
+    "EdgeFadeU": 0.11999999731779099,
+    "EdgeFadeV": 0.05999999865889549,
+    "DepthFade": 0.30000001192092896,
+    "DarkenStrength": 0.30000001192092896,
+    "DecalHalfDepthCm": 40.0
+   },
+   "tint": [
+    0.3499999940395355,
+    0.33000001311302185,
+    0.30000001192092896,
+    1
+   ],
+   "overridden": [
+    "BaseColorTex",
+    "DarkenStrength",
+    "DecalHalfDepthCm",
+    "DepthFade",
+    "EdgeFadeU",
+    "EdgeFadeV",
+    "NormalTex",
+    "OpacityStrength",
+    "OpacityTex",
+    "RoughnessTex"
+   ],
+   "parent": {
+    "refPath": "/Game/LastBell/ArtTest/Decals/Leaking006/MI_Leaking006.MI_Leaking006"
+   }
+  },
+  "MI_Decal_Soot_A": {
+   "package": "/Game/LastBell/Materials/Instances/MI_Decal_Soot_A",
+   "effective": {
+    "Opacity": 1.0,
+    "Roughness": 1.0
+   },
+   "tint": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "overridden": [
+    "BaseColorTint",
+    "GrimeTex",
+    "Opacity",
+    "Roughness"
+   ],
+   "parent": {
+    "refPath": "/Game/LastBell/Materials/Master/M_LB_Decal_Grime.M_LB_Decal_Grime"
+   },
+   "textures": {
+    "GrimeTex": "T_LB_Decal_Soot_A"
+   }
+  },
+  "MI_Decal_Soot_B": {
+   "package": "/Game/LastBell/Materials/Instances/MI_Decal_Soot_B",
+   "effective": {
+    "Opacity": 1.0,
+    "Roughness": 1.0
+   },
+   "tint": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "overridden": [
+    "BaseColorTint",
+    "GrimeTex",
+    "Opacity",
+    "Roughness"
+   ],
+   "parent": {
+    "refPath": "/Game/LastBell/Materials/Master/M_LB_Decal_Grime.M_LB_Decal_Grime"
+   },
+   "textures": {
+    "GrimeTex": "T_LB_Decal_Soot_B"
+   }
+  },
+  "MI_Decal_DustDrift": {
+   "package": "/Game/LastBell/Materials/Instances/MI_Decal_DustDrift",
+   "effective": {
+    "Opacity": 1.0,
+    "Roughness": 1.0
+   },
+   "tint": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "overridden": [
+    "BaseColorTint",
+    "GrimeTex",
+    "Opacity",
+    "Roughness"
+   ],
+   "parent": {
+    "refPath": "/Game/LastBell/Materials/Master/M_LB_Decal_Grime.M_LB_Decal_Grime"
+   }
+  },
+  "MI_Sa_Decal_DustDrift_Strong": {
+   "package": "/Game/LastBell/Environments/Chapel/Materials/MI_Sa_Decal_DustDrift_Strong",
+   "effective": {
+    "Opacity": 2.0,
+    "Roughness": 1.0
+   },
+   "tint": [
+    1,
+    1,
+    1,
+    1
+   ],
+   "overridden": [
+    "BaseColorTint",
+    "GrimeTex",
+    "Opacity",
+    "Roughness"
+   ],
+   "parent": {
+    "refPath": "/Game/LastBell/Materials/Master/M_LB_Decal_Grime.M_LB_Decal_Grime"
+   }
+  }
+ },
+ "leaks": {
+  "Decal_Leak_N0": {
+   "actor": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.DecalActor_1",
+   "transform": {
+    "location": {
+     "x": 1300,
+     "y": 2500,
+     "z": 570
+    },
+    "rotation": {
+     "pitch": 0,
+     "yaw": 89.99999999999999,
+     "roll": 0
+    },
+    "scale": {
+     "x": 1,
+     "y": 1,
+     "z": 1
+    }
+   },
+   "decalSize": {
+    "x": 40,
+    "y": 37.5,
+    "z": 150
+   },
+   "decalMaterial": {
+    "refPath": "/Game/LastBell/Environments/Courtyard/Materials/MI_Decal_Leaking006_Wall.MI_Decal_Leaking006_Wall"
+   },
+   "sortOrder": 0
+  },
+  "Decal_Leak_N1": {
+   "actor": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.DecalActor_2",
+   "transform": {
+    "location": {
+     "x": 2900,
+     "y": 2500,
+     "z": 570
+    },
+    "rotation": {
+     "pitch": 0,
+     "yaw": 89.99999999999999,
+     "roll": 0
+    },
+    "scale": {
+     "x": 1,
+     "y": 1,
+     "z": 1
+    }
+   },
+   "decalSize": {
+    "x": 40,
+    "y": 37.5,
+    "z": 150
+   },
+   "decalMaterial": {
+    "refPath": "/Game/LastBell/Environments/Courtyard/Materials/MI_Decal_Leaking006_Wall.MI_Decal_Leaking006_Wall"
+   },
+   "sortOrder": 0
+  },
+  "Decal_Leak_N2": {
+   "actor": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.DecalActor_3",
+   "transform": {
+    "location": {
+     "x": 5300,
+     "y": 2500,
+     "z": 570
+    },
+    "rotation": {
+     "pitch": 0,
+     "yaw": 89.99999999999999,
+     "roll": 0
+    },
+    "scale": {
+     "x": 1,
+     "y": 1,
+     "z": 1
+    }
+   },
+   "decalSize": {
+    "x": 40,
+    "y": 37.5,
+    "z": 150
+   },
+   "decalMaterial": {
+    "refPath": "/Game/LastBell/Environments/Courtyard/Materials/MI_Decal_Leaking006_Wall.MI_Decal_Leaking006_Wall"
+   },
+   "sortOrder": 0
+  },
+  "Decal_Leak_S0": {
+   "actor": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.DecalActor_4",
+   "transform": {
+    "location": {
+     "x": 2500,
+     "y": -2500,
+     "z": 570
+    },
+    "rotation": {
+     "pitch": 0,
+     "yaw": -90.00000000000001,
+     "roll": 0
+    },
+    "scale": {
+     "x": 1,
+     "y": 1,
+     "z": 1
+    }
+   },
+   "decalSize": {
+    "x": 40,
+    "y": 37.5,
+    "z": 150
+   },
+   "decalMaterial": {
+    "refPath": "/Game/LastBell/Environments/Courtyard/Materials/MI_Decal_Leaking006_Wall.MI_Decal_Leaking006_Wall"
+   },
+   "sortOrder": 0
+  },
+  "Decal_Leak_S1": {
+   "actor": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.DecalActor_5",
+   "transform": {
+    "location": {
+     "x": 4300,
+     "y": -2500,
+     "z": 570
+    },
+    "rotation": {
+     "pitch": 0,
+     "yaw": -90.00000000000001,
+     "roll": 0
+    },
+    "scale": {
+     "x": 1,
+     "y": 1,
+     "z": 1
+    }
+   },
+   "decalSize": {
+    "x": 40,
+    "y": 37.5,
+    "z": 150
+   },
+   "decalMaterial": {
+    "refPath": "/Game/LastBell/Environments/Courtyard/Materials/MI_Decal_Leaking006_Wall.MI_Decal_Leaking006_Wall"
+   },
+   "sortOrder": 0
+  },
+  "Decal_Leak_E0": {
+   "actor": "/Game/LastBell/Maps/L_Monastery.L_Monastery:PersistentLevel.DecalActor_6",
+   "transform": {
+    "location": {
+     "x": 6000,
+     "y": -1600,
+     "z": 570
+    },
+    "rotation": {
+     "pitch": 0,
+     "yaw": 0,
+     "roll": 0
+    },
+    "scale": {
+     "x": 1,
+     "y": 1,
+     "z": 1
+    }
+   },
+   "decalSize": {
+    "x": 40,
+    "y": 37.5,
+    "z": 150
+   },
+   "decalMaterial": {
+    "refPath": "/Game/LastBell/Environments/Courtyard/Materials/MI_Decal_Leaking006_Wall.MI_Decal_Leaking006_Wall"
+   },
+   "sortOrder": 0
+  }
+ },
+ "crack_actors_present": [],
+ "dirty_before": {
+  "/Game/LastBell/Materials/Master/M_LB_Surface": true,
+  "/Game/LastBell/Materials/Master/M_LB_Decal": false,
+  "/Game/LastBell/Materials/Master/M_LB_Decal_Grime": false,
+  "/Game/LastBell/ArtTest/Decals/Leaking006/MI_Leaking006": false,
+  "/Game/LastBell/ArtTest/Decals/Leaking006/T_Leaking006_Opacity": false,
+  "/Game/LastBell/ArtTest/Decals/Leaking006/T_Leaking006_N": false,
+  "/Game/LastBell/Blueprints/Interactables/BP_Door_Base_Dungeon": false,
+  "/Game/LastBell/Blueprints/Interactables/BP_RitualMechanism_CryptWinch": false,
+  "/Game/LastBell/Maps/L_Monastery": false
+ }
+}
