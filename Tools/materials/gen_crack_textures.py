@@ -28,12 +28,13 @@ SS = 2                                                             # drawing can
 
 # set -> parameters.  All lengths/widths are final-size pixels.
 SETS = {
-    "A": dict(W=2048, H=2048, seed=11101, k=6, step=0.30, kind="diag",
+    "A": dict(W=2048, H=2048, seed=11101, k=6, step=0.30, kind="diag", off=28.0,
               start=(0.16, 0.10), end=(0.84, 0.90), w0=18.0, w1=2.0),
-    "B": dict(W=1024, H=2048, seed=11102, k=5, step=0.12, kind="arch",
+    "B": dict(W=1024, H=2048, seed=11102, k=5, step=0.12, kind="arch", off=28.0,
               start=(0.50, 0.94), end_v=0.06, end_du=0.12, w0=20.0, w1=2.0),
-    "C": dict(W=2048, H=2048, seed=11103, k=3, step=0.0, kind="fork",
-              start=(0.50, 0.93), stem_frac=0.55, w0=16.0, w1=6.0, prong_frac=0.35, prong_w0=6.0, prong_w1=2.0),
+    # second pass: C is a short oblique crack (no fork)
+    "C": dict(W=2048, H=2048, seed=11103, k=3, step=0.18, kind="diag", off=32.0,
+              start=(0.32, 0.90), end=(0.66, 0.10), w0=14.0, w1=2.0),
 }
 
 # look parameters (spec values, except BRANCH_OFF, SAFE_INSET and the B start v: see the notes at each)
@@ -42,8 +43,13 @@ MAIN_OFF = 28.0                                                    # +- degrees,
 BRANCH_OFF = 34.0                                                  # +- degrees, branches (spec said 22; raised to 34 so thin branches zig-zag instead of reading as smooth lines)
 STEP_HEAD_JITTER = 8.0                                             # +- degrees around horizontal on a "bed joint" step
 STEP_LEN_MUL = 1.5
-BRANCH_ANGLE = (25.0, 55.0)
-BRANCH_LEN = (0.15, 0.35)
+BRANCH_ANGLE = (35.0, 70.0)                                       # second pass (spec 25-55)
+BRANCH_LEN = (0.10, 0.24)                                          # second pass (spec 0.15-0.35)
+EDGE_NOISE = 1.20                                                  # amplitude of the edge roughening (spec 0.30 moved the edge only ~0.15 px: no visible change; 1.2 gives ~0.5 px)
+TAPER_S = 0.10                                                     # main stems fade in over the first 10 % of their length
+TAPER_FLOOR = 1.5
+END_NO_STEP = 0.10                                                 # no bed-joint steps in the last 10 % of a main stem
+END_STOP = 1.5                                                     # a targeted walk stops within END_STOP x SEG_HI of its target
 SUB_LEN_FRAC = 0.35
 SUB_THRESHOLD = 0.22
 
@@ -95,7 +101,7 @@ def rad(deg):
 # the walker: straight segments, heading = base + independent offset (never accumulated), never smoothed
 # ----------------------------------------------------------------------------------------------------------
 class Path:
-    def __init__(self, pts, w0, w1):
+    def __init__(self, pts, w0, w1, taper=False):
         self.pts = np.asarray(pts, np.float64)                      # (n, 2) px
         d = np.diff(self.pts, axis=0)
         self.seg_len = np.hypot(d[:, 0], d[:, 1])
@@ -103,9 +109,20 @@ class Path:
         self.cum = np.concatenate([[0.0], np.cumsum(self.seg_len)])
         self.total = float(self.cum[-1])
         self.w0, self.w1 = w0, w1
+        self.taper = taper
+        self.jit = None
 
     def width_at(self, s):
-        return self.w0 + (self.w1 - self.w0) * (min(max(s, 0.0), 1.0) ** 0.8)
+        s = min(max(s, 0.0), 1.0)
+        w = self.w0 + (self.w1 - self.w0) * (s ** 0.8)
+        if self.taper:
+            t = min(max(s / TAPER_S, 0.0), 1.0)
+            w = max(TAPER_FLOOR, w * t * t * (3.0 - 2.0 * t))
+        return w
+
+    def seg_index(self, s):
+        i = int(np.searchsorted(self.cum, s * self.total, side="right") - 1)
+        return min(max(i, 0), len(self.seg_len) - 1)
 
     def at(self, s):
         """(point, heading, base width) at fraction s of the arc length."""
@@ -131,12 +148,13 @@ def walk(rng, p0, heading, target, length, offs, step, lo=SEG_LO, hi=SEG_HI):
     (+-8 deg) segment, 1.5x longer, as if the crack ran along a bed joint."""
     pts = [np.asarray(p0, np.float64)]
     total = 0.0
+    dist0 = float(np.hypot(*(target - np.asarray(p0, np.float64)))) if target is not None else 0.0
     for _ in range(4000):
         p = pts[-1]
         if target is not None:
             d = target - p
             dist = float(np.hypot(d[0], d[1]))
-            if dist < lo * 0.5:
+            if dist < END_STOP * hi:
                 break
             base = math.atan2(d[1], d[0])
             remaining = dist
@@ -147,7 +165,7 @@ def walk(rng, p0, heading, target, length, offs, step, lo=SEG_LO, hi=SEG_HI):
             base = heading
         h = base + rad(rng.uniform(-offs, offs))
         seg = rng.uniform(lo, hi)
-        if step > 0.0 and rng.random() < step:
+        if step > 0.0 and rng.random() < step and not (target is not None and dist < END_NO_STEP * dist0):
             c = math.cos(base)
             hz = 0.0 if c > 0.3 else (math.pi if c < -0.3 else (0.0 if rng.random() < 0.5 else math.pi))
             h = hz + rad(rng.uniform(-STEP_HEAD_JITTER, STEP_HEAD_JITTER))
@@ -178,9 +196,10 @@ def stations(rng, k, lo=0.15, hi=0.85, gap=0.12):
 def grow_branches(rng, parent, k, paths, lo_hi=(0.15, 0.85), parent_len=None):
     """k branches off `parent` (and a sub-branch on the long ones).  Appends Path objects to `paths`."""
     plen = parent.total if parent_len is None else parent_len
+    sign = 1.0 if rng.random() < 0.5 else -1.0                      # first side random, then alternate
     for s in stations(rng, k, *lo_hi):
+        sign = -sign
         p, hd, w = parent.at(s)
-        sign = 1.0 if rng.random() < 0.5 else -1.0
         h0 = hd + sign * rad(rng.uniform(*BRANCH_ANGLE))
         length = rng.uniform(*BRANCH_LEN) * plen
         pts = walk(rng, p, h0, None, length, BRANCH_OFF, 0.0)
@@ -206,6 +225,7 @@ def stroke_prims(rng, path, circles=True):
     quads, discs = [], []
     n = len(path.seg_len)
     jit = rng.uniform(0.75, 1.25, n)
+    path.jit = jit
     wa = [(path.width_at(path.cum[i] / path.total)) * jit[i] for i in range(n)]
     wb = [(path.width_at(path.cum[i + 1] / path.total)) * jit[i] for i in range(n)]
     for i in range(n):
@@ -222,22 +242,30 @@ def stroke_prims(rng, path, circles=True):
 
 
 def chip_prims(rng, path):
-    """Spall polygons along the main stem, one side each, every 120-260 px."""
+    """Spall polygons attached to the main stem's edge (centre on the edge + 0-2 px, random side), 160-320 px apart, none in the taper zone."""
     polys = []
-    d = rng.uniform(120.0, 260.0)
+    d = max(rng.uniform(160.0, 320.0), TAPER_S * path.total)
     while d < path.total:
         s = d / path.total
         p, hd, w = path.at(s)
+        w = w * path.jit[path.seg_index(s)]                          # the width that was actually drawn here
         side = 1.0 if rng.random() < 0.5 else -1.0
-        r = rng.uniform(4.0, 14.0)
+        r = rng.uniform(5.0, 16.0)
         nx, ny = -math.sin(hd), math.cos(hd)
-        off = w * 0.5 + r * 0.35
-        c = p + side * off * np.array([nx, ny])
+        c = p + side * (w * 0.5 + rng.uniform(0.0, 2.0)) * np.array([nx, ny])
         nv = int(rng.integers(4, 7))
-        ang = np.sort(rng.uniform(0.0, 2.0 * math.pi, nv))
+        ph = rng.uniform(0.0, 2.0 * math.pi)
+        ang = ph + (np.arange(nv) + rng.uniform(-0.4, 0.4, nv)) * (2.0 * math.pi / nv)   # irregular, but the centre stays inside
         rr = r * rng.uniform(0.6, 1.0, nv)
-        polys.append([(c[0] + rr[j] * math.cos(ang[j]), c[1] + rr[j] * math.sin(ang[j])) for j in range(nv)])
-        d += rng.uniform(120.0, 260.0)
+        st = rng.uniform(1.3, 2.2)                                   # stretched along the stem so a chip reads as a spall, not a bead
+        tx, ty = math.cos(hd), math.sin(hd)
+        pl = []
+        for j in range(nv):
+            lx, ly = rr[j] * math.cos(ang[j]), rr[j] * math.sin(ang[j])
+            a_, b_ = lx * st, ly                                      # a_ along the stem, b_ across it
+            pl.append((c[0] + a_ * tx + b_ * nx, c[1] + a_ * ty + b_ * ny))
+        polys.append(pl)
+        d += rng.uniform(160.0, 320.0)
     return polys
 
 
@@ -280,33 +308,16 @@ def build_geometry(name):
     W, H = P["W"], P["H"]
     rng = np.random.default_rng(P["seed"])
     _SAFE[:] = [SAFE_INSET * W, SAFE_INSET * H, (1.0 - SAFE_INSET) * W, (1.0 - SAFE_INSET) * H]
-    p0 =np.array([P["start"][0] * W, P["start"][1] * H])
+    p0 = np.array([P["start"][0] * W, P["start"][1] * H])
     paths = []                                                       # every drawn stroke
     if P["kind"] == "diag":
         target = np.array([P["end"][0] * W, P["end"][1] * H])
-        main = Path(walk(rng, p0, 0.0, target, 0.0, MAIN_OFF, P["step"]), P["w0"], P["w1"])
-        paths.append(main)
-        grow_branches(rng, main, P["k"], paths)
-        stem_paths = [main]
-    elif P["kind"] == "arch":
+    else:                                                            # arch: leans left or right
         sgn = 1.0 if rng.random() < 0.5 else -1.0
         target = np.array([(0.5 + sgn * P["end_du"]) * W, P["end_v"] * H])
-        main = Path(walk(rng, p0, 0.0, target, 0.0, MAIN_OFF, P["step"]), P["w0"], P["w1"])
-        paths.append(main)
-        grow_branches(rng, main, P["k"], paths)
-        stem_paths = [main]
-    else:                                                            # fork
-        target = np.array([p0[0], p0[1] - P["stem_frac"] * H])
-        main = Path(walk(rng, p0, 0.0, target, 0.0, MAIN_OFF, P["step"]), P["w0"], P["w1"])
-        paths.append(main)
-        grow_branches(rng, main, P["k"], paths)
-        tip = main.pts[-1]
-        up = -math.pi / 2.0
-        for sg in (-1.0, 1.0):
-            h0 = up + sg * rad(rng.uniform(28.0, 40.0))
-            pr = Path(walk(rng, tip, h0, None, P["prong_frac"] * H, MAIN_OFF, 0.0), P["prong_w0"], P["prong_w1"])
-            paths.append(pr)
-        stem_paths = [main] + paths[-2:]
+    main = Path(walk(rng, p0, 0.0, target, 0.0, P["off"], P["step"]), P["w0"], P["w1"], taper=True)
+    paths.append(main)
+    grow_branches(rng, main, P["k"], paths)
     # strokes
     q_all, d_all = [], []
     for p in paths:
@@ -316,7 +327,7 @@ def build_geometry(name):
     # twigs and chips
     tq, td = twig_prims(rng, paths, int(rng.integers(6, 11)))
     chips = chip_prims(rng, main)
-    layers = [(0.6, tq, td, []), (0.7, [], [], chips), (1.0, q_all, d_all, [])]
+    layers = [(0.6, tq, td, []), (1.0, q_all, d_all, chips)]
     return layers, paths
 
 
@@ -335,7 +346,12 @@ def build_maps(name):
     P = SETS[name]
     W, H = P["W"], P["H"]
     layers, paths = build_geometry(name)
-    core = np.clip(np.asarray(draw_all(layers, W, H), np.float32) / 255.0, 0.0, 1.0)
+    core_raw = np.clip(np.asarray(draw_all(layers, W, H), np.float32) / 255.0, 0.0, 1.0)
+    rng_e = np.random.default_rng(P["seed"] + 700000)                # edge roughening stream
+    edge_n = fbm(H, W, 14, 3, rng_e)
+    cb = gblur(core_raw, 1.2)
+    # the noise is faded out where there is no stroke (c -> 0), otherwise a strong amplitude would seed specks on the empty stone
+    core = smoothstep(0.38, 0.62, cb + EDGE_NOISE * (edge_n - 0.5) * np.clip(cb * 3.0, 0.0, 1.0)).astype(np.float32)
     rng = np.random.default_rng(P["seed"] + 500000)                  # independent stream for the noise
     noise = fbm(H, W, 90, 3, rng)
     bleed = gblur(core, 14.0) * (0.45 + 0.9 * noise)
@@ -388,6 +404,7 @@ def main():
     if a.debug_crops:
         os.makedirs(a.debug_crops, exist_ok=True)
     ok = True
+    smalls = []
     for name in ("A", "B", "C"):
         if a.only and name not in a.only:
             continue
@@ -429,6 +446,16 @@ def main():
             pv.save(os.path.join(a.debug_crops, "full_%s.png" % name))
         s = 1024.0 / max(W, H)
         pv.resize((max(1, int(round(W * s))), max(1, int(round(H * s)))), Image.LANCZOS).save(os.path.join(prev_dir, "p11_crack_tex_%s.png" % name.lower()))
+        s = 256.0 / max(W, H)
+        smalls.append(pv.resize((max(1, int(round(W * s))), max(1, int(round(H * s)))), Image.LANCZOS))
+    if len(smalls) == 3:                                             # the distance view: all three at 256 px, side by side
+        gap = 8
+        sheet = Image.new("L", (sum(im.width for im in smalls) + gap * 2, 256), 40)
+        x = 0
+        for im in smalls:
+            sheet.paste(im, (x, 0))
+            x += im.width + gap
+        sheet.save(os.path.join(prev_dir, "p11_crack_tex_small.png"))
     print("ALL CHECKS PASSED" if ok else "CHECKS FAILED")
     sys.exit(0 if ok else 1)
 
