@@ -275,6 +275,24 @@ Status 2026-11-02: P11-0…P11-2 done (GPU baseline: all 6 spots under budget, c
 
 Status 2026-11-04: P11-0…P11-7 done (D-086, D-087). P11-8: brightness re-check and one MI correction done (D-088), independent QA passed with caveats (`Docs/ArtTest/materials/p11_8_qa.md`, suite 79/79), docs done. Owner's six-spot `stat gpu`: all under 16.6 ms, highest chapel 14.96 ms (R-44 closed). Owner said "approve and merge" on 2026-11-04: Phase 11 merged to `main`. R-26 and R-46 closed; R-47 stays open until the first run after a cold start. Phase 12 waits for the owner's approval.
 
+## Phase 12 — Warden visual: task breakdown
+Branch `claude/phase-12-warden-visual`. Spec: `Docs/plans/P12_WARDEN_VISUAL.md` (D-089). Owner approved the plan on 2026-11-04. Animation is Phase 13.
+
+| Task | Scope | Owner | Depends on |
+|---|---|---|---|
+| P12-0 | Plan approval; D-089, R-49…R-52, plan table | lead + owner | — |
+| P12-1 | Pipeline spike: a test figure through Blender, FBX and Unreal | technical-artist [EDITOR], lead for captures | P12-0 |
+| P12-2 | Downloads; hand comparison | asset-curator, technical-artist | P12-0 |
+| P12-3 | Three concept blockouts; the owner chooses (D-090) | technical-artist, owner | P12-1 |
+| P12-4 | Final model of the chosen concept | technical-artist | P12-3 |
+| P12-5 | Rig, weights, held pose, range-of-motion clip, silhouette mesh | animation-specialist | P12-4 |
+| P12-6 | `M_LB_Character`, textures, Unreal import | technical-artist [EDITOR], lead for captures | P12-5 |
+| P12-7 | Read review in the game's real lighting | lead + owner | P12-6 |
+| P12-8 | `BP_Warden` and `BP_WardenSilhouette` swap | unreal-blueprint-engineer [EDITOR] | P12-7 |
+| P12-9 | QA, docs, GPU readings, playtest; PHASE 12 READY FOR YOUR REVIEW | qa-reviewer + lead + owner | all |
+
+Status 2026-11-04: P12-0 done. P12-1 and P12-2 started.
+
 ## Deferred to Phase 14–15 (Lighting, VFX: storm work)
 Items the owner asked to fold into the storm pass. Plan them in detail (Docs/plans/) when Phase 14–15 starts.
 

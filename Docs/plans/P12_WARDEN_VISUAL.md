@@ -1,6 +1,6 @@
 # Phase 12: Warden visual: plan
 
-**Status:** waiting for the owner's approval. Nothing is built yet.
+**Status:** approved by the owner on 2026-11-04. P12-0 done; P12-1 and P12-2 in progress.
 **Branch:** `claude/phase-12-warden-visual`, from `main` (0df20fc).
 **Rules:** D-048 applies. The lead plans in Opus 5.5 at xhigh effort; every implementer is spawned with `model: "sonnet", effort: "high"`. Nothing starts without the owner's "go".
 
@@ -132,6 +132,7 @@ Editor tasks never overlap. Each one saves one package per `save_assets` call an
 - Agents don't run captures. They stop and ask the lead, who tells the owner first, because Unreal must be in front.
 - Never use `read_graph_dsl` on a Blueprint you aren't editing: it marks it dirty (P8). Use `find_nodes` and `get_node_infos`.
 - Free assets only. Every new asset gets a row in `Docs/ASSET_REGISTRY.md`.
+- **Never assign an existing project material or MI to a skeletal mesh.** Their parents have `bUsedWithSkeletalMesh` false, so the editor would set the flag itself, dirty the master and recompile it (R-47). Skeletal meshes use the default material or `M_LB_Character` children only.
 
 ---
 
@@ -140,7 +141,7 @@ Editor tasks never overlap. Each one saves one package per `save_assets` call an
 
 **Files:** `Tools/blender/warden/spike_skel.py` (new); output `SourceArt/Warden/spike/`; assets in `/Game/LastBell/ArtTest/P12/`.
 
-**The figure:** a 290 cm stick figure of tapered boxes on the core bones of the joint table (P12-5), with left-side boxes in slot `MAT_Left` and the rest in `MAT_Body`, plus a 2-second clip bending the spine and raising the left arm.
+**The figure:** a 290 cm stick figure of tapered boxes on the core bones of the joint table (P12-5), with left-side boxes in slot `MAT_Left` and the rest in `MAT_Body`, plus a 2-second clip bending the spine and raising the left arm. It's deliberately lopsided, so `get_bounds` alone shows its orientation: a 30 cm box on the left hand only, and a 25 cm nose on the face only. No materials are assigned to it.
 
 **Export settings to start from (`bpy.ops.export_scene.fbx`):**
 - Scene unit scale 0.01, modelled in centimetres; character facing −Y, its left on +X.
@@ -155,11 +156,11 @@ Editor tasks never overlap. Each one saves one package per `save_assets` call an
 | 1 | `import_file` with `import_animations`, `create_physics_asset` | Returns mesh, skeleton, physics asset, animation |
 | 2 | `get_bone_names` | First bone is `root`; no `Armature` bone; count equals the source |
 | 3 | `get_bounds` | Height 290 ± 1, not 100× or 0.01× |
-| 4 | Orientation, by a capture of a temporary actor | Faces +Y in mesh space, `MAT_Left` on +X (as `SKM_Manny_Simple`) |
-| 5 | The clip plays with `AnimationSingleNode` on a `SkeletalMeshActor` in Simulate | Bends visibly; bones don't stretch or flip |
+| 4 | Orientation, from `get_bounds` of the lopsided figure, then seen in a `CaptureAssetImage` thumbnail | Nose towards +Y in mesh space, left hand's box towards +X (as `SKM_Manny_Simple`) |
+| 5 | The clip plays with `AnimationSingleNode` on a temporary `SkeletalMeshActor` in Simulate (the lead captures it, about 2 minutes, Unreal in front) | Bends visibly; bones don't stretch or flip |
 | 6 | `get_material_slots` | Both names survive |
 | 7 | Second import over the same name, with `skeleton` set | Mesh updates; skeleton, sockets and references survive. **If not, write the safe re-import procedure** |
-| 8 | Normals | No faceted shading or inverted faces in a capture |
+| 8 | Normals | No inverted faces in a `CaptureAssetImage` thumbnail; flat shading on the boxes is expected |
 
 **Report only, for the Phase 13 plan (no pass or fail):**
 - Can `BlueprintTools.create` make an Animation Blueprint, with `asset_type` `/Script/Engine.AnimBlueprint`? Can `write_graph_dsl` touch its graph?
