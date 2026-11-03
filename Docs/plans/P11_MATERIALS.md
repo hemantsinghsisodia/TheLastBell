@@ -479,6 +479,19 @@ In every view the real difference is below what scaling alone creates, the area 
 5. **GPU (owner, 1 minute):** one reading at the chapel mid-nave spot. Budget ≤ 16.6 ms; baseline 15.32 ms. If over: the P11-8 cut list, before any decal work.
 6. **Suite** on the mirror, and report. P11-6 waits for the owner's "go".
 
+**Look result (`p11_w1_*` at the master's defaults, all 24 poses; `p11_w2_*` at the chosen values, 6 poses):** the first render of the new shaders ran with no GPU crash and no shader error in the log.
+
+| | `GrimeBaseAmount` | `StreakAmount` | `PatchAmount` | Result at normal exposure |
+|---|---|---|---|---|
+| Defaults | 0.45 | 0.30 | 0.30 | Clear in the altar corner, barely visible on the north wall and the passage wall |
+| **Chosen** | **0.55** | **0.42** | **0.40** | Soft vertical streaks read on the north wall; no hard edges; memorial legible |
+
+Measured on same-size captures, the defaults change whole images by 2 to 5 % against the switch off (`p11_r5_`), and the bottom third of the bells view by 15 %. The chosen values take a further 0 to 1.6 % off whole images. **Brightness:** the crypt reads about 5 % lower in the 24-pose table although this layer doesn't reach it, so most of that table's shift is the taller viewport framing, not the material. P11-8 has to re-read brightness at one viewport size before correcting it.
+
+**Not judged yet:** only 6 poses were captured at the chosen values; the other 18 are covered by the full re-capture in P11-8. Nobody has judged this in play.
+
+**Saved:** `MI_Cl_CarveDirt`, `MI_Kit_Masonry`, `MI_Kit_Trim`, one at a time. `M_LB_Surface` shows as modified in the editor after the switch change (189 expressions and 73 parameters, as committed) and was not saved. Its file on disk is unchanged.
+
 ### P11-6: decals
 1. **Retune** (instance values only). D-046: leak decals were "too strong, hair-like". For each decal MI in the census, check one capture per area. Lower `Opacity` and adjust `Roughness` until it reads as a stain.
 2. **Crack decals** (none exist; the CC0 sources have no suitable decal). Generate `T_LB_Decal_Crack_A/B/C` procedurally with a Python script in `Tools/materials/` (opacity, normal, 2K, seeded). Three MIs on `M_LB_Decal`. Registry rows ("own work").
