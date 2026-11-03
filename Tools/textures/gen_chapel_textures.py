@@ -861,6 +861,7 @@ def soot_texture(seed, lean, width):
     f = prof * np.exp(-t * 2.1) * (0.50 + 0.95 * turb) * (0.78 + 0.45 * streak)
     a = 0.85 * np.clip(f * 1.55, 0, 1) ** 0.95
     a = a * (0.80 + 0.40 * fine) * (1 - smoothstep(0.80, 1.0, t))
+    a = a * smoothstep(0.0, 0.10, t)                           # P11-6: fade the bottom edge too (no hard sticker edge)
     a = a * np.clip(np.minimum(u, 1 - u) / 0.05, 0, 1)
     return rgba_const((0.02, 0.02, 0.02), np.clip(a, 0, 0.85), (fine - 0.5) * 0.5)
 
@@ -1491,8 +1492,8 @@ def parchment_texture(seed, rotate=False):
 
 # name -> (seed key, generator call, preview file)
 GRIME = [
-    ("T_LB_Decal_Soot_A", "soot_a", lambda s: soot_texture(s, 0.03, 1.0)),
-    ("T_LB_Decal_Soot_B", "soot_b", lambda s: soot_texture(s, -0.07, 1.25)),
+    ("T_LB_Decal_SootSoft_A", "soot_a", lambda s: soot_texture(s, 0.03, 1.0)),
+    ("T_LB_Decal_SootSoft_B", "soot_b", lambda s: soot_texture(s, -0.07, 1.25)),
     ("T_LB_Decal_Mould_Band", "mould", mould_band_texture),
     ("T_LB_Decal_WaterStain", "waterstain", water_stain_texture),
     ("T_LB_Decal_WaxDrips", "wax", wax_texture),
