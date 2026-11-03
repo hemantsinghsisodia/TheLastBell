@@ -551,6 +551,17 @@ Checks the script prints and enforces (exit 1 on failure): fraction of pixels wi
 
 **Stop here and report.** The lead looks at the previews before anything goes into the editor.
 
+**Step 1 result (2026-11-03; commits b52928f, 79df30b).** The generator is the record; it differs from the text above in these ways. The first pass read as marker lines, and C as a sapling.
+- Every stem's width is multiplied by `smoothstep(0, 0.10, s)`, floor 1.5 px, so the thick end has no round stub.
+- Edges are roughened at final size: `core = smoothstep(0.38, 0.62, blur(raw, 1.2) + 1.2 * (fbm(cell 14) - 0.5) * clip(blur * 3, 0, 1))`. Thin branches break into dashes. The amplitude was first set at 0.30 and moved the edge by only about 0.15 px.
+- Chips sit on the stem's edge, value 1.0, radius 5–16 px, spacing 160–320 px, stretched along the stem, none in the first 10 %.
+- Branches: length 0.10–0.24 x main, ± 35–70° off the local heading, alternating sides, wander ± 34°.
+- C has no fork: an oblique crack from (0.32, 0.90) toward (0.66, 0.10), 14 px to 2 px, wander ± 32°, `step` 0.18, `k` 3.
+- B starts at v 0.94, not 0.97, because strokes stay inside a 0.055 inset so the border check can pass. No steps in the last 10 % of a stem.
+- Coverage: A 0.90 %, B 1.27 %, C 0.53 %. Border checks pass, and two runs give the same MD5s. Soot: bottom 4 rows mean alpha 0.00013 and 0.00016 (were 0.133 and 0.164); the other PNGs are unchanged.
+
+Lead review of `p11_crack_tex_{a,b,c,small}.png`: all three read as cracks at full size and at 256 px. Small crossings remain (C's closed triangle, a knot in A). They look like the islands real cracks form, so they stay unless they look wrong on a wall. These were judged on a fake stone, so the real test is Step 3.
+
 #### Step 2: editor (technical-artist) [EDITOR]
 New script `Tools/materials/apply_p11_decals.py`, in the style of `set_weathering.py`: `--snapshot FILE` (before-values of everything it changes), `--textures`, `--mis`, `--leaks`, `--cracks`, `--check` (read back everything; exit 1 on a mismatch), `--save`. Refuses to run while PIE runs (`IsPIERunning`). Idempotent by asset name and actor label. Spawn decals as `Tools/crypt/place_crypt.py` `place_decal` does (`add_to_scene_from_class` DecalActor, `set_actor_transform`, `set_label`, `set_actor_folder`, `NewDecalComponent`).
 
