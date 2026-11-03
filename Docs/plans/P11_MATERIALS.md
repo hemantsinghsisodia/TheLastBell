@@ -1,6 +1,6 @@
 # Phase 11: Materials (surface polish): plan
 
-**Status:** approved by the owner on 2026-11-02. P11-0, P11-1 and P11-2 done; P11-3 done: the owner chose A (D-086). P11-0 to P11-7 done (suite 79/79); P11-8: brightness, QA, docs and GPU re-check done; waiting for the owner's playtest judgement and approval. The door corners and `Gobo_Moon` specks stay out of scope.
+**Status:** approved by the owner on 2026-11-02. P11-0, P11-1 and P11-2 done; P11-3 done: the owner chose A (D-086). P11-0 to P11-7 done (suite 79/79); P11-8 done. The owner approved Phase 11 on 2026-11-04 and it's merged to `main`. The door corners and `Gobo_Moon` specks stay out of scope.
 **Branch:** `claude/phase-11-materials`, from `main` (6dfa29d).
 **Rules:** D-048 applies. The lead plans in Opus 5.5 at xhigh effort; every implementer is spawned with `model: "sonnet", effort: "high"`.
 
@@ -867,11 +867,18 @@ A full run from the start to the last objective in one PIE session of about 8 mi
 
 **Seen in the owner's screenshots (lead, not the owner's judgement):** the memorial and numerals read, and the crypt stone holds up close to the candle. At close range the cloister lantern's glass reads as a flat, pale cream pane (noted at P11-7 as flat at 3 m).
 
-#### Still with the owner
-- Their judgement of the play-through, including the items flagged above: chapel nave brightness, cloister south entrance, crypt exit stair from the gate, five crack views on black walls, tower lanterns. No impressions received yet; the run above took 8 minutes.
-- Not judged by anyone yet: weathering in play, and courtyard and chapel light colour.
-- R-47 closes on the first run after a cold start.
-- Keep or delete the leftovers listed in step 2.
+#### Phase 11 close-out (lead, 2026-11-04)
+- **The owner said "approve and merge"** after the "PHASE 11 READY FOR YOUR REVIEW" report, and listed no fixes. The lead merged the branch to main, pushed main and deleted the branch.
+- **Decided by the approval, as that report offered:** the leftovers from step 2 stay in place, and the broken lancet's jagged black edge and the grey diamond above the chapel front stay out of scope.
+- **Closed:** R-26, R-44, R-46 and R-32; D-046's leak decals (D-087).
+- **Still open:**
+  - R-47, until the first run after a cold start. The owner was asked to report it.
+  - The flagged brightness items weren't changed: chapel nave, cloister south entrance, crypt exit stair. The chapel's cause isn't traced.
+  - The lantern glass reads flat up close and doesn't flicker (Phase 15).
+  - The game thread's 14.84 ms at P11-5c never came back and has no known cause.
+  - Weathering's own GPU cost isn't isolated.
+  - Outside Phase 11, as before: the door corners, the `Gobo_Moon_*` specks and the Phase 9 dress bounds mismatches (118).
+- **Not tested in this phase:** a play-through with the Warden on, which no gameplay change here called for. The owner's approval came without written impressions, so this file doesn't record a judgement on each flagged item.
 
 ## Proposed log entries (added in P11-0, on approval)
 - **D-085:** vertex-colour contract dropped in favour of a world-space weathering layer.
