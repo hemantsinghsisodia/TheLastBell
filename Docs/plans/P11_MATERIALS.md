@@ -492,6 +492,12 @@ Measured on same-size captures, the defaults change whole images by 2 to 5 % aga
 
 **Saved:** `MI_Cl_CarveDirt`, `MI_Kit_Masonry`, `MI_Kit_Trim`, one at a time. `M_LB_Surface` shows as modified in the editor after the switch change (189 expressions and 73 parameters, as committed) and was not saved. Its file on disk is unchanged.
 
+**GPU reading (owner, 2026-11-03, chapel mid-nave, High, Warden off): 15.00 ms** (graphics queue 14.80 avg, 15.73 max), against 15.32 ms at baseline and a budget of 16.6 ms. Within budget, so no cuts are needed before the decals.
+
+**This isn't a measurement of the layer's cost.** The two readings aren't framed alike: 372.5K primitives now, 422.3K then, and render 1671x870 against 1664x846 (the editor window changed). `Nanite BasePass` and `Basepass`, where the layer's shader cost would land, read 1.15 and 0.89 now, 1.22 and 0.97 then. The P11-8 reading at all six spots is the real close of R-44.
+
+**Game thread:** 14.84 ms now, 11.38 ms at baseline, with `Frame` at 16.75 ms against the 16.67 ms cap. A material change can't cost game-thread time, so this isn't from the layer, and it isn't explained yet. Check it again in the P11-8 readings.
+
 ### P11-6: decals
 1. **Retune** (instance values only). D-046: leak decals were "too strong, hair-like". For each decal MI in the census, check one capture per area. Lower `Opacity` and adjust `Roughness` until it reads as a stain.
 2. **Crack decals** (none exist; the CC0 sources have no suitable decal). Generate `T_LB_Decal_Crack_A/B/C` procedurally with a Python script in `Tools/materials/` (opacity, normal, 2K, seeded). Three MIs on `M_LB_Decal`. Registry rows ("own work").
