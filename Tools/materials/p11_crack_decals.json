@@ -5,7 +5,7 @@
   "location": {
    "x": 2500.0,
    "y": 922.0,
-   "z": 650
+   "z": 615
   },
   "rotation": {
    "pitch": 0,
@@ -14,8 +14,8 @@
   },
   "size": {
    "x": 12,
-   "y": 45,
-   "z": 45
+   "y": 85,
+   "z": 85
   },
   "plane": "",
   "note": "crown of the intact north bay, garth side"
@@ -26,7 +26,7 @@
   "location": {
    "x": 4500.0,
    "y": -922.0,
-   "z": 650
+   "z": 615
   },
   "rotation": {
    "pitch": 0,
@@ -35,8 +35,8 @@
   },
   "size": {
    "x": 12,
-   "y": 45,
-   "z": 45
+   "y": 85,
+   "z": 85
   },
   "plane": "",
   "note": "crown of the intact south bay, garth side"
@@ -45,9 +45,9 @@
   "label": "Crack_Co_ArcN_BrokenA",
   "mi": "MI_Decal_Crack_A",
   "location": {
-   "x": 3170.0,
-   "y": 922.0,
-   "z": 630
+   "x": 3170,
+   "y": 920,
+   "z": 565
   },
   "rotation": {
    "pitch": 0,
@@ -56,19 +56,19 @@
   },
   "size": {
    "x": 12,
-   "y": 70,
-   "z": 70
+   "y": 130,
+   "z": 130
   },
-  "plane": "",
+  "plane": "bounds",
   "note": "standing stub of the north bay 3000"
  },
  {
   "label": "Crack_Co_ArcN_BrokenB",
   "mi": "MI_Decal_Crack_A",
   "location": {
-   "x": 4830.0,
-   "y": 922.0,
-   "z": 630
+   "x": 4830,
+   "y": 920,
+   "z": 565
   },
   "rotation": {
    "pitch": 0,
@@ -77,19 +77,19 @@
   },
   "size": {
    "x": 12,
-   "y": 70,
-   "z": 70
+   "y": 130,
+   "z": 130
   },
-  "plane": "",
+  "plane": "bounds",
   "note": "standing stub of the north bay 4000"
  },
  {
   "label": "Crack_Co_ArcS_BrokenA",
   "mi": "MI_Decal_Crack_A",
   "location": {
-   "x": 2170.0,
-   "y": -922.0,
-   "z": 630
+   "x": 2170,
+   "y": -920,
+   "z": 565
   },
   "rotation": {
    "pitch": 0,
@@ -98,19 +98,19 @@
   },
   "size": {
    "x": 12,
-   "y": 70,
-   "z": 70
+   "y": 130,
+   "z": 130
   },
-  "plane": "",
+  "plane": "bounds",
   "note": "standing stub of the south bay 2000"
  },
  {
   "label": "Crack_Co_ArcS_BrokenB",
   "mi": "MI_Decal_Crack_A",
   "location": {
-   "x": 3830.0,
-   "y": -922.0,
-   "z": 630
+   "x": 3830,
+   "y": -920,
+   "z": 565
   },
   "rotation": {
    "pitch": 0,
@@ -119,10 +119,10 @@
   },
   "size": {
    "x": 12,
-   "y": 70,
-   "z": 70
+   "y": 130,
+   "z": 130
   },
-  "plane": "",
+  "plane": "bounds",
   "note": "standing stub of the south bay 3000"
  },
  {
@@ -215,7 +215,7 @@
   "location": {
    "x": 300,
    "y": 0,
-   "z": 720
+   "z": 690
   },
   "rotation": {
    "pitch": 0,
@@ -224,8 +224,8 @@
   },
   "size": {
    "x": 12,
-   "y": 80,
-   "z": 40
+   "y": 110,
+   "z": 55
   },
   "plane": "bounds",
   "note": "crown of the gate arch, courtyard side"
@@ -299,7 +299,7 @@
   "location": {
    "x": 6060.0,
    "y": -0.0,
-   "z": 440
+   "z": 470
   },
   "rotation": {
    "pitch": 0,
@@ -308,8 +308,8 @@
   },
   "size": {
    "x": 12,
-   "y": 60,
-   "z": 60
+   "y": 90,
+   "z": 90
   },
   "plane": "",
   "note": "above the main door, inside"
@@ -329,8 +329,8 @@
   },
   "size": {
    "x": 12,
-   "y": 60,
-   "z": 60
+   "y": 90,
+   "z": 90
   },
   "plane": "",
   "note": "base of the north wall"
@@ -350,8 +350,8 @@
   },
   "size": {
    "x": 12,
-   "y": 60,
-   "z": 60
+   "y": 90,
+   "z": 90
   },
   "plane": "",
   "note": "base of the south wall"
@@ -371,8 +371,8 @@
   },
   "size": {
    "x": 12,
-   "y": 60,
-   "z": 60
+   "y": 90,
+   "z": 90
   },
   "plane": "",
   "note": "base of the east wall, south corner"
@@ -413,8 +413,8 @@
   },
   "size": {
    "x": 12,
-   "y": 55,
-   "z": 55
+   "y": 90,
+   "z": 90
   },
   "plane": "",
   "note": "base of the sacristy east wall"
@@ -476,8 +476,8 @@
   },
   "size": {
    "x": 12,
-   "y": 60,
-   "z": 60
+   "y": 90,
+   "z": 90
   },
   "plane": "",
   "note": "base of the north wall"
@@ -497,8 +497,8 @@
   },
   "size": {
    "x": 12,
-   "y": 60,
-   "z": 60
+   "y": 90,
+   "z": 90
   },
   "plane": "",
   "note": "base of the west wall"
@@ -544,48 +544,6 @@
   },
   "plane": "bounds",
   "note": "crown of the south archway, inside"
- },
- {
-  "label": "Crack_Cl_ArcN_Crown",
-  "mi": "MI_Decal_Crack_C",
-  "location": {
-   "x": 11050,
-   "y": 2205,
-   "z": 585
-  },
-  "rotation": {
-   "pitch": 0,
-   "yaw": 90,
-   "roll": 90
-  },
-  "size": {
-   "x": 12,
-   "y": 40,
-   "z": 40
-  },
-  "plane": "bounds",
-  "note": "arcade arch under the vault collapse, garth side"
- },
- {
-  "label": "Crack_Cl_ArcS_Crown",
-  "mi": "MI_Decal_Crack_C",
-  "location": {
-   "x": 10750,
-   "y": 1395,
-   "z": 585
-  },
-  "rotation": {
-   "pitch": 0,
-   "yaw": -90,
-   "roll": 270
-  },
-  "size": {
-   "x": 12,
-   "y": 40,
-   "z": 40
-  },
-  "plane": "bounds",
-  "note": "south arcade arch, garth side"
  },
  {
   "label": "Crack_Cr_WC_W",
@@ -696,7 +654,7 @@
   "label": "Crack_Cr_NC_N",
   "mi": "MI_Decal_Crack_C",
   "location": {
-   "x": 11150,
+   "x": 11300,
    "y": -700,
    "z": -420
   },
@@ -707,8 +665,8 @@
   },
   "size": {
    "x": 12,
-   "y": 70,
-   "z": 70
+   "y": 100,
+   "z": 100
   },
   "plane": "decal",
   "note": "north chamber, north wall"
@@ -770,8 +728,8 @@
   },
   "size": {
    "x": 12,
-   "y": 60,
-   "z": 60
+   "y": 90,
+   "z": 90
   },
   "plane": "",
   "note": "base of the east wall"

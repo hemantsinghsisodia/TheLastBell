@@ -38,7 +38,7 @@ def crack_poses():
         floor = -600 if c[2] < -100 else (c[2] // 1000) * 1000 if c[2] > 1000 else 0
         eye = c[2] - 60 if a["label"].startswith("Crack_Tw_") and c[2] > 500 else floor + 170
         start = (c[0] - f[0] * 5, c[1] - f[1] * 5, eye)
-        want = max(300, a["size"]["y"] * 3)
+        want = max(300, a["size"]["y"] * 3, abs(c[2] - eye) * 1.5)
         d = max(120, min(want, clear(start, (c[0] - f[0] * want, c[1] - f[1] * want, eye)) - 30))
         cam = (c[0] - f[0] * d, c[1] - f[1] * d, eye)
         pitch = math.degrees(math.atan2(c[2] - eye, d))

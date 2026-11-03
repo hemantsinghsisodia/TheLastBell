@@ -602,7 +602,7 @@ These are new assets, so nothing overwrites an existing texture. `T_LB_Decal_Soo
 
 **The six courtyard leaks** (`--leaks`): same X and Y and yaw as now. Rotation (0, yaw, **90**), `decalSize` (12, 200, 50), Z **600**. The wall was traced at these spots: it's there at Z 400, 600 and 790 and gone by 830, so the stain starts under the coping. Pass location, rotation and scale to `set_actor_transform`.
 
-**39 crack decals** (`--cracks`) from `Tools/materials/p11_crack_decals.json`, unchanged, as `DecalActor`, folder `Dressing/Decals/Cracks`, `sortOrder` 1 so they draw over stains, `fadeScreenSize` left at its default. No collision change. The table below is that file.
+**37 crack decals** (39 in round 1; see Step 3) (`--cracks`) from `Tools/materials/p11_crack_decals.json`, unchanged, as `DecalActor`, folder `Dressing/Decals/Cracks`, `sortOrder` 1 so they draw over stains, `fadeScreenSize` left at its default. No collision change. The table below is that file.
 
 **Never:** a crack within 2 m of a clue, numeral or tablet (`make_crack_placements.py` enforces this and the no-go walls: chapel north wall X 8000–9000, cloister bell wall Y 1950–2800, crypt lever wall X 10600–11200). A label not in the file. Any change to `MI_Decal_Mould`, chalk or light-pool MIs.
 
@@ -618,47 +618,70 @@ These are new assets, so nothing overwrites an existing texture. `T_LB_Decal_Soo
 
 GPU: 126 decals become 165. Decals cost by screen area, and these are small. The P11-8 reading at six spots covers it; "fewer decals" is already the third cut.
 
-#### Crack list
+#### Step 3, first round (lead, 2026-11-03; `p11_ck1_*`, `p11_dc1_*`)
+**Step 2 went in as specified** (commit 9a38399; `--check` 65/65, suite 79/79). All 26 decal views were compared before and after, lifted the same amount.
 
+| Decal | Result |
+|---|---|
+| Courtyard leaks | **Pass.** They now run down from under the coping as rain stains. No strands, no hard edge. This was the D-046 hair |
+| Soot | **Pass.** The square bottom edge is gone, and a soft plume remains |
+| Damp streaks | **Pass.** Soft, no black hair |
+| `Leaking004`, dust | **Pass.** Softer, still read as stains |
+| Others (no change) | Same as before, as expected |
+| Large cracks (half-size ≥ 120) | **Pass.** `tw_n_mid`, `co_frontcrown`, `co_walln_05`, `co_walls_03` and `tw_sw_a` read as real structural cracks |
+| Small cracks (half-size ≤ 70) | **Fail.** Hard to see or invisible. At these sizes the lines are under a centimetre wide and fade in the mips. `ch_s_base` and `ch_doorcrown` did land on the wall; they're just too thin |
+| `Crack_Cl_ArcN_Crown`, `Crack_Cl_ArcS_Crown` | **Fail.** Completely behind the ivy |
+
+**Not yet verifiable:** the crypt group and the arcade and gate crowns. Editor-mode shots show each decal's icon over its centre, and much of the crypt is black without the player's light.
+
+**The jagged black fringe on the lit reveal of the broken lancet isn't a decal.** It's the same shape before and after the damp streak changed. It's left alone here; it stays out of scope unless the owner adds it.
+
+**Changes for round 2** (the list below already includes them):
+- Small cracks get bigger, not bolder only: wall bases half-size 90 at Z 95 (the box stops 5 cm above the floor, so nothing projects on the floor); arcade crowns 85; broken-bay stubs 130, with the plane taken from the bounds because the opening beside them can't be probed; door crown 90; gate 110 x 55; `Crack_Cr_NC_N` 100, moved 150 cm along the wall, off the torch.
+- The two ivy-covered cracks are deleted: **37 cracks**, not 39.
+- `MI_Decal_Crack_A` `OpacityStrength` 1.0 → 1.2; `MI_Decal_Crack_C` 1.0 → 1.5; B stays 1.0. Tune cracks within 0.7–1.8 from here. No re-import: the textures don't change.
+- Review poses stand further back, so the steep arcade views become what a player sees from the garth.
+
+Round 2 captures use PIE Simulate (no icons) for the entries that couldn't be judged: `co_arcn_crown, co_arcs_crown, co_arcn_brokena, co_arcn_brokenb, co_arcs_brokena, co_arcs_brokenb, co_gatecrown, cl_archs_crown, cr_cc_s, cr_fp_s, cr_fp_n, cr_sc_s, cr_wc_w, cr_nc_n, ch_e_base, ch_s_base, ch_doorcrown, sa_e_base, tw_e_base`.
+
+#### Crack list
 | Label | MI | Location | Rotation (P, Y, R) | DecalSize | Where |
 |---|---|---|---|---|---|
-| `Crack_Co_ArcN_Crown` | C | 2500, 922, 650 | 0, 90, 90 | 12, 45, 45 | crown of the intact north bay, garth side |
-| `Crack_Co_ArcS_Crown` | C | 4500, -922, 650 | 0, -90, 270 | 12, 45, 45 | crown of the intact south bay, garth side |
-| `Crack_Co_ArcN_BrokenA` | A | 3170, 922, 630 | 0, 90, 90 | 12, 70, 70 | standing stub of the north bay 3000 |
-| `Crack_Co_ArcN_BrokenB` | A | 4830, 922, 630 | 0, 90, 270 | 12, 70, 70 | standing stub of the north bay 4000 |
-| `Crack_Co_ArcS_BrokenA` | A | 2170, -922, 630 | 0, -90, 75 | 12, 70, 70 | standing stub of the south bay 2000 |
-| `Crack_Co_ArcS_BrokenB` | A | 3830, -922, 630 | 0, -90, 255 | 12, 70, 70 | standing stub of the south bay 3000 |
+| `Crack_Co_ArcN_Crown` | C | 2500, 922, 615 | 0, 90, 90 | 12, 85, 85 | crown of the intact north bay, garth side |
+| `Crack_Co_ArcS_Crown` | C | 4500, -922, 615 | 0, -90, 270 | 12, 85, 85 | crown of the intact south bay, garth side |
+| `Crack_Co_ArcN_BrokenA` | A | 3170, 920, 565 | 0, 90, 90 | 12, 130, 130 | standing stub of the north bay 3000 (check in capture) |
+| `Crack_Co_ArcN_BrokenB` | A | 4830, 920, 565 | 0, 90, 270 | 12, 130, 130 | standing stub of the north bay 4000 (check in capture) |
+| `Crack_Co_ArcS_BrokenA` | A | 2170, -920, 565 | 0, -90, 75 | 12, 130, 130 | standing stub of the south bay 2000 (check in capture) |
+| `Crack_Co_ArcS_BrokenB` | A | 3830, -920, 565 | 0, -90, 255 | 12, 130, 130 | standing stub of the south bay 3000 (check in capture) |
 | `Crack_Co_WallN_05` | B | 2200, 2500, 400 | 0, 90, 90 | 12, 240, 120 | curtain wall west of the broken panel N_05 |
 | `Crack_Co_WallN_10` | A | 4840, 2500, 430 | 0, 90, 110 | 12, 170, 170 | curtain wall east of the broken panel N_10 |
 | `Crack_Co_WallS_03` | A | 2020, -2500, 430 | 0, -90, 75 | 12, 170, 170 | curtain wall east of the broken panel S_03 |
 | `Crack_Co_WallS_08` | B | 3410, -2500, 400 | 0, -90, 90 | 12, 240, 120 | curtain wall west of the broken panel S_08 |
-| `Crack_Co_GateCrown` | B | 300, 0, 720 | 0, 180, 90 | 12, 80, 40 | crown of the gate arch, courtyard side (check in capture) |
+| `Crack_Co_GateCrown` | B | 300, 0, 690 | 0, 180, 90 | 12, 110, 55 | crown of the gate arch, courtyard side (check in capture) |
 | `Crack_Co_FrontCrown` | B | 6000, 0, 490 | 0, 0, 90 | 12, 120, 60 | above the chapel door, outside |
 | `Crack_Ch_S_HoleW` | A | 6210, -750, 620 | 0, -90, 80 | 12, 150, 150 | west of the broken lancet |
 | `Crack_Ch_S_HoleE` | B | 6800, -750, 500 | 0, -90, 90 | 12, 210, 105 | east of the broken lancet |
-| `Crack_Ch_DoorCrown` | C | 6060, -0, 440 | 0, 180, 90 | 12, 60, 60 | above the main door, inside |
-| `Crack_Ch_N_Base` | C | 7000, 750, 95 | 0, 90, 270 | 12, 60, 60 | base of the north wall |
-| `Crack_Ch_S_Base` | C | 8000, -750, 95 | 0, -90, 90 | 12, 60, 60 | base of the south wall |
-| `Crack_Ch_E_Base` | C | 8960, -640, 95 | 0, 0, 90 | 12, 60, 60 | base of the east wall, south corner |
+| `Crack_Ch_DoorCrown` | C | 6060, -0, 470 | 0, 180, 90 | 12, 90, 90 | above the main door, inside |
+| `Crack_Ch_N_Base` | C | 7000, 750, 95 | 0, 90, 270 | 12, 90, 90 | base of the north wall |
+| `Crack_Ch_S_Base` | C | 8000, -750, 95 | 0, -90, 90 | 12, 90, 90 | base of the south wall |
+| `Crack_Ch_E_Base` | C | 8960, -640, 95 | 0, 0, 90 | 12, 90, 90 | base of the east wall, south corner |
 | `Crack_Ch_N_High` | A | 7000, 750, 830 | 0, 90, 100 | 12, 170, 170 | high on the north wall between the soot marks |
-| `Crack_Sa_E_Base` | C | 8960, -1200, 95 | 0, 0, 270 | 12, 55, 55 | base of the sacristy east wall |
+| `Crack_Sa_E_Base` | C | 8960, -1200, 95 | 0, 0, 270 | 12, 90, 90 | base of the sacristy east wall |
 | `Crack_Cl_N_CollapseW` | A | 10640, 3000, 430 | 0, 90, 80 | 12, 170, 170 | north wall west of the vault collapse |
 | `Crack_Cl_N_CollapseE` | B | 11260, 3000, 400 | 0, 90, 90 | 12, 230, 115 | north wall east of the vault collapse |
-| `Crack_Cl_N_Base` | C | 10150, 3000, 95 | 0, 90, 90 | 12, 60, 60 | base of the north wall |
-| `Crack_Cl_W_Base` | C | 9500, 1000, 95 | 0, 180, 270 | 12, 60, 60 | base of the west wall |
+| `Crack_Cl_N_Base` | C | 10150, 3000, 95 | 0, 90, 90 | 12, 90, 90 | base of the north wall |
+| `Crack_Cl_W_Base` | C | 9500, 1000, 95 | 0, 180, 270 | 12, 90, 90 | base of the west wall |
 | `Crack_Cl_ArchW_Crown` | B | 9500, 2000, 560 | 0, 180, 90 | 12, 120, 60 | crown of the west archway, inside |
 | `Crack_Cl_ArchS_Crown` | B | 10650, 546, 455 | 0, -90, 90 | 12, 120, 60 | crown of the south archway, inside (check in capture) |
-| `Crack_Cl_ArcN_Crown` | C | 11050, 2205, 585 | 0, 90, 90 | 12, 40, 40 | arcade arch under the vault collapse, garth side (check in capture) |
-| `Crack_Cl_ArcS_Crown` | C | 10750, 1395, 585 | 0, -90, 270 | 12, 40, 40 | south arcade arch, garth side (check in capture) |
 | `Crack_Cr_WC_W` | A | 6300, -1750, -400 | 0, 180, 80 | 12, 120, 120 | west corridor, west wall (check in capture) |
 | `Crack_Cr_SC_S` | A | 6900, -2500, -400 | 0, -90, 255 | 12, 120, 120 | south corridor, south wall (check in capture) |
 | `Crack_Cr_FP_S` | B | 9360, -2460, -400 | 0, -90, 90 | 12, 170, 85 | flooded pit, south wall between the leaks (check in capture) |
 | `Crack_Cr_FP_N` | A | 9625, -2100, -400 | 0, 90, 100 | 12, 110, 110 | flooded pit, north wall between the leaks (check in capture) |
 | `Crack_Cr_CC_S` | A | 10700, -2500, -400 | 0, -90, 80 | 12, 130, 130 | winch chamber, south wall (check in capture) |
-| `Crack_Cr_NC_N` | C | 11150, -700, -420 | 0, 90, 90 | 12, 70, 70 | north chamber, north wall (check in capture) |
+| `Crack_Cr_NC_N` | C | 11300, -700, -420 | 0, 90, 90 | 12, 100, 100 | north chamber, north wall (check in capture) |
 | `Crack_Tw_SW_A` | A | 12300, 1540, 2900 | 0, -90, 80 | 12, 170, 170 | south wall beside the broken corner |
 | `Crack_Tw_SW_B` | B | 12040, 1800, 2900 | 0, 180, 90 | 12, 230, 115 | west wall beside the broken corner |
-| `Crack_Tw_E_Base` | C | 12960, 2000, 95 | 0, 0, 90 | 12, 60, 60 | base of the east wall |
+| `Crack_Tw_E_Base` | C | 12960, 2000, 95 | 0, 0, 90 | 12, 90, 90 | base of the east wall |
 | `Crack_Tw_E_Mid` | A | 12960, 2200, 850 | 0, 0, 100 | 12, 150, 150 | east wall, lower stair |
 | `Crack_Tw_N_Mid` | B | 12500, 2460, 1550 | 0, 90, 270 | 12, 200, 100 | north wall, upper stair |
 
