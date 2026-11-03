@@ -1,4 +1,4 @@
-"""P11-6 step 2: decal retune, crack textures, six courtyard leaks and 39 crack decals.
+"""P11-6 step 2: decal retune, crack textures, six courtyard leaks and the crack decals (39 in round 1, 37 from round 2).
 
 Spec: Docs/plans/P11_MATERIALS.md, section "P11-6: decals", "Step 2: editor". Run with -I, editor open on
 L_Monastery, no PIE. Exactly one mode per run:
@@ -6,7 +6,11 @@ L_Monastery, no PIE. Exactly one mode per run:
     --textures        import the 8 new textures and copy the settings of the reference texture; read back + get_size
     --mis             create MI_Decal_Crack_{A,B,C}; retune the 7 existing MIs (old value must match the plan, else refuse)
     --leaks           the six courtyard Decal_Leak_* actors: rotation (0, yaw, 90), decalSize (12, 200, 50), Z 600
-    --cracks          the 39 crack decals of Tools/materials/p11_crack_decals.json (idempotent by label)
+    --cracks          first removes any Crack_* actor whose label is not in Tools/materials/p11_crack_decals.json (round 2: only
+                      the two ivy-covered ones may match, else STOP), then places or updates the listed cracks (idempotent by
+                      label; an existing actor is never respawned, only changed where it differs)
+    --crack-mis       round 2: only the OpacityStrength of the three MI_Decal_Crack_* (set where it differs)
+    --save-round2     round 2: saves only MI_Decal_Crack_A, MI_Decal_Crack_C and L_Monastery (one package per call)
     --check           read back everything; exit 1 on any mismatch
     --save            one package per save_assets call, 5 s apart, L_Monastery last (never M_LB_Surface, never a Blueprint)
 
@@ -57,6 +61,8 @@ COPY_PROPS = ["compressionSettings", "sRGB", "lODGroup", "addressX", "addressY",
               "bNormalizeNormals", "powerOfTwoMode", "mipLoadOptions"]
 
 # New MIs: parent M_LB_Decal, every value an explicit override.
+CRACK_OPACITY = {"A": 1.2, "B": 1.0, "C": 1.5}   # round 2 (was 1.0 for all three)
+REMOVED_ROUND2 = {"Crack_Cl_ArcN_Crown", "Crack_Cl_ArcS_Crown"}   # behind ivy; the only Crack_* actors allowed to be pruned
 CRACK_SCALARS = {"OpacityStrength": 1.0, "OpacityContrast": 1.0, "NormalStrength": 1.0, "RoughnessScale": 0.9,
                  "DarkenStrength": 0.35, "DepthFade": 0.3, "EdgeFadeU": 0.03, "EdgeFadeV": 0.03, "DecalHalfDepthCm": 12.0}
 CRACK_TINT = (0.030, 0.027, 0.024, 1.0)
@@ -305,7 +311,7 @@ def do_mis(ue):
         ue.call(MI, "set_vector_parameter", {"instance": ref(pkg), "name": "BaseColorTint",
                                              "value": dict(zip("rgba", CRACK_TINT))})
         ok &= all(close(a, b) for a, b in zip(vector(ue, pkg, "BaseColorTint"), CRACK_TINT))
-        for k, v in CRACK_SCALARS.items():
+        for k, v in {**CRACK_SCALARS, "OpacityStrength": CRACK_OPACITY[s]}.items():
             ok &= set_scalar_explicit(ue, pkg, k, v)
         log.append((n, ok))
         print(f"  {n}: parameters set and read back {'ok' if ok else 'MISMATCH'}", flush=True)
@@ -382,8 +388,8 @@ def leak_issues(ue, lbl, a):
 def load_cracks():
     with open(CRACK_JSON, encoding="utf-8") as f:
         d = json.load(f)
-    if len(d) != 39 or len({r["label"] for r in d}) != 39:
-        raise SystemExit(f"{CRACK_JSON}: expected 39 unique labels, got {len(d)}")
+    if len(d) != 37 or len({r["label"] for r in d}) != 37:
+        raise SystemExit(f"{CRACK_JSON}: expected 37 unique labels, got {len(d)}")
     return d
 
 
@@ -421,11 +427,29 @@ def do_cracks(ue):
             print(f"REFUSED: {n} missing; run --mis first")
             return 1
     existing = actors_by_prefix(ue, "Crack_")
-    placed, left_out = 0, []
+    # prune: Crack_* actors whose label is not in the JSON. Only the two ivy-covered ones may match.
+    listed = {r["label"] for r in recs}
+    extra = sorted(l for l in existing if l not in listed)
+    if not set(extra) <= REMOVED_ROUND2:
+        print(f"STOP: these Crack_* actors are not in the JSON but are not the two expected removals: "
+              f"{sorted(set(extra) - REMOVED_ROUND2)}. Nothing was changed.")
+        return 1
+    for l in extra:
+        ue.call(SC, "remove_from_scene", {"actor": existing[l]})
+        print(f"  removed {l} (not in the JSON)", flush=True)
+        del existing[l]
+    placed, left_out, updated, unchanged = 0, [], 0, 0
     for i, r in enumerate(recs):
         lbl = r["label"]
         try:
             a = existing.get(lbl)
+            if a is not None and not crack_issues(ue, r, a):
+                unchanged += 1
+                placed += 1
+                print(f"  [{i + 1:2}/{len(recs)}] {lbl}: unchanged", flush=True)
+                continue
+            if a is not None:
+                updated += 1
             if a is None:
                 a = ue.call(SC, "add_to_scene_from_class", {"actor_type": {"refPath": "/Script/Engine.DecalActor"},
                                                             "name": lbl, "xform": crack_xf(r)})
@@ -443,19 +467,51 @@ def do_cracks(ue):
             issues = crack_issues(ue, r, a)
         except Exception as e:
             left_out.append((lbl, "tool error: " + str(e)[:200]))
-            print(f"  [{i + 1:2}/39] {lbl}: FAILED {str(e)[:200]}", flush=True)
+            print(f"  [{i + 1:2}/{len(recs)}] {lbl}: FAILED {str(e)[:200]}", flush=True)
             if len(left_out) >= 3:
                 print("STOP: 3 failures; remaining cracks were not attempted. State is partial: run --check.")
                 return 2
             continue
         if issues:
             left_out.append((lbl, "read-back mismatch: " + ", ".join(issues)))
-            print(f"  [{i + 1:2}/39] {lbl}: MISMATCH {issues}", flush=True)
+            print(f"  [{i + 1:2}/{len(recs)}] {lbl}: MISMATCH {issues}", flush=True)
         else:
             placed += 1
-            print(f"  [{i + 1:2}/39] {lbl}: ok ({r['mi'][-1]})", flush=True)
-    print(f"cracks placed and read back: {placed}/39; left out or mismatched: {left_out or 'none'}")
-    return 0 if placed == 39 else 1
+            print(f"  [{i + 1:2}/{len(recs)}] {lbl}: {'updated' if lbl in existing else 'placed'} ok ({r['mi'][-1]})", flush=True)
+    print(f"cracks placed or updated and read back: {placed}/{len(recs)}; unchanged (already as listed): {unchanged}; updated: {updated}; left out or mismatched: {left_out or 'none'}")
+    return 0 if placed == len(recs) else 1
+
+
+def do_crack_mis(ue):
+    """Round 2: only OpacityStrength of the three crack MIs, set where it differs."""
+    ok_all = True
+    for n in NEW_MIS:
+        pkg = f"{INST}/{n}"
+        want = CRACK_OPACITY[n[-1]]
+        before = scalar(ue, pkg, "OpacityStrength")
+        if close(before, want) and "OpacityStrength" in overridden(ue, pkg):
+            print(f"  {n}.OpacityStrength: {before:.4f} already {want}, not touched")
+            continue
+        ok = set_scalar_explicit(ue, pkg, "OpacityStrength", want)
+        ok_all &= ok
+        print(f"  {n}.OpacityStrength: {before:.4f} -> {scalar(ue, pkg, 'OpacityStrength'):.4f} (want {want}) {'' if ok else 'MISMATCH'}", flush=True)
+    return 0 if ok_all else 1
+
+
+def do_save_round2(ue):
+    order = [f"{INST}/MI_Decal_Crack_A", f"{INST}/MI_Decal_Crack_C", MAP_PKG]
+    print("not saved on purpose:", {p.split("/")[-1]: ue.call(AS, "is_dirty", {"asset_path": p}) for p in NEVER_SAVE})
+    for i, pkg in enumerate(order):
+        if i:
+            time.sleep(PAUSE_S)
+        was = ue.call(AS, "is_dirty", {"asset_path": pkg})
+        res = ue.call(AS, "save_assets", {"asset_paths": [pkg]})
+        dirty = ue.call(AS, "is_dirty", {"asset_path": pkg})
+        print(f"  save {pkg.split('/')[-1]}: was dirty {was}, returned {res}, is_dirty {dirty}", flush=True)
+        if res is not True or dirty is not False:
+            print(f"STOP: {pkg} did not save cleanly; later packages were not saved.")
+            return 1
+    return 0
 
 
 # ------------------------------------------------------------------ check
@@ -500,7 +556,7 @@ def do_check(ue):
         if asset_name(pr) != "M_LB_Decal":
             issues.append(f"parent {asset_name(pr)}")
         ov = overridden(ue, pkg)
-        for k, v in CRACK_SCALARS.items():
+        for k, v in {**CRACK_SCALARS, "OpacityStrength": CRACK_OPACITY[s]}.items():
             if not close(scalar(ue, pkg, k), v):
                 issues.append(f"{k}={scalar(ue, pkg, k)}")
             if k not in ov:
@@ -569,9 +625,9 @@ def do_check(ue):
         rec(not iss, f"crack {r['label']}: {iss}")
     extra = sorted(set(present) - {r["label"] for r in recs})
     rec(not extra, f"unexpected Crack_ actors: {extra}")
-    print(f"cracks: {c_ok}/39 at the listed transform, size, MI and sortOrder 1; actors labelled Crack_*: {len(present)}; unexpected: {extra or 'none'}")
+    print(f"cracks: {c_ok}/{len(recs)} at the listed transform, size, MI and sortOrder 1; actors labelled Crack_*: {len(present)}; unexpected: {extra or 'none'}")
     inf = ue.call(SC, "get_actors_in_folder", {"folder_path": CRACK_FOLDER})
-    rec(len(inf) == 39, f"folder {CRACK_FOLDER} holds {len(inf)} actors, expected 39")
+    rec(len(inf) == len(recs), f"folder {CRACK_FOLDER} holds {len(inf)} actors, expected {len(recs)}")
     print(f"folder {CRACK_FOLDER}: {len(inf)} actors")
 
     dirty = {p.split("/")[-1]: ue.call(AS, "is_dirty", {"asset_path": p}) for p in WATCH_DIRTY + SAVE_ORDER}
@@ -604,7 +660,7 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     g = ap.add_mutually_exclusive_group(required=True)
     g.add_argument("--snapshot", metavar="FILE")
-    for m in ("textures", "mis", "leaks", "cracks", "check", "save"):
+    for m in ("textures", "mis", "leaks", "cracks", "check", "save", "crack-mis", "save-round2"):
         g.add_argument("--" + m, action="store_true")
     a = ap.parse_args()
     ue = UE()
@@ -621,6 +677,10 @@ def main():
             return do_leaks(ue)
         if a.cracks:
             return do_cracks(ue)
+        if a.crack_mis:
+            return do_crack_mis(ue)
+        if a.save_round2:
+            return do_save_round2(ue)
         if a.check:
             return do_check(ue)
         return do_save(ue)
