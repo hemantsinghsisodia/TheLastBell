@@ -1,6 +1,6 @@
 # Phase 11: Materials (surface polish): plan
 
-**Status:** approved by the owner on 2026-11-02. P11-0, P11-1 and P11-2 done; P11-3 done: the owner chose A (D-086). P11-0 to P11-7 done (suite 79/79); P11-8: brightness, QA and docs done; waiting for the owner's GPU readings and playtest. The door corners and `Gobo_Moon` specks stay out of scope.
+**Status:** approved by the owner on 2026-11-02. P11-0, P11-1 and P11-2 done; P11-3 done: the owner chose A (D-086). P11-0 to P11-7 done (suite 79/79); P11-8: brightness, QA, docs and GPU re-check done; waiting for the owner's playtest judgement and approval. The door corners and `Gobo_Moon` specks stay out of scope.
 **Branch:** `claude/phase-11-materials`, from `main` (6dfa29d).
 **Rules:** D-048 applies. The lead plans in Opus 5.5 at xhigh effort; every implementer is spawned with `model: "sonnet", effort: "high"`.
 
@@ -844,12 +844,34 @@ New script `Tools/materials/apply_p11_brightness.py`, same style as `apply_p11_l
 **Left over, for the owner's decision at phase end (all unreferenced by the game):** `T_LB_Decal_Soot_A/_B`, `MI_Wooden_Lantern_01_Glass`, `M_P11_WeatherTest`, the 22 `ArtTest/P11` assets and `L_Test_P11_Walls`. The dependency walk can't see string-path references.
 
 #### Step 3 result: docs (lead, 2026-11-04)
-MCP_NOTES "Materials and surface work (Phase 11)", ASSET_REGISTRY, RISKS, D-088, IMPLEMENTATION_PLAN. `ART_DIRECTION.md` and `MODULAR_KIT.md` no longer carry the vertex-colour contract. **PERFORMANCE_BUDGET gets its row when the owner's readings arrive.**
+MCP_NOTES "Materials and surface work (Phase 11)", ASSET_REGISTRY, RISKS, D-088, IMPLEMENTATION_PLAN. `ART_DIRECTION.md` and `MODULAR_KIT.md` no longer carry the vertex-colour contract. PERFORMANCE_BUDGET got its row with the owner's readings (step 4).
 
-#### Step 4: still with the owner
-- `stat gpu` at the 6 spots, High, with the Warden state noted; compare with P11-1. Re-check the game thread (14.84 ms against 11.38 at P11-5c, unexplained).
-- Playtest, including the items flagged above: chapel nave brightness, cloister south entrance, crypt exit stair from the gate, five crack views on black walls, tower lanterns.
+#### Step 4 result: GPU (owner, 2026-11-04; screenshots, numbers read by the lead)
+A full run from the start to the last objective in one PIE session of about 8 minutes, at High, render 1664x846, Warden off. The log confirms `lb.Warden.Enabled 0`, shows no warning or error apart from the usual `LogCrowdFollowing` lines, and records no crash.
+
+| Spot | GPU ms, P11-1 | GPU ms, now | Change | Headroom to 16.6 | Game ms, P11-1 → now | Draws, P11-1 → now | VRAM GB, now |
+|---|---|---|---|---|---|---|---|
+| Courtyard garth | 13.95 | 12.27 | −1.68 | 4.33 | 12.96 → 13.79 | 660 → 739 | 3.35 |
+| Chapel, mid-nave | 15.32 | **14.96** | −0.36 | **1.64** | 11.38 → 11.55 | 668 → 693 | 3.35 |
+| Crypt ossuary | 14.22 | 14.13 | −0.09 | 2.47 | 11.33 → 11.44 | 570 → 697 | 3.89 |
+| Cloister, by the bells | 12.95 | **14.73** | **+1.78** | 1.87 | 12.19 → 10.77 | 591 → 440 | 3.89 |
+| Tower mid-stair | 12.30 | 12.71 | +0.41 | 3.89 | 12.43 → 12.04 | 408 → 373 | 3.95 |
+| Belfry | 12.72 | 12.89 | +0.17 | 3.71 | 10.82 → 12.50 | 324 → 368 | 3.42 |
+
+**All six pass; R-44 closed, and no budget cut is needed.**
+- **The views are framed by hand and differ,** so the changes aren't exact costs.
+- **Cloister +1.78:** the new view has a lantern-lit wall filling the screen; the P11-1 view was darker. Deferred lighting rose 3.36 → 4.47, Lumen probes 2.47 → 3.57 and the base passes 1.96 → 2.62. This can't be split between framing and weathering.
+- **The layer's own cost is still not isolated.** The chapel's base passes didn't rise (2.19 → 2.11).
+- **Game thread:** the 14.84 ms of P11-5c didn't come back (chapel 11.55). Its cause stays unknown. The highest now is 13.79 at the garth.
+- **Chapel graphics queue:** 16.00 ms at its maximum, with the Warden not in these numbers. Phases 12–13 add to this.
+
+**Seen in the owner's screenshots (lead, not the owner's judgement):** the memorial and numerals read, and the crypt stone holds up close to the candle. At close range the cloister lantern's glass reads as a flat, pale cream pane (noted at P11-7 as flat at 3 m).
+
+#### Still with the owner
+- Their judgement of the play-through, including the items flagged above: chapel nave brightness, cloister south entrance, crypt exit stair from the gate, five crack views on black walls, tower lanterns. No impressions received yet; the run above took 8 minutes.
 - Not judged by anyone yet: weathering in play, and courtyard and chapel light colour.
+- R-47 closes on the first run after a cold start.
+- Keep or delete the leftovers listed in step 2.
 
 ## Proposed log entries (added in P11-0, on approval)
 - **D-085:** vertex-colour contract dropped in favour of a world-space weathering layer.
