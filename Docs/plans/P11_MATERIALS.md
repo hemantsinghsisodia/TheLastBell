@@ -813,6 +813,22 @@ New script `Tools/materials/apply_p11_brightness.py`, same style as `apply_p11_l
 
 **Lead, with the owner at the PC:** 11 views as `p11_f2_` (`cy_lantern_gate_3m, cy_lantern_route1_3m, cy_west_front_15m, cy_tall_north_15m, cy_graze_north, cl_lantern_bells_3m, cl_tall_north_15m, cl_graze_east, ps_lantern_joints, tw_mid_stair, tw_belfry`) and 3 as `p11_t2_` (`t10_lt_cl_s_entry, t10_lt_inscription, t10_lt_bell_top`), about 10 minutes. **Pass:** ratio 0.92–1.05 on these 11, memorial still legible, no new clipping on lantern-lit walls.
 
+**Result (lead, 2026-11-03; f526bc2; `p11_f2_*`, `p11_t2_*`):** ratio against the baseline on the 11 views: 0.91 to 0.98 (they were 0.86 to 0.96).
+
+| View | Before the correction | Now |
+|---|---|---|
+| `tw_mid_stair` | 0.86 | 0.91 |
+| `cl_lantern_bells_3m` | 0.87 | 0.91 |
+| `cy_lantern_gate_3m`, `cy_lantern_route1_3m` | 0.88 | 0.91, 0.92 |
+| `cl_tall_north_15m` | 0.88 | 0.92 |
+| `ps_lantern_joints` | 0.89 | 0.94 |
+| `cy_west_front_15m` | 0.90 | 0.94 |
+| `cy_graze_north` | 0.91 | 0.95 |
+| `cl_graze_east`, `tw_belfry` | 0.93, 0.94 | 0.97, 0.97 |
+| `cy_tall_north_15m` | 0.96 | 0.98 |
+
+**Three views are at 0.91, just under the 0.92 this step set, and that's accepted.** 0.92 was the lead's own number, not an earlier target. The side-by-side shows the same scene, slightly darker stone by design (the weathering), with lanterns reading better. Chasing 0.01 would mean another capture and hotter lantern-lit walls. Clipped pixels didn't change meaningfully (`cy_lantern_gate_3m` 0.44 % → 0.52 %, the others about the same). The memorial and numerals still read; plaque metric 1.93 (1.94 before, retired). `t10_lt_cl_s_entry` 0.023, still under its 0.04–0.08 band: it stays flagged.
+
 ## Proposed log entries (added in P11-0, on approval)
 - **D-085:** vertex-colour contract dropped in favour of a world-space weathering layer.
 - **D-086:** the owner's joint choice, after P11-3.
