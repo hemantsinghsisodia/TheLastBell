@@ -1,6 +1,6 @@
 # Phase 12: Warden visual: plan
 
-**Status:** approved by the owner on 2026-11-04. P12-0 and P12-1 done (R-50 closed); P12-2 and P12-3 in progress.
+**Status:** approved by the owner on 2026-11-04. P12-0, P12-1 (R-50 closed) and P12-2 done; P12-3 in progress.
 **Branch:** `claude/phase-12-warden-visual`, from `main` (0df20fc).
 **Rules:** D-048 applies. The lead plans in Opus 5.5 at xhigh effort; every implementer is spawned with `model: "sonnet", effort: "high"`. Nothing starts without the owner's "go".
 
@@ -228,6 +228,25 @@ Sheet: `Docs/ArtTest/warden/p12_hands.png`. The lead picks the better one and lo
 - `hessian_230` maps are 2048 × 2036, so P12-6 must resize or crop them to 2048 × 2048 before import.
 - `brown_leather`'s colour map is named `_albedo_`, not `_diff_`.
 - **Licence of the base mesh:** BlenderKit's page allows commercial use and "higher-level derivative works", and forbids reselling the asset even when modified. It never mentions shipping inside a game. That looks permitted, but it's a reading rather than stated wording. **Lead's decision: none of this mesh ships unless it's clearly better than the scripted hand, and then only after the owner has been asked.**
+
+**Hand comparison result (technical-artist and lead, dfd94b2; `Docs/ArtTest/warden/p12_hands.png`): the scripted hand (version 2) is chosen.** Both are 3,880 triangles with a 40 cm forearm.
+
+| | Base mesh | Scripted |
+|---|---|---|
+| Reads as | A slender, elegant human hand | A thin, skeletal hand with knobbly knuckles and long bony fingers |
+| Silhouette in the candle row | Soft | Knuckles and joints show, and the rim light finds the bony outline |
+| Weakest point | Too human; ragged thumb tip | Plain palm with a visible join at the knuckle row, a smooth thumb mound, blunt fingertips, a kink at the wrist |
+| Licence | Not settled in explicit words | Own work, no question |
+
+**Why:** the base mesh is cleaner, but it isn't clearly better for this creature. The scripted hand is the better monster, and the player sees it at arm's length at the closest, in the dark. So the base mesh isn't used for hands or feet, and the owner doesn't need to rule on its licence.
+
+**Must be fixed when P12-4 takes this hand:**
+1. Blend the fingers into the palm: no visible join at the knuckle row, and some webbing.
+2. Metacarpal ridges strong enough to read in the back of the hand, and a thumb mound with a real shape.
+3. Slightly tapered, bony fingertips instead of blunt bullets; no smudge on the ring finger.
+4. No kink where the palm meets the forearm; ulna and tendons carried up the forearm.
+
+The feet use the same method.
 
 ### P12-3: concept blockouts (technical-artist; owner chooses)
 **Files:** `Tools/blender/warden/concepts.py` (seeded, headless); `Tools/blender/warden/render_concepts.py`; output `Docs/ArtTest/warden/`.
