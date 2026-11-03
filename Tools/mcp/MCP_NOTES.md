@@ -166,7 +166,7 @@ For C++ API names, read `Source/LastBell/`; for architecture, read `Docs/TECHNIC
    - `place_tower.py`:
      - `--cats` (the order `block wall tower stair arcade vault roof floor garth door doorleaf dress`), `--only`, `--check`, `--fix-collision`;
      - `--hide-greybox` / `--verify-greybox`, `--ground`, `--perim`.
-   - `place_lighting_p10.py`: `greybox | lights | lfv | pp | shafts | check`. `lights` places point and spot records; `check` gave 51/51 after P10-7b.
+   - `place_lighting_p10.py`: `greybox | lights | lfv | pp | shafts | check`. `lights` places point and spot records; `check` gave 55/55 after P10-8d (51/51 after P10-7b).
    - `bp_swap.py`: the dump and diff for child-BP swaps (D-071 procedure).
    - `p10_6a_checks.py` (dressing checks, 29 lines; it logs about 29 harmless `staticMesh could not be read` warnings, because it asks non-mesh components for `staticMesh`) and `p10_6b_checks.py` (the swap readouts and `world_box`).
    - `import_p10.py` (the P10-4 imports).
@@ -190,3 +190,22 @@ For C++ API names, read `Source/LastBell/`; for architecture, read `Docs/TECHNIC
     - Don't add a second shadowed moon source where the directional moon already enters; it gives double shadow sets.
 16. **Shadowless lights outside a wall** light the whole interior through it (`Light_TowerExt_0..2`, removed in P10-8d). An exterior silhouette light needs shadows, or a radius that can't reach inside.
 17. **`place_tower.py` leaves stale actors.** `--cats` / `--only` remove only the labels present in the layout, so an actor whose record was dropped from the layout stays in the level. Remove it explicitly (P10-8d: `CLA_LanternBracket_West`).
+
+## Materials and surface work (Phase 11)
+1. **Reimport can add collision.** A Content Browser Reimport gives an Interchange-imported mesh (`InterchangeAssetImportData`; the 29 cloister and tower meshes, which have no collision by design) a generated convex hull that fills arch and door openings. Kit meshes (`FbxStaticMeshImportData`, with UCX) don't have this problem.
+   - Run `StaticMeshTools.remove_collisions` before saving, and check with `Tools/materials/check_reimport.py`.
+   - Reimport also marks `L_Monastery` dirty, even though no actor changes.
+2. **`ApproxSize` isn't a size.** The tag reads larger than the mesh and varies between builds (435x77x802 for a 400x60x800 wall). Use `StaticMeshTools.get_bounds`.
+3. **`SelectAssets` doesn't work** for selecting in the Content Browser (no effect, or a timeout). The owner's search box takes `Name==A OR Name==B`.
+4. **Compare captures at one size.** The viewport changes with the editor window and restarts (1331x808 and 1335x862 in this phase). `brightness_report_p11.py` fits the images first.
+5. **Judge decals in PIE Simulate.** Editor-mode captures draw each decal's icon over its centre.
+6. **Wall decals need roll 90:** rotation (0, yaw, 90) and DecalSize (depth, vertical half, horizontal half); forward (cos yaw, sin yaw) goes into the wall. Without the roll, the texture lies on its side and stretches into strands (D-087).
+7. **Small decals lose thin lines in the mips.** Scale the decal instead of only raising its opacity.
+8. **`M_LB_Decal` `OpacityTex` samples Alpha,** so the texture needs TC_Alpha, as `T_Leaking006_Opacity` has.
+9. **Traces miss the crypt's art walls,** which have no collision. Take the plane from an existing decal on that wall (`"decal"` entries in `make_crack_placements.py`).
+10. **A bright emissive needs a saturated hue.** The tonemapper desaturates bright colours, so a glowing pane needs a more saturated base hue than its light (D-088).
+11. **Measure only the glowing pixels.** A wide luma window around lantern glass also measures the lit wall behind it and gives a false "over" (`lantern_report.py --half 3`).
+12. **`BrightnessMul` moves the screen less than the sum suggests.** A linear ×1.15 was expected to add about 6.5 % to the display mean; it added 2 to 6 % (D-088).
+13. **Git Bash rewrites `/Game/...` arguments** into `C:/Program Files/Git/Game/...`, which shows up as `DoesAssetExist` errors in the log. Keep these paths inside Python scripts.
+14. **Stopping `capture_session.py` by force leaves the throttle off.** Set `bThrottleCPUWhenNotForeground` back to true on `/Script/UnrealEd.Default__EditorPerformanceSettings`, and stop PIE if it's running.
+15. **Which areas have check scripts.** The crypt, cloister and tower do, but `Tools/crypt/place_lighting.py` has no `check` mode (use `place_crypt.py --cats light --check`). The chapel and courtyard have none, so compare them with a census (`census_p11.py`), which doesn't record light colour, scattering or cone angle.

@@ -1,6 +1,6 @@
 # Phase 11: Materials (surface polish): plan
 
-**Status:** approved by the owner on 2026-11-02. P11-0, P11-1 and P11-2 done; P11-3 done: the owner chose A (D-086). P11-0 to P11-7 done (suite 79/79); P11-8 in progress. The door corners and `Gobo_Moon` specks stay out of scope.
+**Status:** approved by the owner on 2026-11-02. P11-0, P11-1 and P11-2 done; P11-3 done: the owner chose A (D-086). P11-0 to P11-7 done (suite 79/79); P11-8: brightness, QA and docs done; waiting for the owner's GPU readings and playtest. The door corners and `Gobo_Moon` specks stay out of scope.
 **Branch:** `claude/phase-11-materials`, from `main` (6dfa29d).
 **Rules:** D-048 applies. The lead plans in Opus 5.5 at xhigh effort; every implementer is spawned with `model: "sonnet", effort: "high"`.
 
@@ -828,6 +828,28 @@ New script `Tools/materials/apply_p11_brightness.py`, same style as `apply_p11_l
 | `cy_tall_north_15m` | 0.96 | 0.98 |
 
 **Three views are at 0.91, just under the 0.92 this step set, and that's accepted.** 0.92 was the lead's own number, not an earlier target. The side-by-side shows the same scene, slightly darker stone by design (the weathering), with lanterns reading better. Chasing 0.01 would mean another capture and hotter lantern-lit walls. Clipped pixels didn't change meaningfully (`cy_lantern_gate_3m` 0.44 % → 0.52 %, the others about the same). The memorial and numerals still read; plaque metric 1.93 (1.94 before, retired). `t10_lt_cl_s_entry` 0.023, still under its 0.04–0.08 band: it stays flagged.
+
+#### Step 2 result: QA (qa-reviewer, 2026-11-03; `Docs/ArtTest/materials/p11_8_qa.md`)
+**PASS with caveats: no P0, P1 or P2 defect.**
+- **Suite:** 79/79. **Phase 11 checks:** decals 63/63, lantern 9/9, brightness 12/12, weathering on as expected.
+- **Placement:** crypt, tower and cloister checks equal Phase 9 and 10. The crypt's 118 dress bounds failures are the same count as P9-8b (out of scope). Lighting is 55/55: 51/51 in the brief was the P10-8b figure.
+- **Against the census:** all 2485 mesh actors have the same transform and overrides, and the only class change is +37 decals. Of the 126 older decals, only the six `Decal_Leak_*` changed. QA's script first flagged 8 `Sa_Wall_*` overrides; it was the script's mistake, and the lead re-read all 8 slot by slot: all equal.
+- **Lights:** all 59 point, spot and rect lights equal the census in location, rotation, intensity, radius, shadows and light function. The moon, sky light and post-process values match. The census doesn't record colour, scattering or cone angle, so these **weren't compared for the courtyard and chapel**. The map file wasn't diffed.
+- **Unchanged:** no Blueprint, `Source/` or `Config/` file changed; nothing dirty in 129 packages.
+- **Clues:** nearest crack 293.9 cm (`Crack_Tw_SW_B` to the Great Bell); none under 2 m.
+- **Fixed in the docs step:** registry "39 cracks" and a stale "not yet imported" (R1, R2); the Git Bash note in MCP_NOTES (T1).
+
+**Could not be verified by QA:** `Tools/crypt/place_lighting.py` has no `check` mode (substitute: `place_crypt.py --cats light --check`, 16/16); the chapel and courtyard have no check script (substitute: the census).
+
+**Left over, for the owner's decision at phase end (all unreferenced by the game):** `T_LB_Decal_Soot_A/_B`, `MI_Wooden_Lantern_01_Glass`, `M_P11_WeatherTest`, the 22 `ArtTest/P11` assets and `L_Test_P11_Walls`. The dependency walk can't see string-path references.
+
+#### Step 3 result: docs (lead, 2026-11-04)
+MCP_NOTES "Materials and surface work (Phase 11)", ASSET_REGISTRY, RISKS, D-088, IMPLEMENTATION_PLAN. `ART_DIRECTION.md` and `MODULAR_KIT.md` no longer carry the vertex-colour contract. **PERFORMANCE_BUDGET gets its row when the owner's readings arrive.**
+
+#### Step 4: still with the owner
+- `stat gpu` at the 6 spots, High, with the Warden state noted; compare with P11-1. Re-check the game thread (14.84 ms against 11.38 at P11-5c, unexplained).
+- Playtest, including the items flagged above: chapel nave brightness, cloister south entrance, crypt exit stair from the gate, five crack views on black walls, tower lanterns.
+- Not judged by anyone yet: weathering in play, and courtyard and chapel light colour.
 
 ## Proposed log entries (added in P11-0, on approval)
 - **D-085:** vertex-colour contract dropped in favour of a world-space weathering layer.

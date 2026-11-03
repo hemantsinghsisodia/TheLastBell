@@ -10,7 +10,7 @@ An intentionally authored premium Unreal environment, **not** a collage of marke
 
 ## Materials
 Master materials in `Materials/Master/`, used through instances only:
-- `M_LB_Surface` (opaque master): macro variation, detail normals, a wetness layer (darkening plus roughness), a moss or grime mask from world-aligned and vertex-paint inputs, puddle mask.
+- `M_LB_Surface` (opaque master): macro variation, detail normals, a wetness layer (darkening plus roughness), moss and grime from world-space layers (floor growth, and `bWeathering` on walls; no vertex paint, D-085), puddle mask.
 - `M_LB_Decal`, `M_LB_Glass` (stained glass), `M_LB_Foliage`, `M_LB_Water`.
 - The anti-tiling strategy is macro variation plus decals plus mesh variety. Avoid 8K textures by default: hero assets get 4K, most get 2K.
 

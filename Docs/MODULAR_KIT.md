@@ -79,10 +79,10 @@ Source: a read-only dump of every actor's transform and bounds from `/Game/LastB
   - **Slot 1** dressed stone trim: arch voussoirs and hoods, quoins, cap course, plinth, piers. UV0 (see below), a separate MI (cleaner, lighter ashlar).
   - **Slot 2** rubble / mortar / rough core: fractured tops, broken edges, exposed core of broken pieces. A coarse, darker MI.
 - **UV0:** non-overlapping, planar-projected at a fixed world scale (1 UV unit = 100 cm), no mirroring; used for trim (slot 1) and as the fallback for slots 0 and 2. Large faces (slot 0) read through the world-aligned MIs, so wall segments tile without visible UV seams.
-- **Vertex colour (proposal; the technical-artist confirms against `M_LB_Surface` inputs):** R = wetness / puddle bias (floor and low plinths painted, walls 0), G = moss/grime bias, B = baked edge/crevice wear, A unused. Every piece ships with at least a default paint (floor slab: R by height).
+- **Vertex colour:** not used. The R wet / G grime / B wear contract was dropped (D-085); weathering is a world-space layer in `M_LB_Surface` (`bWeathering`). Kit vertex colours stay white and nothing reads them.
 - **Edges:** every convex edge of slot 1 (trim, quoins, arch reveals, piers) has a **2–3 cm chamfer or bevel** (5 cm on cap/coping and plinth tops) so the moon and lightning catch it. Slot 0 faces carry modelled macro relief only (course steps and chips of ±1–3 cm); fine detail comes from the normal map.
 - **Pointed arch rule:** equilateral or slightly lancet; the springline is at the clear height listed per piece, the clear rectangle below the springline is never obstructed.
-- **Nanite and LOD:** Nanite on for every piece, no hand LODs. Triangle budgets (ceiling per piece): wall segment 2.5k; broken wall 4k; doorway 6k; gate arch 12k; pier 1.5k; floor slab 3.2k (25 cm vertex grid for vertex paint and ±1.5 cm relief); rubble 2k; heap 6k; cliff slab 8k; well wall 2k.
+- **Nanite and LOD:** Nanite on for every piece, no hand LODs. Triangle budgets (ceiling per piece): wall segment 2.5k; broken wall 4k; doorway 6k; gate arch 12k; pier 1.5k; floor slab 3.2k (25 cm vertex grid and ±1.5 cm relief); rubble 2k; heap 6k; cliff slab 8k; well wall 2k.
 - **Collision:** custom simple collision (`UCX_` boxes) exported with the FBX; collision trace response `Block`; Complexity "Use Simple as Complex" is **off**. Straight pieces: one box per segment (stepped boxes following the broken profile for broken pieces). Opening pieces: several boxes leaving the clear opening completely free (see the table). The floor slab collides as a single box (top flat at Z=40 in the piece = Z 0 when placed at Z=-40). Collision stays walkable-flat for the Warden navmesh; rubble blocks (no walkable slope).
 - **Gameplay safety:** no kit piece has its own blueprint behaviour; doors stay `BP_Door_Base` leaves placed in the opening; nothing in the kit overlaps a trigger or checkpoint volume.
 
@@ -107,7 +107,7 @@ Sizes are `X×Y×Z` cm. "Clear" is the unobstructed opening at ground level. P0 
 | 13 | `Trim_Plinth_100x80x60` | 100×80×60 | Filler | same | P0 |
 | 14 | `Pier_100x100x500` | 100×100×500 | Square pier with base, chamfered shaft, simple capital (slot 1); collides as one box | `Col_N0..3`, `Col_S0..3` | P0 |
 | 15 | `Pier_Broken_100x100x350` | 100×100×350 | Broken top at about 350 (slot 2), ragged | `FountainPost` (Z 60..350 on the basin), two or three of the `Col_*` for ruin | P0 |
-| 16 | `Floor_Slab_1000x1000x40` | 1000×1000×40 | Flagstone slab with a 25 cm vertex grid (R = puddle bias painted low in dips); top flat to ±1.5 cm; place at Z=-40 so the top is Z=0; slot 0 is flagstone | `Ground_0` in the playable area | P0 |
+| 16 | `Floor_Slab_1000x1000x40` | 1000×1000×40 | Flagstone slab with a 25 cm vertex grid; top flat to ±1.5 cm; place at Z=-40 so the top is Z=0; slot 0 is flagstone | `Ground_0` in the playable area | P0 |
 | 17 | `Rubble_Chunk_S` | about 60×50×40 | Dressed stone block, broken corners | scatter around `Ruin_Wall`, well | P0 |
 | 18 | `Rubble_Chunk_M` | about 120×100×70 | Rough stone chunk | `Rubble_0..4` | P0 |
 | 19 | `Rubble_Chunk_L` | about 170×150×110 | Large fallen block, one flat top | `Rubble_0..4`; also the `Plinth_Key` slab (use a flat-topped chunk) | P0 |
@@ -195,10 +195,10 @@ Coordinates cm. "Run" lists the instances in X or Y order; **all yaws and origin
 5. **Floor slab count and ground outside the walls.** About 36 courtyard + 3 approach Nanite slabs; keep `Ground_0` as the underlay and the hidden outer ring (Y beyond ±2560, 1000 wide, unreachable) un-slabbed. Puddles and the wet look are the master-material job, not a mesh.
 6. **Tower proxy.** The greybox tower stays for P7. If the lead wants a dressed silhouette from the courtyard (belfry openings, ruined crown), a single proxy `Tower_Proxy_1000x1000x3500` is needed (P1 item 39). Decision needed before P7-004.
 7. **Chapel front reads flat** (a 16 m × 12 m wall with one door). A blind lancet pair or rose recess (P1 item 30, blind variant) would help; they could be promoted to P0. Doing this is purely visual and does not change gameplay.
-8. **Repetition (R-26).** The wall family has only one plain variant pair (A/B) plus broken ones; expect to need vertex-paint breakup and decals (Phase 11). If the lead wants more, add `_C`.
-9. **Vertex-colour channel contract** (section 3) is a proposal; the technical-artist must confirm `M_LB_Surface` reads R/G/B as wet / grime / wear (or change the table).
+8. **Repetition (R-26).** The wall family has only one plain variant pair (A/B) plus broken ones; expect to need breakup and decals (Phase 11). If the lead wants more, add `_C`. Phase 11 did this with one joint pattern (D-086), a world-space weathering layer (D-085) and decals (D-087).
+9. **Vertex-colour channel contract** (section 3) is a proposal; the technical-artist must confirm `M_LB_Surface` reads R/G/B as wet / grime / wear (or change the table). Superseded: the contract was dropped (D-085).
 10. **Pivot/yaw tooling.** The "bottom-left-back, yaw 90 shifts the origin to the max-X face" rule makes placement errors easy; P7-003 should place by script from the run table above and verify with a bounds check.
-11. **Collision and Nanite.** Verify in P7-002 that the `UCX_` collision imports with each FBX, that the Nanite fallback keeps the vertex-painted slab colours, and that the doorway and gate collision leaves the clear opening free (a trace test).
+11. **Collision and Nanite.** Verify in P7-002 that the `UCX_` collision imports with each FBX, and that the doorway and gate collision leaves the clear opening free (a trace test).
 12. **Interiors** (the chapel nave, crypt, cloister) are out of the Phase 7 scope. The kit lists the P1 pieces they will need, but their dimensions (nave 1200 tall, crypt corridors ≥ 200 wide, tower 3500) are unchanged and may need `Wall_400x60x200` fillers to reach the tower height.
 
 ## 8. Lead decisions on the open questions (2026-10-23)
@@ -209,7 +209,7 @@ Coordinates cm. "Run" lists the instances in X or Y order; **all yaws and origin
 5. **Tower proxy:** no. The greybox tower stays and only gets the world-aligned ashlar MI for the silhouette; tower art is Phase 10.
 6. **Blind lancet windows:** promoted to P0 (the flat chapel front is otherwise a weak spot). P0 = 26 pieces.
 7. **Wall_400x60x800_B:** keep (repetition, R-26).
-8. **Vertex colours:** the R wet / G grime / B wear contract is adopted. Kit meshes export vertex colours (default white = no effect); `M_LB_Surface` reads them in Phase 11.
+8. **Vertex colours:** the R wet / G grime / B wear contract is adopted. Kit meshes export vertex colours (default white = no effect); `M_LB_Surface` reads them in Phase 11. Superseded in Phase 11: nothing reads them (D-085).
 
 ## 9. Cliff run update (P7-002c)
 The first cliff slabs had a displaced front but flat, banded-looking ends and top. They are rebuilt so every visible face is rock:
