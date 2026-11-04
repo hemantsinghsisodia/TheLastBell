@@ -81,6 +81,20 @@ Warden Art V5 (28 Oct), in `C:\Hemant\Prj\Learning\Warden\output\`: Blender mast
 ### P12-6: read review (lead + owner; was P12-7)
 Same sheet and pass rules as the old P12-7 below, with `AN_Warden_Idle` on the temporary actors. Poses and placement: `Tools/warden/read_review.py`: 12 views, then 4 at 3 m with the candle proxy. Allowed corrections here are MI values only: `Cloth Brightness`, skin and metal brightness. **Never change a light.** Output: `Docs/ArtTest/warden/p12_read.png` and a fix list agreed with the owner.
 
+**Result, first round (lead, 2026-11-04; `rv_p12r_*`, sheet `Docs/ArtTest/warden/p12_read.png`; temporaries removed, 2980 actors, nothing saved):**
+
+Yaw −90 is confirmed: the playing figure faces the camera in every view, with no wall or ceiling cutting it at these spots.
+
+| Pass rule | Result |
+|---|---|
+| Figure at 8 m, by the level's own lights | **Yes** in the ossuary, chain chamber and by the bells, as a dark outline, often backlit. **Barely** in the west walk (`west_8m`, `west_12m`) |
+| Mask is the focal point | **No.** With the candle at 3 m it's narrow, dark and about the same value as the hood. At 8 m it isn't visible |
+| Materials at 3 m | Cloth holds up. **Hands are the brightest thing on the figure,** and the neck chain outshines the mask. The forearms read as pale tubes |
+| Tall shape at 15–18 m | Yes at `ossuary_15m`. `bells_18m` is small and dark but findable |
+| No candle in a dark spot | Solid black at 3 m (`ossuary_3m`, `west_3m`): frightening, but in `west_3m` the outline can't be found |
+
+**Not a material issue:** Idle stands upright and stiff with the arms held away from the body, not hunched like the concept art. That belongs to Phase 13.
+
 ### P12-7: fixes (technical-artist)
 Only what the review shows matters at game distance. Candidates: hand flecks, pale hands, forearm and sleeve join, mask eye slits, hood rim.
 - **Material or texture fix:** in this project, directly.
