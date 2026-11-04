@@ -1,0 +1,37 @@
+{
+ "source": "C:\\Hemant\\Prj\\Learning\\TheLastBell\\SourceArt\\Warden\\V5\\Warden_Rigged.blend",
+ "pose": "Warden_Idle frame 1",
+ "lod": "SK_Warden_LOD2",
+ "source_modifiers": [
+  "ARMATURE"
+ ],
+ "triangles_after_weld": 18918,
+ "triangles": 7600,
+ "vertices": 4124,
+ "bounds_m_min": [
+  -0.6245553493499756,
+  -0.5224010348320007,
+  0.0011304294457659125
+ ],
+ "bounds_m_max": [
+  1.009729266166687,
+  0.7417318820953369,
+  2.9039576053619385
+ ],
+ "bounds_cm_min": [
+  -62.455535888671875,
+  -52.24010467529297,
+  0.11304294317960739
+ ],
+ "bounds_cm_max": [
+  100.9729232788086,
+  74.17318725585938,
+  290.395751953125
+ ],
+ "height_cm": 290.2827090099454,
+ "rotz_deg": 0.0,
+ "axis_forward": "-Y",
+ "fbx": "C:\\Hemant\\Prj\\Learning\\TheLastBell\\SourceArt\\Warden\\SM_LB_Warden_Silhouette.fbx",
+ "fbx_bytes": 188876,
+ "saved_master": false
+}
