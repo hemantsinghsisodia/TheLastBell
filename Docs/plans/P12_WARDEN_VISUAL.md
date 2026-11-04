@@ -1,6 +1,6 @@
 # Phase 12: Warden visual: plan
 
-**Status:** approved by the owner on 2026-11-04. P12-0 to P12-3 done. **At P12-3 the owner supplied their own Warden Art V5 (D-090). The tasks from P12-4 on were rewritten; "The route from P12-4 on" below is the live spec.** P12-4 and P12-5 done; P12-6 first round done; P12-7 round 1 passed. Waiting for the owner on any geometry fix before P12-8.
+**Status:** approved by the owner on 2026-11-04. P12-0 to P12-3 done. **At P12-3 the owner supplied their own Warden Art V5 (D-090). The tasks from P12-4 on were rewritten; "The route from P12-4 on" below is the live spec.** P12-4 and P12-5 done; P12-6 first round done; P12-7 round 1 passed. **Paused 2026-11-04: the owner is fixing the arms and hands in their own tool; P12-8 waits for that build.**
 **Branch:** `claude/phase-12-warden-visual`, from `main` (0df20fc).
 **Rules:** D-048 applies. The lead plans in Opus 5.5 at xhigh effort; every implementer is spawned with `model: "sonnet", effort: "high"`. Nothing starts without the owner's "go".
 
@@ -138,6 +138,20 @@ Only what the review shows matters at game distance. Candidates: hand flecks, pa
 - The mask is now the brightest part of the figure, its crack and eye slits read at 3 m, and the hands are clearly dimmer. The numbers come from fixed boxes in the frame and are a guide: the viewport was 1331 × 808 in round 1 and 1335 × 862 here.
 - At 8 m the outline is as good as before and the robe is slightly darker. The mask still doesn't show at 8 m, because the candle can't reach it; `EmissiveLift` wasn't needed for the pass rule, so it wasn't added.
 - **Still there, geometry:** the forearms read as tubes where the sleeves end, and the hands remain pale in absolute terms. Stair-stepping on the eye slits and the hood rim's jagged edge don't show at 3 m in the game's light.
+
+#### Geometry: the owner is doing it at the source (2026-11-04)
+The owner's photo of the backlit figure showed the forearms and wrists matter, so the lead's "skip it" was wrong. In the master, the forearm is a tube of constant radius (about 3–3.7 cm) made by stretching the wrist up to the elbow (`finish_forearms.py`); the sleeve hangs beside it, not around it; the palm is about 10° and the fingers about 30° off the forearm. The lead's own scripted fix (option B) is on hold so the work isn't done twice.
+
+**Asked of the owner:**
+- **Must:** sleeves around the arm, ending ragged 10–15 cm above the shackles; shape on the part of the forearm that shows; a wrist that flows into a palm with thickness; palm and fingers lined up, in a relaxed curl; no white flecks on the hands; wrist chains re-fitted.
+- **Worth doing:** hunched Idle; mesh and clips facing the same way (no `force_front_x_axis` mismatch); stoop with the mask visible and top ≤ about 220; cleaner eye slits and hood rim; Walk lifted 1.3 cm.
+- **Keep:** 110 bones, names and hierarchy; 6 slot names; 3 clip names, in place, 30 fps; 290 cm, Idle and Walk ≤ about 292; 3 LODs, LOD0 ≤ about 75,000.
+
+**When it arrives, the lead:**
+1. Checks `warden_art_v5` and `unreal_validation/Content/WardenArtV5` (or the folder the owner names), and re-runs the provenance check for anything new from a generator.
+2. With TheLastBell closed, removes `Content/LastBell/Characters/Warden/` assets through the editor first, then copies, moves and re-checks them as in P12-4. `copy_v5.py` refuses to run over an existing folder. `SM_LB_Warden_Silhouette` needs a re-bake from the new master.
+3. Re-runs `apply_p12_materials.py`, and `measure_clearance.py` if heights changed. If the facing is fixed, P12-8's yaw and `read_review.py`'s `-90` must be re-checked.
+4. Captures again (about 5 minutes, asking first), then goes on to P12-8.
 
 ### P12-8 and P12-9: changes from the sections below
 - **P12-8:** mesh `SK_Warden`, single-node `AN_Warden_Idle`, looping, playing. Yaw from P12-5. Socket `mask` goes on bone `head`, positioned at the mask (V5 has no `mask` bone); `TellLight` attaches there. Silhouette uses `SM_LB_Warden_Silhouette`. Top of the figure is 290, so **no height offset** on the silhouettes.
