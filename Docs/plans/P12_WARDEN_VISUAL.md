@@ -1,6 +1,6 @@
 # Phase 12: Warden visual: plan
 
-**Status:** approved by the owner on 2026-11-04. P12-0 to P12-3 done. **At P12-3 the owner supplied their own Warden Art V5 (D-090). The tasks from P12-4 on were rewritten; "The route from P12-4 on" below is the live spec.** P12-4 and P12-5 done; P12-6 ready, waiting for the owner.
+**Status:** approved by the owner on 2026-11-04. P12-0 to P12-3 done. **At P12-3 the owner supplied their own Warden Art V5 (D-090). The tasks from P12-4 on were rewritten; "The route from P12-4 on" below is the live spec.** P12-4 and P12-5 done; P12-6 first round done; P12-7 round 1 in progress.
 **Branch:** `claude/phase-12-warden-visual`, from `main` (0df20fc).
 **Rules:** D-048 applies. The lead plans in Opus 5.5 at xhigh effort; every implementer is spawned with `model: "sonnet", effort: "high"`. Nothing starts without the owner's "go".
 
@@ -100,6 +100,32 @@ Only what the review shows matters at game distance. Candidates: hand flecks, pa
 - **Material or texture fix:** in this project, directly.
 - **Geometry fix:** `import_file` can't import LODs, and a skeletal re-import is delete and import again (P12-1). So edit a copy of the Blender master, use the isolated project's `Scripts/import_warden_v5.py` route, then copy again with a new `copy_v5.py` run after removing the old assets. The lead asks the owner before starting one.
 - **Not here:** the stoop's look, run, attack and turn clips are Phase 13.
+
+#### P12-7 round 1: materials (owner's "go", 2026-11-04; technical-artist [EDITOR])
+**Why the mask is dark:** `M_Warden_BellMetal` takes its metallic from a texture and reads as fully metal, and metal has no diffuse. In dim light with one small candle it shows almost nothing but specular. So the fix is less metal, not just more colour.
+
+**How, because these materials have no parameters** (only `M_Warden_Wool` does, and `M_Warden_Skin` has one fixed constant):
+1. Add scalar parameters to the parents, **default 1, so a parent looks the same until an MI changes it**:
+   - `M_Warden_BellMetal`: `BaseColorMul`, `MetallicMul`, `RoughnessMul`. Each multiplies what currently feeds that output.
+   - `M_Warden_Skin`: `BaseColorMul`, multiplying the output of its existing `Multiply` (the 0.22 constant stays).
+   - `M_Warden_RustedIron`, `M_Warden_ChainIron`: `BaseColorMul`.
+2. Create `MI_Warden_BellMetal`, `MI_Warden_Skin`, `MI_Warden_RustedIron`, `MI_Warden_ChainIron` in `Characters/Warden/Materials/`, and assign them by slot on `SK_Warden`. Slot names stay `M_Warden_*`. `M_Warden_Leather` is untouched. From here tuning needs no recompile.
+
+| Instance | Parameter | Before | Round 1 | Purpose |
+|---|---|---|---|---|
+| `MI_Warden_BellMetal` | `BaseColorMul` | 1 | **1.6** | Mask brighter |
+| | `MetallicMul` | 1 | **0.35** | Gives it diffuse colour, so the candle lights it |
+| | `RoughnessMul` | 1 | **0.85** | Broader highlight |
+| `MI_Warden_Skin` | `BaseColorMul` | 1 | **0.55** | Hands stop outshining the mask (0.22 × 0.55 = 0.12) |
+| `MI_Warden_RustedIron` | `BaseColorMul` | 1 | **0.6** | Shackles quieter |
+| `MI_Warden_ChainIron` | `BaseColorMul` | 1 | **0.5** | Neck chain below the mask |
+| `MI_Warden_Wool` | `Cloth Brightness` | 0.4 | **0.25** | Robe nearer the concept's near-black |
+
+**Script:** `Tools/warden/apply_p12_materials.py`, same style as `apply_p11_lantern.py`: `--snapshot Docs/ArtTest/warden/p12_7_before.json`, `--apply`, `--check`, `--save` (one package per call), `--restore`. Update `check_warden.py`: slots now map to the four new MIs plus `M_Warden_Leather` and `MI_Warden_Wool`, and `Cloth Brightness` is 0.25.
+
+**Acceptance:** no shader error; `check_warden.py` n/n; `M_LB_Surface` and every map not dirty; suite 79/79. No geometry, texture, LOD or light change.
+
+**Then the lead captures, about 5 minutes with the owner told first,** prefix `rv2_`: `ossuary_8m`, `chain_8m`, `bells_8m`, then with the candle `ossuary_3m`, `chain_3m`, `bells_3m`. **Pass:** with the candle at 3 m the mask is the brightest part of the figure and its crack and eye slits read; the hands are clearly dimmer; at 8 m the outline is no worse than round 1. If the mask still fails, the next step is the plan's small lift, added as `EmissiveLift`, not more brightness on everything.
 
 ### P12-8 and P12-9: changes from the sections below
 - **P12-8:** mesh `SK_Warden`, single-node `AN_Warden_Idle`, looping, playing. Yaw from P12-5. Socket `mask` goes on bone `head`, positioned at the mask (V5 has no `mask` bone); `TellLight` attaches there. Silhouette uses `SM_LB_Warden_Silhouette`. Top of the figure is 290, so **no height offset** on the silhouettes.
