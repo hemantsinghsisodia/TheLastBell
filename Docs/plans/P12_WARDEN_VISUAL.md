@@ -1,8 +1,83 @@
 # Phase 12: Warden visual: plan
 
-**Status:** approved by the owner on 2026-11-04. P12-0, P12-1 (R-50 closed) and P12-2 done; P12-3 in progress.
+**Status:** approved by the owner on 2026-11-04. P12-0 to P12-3 done. **At P12-3 the owner supplied their own Warden Art V5 (D-090). The tasks from P12-4 on were rewritten; "The route from P12-4 on" below is the live spec.** P12-4 waits for the owner's Migrate.
 **Branch:** `claude/phase-12-warden-visual`, from `main` (0df20fc).
 **Rules:** D-048 applies. The lead plans in Opus 5.5 at xhigh effort; every implementer is spawned with `model: "sonnet", effort: "high"`. Nothing starts without the owner's "go".
+
+## The route from P12-4 on (D-090, 2026-11-04)
+**This section replaces everything below about the design, budgets, `M_LB_Character`, the scripted build and tasks P12-4 to P12-7. Those sections stay as a record only.** P12-1's findings, the standing limits, the failure-mode table in P12-8 and P12-9 still apply where this section doesn't change them.
+
+### What the owner supplied
+Warden Art V5 (28 Oct), in `C:\Hemant\Prj\Learning\Warden\output\`: Blender master and FBX in `warden_art_v5`, native assets in `unreal_validation/Content/WardenArtV5` (isolated project `WardenAssetValidation`, UE 5.8.3).
+
+| Item | V5 |
+|---|---|
+| Design | Pointed hood, long cracked bell-metal mask with eye slits, layered cape, rope belt, torn robe, boots, wrist shackles, neck and wrist chains |
+| Height | 290 cm |
+| Top of the figure by clip | Idle 290.0–290.3; Walk 288.8–291.8; DoorwayStoop 290 down to **217.4** |
+| Triangles | LOD0 75,764; LOD1 37,882; LOD2 18,941 |
+| Sections | 6: Wool, BellMetal, RustedIron, Skin, Leather, ChainIron |
+| Skeleton | 110 bones, root `root`, ≤ 4 influences. Mannequin-like names, but 3 spine bones, no twist, metacarpal or `ik_` bones. 41 chain bones, 16 robe bones |
+| Clips | `AN_Warden_Idle` 4 s, `AN_Warden_Walk` 2 s, `AN_Warden_DoorwayStoop` 3 s; 30 fps, in place |
+| Textures | 20: wool and skin 4K, others 2K, two wool detail maps 1K |
+
+**Its own README:** a review build, not production-approved; hands use reduced surfaces; hood and shoulder edges are too regular; UV seams, shimmer between LODs and fine hand transitions still need art review. The physics asset needs tuning. Its validation checks structure, not looks.
+
+**Lead's review of the renders:**
+- The hands have white flecks, and they and the forearms read too pale; forearms look like tubes where the sleeves end.
+- The mask's eye slits are stair-stepped and the hood rim is jagged.
+- In DoorwayStoop the head vanishes into a lump in the rendered views. The height works: 217.4 clears the 230 doors and the 224 tower door.
+- Walk dips 1.31 cm below the floor.
+- Materials were tuned with no Lumen, on DX11. This project uses Lumen, so nothing about how it looks here is known yet.
+
+### P12-4: bring it in (owner, then technical-artist [EDITOR])
+**Owner, about 5 minutes:**
+1. Close TheLastBell in Unreal, choosing Don't Save. Two editors at once risk a GPU crash on this card (D-053).
+2. Open `C:\Hemant\Prj\Learning\Warden\output\unreal_validation\WardenAssetValidation.uproject`.
+3. In the Content Browser, open `WardenArtV5/Meshes`, right-click `SK_Warden`, then **Asset Actions > Migrate**. Check the list holds only `/Game/WardenArtV5/...` assets and no `Preview` map. Click OK and choose `C:\Hemant\Prj\Learning\TheLastBell\Content`.
+4. Open `WardenArtV5/Animations`, select all 3 clips, and Migrate them to the same folder.
+5. Close that project and reopen TheLastBell.
+
+**Technical-artist, no owner:**
+1. `AssetTools.move` everything from `/Game/WardenArtV5/` to `/Game/LastBell/Characters/Warden/{Meshes,Anims,Materials,Textures}/`, keeping the names. Confirm references with `get_dependencies`, then remove the empty folder. Nothing stays in the Content root.
+2. **`Tools/warden/check_warden.py`, read-only, prints n/n:**
+   - bones 110, root `root`; height 290 ± 1;
+   - 3 LODs; 6 sections, each with its material; physics asset assigned;
+   - 20 textures, with sRGB and compression as in V5's `Reports/validation-v5.json`;
+   - clips 4, 2 and 3 s on the same skeleton;
+   - `MI_Warden_Wool` values: Weave Scale 109.94, Detail Strength 0.5, Wetness 0.15, Cloth Brightness 0.4.
+3. No shader error in the log. `M_LB_Surface` and every map are not dirty. Save one package per call. Suite 79/79.
+4. Copy `Warden_Rigged.blend`, `exports/*.fbx`, V5's `README.md` and the three licence texts to `SourceArt/Warden/V5/` (`licences/` for the texts). Commit. The owner's folder is read-only for us: nothing in it is changed.
+5. Update the registry row's Unreal path.
+
+**If Migrate misses assets or the mesh won't load:** stop and report. Don't copy files by hand.
+
+### P12-5: fit (technical-artist [EDITOR])
+1. **Clearance table, `Docs/ArtTest/warden/p12_clearance.md`:** for every `Crypt` and `Cloister` route segment, every search point and every spawn point, the lowest ceiling above it. Traces can't do this, because the art has no collision, so read the vault, soffit, portal and door records in `Docs/plans/p9_d1_layout.json` and `p10_d1_layout.json`. List every place lower than 292 cm. This tells Phase 13 where it must stoop, and tells us if Idle clips while standing.
+2. **Facing:** confirm which yaw makes `SK_Warden` face actor +X, from bounds plus a thumbnail. Expect −90.
+3. **Silhouette:** `Tools/blender/warden/bake_silhouette.py` opens the copy in `SourceArt/Warden/V5/`, never saves it, poses Idle frame 1 at LOD2, merges and decimates to ≤ 8,000 triangles, and exports `SourceArt/Warden/SM_LB_Warden_Silhouette.fbx` with the pivot at the feet. Import it as a static mesh to `Characters/Warden/Meshes/`, Nanite off, no collision. It must not get a project material with a missing usage flag; `MI_LB_WardenSilhouette` is fine, because this is a static mesh.
+
+### P12-6: read review (lead + owner; was P12-7)
+Same poses, candle proxy, sheet and pass rules as the old P12-7 below, with `AN_Warden_Idle` on the temporary actors. Allowed corrections here are MI values only: `Cloth Brightness`, skin and metal brightness. **Never change a light.** Output: `Docs/ArtTest/warden/p12_read.png` and a fix list agreed with the owner.
+
+### P12-7: fixes (technical-artist)
+Only what the review shows matters at game distance. Candidates: hand flecks, pale hands, forearm and sleeve join, mask eye slits, hood rim.
+- **Material or texture fix:** in this project, directly.
+- **Geometry fix:** `import_file` can't import LODs, and a skeletal re-import is delete and import again (P12-1). So edit a copy of the Blender master, use the isolated project's `Scripts/import_warden_v5.py` route, then Migrate again. The lead asks the owner before starting one, because it costs another Migrate.
+- **Not here:** the stoop's look, run, attack and turn clips are Phase 13.
+
+### P12-8 and P12-9: changes from the sections below
+- **P12-8:** mesh `SK_Warden`, single-node `AN_Warden_Idle`, looping, playing. Yaw from P12-5. Socket `mask` goes on bone `head`, positioned at the mask (V5 has no `mask` bone); `TellLight` attaches there. Silhouette uses `SM_LB_Warden_Silhouette`. Top of the figure is 290, so **no height offset** on the silhouettes.
+- **P12-9 GPU cuts, in order, if over 16.6 ms:**
+  1. Wool and skin textures 4K to 2K.
+  2. LOD1 sooner, through a screen-size change.
+  3. A reduced LOD0, which needs a geometry round.
+- **P12-9 docs:** also `ASSET_PLAN.md` (route) and `TECHNICAL_DESIGN.md` §8 (`M_LB_Character` is not used).
+
+### What this drops
+`Tools/blender/warden/concepts.py`, the blockout sheets and `hand_test.py` stay on the branch as a record and aren't used. `blenderkit` base mesh, `hessian_230` and `brown_leather`: not used, so their registry rows are marked at P12-9.
+
+---
 
 ## Goal
 Replace the Warden's cone-and-cube placeholder with one custom, memorable creature: a very tall, stooped, robed figure with a masked head and long bare arms. It must read as the same design in the crypt, the cloister and the two distant silhouettes.
@@ -268,7 +343,10 @@ The feet use the same method.
 
 **Gate:** the owner picks A, B or C, or a mix. The lead records it as **D-090** and writes the exact P12-4 values into this plan before P12-4 starts. **Nothing else proceeds until the owner chooses.**
 
+**Result (2026-11-04): all three renders are on the sheet (`2265a6e`), and none was chosen.** The owner replied with their own finished build, Warden Art V5, and the lead recommended it over the blockouts: D-090. Two findings carry over: the crypt's ≥ 260 cm rule forced a 45° head pitch in the held pose, and that held pose no longer applies, because V5 stands at 290.
+
 ### P12-4: final model (technical-artist)
+**Superseded by D-090; kept as a record.**
 The lead fills in the chosen concept's exact dimensions after the gate. These apply whichever is chosen.
 
 **Files:** `Tools/blender/warden/build_warden.py` (seeded, reruns from nothing); `Tools/blender/warden/render_warden.py`; `Tools/textures/gen_warden_textures.py` (numpy and PIL, seeds 12101+); textures in `ExternalAssets/Generated/warden/` (git-ignored, rebuilt by script); `SourceArt/Warden/` for FBX and the `.blend`.
@@ -306,6 +384,7 @@ The simulated result keeps its quads, so it weights and deforms cleanly with no 
 **If the lead can't accept it after three rounds, stop and report to the owner with images** (R-49). Options then: simplify the design; keep the agreed silhouette with a simpler mask; or, only if the owner says so, try a free AI-generated mask as a starting point. Asset plan note: hands-off generated meshes aren't production-ready.
 
 ### P12-5: rig, weights, poses (animation-specialist)
+**Superseded by D-090; kept as a record.**
 **Files:** `Tools/blender/warden/rig_warden.py`; clips and FBX in `SourceArt/Warden/`.
 
 **Joint table (cm; character faces −Y; left is +X; A-pose at 45°). Mirrored for `_r`:**
@@ -366,6 +445,7 @@ Target about 110 bones or fewer.
 **Acceptance (lead):** 12 extreme frames rendered to `Docs/ArtTest/warden/p12_rom.png`. No candy-wrapper twisting at wrists or elbows, no robe through the arms in the held pose, no mask deformation. Some robe stretch at ±25° is acceptable, because Phase 13 tunes it.
 
 ### P12-6: material and import (technical-artist [EDITOR])
+**Superseded by D-090; kept as a record.**
 **`/Game/LastBell/Materials/Master/M_LB_Character`** (new): Opaque, Default Lit, `bUsedWithSkeletalMesh` on. Build it first on `M_P12_CharacterTest` in `ArtTest/P12`, so a shader error can't reach the real one. Other GPU apps closed, all work saved (D-053).
 
 | Parameter | Default | Purpose |
