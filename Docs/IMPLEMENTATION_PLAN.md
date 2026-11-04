@@ -284,14 +284,14 @@ Branch `claude/phase-12-warden-visual`. Spec: `Docs/plans/P12_WARDEN_VISUAL.md` 
 | P12-1 | Pipeline spike: a test figure through Blender, FBX and Unreal | technical-artist [EDITOR], lead for captures | P12-0 |
 | P12-2 | Downloads; hand comparison | asset-curator, technical-artist | P12-0 |
 | P12-3 | Three concept blockouts; the owner supplied their own build instead (D-090) | technical-artist, owner | P12-1 |
-| P12-4 | Migrate V5 into the project, move it under `Characters/Warden`, check it | owner, technical-artist [EDITOR] | P12-3 |
+| P12-4 | Copy V5 into the project, move it under `Characters/Warden`, check it | lead, technical-artist [EDITOR] | P12-3 |
 | P12-5 | Clearance on the Warden's routes; silhouette mesh | technical-artist [EDITOR] | P12-4 |
 | P12-6 | Read review in the game's real lighting | lead + owner | P12-5 |
 | P12-7 | Fixes the review calls for | technical-artist | P12-6 |
 | P12-8 | `BP_Warden` and `BP_WardenSilhouette` swap | unreal-blueprint-engineer [EDITOR] | P12-7 |
 | P12-9 | QA, docs, GPU readings, playtest; PHASE 12 READY FOR YOUR REVIEW | qa-reviewer + lead + owner | all |
 
-Status 2026-11-04: P12-0…P12-3 done; the owner chose their own Warden Art V5 (D-090), so the scripted build is dropped. P12-4 waits for the owner's Migrate.
+Status 2026-11-04: P12-0…P12-3 done; the owner chose their own Warden Art V5 (D-090), so the scripted build is dropped. P12-4 in progress.
 
 ## Deferred to Phase 14–15 (Lighting, VFX: storm work)
 Items the owner asked to fold into the storm pass. Plan them in detail (Docs/plans/) when Phase 14–15 starts.

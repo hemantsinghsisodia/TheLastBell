@@ -1,0 +1,171 @@
+{
+ "source": "C:\\Hemant\\Prj\\Learning\\Warden\\output\\unreal_validation\\Content\\WardenArtV5",
+ "count": 33,
+ "files": [
+  {
+   "file": "Animations/AN_Warden_DoorwayStoop.uasset",
+   "bytes": 423894,
+   "md5": "052d0eb24569057919d391ef94346b49"
+  },
+  {
+   "file": "Animations/AN_Warden_Idle.uasset",
+   "bytes": 555849,
+   "md5": "2d139074c29a8ea2ee247f2cb75febee"
+  },
+  {
+   "file": "Animations/AN_Warden_Walk.uasset",
+   "bytes": 291846,
+   "md5": "bd75a27dc01164b151fb0d5f432bff83"
+  },
+  {
+   "file": "Materials/MI_Warden_Wool.uasset",
+   "bytes": 4873,
+   "md5": "c4d9e48540d328386e907b02d94c471c"
+  },
+  {
+   "file": "Materials/M_Warden_BellMetal.uasset",
+   "bytes": 11402,
+   "md5": "c904d5f3a29ba324d55f25ac564e98dc"
+  },
+  {
+   "file": "Materials/M_Warden_ChainIron.uasset",
+   "bytes": 7112,
+   "md5": "ef075707bf7dd1305cded6154ad680d6"
+  },
+  {
+   "file": "Materials/M_Warden_Leather.uasset",
+   "bytes": 7090,
+   "md5": "348d1627667138fe6fce32bddd2f90d4"
+  },
+  {
+   "file": "Materials/M_Warden_RustedIron.uasset",
+   "bytes": 11414,
+   "md5": "1da966a52ff48b13514db66253b2524a"
+  },
+  {
+   "file": "Materials/M_Warden_Skin.uasset",
+   "bytes": 12310,
+   "md5": "165df7e43bb8edddde1e1b3b13e11002"
+  },
+  {
+   "file": "Materials/M_Warden_Wool.uasset",
+   "bytes": 22763,
+   "md5": "c57886d25aed900e9b012e3730bff8f4"
+  },
+  {
+   "file": "Meshes/SK_Warden.uasset",
+   "bytes": 28609621,
+   "md5": "5b344c2d6007282f2317dfbc3caccd42"
+  },
+  {
+   "file": "Meshes/SK_Warden_PhysicsAsset.uasset",
+   "bytes": 82467,
+   "md5": "1bd59a737474bade0c1b27a4513f3685"
+  },
+  {
+   "file": "Meshes/SK_Warden_Skeleton.uasset",
+   "bytes": 24041,
+   "md5": "edd0c2db4259c210edb81a42d4638409"
+  },
+  {
+   "file": "Textures/T_Warden_BellMetal_BaseColor.uasset",
+   "bytes": 28016,
+   "md5": "85e98ab1bd432048a19ecf1ae562f9f2"
+  },
+  {
+   "file": "Textures/T_Warden_BellMetal_NormalDX.uasset",
+   "bytes": 24068,
+   "md5": "ca2e3d9e0a753e759979ee2cd7d0e5db"
+  },
+  {
+   "file": "Textures/T_Warden_BellMetal_ORM.uasset",
+   "bytes": 32269,
+   "md5": "561746b9a23dea33bce895f5466fd4e1"
+  },
+  {
+   "file": "Textures/T_Warden_ChainIron_BaseColor.uasset",
+   "bytes": 233483,
+   "md5": "c01a3da4eee05cb9eed9e67dc0e78756"
+  },
+  {
+   "file": "Textures/T_Warden_ChainIron_NormalDX.uasset",
+   "bytes": 271090,
+   "md5": "6dee7d4b5024d463417d54591959a1ea"
+  },
+  {
+   "file": "Textures/T_Warden_ChainIron_ORM.uasset",
+   "bytes": 363147,
+   "md5": "00c291a13dc0fb60848f616c9a2e5392"
+  },
+  {
+   "file": "Textures/T_Warden_Leather_BaseColor.uasset",
+   "bytes": 220806,
+   "md5": "a61b6a81ded77fdd3e0192fa12dac712"
+  },
+  {
+   "file": "Textures/T_Warden_Leather_NormalDX.uasset",
+   "bytes": 226558,
+   "md5": "603c9f35ee323186283746bf904833be"
+  },
+  {
+   "file": "Textures/T_Warden_Leather_ORM.uasset",
+   "bytes": 299889,
+   "md5": "087563096fb7fbc86c63f0fac527fcc4"
+  },
+  {
+   "file": "Textures/T_Warden_RustedIron_BaseColor.uasset",
+   "bytes": 48544,
+   "md5": "8f235de0289d942634328a3f4aa9fd30"
+  },
+  {
+   "file": "Textures/T_Warden_RustedIron_NormalDX.uasset",
+   "bytes": 39918,
+   "md5": "80c5743ca070afc254ea493cf54d1f66"
+  },
+  {
+   "file": "Textures/T_Warden_RustedIron_ORM.uasset",
+   "bytes": 62416,
+   "md5": "cdde0a130bc604edb68c034466118e28"
+  },
+  {
+   "file": "Textures/T_Warden_Skin_BaseColor.uasset",
+   "bytes": 211159,
+   "md5": "44fecc882ca55b4c694d2cccbc3df78c"
+  },
+  {
+   "file": "Textures/T_Warden_Skin_NormalDX.uasset",
+   "bytes": 172804,
+   "md5": "256b107dbc417edafca2b3f0f6c1ddc6"
+  },
+  {
+   "file": "Textures/T_Warden_Skin_ORM.uasset",
+   "bytes": 229361,
+   "md5": "66a8b2e12a73f39e212056a1335e272e"
+  },
+  {
+   "file": "Textures/T_Warden_Wool_BaseColor.uasset",
+   "bytes": 2225976,
+   "md5": "1f3c477a5a19a9640ac8bf45db312fb7"
+  },
+  {
+   "file": "Textures/T_Warden_Wool_DetailMasks.uasset",
+   "bytes": 2086833,
+   "md5": "2e8c3522aad912a96f68504f0bf953f4"
+  },
+  {
+   "file": "Textures/T_Warden_Wool_DetailNormalDX.uasset",
+   "bytes": 2218444,
+   "md5": "544d88c9cd93038aa4a51200b0def7d9"
+  },
+  {
+   "file": "Textures/T_Warden_Wool_NormalDX.uasset",
+   "bytes": 2217329,
+   "md5": "9446e7cf2b18307121f0545d2c22edcb"
+  },
+  {
+   "file": "Textures/T_Warden_Wool_ORM.uasset",
+   "bytes": 3181658,
+   "md5": "de9d801a1f4e84678244ce1ef08269ad"
+  }
+ ]
+}

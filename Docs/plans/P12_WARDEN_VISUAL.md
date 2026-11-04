@@ -1,6 +1,6 @@
 # Phase 12: Warden visual: plan
 
-**Status:** approved by the owner on 2026-11-04. P12-0 to P12-3 done. **At P12-3 the owner supplied their own Warden Art V5 (D-090). The tasks from P12-4 on were rewritten; "The route from P12-4 on" below is the live spec.** P12-4 waits for the owner's Migrate.
+**Status:** approved by the owner on 2026-11-04. P12-0 to P12-3 done. **At P12-3 the owner supplied their own Warden Art V5 (D-090). The tasks from P12-4 on were rewritten; "The route from P12-4 on" below is the live spec.** P12-4 in progress.
 **Branch:** `claude/phase-12-warden-visual`, from `main` (0df20fc).
 **Rules:** D-048 applies. The lead plans in Opus 5.5 at xhigh effort; every implementer is spawned with `model: "sonnet", effort: "high"`. Nothing starts without the owner's "go".
 
@@ -31,12 +31,10 @@ Warden Art V5 (28 Oct), in `C:\Hemant\Prj\Learning\Warden\output\`: Blender mast
 - Materials were tuned with no Lumen, on DX11. This project uses Lumen, so nothing about how it looks here is known yet.
 
 ### P12-4: bring it in (owner, then technical-artist [EDITOR])
-**Owner, about 5 minutes:**
-1. Close TheLastBell in Unreal, choosing Don't Save. Two editors at once risk a GPU crash on this card (D-053).
-2. Open `C:\Hemant\Prj\Learning\Warden\output\unreal_validation\WardenAssetValidation.uproject`.
-3. In the Content Browser, open `WardenArtV5/Meshes`, right-click `SK_Warden`, then **Asset Actions > Migrate**. Check the list holds only `/Game/WardenArtV5/...` assets and no `Preview` map. Click OK and choose `C:\Hemant\Prj\Learning\TheLastBell\Content`.
-4. Open `WardenArtV5/Animations`, select all 3 clips, and Migrate them to the same folder.
-5. Close that project and reopen TheLastBell.
+**Migrate wasn't possible, so the lead copied the files (2026-11-04).** The isolated project sets `DisableEnginePluginsByDefault`, so its Content Browser has no asset list and its editor has no plugin window. The owner found this. Instead of changing that project, `Tools/warden/copy_v5.py` copied what Migrate would have copied, with TheLastBell closed, into `Content/WardenArtV5/`:
+- 33 assets, 42.4 MB, each checked by MD5 (`Docs/ArtTest/warden/p12_v5_copy.json`). `Preview` left out.
+- Checked first: same engine build (5.8.3-58210709), no reference to `/Game` outside the set, and nothing depends on `Preview`.
+- The owner's folder was only read.
 
 **Technical-artist, no owner:**
 1. `AssetTools.move` everything from `/Game/WardenArtV5/` to `/Game/LastBell/Characters/Warden/{Meshes,Anims,Materials,Textures}/`, keeping the names. Confirm references with `get_dependencies`, then remove the empty folder. Nothing stays in the Content root.
@@ -50,7 +48,7 @@ Warden Art V5 (28 Oct), in `C:\Hemant\Prj\Learning\Warden\output\`: Blender mast
 4. Copy `Warden_Rigged.blend`, `exports/*.fbx`, V5's `README.md` and the three licence texts to `SourceArt/Warden/V5/` (`licences/` for the texts). Commit. The owner's folder is read-only for us: nothing in it is changed.
 5. Update the registry row's Unreal path.
 
-**If Migrate misses assets or the mesh won't load:** stop and report. Don't copy files by hand.
+**If the editor can't load an asset:** stop and report.
 
 ### P12-5: fit (technical-artist [EDITOR])
 1. **Clearance table, `Docs/ArtTest/warden/p12_clearance.md`:** for every `Crypt` and `Cloister` route segment, every search point and every spawn point, the lowest ceiling above it. Traces can't do this, because the art has no collision, so read the vault, soffit, portal and door records in `Docs/plans/p9_d1_layout.json` and `p10_d1_layout.json`. List every place lower than 292 cm. This tells Phase 13 where it must stoop, and tells us if Idle clips while standing.
@@ -63,7 +61,7 @@ Same poses, candle proxy, sheet and pass rules as the old P12-7 below, with `AN_
 ### P12-7: fixes (technical-artist)
 Only what the review shows matters at game distance. Candidates: hand flecks, pale hands, forearm and sleeve join, mask eye slits, hood rim.
 - **Material or texture fix:** in this project, directly.
-- **Geometry fix:** `import_file` can't import LODs, and a skeletal re-import is delete and import again (P12-1). So edit a copy of the Blender master, use the isolated project's `Scripts/import_warden_v5.py` route, then Migrate again. The lead asks the owner before starting one, because it costs another Migrate.
+- **Geometry fix:** `import_file` can't import LODs, and a skeletal re-import is delete and import again (P12-1). So edit a copy of the Blender master, use the isolated project's `Scripts/import_warden_v5.py` route, then copy again with a new `copy_v5.py` run after removing the old assets. The lead asks the owner before starting one.
 - **Not here:** the stoop's look, run, attack and turn clips are Phase 13.
 
 ### P12-8 and P12-9: changes from the sections below
