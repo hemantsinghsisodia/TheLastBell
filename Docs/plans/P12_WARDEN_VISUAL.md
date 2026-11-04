@@ -1,6 +1,6 @@
 # Phase 12: Warden visual: plan
 
-**Status:** approved by the owner on 2026-11-04. P12-0 to P12-3 done. **At P12-3 the owner supplied their own Warden Art V5 (D-090). The tasks from P12-4 on were rewritten; "The route from P12-4 on" below is the live spec.** P12-4 in progress.
+**Status:** approved by the owner on 2026-11-04. P12-0 to P12-3 done. **At P12-3 the owner supplied their own Warden Art V5 (D-090). The tasks from P12-4 on were rewritten; "The route from P12-4 on" below is the live spec.** P12-4 and P12-5 done; P12-6 ready, waiting for the owner.
 **Branch:** `claude/phase-12-warden-visual`, from `main` (0df20fc).
 **Rules:** D-048 applies. The lead plans in Opus 5.5 at xhigh effort; every implementer is spawned with `model: "sonnet", effort: "high"`. Nothing starts without the owner's "go".
 
@@ -55,8 +55,31 @@ Warden Art V5 (28 Oct), in `C:\Hemant\Prj\Learning\Warden\output\`: Blender mast
 2. **Facing:** confirm which yaw makes `SK_Warden` face actor +X, from bounds plus a thumbnail. Expect −90.
 3. **Silhouette:** `Tools/blender/warden/bake_silhouette.py` opens the copy in `SourceArt/Warden/V5/`, never saves it, poses Idle frame 1 at LOD2, merges and decimates to ≤ 8,000 triangles, and exports `SourceArt/Warden/SM_LB_Warden_Silhouette.fbx` with the pivot at the feet. Import it as a static mesh to `Characters/Warden/Meshes/`, Nanite off, no collision. It must not get a project material with a missing usage flag; `MI_LB_WardenSilhouette` is fine, because this is a static mesh.
 
+**Results of P12-4 and P12-5 (technical-artist; c3e8468, 480762a):**
+
+| Check | Result |
+|---|---|
+| Move | 33 assets under `/Game/LastBell/Characters/Warden/`; nothing points at the old folder, no redirector left, `Content/WardenArtV5` gone |
+| `check_warden.py` | 53/53 |
+| Suite | 79/79 |
+| Log, dirty packages | No shader or material errors; no map or `M_LB_Surface` dirty |
+| Texture memory | About 130 MiB by estimate, all mips resident; wool and skin 4K sets about 43 MiB each. 2K would save about 96 MiB. Mesh and clip memory not measured |
+| Silhouette | `SM_LB_Warden_Silhouette`: 7,600 triangles, height 290.28, Nanite off, no collision. Needs yaw −90 on its component |
+
+**Clearance (`Docs/ArtTest/warden/p12_clearance.md`): nothing on the routes, search points or spawn points is below 292 cm by the estimate.** Lowest: crypt 347 (a portal jamb on an assumed path), crypt search 485, cloister 540. 69 of 179 route samples have only a low vault *springing* (260) over them; the estimated underside there is 485–558 and the greybox ceiling is 560. The crypt vault numbers are modelled from the P9 survey, not measured. So **Idle and Walk don't need a stoop on the patrols.**
+
+**Below 292, all off the patrol set, so for Phase 13:**
+- Doors: 230 (`Door_Sacristy`, `Door_ChapelMain`, `Door_Shortcut`), 224 (`Door_Tower`, whose art apex is 228 and jambs 194).
+- Cloister cell doors: shoulders 220, apex 250. Crypt stair ends: 286, 271, 256.
+- `CLA_Archway_W` springing is 300: only 8 above Walk's top.
+- `LBWardenSpawnPoint_1` (9000, 2000) has no ceiling data: outdoors, so not a problem, but not measured.
+
+**Known issue: the bind pose and the clips are 90° apart.** The bind pose faces mesh +X, because V5's mesh import used `force_front_x_axis`; the playing clips face mesh +Y and need yaw −90. Fine while a clip always plays, but a bind-pose snap would turn it 90°, and Phase 13 must allow for it in sockets and any blend to the reference pose. Fixing it means a geometry round, so it's left until the review shows whether one is needed anyway.
+
+**Candle reach:** the player's candle has radius 600 (`LBPlayerTuningData`), so it can't light a figure at 8 m. The 8 m pass rule below therefore means "readable by the level's own lights", and only 3 m views get a candle variant (`Tools/warden/read_review.py`).
+
 ### P12-6: read review (lead + owner; was P12-7)
-Same poses, candle proxy, sheet and pass rules as the old P12-7 below, with `AN_Warden_Idle` on the temporary actors. Allowed corrections here are MI values only: `Cloth Brightness`, skin and metal brightness. **Never change a light.** Output: `Docs/ArtTest/warden/p12_read.png` and a fix list agreed with the owner.
+Same sheet and pass rules as the old P12-7 below, with `AN_Warden_Idle` on the temporary actors. Poses and placement: `Tools/warden/read_review.py`: 12 views, then 4 at 3 m with the candle proxy. Allowed corrections here are MI values only: `Cloth Brightness`, skin and metal brightness. **Never change a light.** Output: `Docs/ArtTest/warden/p12_read.png` and a fix list agreed with the owner.
 
 ### P12-7: fixes (technical-artist)
 Only what the review shows matters at game distance. Candidates: hand flecks, pale hands, forearm and sleeve join, mask eye slits, hood rim.
