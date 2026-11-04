@@ -17,8 +17,9 @@ import json
 import math
 import os
 import sys
+import time
 
-HERE = os.path.dirname(os.path.abspath(__file__))
+HERE =os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, "..", "mcp"))
 from ue import UE  # noqa: E402
 
@@ -35,9 +36,9 @@ EYE = 165.0
 # figure XYZ, then cameras (name, x, y, pitch). Camera Z is floor + eye height. Each figure faces its first camera.
 SPOTS = {
     "ossuary": ((8850.0, -2250.0, -600.0), [("3m", 8550.0, -2250.0, 8.0), ("8m", 8050.0, -2250.0, 2.0), ("15m", 7400.0, -2350.0, 2.0)]),
-    "chain": ((10800.0, -1780.0, -600.0), [("3m", 10573.0, -1977.0, 8.0), ("8m", 10195.0, -2304.0, 2.0), ("side10m", 11350.0, -900.0, 2.0)]),
+    "chain": ((10800.0, -1780.0, -600.0), [("3m", 10573.0, -1977.0, 8.0), ("8m", 10195.0, -2304.0, 2.0), ("side6m", 11200.0, -2200.0, 4.0)]),
     "bells": ((11750.0, 2650.0, 0.0), [("3m", 11750.0, 2350.0, 8.0), ("8m", 11750.0, 1850.0, 2.0), ("18m", 11750.0, 850.0, 1.0)]),
-    "west": ((9850.0, 2000.0, 0.0), [("3m", 9850.0, 1700.0, 8.0), ("8m", 9850.0, 1200.0, 2.0), ("15m", 9850.0, 500.0, 1.0)]),
+    "west": ((9850.0, 2000.0, 0.0), [("3m", 9850.0, 1700.0, 8.0), ("8m", 9850.0, 1200.0, 2.0), ("12m", 9850.0, 800.0, 1.0)]),
 }
 
 
@@ -77,7 +78,14 @@ def labelled(ue):
 
 
 def count(ue):
-    return len(ue.call(SC, "find_actors", {"name": "", "tag": "", "collision_channels": []}))
+    # this large reply sometimes drops the connection straight after a spawn; a second try is enough
+    for attempt in range(3):
+        try:
+            return len(ue.call(SC, "find_actors", {"name": "", "tag": "", "collision_channels": []}))
+        except ConnectionResetError:
+            if attempt == 2:
+                raise
+            time.sleep(2)
 
 
 def xform(x, y, z, yaw):
