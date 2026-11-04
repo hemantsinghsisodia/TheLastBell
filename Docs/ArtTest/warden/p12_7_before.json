@@ -1,0 +1,124 @@
+{
+ "taken": "2026-11-04 10:45:46",
+ "note": "values read before P12-7 round 1 changed anything",
+ "mesh": "/Game/LastBell/Characters/Warden/Meshes/SK_Warden",
+ "slots": [
+  "M_Warden_Wool",
+  "M_Warden_BellMetal",
+  "M_Warden_RustedIron",
+  "M_Warden_Skin",
+  "M_Warden_Leather",
+  "M_Warden_ChainIron"
+ ],
+ "slot_materials": {
+  "M_Warden_Wool": "/Game/LastBell/Characters/Warden/Materials/MI_Warden_Wool.MI_Warden_Wool",
+  "M_Warden_BellMetal": "/Game/LastBell/Characters/Warden/Materials/M_Warden_BellMetal.M_Warden_BellMetal",
+  "M_Warden_RustedIron": "/Game/LastBell/Characters/Warden/Materials/M_Warden_RustedIron.M_Warden_RustedIron",
+  "M_Warden_Skin": "/Game/LastBell/Characters/Warden/Materials/M_Warden_Skin.M_Warden_Skin",
+  "M_Warden_Leather": "/Game/LastBell/Characters/Warden/Materials/M_Warden_Leather.M_Warden_Leather",
+  "M_Warden_ChainIron": "/Game/LastBell/Characters/Warden/Materials/M_Warden_ChainIron.M_Warden_ChainIron"
+ },
+ "wool_before": {
+  "Detail Strength": [
+   0.5,
+   true
+  ],
+  "Weave Scale": [
+   109.94219970703125,
+   true
+  ],
+  "Wetness": [
+   0.15000000596046448,
+   true
+  ],
+  "Cloth Brightness": [
+   0.4000000059604645,
+   true
+  ]
+ },
+ "cloth_brightness_before": 0.4000000059604645,
+ "geometry": {
+  "bounds_origin": [
+   -14.688154220581055,
+   -13.898918151855469,
+   145
+  ],
+  "bounds_extent": [
+   68.69979286193848,
+   76.60987091064453,
+   145
+  ],
+  "lod_count": 3,
+  "lod_vertices": [
+   65983,
+   39159,
+   24080
+  ]
+ },
+ "parents_before": {
+  "M_Warden_BellMetal": {
+   "MP_BaseColor": [
+    "MaterialExpressionTextureSample_1",
+    "RGB"
+   ],
+   "MP_Metallic": [
+    "MaterialExpressionTextureSample_5",
+    "B"
+   ],
+   "MP_Roughness": [
+    "MaterialExpressionTextureSample_5",
+    "G"
+   ],
+   "parameters": []
+  },
+  "M_Warden_Skin": {
+   "MP_BaseColor": [
+    "MaterialExpressionMultiply_0",
+    ""
+   ],
+   "parameters": []
+  },
+  "M_Warden_RustedIron": {
+   "MP_BaseColor": [
+    "MaterialExpressionTextureSample_1",
+    "RGB"
+   ],
+   "parameters": []
+  },
+  "M_Warden_ChainIron": {
+   "MP_BaseColor": [
+    "MaterialExpressionTextureSample_1",
+    "RGB"
+   ],
+   "parameters": []
+  },
+  "M_Warden_Leather": {
+   "parameters": []
+  }
+ },
+ "new_assets_exist": {
+  "MI_Warden_BellMetal": false,
+  "MI_Warden_Skin": false,
+  "MI_Warden_RustedIron": false,
+  "MI_Warden_ChainIron": false
+ },
+ "dirty_before": {
+  "/Game/LastBell/Materials/Master/M_LB_Surface": false,
+  "/Game/LastBell/Maps/L_Monastery": false,
+  "/Game/LastBell/Maps/L_MainMenu": false,
+  "/Game/LastBell/Maps/L_Test_ArtKit": false,
+  "/Game/LastBell/Maps/L_Test_MicroSlice": false,
+  "/Game/LastBell/Maps/L_Test_Puzzles": false,
+  "/Game/LastBell/Maps/L_Test_Warden": false,
+  "/Game/LastBell/Characters/Warden/Materials/M_Warden_BellMetal": false,
+  "/Game/LastBell/Characters/Warden/Materials/M_Warden_Skin": false,
+  "/Game/LastBell/Characters/Warden/Materials/M_Warden_RustedIron": false,
+  "/Game/LastBell/Characters/Warden/Materials/M_Warden_ChainIron": false,
+  "/Game/LastBell/Characters/Warden/Materials/MI_Warden_BellMetal": null,
+  "/Game/LastBell/Characters/Warden/Materials/MI_Warden_Skin": null,
+  "/Game/LastBell/Characters/Warden/Materials/MI_Warden_RustedIron": null,
+  "/Game/LastBell/Characters/Warden/Materials/MI_Warden_ChainIron": null,
+  "/Game/LastBell/Characters/Warden/Materials/MI_Warden_Wool": false,
+  "/Game/LastBell/Characters/Warden/Meshes/SK_Warden": false
+ }
+}

@@ -10,10 +10,12 @@ Expected values come from the owner's report C:\\Hemant\\Prj\\Learning\\Warden\\
 
 Checks (all under /Game/LastBell/Characters/Warden/):
   mesh      SK_Warden: 110 bones, first bone `root`; height 290 +/- 1 (bounds Z size); 3 LODs, vertices per LOD and 6 sections
-            per LOD as in the report; each of the 6 slots has its expected material; physics asset and skeleton assigned.
+            per LOD as in the report; each of the 6 slots has its expected material (SLOT_MATERIAL: since P12-7 round 1 four
+            slots hold new MIs, Leather its parent and Wool its MI); physics asset and skeleton assigned.
   textures  the 20 textures: size, sRGB and compression settings equal to the report.
   clips     AN_Warden_Idle 4 s, Walk 2 s, DoorwayStoop 3 s (+/- 0.01), all on SK_Warden_Skeleton (the mesh's skeleton).
-  wool      MI_Warden_Wool: Weave Scale 109.94, Detail Strength 0.5, Wetness 0.15, Cloth Brightness 0.4.
+  wool      MI_Warden_Wool: Weave Scale 109.94, Detail Strength 0.5, Wetness 0.15, Cloth Brightness 0.25 (P12-7 round 1; the report's
+            own value is 0.4 and is checked against REPORT_WOOL).
   place     nothing left under /Game/WardenArtV5, and no dependency of a Warden asset points there.
 Informational (not counted): texture memory estimate from the Format and Dimensions tags.
 
@@ -38,7 +40,12 @@ BASE = "/Game/LastBell/Characters/Warden"
 OLD = "/Game/WardenArtV5"
 DEFAULT_VALIDATION = r"C:\Hemant\Prj\Learning\Warden\output\unreal_validation\Reports\validation-v5.json"
 CLIPS = {"AN_Warden_Idle": 4.0, "AN_Warden_Walk": 2.0, "AN_Warden_DoorwayStoop": 3.0}
-WOOL = {"Weave Scale": 109.94, "Detail Strength": 0.5, "Wetness": 0.15, "Cloth Brightness": 0.4}
+WOOL = {"Weave Scale": 109.94, "Detail Strength": 0.5, "Wetness": 0.15, "Cloth Brightness": 0.25}   # Cloth Brightness: P12-7 round 1
+REPORT_WOOL = dict(WOOL, **{"Cloth Brightness": 0.4})   # what the owner's report has
+# slot name -> material the slot must hold (P12-7 round 1: four MIs on the Warden parents, Leather unchanged)
+SLOT_MATERIAL = {"M_Warden_Wool": "MI_Warden_Wool", "M_Warden_BellMetal": "MI_Warden_BellMetal",
+                 "M_Warden_RustedIron": "MI_Warden_RustedIron", "M_Warden_Skin": "MI_Warden_Skin",
+                 "M_Warden_Leather": "M_Warden_Leather", "M_Warden_ChainIron": "MI_Warden_ChainIron"}
 # bytes per pixel of the GPU formats this project's textures use (informational memory estimate only)
 BPP = {"DXT1": 0.5, "DXT5": 1.0, "BC4": 0.5, "BC5": 1.0, "BC7": 1.0, "BGRA8": 4.0, "G8": 1.0}
 
@@ -102,8 +109,8 @@ def check_mesh(ue, res, rep):
                   "LOD%d vertices %d, sections %d" % (i, m["lod_vertices"][i], m["sections"][i]), "got %d / %d" % (v, s))
     slots = ue.call(SK, "get_material_slots", {"mesh": mesh})
     res.check(len(slots) == 6, "6 material slots", "got %s" % slots)
-    for slot, want in zip(slots, m["materials"]):
-        want_path = BASE + "/Materials/" + want.rsplit("/", 1)[1].split(".")[0]
+    for slot in slots:
+        want_path = BASE + "/Materials/" + SLOT_MATERIAL.get(slot, "?")
         got = ue.call(SK, "get_material", {"mesh": mesh, "slot_name": slot})
         got = got.get("refPath", "") if isinstance(got, dict) else str(got)
         res.check(got.split(".")[0] == want_path, "slot %s -> %s" % (slot, want_path.rsplit("/", 1)[1]), "got %s" % got)
@@ -157,7 +164,7 @@ def check_wool(ue, res, rep):
         got = ue.call(MI, "get_scalar_parameter", {"instance": mi, "name": k})
         res.check(abs(got - want) <= 0.005 + 1e-9 * abs(want), "MI_Warden_Wool %s == %g" % (k, want), "got %.6g" % got)
     # the report's own numbers must agree with the constants above (so a changed report is noticed)
-    for k, want in WOOL.items():
+    for k, want in REPORT_WOOL.items():
         rv = rep["wool_parameters"][k]
         res.check(abs(rv - want) <= 0.005, "report wool %s == %g" % (k, want), "report has %.6g" % rv)
 
