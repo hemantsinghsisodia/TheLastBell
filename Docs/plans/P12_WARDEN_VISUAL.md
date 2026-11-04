@@ -1,6 +1,6 @@
 # Phase 12: Warden visual: plan
 
-**Status:** approved by the owner on 2026-11-04. P12-0 to P12-3 done. **At P12-3 the owner supplied their own Warden Art V5 (D-090). The tasks from P12-4 on were rewritten; "The route from P12-4 on" below is the live spec.** P12-4 and P12-5 done; P12-6 first round done; P12-7 round 1 in progress.
+**Status:** approved by the owner on 2026-11-04. P12-0 to P12-3 done. **At P12-3 the owner supplied their own Warden Art V5 (D-090). The tasks from P12-4 on were rewritten; "The route from P12-4 on" below is the live spec.** P12-4 and P12-5 done; P12-6 first round done; P12-7 round 1 passed. Waiting for the owner on any geometry fix before P12-8.
 **Branch:** `claude/phase-12-warden-visual`, from `main` (0df20fc).
 **Rules:** D-048 applies. The lead plans in Opus 5.5 at xhigh effort; every implementer is spawned with `model: "sonnet", effort: "high"`. Nothing starts without the owner's "go".
 
@@ -126,6 +126,18 @@ Only what the review shows matters at game distance. Candidates: hand flecks, pa
 **Acceptance:** no shader error; `check_warden.py` n/n; `M_LB_Surface` and every map not dirty; suite 79/79. No geometry, texture, LOD or light change.
 
 **Then the lead captures, about 5 minutes with the owner told first,** prefix `rv2_`: `ossuary_8m`, `chain_8m`, `bells_8m`, then with the candle `ossuary_3m`, `chain_3m`, `bells_3m`. **Pass:** with the candle at 3 m the mask is the brightest part of the figure and its crack and eye slits read; the hands are clearly dimmer; at 8 m the outline is no worse than round 1. If the mask still fails, the next step is the plan's small lift, added as `EmissiveLift`, not more brightness on everything.
+
+**Result, round 1 (technical-artist 81be641; lead `rv2_p12r_*`, sheet `Docs/ArtTest/warden/p12_read_r2.png`): passes.** `check_warden.py` 53/53, suite 79/79, no shader errors. Temporaries removed, 2980 actors, nothing saved.
+
+| With the candle at 3 m, display luma, 95th percentile | Before, ossuary / bells | Now, ossuary / bells |
+|---|---|---|
+| Mask | 0.108 / 0.135 | **0.193 / 0.195** |
+| Hands | 0.127–0.132 / 0.135–0.139 | 0.112–0.117 / 0.114–0.120 |
+| Neck chain | 0.111 / 0.114 | 0.088 / 0.089 |
+
+- The mask is now the brightest part of the figure, its crack and eye slits read at 3 m, and the hands are clearly dimmer. The numbers come from fixed boxes in the frame and are a guide: the viewport was 1331 × 808 in round 1 and 1335 × 862 here.
+- At 8 m the outline is as good as before and the robe is slightly darker. The mask still doesn't show at 8 m, because the candle can't reach it; `EmissiveLift` wasn't needed for the pass rule, so it wasn't added.
+- **Still there, geometry:** the forearms read as tubes where the sleeves end, and the hands remain pale in absolute terms. Stair-stepping on the eye slits and the hood rim's jagged edge don't show at 3 m in the game's light.
 
 ### P12-8 and P12-9: changes from the sections below
 - **P12-8:** mesh `SK_Warden`, single-node `AN_Warden_Idle`, looping, playing. Yaw from P12-5. Socket `mask` goes on bone `head`, positioned at the mask (V5 has no `mask` bone); `TellLight` attaches there. Silhouette uses `SM_LB_Warden_Silhouette`. Top of the figure is 290, so **no height offset** on the silhouettes.
