@@ -104,7 +104,10 @@ def place(ue):
     if not pie_off(ue):
         return 2
     good = True
+    only = sys.argv[sys.argv.index("--only") + 1].split(",") if "--only" in sys.argv else list(SPOTS)   # e.g. --only ossuary,bells for the GPU reading
     for spot, ((fx, fy, fz), cams) in SPOTS.items():
+        if spot not in only:
+            continue
         label = "P12_Review_" + spot
         _, cx, cy, _ = cams[0]
         yaw = round(yaw_to(fx, fy, cx, cy), 2)   # V5.5: mesh and clips face +X, so actor yaw = D
@@ -125,8 +128,8 @@ def place(ue):
         good = good and ok
         print(label, "yaw", yaw, "OK" if ok else "FAILED: %s" % json.dumps(p)[:300])
     n = count(ue)
-    print("actor count", n, "(expected %d)" % (EXPECTED_ACTORS + len(SPOTS)))
-    print("PLACE", "OK" if good and n == EXPECTED_ACTORS + len(SPOTS) else "FAILED")
+    print("actor count", n, "(expected %d)" % (EXPECTED_ACTORS + len(only)))
+    print("PLACE", "OK" if good and n == EXPECTED_ACTORS + len(only) else "FAILED")
     return 0 if good else 1
 
 
