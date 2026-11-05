@@ -7,6 +7,7 @@
 #include "Engine/World.h"
 #include "GameFramework/PlayerController.h"
 #include "Materials/MaterialInstanceDynamic.h"
+#include "LBLog.h"
 
 namespace
 {
@@ -120,20 +121,25 @@ void ALBWardenApparition::HandleWorldStateChanged(FGameplayTag Tag, bool bAdded)
 void ALBWardenApparition::HandleWorldStateReplaced()
 {
 	// A load or a new game: whatever was on screen is gone, and the tag says whether the beat has already happened.
+	const int32 StationBefore = Run.Station;
+	const TCHAR* PhaseBefore = LBApparition::PhaseName(Run.Phase);
 	StopShowing();
 	if (IsTagPresent())
 	{
 		LBApparition::Finish(Run);
+		UE_LOG(LogLBWarden, Log, TEXT("%s: world state replaced, tag present: finished (was %s at station %d)"), *GetName(), PhaseBefore, StationBefore);
 	}
 	else
 	{
 		LBApparition::Reset(Run);
+		UE_LOG(LogLBWarden, Log, TEXT("%s: world state replaced, tag absent: reset to Idle (was %s at station %d)"), *GetName(), PhaseBefore, StationBefore);
 	}
 	ApplyAlpha();
 }
 
 void ALBWardenApparition::BeginRun()
 {
+	UE_LOG(LogLBWarden, Log, TEXT("%s: run started (trigger %s, %d stations, arm delay %.2f s)"), *GetName(), *TriggerTag.ToString(), Stations.Num(), ArmDelaySeconds);
 	LBApparition::Start(Run);
 	SetActorTickEnabled(true);
 }
@@ -199,7 +205,25 @@ void ALBWardenApparition::Tick(float DeltaSeconds)
 		}
 	}
 
-	if (LBApparition::Step(Run, Stations, ArmDelaySeconds, Facts) && Station)
+	const ELBApparitionPhase PhaseBefore = Run.Phase;
+	const int32 StationBefore = Run.Station;
+	const bool bEnteredFadeIn = LBApparition::Step(Run, Stations, ArmDelaySeconds, Facts);
+
+	// One line per transition, never per tick.
+	if (bEnteredFadeIn)
+	{
+		UE_LOG(LogLBWarden, Log, TEXT("%s: station %d fading in"), *GetName(), Run.Station);
+	}
+	else if (PhaseBefore == ELBApparitionPhase::WaitForLook && Run.Station == StationBefore + 1)
+	{
+		UE_LOG(LogLBWarden, Log, TEXT("%s: station %d skipped, player too close (%.0f cm)"), *GetName(), StationBefore, Facts.PlayerDistance);
+	}
+	if (PhaseBefore != ELBApparitionPhase::Done && Run.Phase == ELBApparitionPhase::Done)
+	{
+		UE_LOG(LogLBWarden, Log, TEXT("%s: run done"), *GetName());
+	}
+
+	if (bEnteredFadeIn && Station)
 	{
 		// Just entered FadeIn: stand at the station and turn (yaw only) to face the player. It stays like that.
 		const FVector ToPlayer = CameraLocation - Station->Location;

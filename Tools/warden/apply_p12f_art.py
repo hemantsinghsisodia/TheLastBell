@@ -4,7 +4,7 @@ Spec: Docs/plans/P12_FIX1_WARDEN_APPEARANCES.md sections 5 and 7 (material only)
     python -I Tools/warden/apply_p12f_art.py --apply | --check | --save
 
     --apply   preflight (connected, PIE off, L_Monastery and M_LB_Surface not dirty, actor count 2980), then:
-              1. import SourceArt/Warden/SM_LB_Warden_Silhouette.fbx as a NEW static mesh
+              1. import SourceArt/Warden/SM_LB_Warden_Apparition.fbx as a NEW static mesh
                  /Game/LastBell/Characters/Warden/Meshes/SM_LB_Warden_Apparition (SM_LB_Warden_Silhouette is NOT touched: the old
                  Blueprint and the map still reference it). Nanite off, no collision, one LOD; reads back slots, triangles, bounds.
               2. creates, in /Game/LastBell/Characters/Warden/Materials/: M_Warden_Apparition, MI_Warden_Apparition_Body,
@@ -39,7 +39,7 @@ SC = "editor_toolset.toolsets.scene.SceneTools"
 APP = "EditorToolset.EditorAppToolset"
 LOGS = "EditorToolset.LogsToolset"
 
-FBX = os.path.join(ROOT, "SourceArt", "Warden", "SM_LB_Warden_Silhouette.fbx")
+FBX = os.path.join(ROOT, "SourceArt", "Warden", "SM_LB_Warden_Apparition.fbx")
 MESH_DIR = "/Game/LastBell/Characters/Warden/Meshes"
 MESH_NAME = "SM_LB_Warden_Apparition"
 MESH_PKG = f"{MESH_DIR}/{MESH_NAME}"

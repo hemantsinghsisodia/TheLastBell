@@ -621,4 +621,16 @@ bool FLBWardenNoFlipFlopTest::RunTest(const FString& Parameters)
 	return true;
 }
 
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBWardenStateOrderTest, "LastBell.Warden.StateOrderMatchesBlueprintLiterals", LB_TEST_FLAGS)
+bool FLBWardenStateOrderTest::RunTest(const FString& Parameters)
+{
+	// BP_Warden stores the state in a byte and compares it to these literals (D2, P12 fix set 1). Reordering ELBWardenState breaks
+	// the glow silently, so this fails first.
+	TestEqual(TEXT("ELBWardenState::Chase == 5: BP_Warden's PlayStateFeedback and EndWindupTell compare the state byte to 5 and must change if this fails"),
+		static_cast<int32>(ELBWardenState::Chase), 5);
+	TestEqual(TEXT("ELBWardenState::Attack == 6: BP_Warden's PlayStateFeedback and EndWindupTell compare the state byte to 6 and must change if this fails"),
+		static_cast<int32>(ELBWardenState::Attack), 6);
+	return true;
+}
+
 #endif // WITH_DEV_AUTOMATION_TESTS

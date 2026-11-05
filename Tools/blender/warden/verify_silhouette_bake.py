@@ -23,7 +23,7 @@ ROOT = os.path.normpath(os.path.join(HERE, "..", "..", ".."))
 
 def args():
     argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
-    a = {"fbx": os.path.join(ROOT, "SourceArt", "Warden", "SM_LB_Warden_Silhouette.fbx"),
+    a = {"fbx": os.path.join(ROOT, "SourceArt", "Warden", "SM_LB_Warden_Apparition.fbx"),
          "png": os.path.join(ROOT, "Docs", "ArtTest", "warden", "p12f_silhouette_bake.png")}
     for i, k in enumerate(argv):
         if k == "--fbx":

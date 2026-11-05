@@ -12,7 +12,7 @@ decimates it to <= 8000 triangles with the mask protected (see --mask-mode), sca
 owner's own export does (scripts/export_unreal_cm.py: vertex coordinates x100, scene unit scale 0.01, FBX export with
 global_scale 1, apply_unit_scale, FBX_SCALE_UNITS, axis_forward -Y, axis_up Z, bake_space_transform False, mesh_smooth_type
 FACE), keeps the origin at the skeleton root (0, 0, 0) = the ground point between the feet, and writes
-SourceArt/Warden/SM_LB_Warden_Silhouette.fbx plus <out>.json (a report: triangles, bounds in Blender metres and in cm).
+SourceArt/Warden/SM_LB_Warden_Apparition.fbx plus <out>.json (a report: triangles, bounds in Blender metres and in cm).
 
 Orientation (measured): the master's figure faces Blender -Y. With these axes and the project's default static-mesh FBX import
 (bConvertScene true, bForceFrontXAxis false) the import maps Blender (x, y, z) to Unreal (x, -y, z). So with --rotz 0 the figure
@@ -21,7 +21,7 @@ faces mesh +Y in Unreal and needs yaw D - 90 to face world direction D, while SK
 which the import maps to mesh +X, so the static silhouette faces +X like SK_Warden and yaw means the same on both.
 
 Options:
-    --out PATH          FBX path (default SourceArt/Warden/SM_LB_Warden_Silhouette.fbx)
+    --out PATH          FBX path (default SourceArt/Warden/SM_LB_Warden_Apparition.fbx)
     --rotz DEG           rotate the baked mesh about Z (degrees, Blender frame) BEFORE export. 0 keeps the master's
                          orientation: the figure faces Blender -Y. Use 90 for this mesh (faces mesh +X in Unreal).
     --mask-mode M        protect (default): the mask's faces are not decimated at all (the body is decimated with its
@@ -49,7 +49,7 @@ MASTER = os.path.join(ROOT, "SourceArt", "Warden", "V5_5", "Warden_Rigged.blend"
 
 def parse_args():
     argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
-    a = {"mask_mode": "protect", "out": os.path.join(ROOT, "SourceArt", "Warden", "SM_LB_Warden_Silhouette.fbx"), "rotz": 0.0, "axis_forward": "-Y",
+    a = {"mask_mode": "protect", "out": os.path.join(ROOT, "SourceArt", "Warden", "SM_LB_Warden_Apparition.fbx"), "rotz": 0.0, "axis_forward": "-Y",
          "target": 7600, "weld": 0.003}
     i = 0
     while i < len(argv):

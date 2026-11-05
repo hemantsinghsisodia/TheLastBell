@@ -50,7 +50,9 @@ void ULBWardenTestSink::HandleLost()
 #include "Engine/StaticMeshActor.h"
 #include "Engine/TargetPoint.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/MeshComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Materials/MaterialInstanceDynamic.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PlayerController.h"
 #include "EnhancedInputSubsystems.h"
@@ -1873,6 +1875,256 @@ bool FLBWardenEscapeTest::RunTest(const FString& Parameters)
 		Test->TestEqual(TEXT("Still chasing"), static_cast<int32>(C.State()), static_cast<int32>(ELBWardenState::Chase));
 		Test->TestEqual(TEXT("Exactly one windup"), S->Sink->WindupTimes.Num(), 1);
 		return true;
+	});
+
+	Enqueue(R);
+	return true;
+}
+
+// ---- The attack tell: mask glow and light follow the Warden's state (P12 fix set 1, D2) --------------------------------------------
+
+namespace
+{
+	/** BP_Warden's mask glow levels (plan section 7): TellGlow while chasing and during the windup. */
+	constexpr float GTellGlowChase = 0.25f;
+	constexpr float GTellGlowWindup = 1.f;
+	/** The Blueprint may set the level a tick after the state changes: poll this long before calling it wrong. */
+	constexpr double GTellPollSeconds = 0.3;
+
+	struct FTellReading
+	{
+		/** Empty when everything was found; otherwise what is missing (the test fails with it). */
+		FString Problem;
+		float Glow = -1.f;
+		bool bLightVisible = false;
+	};
+
+	/** Reads TellGlow from the dynamic instance on CharacterMesh0's M_Warden_BellMetal slot, and TellLight's visibility. By name only. */
+	FTellReading ReadTell(const ALBWarden* Warden)
+	{
+		FTellReading Reading;
+		if (!Warden)
+		{
+			Reading.Problem = TEXT("no Warden");
+			return Reading;
+		}
+
+		UMeshComponent* Mesh = nullptr;
+		USceneComponent* Light = nullptr;
+		TInlineComponentArray<USceneComponent*> Components;
+		Warden->GetComponents(Components);
+		for (USceneComponent* Component : Components)
+		{
+			if (Component->GetFName() == TEXT("CharacterMesh0"))
+			{
+				Mesh = Cast<UMeshComponent>(Component);
+			}
+			else if (Component->GetFName() == TEXT("TellLight"))
+			{
+				Light = Component;
+			}
+		}
+		if (!Mesh)
+		{
+			Reading.Problem = TEXT("the Warden has no mesh component named CharacterMesh0");
+			return Reading;
+		}
+		if (!Light)
+		{
+			Reading.Problem = TEXT("the Warden has no component named TellLight");
+			return Reading;
+		}
+		Reading.bLightVisible = Light->IsVisible();
+
+		const int32 Slot = Mesh->GetMaterialIndex(TEXT("M_Warden_BellMetal"));
+		if (Slot == INDEX_NONE)
+		{
+			Reading.Problem = TEXT("CharacterMesh0 has no material slot named M_Warden_BellMetal");
+			return Reading;
+		}
+		const UMaterialInstanceDynamic* Instance = Cast<UMaterialInstanceDynamic>(Mesh->GetMaterial(Slot));
+		if (!Instance)
+		{
+			Reading.Problem = FString::Printf(TEXT("no dynamic material instance on the M_Warden_BellMetal slot (index %d) at runtime: the slot holds %s, so BP_Warden's SetupMaskGlow did not create one"),
+				Slot, *GetNameSafe(Mesh->GetMaterial(Slot)));
+			return Reading;
+		}
+		if (!Instance->GetScalarParameterValue(FName(TEXT("TellGlow")), Reading.Glow))
+		{
+			Reading.Problem = TEXT("the M_Warden_BellMetal instance has no scalar parameter TellGlow");
+		}
+		return Reading;
+	}
+
+	/**
+	 * Checks the tell for one state: true once it has been decided (matched, or failed after GTellPollSeconds from Since, or the
+	 * components are missing); false while still waiting for the Blueprint to catch up.
+	 */
+	bool PollTell(FWCtx& C, double Since, float WantGlow, bool bWantLight, const TCHAR* What)
+	{
+		const FTellReading Reading = ReadTell(C.Warden());
+		if (!Reading.Problem.IsEmpty())
+		{
+			C.T->AddError(FString::Printf(TEXT("%s: %s"), What, *Reading.Problem));
+			return true;
+		}
+		if (FMath::IsNearlyEqual(Reading.Glow, WantGlow, 0.01f) && Reading.bLightVisible == bWantLight)
+		{
+			Note(FString::Printf(TEXT("tell %s: TellGlow %.2f, TellLight %s, read %.2fs after the state change"), What, Reading.Glow,
+				Reading.bLightVisible ? TEXT("visible") : TEXT("not visible"), C.Now - Since));
+			return true;
+		}
+		if (C.Now - Since > GTellPollSeconds)
+		{
+			C.T->AddError(FString::Printf(TEXT("%s: wanted TellGlow %.2f and TellLight %s, read TellGlow %.2f and TellLight %s (%.2fs after the state change, Warden state %s)"),
+				What, WantGlow, bWantLight ? TEXT("visible") : TEXT("not visible"), Reading.Glow, Reading.bLightVisible ? TEXT("visible") : TEXT("not visible"),
+				C.Now - Since, LBWardenLogic::StateName(C.State())));
+			return true;
+		}
+		return false;
+	}
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBWardenTellGlowTest, "LastBell.Functional.Warden.Tell.MaskGlowFollowsState",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
+bool FLBWardenTellGlowTest::RunTest(const FString& Parameters)
+{
+	TSharedPtr<FWRunner> R = StartSession(this);
+	const TSharedRef<FWS> S = R->S;
+	FAutomationTestBase* Test = this;
+	AddSetupSteps(*R, FSetup(), Test);
+
+	R->Add(TEXT("Dormant: TellGlow 0, TellLight off"), [S, Test](FWCtx& C)
+	{
+		if (C.bFirst)
+		{
+			S->T0 = C.Now;
+			Test->TestEqual(TEXT("The Warden is Dormant before any stage tag"), static_cast<int32>(C.State()), static_cast<int32>(ELBWardenState::Dormant));
+		}
+		return PollTell(C, S->T0, 0.f, false, TEXT("Dormant"));
+	});
+
+	R->Add(TEXT("Stage 5"), [](FWCtx& C) { SetStage(C.W, 5); return true; });
+	AddWaitForWarden(*R, Test);
+
+	R->Add(TEXT("Patrol: TellGlow 0, TellLight off"), [S, Test](FWCtx& C)
+	{
+		if (C.bFirst)
+		{
+			S->T0 = C.Now;
+			Test->TestEqual(TEXT("The Warden is on Patrol"), static_cast<int32>(C.State()), static_cast<int32>(ELBWardenState::Patrol));
+		}
+		return PollTell(C, S->T0, 0.f, false, TEXT("Patrol"));
+	});
+
+	// The post is at X=800. At (-600, -300) the player is 1400 cm away in the open (the stage 3 tests prove it is seen), so the
+	// chase lasts about three seconds before the Warden is in attack range.
+	R->Add(TEXT("Player seen from far away: Chase, TellGlow 0.25, TellLight off"), [S, Test](FWCtx& C)
+	{
+		if (C.bFirst)
+		{
+			PlacePlayer(C, FVector(-600.0, -300.0, 0.0), 0.f);
+			S->T0 = -1.0;
+		}
+		if (S->T0 < 0.0)
+		{
+			if (C.State() == ELBWardenState::Chase)
+			{
+				S->T0 = C.Now;
+			}
+			else if (C.Elapsed > 10.0)
+			{
+				Test->AddError(TEXT("The Warden never began a chase"));
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		if (C.State() != ELBWardenState::Chase)
+		{
+			Test->AddError(FString::Printf(TEXT("Chase ended (now %s) before TellGlow/TellLight could be read"), LBWardenLogic::StateName(C.State())));
+			return true;
+		}
+		return PollTell(C, S->T0, GTellGlowChase, false, TEXT("Chase"));
+	});
+
+	R->Add(TEXT("Attack windup: TellGlow 1, TellLight visible"), [S, Test](FWCtx& C)
+	{
+		if (C.bFirst)
+		{
+			S->T0 = -1.0;
+			S->T1 = C.Now;
+		}
+		if (S->T0 < 0.0)
+		{
+			if (C.State() == ELBWardenState::Attack)
+			{
+				S->T0 = C.Now; // when the windup began; the next step uses it
+			}
+			else if (C.Now - S->T1 > 12.0)
+			{
+				Test->AddError(TEXT("The Warden never reached attack range and began a windup"));
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		return PollTell(C, S->T0, GTellGlowWindup, true, TEXT("Attack windup"));
+	}, 40.f);
+
+	R->Add(TEXT("Sprint away inside the windup: back in Chase after the windup, TellGlow 0.25, TellLight off"), [S, Test](FWCtx& C)
+	{
+		// Away from the Warden, keep going (the same escape as SprintingAwayInsideTheWindupEscapes).
+		const FVector Away = (C.Pawn->GetActorLocation() - C.WardenLoc()).GetSafeNormal2D();
+		DriveToward(C, C.Pawn->GetActorLocation() + Away * 600.0, true);
+
+		const double WindupEnds = S->T0 + C.Warden()->GetTuning().AttackWindupSeconds;
+		if (C.Now < WindupEnds + 0.1)
+		{
+			Test->TestFalse(TEXT("The player is alive during the escape"), C.Pawn->IsDead());
+			return false;
+		}
+		if (S->T2 < WindupEnds)
+		{
+			S->T2 = C.Now; // the first frame after the windup is over: the poll window starts here
+		}
+		if (C.State() != ELBWardenState::Chase)
+		{
+			Test->AddError(FString::Printf(TEXT("Expected Chase after the escape, the Warden is in %s"), LBWardenLogic::StateName(C.State())));
+			return true;
+		}
+		return PollTell(C, S->T2, GTellGlowChase, false, TEXT("Chase after the windup"));
+	});
+
+	R->Add(TEXT("Stage dropped: Dormant, TellGlow 0, TellLight off"), [S, Test](FWCtx& C)
+	{
+		StandStill(C);
+		if (C.bFirst)
+		{
+			S->T0 = -1.0;
+			ULBWorldStateSubsystem::Get(C.W)->ReplaceState(FGameplayTagContainer());
+		}
+		if (S->T0 < 0.0)
+		{
+			if (C.State() == ELBWardenState::Dormant)
+			{
+				S->T0 = C.Now;
+			}
+			else if (C.Elapsed > 5.0)
+			{
+				Test->AddError(FString::Printf(TEXT("The Warden never went Dormant after the stage tags were removed (state %s)"), LBWardenLogic::StateName(C.State())));
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		return PollTell(C, S->T0, 0.f, false, TEXT("Dormant after the chase"));
 	});
 
 	Enqueue(R);

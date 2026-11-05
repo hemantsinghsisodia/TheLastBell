@@ -516,6 +516,8 @@ namespace
 		TWeakObjectPtr<ALBWardenApparition> Apparition;
 		FGameplayTag Trigger;
 		float AlphaSeen = 0.f;
+		TWeakObjectPtr<AActor> Blocker;
+		int32 WaitFrames = 0;
 
 		ALBWardenApparition* A() const { return Apparition.Get(); }
 	};
@@ -1101,6 +1103,116 @@ bool FLBApparitionStateReplacedTest::RunTest(const FString& Parameters)
 		Test->TestTrue(TEXT("Still Done"), A->GetPhase() == ELBApparitionPhase::Done);
 		return true;
 	});
+
+	Enqueue(R);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBApparitionBlockedViewTest, "LastBell.Functional.Warden.Apparition.BlockedViewStaysHidden",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
+bool FLBApparitionBlockedViewTest::RunTest(const FString& Parameters)
+{
+	TSharedRef<FAppRunner> R = StartSession(this);
+	const TSharedRef<FAppState> S = R->S;
+	FAutomationTestBase* Test = this;
+	AddSetup(*R, Test, { MakeStation(GStation1) }, false);
+
+	// The player looks straight at the look point, so the cone test passes on every frame; only the line of sight can keep it hidden.
+	R->Add(TEXT("A wall between the camera and the look point: it stays in WaitForLook, hidden, for over a second"), [S, Test](FAppCtx& C)
+	{
+		ALBWardenApparition* A = S->A();
+		LookAtStation(C.Pawn, GStation1);
+		const APlayerController* PC = Cast<APlayerController>(C.Pawn->GetController());
+		const APlayerCameraManager* Camera = PC ? PC->PlayerCameraManager.Get() : nullptr;
+		if (!Test->TestNotNull(TEXT("Camera manager"), Camera))
+		{
+			return true;
+		}
+		const FVector Eye = Camera->GetCameraLocation();
+		const FVector LookPoint = GStation1 + FVector(0.0, 0.0, GLookHeight);
+
+		if (C.bFirst)
+		{
+			// 20 x 400 x 400 cm, half way along the line of sight. Built from the engine cube at runtime: no asset references.
+			UStaticMesh* Cube = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cube.Cube"));
+			AStaticMeshActor* Wall = Cube ? C.W->SpawnActor<AStaticMeshActor>((Eye + LookPoint) * 0.5, FRotator::ZeroRotator) : nullptr;
+			if (!Test->TestNotNull(TEXT("Blocking wall spawned"), Wall))
+			{
+				return true;
+			}
+			Wall->SetMobility(EComponentMobility::Movable);
+			Wall->GetStaticMeshComponent()->SetStaticMesh(Cube);
+			Wall->SetActorScale3D(FVector(0.2f, 4.f, 4.f));
+			S->Blocker = Wall;
+			S->WaitFrames = 0;
+
+			// The wall really blocks Visibility, and the first thing the view ray meets is the wall: neither the pawn nor the
+			// apparition is in the way (the query ignores them, as IsLookedAt does).
+			FCollisionQueryParams Params(SCENE_QUERY_STAT(LBApparitionTestWall), false, A);
+			Params.AddIgnoredActor(C.Pawn);
+			FHitResult Hit;
+			const bool bHit = C.W->LineTraceSingleByChannel(Hit, Eye, LookPoint, ECC_Visibility, Params);
+			Test->TestTrue(TEXT("The view ray from the camera to the look point hits something"), bHit);
+			Test->TestTrue(FString::Printf(TEXT("...and it is the wall, not the pawn (hit %s)"), *GetNameSafe(Hit.GetActor())), bHit && Hit.GetActor() == Wall);
+
+			ULBWorldStateSubsystem::Get(C.W)->AddState(S->Trigger);
+			Note(FString::Printf(TEXT("wall at %s between eye %s and look point %s"), *Wall->GetActorLocation().ToCompactString(), *Eye.ToCompactString(), *LookPoint.ToCompactString()));
+			return false;
+		}
+
+		// Guard: the view really is on the look point (so only the wall explains staying hidden).
+		const FVector ViewDir = Camera->GetCameraRotation().Vector();
+		const float OffAxisDeg = FMath::RadiansToDegrees(FMath::Acos(FMath::Clamp(static_cast<float>(FVector::DotProduct(ViewDir, (LookPoint - Eye).GetSafeNormal())), -1.f, 1.f)));
+		if (C.Frames > 5)
+		{
+			Test->TestTrue(FString::Printf(TEXT("The view is on the look point (%.1f deg off)"), OffAxisDeg), OffAxisDeg < 5.f);
+		}
+
+		Test->TestTrue(TEXT("Hidden while the view is blocked"), A->IsHidden());
+		Test->TestEqual(TEXT("Alpha stays 0 while the view is blocked"), A->GetAlpha(), 0.f);
+		Test->TestTrue(TEXT("Never enters FadeIn while the view is blocked"), A->GetPhase() == ELBApparitionPhase::ArmDelay || A->GetPhase() == ELBApparitionPhase::WaitForLook);
+		if (A->GetPhase() == ELBApparitionPhase::WaitForLook)
+		{
+			++S->WaitFrames;
+		}
+		if (C.Elapsed < 1.5)
+		{
+			return false;
+		}
+		// 1.5 s after the tag, less the 0.1 s arm delay: well over a second spent waiting with the view on the point.
+		Test->TestTrue(TEXT("Waiting for the look, not started"), A->GetPhase() == ELBApparitionPhase::WaitForLook);
+		Test->TestTrue(FString::Printf(TEXT("It waited in WaitForLook for many frames (%d)"), S->WaitFrames), S->WaitFrames > 20);
+		return true;
+	});
+
+	R->Add(TEXT("Wall removed: it starts fading in"), [S, Test](FAppCtx& C)
+	{
+		ALBWardenApparition* A = S->A();
+		LookAtStation(C.Pawn, GStation1);
+		if (C.bFirst)
+		{
+			if (AActor* Wall = S->Blocker.Get())
+			{
+				Wall->Destroy();
+			}
+			Test->TestTrue(TEXT("Still waiting in WaitForLook when the wall goes"), A->GetPhase() == ELBApparitionPhase::WaitForLook);
+			return false;
+		}
+		if (A->GetAlpha() > 0.01f)
+		{
+			Test->TestFalse(TEXT("Visible once alpha is above 0"), A->IsHidden());
+			Test->TestTrue(TEXT("Fading in (or already holding)"), A->GetPhase() == ELBApparitionPhase::FadeIn || A->GetPhase() == ELBApparitionPhase::Hold);
+			Test->TestEqual(TEXT("On station 1"), A->GetStationIndex(), 0);
+			Note(FString::Printf(TEXT("fading in %.2fs after the wall was removed"), C.Elapsed));
+			return true;
+		}
+		if (C.Elapsed > 3.0)
+		{
+			Test->AddError(FString::Printf(TEXT("Removing the wall did not start the fade-in (phase %s): is the pawn counted as a blocker?"), LBApparition::PhaseName(A->GetPhase())));
+			return true;
+		}
+		return false;
+	}, 15.f);
 
 	Enqueue(R);
 	return true;
