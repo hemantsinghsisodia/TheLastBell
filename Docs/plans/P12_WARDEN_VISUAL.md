@@ -1,6 +1,6 @@
 # Phase 12: Warden visual: plan
 
-**Status:** approved by the owner on 2026-11-04. P12-0 to P12-3 done. **At P12-3 the owner supplied their own Warden Art V5 (D-090). The tasks from P12-4 on were rewritten; "The route from P12-4 on" below is the live spec.** P12-4 and P12-5 done; P12-6 first round done; P12-7 round 1 passed. **V5.5 (D-091) is in the project and passes the read review. P12-8 in progress (owner's "go", 2026-11-05).**
+**Status:** approved by the owner on 2026-11-04. P12-0 to P12-3 done. **At P12-3 the owner supplied their own Warden Art V5 (D-090). The tasks from P12-4 on were rewritten; "The route from P12-4 on" below is the live spec.** P12-4 and P12-5 done; P12-6 first round done; P12-7 round 1 passed. **V5.5 (D-091) is in the project and passes the read review. P12-8 done (suite 79/79); nothing yet seen running in-game. P12-9 next.**
 **Branch:** `claude/phase-12-warden-visual`, from `main` (0df20fc).
 **Rules:** D-048 applies. The lead plans in Opus 5.5 at xhigh effort; every implementer is spawned with `model: "sonnet", effort: "high"`. Nothing starts without the owner's "go".
 
@@ -645,6 +645,19 @@ Four 3 m and 8 m views repeat with `P12_CandleProxy` on (16 shots). The lead fix
 - The figure doesn't cut through any wall or ceiling at the patrol points used.
 
 **Gate:** the owner says yes or lists changes. Changes loop to MI values (P12-7), or to P12-4 if the design itself must change, which is reported first with its cost.
+
+### P12-8 result (unreal-blueprint-engineer, dfb9f6d, 2026-11-05)
+`BP_Warden` and `BP_WardenSilhouette` use the new art; `SK_Warden` has socket `mask` on `head`. `check_warden.py` 61/61, `--bp` 33/33, `--disk` 14/14 (both maps read from disk in a separate process), suite 79/79 including `Warden.*`, `Functional.Warden.*`, `Warden.MonasteryReachability`, RouteBot and WalkPath. No Source, Config or other Blueprint changed, and no map was saved: placed instances take the new template values from disk.
+
+- **Route:** `CharacterMesh0` is set on the class default object, `BP_Warden.Default__BP_Warden_C:CharacterMesh0`. It persisted through a reload.
+- **Graph:** new function `AttachTellLightToMask`, called from the existing `BeginPlay` after `BindtoBrain`. The 6 orphan events `read_graph_dsl` left were removed.
+- **Don't save `L_Monastery` from the session that made these edits.** That session's placed silhouettes hold stale values, and saving would write them as overrides. Restart with Don't Save before judging or saving anything.
+- **Open, for later:**
+  - `CharacterMesh0` has `AlwaysTickPose`, so a hidden dormant Warden may still evaluate its pose. Left as is; check against the game-thread reading.
+  - `TellLight` casts no shadows; its position at the `mask` socket hasn't been seen.
+  - The physics asset's old preview reference is still there.
+  - `--restore` is untested.
+- **In-game rows of the failure-mode table:** covered only by the suite's logic until the owner's playtest. Facing, feet on the floor, the attack light, silhouettes and checkpoint reload haven't been seen.
 
 ### P12-8: wire it in (unreal-blueprint-engineer [EDITOR])
 Read each template with `get_properties` first and record the old values in `Docs/ArtTest/warden/p12_8_before.json`. Use `Tools/warden/apply_p12_warden.py` (`--snapshot`, `--apply`, `--check`, `--save`, `--restore`, same style as `apply_p11_lantern.py`).
