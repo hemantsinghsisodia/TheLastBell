@@ -1,6 +1,6 @@
 # P12 fix set 1: Warden appearances and attack light
 
-**Status: approved by the owner on 2026-11-05 ("go"): option A now with the real walk in Phase 13, and the chase glow. F1 paused 2026-11-05 at the owner's shutdown: code committed as WIP; the suite was stopped at 30 passed, 0 failed, and the unit tests had not run yet. **Resume:** with Unreal closed, run `Tools/build_and_test.ps1` for the full suite, review the code against section 4, then F2.**
+**Status: approved by the owner on 2026-11-05 ("go"): option A now with the real walk in Phase 13, and the chase glow. F1 done (a7957d5): suite 89/89 on the real project, reviewed by the lead. F2 next.**
 Branch: `claude/phase-12-warden-visual`. Parent plan: `P12_WARDEN_VISUAL.md`. Lead plans; every implementer is spawned with `model: "sonnet", effort: "high"` (D-048).
 
 ## 1. What the owner asked for, and what's behind it
@@ -92,6 +92,12 @@ New files, following the `LBWardenLogic` pattern (pure logic, unit tested; the a
   The real checkpoint reload is checked in the owner's playtest (section 9).
 
 Build with `Tools/mirror_build_and_test.ps1`. The real project also needs `Tools/build_and_test.ps1` **with Unreal closed**, because this adds a new class. Pass: the old 79 plus the new tests, no `Result={Fail`.
+
+### F1 result (2026-11-05)
+`Tools/build_and_test.ps1` on the real project: build succeeded, **89 passed, 0 failed** (the old 79 plus 7 unit and 3 functional apparition tests), log ends `TEST COMPLETE. EXIT CODE: 0`. The extra unit test is `ZeroDurationsComplete`. New tag `State.Test.Apparition`. The lead reviewed the logic and the actor against this section and found nothing to change.
+
+- **Not covered by tests:** a real checkpoint reload (the tests use `ReplaceState`), how the placed instances look, and anything visual. Those are for section 8 and the owner's playtest.
+- **Tool problem:** the run finished at 21:41, but `Start-Process -Wait` in the script hadn't returned about 30 minutes later, so its summary lines never printed. The cause wasn't found. Read `Saved/Logs/LBTests_All.log` directly if a run seems to take too long.
 
 ## 5. Art (technical-artist)
 
