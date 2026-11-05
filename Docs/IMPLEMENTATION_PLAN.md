@@ -291,7 +291,7 @@ Branch `claude/phase-12-warden-visual`. Spec: `Docs/plans/P12_WARDEN_VISUAL.md` 
 | P12-8 | `BP_Warden` and `BP_WardenSilhouette` swap | unreal-blueprint-engineer [EDITOR] | P12-7 |
 | P12-9 | QA, docs, GPU readings, playtest; PHASE 12 READY FOR YOUR REVIEW | qa-reviewer + lead + owner | all |
 
-Status 2026-11-04: P12-0…P12-3 done; the owner chose their own Warden Art V5 (D-090), so the scripted build is dropped. P12-4 in progress.
+Status 2026-11-04: P12-0…P12-3 done; the owner chose their own Warden Art V5 (D-090), so the scripted build is dropped. P12-4 to P12-6 first done on V5. The owner then reworked the arms: V5.5 replaces V5 (D-091), and P12-4 to P12-7 are being repeated on it.
 
 ## Deferred to Phase 14–15 (Lighting, VFX: storm work)
 Items the owner asked to fold into the storm pass. Plan them in detail (Docs/plans/) when Phase 14–15 starts.

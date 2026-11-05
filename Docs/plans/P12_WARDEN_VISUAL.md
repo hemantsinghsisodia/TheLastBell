@@ -1,6 +1,6 @@
 # Phase 12: Warden visual: plan
 
-**Status:** approved by the owner on 2026-11-04. P12-0 to P12-3 done. **At P12-3 the owner supplied their own Warden Art V5 (D-090). The tasks from P12-4 on were rewritten; "The route from P12-4 on" below is the live spec.** P12-4 and P12-5 done; P12-6 first round done; P12-7 round 1 passed. **Paused 2026-11-04: the owner is fixing the arms and hands in their own tool; P12-8 waits for that build.**
+**Status:** approved by the owner on 2026-11-04. P12-0 to P12-3 done. **At P12-3 the owner supplied their own Warden Art V5 (D-090). The tasks from P12-4 on were rewritten; "The route from P12-4 on" below is the live spec.** P12-4 and P12-5 done; P12-6 first round done; P12-7 round 1 passed. **The owner delivered V5.5 on 2026-11-05 (D-091); "Bringing in V5.5" below is the live step.**
 **Branch:** `claude/phase-12-warden-visual`, from `main` (0df20fc).
 **Rules:** D-048 applies. The lead plans in Opus 5.5 at xhigh effort; every implementer is spawned with `model: "sonnet", effort: "high"`. Nothing starts without the owner's "go".
 
@@ -152,6 +152,31 @@ The owner's photo of the backlit figure showed the forearms and wrists matter, s
 2. With TheLastBell closed, removes `Content/LastBell/Characters/Warden/` assets through the editor first, then copies, moves and re-checks them as in P12-4. `copy_v5.py` refuses to run over an existing folder. `SM_LB_Warden_Silhouette` needs a re-bake from the new master.
 3. Re-runs `apply_p12_materials.py`, and `measure_clearance.py` if heights changed. If the facing is fixed, P12-8's yaw and `read_review.py`'s `-90` must be re-checked.
 4. Captures again (about 5 minutes, asking first), then goes on to P12-8.
+
+#### Bringing in V5.5 (D-091, 2026-11-05)
+**The owner's build against the fix list (lead's check of reports, previews and the master, read-only):**
+
+| Item | Result |
+|---|---|
+| Forearm, wrist join, hand angle, chains, hunched Idle, facing, Walk | Done. Forearm radius tapers from about 6 to 2 cm; the owner's validation shows 0° palm to forearm and no bad chain frames; Idle top 285.6, Walk 287.2, lowest Walk point 0.3 cm above the floor |
+| Sleeves | **Not done:** robe triangles unchanged at 33,007. Judge in the read review |
+| Stoop | Mask shows, top 219.5. The pose still reads as a folded lump; Phase 13 |
+| Mask edges | Hood rim smooth; the crack still has stepped gaps up close |
+| Triangles | **LOD0 99,974** (LOD1 49,975, LOD2 19,973): skin 28,506, chains 21,376, wool 33,007, bell metal 8,513, leather 7,241, iron 1,331 |
+| Skin | Warm brown with baked hair, not the concept's grey-blue. Judge in the read review |
+
+**Copied (lead):** `Tools/warden/copy_v5_5.py`, with TheLastBell closed: 33 files, 65.6 MB, MD5 checked (`Docs/ArtTest/warden/p12_v5_5_copy.json`), to `Content/WardenArtV5{,_1,_4,_5}/`. The set is the references followed from the mesh and clips, stopping at the skeleton and physics asset. Their preview-mesh reference points at the old V5 mesh, which wasn't copied, so step 3 below repoints it.
+
+**Technical-artist [EDITOR], after the owner reopens TheLastBell:**
+1. Confirm all 33 load, and that the new `SK_Warden` reports 110 bones, 3 LODs, 6 slots, height 290, and the skeleton and physics asset under `/Game/WardenArtV5/`.
+2. `AssetTools.delete` the old assets in `/Game/LastBell/Characters/Warden/` (V5 mesh, skeleton, physics asset, clips, materials, MIs, textures, and `SM_LB_Warden_Silhouette`). Check with `get_referencers` first that nothing outside the folder uses them; if something does, stop and report. Then `AssetTools.move` the 33 new assets into `Characters/Warden/{Meshes,Anims,Materials,Textures}/`, keeping names. Confirm nothing points at `/Game/WardenArtV5*`, no redirector is left, and those four `Content` folders are gone.
+3. Set the skeleton's and physics asset's preview mesh to the new `SK_Warden` if the property is writable. If a dangling preview reference remains, report it.
+4. **Materials:** extend `apply_p12_materials.py` for the new parents. Same parameters and values as round 1 on BellMetal, RustedIron and ChainIron, and `Cloth Brightness` 0.25. **Skin differs:** V5.4's `M_Warden_Skin` already has a `Skin Brightness` scalar (0.14), so don't add `BaseColorMul`; create `MI_Warden_Skin` with `Skin Brightness` **0.12**.
+5. Update `check_warden.py` for the new numbers and `read_review.py`: **a figure facing world direction D now has actor yaw D, not D − 90**. Read the owner's `Reports/facing-corrected-v5_5.json` and confirm from the mesh that this holds here.
+6. Copy `Warden_Rigged.blend`, `exports/*.fbx` and `README.md` to `SourceArt/Warden/V5_5/`, and the licence texts to `SourceArt/Warden/V5_5/licences/`. Remove `SourceArt/Warden/V5/` with `git rm`, since it stays in history. Change `bake_silhouette.py` to the new path, re-bake (≤ 8,000 triangles, Idle frame 1, LOD2) and re-import `SM_LB_Warden_Silhouette` with `MI_LB_WardenSilhouette`. Report which yaw it needs: the static import may still differ from the skeletal mesh.
+7. Update the registry row's Unreal path if needed. `M_LB_Surface` and every map not dirty; no shader errors; suite 79/79. Commit.
+
+**Then the lead:** full read review again (16 shots, about 12 minutes, asking first), prefix `rv3_`. **Judge:** the arms in backlit outline, like the owner's photo; skin colour; whether the bare forearms are acceptable.
 
 ### P12-8 and P12-9: changes from the sections below
 - **P12-8:** mesh `SK_Warden`, single-node `AN_Warden_Idle`, looping, playing. Yaw from P12-5. Socket `mask` goes on bone `head`, positioned at the mask (V5 has no `mask` bone); `TellLight` attaches there. Silhouette uses `SM_LB_Warden_Silhouette`. Top of the figure is 290, so **no height offset** on the silhouettes.
