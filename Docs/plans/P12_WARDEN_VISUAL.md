@@ -255,6 +255,11 @@ This phase builds how it **looks** and a rig that is ready for animation. How it
 
 **Until Phase 13 the Warden glides in one held pose,** as the placeholder does today. This is expected and isn't a defect in this phase (R-52).
 
+**Phase 13 notes from fix set 1 (`P12_FIX1_WARDEN_APPEARANCES.md`, D-092):**
+- **Walk must be reworked, not just connected.** Measured on the V5.5 master: the hands move 0.2 cm forward and 3 cm up and down (the pelvis lift), the upper body doesn't animate, and the feet swing back and forth at about 43 cm/s without ever planting. Patrol is 140 cm/s. The owner's crypt playtest asked for leg and hand movement and a stoop to grab the player.
+- **Chapel walk (owner):** a real walk from the altar rail into the sacristy replaces `Apparition_Chapel`'s second station, stooping through the doorway if it needs to. The first station stays.
+- **No attack clip exists yet;** the tell is the light and the mask glow only.
+
 ---
 
 ## What the lead found (read-only, 2026-11-04)

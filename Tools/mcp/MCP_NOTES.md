@@ -223,3 +223,12 @@ For C++ API names, read `Source/LastBell/`; for architecture, read `Docs/TECHNIC
 10. **Copying between projects.** Assets from another UE project with the same engine build can be copied as files, with TheLastBell closed, at their original `/Game` paths, then moved in the editor, which fixes references (`Tools/warden/copy_v5_5.py`). Check first that the set is self-contained, and compare hashes.
 11. **A physics asset with a dangling preview mesh** opens on a cube and offers to delete every body as unmatched: choose Cancel. Setting the Preview Mesh in that editor and saving fixes it. No tool can set it. That editor also rewrites `Config/DefaultEditor.ini`; restore the file.
 12. **`AnimationSingleNode` on a template:** `animationMode` first, then `animationData` with `animToPlay`, `bSavedLooping`, `bSavedPlaying`, `savedPosition`, `savedPlayRate`.
+
+13. **`find_actors` matches labels,** not object names. Find an actor such as `BP_WardenSilhouette_C_2` by its object path, and read its label first.
+14. **`AssetTools.delete` can return True and still leave the asset:** `exists` stays True and it reads as dirty (P12 fix set 1). Check `exists` afterwards. Remove the files only with Unreal closed, after `get_referencers` is empty, with `git rm`; never save the half-deleted asset.
+15. **`add_variable` can't make enum variables.** Use a byte and compare with literals (`ELBWardenState`: Chase 5, Attack 6), and record it: reordering the enum breaks those silently.
+16. **`SetScalarParameterValue` on a dynamic material instance** shares its node type with the parameter-collection version. Add it with `create_node` and `declaring_class` `MaterialInstanceDynamic`.
+17. **Static mesh import into a new name** avoids replacing a mesh that a Blueprint and a map still use. Swap the users, restart the editor, then delete the old one.
+18. **Captures need Unreal in front, and only the owner can do that.** Give `capture_session.py` `--fg-wait 180`, so the owner can reply "go" and then click Unreal. Simulate shows hidden actors such as the moon gobos (D-074) as bright marks.
+19. **`Tools/build_and_test.ps1` can hang after the tests end** (`Start-Process -Wait`): if `Saved/Logs/LBTests_All.log` ends with `TEST COMPLETE`, read the result from it and stop the script.
+

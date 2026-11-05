@@ -20,12 +20,12 @@ Everything is built from primitives using engine basic shapes and template mater
 | # | Area | Beat / player action | Tags set | Checkpoint |
 |---|---|---|---|---|
 | 1 | Approach | Spawn at X=-2800 facing +X. Narrow path between 6 m cliff walls; the tower is visible beyond the gatehouse | — | `CP_Approach` (at spawn, X=-2700) |
-| 2 | Courtyard | Passing the gatehouse adds `State.Event.CourtyardEntered`. A distant bell (placeholder text) and a `BP_WardenSilhouette` on the far wall top for 3 s (Stage 1 presence) | CourtyardEntered, `State.Warden.Stage.1` | `CP_Courtyard` (X=300) |
+| 2 | Courtyard | Passing the gatehouse adds `State.Event.CourtyardEntered`. A distant bell (placeholder text) and the Warden on the wall top by the chapel (`Apparition_Courtyard`, D-092): once the player looks that way it fades in against a soft moon glow, stays 4 s and fades out (Stage 1 presence) | CourtyardEntered, `State.Warden.Stage.1` | `CP_Courtyard` (X=300) |
 | 3 | Courtyard | The chapel main doors are locked (prompt "Locked"). Find the **Chapel Key** inside the ruined well house in the SW corner (X1500,Y-2000). Collapsed wall rubble blocks a direct line | `State.Item.ChapelKey` | — |
 | 4 | Chapel | Open the main doors (`RequiredStateTags` = ChapelKey) | `State.Door.ChapelMain.Open` | `CP_Chapel` (X=6300) |
 | 5 | Chapel | Light 3 candles: nave north side (X7000,Y600), sacristy (X8600,Y-1300), choir dais (X8800,Y0) | `State.Chapel.Candle.1/2/3` | — |
 | 6 | Chapel | **Ritual Mechanism 1** at the altar (X8900,Y0), which requires all 3 candles | `State.Ritual.1` | — |
-| 7 | Chapel | Event: the candle actors hide, a silhouette shows behind the "stained glass" (thin translucent panel at X9000) for 3 s, and the sacristy crypt door auto-opens | `State.Warden.Stage.2` (added by mechanism Granted tags) | `CP_Chapel_After` (X8500,Y-1100) |
+| 7 | Chapel | Event: the candle actors hide, the Warden forms at the altar rail as the player turns round, fades, then forms inside the sacristy doorway and fades (`Apparition_Chapel`, D-092; a real walk from the rail into the sacristy comes in Phase 13), and the sacristy crypt door auto-opens | `State.Warden.Stage.2` (added by mechanism Granted tags) | `CP_Chapel_After` (X8500,Y-1100) |
 | 8 | Crypt | Stairs (ramps) down from the sacristy to Z=-600. Entering adds CryptEntered. The silhouette crosses a far corridor once | `State.Event.CryptEntered`, `State.Warden.Stage.3` | `CP_Crypt` (bottom of stairs) |
 | 9 | Crypt | Ossuary chamber (X7500-9000, Y-3000..-2000): pick up the **Crank** | `State.Item.Crank` | — |
 | 10 | Crypt | Flooded passage with a **pit** (2 m wide gap with a KillVolume below, crossed on a 1 m ledge), the death test | — | — |

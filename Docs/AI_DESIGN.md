@@ -7,7 +7,7 @@ One memorable enemy that feels threatening but **understandable**. The player sh
 | Stage | Trigger | Implementation | Pawn present? |
 |---|---|---|---|
 | 1 Presence | Game start | Scripted audio emitters, moved props, doors, shadow decals | No |
-| 2 Partial Sightings | Mech 1 complete | `BP_WardenSilhouette` (non-AI animated actor) on scripted triggers: stained glass, a doorway across the nave, a reflection | No (silhouette only) |
+| 2 Partial Sightings | Mech 1 complete | `BP_WardenApparition` (non-AI, D-092) on scripted triggers: the courtyard roofline, then the altar rail and the sacristy doorway | No (silhouette only) |
 | 3 Investigation | Enter crypt | AI pawn spawns, restricted to Investigate and Return, and reacts to loud stimuli | Yes |
 | 4 Patrol / Search | Mech 2 complete | Patrol route plus Search enabled | Yes |
 | 5 Hunt | Mech 3 started | Chase enabled, larger perception ranges | Yes |
