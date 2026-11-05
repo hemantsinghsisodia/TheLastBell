@@ -70,7 +70,7 @@ Mirror pitfall: robocopy keeps the source file timestamps, so a file restored to
 C++ can't be built in the real project while the editor is open (Live Coding plus the DLL lock). Build and test C++ in the mirror `C:\lbb` (Content is a junction to the real Content), and sync with PowerShell robocopy.
 
 ## Framework quick reference
-For C++ API names, read `Source/LastBell/`; for architecture, read `Docs/TECHNICAL_DESIGN.md`. The key Blueprints are in `/Game/LastBell/Blueprints/` (Interactables: BP_Door_Base, BP_Lever, BP_TagInteractable, BP_RitualMechanism, BP_TagTrigger, BP_TagVisibility, BP_WardenApparition, BP_WardenPlaceholderKill, BP_KillVolume, BP_Inspectable_Note). Data is in `/Game/LastBell/Data/`.
+For C++ API names, read `Source/LastBell/`; for architecture, read `Docs/TECHNICAL_DESIGN.md`. The key Blueprints are in `/Game/LastBell/Blueprints/` (Interactables: BP_Door_Base, BP_Lever, BP_TagInteractable, BP_RitualMechanism, BP_TagTrigger, BP_TagVisibility, BP_WardenApparition, BP_KillVolume, BP_Inspectable_Note). Data is in `/Game/LastBell/Data/`.
 
 ## Floor growth layer, light functions (P7-FIX3 G3)
 - `M_LB_Surface` growth layer (`bGapGrowth`, group Growth): wall proximity comes from `MPC_LB_GrowthObstacles` (48 XY boxes, `Ob00..Ob47` = centreX, centreY, halfX, halfY; halfX < 0 = unused), NOT from `DistanceToNearestSurface`: the global distance field returns ~0 in this project (Lumen hardware RT, no GDF), which fills every joint. The DTNS path is kept behind the static switch `bWallUseDistanceField` (default off). Refresh the boxes after moving walls/piers/kerbs: `python Tools/mcp/update_growth_obstacles.py [--dry] [--prefix ...]` (editor open on L_Monastery; ~40 s; add the label prefixes of new structures, e.g. kerbs, arcade, well-head).
