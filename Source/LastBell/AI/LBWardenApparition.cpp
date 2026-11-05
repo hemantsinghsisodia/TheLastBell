@@ -1,0 +1,216 @@
+#include "AI/LBWardenApparition.h"
+#include "AI/LBWardenLogic.h"
+#include "Systems/LBWorldStateSubsystem.h"
+#include "Camera/PlayerCameraManager.h"
+#include "Components/SceneComponent.h"
+#include "Components/StaticMeshComponent.h"
+#include "Engine/World.h"
+#include "GameFramework/PlayerController.h"
+#include "Materials/MaterialInstanceDynamic.h"
+
+namespace
+{
+	const FName FadeParameter(TEXT("Fade"));
+
+	/** No collision, no shadows, no navigation: a visual only. */
+	void MakeVisualOnly(UStaticMeshComponent* Mesh)
+	{
+		Mesh->SetMobility(EComponentMobility::Movable);
+		Mesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		Mesh->SetCanEverAffectNavigation(false);
+		Mesh->SetCastShadow(false);
+		Mesh->bReceivesDecals = false;
+	}
+}
+
+ALBWardenApparition::ALBWardenApparition()
+{
+	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bStartWithTickEnabled = false;
+
+	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
+	Root->SetMobility(EComponentMobility::Movable);
+	SetRootComponent(Root);
+
+	Body = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body"));
+	Body->SetupAttachment(Root);
+	MakeVisualOnly(Body);
+
+	Glow = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Glow"));
+	Glow->SetupAttachment(Root);
+	MakeVisualOnly(Glow);
+}
+
+bool ALBWardenApparition::IsTagPresent() const
+{
+	const ULBWorldStateSubsystem* WorldState = ULBWorldStateSubsystem::Get(this);
+	return WorldState && TriggerTag.IsValid() && WorldState->HasState(TriggerTag);
+}
+
+void ALBWardenApparition::MakeFadeMaterials(UMeshComponent* Mesh)
+{
+	if (!Mesh)
+	{
+		return;
+	}
+	const int32 SlotCount = Mesh->GetNumMaterials();
+	for (int32 Slot = 0; Slot < SlotCount; ++Slot)
+	{
+		if (Mesh->GetMaterial(Slot))
+		{
+			if (UMaterialInstanceDynamic* Instance = Mesh->CreateDynamicMaterialInstance(Slot))
+			{
+				FadeMaterials.Add(Instance);
+			}
+		}
+	}
+}
+
+void ALBWardenApparition::BeginPlay()
+{
+	Super::BeginPlay();
+
+	// The Glow card: hidden at size 0, otherwise scaled to the size in cm (the plane is 100 cm across at scale 1).
+	if (GlowSizeCm > 0.f)
+	{
+		Glow->SetRelativeScale3D(FVector(GlowSizeCm / 100.f));
+	}
+	else
+	{
+		Glow->SetVisibility(false);
+	}
+
+	FadeMaterials.Reset();
+	MakeFadeMaterials(Body);
+	MakeFadeMaterials(Glow);
+
+	LBApparition::Reset(Run);
+	StopShowing();
+
+	if (ULBWorldStateSubsystem* WorldState = ULBWorldStateSubsystem::Get(this))
+	{
+		WorldState->OnStateChanged.AddDynamic(this, &ALBWardenApparition::HandleWorldStateChanged);
+		WorldState->OnStateReplaced.AddDynamic(this, &ALBWardenApparition::HandleWorldStateReplaced);
+	}
+	if (IsTagPresent())
+	{
+		// A checkpoint reload after the beat: it has happened, so it stays finished.
+		LBApparition::Finish(Run);
+	}
+}
+
+void ALBWardenApparition::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	if (ULBWorldStateSubsystem* WorldState = ULBWorldStateSubsystem::Get(this))
+	{
+		WorldState->OnStateChanged.RemoveDynamic(this, &ALBWardenApparition::HandleWorldStateChanged);
+		WorldState->OnStateReplaced.RemoveDynamic(this, &ALBWardenApparition::HandleWorldStateReplaced);
+	}
+	Super::EndPlay(EndPlayReason);
+}
+
+void ALBWardenApparition::HandleWorldStateChanged(FGameplayTag Tag, bool bAdded)
+{
+	if (bAdded && TriggerTag.IsValid() && Tag == TriggerTag && Run.Phase == ELBApparitionPhase::Idle)
+	{
+		BeginRun();
+	}
+}
+
+void ALBWardenApparition::HandleWorldStateReplaced()
+{
+	// A load or a new game: whatever was on screen is gone, and the tag says whether the beat has already happened.
+	StopShowing();
+	if (IsTagPresent())
+	{
+		LBApparition::Finish(Run);
+	}
+	else
+	{
+		LBApparition::Reset(Run);
+	}
+	ApplyAlpha();
+}
+
+void ALBWardenApparition::BeginRun()
+{
+	LBApparition::Start(Run);
+	SetActorTickEnabled(true);
+}
+
+void ALBWardenApparition::StopShowing()
+{
+	SetActorTickEnabled(false);
+	Run.Alpha = 0.f;
+	ApplyAlpha();
+}
+
+void ALBWardenApparition::ApplyAlpha()
+{
+	for (UMaterialInstanceDynamic* Instance : FadeMaterials)
+	{
+		if (Instance)
+		{
+			Instance->SetScalarParameterValue(FadeParameter, Run.Alpha);
+		}
+	}
+	SetActorHiddenInGame(Run.Alpha <= 0.f);
+}
+
+bool ALBWardenApparition::IsLookedAt(const FLBApparitionStation& Station, const FVector& CameraLocation, const FRotator& CameraRotation) const
+{
+	const FVector LookPoint = Station.Location + FVector(0.0, 0.0, LookPointHeight);
+	if (!LBWardenLogic::IsInsideViewCone(CameraLocation, CameraRotation.Vector(), LookPoint, Station.LookConeDegrees))
+	{
+		return false;
+	}
+	// Only now the line of sight: the trace is the expensive part.
+	const UWorld* World = GetWorld();
+	if (!World)
+	{
+		return false;
+	}
+	FCollisionQueryParams Params(SCENE_QUERY_STAT(LBApparitionLook), false, this);
+	if (const APlayerController* PC = World->GetFirstPlayerController())
+	{
+		Params.AddIgnoredActor(PC->GetPawn());
+	}
+	return !World->LineTraceTestByChannel(CameraLocation, LookPoint, ECC_Visibility, Params);
+}
+
+void ALBWardenApparition::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	FLBApparitionFacts Facts;
+	Facts.DeltaSeconds = DeltaSeconds;
+
+	const FLBApparitionStation* Station = Stations.IsValidIndex(Run.Station) ? &Stations[Run.Station] : nullptr;
+	const APlayerController* PC = GetWorld() ? GetWorld()->GetFirstPlayerController() : nullptr;
+	const APlayerCameraManager* Camera = PC ? PC->PlayerCameraManager.Get() : nullptr;
+	FVector CameraLocation = FVector::ZeroVector;
+	if (Camera && Station)
+	{
+		CameraLocation = Camera->GetCameraLocation();
+		Facts.PlayerDistance = static_cast<float>(FVector::DistXY(CameraLocation, Station->Location));
+		if (Run.Phase == ELBApparitionPhase::WaitForLook)
+		{
+			Facts.bLookedAt = IsLookedAt(*Station, CameraLocation, Camera->GetCameraRotation());
+		}
+	}
+
+	if (LBApparition::Step(Run, Stations, ArmDelaySeconds, Facts) && Station)
+	{
+		// Just entered FadeIn: stand at the station and turn (yaw only) to face the player. It stays like that.
+		const FVector ToPlayer = CameraLocation - Station->Location;
+		const float Yaw = static_cast<float>(FVector(ToPlayer.X, ToPlayer.Y, 0.0).Rotation().Yaw);
+		SetActorLocationAndRotation(Station->Location, FRotator(0.f, Yaw, 0.f), false, nullptr, ETeleportType::TeleportPhysics);
+	}
+
+	ApplyAlpha();
+
+	if (Run.Phase == ELBApparitionPhase::Done)
+	{
+		SetActorTickEnabled(false);
+	}
+}

@@ -1,6 +1,6 @@
 # P12 fix set 1: Warden appearances and attack light
 
-**Status: approved by the owner on 2026-11-05 ("go"): option A now with the real walk in Phase 13, and the chase glow. F1 in progress.**
+**Status: approved by the owner on 2026-11-05 ("go"): option A now with the real walk in Phase 13, and the chase glow. F1 paused 2026-11-05 at the owner's shutdown: code committed as WIP; the suite was stopped at 30 passed, 0 failed, and the unit tests had not run yet. **Resume:** with Unreal closed, run `Tools/build_and_test.ps1` for the full suite, review the code against section 4, then F2.**
 Branch: `claude/phase-12-warden-visual`. Parent plan: `P12_WARDEN_VISUAL.md`. Lead plans; every implementer is spawned with `model: "sonnet", effort: "high"` (D-048).
 
 ## 1. What the owner asked for, and what's behind it
