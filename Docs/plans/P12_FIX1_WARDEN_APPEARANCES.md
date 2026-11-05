@@ -126,26 +126,33 @@ Start from a clean editor session: Unreal restarted, choosing Don't Save. `L_Mon
 
 ## 7. Attack light (technical-artist for the material, unreal-blueprint-engineer for `BP_Warden`, [EDITOR])
 
-**Lead reads first (Unreal open, read-only):** `TellLight`'s units and current parent, and how `BP_Warden` switches it. Use `find_nodes` and `get_node_infos`, never `read_graph_dsl`. Add the findings here before the agent starts.
+**What's there now (read by the lead, 2026-11-05, F0b):**
+- `TellLight`: 800, **Unitless**, inverse-squared falloff, radius 160, colour (1, 0.078, 0.039), no shadows, volumetric scatter 1, `bVisible` false. Template location (16, 0, 274), which only makes sense under `PlaceholderBody` (0, 0, −110), so it's measured from the floor.
+- `BeginPlay`: `K2Node_CallFunction_15` (`BindtoBrain`), then `K2Node_CallFunction_19` (`AttachTellLightToMask`).
+- State-changed event (`K2Node_CustomEvent_5`) calls `PlayStateFeedback(NewState)`, which is **empty**.
+- Windup event (`K2Node_CustomEvent_6`) calls `PlayWindupTell`, also empty, then `ShowWindupTell(Seconds)`: shows `TellLight` and sets a timer for `EndWindupTell`, which hides it.
+- In `LBWardenBrainComponent`, entering `Attack` broadcasts `OnAttackWindup`. Don't rely on the order of that and the state-changed event.
 
-**Light:**
-- New function `PlaceTellLight`, replacing `AttachTellLightToMask` at the same call site: attach `TellLight` to the capsule, no socket, relative (110, 0, 125). That puts it about 40 cm in front of the mask at face height, and it no longer depends on the bone's axes. Socket `mask` stays for Phase 13.
-- Radius 160 → 700. Intensity 800 → 5000 at first, range 3000–10000. Still no shadows. Tune in section 8.
+**Light (replaces the "PlaceTellLight" idea, because no runtime attach is needed):**
+- Remove the call to `AttachTellLightToMask` from `BeginPlay`, and delete the function. Socket `mask` stays on the skeleton for Phase 13.
+- On the `TellLight` template, set relative location **(110, 0, 235)**: about 40 cm in front of the mask at face height, measured from the floor. **Confirm the parent first:** the placed `BP_Warden_C_0`'s `TellLight` must end up at actor location + (110, 0, 125), rotated with the actor. If its parent isn't `PlaceholderBody`, work out the equivalent value and report it.
+- Radius 160 → 700. Intensity 800 → 5000 at first, range 3000–10000, Unitless as now. Still no shadows. Tune in section 8.
 
 **Mask glow:**
 - `M_Warden_BellMetal`: add scalar `TellGlow` (default 0) and vector `TellGlowColor` (1, 0.06, 0.02). Emissive = `TellGlowColor` × `TellGlow` × 8. Validate only this material. Other materials are untouched.
-- `BP_Warden` BeginPlay: dynamic material instance on the slot named `M_Warden_BellMetal`, found by name, not by a fixed index. Stored in a variable.
+- `BP_Warden`: variable `MaskGlowMID` (`MaterialInstanceDynamic`) and variable `LastFeedbackState` (`ELBWardenState`, default Dormant).
+- New function `SetupMaskGlow`, called from `BeginPlay` after `BindtoBrain`, in the place of the removed call: on `CharacterMesh0`, `GetMaterialIndex("M_Warden_BellMetal")`, `CreateDynamicMaterialInstance` on that index, stored in `MaskGlowMID`. The slot is found by name, never a fixed index.
+- New function `SetMaskGlow(Level)`: if `MaskGlowMID` is valid, `SetScalarParameterValue("TellGlow", Level)`.
 
 **Levels:**
 
-| Situation | Light | `TellGlow` |
-|---|---|---|
-| Not chasing | Off | 0 |
-| State Chase | Off | 0.25 |
-| Attack windup | On | 1 |
-| Windup ends, player escaped | Off | 0.25 if still in Chase, otherwise 0 |
+| Where | Add |
+|---|---|
+| `PlayStateFeedback(NewState)` | Store `LastFeedbackState`. Chase: `SetMaskGlow(0.25)`. Attack: leave it alone, because the windup handles it. Any other state: `SetMaskGlow(0)` |
+| `ShowWindupTell` | `SetMaskGlow(1)`, as well as showing the light |
+| `EndWindupTell` | After hiding the light: `SetMaskGlow(0.25)` if `LastFeedbackState` is Chase, otherwise `SetMaskGlow(0)` |
 
-Use the existing `OnStateChanged` and `OnAttackWindup` hooks. **AI timings don't change:** the windup stays 0.6 s, `DA_WardenTuning` is untouched.
+**AI timings don't change:** the windup stays 0.6 s, `DA_WardenTuning` is untouched. Read graphs with `find_nodes` and `get_node_infos`, never `read_graph_dsl`. `write_graph_dsl` can't extend an existing event, so follow `MCP_NOTES.md` ("Skeletal meshes and the Warden") and P12-8's method in `Tools/warden/apply_p12_warden.py`.
 
 **Checks:** `Tools/warden/check_warden.py`: update the `BP_Warden` and silhouette checks to the new values and add `--bp` checks for `BP_WardenApparition`, both placed instances and all section 3 values. The suite must still pass, including `Functional.Warden.Attack.*`.
 
@@ -203,7 +210,7 @@ Then "PHASE 12 READY FOR YOUR REVIEW". Merge only on "approve and merge".
 | F1 | Section 4 | gameplay-programmer | Unreal closed for the real build | F0a |
 | F2 | Section 5 | technical-artist [EDITOR] | Unreal open on the new binaries | F1 |
 | F3 | Section 6 | unreal-blueprint-engineer [EDITOR] | Clean session | F2 |
-| F0b | Read `BP_Warden` and `TellLight`, finish section 7 | lead | Unreal open | F3 |
+| F0b | Read `BP_Warden` and `TellLight`, finish section 7. **Done** | lead | Unreal open | F1 |
 | F4 | Section 7 | technical-artist, unreal-blueprint-engineer [EDITOR] | | F0b |
 | F5 | Section 8 | lead + owner | Capture session | F4 |
 | F6 | Section 9 | qa-reviewer, lead, owner | Playtest | F5 |
