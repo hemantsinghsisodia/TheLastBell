@@ -1,23 +1,30 @@
-"""check_warden.py -- P12-4: read-only check of the owner's Warden Art V5 as imported into this project.
+"""check_warden.py -- P12-4 (V5), updated for the owner's Warden V5.5 (D-091): read-only check of the Warden as imported.
 
     python -I Tools/warden/check_warden.py [--validation PATH]
 
 Uses Tools/mcp/ue.py (the editor must be open, MCP server on http://127.0.0.1:8000/mcp).  READ-ONLY: it calls only
 get_* / list_* / exists / is_dirty tools.  It never saves, imports, moves or edits anything.
 
-Expected values come from the owner's report C:\\Hemant\\Prj\\Learning\\Warden\\output\\unreal_validation\\Reports\\validation-v5.json
-(read-only for us; override with --validation).  Prints one PASS/FAIL line per check and "n/n"; exit code 1 on any FAIL.
+Expected values come from the owner's report C:\\Hemant\\Prj\\Learning\\Warden\\output\\unreal_validation\\Reports\\validation-v5_1.json
+(read-only for us; override with --validation; the owner wrote no validation report for V5.5, so this is the newest one: its
+bone count, root, texture list and wool values still hold) plus MESH_V5_5 below, which holds what Unreal itself reports for
+the V5.5 mesh (the report's LOD vertex counts are the V5.1 mesh's).  Prints one PASS/FAIL line per check and "n/n"; exit code
+1 on any FAIL.
 
 Checks (all under /Game/LastBell/Characters/Warden/):
-  mesh      SK_Warden: 110 bones, first bone `root`; height 290 +/- 1 (bounds Z size); 3 LODs, vertices per LOD and 6 sections
-            per LOD as in the report; each of the 6 slots has its expected material (SLOT_MATERIAL: since P12-7 round 1 four
+  mesh      SK_Warden: 110 bones, first bone `root`; height 290 +/- 1 (bounds Z size); 3 LODs, vertices per LOD (MESH_V5_5:
+            75,603 / 45,003 / 22,347; V5 had 65,983 / 39,159 / 24,080) and 6 sections per LOD; each of the 6 slots has its expected material (SLOT_MATERIAL: since P12-7 round 1 four
             slots hold new MIs, Leather its parent and Wool its MI); physics asset and skeleton assigned.
-  textures  the 20 textures: size, sRGB and compression settings equal to the report.
+  textures  the 20 textures (V5.1 sets, plus the V5.4 skin set): size, sRGB and compression settings equal to the report.
   clips     AN_Warden_Idle 4 s, Walk 2 s, DoorwayStoop 3 s (+/- 0.01), all on SK_Warden_Skeleton (the mesh's skeleton).
   wool      MI_Warden_Wool: Weave Scale 109.94, Detail Strength 0.5, Wetness 0.15, Cloth Brightness 0.25 (P12-7 round 1; the report's
             own value is 0.4 and is checked against REPORT_WOOL).
-  place     nothing left under /Game/WardenArtV5, and no dependency of a Warden asset points there.
-Informational (not counted): texture memory estimate from the Format and Dimensions tags.
+  skin      MI_Warden_Skin: parent M_Warden_Skin, `Skin Brightness` 0.12 (the V5.4 parent has that scalar, default 0.14; V5's
+            round 1 used a `BaseColorMul` of 0.55 that V5.5 does not have).
+  place     nothing left under the four temporary V5.5 folders /Game/WardenArtV5, _1, _4, _5 (editor and disk), and no dependency
+            of a Warden asset points there.
+Informational (not counted): texture memory estimate from the Format and Dimensions tags; the skeleton's and the physics
+asset's preview-mesh tags (the physics asset's still names the old /Game/WardenArtV5 mesh: no tool can write it).
 
 A later task (P12-8) adds a `--bp` mode that checks BP_Warden's use of the mesh; it plugs in at CHECK_GROUPS below.
 """
@@ -38,7 +45,17 @@ MI = "editor_toolset.toolsets.material_instance.MaterialInstanceTools"
 
 BASE = "/Game/LastBell/Characters/Warden"
 OLD = "/Game/WardenArtV5"
-DEFAULT_VALIDATION = r"C:\Hemant\Prj\Learning\Warden\output\unreal_validation\Reports\validation-v5.json"
+OLD_FOLDERS = ["WardenArtV5", "WardenArtV5_1", "WardenArtV5_4", "WardenArtV5_5"]   # the owner's version folders, copied in as temporary paths
+# What Unreal reports for the owner's V5.5 mesh (step 1 of "Bringing in V5.5", read with SkeletalMeshTools). The owner's
+# validation-v5_1.json has 73303 / 45065 / 22517 (the V5.1 mesh); V5 had 65983 / 39159 / 24080.
+MESH_V5_5 = {"lod_vertices": [75603, 45003, 22347], "sections": [6, 6, 6]}
+SKIN_BRIGHTNESS = 0.12
+# The one dependency allowed to name a temporary folder: the physics asset's editor-only preview-mesh soft reference still
+# names the owner's V5 path /Game/WardenArtV5/Meshes/SK_Warden (their mesh now lives at V5_5 and was moved). No MCP tool can
+# write PhysicsAsset's PreviewSkeletalMesh (not an exposed property; assign_physics_asset does not set it). It is editor-only
+# data, not used at runtime. Reported to the lead; fixed by opening the physics asset once in the Physics Asset Editor.
+KNOWN_DANGLING = {("/Game/LastBell/Characters/Warden/Meshes/SK_Warden_PhysicsAsset", "/Game/WardenArtV5/Meshes/SK_Warden")}
+DEFAULT_VALIDATION = r"C:\Hemant\Prj\Learning\Warden\output\unreal_validation\Reports\validation-v5_1.json"
 CLIPS = {"AN_Warden_Idle": 4.0, "AN_Warden_Walk": 2.0, "AN_Warden_DoorwayStoop": 3.0}
 WOOL = {"Weave Scale": 109.94, "Detail Strength": 0.5, "Wetness": 0.15, "Cloth Brightness": 0.25}   # Cloth Brightness: P12-7 round 1
 REPORT_WOOL = dict(WOOL, **{"Cloth Brightness": 0.4})   # what the owner's report has
@@ -92,7 +109,7 @@ def tex_enum(s):
 
 
 def check_mesh(ue, res, rep):
-    m = rep["mesh"]
+    m = dict(rep["mesh"], **MESH_V5_5)
     mesh = ref(BASE + "/Meshes/SK_Warden")
     bones = ue.call(SK, "get_bone_names", {"mesh": mesh})
     res.check(len(bones) == m["bone_count"], "bones == %d" % m["bone_count"], "got %d" % len(bones))
@@ -169,22 +186,45 @@ def check_wool(ue, res, rep):
         res.check(abs(rv - want) <= 0.005, "report wool %s == %g" % (k, want), "report has %.6g" % rv)
 
 
+def check_skin(ue, res, rep):
+    mi = ref(BASE + "/Materials/MI_Warden_Skin")
+    par = js(ue.call(OB, "get_properties", {"instance": mi, "properties": ["parent"]}))["parent"]
+    par = (par.get("refPath", "") if isinstance(par, dict) else str(par)).split(".")[0]
+    res.check(par == BASE + "/Materials/M_Warden_Skin", "MI_Warden_Skin parent is M_Warden_Skin", "got %s" % par)
+    got = ue.call(MI, "get_scalar_parameter", {"instance": mi, "name": "Skin Brightness"})
+    res.check(abs(got - SKIN_BRIGHTNESS) <= 1e-4, "MI_Warden_Skin Skin Brightness == %g" % SKIN_BRIGHTNESS, "got %.6g" % got)
+
+
 def check_place(ue, res, rep):
-    res.check(not ue.call(AS, "exists", {"path": OLD}), "%s is gone from the editor" % OLD)
-    res.check(not os.path.exists(os.path.join(ROOT, "Content", "WardenArtV5")), "Content/WardenArtV5 is gone from disk")
+    for f in OLD_FOLDERS:
+        res.check(not ue.call(AS, "exists", {"path": "/Game/" + f}), "/Game/%s is gone from the editor" % f)
+    for f in OLD_FOLDERS:
+        res.check(not os.path.exists(os.path.join(ROOT, "Content", f)), "Content/%s is gone from disk" % f)
     assets = ue.call(AS, "find_assets", {"folder_path": BASE, "name": ""})
-    res.check(len(assets) >= 33, ">= 33 assets under %s" % BASE, "got %d" % len(assets))
+    res.check(len(assets) >= 38, ">= 38 assets under %s (33 owner assets, 4 tuned MIs, the silhouette)" % BASE, "got %d" % len(assets))
+    for a in assets:
+        if "Redirector" in str(ue.call(AS, "get_asset_class", {"asset_path": a})):
+            res.check(False, "no redirector under %s" % BASE, a)
     bad = []
     for a in assets:
         for d in ue.call(AS, "get_dependencies", {"asset_path": a}):
-            if OLD in d:
-                bad.append("%s -> %s" % (a, d))
-    res.check(not bad, "no dependency points at %s" % OLD, "; ".join(bad[:3]))
+            if OLD in d:      # also matches _1, _4, _5
+                if (a, d) in KNOWN_DANGLING:
+                    print("INFO  known exemption (preview mesh, editor-only): %s -> %s" % (a, d))
+                else:
+                    bad.append("%s -> %s" % (a, d))
+    res.check(not bad, "no dependency points at %s*" % OLD, "; ".join(bad[:3]))
+    for n, label in (("SK_Warden_Skeleton", "skeleton"), ("SK_Warden_PhysicsAsset", "physics asset")):
+        try:
+            tag = ue.call(AS, "get_asset_tags", {"asset_path": BASE + "/Meshes/" + n}).get("PreviewSkeletalMesh", "?")
+        except Exception as ex:  # noqa: BLE001
+            tag = "unreadable (%s)" % str(ex)[:80]
+        print("INFO  %s preview mesh tag: %s" % (label, tag))
 
 
 # (name, function).  P12-8 appends ("blueprint", check_bp) here when run with --bp.
 CHECK_GROUPS = [("mesh", check_mesh), ("textures", check_textures), ("clips", check_clips),
-                ("wool", check_wool), ("place", check_place)]
+                ("wool", check_wool), ("skin", check_skin), ("place", check_place)]
 
 
 def main():

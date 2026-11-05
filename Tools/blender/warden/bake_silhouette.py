@@ -1,8 +1,8 @@
-"""bake_silhouette.py -- P12-5: the Warden's black silhouette mesh, baked from the owner's V5 master.
+"""bake_silhouette.py -- P12-5 (V5), re-baked for V5.5 (D-091): the Warden's black silhouette mesh, from the owner's master.
 
     blender.exe -b --factory-startup --python Tools/blender/warden/bake_silhouette.py -- [options]
 
-Opens SourceArt/Warden/V5/Warden_Rigged.blend (a copy of the owner's master; NEVER saved by this script: it has no save
+Opens SourceArt/Warden/V5_5/Warden_Rigged.blend (a copy of the owner's V5.5 master, md5 4445c23d...; NEVER saved by this script: it has no save
 call, and everything it creates lives in memory), poses the armature `Warden_Rig` with the action `Warden_Idle` at frame 1,
 takes the evaluated (armature-deformed) LOD2 mesh `SK_Warden_LOD2` (the same thing as applying the Armature modifier),
 welds it, collapses it to ONE material slot, decimates it to <= 8000 triangles, scales it to centimetres exactly as the
@@ -14,8 +14,11 @@ SourceArt/Warden/SM_LB_Warden_Silhouette.fbx plus <out>.json (a report: triangle
 Orientation (measured, P12-5): with these axes and the project's default static-mesh FBX import (bConvertScene true,
 bForceFrontXAxis false) the import maps Blender (x, y, z) to Unreal (x, -y, z), so the figure, which faces Blender -Y, faces
 mesh +Y in Unreal. That is the same mapping the owner's ANIMATIONS evaluate to (see the P12-5 report), so --rotz 0 (default)
-gives a silhouette that agrees with the playing Warden: both need actor/component yaw -90 to face world +X. (SK_Warden's
-bind pose, imported by the owner with force_front_x_axis, faces +X instead.)
+gave, in V5, a silhouette that agreed with the playing Warden: both needed yaw -90 to face world +X.
+V5.5 CHANGED THAT for the skeletal side: the V5.5 mesh and clips both face mesh +X (yaw 0 faces world +X), but this static
+silhouette still faces mesh +Y, because the master still faces Blender -Y and the static import maps Blender y to Unreal -y.
+So with --rotz 0 the silhouette's component needs yaw D - 90 for a figure facing world direction D, while SK_Warden needs D.
+(--rotz 90 would turn the baked figure to Blender +X, i.e. mesh +X, and give yaw D for both; not used unless the lead asks.)
 
 Options:
     --out PATH          FBX path (default SourceArt/Warden/SM_LB_Warden_Silhouette.fbx)
@@ -38,7 +41,7 @@ from mathutils import Matrix
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.normpath(os.path.join(HERE, "..", "..", ".."))
-MASTER = os.path.join(ROOT, "SourceArt", "Warden", "V5", "Warden_Rigged.blend")
+MASTER = os.path.join(ROOT, "SourceArt", "Warden", "V5_5", "Warden_Rigged.blend")
 
 
 def parse_args():

@@ -1,20 +1,30 @@
-"""P12-7 round 1: Warden materials. Scalar parameters on four parents, four new MIs, slot assignment, Cloth Brightness.
+"""P12 Warden materials (round 1 values, reapplied on the owner's V5.5 build, D-091): scalar parameters on three parents,
+four MIs, slot assignment, Cloth Brightness.
 
-Spec: Docs/plans/P12_WARDEN_VISUAL.md, section "P12-7 round 1: materials". Run with -I, editor open on L_Monastery, no PIE.
+Spec: Docs/plans/P12_WARDEN_VISUAL.md, sections "P12-7 round 1: materials" and "Bringing in V5.5" step 4. Run with -I,
+editor open on L_Monastery, no PIE.
+
+V5.5 differences from V5: M_Warden_BellMetal, M_Warden_RustedIron and M_Warden_ChainIron are the owner's V5.1 materials
+(no tuning parameters, so --parents adds BaseColorMul / MetallicMul / RoughnessMul, default 1). M_Warden_Skin is the V5.4
+material and already has a `Skin Brightness` scalar (default 0.14): NO parameter is added to it; MI_Warden_Skin sets
+Skin Brightness 0.12.
 Exactly one mode per run:
     --snapshot FILE     read-only: each slot's material, MI_Warden_Wool parameters, parents' output wiring, mesh bounds/LODs,
-                        which of the new assets exist, dirty state of the watch list
-    --parents [NAMES]   rewire the parents (default all four; or a comma list such as M_Warden_BellMetal): for each output named
+                        which of the new assets exist, dirty state of the watch list, and every scalar of each existing
+                        MI_Warden_* (so a run before a delete records the old tuned values)
+    --parents [NAMES]   rewire the parents (default the three; or a comma list such as M_Warden_BellMetal): for each output named
                         in the plan, <old feeder> -> Multiply(A) x ScalarParameter(B, default 1) -> output; recompile; read the
                         wiring back. Idempotent (a parameter that already exists is not added again). Stops at the first failure.
-    --apply             --parents (all four, BellMetal first), then create the four MIs, set the table values, assign the MIs
+    --apply             --parents (all three, BellMetal first), then create the four MIs, set the table values, assign the MIs
                         to the slots by slot name, set MI_Warden_Wool Cloth Brightness to 0.25; read everything back
     --check             read back everything; exit 1 on any mismatch (needs the snapshot, see --snap-file)
-    --save              one package per save_assets call, 5 s apart: 4 parents, 4 new MIs, MI_Warden_Wool, SK_Warden.
+    --save              one package per save_assets call, 5 s apart: 3 parents, 4 new MIs, MI_Warden_Wool, SK_Warden.
                         Never M_LB_Surface, a map or a Blueprint.
     --restore           puts every slot back on the snapshot's material and Cloth Brightness back to the snapshot value; read back.
                         Saves nothing. The parameters added to the parents stay (default 1 = same look); the new MIs stay unused.
-    --snap-file FILE    snapshot used by --apply / --check / --restore (default Docs/ArtTest/warden/p12_7_before.json)
+    --snap-file FILE    snapshot used by --apply / --check / --restore (default Docs/ArtTest/warden/p12_v5_5_new_before.json:
+                        the state after the V5.5 move and before --apply; Docs/ArtTest/warden/p12_v5_5_before.json is the
+                        record of the OLD V5 tuned values, taken before the delete)
 
 Nothing saves unless --save is given. Exit codes: 0 ok, 1 mismatch or refused, 2 a tool call failed (state unknown:
 run --check before anything else; never retry in a loop).
@@ -38,23 +48,28 @@ APP = "EditorToolset.EditorAppToolset"
 
 MAT_DIR = "/Game/LastBell/Characters/Warden/Materials"
 MESH_PKG = "/Game/LastBell/Characters/Warden/Meshes/SK_Warden"
-DEFAULT_SNAP = os.path.join(ROOT, "Docs", "ArtTest", "warden", "p12_7_before.json")
+DEFAULT_SNAP = os.path.join(ROOT, "Docs", "ArtTest", "warden", "p12_v5_5_new_before.json")
 PAUSE_S = 5
 GROUP = "Warden Tuning"
 
 # parent -> list of (parameter, material property it multiplies)
 PARENT_PARAMS = {
     "M_Warden_BellMetal": [("BaseColorMul", "MP_BaseColor"), ("MetallicMul", "MP_Metallic"), ("RoughnessMul", "MP_Roughness")],
-    "M_Warden_Skin": [("BaseColorMul", "MP_BaseColor")],
     "M_Warden_RustedIron": [("BaseColorMul", "MP_BaseColor")],
     "M_Warden_ChainIron": [("BaseColorMul", "MP_BaseColor")],
 }
-PARENT_ORDER = ["M_Warden_BellMetal", "M_Warden_Skin", "M_Warden_RustedIron", "M_Warden_ChainIron"]
+PARENT_ORDER = ["M_Warden_BellMetal", "M_Warden_RustedIron", "M_Warden_ChainIron"]
+# V5.4 skin parent: already has its own brightness scalar; nothing is added to it, its wiring must stay as snapshotted
+SKIN_PARENT = "M_Warden_Skin"
+SKIN_PARAM = "Skin Brightness"
+SKIN_DEFAULT = 0.14
+SNAP_PARENT_PROPS = dict(PARENT_PARAMS, **{SKIN_PARENT: [(SKIN_PARAM, "MP_BaseColor")]})
+OLD_MI_NAMES = ["MI_Warden_BellMetal", "MI_Warden_Skin", "MI_Warden_RustedIron", "MI_Warden_ChainIron", "MI_Warden_Wool"]
 
 # new MI -> (parent, {parameter: value}); the table in the plan
 NEW_MIS = {
     "MI_Warden_BellMetal": ("M_Warden_BellMetal", {"BaseColorMul": 1.6, "MetallicMul": 0.35, "RoughnessMul": 0.85}),
-    "MI_Warden_Skin": ("M_Warden_Skin", {"BaseColorMul": 0.55}),
+    "MI_Warden_Skin": ("M_Warden_Skin", {"Skin Brightness": 0.12}),
     "MI_Warden_RustedIron": ("M_Warden_RustedIron", {"BaseColorMul": 0.6}),
     "MI_Warden_ChainIron": ("M_Warden_ChainIron", {"BaseColorMul": 0.5}),
 }
@@ -163,10 +178,25 @@ def mi_scalar_state(ue, mi_name, param):
 
 def wiring_snapshot(ue):
     out = {}
-    for mat, plist in PARENT_PARAMS.items():
+    for mat, plist in SNAP_PARENT_PROPS.items():
         out[mat] = {prop: list(prop_input(ue, mat, prop)) for _, prop in plist}
         out[mat]["parameters"] = sorted(param_names(ue, mat))
     out["M_Warden_Leather"] = {"parameters": sorted(param_names(ue, "M_Warden_Leather"))}
+    return out
+
+
+def instance_values(ue):
+    """Every existing MI_Warden_*: parent and each scalar parameter with its explicit-override flag."""
+    out = {}
+    for n in OLD_MI_NAMES:
+        if not ue.call(AS, "exists", {"path": pkg(n)}):
+            continue
+        par = short(as_json(ue.call(OB, "get_properties", {"instance": ref(pkg(n)), "properties": ["parent"]}))["parent"])
+        vals = {}
+        for p in ue.call(MI, "list_parameters", {"material": ref(pkg(n))}):
+            if "scalar" in str(p.get("type", "")).lower():
+                vals[p["name"]] = list(mi_scalar_state(ue, n, p["name"]))
+        out[n] = {"parent": par, "scalars": vals}
     return out
 
 
@@ -179,7 +209,7 @@ def do_snapshot(ue, path):
     snap = {"taken": time.strftime("%Y-%m-%d %H:%M:%S"), "note": "values read before P12-7 round 1 changed anything",
             "mesh": MESH_PKG, "slots": slots, "slot_materials": mats, "wool_before": wool,
             "cloth_brightness_before": wool["Cloth Brightness"][0], "geometry": mesh_geometry(ue),
-            "parents_before": wiring_snapshot(ue),
+            "parents_before": wiring_snapshot(ue), "instances_before": instance_values(ue),
             "new_assets_exist": {n: bool(ue.call(AS, "exists", {"path": pkg(n)})) for n in NEW_MIS}}
     wl = watch_list(ue) + SAVE_ORDER
     snap["dirty_before"] = {p: is_dirty(ue, p) for p in wl}
@@ -191,6 +221,8 @@ def do_snapshot(ue, path):
         print(f"  slot {s} -> {short(mats[s])}")
     print("  Cloth Brightness:", snap["cloth_brightness_before"], "| geometry:", snap["geometry"])
     print("  parents before:", json.dumps(snap["parents_before"]))
+    for n, d in snap["instances_before"].items():
+        print(f"  existing {n} (parent {d['parent']}): {json.dumps(d['scalars'])}")
     print("  dirty before:", sorted(short(k) for k, v in snap["dirty_before"].items() if v) or "none")
     return 0
 
@@ -376,6 +408,12 @@ def do_check(ue, snap):
                 else:
                     good = False
             rec(good, f"{mat} {param} wiring", f"{mat}: {prop} = old feeder {before[0]}.{before[1]} x {param} (default 1)")
+    sk_names = param_names(ue, SKIN_PARENT)
+    sk_before = snap["parents_before"][SKIN_PARENT]
+    sk_feed = list(prop_input(ue, SKIN_PARENT, "MP_BaseColor"))
+    rec("BaseColorMul" not in sk_names and SKIN_PARAM in sk_names and sk_feed == sk_before["MP_BaseColor"]
+        and sorted(sk_names) == sk_before["parameters"], f"{SKIN_PARENT} changed",
+        f"{SKIN_PARENT} untouched (no BaseColorMul added; {SKIN_PARAM} present; BaseColor feeder {sk_feed}; parameters {sorted(sk_names)})")
     leather = sorted(param_names(ue, "M_Warden_Leather"))
     rec(leather == snap["parents_before"]["M_Warden_Leather"]["parameters"], "leather changed", f"M_Warden_Leather untouched (parameters {leather})")
     # MIs

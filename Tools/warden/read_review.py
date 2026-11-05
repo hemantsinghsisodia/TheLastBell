@@ -9,7 +9,8 @@
 
 Everything here is temporary: NEVER save L_Monastery while a P12_* actor exists. PIE must be off to place or remove.
 
-The animated Warden faces mesh +Y (P12-5), so a figure facing world direction D has actor yaw D - 90.
+Since V5.5 (D-091) the mesh AND the clips face mesh +X (owner's Reports/facing-corrected-v5_5.json), so a figure
+facing world direction D has actor yaw D, with the mesh at yaw 0. (V5's clips faced +Y, which needed D - 90.)
 The candle proxy copies the player's candle: 10 cd, 1900 K, radius 600, no shadows, camera + (36, 14, -10). Its radius
 means it can't reach a figure at 8 m, so only the 3 m views get a candle variant.
 """
@@ -106,7 +107,7 @@ def place(ue):
     for spot, ((fx, fy, fz), cams) in SPOTS.items():
         label = "P12_Review_" + spot
         _, cx, cy, _ = cams[0]
-        yaw = round(yaw_to(fx, fy, cx, cy) - 90.0, 2)
+        yaw = round(yaw_to(fx, fy, cx, cy), 2)   # V5.5: mesh and clips face +X, so actor yaw = D
         r = ue.call(SC, "add_to_scene_from_asset", {"asset_path": MESH, "name": label, "xform": xform(fx, fy, fz, yaw)})
         actor = r["refPath"] if isinstance(r, dict) else r
         ue.call(AC, "set_label", {"actor": {"refPath": actor}, "label": label})
