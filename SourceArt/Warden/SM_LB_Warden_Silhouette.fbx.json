@@ -6,32 +6,52 @@
   "ARMATURE"
  ],
  "triangles_after_weld": 19865,
- "triangles": 7600,
- "vertices": 4073,
+ "triangles": 7389,
+ "slots": [
+  "MAT_Body",
+  "MAT_Mask"
+ ],
+ "triangles_per_slot_after_weld": [
+  19532,
+  333
+ ],
+ "triangles_per_slot": [
+  7056,
+  333
+ ],
+ "mask_mode": "protect",
+ "bell_metal_islands": [
+  {
+   "faces": 337,
+   "centre_z_m": 2.443338875482863,
+   "mask": true
+  }
+ ],
+ "vertices": 3956,
  "bounds_m_min": [
+  -0.8380981683731079,
   -0.6626198887825012,
-  -0.6087599992752075,
   0.00248536909930408
  ],
  "bounds_m_max": [
-  1.0955383777618408,
-  0.8380982279777527,
+  0.6087599992752075,
+  1.0955384969711304,
   2.8422296047210693
  ],
  "bounds_cm_min": [
+  -83.809814453125,
   -66.2619857788086,
-  -60.875999450683594,
   0.24853691458702087
  ],
  "bounds_cm_max": [
-  109.55384063720703,
-  83.80982208251953,
+  60.875999450683594,
+  109.55384826660156,
   284.22296142578125
  ],
  "height_cm": 283.97442451119423,
- "rotz_deg": 0.0,
+ "rotz_deg": 90.0,
  "axis_forward": "-Y",
  "fbx": "C:\\Hemant\\Prj\\Learning\\TheLastBell\\SourceArt\\Warden\\SM_LB_Warden_Silhouette.fbx",
- "fbx_bytes": 187180,
+ "fbx_bytes": 183964,
  "saved_master": false
 }
