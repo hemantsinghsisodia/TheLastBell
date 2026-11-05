@@ -176,10 +176,18 @@ The owner's photo of the backlit figure showed the forearms and wrists matter, s
 6. Copy `Warden_Rigged.blend`, `exports/*.fbx` and `README.md` to `SourceArt/Warden/V5_5/`, and the licence texts to `SourceArt/Warden/V5_5/licences/`. Remove `SourceArt/Warden/V5/` with `git rm`, since it stays in history. Change `bake_silhouette.py` to the new path, re-bake (≤ 8,000 triangles, Idle frame 1, LOD2) and re-import `SM_LB_Warden_Silhouette` with `MI_LB_WardenSilhouette`. Report which yaw it needs: the static import may still differ from the skeletal mesh.
 7. Update the registry row's Unreal path if needed. `M_LB_Surface` and every map not dirty; no shader errors; suite 79/79. Commit.
 
+**Result (technical-artist, e8d57a2):** the 38 old assets are deleted and the 33 new ones moved into `Characters/Warden/`; no redirector left and the four temporary folders are gone. `check_warden.py` 61/61, suite 79/79, no shader errors. `apply_p12_materials.py --check` was 30/30; it reads 29/30 only because the temporary-actor test left `L_Monastery` marked dirty in memory, unsaved.
+- **LOD0 vertices in Unreal:** 75,603 / 45,003 / 22,347. Texture memory is still about 130 MiB by estimate.
+- **Skin:** `MI_Warden_Skin` `Skin Brightness` 0.12; other values as round 1.
+- **Yaws now differ:** `SK_Warden` faces world direction D at yaw **D** (checked with traces against the placed figure). `SM_LB_Warden_Silhouette` needs yaw **D − 90**: the static import mirrors Y, and it wasn't trace-tested because it has no collision. P12-8 must use −90 for the silhouette component and 0 for `CharacterMesh0`.
+- **Silhouette:** 7,600 triangles, height 283.97.
+- **Open, small:** `SK_Warden_PhysicsAsset`'s preview mesh still names the old V5 path. It's editor-only and no tool can set it, so the editor logs a warning, and `check_warden.py` exempts this one reference with an INFO line. Opening that asset once in Unreal should repair it; the owner is asked at P12-9.
+- **Not verified:** anything visual, playback in Simulate, or the wired `BP_Warden`.
+
 **Then the lead:** full read review again (16 shots, about 12 minutes, asking first), prefix `rv3_`. **Judge:** the arms in backlit outline, like the owner's photo; skin colour; whether the bare forearms are acceptable.
 
 ### P12-8 and P12-9: changes from the sections below
-- **P12-8:** mesh `SK_Warden`, single-node `AN_Warden_Idle`, looping, playing. Yaw from P12-5. Socket `mask` goes on bone `head`, positioned at the mask (V5 has no `mask` bone); `TellLight` attaches there. Silhouette uses `SM_LB_Warden_Silhouette`. Top of the figure is 290, so **no height offset** on the silhouettes.
+- **P12-8:** mesh `SK_Warden`, single-node `AN_Warden_Idle`, looping, playing. Yaw 0 on `CharacterMesh0` and −90 on the silhouette's component (V5.5 result). Socket `mask` goes on bone `head`, positioned at the mask (V5 has no `mask` bone); `TellLight` attaches there. Silhouette uses `SM_LB_Warden_Silhouette`. Top of the figure is 290, so **no height offset** on the silhouettes.
 - **P12-9 GPU cuts, in order, if over 16.6 ms:**
   1. Wool and skin textures 4K to 2K.
   2. LOD1 sooner, through a screen-size change.
