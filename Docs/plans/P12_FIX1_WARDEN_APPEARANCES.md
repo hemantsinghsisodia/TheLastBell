@@ -1,6 +1,6 @@
 # P12 fix set 1: Warden appearances and attack light
 
-**Status: approved by the owner on 2026-11-05 ("go"): option A now with the real walk in Phase 13, and the chase glow. F1 and F2 done (suite 89/89 at F1; d29582f, not yet seen rendered). F3 next.**
+**Status: approved by the owner on 2026-11-05 ("go"): option A now with the real walk in Phase 13, and the chase glow. F1 to F4 done (1bfb141); nothing yet seen rendered or running in-game. F5, the look test, next.**
 Branch: `claude/phase-12-warden-visual`. Parent plan: `P12_WARDEN_VISUAL.md`. Lead plans; every implementer is spawned with `model: "sonnet", effort: "high"` (D-048).
 
 ## 1. What the owner asked for, and what's behind it
@@ -162,18 +162,29 @@ The session must be free of temporary actors: `L_Monastery` is saved here, and t
 
 **Checks:** `Tools/warden/check_warden.py`: update the `BP_Warden` and silhouette checks to the new values and add `--bp` checks for `BP_WardenApparition`, both placed instances and all section 3 values. The suite must still pass, including `Functional.Warden.Attack.*`.
 
+### F3 and F4 result (1bfb141, 2026-11-05)
+`BP_WardenApparition`, `Apparition_Courtyard` (`BP_WardenApparition_C_0`) and `Apparition_Chapel` (`BP_WardenApparition_C_1`) replace `Silh_CourtyardWall` and `Silh_ChapelWindow`; 2980 actors, map saved once and read back from disk. `BP_Warden`: `TellLight` (110, 0, 235), radius 700, intensity 5000, parent confirmed as `PlaceholderBody`; `AttachTellLightToMask` removed; `SetupMaskGlow`, `SetMaskGlow` and the three levels in place. Both Blueprints compile with no errors or warnings. `check_warden.py` 61/61, `--bp` 43/43, `--disk` 15/15. `LastBell.Functional.Warden` in the mirror: 25 passed, 0 failed, headless. Tool: `Tools/warden/apply_p12f_blueprints.py`.
+
+- **Differs from the plan:** `LastFeedbackState` is a byte, because `add_variable` can't make enum variables. The comparisons use Chase = 5 and Attack = 6, so changing the order of `ELBWardenState` would break them silently. Added: an `idx >= 0` guard in `SetupMaskGlow`.
+- **Not seen:** anything rendered, the fades, the look gate, the light's brightness, the glow card's facing (pitch 90 probably faces −X; the material is two-sided, so it shouldn't show) and the checkpoint reload. The mirror tests ran with no rendering.
+- `L_Monastery` is dirty in that session from compiling `BP_Warden`, and `SM_LB_Warden_Silhouette` is still dirty. Restart with Don't Save before anything else.
+
 ## 8. Look test (lead, about 10 minutes of capture, needs the owner)
 
 Tell the owner first: Unreal must stay in front and the PC left alone; offer "wait". Agents don't run the capture tool.
 
-New `Tools/warden/apparition_review.py` (temporary `P12F_` actors, same rules as `read_review.py`; never save the map while they exist), `--poses`, `--place`, `--status`, `--remove`.
+New `Tools/warden/apparition_review.py` (temporary `P12F_` actors, same rules as `read_review.py`; never save the map while they exist), `--poses`, `--place`, `--status`, `--remove`. Temporary figures are StaticMeshActors with `SM_LB_Warden_Apparition`, using its default materials with `Fade` at 1, because the real actors hide themselves until triggered.
 
-| View | Camera (x, y, z, looking at) | What's judged |
+All candidates for one spot stand together, so one view compares them, and they're narrowed down afterwards.
+
+| View | Camera (x, y, z), looking at | What's judged |
 |---|---|---|
-| Roofline ×3 | (500, 0, 170), at Y 1300 / 1800 / 2300 | Which spot reads best. Mean brightness of the figure against the sky right beside it: figure at most a quarter of the sky's. Glow looks like sky, not like a card. Pale mask visible |
-| Rail ×3 | (8720, 0, 195) with the candle proxy, at Y −250 / −120 / 0 | Reads as a solid dark figure, not a flat hole. Backdrop. Rail in front at waist height |
-| Sacristy ×2 | (8650, −300, 165) and (8350, −300, 165), at (8500, −930) | Framed by the doorway against the candlelit wall |
-| Light ×2 | ossuary and bells 3 m spots from `read_review.py`, `SK_Warden`, temporary light at the new offset with candle proxy | Mask, chest and hands clearly red; floor and nearby wall visibly red |
+| `roof_all` | (500, 0, 170), at (6020, 1800, 900). Figures at (6020, Y, 800), Y 1300 / 1800 / 2300, each with its glow plane | Which spot reads best. Figure's mean brightness at most a quarter of the sky right beside it. Glow looks like sky, not like a card. Pale mask visible |
+| `rail_all` | (8720, 0, 195), at (8380, −120, 150), with the candle proxy. Figures at (8380, Y, 0), Y −250 / −120 / 0 | Solid dark figure, not a flat hole. Backdrop. Rail in front at waist height |
+| `sac_a`, `sac_b` | (8650, −300, 165) and (8350, −300, 165), at (8500, −930, 150). Figure at (8500, −930, 0) | Framed by the doorway against the candlelit wall |
+| `light_ossuary`, `light_bells` | The 3 m cameras from `read_review.py`'s `ossuary` and `bells` spots, with candle proxy. `SK_Warden` playing Idle, plus a temporary red point light at the new offset with the new values | Mask, chest and hands clearly red; floor and nearby wall visibly red. The mask's own glow isn't in this view; that's for the playtest |
+
+Each figure's yaw faces its first camera. Glow plane: `/Engine/BasicShapes/Plane`, `MI_Warden_ApparitionGlow`, scale 10, 150 cm behind the figure from the camera and 150 cm up, turned to face the camera.
 
 Corrections allowed without returning to the owner: the values in section 3 (positions only among those listed), glow `Strength`, mask `Emissive`, light intensity and radius within range. **If the figure still looks flat at the rail after tuning, stop and show the owner**, with the full `SK_Warden` shown at that spot for comparison. Send the owner the sheet in any case.
 
