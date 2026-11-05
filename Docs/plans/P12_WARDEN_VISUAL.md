@@ -1,6 +1,6 @@
 # Phase 12: Warden visual: plan
 
-**Status:** approved by the owner on 2026-11-04. P12-0 to P12-3 done. **At P12-3 the owner supplied their own Warden Art V5 (D-090). The tasks from P12-4 on were rewritten; "The route from P12-4 on" below is the live spec.** P12-4 and P12-5 done; P12-6 first round done; P12-7 round 1 passed. **The owner delivered V5.5 on 2026-11-05 (D-091); "Bringing in V5.5" below is the live step.**
+**Status:** approved by the owner on 2026-11-04. P12-0 to P12-3 done. **At P12-3 the owner supplied their own Warden Art V5 (D-090). The tasks from P12-4 on were rewritten; "The route from P12-4 on" below is the live spec.** P12-4 and P12-5 done; P12-6 first round done; P12-7 round 1 passed. **V5.5 (D-091) is in the project and passes the read review. P12-8 waits for the owner's "go".**
 **Branch:** `claude/phase-12-warden-visual`, from `main` (0df20fc).
 **Rules:** D-048 applies. The lead plans in Opus 5.5 at xhigh effort; every implementer is spawned with `model: "sonnet", effort: "high"`. Nothing starts without the owner's "go".
 
@@ -185,6 +185,20 @@ The owner's photo of the backlit figure showed the forearms and wrists matter, s
 - **Not verified:** anything visual, playback in Simulate, or the wired `BP_Warden`.
 
 **Then the lead:** full read review again (16 shots, about 12 minutes, asking first), prefix `rv3_`. **Judge:** the arms in backlit outline, like the owner's photo; skin colour; whether the bare forearms are acceptable.
+
+**Read review of V5.5 (lead, 2026-11-05; `rv3_p12r_*`, sheet `Docs/ArtTest/warden/p12_read_r3.png`; temporaries removed, 2980 actors, nothing saved). Judged by eye; no luma boxes this time, because the hunch moved the figure in frame.**
+
+| Pass rule | Result |
+|---|---|
+| Facing at yaw D | Faces the camera in every view |
+| Arms in backlit outline (the owner's photo) | **Fixed:** at `ossuary_8m` the arms read as long sleeves ending in thin hands and chains, with no pipes and no broken wrist |
+| Mask is the focal point at 3 m with the candle | **Yes,** in all four candle views; the crack reads |
+| Hands | Clearly dimmer than the mask; the warm skin isn't distracting in this light |
+| Bare forearms | Show near the elbow in candle views, and read as thin arms, not tubes. Acceptable; sleeves stay as they are unless the owner says otherwise |
+| Outline at 8 m | Yes in the ossuary, chain chamber and by the bells. West walk still very dark, as agreed |
+| Far views | `ossuary_15m` and `bells_18m` are small but findable |
+
+**The owner's judgement of the sheet is still open.**
 
 ### P12-8 and P12-9: changes from the sections below
 - **P12-8:** mesh `SK_Warden`, single-node `AN_Warden_Idle`, looping, playing. Yaw 0 on `CharacterMesh0` and −90 on the silhouette's component (V5.5 result). Socket `mask` goes on bone `head`, positioned at the mask (V5 has no `mask` bone); `TellLight` attaches there. Silhouette uses `SM_LB_Warden_Silhouette`. Top of the figure is 290, so **no height offset** on the silhouettes.
