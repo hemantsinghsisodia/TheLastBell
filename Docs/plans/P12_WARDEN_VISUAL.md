@@ -655,7 +655,7 @@ Four 3 m and 8 m views repeat with `P12_CandleProxy` on (16 shots). The lead fix
 - **Open, for later:**
   - `CharacterMesh0` has `AlwaysTickPose`, so a hidden dormant Warden may still evaluate its pose. Left as is; check against the game-thread reading.
   - `TellLight` casts no shadows; its position at the `mask` socket hasn't been seen.
-  - The physics asset's old preview reference is still there.
+  - The physics asset's old preview reference: **fixed by the owner.** They set its preview mesh to `SK_Warden` and saved it; the same 43 bone names and 43 bodies, 42 constraints; `check_warden.py`'s exemption removed. Opening the physics editor also rewrote `Config/DefaultEditor.ini` (preview-scene profiles); that was restored, as it isn't part of this work.
   - `--restore` is untested.
 - **In-game rows of the failure-mode table:** covered only by the suite's logic until the owner's playtest. Facing, feet on the floor, the attack light, silhouettes and checkpoint reload haven't been seen.
 

@@ -56,7 +56,7 @@ SKIN_BRIGHTNESS = 0.12
 # names the owner's V5 path /Game/WardenArtV5/Meshes/SK_Warden (their mesh now lives at V5_5 and was moved). No MCP tool can
 # write PhysicsAsset's PreviewSkeletalMesh (not an exposed property; assign_physics_asset does not set it). It is editor-only
 # data, not used at runtime. Reported to the lead; fixed by opening the physics asset once in the Physics Asset Editor.
-KNOWN_DANGLING = {("/Game/LastBell/Characters/Warden/Meshes/SK_Warden_PhysicsAsset", "/Game/WardenArtV5/Meshes/SK_Warden")}
+KNOWN_DANGLING = set()  # the owner re-saved the physics asset with the new preview mesh (2026-11-05)
 DEFAULT_VALIDATION = r"C:\Hemant\Prj\Learning\Warden\output\unreal_validation\Reports\validation-v5_1.json"
 CLIPS = {"AN_Warden_Idle": 4.0, "AN_Warden_Walk": 2.0, "AN_Warden_DoorwayStoop": 3.0}
 WOOL = {"Weave Scale": 109.94, "Detail Strength": 0.5, "Wetness": 0.15, "Cloth Brightness": 0.25}   # Cloth Brightness: P12-7 round 1
