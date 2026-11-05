@@ -1,6 +1,6 @@
 # Phase 12: Warden visual: plan
 
-**Status:** approved by the owner on 2026-11-04. P12-0 to P12-3 done. **At P12-3 the owner supplied their own Warden Art V5 (D-090). The tasks from P12-4 on were rewritten; "The route from P12-4 on" below is the live spec.** P12-4 and P12-5 done; P12-6 first round done; P12-7 round 1 passed. **V5.5 (D-091) is in the project and passes the read review. P12-8 waits for the owner's "go".**
+**Status:** approved by the owner on 2026-11-04. P12-0 to P12-3 done. **At P12-3 the owner supplied their own Warden Art V5 (D-090). The tasks from P12-4 on were rewritten; "The route from P12-4 on" below is the live spec.** P12-4 and P12-5 done; P12-6 first round done; P12-7 round 1 passed. **V5.5 (D-091) is in the project and passes the read review. P12-8 in progress (owner's "go", 2026-11-05).**
 **Branch:** `claude/phase-12-warden-visual`, from `main` (0df20fc).
 **Rules:** D-048 applies. The lead plans in Opus 5.5 at xhigh effort; every implementer is spawned with `model: "sonnet", effort: "high"`. Nothing starts without the owner's "go".
 
@@ -201,7 +201,12 @@ The owner's photo of the backlit figure showed the forearms and wrists matter, s
 **The owner's judgement of the sheet is still open.**
 
 ### P12-8 and P12-9: changes from the sections below
-- **P12-8:** mesh `SK_Warden`, single-node `AN_Warden_Idle`, looping, playing. Yaw 0 on `CharacterMesh0` and −90 on the silhouette's component (V5.5 result). Socket `mask` goes on bone `head`, positioned at the mask (V5 has no `mask` bone); `TellLight` attaches there. Silhouette uses `SM_LB_Warden_Silhouette`. Top of the figure is 290, so **no height offset** on the silhouettes.
+- **P12-8 values for V5.5 (2026-11-05; these replace the old table below wherever they differ):**
+  - `CharacterMesh0`: `SK_Warden`, single-node `AN_Warden_Idle`, looping, playing, location (0, 0, −110), **yaw 0**, `NoCollision`.
+  - **Silhouette:** `Body` = `SM_LB_Warden_Silhouette`, location (0, 0, 0), scale 1, **yaw +90**, because both placed actors should face −X towards the player: `SM_LB_Warden_Silhouette` faces yaw D − 90 with D = 180. Top of figure is about 284, so no height offset. `Head` emptied and hidden.
+  - **Socket:** `mask` on bone `head`, **zero offset**. Tools can't read this bone's axes reliably, and the head is inside the hood about 20–40 cm behind the mask. Report whether `TellLight` casts shadows; the owner sees the result when caught.
+  - **If an inherited `CharacterMesh0` value won't persist through `set_properties`** (MCP_NOTES warns of this on Blueprint templates): set it in `UserConstructionScript` instead, then read back after compile and after a reload. No `Source/` change.
+  - **Checks:** the suite covers the Warden's logic with the new body. The failure-mode table's in-game rows are checked by the owner's playtest, because nothing automated can see them. Socket `mask` goes on bone `head`, positioned at the mask (V5 has no `mask` bone); `TellLight` attaches there. Silhouette uses `SM_LB_Warden_Silhouette`. Top of the figure is 290, so **no height offset** on the silhouettes.
 - **P12-9 GPU cuts, in order, if over 16.6 ms:**
   1. Wool and skin textures 4K to 2K.
   2. LOD1 sooner, through a screen-size change.
