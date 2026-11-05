@@ -1,6 +1,6 @@
 # P12 fix set 1: Warden appearances and attack light
 
-**Status: approved by the owner on 2026-11-05 ("go"): option A now with the real walk in Phase 13, and the chase glow. F1 to F5 done; the look test passed, but nothing has yet been seen running in-game. F6, the owner's playtest and QA, next.**
+**Status: approved by the owner on 2026-11-05 ("go"): option A now with the real walk in Phase 13, and the chase glow. Done (2026-11-06): owner's playtest "all good", QA passed with caveats, suite 92/92 on the real project. Part of the Phase 12 review.**
 Branch: `claude/phase-12-warden-visual`. Parent plan: `P12_WARDEN_VISUAL.md`. Lead plans; every implementer is spawned with `model: "sonnet", effort: "high"` (D-048).
 
 ## 1. What the owner asked for, and what's behind it
@@ -222,6 +222,18 @@ Sheet: `Docs/ArtTest/warden/p12f_look_test.png`; all captures in `Docs/ArtTest/w
 4. Still open from the first playtest: feet on the floor, faces the way it moves, crypt `Game:` reading.
 
 Then "PHASE 12 READY FOR YOUR REVIEW". Merge only on "approve and merge".
+
+### F6 result (2026-11-06)
+- **Owner's playtest (2026-11-05): "all good".** The editor log shows the courtyard and chapel beats triggered, an attack landing 0.6 s after the windup, and a clean reload from `CP_Crypt`. There was no chase, so the chase glow wasn't seen on screen.
+- **QA** (`Docs/ArtTest/warden/p12f_qa.md`): pass with caveats, no P1. Every value read back as specified. Follow-ups in 785c9ce:
+  - `BlockedViewStaysHidden` (line of sight);
+  - `MaskGlowFollowsState`, which reads `TellGlow` 0 / 0.25 / 1 and the light in Dormant, Patrol, Chase and the windup;
+  - `StateOrderMatchesBlueprintLiterals`;
+  - log lines on `LogLBWarden`;
+  - the source FBX renamed to `SM_LB_Warden_Apparition.fbx`.
+- **Old `BP_WardenSilhouette` and `SM_LB_Warden_Silhouette` removed** with Unreal closed (f42ca38). Nothing referenced them.
+- **`Tools/build_and_test.ps1` on the real project:** build succeeded, **92 passed, 0 failed**, `TEST COMPLETE. EXIT CODE: 0`, no invalid tags.
+- **Left as is:** the new mesh's import metadata still names the old FBX file, which only matters for a re-import from the editor's menu.
 
 ## 10. Failure modes
 

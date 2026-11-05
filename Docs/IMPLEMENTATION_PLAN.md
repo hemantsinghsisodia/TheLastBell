@@ -291,7 +291,7 @@ Branch `claude/phase-12-warden-visual`. Spec: `Docs/plans/P12_WARDEN_VISUAL.md` 
 | P12-8 | `BP_Warden` and `BP_WardenSilhouette` swap | unreal-blueprint-engineer [EDITOR] | P12-7 |
 | P12-9 | QA, docs, GPU readings, playtest; PHASE 12 READY FOR YOUR REVIEW | qa-reviewer + lead + owner | all |
 
-Status 2026-11-04: P12-0…P12-3 done; the owner chose their own Warden Art V5 (D-090), so the scripted build is dropped. P12-4 to P12-8 done on V5.5 (D-091): read review passed, wired into `BP_Warden` and both silhouettes, suite 79/79, QA passed with caveats. GPU readings passed (highest 15.33 ms). The owner's playtest led to fix set 1 (`Docs/plans/P12_FIX1_WARDEN_APPEARANCES.md`, D-092), approved 2026-11-05 and in progress.
+Status 2026-11-04: P12-0…P12-3 done; the owner chose their own Warden Art V5 (D-090), so the scripted build is dropped. P12-4 to P12-8 done on V5.5 (D-091): read review passed, wired into `BP_Warden` and both silhouettes, suite 79/79, QA passed with caveats. GPU readings passed (highest 15.33 ms). The owner's playtest led to fix set 1 (`Docs/plans/P12_FIX1_WARDEN_APPEARANCES.md`, D-092): done on 2026-11-06, owner's playtest "all good", QA passed with caveats, suite 92/92. **PHASE 12 READY FOR YOUR REVIEW.**
 
 ## Deferred to Phase 14–15 (Lighting, VFX: storm work)
 Items the owner asked to fold into the storm pass. Plan them in detail (Docs/plans/) when Phase 14–15 starts.
