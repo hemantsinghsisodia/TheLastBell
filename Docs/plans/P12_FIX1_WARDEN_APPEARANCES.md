@@ -1,6 +1,6 @@
 # P12 fix set 1: Warden appearances and attack light
 
-**Status: waiting for the owner's "go" and the two decisions in section 2. Nothing here has been started.**
+**Status: approved by the owner on 2026-11-05 ("go"): option A now with the real walk in Phase 13, and the chase glow. F1 in progress.**
 Branch: `claude/phase-12-warden-visual`. Parent plan: `P12_WARDEN_VISUAL.md`. Lead plans; every implementer is spawned with `model: "sonnet", effort: "high"` (D-048).
 
 ## 1. What the owner asked for, and what's behind it
@@ -23,17 +23,14 @@ Owner's playtest, 2026-11-05:
 
 So a walking figure at 3–8 m would look much like the gliding figure the owner has just objected to in the crypt. Phase 13 has to rework Walk (see section 9).
 
-## 2. Decisions for the owner
+## 2. Owner's decisions (2026-11-05)
 
-**D1. How does it get from the rail to the room?**
-- **A (recommended): it steps through the dark.** It forms at the rail as you turn around, fades away, then forms again inside the sacristy, framed by the doorway against the candlelit wall, and fades away. No walking on screen, so it doesn't depend on animation.
-- B: it really walks there, on the full model with the Walk clip. It would look like a glide (section 1) until Phase 13 redoes the clip, it can only stop in shadow or by an extra material swap, and it needs clearance checks along the path. This plan would be revised first.
+**D1. From the rail to the room: stations now, a real walk in Phase 13.**
+- **Now:** it forms at the rail as the player turns around and fades away, then forms inside the sacristy, framed by the doorway against the candlelit wall, and fades away. No walking on screen, so it doesn't depend on animation.
+- **Phase 13 (the owner's suggestion):** once Walk is reworked, a real walk from the rail into the sacristy replaces the second station, stooping through the doorway if it needs to. The first station stays. This is in the Phase 13 notes (section 9).
+- **Not done:** leaving the whole chapel change until Phase 13. It would save almost nothing, because the rail shares its code and materials with the roofline, and it would keep the easily missed east-window version and the old Blueprint.
 
-**D2. Red glow while it's chasing you?**
-- **Yes (recommended):** the mask glows dull red through the chase and flares at the attack. The attack tell lasts only 0.6 s, so a chase glow gives the red far more time on screen, and it tells the player "it has seen me".
-- No: the mask glow and the stronger light happen only in the 0.6 s windup.
-
-The rest of this plan assumes A and Yes.
+**D2. Red glow while it's chasing the player: yes.** The mask glows dull red through the chase and flares at the attack. The attack tell lasts only 0.6 s, so this gives the red far more time on screen, and it tells the player "it has seen me".
 
 ## 3. Behaviour
 
@@ -87,7 +84,12 @@ New files, following the `LBWardenLogic` pattern (pure logic, unit tested; the a
 
 **Tests**, new `Source/LastBellTests/Tests/LBApparitionTests.cpp`:
 - Unit, `LastBell.Warden.Apparition.*`: `WaitsForLook` (alpha stays 0 for 60 s unseen), `FadeTiming` (alpha rises, holds at 1, falls, reaches 0; total time equals the sum within one tick), `TwoStations` (moves on after the gap and enters FadeIn again), `TooCloseSkips`, `TooCloseDuringHoldFadesFromCurrentAlpha`, `DoneIsTerminal`.
-- Functional on `L_Monastery`, `LastBell.Functional.Warden.Apparition.*`, using the `LBPuzzleFunctionalTests` and `LBSaveTests` patterns: `ChapelSequence` (add `State.Ritual.1`, aim away and check hidden; aim at the rail and check alpha rises, then falls; aim into the sacristy and check the second station; check Done), `NotRepeatedAfterReload` (reload with the tag present: stays hidden, Done).
+- Functional, `LastBell.Functional.Warden.Apparition.*`, in the map the existing Warden functional tests use (`L_Test_Warden`), with the patterns of `LBWardenFunctionalTests` and `LBPuzzleFunctionalTests`. **They spawn their own `ALBWardenApparition`** with `SpawnActorDeferred`, in clear space around the player, so they don't depend on the placed instances (those arrive in F3, and `check_warden.py --bp` checks them):
+  - `TwoStationSequence`: add the trigger tag, aim away and check it stays hidden; aim at station 1 and check alpha rises, then falls; aim at station 2 and check the same; check Done, hidden, tick off. Use a tag that exists only for tests (`State.Test.*`), so nothing else in the map reacts, and short fades (0.2 s) to keep the test quick.
+  - `TagAlreadyPresentStaysDone`: spawn with the tag already in the world state: stays hidden, Done, and adding other tags does nothing.
+  - `StateReplacedMidRunStops`: while in Hold, call `ReplaceState` without the tag: hidden, Idle; add the tag again and check it runs again. Then `ReplaceState` with the tag: hidden, Done.
+
+  The real checkpoint reload is checked in the owner's playtest (section 9).
 
 Build with `Tools/mirror_build_and_test.ps1`. The real project also needs `Tools/build_and_test.ps1` **with Unreal closed**, because this adds a new class. Pass: the old 79 plus the new tests, no `Result={Fail`.
 
@@ -164,7 +166,7 @@ Corrections allowed without returning to the owner: the values in section 3 (pos
 - `DECISIONS.md`: D-092 (the appearances: reason, one-shot look gate, stations rather than walking).
 - `RISKS.md`: R-54 (the dithered fade might shimmer on a small distant figure; check in play). R-52 gets the Walk finding.
 - `TECHNICAL_DESIGN.md` §8 and line 166 (`ALBWardenApparition`), `GREYBOX_SPEC.md` steps 2 and 7, `LEVEL_DESIGN.md`, `ASSET_REGISTRY.md` where affected, `IMPLEMENTATION_PLAN.md`, `MCP_NOTES.md` (anything new).
-- `P12_WARDEN_VISUAL.md`: pointer to this plan. Add to its Phase 13 notes: **Walk must be reworked** (arm swing, upper body, planted feet, natural speed near patrol's 140 cm/s).
+- `P12_WARDEN_VISUAL.md`: pointer to this plan. Add to its Phase 13 notes: **Walk must be reworked** (arm swing, upper body, planted feet, natural speed near patrol's 140 cm/s), and **the chapel gets a real walk** from the rail into the sacristy, replacing `Apparition_Chapel`'s second station, stooping through the doorway if it needs to (owner, D1).
 
 **Owner, about 15 minutes:** `scalability 2`, `r.SetRes 1920x1080w`, `stat unit`, Warden on.
 1. `lb.NewGame`, enter the courtyard: roofline fades in, holds, fades out, stands out enough?
@@ -191,11 +193,12 @@ Then "PHASE 12 READY FOR YOUR REVIEW". Merge only on "approve and merge".
 
 | Task | Scope | Owner | Needs | Depends on |
 |---|---|---|---|---|
-| F0 | D-092, R-54, read `BP_Warden` and `TellLight`, finish section 7 | lead | Unreal open | owner's go |
-| F1 | Section 4 | gameplay-programmer | Mirror build; real build with Unreal closed | F0 |
+| F0a | D-092, R-54 and the plan updates | lead | Nothing | owner's go |
+| F1 | Section 4 | gameplay-programmer | Unreal closed for the real build | F0a |
 | F2 | Section 5 | technical-artist [EDITOR] | Unreal open on the new binaries | F1 |
 | F3 | Section 6 | unreal-blueprint-engineer [EDITOR] | Clean session | F2 |
-| F4 | Section 7 | technical-artist, unreal-blueprint-engineer [EDITOR] | | F3 |
+| F0b | Read `BP_Warden` and `TellLight`, finish section 7 | lead | Unreal open | F3 |
+| F4 | Section 7 | technical-artist, unreal-blueprint-engineer [EDITOR] | | F0b |
 | F5 | Section 8 | lead + owner | Capture session | F4 |
 | F6 | Section 9 | qa-reviewer, lead, owner | Playtest | F5 |
 
