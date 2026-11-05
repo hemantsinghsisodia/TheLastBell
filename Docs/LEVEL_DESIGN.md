@@ -25,7 +25,7 @@ A compact monastery on a mountain shelf. The **ruined bell tower** is visible fr
 - **Readability first.** Lit critical paths, landmark lighting on objectives, no pitch-black navigation.
 - **Loops for stealth.** Every Warden-patrol space has at least two routes and line-of-sight breakers.
 - **Altered revisits.** After each mechanism, previously visited spaces change: doors open or close, candles go out, water rises, objects move.
-- **Scale.** Real-world proportions. Doors are 220–250 cm tall. Corridors are at least 180 cm wide wherever the Warden must path (Warden capsule radius about 55 cm, height about 290 cm).
+- **Scale.** Real-world proportions. Doors are 220–250 cm tall. Corridors are at least 180 cm wide wherever the Warden must path (Warden capsule radius 42 cm, half height 110 cm; visual body 290 cm, D-038).
 - **Checkpoints** before each mechanism, after each mechanism, at the start of each Warden section and at the tower base.
 
 ## Map plan

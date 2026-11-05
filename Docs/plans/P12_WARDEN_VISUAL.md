@@ -1,6 +1,6 @@
 # Phase 12: Warden visual: plan
 
-**Status:** approved by the owner on 2026-11-04. P12-0 to P12-3 done. **At P12-3 the owner supplied their own Warden Art V5 (D-090). The tasks from P12-4 on were rewritten; "The route from P12-4 on" below is the live spec.** P12-4 and P12-5 done; P12-6 first round done; P12-7 round 1 passed. **V5.5 (D-091) is in the project and passes the read review. P12-8 done (suite 79/79); nothing yet seen running in-game. P12-9 next.**
+**Status:** approved by the owner on 2026-11-04. P12-0 to P12-3 done. **At P12-3 the owner supplied their own Warden Art V5 (D-090). The tasks from P12-4 on were rewritten; "The route from P12-4 on" below is the live spec.** P12-4 and P12-5 done; P12-6 first round done; P12-7 round 1 passed. **V5.5 (D-091) is in the project and passes the read review. P12-8 done; P12-9 QA passed with caveats (`Docs/ArtTest/warden/p12_9_qa.md`) and docs done. Waiting for the owner's GPU readings and playtest; nothing yet seen running in-game.**
 **Branch:** `claude/phase-12-warden-visual`, from `main` (0df20fc).
 **Rules:** D-048 applies. The lead plans in Opus 5.5 at xhigh effort; every implementer is spawned with `model: "sonnet", effort: "high"`. Nothing starts without the owner's "go".
 
@@ -158,9 +158,9 @@ The owner's photo of the backlit figure showed the forearms and wrists matter, s
 
 | Item | Result |
 |---|---|
-| Forearm, wrist join, hand angle, chains, hunched Idle, facing, Walk | Done. Forearm radius tapers from about 6 to 2 cm; the owner's validation shows 0° palm to forearm and no bad chain frames; Idle top 285.6, Walk 287.2, lowest Walk point 0.3 cm above the floor |
+| Forearm, wrist join, hand angle, chains, hunched Idle, facing, Walk | Done. Forearm radius tapers from about 6 to 2 cm; the owner's validation shows 0° palm to forearm and no bad chain frames; Idle top 285.6, Walk top 290.1 (QA; the owner's `bounds.json` `mid_top` is the middle sample only, so its 287.2 understated it), lowest Walk point 0.3 cm above the floor |
 | Sleeves | **Not done:** robe triangles unchanged at 33,007. Judge in the read review |
-| Stoop | Mask shows, top 219.5. The pose still reads as a folded lump; Phase 13 |
+| Stoop | Mask shows, lowest top 217.3 (QA, every frame). The pose still reads as a folded lump; Phase 13 |
 | Mask edges | Hood rim smooth; the crack still has stepped gaps up close |
 | Triangles | **LOD0 99,974** (LOD1 49,975, LOD2 19,973): skin 28,506, chains 21,376, wool 33,007, bell metal 8,513, leather 7,241, iron 1,331 |
 | Skin | Warm brown with baked hair, not the concept's grey-blue. Judge in the read review |
@@ -215,6 +215,17 @@ The owner's photo of the backlit figure showed the forearms and wrists matter, s
 
 ### What this drops
 `Tools/blender/warden/concepts.py`, the blockout sheets and `hand_test.py` stay on the branch as a record and aren't used. `blenderkit` base mesh, `hessian_230` and `brown_leather`: not used, so their registry rows are marked at P12-9.
+
+---
+
+### P12-9 QA result (qa-reviewer, 2026-11-05; `Docs/ArtTest/warden/p12_9_qa.md`)
+**Pass with caveats: no P0 or P1.** Suite 79/79; `check_warden.py` 61/61, `--bp` 33/33, `--disk` 14/14; only the two Blueprints changed; no Source, Config or map change; 2980 actors; all 59 lights equal the census; source MD5s inside the imported assets equal the owner's V5.5 FBX files.
+
+- **D1 (P2, fixed in the docs):** the quoted heights came from a middle-sample field in the owner's report. Real tops, every frame: Idle 285.6, Walk 290.1, stoop lowest 217.3. Patrol clearance still holds; the crypt stair ends clip Walk.
+- **D3 (P3, kept as a note):** some `check_warden.py` checks are weaker than their names: vertex counts come from Unreal itself, textures are compared with the V5.1 report, clips by length only.
+- **D5 (P3):** the mesh's import data points at the owner's folder, not `SourceArt/Warden/V5_5/exports/`.
+- **D6 (P3):** names stay as the owner made them, so `SK_Warden_PhysicsAsset` has no `PA_` prefix.
+- **D9 (P3, risk, not measured):** `AlwaysTickPose` while dormant; dynamic shadows; in the ray-tracing scene at LOD0; two-sided wool; bounds come from the physics asset, so the hood might pop out very close up. LOD0 is probably used only within about 3.5–6 m. The owner's reading and playtest cover this.
 
 ---
 
@@ -579,7 +590,7 @@ Target about 110 bones or fewer.
 
 **Silhouette mesh:** bake the held pose, merge and decimate: `SM_LB_Warden_Silhouette`, ≤ 8,000 triangles, pivot at the feet, no UVs needed, facing as a static mesh in this project.
 
-**Verify (extends `verify_warden.py`):** joints within 0.5 cm of the table and mirrored; influences; normalised; bone count; held-pose height 250–258 and width ≤ 110.
+**Verify (extends `verify_warden.py` (never built: V5.5 replaced the scripted model)):** joints within 0.5 cm of the table and mirrored; influences; normalised; bone count; held-pose height 250–258 and width ≤ 110.
 
 **Acceptance (lead):** 12 extreme frames rendered to `Docs/ArtTest/warden/p12_rom.png`. No candy-wrapper twisting at wrists or elbows, no robe through the arms in the held pose, no mask deformation. Some robe stretch at ±25° is acceptable, because Phase 13 tunes it.
 
@@ -660,6 +671,7 @@ Four 3 m and 8 m views repeat with `P12_CandleProxy` on (16 shots). The lead fix
 - **In-game rows of the failure-mode table:** covered only by the suite's logic until the owner's playtest. Facing, feet on the floor, the attack light, silhouettes and checkpoint reload haven't been seen.
 
 ### P12-8: wire it in (unreal-blueprint-engineer [EDITOR])
+**The table below describes the dropped scripted model (`SK_LB_Warden`, yaw −90); what was built is in the P12-8 result above and the V5.5 values under "P12-8 and P12-9". Its failure-mode table still applies.**
 Read each template with `get_properties` first and record the old values in `Docs/ArtTest/warden/p12_8_before.json`. Use `Tools/warden/apply_p12_warden.py` (`--snapshot`, `--apply`, `--check`, `--save`, `--restore`, same style as `apply_p11_lantern.py`).
 
 **`BP_Warden`:**
@@ -697,7 +709,7 @@ Read each template with `get_properties` first and record the old values in `Doc
 
 ### P12-9: close
 1. **QA (qa-reviewer):**
-   - suite; `check_warden.py`; `verify_warden.py`;
+   - suite; `check_warden.py`; `verify_warden.py` (never built: V5.5 replaced the scripted model);
    - no `Source/` or `Config/` change; no light or layout change (census compare, 2980 actors);
    - only `BP_Warden` and `BP_WardenSilhouette` changed among Blueprints;
    - naming, folders, registry; logs; dirty packages; git.
