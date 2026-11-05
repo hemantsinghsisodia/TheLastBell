@@ -1,6 +1,6 @@
 # P12 fix set 1: Warden appearances and attack light
 
-**Status: approved by the owner on 2026-11-05 ("go"): option A now with the real walk in Phase 13, and the chase glow. F1 done (a7957d5): suite 89/89 on the real project, reviewed by the lead. F2 next.**
+**Status: approved by the owner on 2026-11-05 ("go"): option A now with the real walk in Phase 13, and the chase glow. F1 and F2 done (suite 89/89 at F1; d29582f, not yet seen rendered). F3 next.**
 Branch: `claude/phase-12-warden-visual`. Parent plan: `P12_WARDEN_VISUAL.md`. Lead plans; every implementer is spawned with `model: "sonnet", effort: "high"` (D-048).
 
 ## 1. What the owner asked for, and what's behind it
@@ -103,7 +103,7 @@ Build with `Tools/mirror_build_and_test.ps1`. The real project also needs `Tools
 
 **Bake:** change `Tools/blender/warden/bake_silhouette.py` to keep **two slots**, `MAT_Body` and `MAT_Mask` (faces that use `M_Warden_BellMetal` in the master), with `--rotz 90`, so the mesh faces +X like `SK_Warden` and yaw means the same on both. Keep the limit of ≤ 8,000 triangles. If the decimation damages the mask, exclude it from the decimation and report.
 
-**Import:** replace `SM_LB_Warden_Silhouette` through the editor (delete and re-import per `MCP_NOTES.md`). `BP_WardenSilhouette` still points at it until section 6; report any referencer warnings. Nanite off, one LOD, collision none. Check in a capture that the figure faces +X with yaw 0.
+**Import (changed at F2):** a **new asset**, `/Game/LastBell/Characters/Warden/Meshes/SM_LB_Warden_Apparition`, not a replacement, because `BP_WardenSilhouette` and the map still point at the old mesh and deleting a referenced asset can raise a dialog that freezes the editor. Nanite off, one LOD, no collision. The MIs below are its default slot materials. Facing +X with yaw 0 is checked only from the bounds until the look test.
 
 **Materials** in `/Game/LastBell/Characters/Warden/Materials/`. Leave `M_LB_Silhouette` and `MI_LB_WardenSilhouette` alone, because `BP_WardenPlaceholderKill` still uses them.
 
@@ -115,13 +115,19 @@ Build with `Tools/mirror_build_and_test.ps1`. The real project also needs `Tools
 | `M_Warden_ApparitionGlow` | Surface, Translucent, Additive, Unlit, two-sided. Emissive = `RadialGradientExponential` (radius 0.5, density 2) × vector `Color` × scalar `Strength` × scalar `Fade` (default 1) |
 | `MI_Warden_ApparitionGlow` | `Color` (0.55, 0.62, 0.80), `Strength` 0.25 (tune at the look test) |
 
+### F2 result (d29582f, 2026-11-05)
+`SM_LB_Warden_Apparition`: slots `MAT_Body` and `MAT_Mask`, 7,389 triangles (mask 333, not decimated; a plain decimate cut it to 85 and damaged it), bounds X −83.81…60.88, Y −109.55…66.26, Z 0.25…284.22. Bell metal is only the mask: one island. Materials as in the table, recompiled without errors. `M_Warden_BellMetal` has `TellGlow` (default 0) and `TellGlowColor`; its Emissive wasn't connected before. Tool: `Tools/warden/apply_p12f_art.py`.
+
+- **Warning to watch at the look test:** "nearly zero normals" on the decimated mesh could show as faint shading artefacts.
+- **`SM_LB_Warden_Silhouette` reads as dirty** in this session, cause unknown. Don't save it. It goes with the old Blueprint.
+
 ## 6. Blueprint and map (unreal-blueprint-engineer, [EDITOR])
 
-Start from a clean editor session: Unreal restarted, choosing Don't Save. `L_Monastery` is saved here, and the session that placed the review figures must not save it.
+The session must be free of temporary actors: `L_Monastery` is saved here, and the session that placed the review figures must not save it. Save the map **before** any `BP_Warden` template edit (section 7), because placed instances keep stale values until a map reload.
 
-1. Create `/Game/LastBell/Blueprints/Interactables/BP_WardenApparition`, parent `ALBWardenApparition`. `Body` = `SM_LB_Warden_Silhouette`, slots `MI_Warden_Apparition_Body` and `_Mask`, location 0, yaw 0, scale 1. `Glow` = `/Engine/BasicShapes/Plane`, `MI_Warden_ApparitionGlow`, relative location (−150, 0, 150), pitch 90 so it faces actor +X, scale = `GlowSizeCm` / 100 (set from C++ at BeginPlay).
+1. Create `/Game/LastBell/Blueprints/Interactables/BP_WardenApparition`, parent `ALBWardenApparition`. `Body` = `SM_LB_Warden_Apparition`, location 0, yaw 0, scale 1; its slots take the mesh's default MIs. `Glow` = `/Engine/BasicShapes/Plane`, `MI_Warden_ApparitionGlow`, relative location (−150, 0, 150), pitch 90 so it faces actor +X, scale = `GlowSizeCm` / 100 (set from C++ at BeginPlay).
 2. In `L_Monastery`, delete `BP_WardenSilhouette_C_0` and `_C_2`. Place `Apparition_Courtyard` and `Apparition_Chapel` with section 3's values. Courtyard `GlowSizeCm` 1000; Chapel 0. Outliner folder `Gameplay/Warden`.
-3. Check with `get_referencers` that nothing uses `BP_WardenSilhouette`, then delete it. If anything does, stop and report.
+3. **Don't delete anything in this session (changed at F2):** the undo history can still reference the removed actors, and a delete could raise a dialog that freezes the editor. After a restart, the lead checks `get_referencers` and deletes `BP_WardenSilhouette` and `SM_LB_Warden_Silhouette`, in section 9.
 4. Save `L_Monastery` and each new or changed package one at a time. Never save-all. Check the never-save list in the parent plan first.
 
 ## 7. Attack light (technical-artist for the material, unreal-blueprint-engineer for `BP_Warden`, [EDITOR])
@@ -172,6 +178,8 @@ New `Tools/warden/apparition_review.py` (temporary `P12F_` actors, same rules as
 Corrections allowed without returning to the owner: the values in section 3 (positions only among those listed), glow `Strength`, mask `Emissive`, light intensity and radius within range. **If the figure still looks flat at the rail after tuning, stop and show the owner**, with the full `SK_Warden` shown at that spot for comparison. Send the owner the sheet in any case.
 
 ## 9. QA, docs and owner playtest
+
+**Lead, in a restarted session:** `get_referencers`, then delete `BP_WardenSilhouette` and `SM_LB_Warden_Silhouette`. If anything still references them, stop and report.
 
 **qa-reviewer:** suite, `check_warden.py` (all modes), output log, and the failure-mode table below by reading the code and the assets. Report honestly what can't be seen automatically.
 
