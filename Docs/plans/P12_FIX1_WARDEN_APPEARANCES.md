@@ -1,6 +1,6 @@
 # P12 fix set 1: Warden appearances and attack light
 
-**Status: approved by the owner on 2026-11-05 ("go"): option A now with the real walk in Phase 13, and the chase glow. F1 to F4 done (1bfb141); nothing yet seen rendered or running in-game. F5, the look test, next.**
+**Status: approved by the owner on 2026-11-05 ("go"): option A now with the real walk in Phase 13, and the chase glow. F1 to F5 done; the look test passed, but nothing has yet been seen running in-game. F6, the owner's playtest and QA, next.**
 Branch: `claude/phase-12-warden-visual`. Parent plan: `P12_WARDEN_VISUAL.md`. Lead plans; every implementer is spawned with `model: "sonnet", effort: "high"` (D-048).
 
 ## 1. What the owner asked for, and what's behind it
@@ -188,6 +188,21 @@ Each figure's yaw faces its first camera. Glow plane: `/Engine/BasicShapes/Plane
 
 Corrections allowed without returning to the owner: the values in section 3 (positions only among those listed), glow `Strength`, mask `Emissive`, light intensity and radius within range. **If the figure still looks flat at the rail after tuning, stop and show the owner**, with the full `SK_Warden` shown at that spot for comparison. Send the owner the sheet in any case.
 
+### F5 result (2026-11-05): look test passed
+Sheet: `Docs/ArtTest/warden/p12f_look_test.png`; all captures in `Docs/ArtTest/warden/p12f/`.
+
+| Item | Result | Final value |
+|---|---|---|
+| Roofline spot | Only Y 1300 is visible from the gate; the ruined arcade hides Y 1800 and Y 2300 | (6020, 1300, 800), unchanged |
+| Contrast | Figure 12.4, sky beside it 88.6 and 95.6 (8-bit grey), so about 7:1 against a target of 4:1. Glow reads as moon behind cloud | Glow `Strength` 0.25 → **0.12** |
+| Pale mask | A small light spot at this distance | `Emissive` → **(0.05, 0.045, 0.038)** |
+| Rail | Solid figure, not a hole; the rail at waist height; mask faces the camera, which confirms +X facing in Unreal. No flat-figure fallback needed. Under the player's candle the robe reads brown rather than black | (8380, −120, 0), unchanged |
+| Sacristy | Black figure with pale mask against the candlelit wall from the dais. Darker but readable from the nave side | (8500, −930, 0), unchanged |
+| Red light | Mask, chest, hands, floor and walls clearly red in the crypt and the cloister. The mask's own glow wasn't in this view | 5000, radius 700, unchanged |
+
+- **The four bright marks in the roofline sky aren't in the game.** They project to the same pixels as `Gobo_Moon_Roof` and `Gobo_Moon_S1..S3`, the hidden light masks. D-074 already records that Simulate ignores `bHiddenInGame`. Check they're absent in the playtest.
+- **Not judged by this test:** the fades, the look gate, the mask's glow, how it feels in motion, and the "nearly zero normals" warning, which showed nothing visible in these views.
+
 ## 9. QA, docs and owner playtest
 
 **Lead, in a restarted session:** `get_referencers`, then delete `BP_WardenSilhouette` and `SM_LB_Warden_Silhouette`. If anything still references them, stop and report.
@@ -203,7 +218,7 @@ Corrections allowed without returning to the owner: the values in section 3 (pos
 **Owner, about 15 minutes:** `scalability 2`, `r.SetRes 1920x1080w`, `stat unit`, Warden on.
 1. `lb.NewGame`, enter the courtyard: roofline fades in, holds, fades out, stands out enough?
 2. Candle puzzle, altar, turn around: figure at the rail, then in the sacristy? Frightening, and is it clear where to go?
-3. Crypt: does the mask glow during the chase? Get caught once: is the red strong enough, and does the reload work without repeating the beats?
+3. Get caught once in the crypt: is the red strong enough, and does the reload work without repeating the beats? The chase only starts at stage 5, on entering the cloister (or `lb.State.Add State.Warden.Stage.5`): does the mask glow during it?
 4. Still open from the first playtest: feet on the floor, faces the way it moves, crypt `Game:` reading.
 
 Then "PHASE 12 READY FOR YOUR REVIEW". Merge only on "approve and merge".

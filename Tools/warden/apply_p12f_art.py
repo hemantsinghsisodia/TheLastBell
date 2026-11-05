@@ -68,8 +68,8 @@ GLOW_PARAMS = [("vector", "Color", (0.55, 0.62, 0.80)), ("scalar", "Strength", 0
 MIS = {
     "MI_Warden_Apparition_Body": (APPARITION, {"Color": (0.012, 0.012, 0.014), "Emissive": (0.0, 0.0, 0.0)}),
     "MI_Warden_Apparition_Mask": (APPARITION, {"Color": (0.30, 0.22, 0.12), "Rough": 0.6, "Metal": 0.3,
-                                               "Emissive": (0.02, 0.018, 0.015)}),
-    "MI_Warden_ApparitionGlow": (GLOW, {"Color": (0.55, 0.62, 0.80), "Strength": 0.25}),
+                                               "Emissive": (0.05, 0.045, 0.038)}),
+    "MI_Warden_ApparitionGlow": (GLOW, {"Color": (0.55, 0.62, 0.80), "Strength": 0.12}),
 }
 SLOT_MI = {"MAT_Body": "MI_Warden_Apparition_Body", "MAT_Mask": "MI_Warden_Apparition_Mask"}
 NEW_MATS = [APPARITION, GLOW]
