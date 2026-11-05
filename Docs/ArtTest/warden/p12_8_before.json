@@ -1,0 +1,1050 @@
+{
+ "taken": "2026-11-05 13:06:05",
+ "note": "values read before P12-8 changed anything",
+ "templates": {
+  "CharacterMesh0": {
+   "skeletalMeshAsset": "None",
+   "animationMode": "AnimationBlueprint",
+   "animationData": {
+    "animToPlay": "None",
+    "bSavedLooping": true,
+    "bSavedPlaying": true,
+    "savedPosition": 0,
+    "savedPlayRate": 1
+   },
+   "relativeLocation": {
+    "x": 0,
+    "y": 0,
+    "z": -110
+   },
+   "relativeRotation": {
+    "pitch": 0,
+    "yaw": 0,
+    "roll": 0
+   },
+   "relativeScale3D": {
+    "x": 1,
+    "y": 1,
+    "z": 1
+   },
+   "bVisible": true,
+   "bHiddenInGame": false,
+   "castShadow": true,
+   "bCastHiddenShadow": false,
+   "bOwnerNoSee": false,
+   "bRenderInMainPass": true,
+   "visibilityBasedAnimTickOption": "AlwaysTickPose",
+   "boundsScale": 1,
+   "bUseAttachParentBound": false,
+   "overrideMaterials": [],
+   "bodyInstance": {
+    "collisionProfileName": "CharacterMesh",
+    "collisionEnabled": "QueryOnly",
+    "objectType": "ECC_Pawn"
+   }
+  },
+  "PlaceholderBody": {
+   "bVisible": true,
+   "bHiddenInGame": false,
+   "relativeLocation": {
+    "x": 0,
+    "y": 0,
+    "z": -110
+   },
+   "relativeRotation": {
+    "pitch": 0,
+    "yaw": 0,
+    "roll": 0
+   },
+   "relativeScale3D": {
+    "x": 1,
+    "y": 1,
+    "z": 1
+   }
+  },
+  "Robe": {
+   "staticMesh": {
+    "refPath": "/Engine/BasicShapes/Cone.Cone"
+   },
+   "bVisible": true,
+   "bHiddenInGame": false,
+   "relativeLocation": {
+    "x": 0,
+    "y": 0,
+    "z": 105
+   },
+   "relativeRotation": {
+    "pitch": 0,
+    "yaw": 0,
+    "roll": 0
+   },
+   "relativeScale3D": {
+    "x": 0.56,
+    "y": 0.56,
+    "z": 2.1
+   },
+   "castShadow": true,
+   "overrideMaterials": [
+    {
+     "refPath": "/Game/LastBell/Materials/Instances/MI_LB_WardenSilhouette.MI_LB_WardenSilhouette"
+    }
+   ],
+   "bodyInstance": {
+    "collisionProfileName": "NoCollision",
+    "collisionEnabled": "NoCollision",
+    "objectType": "ECC_WorldStatic"
+   }
+  },
+  "Shoulders": {
+   "staticMesh": {
+    "refPath": "/Engine/BasicShapes/Cylinder.Cylinder"
+   },
+   "bVisible": true,
+   "bHiddenInGame": false,
+   "relativeLocation": {
+    "x": 0,
+    "y": 0,
+    "z": 202
+   },
+   "relativeRotation": {
+    "pitch": 0,
+    "yaw": 0,
+    "roll": 0
+   },
+   "relativeScale3D": {
+    "x": 0.2,
+    "y": 0.32,
+    "z": 0.65
+   },
+   "castShadow": true,
+   "overrideMaterials": [
+    {
+     "refPath": "/Game/LastBell/Materials/Instances/MI_LB_WardenSilhouette.MI_LB_WardenSilhouette"
+    }
+   ],
+   "bodyInstance": {
+    "collisionProfileName": "NoCollision",
+    "collisionEnabled": "NoCollision",
+    "objectType": "ECC_WorldStatic"
+   }
+  },
+  "Neck": {
+   "staticMesh": {
+    "refPath": "/Engine/BasicShapes/Cylinder.Cylinder"
+   },
+   "bVisible": true,
+   "bHiddenInGame": false,
+   "relativeLocation": {
+    "x": 0,
+    "y": 0,
+    "z": 247
+   },
+   "relativeRotation": {
+    "pitch": 0,
+    "yaw": 0,
+    "roll": 0
+   },
+   "relativeScale3D": {
+    "x": 0.08,
+    "y": 0.08,
+    "z": 0.25
+   },
+   "castShadow": true,
+   "overrideMaterials": [
+    {
+     "refPath": "/Game/LastBell/Materials/Instances/MI_LB_WardenSilhouette.MI_LB_WardenSilhouette"
+    }
+   ],
+   "bodyInstance": {
+    "collisionProfileName": "NoCollision",
+    "collisionEnabled": "NoCollision",
+    "objectType": "ECC_WorldStatic"
+   }
+  },
+  "Head": {
+   "staticMesh": {
+    "refPath": "/Engine/BasicShapes/Sphere.Sphere"
+   },
+   "bVisible": true,
+   "bHiddenInGame": false,
+   "relativeLocation": {
+    "x": 0,
+    "y": 0,
+    "z": 274
+   },
+   "relativeRotation": {
+    "pitch": 0,
+    "yaw": 0,
+    "roll": 0
+   },
+   "relativeScale3D": {
+    "x": 0.16,
+    "y": 0.14,
+    "z": 0.32
+   },
+   "castShadow": true,
+   "overrideMaterials": [
+    {
+     "refPath": "/Game/LastBell/Materials/Instances/MI_LB_WardenSilhouette.MI_LB_WardenSilhouette"
+    }
+   ],
+   "bodyInstance": {
+    "collisionProfileName": "NoCollision",
+    "collisionEnabled": "NoCollision",
+    "objectType": "ECC_WorldStatic"
+   }
+  },
+  "ArmLeft": {
+   "staticMesh": {
+    "refPath": "/Engine/BasicShapes/Cylinder.Cylinder"
+   },
+   "bVisible": true,
+   "bHiddenInGame": false,
+   "relativeLocation": {
+    "x": 0,
+    "y": -19,
+    "z": 130
+   },
+   "relativeRotation": {
+    "pitch": 0,
+    "yaw": 0,
+    "roll": 0
+   },
+   "relativeScale3D": {
+    "x": 0.05,
+    "y": 0.05,
+    "z": 1.9
+   },
+   "castShadow": true,
+   "overrideMaterials": [
+    {
+     "refPath": "/Game/LastBell/Materials/Instances/MI_LB_WardenSilhouette.MI_LB_WardenSilhouette"
+    }
+   ],
+   "bodyInstance": {
+    "collisionProfileName": "NoCollision",
+    "collisionEnabled": "NoCollision",
+    "objectType": "ECC_WorldStatic"
+   }
+  },
+  "ArmRight": {
+   "staticMesh": {
+    "refPath": "/Engine/BasicShapes/Cylinder.Cylinder"
+   },
+   "bVisible": true,
+   "bHiddenInGame": false,
+   "relativeLocation": {
+    "x": 0,
+    "y": 19,
+    "z": 130
+   },
+   "relativeRotation": {
+    "pitch": 0,
+    "yaw": 0,
+    "roll": 0
+   },
+   "relativeScale3D": {
+    "x": 0.05,
+    "y": 0.05,
+    "z": 1.9
+   },
+   "castShadow": true,
+   "overrideMaterials": [
+    {
+     "refPath": "/Game/LastBell/Materials/Instances/MI_LB_WardenSilhouette.MI_LB_WardenSilhouette"
+    }
+   ],
+   "bodyInstance": {
+    "collisionProfileName": "NoCollision",
+    "collisionEnabled": "NoCollision",
+    "objectType": "ECC_WorldStatic"
+   }
+  },
+  "Mask": {
+   "staticMesh": {
+    "refPath": "/Engine/BasicShapes/Cube.Cube"
+   },
+   "bVisible": true,
+   "bHiddenInGame": false,
+   "relativeLocation": {
+    "x": 7.8,
+    "y": 0,
+    "z": 274
+   },
+   "relativeRotation": {
+    "pitch": 0,
+    "yaw": 0,
+    "roll": 0
+   },
+   "relativeScale3D": {
+    "x": 0.015,
+    "y": 0.11,
+    "z": 0.22
+   },
+   "castShadow": true,
+   "overrideMaterials": [
+    {
+     "refPath": "/Game/LastBell/Materials/Instances/MI_LB_WardenMask.MI_LB_WardenMask"
+    }
+   ],
+   "bodyInstance": {
+    "collisionProfileName": "NoCollision",
+    "collisionEnabled": "NoCollision",
+    "objectType": "ECC_WorldStatic"
+   }
+  },
+  "MaskCrack": {
+   "staticMesh": {
+    "refPath": "/Engine/BasicShapes/Cube.Cube"
+   },
+   "bVisible": true,
+   "bHiddenInGame": false,
+   "relativeLocation": {
+    "x": 8.8,
+    "y": 0.5,
+    "z": 274
+   },
+   "relativeRotation": {
+    "pitch": 0,
+    "yaw": 0,
+    "roll": 15
+   },
+   "relativeScale3D": {
+    "x": 0.01,
+    "y": 0.012,
+    "z": 0.26
+   },
+   "castShadow": true,
+   "overrideMaterials": [
+    {
+     "refPath": "/Game/LastBell/Materials/Instances/MI_LB_WardenSilhouette.MI_LB_WardenSilhouette"
+    }
+   ],
+   "bodyInstance": {
+    "collisionProfileName": "NoCollision",
+    "collisionEnabled": "NoCollision",
+    "objectType": "ECC_WorldStatic"
+   }
+  },
+  "TellLight": {
+   "intensity": 800,
+   "lightColor": {
+    "r": 1,
+    "g": 0.0784313753247261,
+    "b": 0.03921568766236305,
+    "a": 1
+   },
+   "attenuationRadius": 160,
+   "castShadows": false,
+   "bVisible": false,
+   "bHiddenInGame": false,
+   "relativeLocation": {
+    "x": 16,
+    "y": 0,
+    "z": 274
+   },
+   "relativeRotation": {
+    "pitch": 0,
+    "yaw": 0,
+    "roll": 0
+   },
+   "relativeScale3D": {
+    "x": 1,
+    "y": 1,
+    "z": 1
+   },
+   "intensityUnits": "Unitless",
+   "sourceRadius": 0,
+   "softSourceRadius": 0,
+   "bAffectsWorld": true,
+   "temperature": 6500,
+   "bUseTemperature": false,
+   "indirectLightingIntensity": 1,
+   "volumetricScatteringIntensity": 1,
+   "bCastVolumetricShadow": false,
+   "lightingChannels": {
+    "bChannel0": true,
+    "bChannel1": false,
+    "bChannel2": false
+   },
+   "mobility": "Movable",
+   "bUseInverseSquaredFalloff": true,
+   "lightFalloffExponent": 8,
+   "castTranslucentShadows": false,
+   "bAutoActivate": false
+  }
+ },
+ "silhouette_templates": {
+  "Body": {
+   "staticMesh": {
+    "refPath": "/Engine/BasicShapes/Cylinder.Cylinder"
+   },
+   "bVisible": true,
+   "bHiddenInGame": false,
+   "relativeLocation": {
+    "x": 0,
+    "y": 0,
+    "z": 130
+   },
+   "relativeRotation": {
+    "pitch": 0,
+    "yaw": 0,
+    "roll": 0
+   },
+   "relativeScale3D": {
+    "x": 0.6,
+    "y": 0.6,
+    "z": 2.6
+   },
+   "castShadow": true,
+   "overrideMaterials": [
+    {
+     "refPath": "/Game/LastBell/Materials/Instances/MI_LB_WardenSilhouette.MI_LB_WardenSilhouette"
+    }
+   ],
+   "bodyInstance": {
+    "collisionProfileName": "NoCollision",
+    "collisionEnabled": "NoCollision",
+    "objectType": "ECC_WorldStatic"
+   }
+  },
+  "Head": {
+   "staticMesh": {
+    "refPath": "/Engine/BasicShapes/Sphere.Sphere"
+   },
+   "bVisible": true,
+   "bHiddenInGame": false,
+   "relativeLocation": {
+    "x": 0,
+    "y": 0,
+    "z": 270
+   },
+   "relativeRotation": {
+    "pitch": 0,
+    "yaw": 0,
+    "roll": 0
+   },
+   "relativeScale3D": {
+    "x": 0.4,
+    "y": 0.4,
+    "z": 0.4
+   },
+   "castShadow": true,
+   "overrideMaterials": [
+    {
+     "refPath": "/Game/LastBell/Materials/Instances/MI_LB_WardenSilhouette.MI_LB_WardenSilhouette"
+    }
+   ],
+   "bodyInstance": {
+    "collisionProfileName": "NoCollision",
+    "collisionEnabled": "NoCollision",
+    "objectType": "ECC_WorldStatic"
+   }
+  }
+ },
+ "silhouette_defaults": {
+  "TriggerTag": {
+   "tagName": "None"
+  },
+  "VisibleSeconds": 3,
+  "MoveOffset": {
+   "x": 0,
+   "y": 0,
+   "z": 0
+  }
+ },
+ "capsule": {
+  "capsuleRadius": 42,
+  "capsuleHalfHeight": 110
+ },
+ "tuning_asset": {
+  "arrivalRadius": 50,
+  "attackCooldownSeconds": 1.5,
+  "attackRange": 140,
+  "attackWindupSeconds": 0.6000000238418579,
+  "candleLitSightMultiplier": 1.25,
+  "capsuleHalfHeight": 110,
+  "capsuleRadius": 42,
+  "chaseSpeed": 420,
+  "eyeHeight": 85,
+  "hearingLoudnessThreshold": 0.05000000074505806,
+  "hearingRange": 2500,
+  "investigateSpeed": 190,
+  "lastKnownMemorySeconds": 6,
+  "lookAroundHalfAngle": 70,
+  "loseSightExtraRadius": 300,
+  "materializeRetrySeconds": 0.5,
+  "patrolSpeed": 140,
+  "peripheralHalfAngle": 45,
+  "playerViewHalfAngle": 75,
+  "repathIntervalSeconds": 0.25,
+  "repathMinDistance": 100,
+  "returnSpeed": 170,
+  "searchDurationSeconds": 12,
+  "searchFallbackRadius": 800,
+  "searchPointCount": 3,
+  "searchPointPauseSeconds": 2,
+  "searchPointRadius": 1500,
+  "searchSpeed": 170,
+  "sightCloseRangeBackOffset": 150,
+  "sightConfirmTime": 0.6000000238418579,
+  "sightRadiusStage3": 1500,
+  "sightRadiusStage4": 2000,
+  "sightRadiusStage5": 2500,
+  "stuckForgiveDistance": 150,
+  "stuckMinProgress": 25,
+  "stuckSeconds": 3,
+  "suspiciousSeconds": 2.5,
+  "turnRate": 180,
+  "unreachableFallbackRadius": 600,
+  "unreachableRecheckSeconds": 8
+ },
+ "sockets": [],
+ "graphs": {
+  "warden": [
+   "UserConstructionScript",
+   "PlayStateFeedback",
+   "PlayWindupTell",
+   "EndWindupTell",
+   "ShowWindupTell",
+   "EventGraph"
+  ],
+  "silhouette": [
+   "UserConstructionScript",
+   "HandleStateChanged",
+   "EventGraph"
+  ]
+ },
+ "eventgraph_dsl": "(event Custom|BindToBrain\n  (bind _self self)\n  (bind _returnvalue (LastBell|Warden|GetBrain _self))\n  (if (not (|GetbBrainBound))\n    (Utilities|IsValid _returnvalue\n      (:\"Is Valid\"\n        (LastBell|Warden|AssignOnStateChanged _returnvalue (AddEvent|Custom|OnStateChanged_Event))\n        (LastBell|Warden|AssignOnAttackWindup _returnvalue (AddEvent|Custom|OnAttackWindup_Event))\n        (|SetbBrainBound true)))))\n\n(event EventBeginPlay\n  (CallFunction|BindtoBrain))\n\n(event Custom|OnStateChanged_Event_0 (OldState NewState))\n\n(event Custom|OnAttackWindup_Event_0 (WindupSeconds))\n\n(event Custom|OnStateChanged_Event (OldState NewState)\n  (CallFunction|PlayStateFeedback NewState))\n\n(event Custom|OnAttackWindup_Event (WindupSeconds)\n  (CallFunction|PlayWindupTell WindupSeconds)\n  (CallFunction|ShowWindupTell WindupSeconds))\n\n(event EventPossessed (NewController)\n  (CallFunction|BindtoBrain))\n\n(event EventEndPlay (EndPlayReason)\n  (bind _self self)\n  (bind _returnvalue (LastBell|Warden|GetBrain _self))\n  (|SetbBrainBound false)\n  (Utilities|IsValid _returnvalue\n    (:\"Is Valid\"\n      (LastBell|Warden|UnbindEventfromOnStateChanged _returnvalue (EventDispatchers|CreateEvent))\n      (LastBell|Warden|UnbindEventfromOnAttackWindup _returnvalue (EventDispatchers|CreateEvent)))))\n",
+ "instances": {
+  "BP_Warden_C_0": {
+   "CharacterMesh0": {
+    "skeletalMeshAsset": "None",
+    "animationMode": "AnimationBlueprint",
+    "animationData": {
+     "animToPlay": "None",
+     "bSavedLooping": true,
+     "bSavedPlaying": true,
+     "savedPosition": 0,
+     "savedPlayRate": 1
+    },
+    "relativeLocation": {
+     "x": 0,
+     "y": 0,
+     "z": -110
+    },
+    "relativeRotation": {
+     "pitch": 0,
+     "yaw": 0,
+     "roll": 0
+    },
+    "relativeScale3D": {
+     "x": 1,
+     "y": 1,
+     "z": 1
+    },
+    "bVisible": true,
+    "bHiddenInGame": false,
+    "castShadow": true,
+    "bCastHiddenShadow": false,
+    "bOwnerNoSee": false,
+    "bRenderInMainPass": true,
+    "visibilityBasedAnimTickOption": "AlwaysTickPose",
+    "boundsScale": 1,
+    "bUseAttachParentBound": false,
+    "overrideMaterials": [],
+    "bodyInstance": {
+     "collisionProfileName": "CharacterMesh",
+     "collisionEnabled": "QueryOnly",
+     "objectType": "ECC_Pawn"
+    }
+   },
+   "TellLight": {
+    "intensity": 800,
+    "lightColor": {
+     "r": 1,
+     "g": 0.0784313753247261,
+     "b": 0.03921568766236305,
+     "a": 1
+    },
+    "attenuationRadius": 160,
+    "castShadows": false,
+    "bVisible": false,
+    "bHiddenInGame": false,
+    "relativeLocation": {
+     "x": 16,
+     "y": 0,
+     "z": 274
+    },
+    "relativeRotation": {
+     "pitch": 0,
+     "yaw": 0,
+     "roll": 0
+    },
+    "relativeScale3D": {
+     "x": 1,
+     "y": 1,
+     "z": 1
+    },
+    "intensityUnits": "Unitless",
+    "sourceRadius": 0,
+    "softSourceRadius": 0,
+    "bAffectsWorld": true,
+    "temperature": 6500,
+    "bUseTemperature": false,
+    "indirectLightingIntensity": 1,
+    "volumetricScatteringIntensity": 1,
+    "bCastVolumetricShadow": false,
+    "lightingChannels": {
+     "bChannel0": true,
+     "bChannel1": false,
+     "bChannel2": false
+    },
+    "mobility": "Movable",
+    "bUseInverseSquaredFalloff": true,
+    "lightFalloffExponent": 8,
+    "castTranslucentShadows": false,
+    "bAutoActivate": false
+   },
+   "Robe": {
+    "staticMesh": {
+     "refPath": "/Engine/BasicShapes/Cone.Cone"
+    },
+    "bVisible": true,
+    "bHiddenInGame": false,
+    "relativeLocation": {
+     "x": 0,
+     "y": 0,
+     "z": 105
+    },
+    "relativeRotation": {
+     "pitch": 0,
+     "yaw": 0,
+     "roll": 0
+    },
+    "relativeScale3D": {
+     "x": 0.56,
+     "y": 0.56,
+     "z": 2.1
+    },
+    "castShadow": true,
+    "overrideMaterials": [
+     {
+      "refPath": "/Game/LastBell/Materials/Instances/MI_LB_WardenSilhouette.MI_LB_WardenSilhouette"
+     }
+    ],
+    "bodyInstance": {
+     "collisionProfileName": "NoCollision",
+     "collisionEnabled": "NoCollision",
+     "objectType": "ECC_WorldStatic"
+    }
+   },
+   "Shoulders": {
+    "staticMesh": {
+     "refPath": "/Engine/BasicShapes/Cylinder.Cylinder"
+    },
+    "bVisible": true,
+    "bHiddenInGame": false,
+    "relativeLocation": {
+     "x": 0,
+     "y": 0,
+     "z": 202
+    },
+    "relativeRotation": {
+     "pitch": 0,
+     "yaw": 0,
+     "roll": 0
+    },
+    "relativeScale3D": {
+     "x": 0.2,
+     "y": 0.32,
+     "z": 0.65
+    },
+    "castShadow": true,
+    "overrideMaterials": [
+     {
+      "refPath": "/Game/LastBell/Materials/Instances/MI_LB_WardenSilhouette.MI_LB_WardenSilhouette"
+     }
+    ],
+    "bodyInstance": {
+     "collisionProfileName": "NoCollision",
+     "collisionEnabled": "NoCollision",
+     "objectType": "ECC_WorldStatic"
+    }
+   },
+   "Neck": {
+    "staticMesh": {
+     "refPath": "/Engine/BasicShapes/Cylinder.Cylinder"
+    },
+    "bVisible": true,
+    "bHiddenInGame": false,
+    "relativeLocation": {
+     "x": 0,
+     "y": 0,
+     "z": 247
+    },
+    "relativeRotation": {
+     "pitch": 0,
+     "yaw": 0,
+     "roll": 0
+    },
+    "relativeScale3D": {
+     "x": 0.08,
+     "y": 0.08,
+     "z": 0.25
+    },
+    "castShadow": true,
+    "overrideMaterials": [
+     {
+      "refPath": "/Game/LastBell/Materials/Instances/MI_LB_WardenSilhouette.MI_LB_WardenSilhouette"
+     }
+    ],
+    "bodyInstance": {
+     "collisionProfileName": "NoCollision",
+     "collisionEnabled": "NoCollision",
+     "objectType": "ECC_WorldStatic"
+    }
+   },
+   "Head": {
+    "staticMesh": {
+     "refPath": "/Engine/BasicShapes/Sphere.Sphere"
+    },
+    "bVisible": true,
+    "bHiddenInGame": false,
+    "relativeLocation": {
+     "x": 0,
+     "y": 0,
+     "z": 274
+    },
+    "relativeRotation": {
+     "pitch": 0,
+     "yaw": 0,
+     "roll": 0
+    },
+    "relativeScale3D": {
+     "x": 0.16,
+     "y": 0.14,
+     "z": 0.32
+    },
+    "castShadow": true,
+    "overrideMaterials": [
+     {
+      "refPath": "/Game/LastBell/Materials/Instances/MI_LB_WardenSilhouette.MI_LB_WardenSilhouette"
+     }
+    ],
+    "bodyInstance": {
+     "collisionProfileName": "NoCollision",
+     "collisionEnabled": "NoCollision",
+     "objectType": "ECC_WorldStatic"
+    }
+   },
+   "ArmLeft": {
+    "staticMesh": {
+     "refPath": "/Engine/BasicShapes/Cylinder.Cylinder"
+    },
+    "bVisible": true,
+    "bHiddenInGame": false,
+    "relativeLocation": {
+     "x": 0,
+     "y": -19,
+     "z": 130
+    },
+    "relativeRotation": {
+     "pitch": 0,
+     "yaw": 0,
+     "roll": 0
+    },
+    "relativeScale3D": {
+     "x": 0.05,
+     "y": 0.05,
+     "z": 1.9
+    },
+    "castShadow": true,
+    "overrideMaterials": [
+     {
+      "refPath": "/Game/LastBell/Materials/Instances/MI_LB_WardenSilhouette.MI_LB_WardenSilhouette"
+     }
+    ],
+    "bodyInstance": {
+     "collisionProfileName": "NoCollision",
+     "collisionEnabled": "NoCollision",
+     "objectType": "ECC_WorldStatic"
+    }
+   },
+   "ArmRight": {
+    "staticMesh": {
+     "refPath": "/Engine/BasicShapes/Cylinder.Cylinder"
+    },
+    "bVisible": true,
+    "bHiddenInGame": false,
+    "relativeLocation": {
+     "x": 0,
+     "y": 19,
+     "z": 130
+    },
+    "relativeRotation": {
+     "pitch": 0,
+     "yaw": 0,
+     "roll": 0
+    },
+    "relativeScale3D": {
+     "x": 0.05,
+     "y": 0.05,
+     "z": 1.9
+    },
+    "castShadow": true,
+    "overrideMaterials": [
+     {
+      "refPath": "/Game/LastBell/Materials/Instances/MI_LB_WardenSilhouette.MI_LB_WardenSilhouette"
+     }
+    ],
+    "bodyInstance": {
+     "collisionProfileName": "NoCollision",
+     "collisionEnabled": "NoCollision",
+     "objectType": "ECC_WorldStatic"
+    }
+   },
+   "Mask": {
+    "staticMesh": {
+     "refPath": "/Engine/BasicShapes/Cube.Cube"
+    },
+    "bVisible": true,
+    "bHiddenInGame": false,
+    "relativeLocation": {
+     "x": 7.8,
+     "y": 0,
+     "z": 274
+    },
+    "relativeRotation": {
+     "pitch": 0,
+     "yaw": 0,
+     "roll": 0
+    },
+    "relativeScale3D": {
+     "x": 0.015,
+     "y": 0.11,
+     "z": 0.22
+    },
+    "castShadow": true,
+    "overrideMaterials": [
+     {
+      "refPath": "/Game/LastBell/Materials/Instances/MI_LB_WardenMask.MI_LB_WardenMask"
+     }
+    ],
+    "bodyInstance": {
+     "collisionProfileName": "NoCollision",
+     "collisionEnabled": "NoCollision",
+     "objectType": "ECC_WorldStatic"
+    }
+   },
+   "MaskCrack": {
+    "staticMesh": {
+     "refPath": "/Engine/BasicShapes/Cube.Cube"
+    },
+    "bVisible": true,
+    "bHiddenInGame": false,
+    "relativeLocation": {
+     "x": 8.8,
+     "y": 0.5,
+     "z": 274
+    },
+    "relativeRotation": {
+     "pitch": 0,
+     "yaw": 0,
+     "roll": 15
+    },
+    "relativeScale3D": {
+     "x": 0.01,
+     "y": 0.012,
+     "z": 0.26
+    },
+    "castShadow": true,
+    "overrideMaterials": [
+     {
+      "refPath": "/Game/LastBell/Materials/Instances/MI_LB_WardenSilhouette.MI_LB_WardenSilhouette"
+     }
+    ],
+    "bodyInstance": {
+     "collisionProfileName": "NoCollision",
+     "collisionEnabled": "NoCollision",
+     "objectType": "ECC_WorldStatic"
+    }
+   }
+  },
+  "BP_WardenSilhouette_C_2": {
+   "Body": {
+    "staticMesh": {
+     "refPath": "/Engine/BasicShapes/Cylinder.Cylinder"
+    },
+    "bVisible": true,
+    "bHiddenInGame": false,
+    "relativeLocation": {
+     "x": 0,
+     "y": 0,
+     "z": 130
+    },
+    "relativeRotation": {
+     "pitch": 0,
+     "yaw": 0,
+     "roll": 0
+    },
+    "relativeScale3D": {
+     "x": 0.6,
+     "y": 0.6,
+     "z": 2.6
+    },
+    "castShadow": true,
+    "overrideMaterials": [
+     {
+      "refPath": "/Game/LastBell/Materials/Instances/MI_LB_WardenSilhouette.MI_LB_WardenSilhouette"
+     }
+    ],
+    "bodyInstance": {
+     "collisionProfileName": "NoCollision",
+     "collisionEnabled": "NoCollision",
+     "objectType": "ECC_WorldStatic"
+    }
+   },
+   "Head": {
+    "staticMesh": {
+     "refPath": "/Engine/BasicShapes/Sphere.Sphere"
+    },
+    "bVisible": true,
+    "bHiddenInGame": false,
+    "relativeLocation": {
+     "x": 0,
+     "y": 0,
+     "z": 270
+    },
+    "relativeRotation": {
+     "pitch": 0,
+     "yaw": 0,
+     "roll": 0
+    },
+    "relativeScale3D": {
+     "x": 0.4,
+     "y": 0.4,
+     "z": 0.4
+    },
+    "castShadow": true,
+    "overrideMaterials": [
+     {
+      "refPath": "/Game/LastBell/Materials/Instances/MI_LB_WardenSilhouette.MI_LB_WardenSilhouette"
+     }
+    ],
+    "bodyInstance": {
+     "collisionProfileName": "NoCollision",
+     "collisionEnabled": "NoCollision",
+     "objectType": "ECC_WorldStatic"
+    }
+   },
+   "actor": {
+    "TriggerTag": {
+     "tagName": "State.Ritual.1"
+    },
+    "VisibleSeconds": 3,
+    "MoveOffset": {
+     "x": 0,
+     "y": 0,
+     "z": 0
+    }
+   }
+  },
+  "BP_WardenSilhouette_C_0": {
+   "Body": {
+    "staticMesh": {
+     "refPath": "/Engine/BasicShapes/Cylinder.Cylinder"
+    },
+    "bVisible": true,
+    "bHiddenInGame": false,
+    "relativeLocation": {
+     "x": 0,
+     "y": 0,
+     "z": 130
+    },
+    "relativeRotation": {
+     "pitch": 0,
+     "yaw": 0,
+     "roll": 0
+    },
+    "relativeScale3D": {
+     "x": 0.6,
+     "y": 0.6,
+     "z": 2.6
+    },
+    "castShadow": true,
+    "overrideMaterials": [
+     {
+      "refPath": "/Game/LastBell/Materials/Instances/MI_LB_WardenSilhouette.MI_LB_WardenSilhouette"
+     }
+    ],
+    "bodyInstance": {
+     "collisionProfileName": "NoCollision",
+     "collisionEnabled": "NoCollision",
+     "objectType": "ECC_WorldStatic"
+    }
+   },
+   "Head": {
+    "staticMesh": {
+     "refPath": "/Engine/BasicShapes/Sphere.Sphere"
+    },
+    "bVisible": true,
+    "bHiddenInGame": false,
+    "relativeLocation": {
+     "x": 0,
+     "y": 0,
+     "z": 270
+    },
+    "relativeRotation": {
+     "pitch": 0,
+     "yaw": 0,
+     "roll": 0
+    },
+    "relativeScale3D": {
+     "x": 0.4,
+     "y": 0.4,
+     "z": 0.4
+    },
+    "castShadow": true,
+    "overrideMaterials": [
+     {
+      "refPath": "/Game/LastBell/Materials/Instances/MI_LB_WardenSilhouette.MI_LB_WardenSilhouette"
+     }
+    ],
+    "bodyInstance": {
+     "collisionProfileName": "NoCollision",
+     "collisionEnabled": "NoCollision",
+     "objectType": "ECC_WorldStatic"
+    }
+   },
+   "actor": {
+    "TriggerTag": {
+     "tagName": "State.Event.CourtyardEntered"
+    },
+    "VisibleSeconds": 3,
+    "MoveOffset": {
+     "x": 0,
+     "y": -1000,
+     "z": 0
+    }
+   }
+  }
+ },
+ "actor_count_note": "count is taken separately in the report (find_actors cannot count 2980 cheaply)",
+ "dirty_before": {
+  "/Game/LastBell/Materials/Master/M_LB_Surface": false,
+  "/Game/LastBell/Maps/L_Monastery": true,
+  "/Game/LastBell/Maps/L_Test_Warden": false,
+  "/Game/LastBell/Characters/Warden/Meshes/SK_Warden_Skeleton": false,
+  "/Game/LastBell/Characters/Warden/Meshes/SK_Warden_PhysicsAsset": false,
+  "/Game/LastBell/Characters/Warden/Anims/AN_Warden_Idle": false,
+  "/Game/LastBell/Characters/Warden/Meshes/SM_LB_Warden_Silhouette": false,
+  "/Game/LastBell/Data/DA_WardenTuning": false,
+  "/Game/LastBell/Characters/Warden/Materials/MI_Warden_Wool": false,
+  "/Game/LastBell/Characters/Warden/Materials/MI_Warden_Skin": false,
+  "/Game/LastBell/Materials/Instances/MI_LB_WardenSilhouette": false,
+  "/Game/LastBell/Characters/Warden/Meshes/SK_Warden": false,
+  "/Game/LastBell/Blueprints/AI/BP_Warden": true,
+  "/Game/LastBell/Blueprints/Interactables/BP_WardenSilhouette": true
+ }
+}

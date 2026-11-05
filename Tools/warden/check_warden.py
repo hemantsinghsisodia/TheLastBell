@@ -26,7 +26,9 @@ Checks (all under /Game/LastBell/Characters/Warden/):
 Informational (not counted): texture memory estimate from the Format and Dimensions tags; the skeleton's and the physics
 asset's preview-mesh tags (the physics asset's still names the old /Game/WardenArtV5 mesh: no tool can write it).
 
-A later task (P12-8) adds a `--bp` mode that checks BP_Warden's use of the mesh; it plugs in at CHECK_GROUPS below.
+`--disk` (P12-8) loads L_Monastery and L_Test_Warden from disk in a separate headless process (mirror project) and checks the placed
+Warden and silhouettes as saved; `--bp` (P12-8) runs only the Blueprint group (check_bp, below): BP_Warden and BP_WardenSilhouette use the V5.5 art, and the capsule,
+DA_WardenTuning and TellLight are unchanged against Docs/ArtTest/warden/p12_8_before.json. Still read-only.
 """
 import json
 import os
@@ -222,20 +224,270 @@ def check_place(ue, res, rep):
         print("INFO  %s preview mesh tag: %s" % (label, tag))
 
 
-# (name, function).  P12-8 appends ("blueprint", check_bp) here when run with --bp.
+def check_bp(ue, res, rep, snap_path=None):
+    """P12-8 (--bp): BP_Warden and BP_WardenSilhouette use the V5.5 art; capsule, tuning and TellLight are unchanged.
+    Read-only (find_nodes / get_node_infos / get_properties only; never read_graph_dsl, which spawns orphan events).
+    Expected values are the plan's, in apply_p12_warden.py; 'unchanged' means equal to Docs/ArtTest/warden/p12_8_before.json.
+    A Blueprint property can't be read after a reload from here, so this reads the in-memory state."""
+    sys.path.insert(0, HERE)
+    import apply_p12_warden as ap  # noqa: E402
+    snap_path = snap_path or ap.DEFAULT_SNAP
+    with open(snap_path, "r", encoding="utf-8") as f:
+        snap = json.load(f)
+
+    # --- socket
+    m = ap.pkg_ref(ap.MESH_PKG)
+    names = ue.call(ap.SK, "get_socket_names", {"mesh": m})
+    ok = ap.SOCKET in names
+    bone = ue.call(ap.SK, "get_socket_bone", {"mesh": m, "socket_name": ap.SOCKET}) if ok else None
+    t = ue.call(ap.SK, "get_socket_transform", {"mesh": m, "socket_name": ap.SOCKET}) if ok else None
+    zero = ok and ap.vec_close(t["location"], {"x": 0, "y": 0, "z": 0}) and ap.rot_close(t["rotation"], {"pitch": 0, "yaw": 0, "roll": 0})
+    res.check(ok and bone == ap.BONE and zero, "SK_Warden socket `mask` on bone `head`, zero offset", "sockets %s, bone %s, transform %s" % (names, bone, t))
+
+    # --- CharacterMesh0 (template)
+    cm = ap.read_props(ue, ap.CM0, ap.CM_PROPS)
+    ad = cm["animationData"] if isinstance(cm["animationData"], dict) else {}
+    res.check(ap.same(ap.CM0_VALUES["skeletalMeshAsset"], cm["skeletalMeshAsset"]), "CharacterMesh0 mesh is SK_Warden", "got %s" % ap.short(cm["skeletalMeshAsset"]))
+    res.check(cm["animationMode"] == "AnimationSingleNode", "CharacterMesh0 animation mode is single node", "got %s" % cm["animationMode"])
+    res.check(ap.same(ap.CM0_VALUES["animationData"]["animToPlay"], ad.get("animToPlay")), "CharacterMesh0 clip is AN_Warden_Idle", "got %s" % ap.short(ad.get("animToPlay")))
+    res.check(ad.get("bSavedLooping") is True, "CharacterMesh0 looping", "got %s" % ad.get("bSavedLooping"))
+    res.check(ad.get("bSavedPlaying") is True, "CharacterMesh0 playing", "got %s" % ad.get("bSavedPlaying"))
+    res.check(ap.vec_close(cm["relativeLocation"], {"x": 0, "y": 0, "z": -110}), "CharacterMesh0 location (0, 0, -110)", "got %s" % cm["relativeLocation"])
+    res.check(ap.rot_close(cm["relativeRotation"], {"pitch": 0, "yaw": 0, "roll": 0}), "CharacterMesh0 yaw 0 (pitch 0, roll 0)", "got %s" % cm["relativeRotation"])
+    bi = cm["bodyInstance"] if isinstance(cm["bodyInstance"], dict) else {}
+    res.check(bi.get("collisionProfileName") == "NoCollision" and bi.get("collisionEnabled") == "NoCollision",
+              "CharacterMesh0 collision NoCollision (profile and enabled)", "got %s" % bi)
+
+    # --- placeholder parts
+    for n in ap.PARTS:
+        p = ap.read_props(ue, ap.tmpl_w(n), ap.PART_PROPS)
+        b = p["bodyInstance"] if isinstance(p["bodyInstance"], dict) else {}
+        res.check(p["staticMesh"] in (None, "None") and p["bVisible"] is False and p["bHiddenInGame"] is True
+                  and b.get("collisionProfileName") == "NoCollision",
+                  "%s: no mesh, hidden, NoCollision" % n, "mesh %s visible %s hiddenInGame %s profile %s" % (
+                      ap.short(p["staticMesh"]), p["bVisible"], p["bHiddenInGame"], b.get("collisionProfileName")))
+
+    # --- TellLight: every value equals the snapshot (and the light does not cast shadows, as before)
+    tl = ap.read_props(ue, ap.tmpl_w("TellLight"), ap.LIGHT_PROPS)
+    diffs = [k for k in ap.LIGHT_PROPS if tl[k] != snap["templates"]["TellLight"][k]]
+    res.check(not diffs, "TellLight: all %d values equal the snapshot" % len(ap.LIGHT_PROPS), "differs: %s" % diffs)
+    print("INFO  TellLight casts shadows (castShadows): %s; bVisible %s; intensity %s, radius %s" % (
+        tl["castShadows"], tl["bVisible"], tl["intensity"], tl["attenuationRadius"]))
+
+    # --- graphs
+    fn_infos = ap.graph_infos(ue, ap.WARDEN_PKG, ap.FN_NAME) if ap.FN_NAME in ap.list_graph_names(ue, ap.WARDEN_PKG) else []
+    att = ap.nodes_of(fn_infos, "AttachComponentToComponent")
+    ok = len(att) == 1
+    detail = "%d attach node(s) in %s" % (len(att), ap.FN_NAME)
+    if ok:
+        a = att[0]
+        sock = ap.pin(a, "SocketName", "in")
+        rules = [ap.pin(a, r, "in")["value"] for r in ("LocationRule", "RotationRule", "ScaleRule")]
+        src_light = [c for c in ap.connected(fn_infos, a, "self", "in")]
+        src_parent = [c for c in ap.connected(fn_infos, a, "Parent", "in")]
+        kinds = {i["node"]["refPath"]: i["type_id"] for i in fn_infos}
+        ok = (sock["value"] == ap.SOCKET and rules == ["SnapToTarget"] * 3
+              and len(src_light) == 1 and kinds.get(src_light[0], "").endswith("|GetTellLight")
+              and len(src_parent) == 1 and kinds.get(src_parent[0], "").endswith("|GetMesh"))
+        detail = "socket %r rules %s self<-%s parent<-%s" % (sock["value"], rules, [kinds.get(x) for x in src_light], [kinds.get(x) for x in src_parent])
+    res.check(ok, "%s: AttachComponentToComponent(TellLight -> mesh, `mask`, SnapToTarget) once" % ap.FN_NAME, detail)
+
+    eg = ap.graph_infos(ue, ap.WARDEN_PKG, "EventGraph")
+    calls = ap.nodes_of(eg, "|" + ap.FN_NAME)
+    chain_ok = False
+    if len(calls) == 1:
+        by = {i["node"]["refPath"]: i for i in eg}
+        prev = ap.connected(eg, calls[0], "execute", "in")
+        if len(prev) == 1 and by[prev[0]]["type_id"].endswith("|BindToBrain"):
+            prev2 = ap.connected(eg, by[prev[0]], "execute", "in")
+            chain_ok = len(prev2) == 1 and by[prev2[0]]["type_id"] == "AddEvent|EventBeginPlay"
+    res.check(len(calls) == 1 and chain_ok, "EventGraph: BeginPlay -> BindtoBrain -> %s, the call is present once" % ap.FN_NAME,
+              "%d call node(s), chain ok %s" % (len(calls), chain_ok))
+    events = [i["type_id"] for i in eg if i["type_id"].startswith("AddEvent|")]
+    expect = sorted(["AddEvent|Custom|BindToBrain", "AddEvent|Custom|OnStateChanged_Event", "AddEvent|Custom|OnAttackWindup_Event",
+                     "AddEvent|EventBeginPlay", "AddEvent|EventPossessed", "AddEvent|EventEndPlay"])
+    res.check(sorted(events) == expect, "EventGraph: the 6 original events exist once each, no duplicate or orphan event",
+              "events %s" % sorted(events))
+    binds = ap.nodes_of(eg, "|GetbBrainBound") + ap.nodes_of(eg, "|SetbBrainBound")
+    res.check(len(binds) >= 2 and len(eg) == 29, "EventGraph: bBrainBound logic kept; 29 nodes (28 original + the call)",
+              "%d bBrainBound nodes, %d nodes" % (len(binds), len(eg)))
+
+    # --- silhouette template and actor defaults
+    body = ap.read_props(ue, ap.tmpl_s("Body"), ap.PART_PROPS)
+    ok = (ap.same(ap.SIL_BODY_VALUES["staticMesh"], body["staticMesh"]) and ap.vec_close(body["relativeLocation"], {"x": 0, "y": 0, "z": 0})
+          and ap.rot_close(body["relativeRotation"], {"pitch": 0, "yaw": 90, "roll": 0}) and ap.vec_close(body["relativeScale3D"], {"x": 1, "y": 1, "z": 1})
+          and [ap.short(x) for x in body["overrideMaterials"]] == ["MI_LB_WardenSilhouette"])
+    res.check(ok, "BP_WardenSilhouette Body: SM_LB_Warden_Silhouette, (0,0,0), yaw +90, scale 1, MI_LB_WardenSilhouette kept",
+              "mesh %s loc %s rot %s scale %s mats %s" % (ap.short(body["staticMesh"]), body["relativeLocation"], body["relativeRotation"],
+                                                         body["relativeScale3D"], [ap.short(x) for x in body["overrideMaterials"]]))
+    head = ap.read_props(ue, ap.tmpl_s("Head"), ap.PART_PROPS)
+    res.check(head["staticMesh"] in (None, "None") and head["bVisible"] is False and head["bHiddenInGame"] is True,
+              "BP_WardenSilhouette Head: no mesh, hidden", "mesh %s visible %s hiddenInGame %s" % (ap.short(head["staticMesh"]), head["bVisible"], head["bHiddenInGame"]))
+    sd = ap.read_props(ue, ap.SIL_CDO, ap.SIL_ACTOR_PROPS)
+    res.check(sd == snap["silhouette_defaults"], "BP_WardenSilhouette TriggerTag, VisibleSeconds, MoveOffset defaults equal the snapshot", "got %s" % sd)
+
+    # --- capsule and tuning (read from BP_Warden and DA_WardenTuning)
+    cap = ap.read_props(ue, ap.CAPSULE, ["capsuleRadius", "capsuleHalfHeight"])
+    res.check(close(cap["capsuleRadius"], 42) and close(cap["capsuleHalfHeight"], 110), "BP_Warden capsule 42 / 110", "got %s" % cap)
+    tun = ap.tuning_values(ue)
+    res.check(tun == snap["tuning_asset"] and close(tun["capsuleRadius"], 42) and close(tun["capsuleHalfHeight"], 110),
+              "DA_WardenTuning: all %d values equal the snapshot, capsule 42 / 110" % len(tun), "differs: %s" % [k for k in tun if tun[k] != snap["tuning_asset"].get(k)])
+
+    # --- placed instances in the current level (in memory): they must equal the new templates
+    if ap.level_ok(ue):
+        bad = []
+        for a in ap.WARDEN_INSTANCES:
+            c = ap.read_props(ue, ap.inst(a, "CharacterMesh0"), ap.CM_PROPS)
+            ci = c["bodyInstance"] if isinstance(c["bodyInstance"], dict) else {}
+            if not (ap.same(ap.CM0_VALUES["skeletalMeshAsset"], c["skeletalMeshAsset"]) and c["animationMode"] == "AnimationSingleNode"
+                    and ap.same(ap.CM0_VALUES["animationData"]["animToPlay"], (c["animationData"] or {}).get("animToPlay"))
+                    and ap.rot_close(c["relativeRotation"], {"pitch": 0, "yaw": 0, "roll": 0})
+                    and ap.vec_close(c["relativeLocation"], {"x": 0, "y": 0, "z": -110}) and ci.get("collisionProfileName") == "NoCollision"):
+                bad.append(a + ".CharacterMesh0")
+            for n in ap.PARTS:
+                p = ap.read_props(ue, ap.inst(a, n), ["staticMesh", "bVisible", "bHiddenInGame"])
+                if not (p["staticMesh"] in (None, "None") and p["bVisible"] is False and p["bHiddenInGame"] is True):
+                    bad.append("%s.%s" % (a, n))
+        # The open editor's placed instances keep their old values after a template write (MCP_NOTES: template edits don't reach
+        # placed instances; instance writes to bVisible / transforms don't stick). The saved map does not have this problem
+        # (check it with --disk), so this is INFO only, not counted. Never save the map while it shows a difference.
+        print("INFO  placed BP_Warden_C_0 in the open L_Monastery (in memory): %s" % (
+            "matches the templates" if not bad else "STALE in memory (parts / clip differ from the templates): %s" % bad))
+        bad = []
+        for a in ap.SIL_INSTANCES:
+            b = ap.read_props(ue, ap.inst(a, "Body"), ap.PART_PROPS)
+            h = ap.read_props(ue, ap.inst(a, "Head"), ["staticMesh", "bVisible", "bHiddenInGame"])
+            if not (ap.same(ap.SIL_BODY_VALUES["staticMesh"], b["staticMesh"]) and ap.vec_close(b["relativeLocation"], {"x": 0, "y": 0, "z": 0})
+                    and ap.rot_close(b["relativeRotation"], {"pitch": 0, "yaw": 90, "roll": 0}) and ap.vec_close(b["relativeScale3D"], {"x": 1, "y": 1, "z": 1})
+                    and h["staticMesh"] in (None, "None") and h["bVisible"] is False and h["bHiddenInGame"] is True):
+                bad.append(a)
+            if ap.read_props(ue, ap.inst(a), ap.SIL_ACTOR_PROPS) != snap["instances"][a]["actor"]:
+                bad.append(a + " actor values")
+        print("INFO  placed silhouettes in the open L_Monastery (in memory): %s" % (
+            "match the templates" if not bad else "STALE in memory (Body transform / Head differ from the templates): %s" % bad))
+        bad_act = [a for a in ap.SIL_INSTANCES if ap.read_props(ue, ap.inst(a), ap.SIL_ACTOR_PROPS) != snap["instances"][a]["actor"]]
+        res.check(not bad_act, "placed silhouettes: TriggerTag, VisibleSeconds, MoveOffset equal the snapshot (in memory)", "differs: %s" % bad_act)
+
+    # --- nothing that must stay clean is dirty
+    for pkg in ("/Game/LastBell/Materials/Master/M_LB_Surface", ap.TUNING_PKG, ap.SIL_MI.split(".")[0], ap.ANIM_PKG, ap.SIL_MESH_PKG):
+        res.check(ap.is_dirty(ue, pkg) is False, "%s is not dirty" % pkg.rsplit("/", 1)[1])
+
+
+MIRROR = r"C:\lbb\TheLastBell.uproject"          # the mirror project (Content is a junction to the real Content)
+UE_CMD = r"C:\Program Files\Epic Games\UE_5.8\Engine\Binaries\Win64\UnrealEditor-Cmd.exe"
+DISK_LOG_DIR = os.path.join(ROOT, "Saved", "Logs")
+GETALL = ["StaticMeshComponent StaticMesh", "StaticMeshComponent bVisible", "StaticMeshComponent bHiddenInGame",
+          "StaticMeshComponent RelativeLocation", "StaticMeshComponent RelativeRotation", "StaticMeshComponent RelativeScale3D",
+          "SkeletalMeshComponent SkeletalMeshAsset", "SkeletalMeshComponent AnimationMode", "SkeletalMeshComponent AnimationData",
+          "SkeletalMeshComponent RelativeLocation", "SkeletalMeshComponent RelativeRotation", "SkeletalMeshComponent BodyInstance",
+          "PointLightComponent bVisible", "PointLightComponent Intensity"]
+
+
+def read_map_from_disk(map_name, timeout_s=150):
+    """Load a map from disk in a separate headless editor process (the mirror project) and read the placed Warden and silhouette
+    components with the `getall` console command. Returns {(object path after PersistentLevel., property): raw value text}.
+    The process is started and stopped by this function (it does not exit on its own after `Quit` in this mode); the real editor
+    is not touched. This is how the saved state is checked, because the open editor's placed instances can be stale."""
+    import re
+    import subprocess
+    import time
+    log = os.path.join(DISK_LOG_DIR, "check_warden_disk_%s.log" % map_name)
+    if os.path.exists(log):
+        os.remove(log)
+    cmds = ",".join(["getall " + g for g in GETALL] + ["Quit"])
+    cmdline = '"%s" "%s" /Game/LastBell/Maps/%s -ExecCmds="%s" -unattended -nullrhi -nosplash -nosound -NoP4 -log -abslog=%s' % (
+        UE_CMD, MIRROR, map_name, cmds, log)
+    p = subprocess.Popen(cmdline)
+    t0 = time.time()
+    try:
+        while time.time() - t0 < timeout_s:
+            time.sleep(3)
+            if p.poll() is not None:
+                break
+            if os.path.exists(log):
+                with open(log, "r", encoding="utf-8", errors="replace") as f:
+                    if "Cmd: Quit" in f.read():
+                        time.sleep(3)
+                        break
+    finally:
+        if p.poll() is None:
+            p.kill()
+    out = {}
+    pat = re.compile(r"\]\d+\) \w+ \S+?PersistentLevel\.(\S+)\.(\w+) = (.*)$")
+    pat_bp = re.compile(r"\]\d+\) \w+ \S+?(BP_Warden|BP_WardenSilhouette)_C:(\w+)_GEN_VARIABLE\.(\w+) = (.*)$")
+    with open(log, "r", encoding="utf-8", errors="replace") as f:
+        for line in f:
+            m = pat.search(line)
+            if m and ("BP_Warden" in m.group(1)):
+                out[(m.group(1), m.group(2))] = m.group(3).strip()
+            m = pat_bp.search(line)
+            if m:
+                out[("template:%s.%s" % (m.group(1), m.group(2)), m.group(3))] = m.group(4).strip()
+    return out
+
+
+def _vec(s):
+    import re
+    return [float(x) for x in re.findall(r"=(-?[\d.]+)", s)]
+
+
+def check_disk(ue, res, rep, snap_path=None):
+    """--disk: the SAVED assets, read by a fresh process. Placed BP_Warden_C_0 (L_Monastery, L_Test_Warden) and both silhouettes take the
+    saved templates' values: mesh, clip, looping/playing, location, yaw, collision, hidden parts."""
+    for map_name, silhouettes in (("L_Monastery", ["BP_WardenSilhouette_C_2", "BP_WardenSilhouette_C_0"]), ("L_Test_Warden", [])):
+        v = read_map_from_disk(map_name)
+        k = lambda comp, prop, a="BP_Warden_C_0": v.get(("%s.%s" % (a, comp), prop))  # noqa: E731
+        ad = k("CharacterMesh0", "AnimationData") or ""
+        bi = k("CharacterMesh0", "BodyInstance") or ""
+        res.check("SK_Warden" in (k("CharacterMesh0", "SkeletalMeshAsset") or "") and k("CharacterMesh0", "AnimationMode") == "AnimationSingleNode",
+                  "%s from disk: BP_Warden_C_0 CharacterMesh0 mesh SK_Warden, single-node" % map_name,
+                  "mesh %s mode %s" % (k("CharacterMesh0", "SkeletalMeshAsset"), k("CharacterMesh0", "AnimationMode")))
+        res.check("AN_Warden_Idle" in ad and "bSavedLooping=True" in ad and "bSavedPlaying=True" in ad,
+                  "%s from disk: clip AN_Warden_Idle, looping, playing" % map_name, ad)
+        loc, rot = _vec(k("CharacterMesh0", "RelativeLocation") or ""), _vec(k("CharacterMesh0", "RelativeRotation") or "")
+        res.check(loc == [0, 0, -110] and rot == [0, 0, 0], "%s from disk: CharacterMesh0 location (0,0,-110), yaw 0" % map_name, "loc %s rot %s" % (loc, rot))
+        res.check("CollisionEnabled=NoCollision" in bi, "%s from disk: CharacterMesh0 collision NoCollision" % map_name, bi[:160])
+        bad = [n for n in PARTS_ALL if not (k(n, "StaticMesh") == "None" and k(n, "bVisible") == "False" and k(n, "bHiddenInGame") == "True")]
+        res.check(not bad, "%s from disk: the 8 placeholder parts have no mesh and are hidden" % map_name, "differ: %s" % bad)
+        res.check(k("TellLight", "bVisible") == "False" and (k("TellLight", "Intensity") or "").startswith("800"),
+                  "%s from disk: TellLight off, intensity 800" % map_name, "visible %s intensity %s" % (k("TellLight", "bVisible"), k("TellLight", "Intensity")))
+        for a in silhouettes:
+            body = lambda prop, a=a: v.get(("%s.Body" % a, prop))  # noqa: E731
+            head = lambda prop, a=a: v.get(("%s.Head" % a, prop))  # noqa: E731
+            ok = ("SM_LB_Warden_Silhouette" in (body("StaticMesh") or "") and _vec(body("RelativeLocation") or "") == [0, 0, 0]
+                  and _vec(body("RelativeRotation") or "") == [0, 90, 0] and _vec(body("RelativeScale3D") or "") == [1, 1, 1]
+                  and head("StaticMesh") == "None" and head("bVisible") == "False" and head("bHiddenInGame") == "True")
+            res.check(ok, "%s from disk: %s Body SM_LB_Warden_Silhouette (0,0,0) yaw 90 scale 1; Head empty and hidden" % (map_name, a),
+                      "body %s %s %s %s; head %s %s" % (body("StaticMesh"), body("RelativeLocation"), body("RelativeRotation"), body("RelativeScale3D"),
+                                                       head("StaticMesh"), head("bVisible")))
+
+
+PARTS_ALL = ["Robe", "Shoulders", "Neck", "Head", "ArmLeft", "ArmRight", "Mask", "MaskCrack"]
+
+# (name, function).  `--bp` runs only ("blueprint", check_bp); `--disk` only ("disk", check_disk); the other groups are the default run.
 CHECK_GROUPS = [("mesh", check_mesh), ("textures", check_textures), ("clips", check_clips),
                 ("wool", check_wool), ("skin", check_skin), ("place", check_place)]
+BP_GROUPS = [("blueprint", check_bp)]
+
+
+def close(a, b, tol=1e-3):
+    return abs(float(a) - float(b)) <= tol
 
 
 def main():
     path = DEFAULT_VALIDATION
     if "--validation" in sys.argv:
         path = sys.argv[sys.argv.index("--validation") + 1]
+    groups = CHECK_GROUPS
+    if "--bp" in sys.argv:
+        groups = BP_GROUPS      # BP_Warden / BP_WardenSilhouette only; the Blueprint checks need no validation report
+    if "--disk" in sys.argv:
+        groups = [("disk", check_disk)]   # the saved assets, read by a fresh headless process (about 1 minute per map)
     with open(path, "r", encoding="utf-8") as f:
         rep = json.load(f)
     ue = UE()
     res = Result()
-    for name, fn in CHECK_GROUPS:
+    for name, fn in groups:
         guard(res, name, lambda fn=fn: fn(ue, res, rep))
     print("%d/%d" % (res.passed, res.total))
     return 0 if res.passed == res.total else 1
