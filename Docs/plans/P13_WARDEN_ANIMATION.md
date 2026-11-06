@@ -447,6 +447,29 @@ Compile with no warnings.
 - **Noted:** `Apparition_Courtyard`'s own `Figure` was saved empty, which doesn't matter while it stays static; set it at the next legitimate map save. The search timer runs for the actor's whole life.
 - **Not seen on screen:** motion, physics, foot IK, the catch, stoops, the chapel walk, the look-around, cost.
 
+### First look in the game (owner, 2026-11-06) and the fix (bc7a6b3)
+**Owner:**
+- **Walking:** while it walks, the legs and arms don't move.
+- **Attack:** up close, it lunges with its arms.
+- **Turning:** it turns too fast.
+- **`a.URO.Enable 0`:** changed nothing.
+
+**Cause, measured by the new test `LastBell.Functional.Warden.Anim.LocomotionMovesTheFeet` and `lb.Warden.AnimDebug 1`:**
+- both blend spaces were saved with **empty runtime data** (0 segments), because `p13_retarget.py` set `sampleData` through properties and only `UBlendSpace::ResampleData()` (called by the Blend Space editor) builds it;
+- so the graph output the reference pose;
+- montages bypass the blend space, which is why the attack played.
+
+`GroundSpeed`, the X binding, the samples and the anim instance were all correct. With `ResampleData()` run in memory, `foot_l` swings 140 cm and `hand_l` 144 cm over the walk.
+
+**Fix:** open `BS_Warden_Locomotion` and `BS_Warden_Stoop` in the Blend Space editor, which resamples them, and save. The test, committed red on purpose, then passes.
+
+**Turning (owner):**
+- `RotationRate` yaw 360 → **120**;
+- `TurnRate` 180 → **90**;
+- `TurnTriggerDegrees` 60 → **45**.
+
+All 32 earlier Warden functional tests pass with it. `DA_WardenTuning` and `DA_WardenAnimSet` store no explicit values, so the new defaults apply. The real-project suite: 110 passed, 1 failed (the new test, until the blend spaces are resampled).
+
 ## 12. Look test, performance and playtest (lead and owner)
 
 **Contact sheet (lead, about 10 minutes of capture, owner told first):**
