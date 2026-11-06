@@ -1,6 +1,6 @@
 # Phase 13: Warden animation: plan
 
-**Status: approved by the owner on 2026-11-06 ("go"). P13-0, P13-1 (13 files checked in Blender; registry 86cc8e8) and P13-2 (18df9d9, suite 108/108) done. F0, P13-3 (7e5e65d) and P13-4 (363f5ad) done. Next: the foot IK and stoop fix, and the contact sheet rendered in Blender.**
+**Status: approved by the owner on 2026-11-06 ("go"). P13-0, P13-1 (13 files checked in Blender; registry 86cc8e8) and P13-2 (18df9d9, suite 108/108) done. F0, P13-3 (7e5e65d) and P13-4 (363f5ad) done. P13-5 sheet (00c5db6) shows the retarget is wrong; P13-4b (re-import rotated, retarget again) next. The foot IK and stoop fix is in progress.**
 **Branch:** `claude/phase-13-warden-animation`, from `main` (086d063).
 **Rules:** D-048. The lead plans; every implementer is spawned with `model: "sonnet", effort: "high"`. Nothing starts without the owner's "go"; the owner is told before any capture over about 15 minutes; agents never run the capture tool or operate the desktop.
 
@@ -154,6 +154,28 @@ No limb stretches (every chain stays at or below 1.000 of its reference length).
 5. **The contact sheet is rendered in Blender instead of captured in Simulate.**
    - How: the 12 Warden clips are exported to FBX with the Warden mesh, in headless Unreal Python, then rendered from the front and side at 0/25/50/75 % in neutral light.
    - Why: no capture session and no owner time, and a clearer read on twists and facing. The in-game look is judged in the playtest.
+
+### P13-5 result (00c5db6, 2026-11-06): the retarget is wrong
+Sheet: `Docs/ArtTest/warden/p13_sheet_all.png`, plus one per clip.
+- **Arms:** in **every clip, the idle included,** the arms stick out horizontally at shoulder height, one forward and one back.
+- **Torso and robe:** they lean 20–25° and bend.
+- **What's right:** the legs, feet, head height and facing.
+- **Why the P13-4 numbers passed:** they only measured legs, feet, head, drift and stretch, never where the arms point or how upright the spine is.
+- **Likely cause:** the Y Bot faces +Y and the Warden +X. The retarget pose was auto-aligned *before* the target pelvis was yawed 90°, and the clips were then given a −90° `root` key. So the arms were aligned to the Y Bot's T-pose along the Warden's forward axis.
+- **D1 is withdrawn:** the lead's acceptance of the `root` yaw key in the P13-4 block no longer stands.
+
+**P13-4b: fix**
+1. **Re-import** the Y Bot and its 12 clips in headless Python (`AssetImportTask` + `FbxImportUI`, with the editor closed), with an **import rotation that makes the Y Bot face +X like the Warden**. Confirm the facing from bone positions, not assumed: toes and nose ahead of the heels along +X. Replace the existing assets in place.
+2. **Rebuild the retargeter's retarget pose from scratch:**
+   - no pelvis yaw;
+   - auto-align only;
+   - if the Warden's rest pose differs from the T-pose in its arms, the auto-align handles it; if it doesn't, set the target arm chains to match the source T-pose directions explicitly.
+3. **Re-batch** the 12 clips over the existing `AN_Warden_*`, with **no `root` key**.
+4. **New measurements (failing any of them stops the task):**
+   - in MutantIdle, both hands below Z 160 and within 60 cm of the pelvis sideways;
+   - the pelvis-to-neck line within 15° of vertical in MutantIdle;
+   - in every clip, no hand above Z 200 except in the attacks and LookAround.
+5. **Rerun the contact sheet and look at it** before reporting anything as fixed. Blend spaces, montages and the data asset keep their references; just re-verify them.
 
 ## 7. Stoop zones (lead fills the numbers in F0 from live transforms; unreal-blueprint-engineer places them)
 
