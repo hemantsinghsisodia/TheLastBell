@@ -85,13 +85,30 @@ namespace LBWardenAnim
 	FLBFootPlacement PelvisAndFeet(const FLBFootHit& Left, const FLBFootHit& Right, float MaxPelvisDrop, float ActivateDifference)
 	{
 		FLBFootPlacement Out;
-		Out.LeftZ = Left.bHit ? Left.GroundZ : 0.f;
-		Out.RightZ = Right.bHit ? Right.GroundZ : 0.f;
+		Out.LeftOffset = Left.bHit ? Left.Offset : 0.f;
+		Out.RightOffset = Right.bHit ? Right.Offset : 0.f;
 
-		const float Lowest = FMath::Min(Out.LeftZ, Out.RightZ);
+		const float Lowest = FMath::Min(Out.LeftOffset, Out.RightOffset);
 		Out.PelvisZ = Lowest < 0.f ? -FMath::Min(-Lowest, FMath::Max(MaxPelvisDrop, 0.f)) : 0.f;
-		Out.bActive = FMath::Abs(Out.LeftZ - Out.RightZ) > ActivateDifference;
+		Out.bActive = FMath::Abs(Out.LeftOffset - Out.RightOffset) > ActivateDifference;
 		return Out;
+	}
+
+	FVector FootTarget(const FVector& AnimatedFoot, float Offset)
+	{
+		return AnimatedFoot + FVector(0.0, 0.0, Offset);
+	}
+
+	float FootCorrection(float Offset, float AppliedPelvisZ)
+	{
+		return Offset - AppliedPelvisZ;
+	}
+
+	float CombinedPelvisZ(float FootPelvisZ, float StoopAlpha, float StoopPelvisDrop, float MaxPelvisDrop)
+	{
+		const float Drop = FMath::Max(StoopPelvisDrop, 0.f);
+		const float Total = FootPelvisZ - Drop * FMath::Clamp(StoopAlpha, 0.f, 1.f);
+		return FMath::Clamp(Total, -(FMath::Max(MaxPelvisDrop, 0.f) + Drop), 0.f);
 	}
 
 	float AttackPlayRate(float HitTimeSeconds, float WindupSeconds)

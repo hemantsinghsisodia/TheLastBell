@@ -58,6 +58,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Stoop", meta = (ClampMin = "0.1"))
 	float StoopEaseRate = 3.f;
 
+	/**
+	 * How far the pelvis drops at a full stoop (StoopAlpha 1), cm. The feet stay on the floor, so the knees bend under the robe and
+	 * the head comes down by about this much. Scaled by StoopAlpha.
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Stoop", meta = (ClampMin = "0", Units = "cm"))
+	float StoopPelvisDrop = 40.f;
+
 	// ---- Foot IK ----
 	/** Foot trace starts this far above the floor the capsule stands on. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "FootIK", meta = (ClampMin = "0", Units = "cm"))

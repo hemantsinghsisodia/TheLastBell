@@ -51,18 +51,21 @@ private:
 	TArray<FSample> Samples;
 };
 
-/** What one foot trace found. GroundZ is the ground height under the foot relative to the floor the capsule stands on (cm, up is positive). */
+/** What one foot trace found. Offset = the ground height under the foot minus the height of the floor the capsule stands on (the capsule's bottom), cm, up is positive. */
 struct FLBFootHit
 {
 	bool bHit = false;
-	float GroundZ = 0.f;
+	float Offset = 0.f;
 };
 
-/** Where the feet and pelvis go. LeftZ and RightZ are ground heights (relative to the floor); PelvisZ is the pelvis move (0 or negative). */
+/**
+ * Foot IK result. LeftOffset and RightOffset are how far each foot has to move from where the animation puts it (flat ground: 0).
+ * PelvisZ is the pelvis move that goes with them (0 or negative).
+ */
 struct FLBFootPlacement
 {
-	float LeftZ = 0.f;
-	float RightZ = 0.f;
+	float LeftOffset = 0.f;
+	float RightOffset = 0.f;
 	float PelvisZ = 0.f;
 	/** The two feet are on ground that differs by more than the activation difference: the IK is wanted. */
 	bool bActive = false;
@@ -86,10 +89,26 @@ namespace LBWardenAnim
 	LASTBELL_API ELBWardenTurn TurnDecision(const FLBYawHistory& History, float GroundSpeed, bool bMontageActive, float CooldownLeft, float TriggerDegrees = 60.f, float MaxSpeed = 15.f);
 
 	/**
-	 * Foot IK from the two traces. A trace that hit nothing counts as flat ground (0). The pelvis drops by the lower foot's drop
-	 * (never more than MaxPelvisDrop, never up). The IK is active when the feet differ by more than ActivateDifference.
+	 * Foot IK from the two traces (offset based). A trace that hit nothing counts as flat ground (offset 0). The pelvis moves by the
+	 * more negative of the two offsets, never lower than -MaxPelvisDrop and never up. The IK is active when the feet differ by more
+	 * than ActivateDifference.
 	 */
 	LASTBELL_API FLBFootPlacement PelvisAndFeet(const FLBFootHit& Left, const FLBFootHit& Right, float MaxPelvisDrop, float ActivateDifference = 5.f);
+
+	/** Where a foot goes: the animated foot's own position with Offset added to Z. A foot lifted in its swing keeps its lift. */
+	LASTBELL_API FVector FootTarget(const FVector& AnimatedFoot, float Offset);
+
+	/**
+	 * How far up a foot has to move from where the pelvis move left it, to end on FootTarget: the foot's Offset minus the pelvis move
+	 * that dragged it along (a pelvis dropped by 40 asks every foot to come back up by 40).
+	 */
+	LASTBELL_API float FootCorrection(float Offset, float AppliedPelvisZ);
+
+	/**
+	 * The pelvis translation: the foot IK's pelvis move, plus StoopPelvisDrop * StoopAlpha downwards, in total never lower than
+	 * -(MaxPelvisDrop + StoopPelvisDrop) and never up.
+	 */
+	LASTBELL_API float CombinedPelvisZ(float FootPelvisZ, float StoopAlpha, float StoopPelvisDrop, float MaxPelvisDrop);
 
 	/** Play rate that puts the clip's hit moment (seconds into the clip) on the end of the windup: HitTime / Windup, clamped to 0.8..2.5. 1 when either is unknown. */
 	LASTBELL_API float AttackPlayRate(float HitTimeSeconds, float WindupSeconds);

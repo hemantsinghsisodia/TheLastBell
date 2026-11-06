@@ -38,18 +38,27 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "Warden")
 	float StoopAlpha = 0.f;
 
-	/** Where the left foot goes, component space (the animated foot's X and Y, the ground's height plus the ankle height). */
+	/**
+	 * How far the left foot moves from where the animation puts it, as a vector in the FOOT BONE's local space (use it as the
+	 * Two Bone IK effector with Effector Location Space = Bone Space). It is the foot's ground offset (ground under the foot minus the
+	 * capsule floor) minus the pelvis move that dragged the foot down, turned into the bone's space with last frame's orientation.
+	 * Zero on flat ground with an upright Warden. The animated foot's own position is never read back, so a swinging foot keeps its
+	 * lift and the IK cannot feed on its own output.
+	 */
 	UPROPERTY(BlueprintReadOnly, Category = "Warden")
 	FVector FootIKLeft = FVector::ZeroVector;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Warden")
 	FVector FootIKRight = FVector::ZeroVector;
 
-	/** Pelvis translation, component space (only Z is used, 0 or negative): the lower foot's drop, at most MaxPelvisDrop. */
+	/**
+	 * Pelvis translation, component space (only Z is used, 0 or negative): the lower foot's offset (at most MaxPelvisDrop) plus
+	 * StoopPelvisDrop * StoopAlpha, in total at most MaxPelvisDrop + StoopPelvisDrop.
+	 */
 	UPROPERTY(BlueprintReadOnly, Category = "Warden")
 	FVector PelvisOffset = FVector::ZeroVector;
 
-	/** 1 while the two feet stand on ground that differs by more than 5 cm, easing back to 0 on flat floor. */
+	/** 1 while the two feet stand on ground that differs by more than 5 cm or the Warden stoops (StoopAlpha > 0.01), easing back to 0 otherwise. */
 	UPROPERTY(BlueprintReadOnly, Category = "Warden")
 	float FootIKAlpha = 0.f;
 
@@ -97,16 +106,15 @@ private:
 	bool bHoldingCatchPose = false;
 	bool bCatchPoseFrozen = false;
 
-	// Ankle height above the soles in the reference pose (component Z), measured at initialisation.
-	float RefFootHeightLeft = 0.f;
-	float RefFootHeightRight = 0.f;
-
 	// Targets written by the game thread and eased towards by the thread-safe update. Plain values only.
 	float TargetStoop = 0.f;
 	FVector TargetFootLeft = FVector::ZeroVector;
 	FVector TargetFootRight = FVector::ZeroVector;
-	float TargetPelvisZ = 0.f;
+	float TargetFootPelvisZ = 0.f;
 	float TargetFootAlpha = 0.f;
+	float EasedFootPelvisZ = 0.f;
 	float CachedStoopEaseRate = 3.f;
 	float CachedFootInterpSpeed = 15.f;
+	float CachedStoopPelvisDrop = 40.f;
+	float CachedMaxPelvisDrop = 35.f;
 };

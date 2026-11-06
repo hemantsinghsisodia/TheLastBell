@@ -4,7 +4,7 @@
 #include "Animation/AnimMontage.h"
 #include "Camera/PlayerCameraManager.h"
 #include "Components/SkeletalMeshComponent.h"
-#include "Engine/SkeletalMesh.h"
+#include "Components/CapsuleComponent.h"
 #include "Engine/World.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -22,12 +22,8 @@ namespace
 	constexpr float MaxPlausibleSpeed = 2000.f;
 	/** A yaw change above this in one frame is a snap (a teleport or a scripted turn), not the Warden turning. */
 	constexpr float MaxFrameYawDegrees = 45.f;
-
-	float AnkleHeight(const FReferenceSkeleton& RefSkeleton, FName Bone)
-	{
-		const int32 Index = RefSkeleton.FindBoneIndex(Bone);
-		return Index != INDEX_NONE ? static_cast<float>(RefSkeleton.GetBoneAbsoluteTransform(Index).GetLocation().Z) : 0.f;
-	}
+	/** Above this StoopAlpha the Warden counts as stooping: foot IK on, at any speed. */
+	constexpr float StoopActiveAlpha = 0.01f;
 }
 
 const ULBWardenAnimSet& ULBWardenAnimInstance::GetAnimSet() const
@@ -42,23 +38,15 @@ void ULBWardenAnimInstance::NativeInitializeAnimation()
 	const ULBWardenAnimSet& Set = GetAnimSet();
 	CachedStoopEaseRate = Set.StoopEaseRate;
 	CachedFootInterpSpeed = Set.FootIKInterpSpeed;
+	CachedStoopPelvisDrop = Set.StoopPelvisDrop;
+	CachedMaxPelvisDrop = Set.MaxPelvisDrop;
 
-	RefFootHeightLeft = 0.f;
-	RefFootHeightRight = 0.f;
-	if (const USkeletalMeshComponent* Mesh = GetSkelMeshComponent())
-	{
-		if (const USkeletalMesh* SkeletalMesh = Mesh->GetSkeletalMeshAsset())
-		{
-			RefFootHeightLeft = AnkleHeight(SkeletalMesh->GetRefSkeleton(), FootLeftBone);
-			RefFootHeightRight = AnkleHeight(SkeletalMesh->GetRefSkeleton(), FootRightBone);
-		}
-	}
-
-	// Flat ground: the feet stay where the animation puts them.
-	FootIKLeft = TargetFootLeft = FVector(0.0, 0.0, RefFootHeightLeft);
-	FootIKRight = TargetFootRight = FVector(0.0, 0.0, RefFootHeightRight);
+	// Flat ground, upright: the feet stay where the animation puts them.
+	FootIKLeft = TargetFootLeft = FVector::ZeroVector;
+	FootIKRight = TargetFootRight = FVector::ZeroVector;
 	PelvisOffset = FVector::ZeroVector;
-	TargetPelvisZ = 0.f;
+	TargetFootPelvisZ = 0.f;
+	EasedFootPelvisZ = 0.f;
 	FootIKAlpha = 0.f;
 	TargetFootAlpha = 0.f;
 	StoopAlpha = 0.f;
@@ -118,41 +106,58 @@ void ULBWardenAnimInstance::UpdateFootTargets(const AActor& Owner, const UWorld&
 {
 	const ULBWardenAnimSet& Set = GetAnimSet();
 	const USkeletalMeshComponent* Mesh = GetSkelMeshComponent();
-	if (!Mesh || GroundSpeed >= FootTraceMaxSpeed || Set.FootTraceUp + Set.FootTraceDown <= 0.f)
+	const bool bStooping = StoopAlpha > StoopActiveAlpha;
+	// Traces run when walking slowly (stairs at patrol speed) and at any speed while stooping.
+	if (!Mesh || (GroundSpeed >= FootTraceMaxSpeed && !bStooping))
 	{
-		// Not tracing: everything eases back to flat ground.
-		TargetFootLeft.Z = RefFootHeightLeft;
-		TargetFootRight.Z = RefFootHeightRight;
-		TargetPelvisZ = 0.f;
+		// Not tracing: everything eases back to "the animation as it is".
+		TargetFootLeft = FVector::ZeroVector;
+		TargetFootRight = FVector::ZeroVector;
+		TargetFootPelvisZ = 0.f;
 		TargetFootAlpha = 0.f;
 		return;
 	}
 
-	const double FloorZ = Mesh->GetComponentLocation().Z;
+	// The floor the capsule stands on: the capsule bottom (the mesh origin for an actor without one).
+	const ACharacter* Character = Cast<ACharacter>(&Owner);
+	const UCapsuleComponent* Capsule = Character ? Character->GetCapsuleComponent() : nullptr;
+	const double FloorZ = Capsule ? Capsule->GetComponentLocation().Z - Capsule->GetScaledCapsuleHalfHeight() : Mesh->GetComponentLocation().Z;
 	FCollisionQueryParams Params(SCENE_QUERY_STAT(LBWardenFootIK), false, &Owner);
 
 	FLBFootHit Hits[2];
-	FVector FootComponent[2];
+	FQuat FootRotation[2];
 	const FName Bones[2] = { FootLeftBone, FootRightBone };
 	for (int32 Side = 0; Side < 2; ++Side)
 	{
-		const FVector FootWorld = Mesh->GetSocketLocation(Bones[Side]);
-		FootComponent[Side] = Mesh->GetComponentTransform().InverseTransformPosition(FootWorld);
-		const FVector Start(FootWorld.X, FootWorld.Y, FloorZ + Set.FootTraceUp);
-		const FVector End(FootWorld.X, FootWorld.Y, FloorZ - Set.FootTraceDown);
-		FHitResult Hit;
-		if (World.LineTraceSingleByChannel(Hit, Start, End, ECC_Visibility, Params))
+		// Last frame's pose: the foot XY (where to look) and its orientation (to express the correction in its own space).
+		const FVector FootLocation = Mesh->GetSocketLocation(Bones[Side]);
+		FootRotation[Side] = Mesh->GetSocketTransform(Bones[Side], RTS_Component).GetRotation();
+		if (Set.FootTraceUp + Set.FootTraceDown > 0.f)
 		{
-			Hits[Side].bHit = true;
-			Hits[Side].GroundZ = static_cast<float>(Hit.ImpactPoint.Z - FloorZ);
+			const FVector Start(FootLocation.X, FootLocation.Y, FloorZ + Set.FootTraceUp);
+			const FVector End(FootLocation.X, FootLocation.Y, FloorZ - Set.FootTraceDown);
+			FHitResult Hit;
+			if (World.LineTraceSingleByChannel(Hit, Start, End, ECC_Visibility, Params))
+			{
+				Hits[Side].bHit = true;
+				Hits[Side].Offset = static_cast<float>(Hit.ImpactPoint.Z - FloorZ);
+			}
 		}
 	}
 
 	const FLBFootPlacement Placement = LBWardenAnim::PelvisAndFeet(Hits[0], Hits[1], Set.MaxPelvisDrop);
-	TargetFootLeft = FVector(FootComponent[0].X, FootComponent[0].Y, Placement.LeftZ + RefFootHeightLeft);
-	TargetFootRight = FVector(FootComponent[1].X, FootComponent[1].Y, Placement.RightZ + RefFootHeightRight);
-	TargetPelvisZ = Placement.PelvisZ;
-	TargetFootAlpha = Placement.bActive ? 1.f : 0.f;
+
+	// The pelvis move already applied (the graph scales it by FootIKAlpha) drags the feet along: every foot has to come back up by it.
+	const float AppliedPelvisZ = PelvisOffset.Z * FootIKAlpha;
+	const float Offsets[2] = { Placement.LeftOffset, Placement.RightOffset };
+	FVector* Targets[2] = { &TargetFootLeft, &TargetFootRight };
+	for (int32 Side = 0; Side < 2; ++Side)
+	{
+		const float Correction = LBWardenAnim::FootCorrection(Offsets[Side], AppliedPelvisZ);
+		*Targets[Side] = FootRotation[Side].UnrotateVector(FVector(0.0, 0.0, Correction));
+	}
+	TargetFootPelvisZ = Placement.PelvisZ;
+	TargetFootAlpha = (Placement.bActive || bStooping) ? 1.f : 0.f;
 }
 
 void ULBWardenAnimInstance::UpdateTurn(const AActor& Owner, float DeltaSeconds)
@@ -222,13 +227,11 @@ void ULBWardenAnimInstance::NativeThreadSafeUpdateAnimation(float DeltaSeconds)
 	// Only plain members here: no UObject, no world.
 	StoopAlpha = LBWardenAnim::EaseTowards(StoopAlpha, TargetStoop, CachedStoopEaseRate, DeltaSeconds);
 	FootIKAlpha = FMath::FInterpTo(FootIKAlpha, TargetFootAlpha, DeltaSeconds, CachedFootInterpSpeed);
-	FootIKLeft.X = TargetFootLeft.X;
-	FootIKLeft.Y = TargetFootLeft.Y;
-	FootIKLeft.Z = FMath::FInterpTo(FootIKLeft.Z, TargetFootLeft.Z, DeltaSeconds, CachedFootInterpSpeed);
-	FootIKRight.X = TargetFootRight.X;
-	FootIKRight.Y = TargetFootRight.Y;
-	FootIKRight.Z = FMath::FInterpTo(FootIKRight.Z, TargetFootRight.Z, DeltaSeconds, CachedFootInterpSpeed);
-	PelvisOffset.Z = FMath::FInterpTo(PelvisOffset.Z, TargetPelvisZ, DeltaSeconds, CachedFootInterpSpeed);
+	FootIKLeft = FMath::VInterpTo(FootIKLeft, TargetFootLeft, DeltaSeconds, CachedFootInterpSpeed);
+	FootIKRight = FMath::VInterpTo(FootIKRight, TargetFootRight, DeltaSeconds, CachedFootInterpSpeed);
+	EasedFootPelvisZ = FMath::FInterpTo(EasedFootPelvisZ, TargetFootPelvisZ, DeltaSeconds, CachedFootInterpSpeed);
+	// The stoop part follows the (already eased) StoopAlpha, so it is not eased a second time.
+	PelvisOffset = FVector(0.0, 0.0, LBWardenAnim::CombinedPelvisZ(EasedFootPelvisZ, StoopAlpha, CachedStoopPelvisDrop, CachedMaxPelvisDrop));
 }
 
 void ULBWardenAnimInstance::PlayAttack()

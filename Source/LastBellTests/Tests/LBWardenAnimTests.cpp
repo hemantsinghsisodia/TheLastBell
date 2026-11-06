@@ -188,15 +188,15 @@ bool FLBAnimTurnTest::RunTest(const FString& Parameters)
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBAnimFeetTest, "LastBell.Warden.Anim.PelvisAndFeet", LB_TEST_FLAGS)
 bool FLBAnimFeetTest::RunTest(const FString& Parameters)
 {
-	auto Hit = [](float Z) { FLBFootHit H; H.bHit = true; H.GroundZ = Z; return H; };
+	auto Hit = [](float Z) { FLBFootHit H; H.bHit = true; H.Offset = Z; return H; };
 
 	// Flat floor: nothing to do.
 	{
 		const FLBFootPlacement P = LBWardenAnim::PelvisAndFeet(Hit(0.f), Hit(0.f), 35.f);
 		TestFalse(TEXT("Flat: not active"), P.bActive);
 		TestEqual(TEXT("Flat: pelvis stays"), P.PelvisZ, 0.f);
-		TestEqual(TEXT("Flat: left 0"), P.LeftZ, 0.f);
-		TestEqual(TEXT("Flat: right 0"), P.RightZ, 0.f);
+		TestEqual(TEXT("Flat: left 0"), P.LeftOffset, 0.f);
+		TestEqual(TEXT("Flat: right 0"), P.RightOffset, 0.f);
 	}
 	// Under 5 cm of difference: still flat enough. Exactly 5 is not more than 5.
 	{
@@ -208,21 +208,21 @@ bool FLBAnimFeetTest::RunTest(const FString& Parameters)
 	{
 		const FLBFootPlacement P = LBWardenAnim::PelvisAndFeet(Hit(0.f), Hit(18.f), 35.f);
 		TestTrue(TEXT("Stair up: active"), P.bActive);
-		TestEqual(TEXT("Stair up: right foot at 18"), P.RightZ, 18.f);
+		TestEqual(TEXT("Stair up: right foot at 18"), P.RightOffset, 18.f);
 		TestEqual(TEXT("Stair up: pelvis stays when the lower foot is on the floor"), P.PelvisZ, 0.f);
 	}
 	// Stepping down: the left foot is 20 cm below the floor. The pelvis drops 20.
 	{
 		const FLBFootPlacement P = LBWardenAnim::PelvisAndFeet(Hit(-20.f), Hit(0.f), 35.f);
 		TestTrue(TEXT("Step down: active"), P.bActive);
-		TestEqual(TEXT("Step down: left foot at -20"), P.LeftZ, -20.f);
+		TestEqual(TEXT("Step down: left foot at -20"), P.LeftOffset, -20.f);
 		TestEqual(TEXT("Step down: the pelvis drops by the lower foot's drop"), P.PelvisZ, -20.f);
 	}
 	// The drop is capped at MaxPelvisDrop.
 	{
 		const FLBFootPlacement P = LBWardenAnim::PelvisAndFeet(Hit(0.f), Hit(-60.f), 35.f);
 		TestEqual(TEXT("A 60 cm drop is capped at 35"), P.PelvisZ, -35.f);
-		TestEqual(TEXT("The foot itself still goes to -60"), P.RightZ, -60.f);
+		TestEqual(TEXT("The foot itself still goes to -60"), P.RightOffset, -60.f);
 		TestEqual(TEXT("MaxPelvisDrop 0 never drops the pelvis"), LBWardenAnim::PelvisAndFeet(Hit(0.f), Hit(-60.f), 0.f).PelvisZ, 0.f);
 	}
 	// The pelvis never goes up, even when both feet are on higher ground.
@@ -235,17 +235,70 @@ bool FLBAnimFeetTest::RunTest(const FString& Parameters)
 	{
 		FLBFootHit Miss;
 		const FLBFootPlacement P = LBWardenAnim::PelvisAndFeet(Miss, Hit(20.f), 35.f);
-		TestEqual(TEXT("Miss: left treated as 0"), P.LeftZ, 0.f);
-		TestEqual(TEXT("Miss: right as traced"), P.RightZ, 20.f);
+		TestEqual(TEXT("Miss: left treated as 0"), P.LeftOffset, 0.f);
+		TestEqual(TEXT("Miss: right as traced"), P.RightOffset, 20.f);
 		TestTrue(TEXT("Miss against a 20 cm foot: active"), P.bActive);
 		const FLBFootPlacement Both = LBWardenAnim::PelvisAndFeet(Miss, Miss, 35.f);
 		TestFalse(TEXT("Two misses: inactive"), Both.bActive);
 		TestEqual(TEXT("Two misses: pelvis stays"), Both.PelvisZ, 0.f);
-		// Even a stale GroundZ on a miss is ignored.
+		// Even a stale Offset on a miss is ignored.
 		FLBFootHit StaleMiss;
-		StaleMiss.GroundZ = -50.f;
-		TestEqual(TEXT("A miss ignores GroundZ"), LBWardenAnim::PelvisAndFeet(StaleMiss, Hit(0.f), 35.f).PelvisZ, 0.f);
+		StaleMiss.Offset = -50.f;
+		TestEqual(TEXT("A miss ignores Offset"), LBWardenAnim::PelvisAndFeet(StaleMiss, Hit(0.f), 35.f).PelvisZ, 0.f);
 	}
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBAnimFootTargetTest, "LastBell.Warden.Anim.FootTargetKeepsTheSwing", LB_TEST_FLAGS)
+bool FLBAnimFootTargetTest::RunTest(const FString& Parameters)
+{
+	auto Hit = [](float Z) { FLBFootHit H; H.bHit = true; H.Offset = Z; return H; };
+
+	// Flat floor, the animated foot lifted 20 cm in its swing: the target keeps the lift (offset 0 changes nothing).
+	{
+		const FLBFootPlacement P = LBWardenAnim::PelvisAndFeet(Hit(0.f), Hit(0.f), 35.f);
+		const FVector Swinging(30.0, 12.0, 20.0);
+		const FVector Target = LBWardenAnim::FootTarget(Swinging, P.LeftOffset);
+		TestEqual(TEXT("Flat floor, lifted foot: the target is the animated foot"), Target, Swinging);
+		TestEqual(TEXT("The lift survives (Z stays 20)"), Target.Z, 20.0);
+		TestEqual(TEXT("A planted foot is untouched too"), LBWardenAnim::FootTarget(FVector(0.0, 0.0, 0.0), P.RightOffset), FVector::ZeroVector);
+	}
+	// A stair: the ground under the front foot is 18 cm up. Its target is the animated foot plus 18, the swing included.
+	{
+		const FLBFootPlacement P = LBWardenAnim::PelvisAndFeet(Hit(0.f), Hit(18.f), 35.f);
+		const FVector Planted = LBWardenAnim::FootTarget(FVector(0.0, 0.0, 0.0), P.RightOffset);
+		const FVector Swinging = LBWardenAnim::FootTarget(FVector(0.0, 0.0, 20.0), P.RightOffset);
+		TestEqual(TEXT("Stair, planted foot: 18 up"), Planted.Z, 18.0);
+		TestEqual(TEXT("Stair, swinging foot: its 20 cm lift plus the 18 of the step"), Swinging.Z, 38.0);
+		TestEqual(TEXT("X and Y are never changed"), FVector(Swinging.X, Swinging.Y, 0.0), FVector::ZeroVector);
+	}
+	// The correction asked of a foot once the pelvis has dropped: it comes back up by the drop.
+	TestEqual(TEXT("Flat, pelvis not moved: no correction"), LBWardenAnim::FootCorrection(0.f, 0.f), 0.f);
+	TestEqual(TEXT("Flat, pelvis dropped 40 (stoop): every foot comes up 40"), LBWardenAnim::FootCorrection(0.f, -40.f), 40.f);
+	TestEqual(TEXT("Step down 20, pelvis dropped 20: the low foot needs nothing, the other 20 up"), LBWardenAnim::FootCorrection(-20.f, -20.f), 0.f);
+	TestEqual(TEXT("...and the foot on the floor level"), LBWardenAnim::FootCorrection(0.f, -20.f), 20.f);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBAnimStoopPelvisTest, "LastBell.Warden.Anim.StoopPelvis", LB_TEST_FLAGS)
+bool FLBAnimStoopPelvisTest::RunTest(const FString& Parameters)
+{
+	const float Max = 35.f, Drop = 40.f;
+	// Flat ground: only the stoop term.
+	TestNearlyEqual(TEXT("Alpha 0: 0"), LBWardenAnim::CombinedPelvisZ(0.f, 0.f, Drop, Max), 0.f);
+	TestNearlyEqual(TEXT("Alpha 0.7: -28"), LBWardenAnim::CombinedPelvisZ(0.f, 0.7f, Drop, Max), -28.f);
+	TestNearlyEqual(TEXT("Alpha 1: -40"), LBWardenAnim::CombinedPelvisZ(0.f, 1.f, Drop, Max), -40.f);
+	// On a stair: the foot IK's drop adds to the stoop.
+	TestNearlyEqual(TEXT("Stair drop -20 at alpha 0.7: -48"), LBWardenAnim::CombinedPelvisZ(-20.f, 0.7f, Drop, Max), -48.f);
+	TestNearlyEqual(TEXT("Stair drop -20 at alpha 1: -60"), LBWardenAnim::CombinedPelvisZ(-20.f, 1.f, Drop, Max), -60.f);
+	TestNearlyEqual(TEXT("Stair drop -20 at alpha 0: -20 (no stoop)"), LBWardenAnim::CombinedPelvisZ(-20.f, 0.f, Drop, Max), -20.f);
+	// The total never goes below -(Max + Drop) = -75, and never up.
+	TestNearlyEqual(TEXT("Foot drop already at the cap, full stoop: -75"), LBWardenAnim::CombinedPelvisZ(-35.f, 1.f, Drop, Max), -75.f);
+	TestNearlyEqual(TEXT("A larger foot drop than the cap is clamped in total"), LBWardenAnim::CombinedPelvisZ(-80.f, 1.f, Drop, Max), -75.f);
+	TestNearlyEqual(TEXT("A positive foot value never lifts the pelvis"), LBWardenAnim::CombinedPelvisZ(10.f, 0.f, Drop, Max), 0.f);
+	// Alpha outside 0..1 is clamped; a zero drop leaves the foot IK alone.
+	TestNearlyEqual(TEXT("Alpha 2 counts as 1"), LBWardenAnim::CombinedPelvisZ(0.f, 2.f, Drop, Max), -40.f);
+	TestNearlyEqual(TEXT("StoopPelvisDrop 0: stoop does nothing"), LBWardenAnim::CombinedPelvisZ(-10.f, 1.f, 0.f, Max), -10.f);
 	return true;
 }
 
@@ -271,6 +324,7 @@ bool FLBAnimDefaultsTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("TurnTriggerDegrees"), Set.TurnTriggerDegrees, 60.f);
 	TestEqual(TEXT("TurnCooldownSeconds"), Set.TurnCooldownSeconds, 1.f);
 	TestEqual(TEXT("StoopEaseRate"), Set.StoopEaseRate, 3.f);
+	TestEqual(TEXT("StoopPelvisDrop"), Set.StoopPelvisDrop, 40.f);
 	TestEqual(TEXT("FootTraceUp"), Set.FootTraceUp, 50.f);
 	TestEqual(TEXT("FootTraceDown"), Set.FootTraceDown, 75.f);
 	TestEqual(TEXT("FootIKInterpSpeed"), Set.FootIKInterpSpeed, 15.f);
