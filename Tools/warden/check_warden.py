@@ -26,6 +26,11 @@ Checks (all under /Game/LastBell/Characters/Warden/):
 Informational (not counted): texture memory estimate from the Format and Dimensions tags; the skeleton's and the physics
 asset's preview-mesh tags (the physics asset's still names the old /Game/WardenArtV5 mesh: no tool can write it).
 
+P13-7 (the hookup, apply_p13_hookup.py) changed what several checks expect: BP_Warden's CharacterMesh0 now runs the Animation Blueprint
+ABP_Warden_C (no longer the single Idle clip, no longer AlwaysTickPose), the chapel apparition has one station with a WalkPath and the skeletal
+Figure, L_Monastery has 2992 actors (the 12 stoop zones), and BP_Warden's ShowWindupTell / PlayStateFeedback / EventGraph have the added
+animation calls. `--bp` and `--disk` check all of that; `--disk` also reads the stoop zones and the chapel's Figure from the saved map.
+
 `--disk` (P12-8, updated for fix set 1) loads L_Monastery and L_Test_Warden from disk in a separate headless process (mirror project) and checks
 the placed Warden (V5.5 art, TellLight 5000 / 700 / (110, 0, 235)) and, in L_Monastery, both BP_WardenApparition instances with every section 3
 value and no BP_WardenSilhouette, as saved. `--bp` (P12-8, updated for fix set 1) runs only the Blueprint group (check_bp, below): BP_Warden uses the
@@ -227,6 +232,12 @@ def check_place(ue, res, rep):
         print("INFO  %s preview mesh tag: %s" % (label, tag))
 
 
+def _p13():
+    sys.path.insert(0, HERE)
+    import apply_p13_hookup as p13  # noqa: E402
+    return p13
+
+
 def check_bp(ue, res, rep, snap_path=None):
     """--bp: BP_Warden uses the V5.5 art; capsule and tuning are unchanged; the attack light and mask glow (P12 fix set 1, F4); the new
     BP_WardenApparition and both placed instances (F3).
@@ -255,10 +266,16 @@ def check_bp(ue, res, rep, snap_path=None):
     cm = ap.read_props(ue, ap.CM0, ap.CM_PROPS)
     ad = cm["animationData"] if isinstance(cm["animationData"], dict) else {}
     res.check(ap.same(ap.CM0_VALUES["skeletalMeshAsset"], cm["skeletalMeshAsset"]), "CharacterMesh0 mesh is SK_Warden", "got %s" % ap.short(cm["skeletalMeshAsset"]))
-    res.check(cm["animationMode"] == "AnimationSingleNode", "CharacterMesh0 animation mode is single node", "got %s" % cm["animationMode"])
-    res.check(ap.same(ap.CM0_VALUES["animationData"]["animToPlay"], ad.get("animToPlay")), "CharacterMesh0 clip is AN_Warden_Idle", "got %s" % ap.short(ad.get("animToPlay")))
-    res.check(ad.get("bSavedLooping") is True, "CharacterMesh0 looping", "got %s" % ad.get("bSavedLooping"))
-    res.check(ad.get("bSavedPlaying") is True, "CharacterMesh0 playing", "got %s" % ad.get("bSavedPlaying"))
+    # P13-7: the mesh runs the Animation Blueprint. The single-clip data (AN_Warden_Idle, looping, playing) is still stored but unused in this mode.
+    p13 = _p13()
+    anim_class = ap.read_props(ue, ap.CM0, ["animClass"])["animClass"]
+    res.check(cm["animationMode"] == "AnimationBlueprint", "CharacterMesh0 animation mode is Animation Blueprint (P13-7; was single node)", "got %s" % cm["animationMode"])
+    res.check(ap.same(p13.rp(p13.ABP_CLASS), anim_class), "CharacterMesh0 anim class is ABP_Warden_C", "got %s" % anim_class)
+    res.check(cm["visibilityBasedAnimTickOption"] == "OnlyTickMontagesWhenNotRendered",
+              "CharacterMesh0 tick option is OnlyTickMontagesWhenNotRendered (P13-7; was AlwaysTickPose)", "got %s" % cm["visibilityBasedAnimTickOption"])
+    res.check(ap.get1(ue, ap.CM0, "bEnableUpdateRateOptimizations") is True, "CharacterMesh0 update-rate optimisation on (P13-7)", "got %s" % ap.get1(ue, ap.CM0, "bEnableUpdateRateOptimizations"))
+    res.check(ap.same(ap.CM0_VALUES["animationData"]["animToPlay"], ad.get("animToPlay")) and ad.get("bSavedLooping") is True and ad.get("bSavedPlaying") is True,
+              "CharacterMesh0 animation data still names AN_Warden_Idle, looping, playing (unused in Blueprint mode)", "got %s" % ad)
     res.check(ap.vec_close(cm["relativeLocation"], {"x": 0, "y": 0, "z": -110}), "CharacterMesh0 location (0, 0, -110)", "got %s" % cm["relativeLocation"])
     res.check(ap.rot_close(cm["relativeRotation"], {"pitch": 0, "yaw": 0, "roll": 0}), "CharacterMesh0 yaw 0 (pitch 0, roll 0)", "got %s" % cm["relativeRotation"])
     bi = cm["bodyInstance"] if isinstance(cm["bodyInstance"], dict) else {}
@@ -279,6 +296,7 @@ def check_bp(ue, res, rep, snap_path=None):
     if ap.level_ok(ue):
         apf.check_placed(ue, res)
     apf.check_warden_bp(ue, res, snap_path)
+    p13.check_p13_bp(ue, res)
     tl = ap.read_props(ue, ap.inst("BP_Warden_C_0", "TellLight"), ["intensity", "attenuationRadius", "relativeLocation"]) if ap.level_ok(ue) else None
     if tl:
         print("INFO  placed BP_Warden_C_0 TellLight in the open L_Monastery (in memory): intensity %s, radius %s, location %s "
@@ -298,8 +316,8 @@ def check_bp(ue, res, rep, snap_path=None):
         for a in ap.WARDEN_INSTANCES:
             c = ap.read_props(ue, ap.inst(a, "CharacterMesh0"), ap.CM_PROPS)
             ci = c["bodyInstance"] if isinstance(c["bodyInstance"], dict) else {}
-            if not (ap.same(ap.CM0_VALUES["skeletalMeshAsset"], c["skeletalMeshAsset"]) and c["animationMode"] == "AnimationSingleNode"
-                    and ap.same(ap.CM0_VALUES["animationData"]["animToPlay"], (c["animationData"] or {}).get("animToPlay"))
+            if not (ap.same(ap.CM0_VALUES["skeletalMeshAsset"], c["skeletalMeshAsset"]) and c["animationMode"] == "AnimationBlueprint"
+                    and c["visibilityBasedAnimTickOption"] == "OnlyTickMontagesWhenNotRendered"
                     and ap.rot_close(c["relativeRotation"], {"pitch": 0, "yaw": 0, "roll": 0})
                     and ap.vec_close(c["relativeLocation"], {"x": 0, "y": 0, "z": -110}) and ci.get("collisionProfileName") == "NoCollision"):
                 bad.append(a + ".CharacterMesh0")
@@ -312,7 +330,10 @@ def check_bp(ue, res, rep, snap_path=None):
 
     # --- nothing that must stay clean is dirty
     for pkg in ("/Game/LastBell/Materials/Master/M_LB_Surface", ap.TUNING_PKG, ap.SIL_MI.split(".")[0], ap.ANIM_PKG):
-        res.check(ap.is_dirty(ue, pkg) is False, "%s is not dirty" % pkg.rsplit("/", 1)[1])
+        d = ap.is_dirty(ue, pkg)
+        # the silhouette MI was deleted in the P12 cleanup (086d063): an asset that no longer exists has nothing to be dirty
+        gone = d is None and pkg == ap.SIL_MI.split(".")[0]
+        res.check(d is False or gone, "%s is not dirty%s" % (pkg.rsplit("/", 1)[1], " (asset deleted in the P12 cleanup)" if gone else ""))
     print("INFO  SM_LB_Warden_Silhouette dirty: %s (known: it reads as dirty since F2; never saved; deleted after a restart)" % ap.is_dirty(ue, ap.SIL_MESH_PKG))
 
 
@@ -326,7 +347,13 @@ GETALL = ["StaticMeshComponent StaticMesh", "StaticMeshComponent bVisible", "Sta
           "PointLightComponent bVisible", "PointLightComponent Intensity", "PointLightComponent AttenuationRadius",
           "PointLightComponent RelativeLocation",
           "LBWardenApparition TriggerTag", "LBWardenApparition ArmDelaySeconds", "LBWardenApparition GlowSizeCm",
-          "LBWardenApparition Stations"]
+          "LBWardenApparition Stations",
+          # P13-7: the animated Warden (Animation Blueprint, tick option), the skeletal figure, the 12 stoop zones
+          "SkeletalMeshComponent AnimClass", "SkeletalMeshComponent VisibilityBasedAnimTickOption",
+          "SkeletalMeshComponent bEnableUpdateRateOptimizations", "SkeletalMeshComponent OverrideMaterials",
+          "SkeletalMeshComponent bVisible", "SkeletalMeshComponent CastShadow",
+          "LBWardenApparition bUseSkeletalFigure", "LBWardenStoopZone StoopAmount", "LBWardenStoopZone ActorLabel",
+          "BoxComponent BoxExtent", "BoxComponent RelativeLocation", "BoxComponent RelativeRotation"]
 
 
 def read_map_from_disk(map_name, timeout_s=150):
@@ -371,7 +398,7 @@ def read_map_from_disk(map_name, timeout_s=150):
                 continue
             last = None
             m = pat.search(line)
-            if m and ("BP_Warden" in m.group(1)):
+            if m and ("BP_Warden" in m.group(1) or "LBWardenStoopZone" in m.group(1)):
                 out[(m.group(1), m.group(2))] = m.group(3).strip()
                 if not m.group(3).strip():
                     last = (m.group(1), m.group(2))
@@ -393,7 +420,7 @@ def _nums(s):
 
 # the text export leaves out a struct member that equals its default, so parse by name over these defaults
 STATION_DEFAULTS = {"LookConeDegrees": 30.0, "MinPlayerDistance": 0.0, "FadeInSeconds": 1.0, "HoldSeconds": 3.0, "FadeOutSeconds": 1.5, "GapAfterSeconds": 0.0,
-                    "X": 0.0, "Y": 0.0, "Z": 0.0}
+                    "WalkSpeed": 110.0, "X": 0.0, "Y": 0.0, "Z": 0.0}
 
 
 def _stations_match(text, want):
@@ -403,10 +430,18 @@ def _stations_match(text, want):
         return False
     for line, w in zip(lines, want):
         d = dict(STATION_DEFAULTS)
+        # P13: take the WalkPath group out first, because its points also use X=, Y=, Z= (the station's own Location does too)
+        walk = re.search(r"WalkPath=\(((?:\([^()]*\),?)+)\)", line)
+        points = [tuple(float(x) for x in re.findall(r"=(-?\d+(?:\.\d+)?)", pt)) for pt in re.findall(r"\(([^()]*)\)", walk.group(1))] if walk else []
+        if walk:
+            line = line.replace(walk.group(0), "")
+        want_points = [(q["x"], q["y"], q["z"]) for q in w.get("walkPath", [])]
+        if len(points) != len(want_points) or any(abs(a - b) > 1e-3 for pa, pb in zip(points, want_points) for a, b in zip(pa, pb)):
+            return False
         d.update({k: float(v) for k, v in re.findall(r"(\w+)=(-?\d+(?:\.\d+)?)", line)})
         exp = {"X": w["location"]["x"], "Y": w["location"]["y"], "Z": w["location"]["z"], "LookConeDegrees": w["lookConeDegrees"],
                "MinPlayerDistance": w["minPlayerDistance"], "FadeInSeconds": w["fadeInSeconds"], "HoldSeconds": w["holdSeconds"],
-               "FadeOutSeconds": w["fadeOutSeconds"], "GapAfterSeconds": w["gapAfterSeconds"]}
+               "FadeOutSeconds": w["fadeOutSeconds"], "GapAfterSeconds": w["gapAfterSeconds"], "WalkSpeed": w.get("walkSpeed", 110.0)}
         if any(abs(d[k] - v) > 1e-3 for k, v in exp.items()):
             return False
     return True
@@ -423,11 +458,15 @@ def check_disk(ue, res, rep, snap_path=None):
         k = lambda comp, prop, a="BP_Warden_C_0": v.get(("%s.%s" % (a, comp), prop))  # noqa: E731
         ad = k("CharacterMesh0", "AnimationData") or ""
         bi = k("CharacterMesh0", "BodyInstance") or ""
-        res.check("SK_Warden" in (k("CharacterMesh0", "SkeletalMeshAsset") or "") and k("CharacterMesh0", "AnimationMode") == "AnimationSingleNode",
-                  "%s from disk: BP_Warden_C_0 CharacterMesh0 mesh SK_Warden, single-node" % map_name,
-                  "mesh %s mode %s" % (k("CharacterMesh0", "SkeletalMeshAsset"), k("CharacterMesh0", "AnimationMode")))
+        res.check("SK_Warden" in (k("CharacterMesh0", "SkeletalMeshAsset") or "") and k("CharacterMesh0", "AnimationMode") == "AnimationBlueprint"
+                  and "ABP_Warden_C" in (k("CharacterMesh0", "AnimClass") or ""),
+                  "%s from disk: BP_Warden_C_0 CharacterMesh0 mesh SK_Warden, Animation Blueprint ABP_Warden_C (P13-7; was single-node)" % map_name,
+                  "mesh %s mode %s class %s" % (k("CharacterMesh0", "SkeletalMeshAsset"), k("CharacterMesh0", "AnimationMode"), k("CharacterMesh0", "AnimClass")))
+        res.check(k("CharacterMesh0", "VisibilityBasedAnimTickOption") == "OnlyTickMontagesWhenNotRendered" and k("CharacterMesh0", "bEnableUpdateRateOptimizations") == "True",
+                  "%s from disk: CharacterMesh0 tick option OnlyTickMontagesWhenNotRendered, update-rate optimisation on (the template reached the saved instance)" % map_name,
+                  "tick %s, rate opt %s" % (k("CharacterMesh0", "VisibilityBasedAnimTickOption"), k("CharacterMesh0", "bEnableUpdateRateOptimizations")))
         res.check("AN_Warden_Idle" in ad and "bSavedLooping=True" in ad and "bSavedPlaying=True" in ad,
-                  "%s from disk: clip AN_Warden_Idle, looping, playing" % map_name, ad)
+                  "%s from disk: animation data still names AN_Warden_Idle, looping, playing (unused in Blueprint mode)" % map_name, ad)
         loc, rot = _vec(k("CharacterMesh0", "RelativeLocation") or ""), _vec(k("CharacterMesh0", "RelativeRotation") or "")
         res.check(loc == [0, 0, -110] and rot == [0, 0, 0], "%s from disk: CharacterMesh0 location (0,0,-110), yaw 0" % map_name, "loc %s rot %s" % (loc, rot))
         res.check("CollisionEnabled=NoCollision" in bi, "%s from disk: CharacterMesh0 collision NoCollision" % map_name, bi[:160])
@@ -456,6 +495,42 @@ def check_disk(ue, res, rep, snap_path=None):
                     actor("TriggerTag"), actor("ArmDelaySeconds"), actor("GlowSizeCm"), actor("Stations"), body("StaticMesh"), glow("StaticMesh"), glow("RelativeLocation")))
         left = sorted({key[0] for key in v if "BP_WardenSilhouette" in key[0] and not key[0].startswith("template:")})
         res.check(not left, "%s from disk: no BP_WardenSilhouette is placed" % map_name, "found %s" % left)
+        check_disk_p13(res, map_name, v)
+
+
+def check_disk_p13(res, map_name, v):
+    """L_Monastery as saved: the chapel's skeletal Figure and the 12 stoop zones (section 7's F0 table)."""
+    p13 = _p13()
+    g = lambda a, comp, prop: v.get(("%s.%s" % (a, comp) if comp else a, prop))  # noqa: E731
+    chapel, courtyard = "BP_WardenApparition_C_1", "BP_WardenApparition_C_0"
+    mats = [m for m in (g(chapel, "Figure", "OverrideMaterials") or "").splitlines() if m.strip()]
+    want_mats = ["MI_Warden_Apparition_Mask" if s == p13.BELL_SLOT else "MI_Warden_Apparition_Body"
+                 for s in ["M_Warden_Wool", "M_Warden_BellMetal", "M_Warden_RustedIron", "M_Warden_Skin", "M_Warden_Leather", "M_Warden_ChainIron"]]
+    got_mats = [m.split(".")[-1].strip("'") for m in mats]
+    res.check(g(chapel, None, "bUseSkeletalFigure") == "True" and "SK_Warden" in (g(chapel, "Figure", "SkeletalMeshAsset") or "")
+              and "ABP_Warden_C" in (g(chapel, "Figure", "AnimClass") or "") and g(chapel, "Figure", "AnimationMode") == "AnimationBlueprint"
+              and got_mats == want_mats and g(chapel, "Figure", "bVisible") == "False" and "CollisionEnabled=NoCollision" in (g(chapel, "Figure", "BodyInstance") or ""),
+              "%s from disk: Apparition_Chapel uses the skeletal Figure: SK_Warden, ABP_Warden_C, slots Wool..ChainIron -> Body, Mask, Body x4, hidden, NoCollision" % map_name,
+              "use %s mesh %s class %s mats %s visible %s" % (g(chapel, None, "bUseSkeletalFigure"), g(chapel, "Figure", "SkeletalMeshAsset"),
+                                                              g(chapel, "Figure", "AnimClass"), got_mats, g(chapel, "Figure", "bVisible")))
+    res.check(g(courtyard, None, "bUseSkeletalFigure") == "False", "%s from disk: Apparition_Courtyard still uses the static Body (bUseSkeletalFigure false)" % map_name,
+              "got %s" % g(courtyard, None, "bUseSkeletalFigure"))
+    print("INFO  %s from disk: the courtyard apparition's own Figure is saved with mesh %s and anim class %s (the instance was stale when the map was saved; "
+          "it is unused while bUseSkeletalFigure is false)" % (map_name, g(courtyard, "Figure", "SkeletalMeshAsset"), g(courtyard, "Figure", "AnimClass")))
+    zones = sorted({key[0] for key in v if key[0].startswith("LBWardenStoopZone") and "." not in key[0]})
+    by_label = {g(z, None, "ActorLabel"): z for z in zones}
+    res.check(len(zones) == p13.STOOP_COUNT and sorted(by_label) == sorted(l for l, *_ in p13.STOOP_ZONES),
+              "%s from disk: exactly the 12 LBWardenStoopZone actors, labelled as section 7" % map_name, "got %s" % sorted(by_label))
+    for label, c, h, amount in p13.STOOP_ZONES:
+        z = by_label.get(label)
+        if z is None:
+            res.check(False, "%s from disk: %s" % (map_name, label), "not in the saved map")
+            continue
+        loc, ext, rot = _vec(g(z, "Box", "RelativeLocation") or ""), _vec(g(z, "Box", "BoxExtent") or ""), _vec(g(z, "Box", "RelativeRotation") or "")
+        amt = (_nums(g(z, None, "StoopAmount")) or [-1])[0]
+        ok = (loc == [c["x"], c["y"], c["z"]] and ext == [h["x"], h["y"], h["z"]] and rot == [0, 0, 0] and abs(amt - amount) < 1e-3)
+        res.check(ok, "%s from disk: %s centre (%g, %g, %g), half-extents (%g, %g, %g), StoopAmount %g, rotation 0" % (
+            map_name, label, c["x"], c["y"], c["z"], h["x"], h["y"], h["z"], amount), "loc %s ext %s rot %s amount %s" % (loc, ext, rot, amt))
 
 
 PARTS_ALL = ["Robe", "Shoulders", "Neck", "Head", "ArmLeft", "ArmRight", "Mask", "MaskCrack"]

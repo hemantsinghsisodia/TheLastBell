@@ -16,6 +16,10 @@ Run with -I, editor open on L_Monastery, no PIE. Exactly one mode per run. Every
 Order of the whole task (the plan's rule): --apparition, --save apparition, --map, --save map, THEN --warden, --save warden. The map is
 saved exactly once and never again in the session, because after the BP_Warden template write the placed instances are stale.
 Exit codes: 0 ok, 1 mismatch or refused, 2 a tool call failed (state unknown: run --check first, never retry in a loop).
+
+P13-7 NOTE: the check_* functions and INSTANCES below now describe the state AFTER the Phase 13 hookup (Tools/warden/apply_p13_hookup.py):
+the chapel has one station with a WalkPath, L_Monastery has 12 stoop zones (2992 actors), and BP_Warden's ShowWindupTell, PlayStateFeedback and
+EventGraph have the added animation calls. The apply modes (--apparition, --map, --warden) are Phase 12 history: do not rerun them.
 """
 import argparse
 import json
@@ -34,7 +38,8 @@ BPT = "editor_toolset.toolsets.blueprint.BlueprintTools"
 APP = "EditorToolset.EditorAppToolset"
 
 MAP_PKG = "/Game/LastBell/Maps/L_Monastery"
-EXPECTED_ACTORS = 2980
+EXPECTED_ACTORS = 2980            # the P12 count (used by the P12 apply modes)
+ACTORS_NOW = 2992                 # after P13-7: the same plus the 12 stoop zones
 APP_PKG = "/Game/LastBell/Blueprints/Interactables/BP_WardenApparition"
 APP_CLASS = "/Script/LastBell.LBWardenApparition"
 APP_CDO = APP_PKG + ".Default__BP_WardenApparition_C"
@@ -46,17 +51,22 @@ PLANE = "/Engine/BasicShapes/Plane"
 FOLDER = "Gameplay/Warden"
 
 # the plan's section 3 table (world cm; station = feet; every duration in seconds)
-def station(x, y, z, cone, mind, fin, hold, fout, gap):
-    return {"location": {"x": x, "y": y, "z": z}, "lookConeDegrees": cone, "minPlayerDistance": mind,
-            "fadeInSeconds": fin, "holdSeconds": hold, "fadeOutSeconds": fout, "gapAfterSeconds": gap}
+def station(x, y, z, cone, mind, fin, hold, fout, gap, walk=None, speed=None):
+    s = {"location": {"x": x, "y": y, "z": z}, "lookConeDegrees": cone, "minPlayerDistance": mind,
+         "fadeInSeconds": fin, "holdSeconds": hold, "fadeOutSeconds": fout, "gapAfterSeconds": gap}
+    if walk is not None:                                  # P13: the station's WalkPath and WalkSpeed
+        s["walkPath"] = [{"x": a, "y": b, "z": c} for a, b, c in walk]
+        s["walkSpeed"] = speed
+    return s
 
 
+# P13-7: the chapel has ONE station (the rail) with a WalkPath into the sacristy; the second station is gone.
 INSTANCES = {
     "Apparition_Courtyard": {"tag": "State.Event.CourtyardEntered", "arm": 0.5, "glow": 1000.0, "look": 200.0,
                              "stations": [station(6020, 1300, 800, 30, 0, 1.5, 4.0, 2.0, 0.0)]},
     "Apparition_Chapel": {"tag": "State.Ritual.1", "arm": 1.5, "glow": 0.0, "look": 200.0,
-                          "stations": [station(8380, -120, 0, 30, 150, 1.0, 2.5, 1.2, 1.0),
-                                       station(8500, -930, 0, 30, 300, 1.0, 2.5, 1.5, 0.0)]},
+                          "stations": [station(8380, -120, 0, 30, 150, 1.0, 2.5, 1.5, 0.0,
+                                               walk=[(8380, -380, 0), (8500, -650, 0), (8500, -1000, 0), (8250, -1100, 0)], speed=110)]},
 }
 OLD_ACTORS = {"BP_WardenSilhouette_C_0": "Silh_CourtyardWall", "BP_WardenSilhouette_C_2": "Silh_ChapelWindow"}
 
@@ -583,17 +593,20 @@ def check_setup_mask_glow(ue, g):
 
 
 def check_feedback(ue, g):
+    """PlayStateFeedback after P13-7: entry -> UpdateAnimState(NewState) -> SetLastFeedbackState(NewState) -> the unchanged glow logic."""
     entry, sets, calls = g.type("|PlayStateFeedback"), g.type("|SetLastFeedbackState"), g.type("|" + FN_SET)
+    upd = g.type("|UpdateAnimState")
     ne = g.type("NotEqual(Byte)")
     eq = [i for i in g.type("Equal(Byte)") if not i["type_id"].endswith("NotEqual(Byte)")]
     brs = g.type("Utilities|FlowControl|Branch")
-    if not (len(entry) == 1 and len(sets) == 1 and len(calls) == 2 and len(eq) == 1 and len(ne) == 1 and len(brs) == 2 and len(g.infos) == 8):
-        return [f"PlayStateFeedback: unexpected nodes (8 expected): {[i['type_id'] for i in g.infos]}"]
+    if not (len(entry) == 1 and len(sets) == 1 and len(calls) == 2 and len(eq) == 1 and len(ne) == 1 and len(brs) == 2 and len(upd) == 1 and len(g.infos) == 9):
+        return [f"PlayStateFeedback: unexpected nodes (9 expected: the 8 of fix set 1 plus the UpdateAnimState call): {[i['type_id'] for i in g.infos]}"]
     bad = []
-    entry, st, eq, ne = entry[0], sets[0], eq[0], ne[0]
-    if [t[0]["node"]["refPath"] for t in g.targets(entry, "then")] != [st["node"]["refPath"]] or [s[1] for s in g.sources(st, "LastFeedbackState")] != ["NewState"]:
-        bad.append("entry -> SetLastFeedbackState(NewState) is not wired")
-        return bad
+    entry, st, eq, ne, upd = entry[0], sets[0], eq[0], ne[0], upd[0]
+    if [t[0]["node"]["refPath"] for t in g.targets(entry, "then")] != [upd["node"]["refPath"]] or [s[1] for s in g.sources(upd, "NewState")] != ["NewState"]:
+        return ["entry -> UpdateAnimState(NewState) is not wired"]
+    if [t[0]["node"]["refPath"] for t in g.targets(upd, "then")] != [st["node"]["refPath"]] or [s[1] for s in g.sources(st, "LastFeedbackState")] != ["NewState"]:
+        return ["UpdateAnimState -> SetLastFeedbackState(NewState) is not wired"]
     nxt = [t for t, _ in g.targets(st, "then")]
     if len(nxt) != 1:
         return bad + ["SetLastFeedbackState must lead to the Chase branch"]
@@ -616,17 +629,20 @@ def check_feedback(ue, g):
 
 
 def check_show(ue, g):
-    vis, calls, timer = g.type("Rendering|SetVisibility"), g.type("|" + FN_SET), g.type("SetTimerbyFunctionName")
-    if len(vis) != 1 or len(calls) != 1 or len(timer) != 1 or len(g.infos) != 6:
-        return [f"ShowWindupTell: unexpected nodes (6 expected): {[i['type_id'] for i in g.infos]}"]
-    vis, call, timer = vis[0], calls[0], timer[0]
+    """ShowWindupTell after P13-7: SetVisibility(true) -> SetMaskGlow(1) -> PlayAttackAnim -> the EndWindupTell timer."""
+    vis, calls, timer, play = g.type("Rendering|SetVisibility"), g.type("|" + FN_SET), g.type("SetTimerbyFunctionName"), g.type("|PlayAttackAnim")
+    if len(vis) != 1 or len(calls) != 1 or len(timer) != 1 or len(play) != 1 or len(g.infos) != 7:
+        return [f"ShowWindupTell: unexpected nodes (7 expected: the 6 of fix set 1 plus the PlayAttackAnim call): {[i['type_id'] for i in g.infos]}"]
+    vis, call, timer, play = vis[0], calls[0], timer[0], play[0]
     bad = []
     if g.value(vis, "bNewVisibility") != "true":
         bad.append("the light must be shown (bNewVisibility true)")
     if [t[0]["node"]["refPath"] for t in g.targets(vis, "then")] != [call["node"]["refPath"]]:
         bad.append("SetVisibility must lead to SetMaskGlow")
-    if [t[0]["node"]["refPath"] for t in g.targets(call, "then")] != [timer["node"]["refPath"]]:
-        bad.append("SetMaskGlow must lead to the EndWindupTell timer")
+    if [t[0]["node"]["refPath"] for t in g.targets(call, "then")] != [play["node"]["refPath"]]:
+        bad.append("SetMaskGlow must lead to PlayAttackAnim")
+    if [t[0]["node"]["refPath"] for t in g.targets(play, "then")] != [timer["node"]["refPath"]]:
+        bad.append("PlayAttackAnim must lead to the EndWindupTell timer")
     if float(g.value(call, "Level")) != LEVEL_FLARE:
         bad.append(f"flare level is {g.value(call, 'Level')}, expected {LEVEL_FLARE}")
     if g.value(timer, "FunctionName") != "EndWindupTell":
@@ -658,10 +674,16 @@ def check_end(ue, g):
 
 
 EVENTS = sorted(["AddEvent|Custom|BindToBrain", "AddEvent|Custom|OnStateChanged_Event", "AddEvent|Custom|OnAttackWindup_Event",
-                 "AddEvent|EventBeginPlay", "AddEvent|EventPossessed", "AddEvent|EventEndPlay"])
+                 "AddEvent|Custom|OnPlayerCaught_Event", "AddEvent|EventBeginPlay", "AddEvent|EventPossessed", "AddEvent|EventEndPlay"])
+
+
+def _paths(items):
+    return [t[0]["node"]["refPath"] for t in items]
 
 
 def check_event_graph(ue, g):
+    """EventGraph after P13-7 (35 nodes): the 29 of fix set 1 plus the StartSearchPauseTimer call, the OnPlayerCaught event, its Assign node and
+    its HandlePlayerCaught call, and the matching Unbind node with its Create Event."""
     bad = []
     events = sorted(i["type_id"] for i in g.infos if i["type_id"].startswith("AddEvent|"))
     if events != EVENTS:
@@ -678,10 +700,37 @@ def check_event_graph(ue, g):
         chain = len(prev2) == 1 and prev2[0]["type_id"] == "AddEvent|EventBeginPlay"
     if not chain:
         bad.append(f"BeginPlay -> BindtoBrain -> {FN_SETUP} chain is wrong")
-    if g.targets(setups[0], "then"):
-        bad.append(f"{FN_SETUP} must be the end of the BeginPlay chain")
-    if len(g.type("|GetbBrainBound")) + len(g.type("|SetbBrainBound")) < 2 or len(g.infos) != 29:
-        bad.append(f"bBrainBound logic / node count: {len(g.infos)} nodes (29 expected: the original 28 plus the {FN_SETUP} call)")
+    timers = g.type("|StartSearchPauseTimer")
+    if len(timers) != 1 or [t["node"]["refPath"] for t, _ in g.targets(setups[0], "then")] != [timers[0]["node"]["refPath"]] or g.targets(timers[0], "then"):
+        bad.append(f"{FN_SETUP} must lead to the one StartSearchPauseTimer call, which ends the BeginPlay chain")
+    ev, asg, hand = g.type("AddEvent|Custom|OnPlayerCaught_Event"), g.type("|AssignOnPlayerCaught"), g.type("|HandlePlayerCaught")
+    if len(ev) == 1 and len(asg) == 1 and len(hand) == 1:
+        ev, asg, hand = ev[0], asg[0], hand[0]
+        if [t["node"]["refPath"] for t, _ in g.targets(ev, "OutputDelegate")] != [asg["node"]["refPath"]] or [t["node"]["refPath"] for t, _ in g.targets(ev, "then")] != [hand["node"]["refPath"]]:
+            bad.append("OnPlayerCaught_Event must feed the Assign node's Delegate and lead to HandlePlayerCaught")
+        if g.targets(hand, "then"):
+            bad.append("HandlePlayerCaught must end the handler")
+        src = [s[0] for s in g.sources(asg, "self")]
+        if len(src) != 1 or not src[0]["type_id"].endswith("GetBrain"):
+            bad.append("AssignOnPlayerCaught self must be the brain")
+        att, setb = g.type("|AssignOnAttackWindup"), [i for i in g.type("|SetbBrainBound") if g.value(i, "bBrainBound") == "true"]
+        if len(att) != 1 or len(setb) != 1 or [t["node"]["refPath"] for t, _ in g.targets(att[0], "then")] != [asg["node"]["refPath"]] \
+                or [t["node"]["refPath"] for t, _ in g.targets(asg, "then")] != [setb[0]["node"]["refPath"]]:
+            bad.append("bind chain must be AssignOnStateChanged -> AssignOnAttackWindup -> AssignOnPlayerCaught -> SetbBrainBound")
+    else:
+        bad.append(f"expected one OnPlayerCaught_Event, AssignOnPlayerCaught and HandlePlayerCaught, got {len(ev)}/{len(asg)}/{len(hand)}")
+    unb, unb_att = g.type("|UnbindEventfromOnPlayerCaught"), g.type("|UnbindEventfromOnAttackWindup")
+    if len(unb) == 1 and len(unb_att) == 1:
+        if [t["node"]["refPath"] for t, _ in g.targets(unb_att[0], "then")] != [unb[0]["node"]["refPath"]] or g.targets(unb[0], "then"):
+            bad.append("EndPlay must unbind OnAttackWindup then OnPlayerCaught, and end there")
+        ce = [s[0] for s in g.sources(unb[0], "Delegate")]
+        fn = ue.call(BPT, "get_create_event_function", {"node": ce[0]["node"]}) if len(ce) == 1 else None
+        if fn != "OnPlayerCaught_Event":
+            bad.append(f"the unbind's Create Event is bound to {fn!r}, expected 'OnPlayerCaught_Event'")
+    else:
+        bad.append("expected one UnbindEventfromOnPlayerCaught after the OnAttackWindup unbind")
+    if len(g.type("|GetbBrainBound")) + len(g.type("|SetbBrainBound")) < 2 or len(g.infos) != 35:
+        bad.append(f"bBrainBound logic / node count: {len(g.infos)} nodes (35 expected: the original 28, the {FN_SETUP} call, the search timer call, and 5 for OnPlayerCaught)")
     return bad
 
 
@@ -722,10 +771,10 @@ def check_warden_bp(ue, res, snap_path=None):
          lambda: [v for v in ("MaskGlowMID", "LastFeedbackState") if v not in ue.call(BPT, "list_variables", {"blueprint": pkg_ref(WARDEN_PKG)})]),
         (f"BP_Warden {FN_SET}: valid MaskGlowMID -> SetScalarParameterValue(TellGlow, Level)", lambda: check_set_mask_glow(ue, Graph(ue, FN_SET))),
         (f"BP_Warden {FN_SETUP}: slot {SLOT_NAME} by name -> dynamic instance -> MaskGlowMID", lambda: check_setup_mask_glow(ue, Graph(ue, FN_SETUP))),
-        ("BP_Warden PlayStateFeedback: store state; Chase 0.25; Attack nothing; other 0", lambda: check_feedback(ue, Graph(ue, "PlayStateFeedback"))),
-        ("BP_Warden ShowWindupTell: light on, glow 1, then the EndWindupTell timer", lambda: check_show(ue, Graph(ue, "ShowWindupTell"))),
+        ("BP_Warden PlayStateFeedback: UpdateAnimState(NewState), then store state; Chase 0.25; Attack nothing; other 0", lambda: check_feedback(ue, Graph(ue, "PlayStateFeedback"))),
+        ("BP_Warden ShowWindupTell: light on, glow 1, PlayAttackAnim, then the EndWindupTell timer", lambda: check_show(ue, Graph(ue, "ShowWindupTell"))),
         ("BP_Warden EndWindupTell: light off, glow 0.25 if the last state was Chase, else 0", lambda: check_end(ue, Graph(ue, "EndWindupTell"))),
-        (f"BP_Warden EventGraph: BeginPlay -> BindtoBrain -> {FN_SETUP}; no {FN_ATTACH} call; the 6 events once each; 29 nodes",
+        (f"BP_Warden EventGraph: BeginPlay -> BindtoBrain -> {FN_SETUP} -> search timer; OnPlayerCaught bound and unbound; no {FN_ATTACH} call; the 7 events once each; 35 nodes",
          lambda: check_event_graph(ue, Graph(ue, "EventGraph"))),
     ]
     allbad = []
@@ -766,7 +815,7 @@ def check_apparition_bp(ue, res):
 
 def check_placed(ue, res):
     n = count_actors(ue)
-    res.check(n == EXPECTED_ACTORS, f"L_Monastery actor count == {EXPECTED_ACTORS}", f"got {n}")
+    res.check(n == ACTORS_NOW, f"L_Monastery actor count == {ACTORS_NOW} (2980 + the 12 stoop zones)", f"got {n}")
     in_folder = [a["refPath"] if isinstance(a, dict) else a for a in ue.call(SC, "get_actors_in_folder", {"folder_path": FOLDER})]
     for label, spec in INSTANCES.items():
         found = find_new(ue, label)
