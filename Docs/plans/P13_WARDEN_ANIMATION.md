@@ -424,6 +424,20 @@ Compile with no warnings.
 4. **Stoop zones** placed in `L_Monastery` per section 7, folder `Gameplay/Warden/StoopZones`.
 5. Save each package explicitly. The map is saved once, before any template edit, as in fix set 1. Then `Tools/warden/check_warden.py` gets checks for all of this.
 
+### P13-7 result (d3be054, 2026-11-06): hookup done
+- **`BP_Warden`:** `CharacterMesh0` runs `ABP_Warden_C`, ticks montages only when unseen, and has update-rate optimisation on.
+  - `ShowWindupTell` → `PlayAttackAnim`.
+  - `OnPlayerCaught` → `HandlePlayerCaught` (`DisableMovement`, then `HoldCatchPose`).
+  - `PlayStateFeedback` → `UpdateAnimState`: `bInSearch` set, and a `Montage Stop` (all montages, 0.2 s) on Dormant.
+  - `CheckSearchPause` on a 0.25 s timer: still for 0.5 s in Search → `PlayLookAround` once per pause.
+- **`M_Warden_Apparition`:** `bUsedWithSkeletalMesh`.
+- **`BP_WardenApparition`:** `Figure` = `SK_Warden` + `ABP_Warden_C` + apparition MIs by slot.
+- **`Apparition_Chapel`:** a skeletal figure, one station at the rail, walk path as section 11.
+- **Stoop zones:** the 12 zones placed. 2992 actors.
+- **Checks:** strict compiles clean. `check_warden.py` 61/61, `--bp` 56/56, `--disk` 32/32. Mirror `LastBell.Functional.Warden` 32/32.
+- **Noted:** `Apparition_Courtyard`'s own `Figure` was saved empty, which doesn't matter while it stays static; set it at the next legitimate map save. The search timer runs for the actor's whole life.
+- **Not seen on screen:** motion, physics, foot IK, the catch, stoops, the chapel walk, the look-around, cost.
+
 ## 12. Look test, performance and playtest (lead and owner)
 
 **Contact sheet (lead, about 10 minutes of capture, owner told first):**
