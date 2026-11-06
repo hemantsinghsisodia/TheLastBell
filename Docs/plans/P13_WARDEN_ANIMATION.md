@@ -338,13 +338,20 @@ Pure logic in testable functions, as in `LBWardenLogic`. No hard asset reference
 [Blend Space Player: BS_Warden_Stoop,      X ← GroundSpeed] ──B─┘
    → (local to component, added automatically)
    → [Transform (Modify) Bone: pelvis, Translation ← PelvisOffset, Add to Existing, Component Space, Alpha ← FootIKAlpha]
-   → [Two Bone IK: IK bone foot_l, Effector Location Space = Bone Space, Effector Target = foot_l, Effector Location ← FootIKLeft, Joint Target calf_l (Parent Bone Space), Alpha ← FootIKAlpha]
-   → [Two Bone IK: IK bone foot_r, Effector Location Space = Bone Space, Effector Target = foot_r, Effector Location ← FootIKRight, Joint Target calf_r (Parent Bone Space), Alpha ← FootIKAlpha]
+   → [Two Bone IK: IK bone foot_l, Effector Location Space = Bone Space, Effector Target = foot_l, Effector Location ← FootIKLeft, Joint Target calf_l (Bone Space, location 0: the animated knee is the pole), Alpha ← FootIKAlpha]
+   → [Two Bone IK: IK bone foot_r, Effector Location Space = Bone Space, Effector Target = foot_r, Effector Location ← FootIKRight, Joint Target calf_r (Bone Space, location 0), Alpha ← FootIKAlpha]
    → [RigidBody: Simulation Space Component Space, LOD Threshold 1, Alpha ← PhysicsAlpha]
    → (component to local, added automatically) → [Output Pose]
 ```
 
 Compile with no warnings.
+
+### P13-6 result (5b53ceb, 2026-11-06): graph built through the editor tools; no owner step
+`ABP_Warden`'s AnimGraph is built with `create_node` and `connect_pins` (the Blend Space Player has a typed form with its asset already set), with node options set through `set_properties {"Node": ...}`.
+- **Chain:** two Blend Space Players → Blend (StoopAlpha) → Slot `DefaultSlot` → Local to Component → pelvis Transform (Modify) Bone → two Two Bone IK → RigidBody (LOD Threshold 1) → Component to Local → Output Pose.
+- **Compile:** a strict compile reports no errors and no warnings. A deliberately broken control proved the compile does raise on errors.
+- **Not seen in motion.**
+- **Knee pole:** the joint target was in Parent Bone Space, which put the pole at the hip; it is being changed to Bone Space on the calf (follow-up). R-56 is closed: the tools can build anim graphs.
 
 ## 10. Robe and chain physics (animation-specialist, [EDITOR], F6)
 
