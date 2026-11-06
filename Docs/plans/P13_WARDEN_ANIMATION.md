@@ -255,6 +255,18 @@ Sheet: `Docs/ArtTest/warden/p13_sheet_all.png`, plus one per clip.
 - **(C) Seams:** a 10 cm feather (smoothing) across the sleeve-to-body boundary and across the untouched shoulder and chest band edge.
 - **Attempt limit:** one try plus one variation, then stop with the sheets.
 
+### P13-4c round 3 result (c5e93b0, 2026-11-06): **V5_5w2 accepted by the lead**
+Sheets: `p13w2_sheet_*.png`. Only weights changed, verified against disk; `V5_5/` is untouched.
+- **Fixed:**
+  - **Feet:** 576 foot-pinned wool and leather hem vertices take their nearest robe neighbours' weights plus the leg blend.
+  - **Turns:** the 626 sleeve-flap vertices below the armpit are back on the robe, 30 % towards `spine_03` / `pelvis`.
+  - **Seams:** feathered within 10 cm.
+
+  No slabs, hip boxes or floor fans in any of the 12 clips.
+- **Metrics:** largest wool-edge stretch 24–44, against 91–242 in V5_5 and 59–79 in V5_5w. Stretched share 5–7 %.
+- **Left:** thin hem slivers at the floor in some phases, a triangular sleeve flap at the hip in CrouchedWalking, ragged sleeve wings in the attacks. These are acceptable as torn cloth and are judged again in motion. LOD1 and LOD2 got the same rules but weren't rendered.
+- **Next:** re-import V5_5w2's 3 LODs into `SK_Warden` in place (headless, editor closed), as in the P13-4c block. The leather boots now follow the legs at about 26 % calf; check the feet in the engine.
+
 ## 7. Stoop zones (lead fills the numbers in F0 from live transforms; unreal-blueprint-engineer places them)
 
 New C++ actor `ALBWardenStoopZone`: a box, no collision, editor-only sprite, with property `StoopAmount` 0–1. A world subsystem `ULBWardenStoopSubsystem` keeps the list. The Warden's anim instance asks it for the **highest `StoopAmount` among boxes containing the actor's location**, then eases towards it at 3 per second. Boxes are oriented with the wall. Each extends 150 cm on both sides of the opening, is as wide as the opening plus 20 cm each side, and runs from floor to floor + 300.
