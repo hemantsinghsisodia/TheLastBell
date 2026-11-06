@@ -1,0 +1,230 @@
+{
+ "step": "reimportlods",
+ "before": {
+  "lod_count": 3,
+  "lod_vertices": [
+   75603,
+   45003,
+   22347
+  ],
+  "lod_sections": [
+   6,
+   6,
+   6
+  ],
+  "lod_section_material_slot": [
+   [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+   ]
+  ],
+  "slots": [
+   {
+    "slot": "M_Warden_Wool",
+    "imported": "M_Warden_Wool",
+    "material": "/Game/LastBell/Characters/Warden/Materials/MI_Warden_Wool.MI_Warden_Wool"
+   },
+   {
+    "slot": "M_Warden_BellMetal",
+    "imported": "M_Warden_BellMetal",
+    "material": "/Game/LastBell/Characters/Warden/Materials/MI_Warden_BellMetal.MI_Warden_BellMetal"
+   },
+   {
+    "slot": "M_Warden_RustedIron",
+    "imported": "M_Warden_RustedIron",
+    "material": "/Game/LastBell/Characters/Warden/Materials/MI_Warden_RustedIron.MI_Warden_RustedIron"
+   },
+   {
+    "slot": "M_Warden_Skin",
+    "imported": "M_Warden_Skin",
+    "material": "/Game/LastBell/Characters/Warden/Materials/MI_Warden_Skin.MI_Warden_Skin"
+   },
+   {
+    "slot": "M_Warden_Leather",
+    "imported": "M_Warden_Leather",
+    "material": "/Game/LastBell/Characters/Warden/Materials/M_Warden_Leather.M_Warden_Leather"
+   },
+   {
+    "slot": "M_Warden_ChainIron",
+    "imported": "M_Warden_ChainIron",
+    "material": "/Game/LastBell/Characters/Warden/Materials/MI_Warden_ChainIron.MI_Warden_ChainIron"
+   }
+  ],
+  "skeleton": "/Game/LastBell/Characters/Warden/Meshes/SK_Warden_Skeleton.SK_Warden_Skeleton",
+  "physics_asset": "/Game/LastBell/Characters/Warden/Meshes/SK_Warden_PhysicsAsset.SK_Warden_PhysicsAsset",
+  "bounds_origin": [
+   -7.4988,
+   -15.4613,
+   145.0
+  ],
+  "bounds_extent": [
+   61.5105,
+   78.7845,
+   145.0
+  ],
+  "mesh_sockets": [
+   [
+    "mask",
+    "head",
+    [
+     0.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     0.0
+    ]
+   ]
+  ],
+  "skeleton_sockets": "unreadable: Skeleton: Property 'Sockets' for attribute 'sockets' on 'Skeleton' is protected ",
+  "toolset_socket_names": [
+   "mask"
+  ],
+  "toolset_bone_count": 110,
+  "source_files": [
+   "C:/Hemant/Prj/Learning/Warden/output/warden_art_v5_5/exports/SK_Warden_LOD0.fbx"
+  ],
+  "lod_build_settings": [
+   "(bRecomputeNormals=False,bRecomputeTangents=False,bUseMikkTSpace=False,bComputeWeightedNormals=True,bRemoveDegenerates=True,bUseHighPrecisionTangentBasis=False,bUseHighPrecisionSkinWeights=False,bUseFullPrecisionUVs=False,bUseBackwardsCompatibleF16TruncUVs=False,bOptimizeForInstancing=False,ThresholdPosition=0.000020,ThresholdTangentNormal=0.000020,ThresholdUV=0.000977,MorphThresholdPosition=0.015",
+   "(bRecomputeNormals=False,bRecomputeTangents=False,bUseMikkTSpace=False,bComputeWeightedNormals=True,bRemoveDegenerates=True,bUseHighPrecisionTangentBasis=False,bUseHighPrecisionSkinWeights=False,bUseFullPrecisionUVs=False,bUseBackwardsCompatibleF16TruncUVs=False,bOptimizeForInstancing=False,ThresholdPosition=0.000020,ThresholdTangentNormal=0.000020,ThresholdUV=0.000977,MorphThresholdPosition=0.015",
+   "(bRecomputeNormals=False,bRecomputeTangents=False,bUseMikkTSpace=False,bComputeWeightedNormals=True,bRemoveDegenerates=True,bUseHighPrecisionTangentBasis=False,bUseHighPrecisionSkinWeights=False,bUseFullPrecisionUVs=False,bUseBackwardsCompatibleF16TruncUVs=False,bOptimizeForInstancing=False,ThresholdPosition=0.000020,ThresholdTangentNormal=0.000020,ThresholdUV=0.000977,MorphThresholdPosition=0.015"
+  ]
+ },
+ "after": {
+  "lod_count": 3,
+  "lod_vertices": [
+   75603,
+   45003,
+   22347
+  ],
+  "lod_sections": [
+   6,
+   6,
+   6
+  ],
+  "lod_section_material_slot": [
+   [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+   ]
+  ],
+  "slots": [
+   {
+    "slot": "M_Warden_Wool",
+    "imported": "M_Warden_Wool",
+    "material": "/Game/LastBell/Characters/Warden/Materials/MI_Warden_Wool.MI_Warden_Wool"
+   },
+   {
+    "slot": "M_Warden_BellMetal",
+    "imported": "M_Warden_BellMetal",
+    "material": "/Game/LastBell/Characters/Warden/Materials/MI_Warden_BellMetal.MI_Warden_BellMetal"
+   },
+   {
+    "slot": "M_Warden_RustedIron",
+    "imported": "M_Warden_RustedIron",
+    "material": "/Game/LastBell/Characters/Warden/Materials/MI_Warden_RustedIron.MI_Warden_RustedIron"
+   },
+   {
+    "slot": "M_Warden_Skin",
+    "imported": "M_Warden_Skin",
+    "material": "/Game/LastBell/Characters/Warden/Materials/MI_Warden_Skin.MI_Warden_Skin"
+   },
+   {
+    "slot": "M_Warden_Leather",
+    "imported": "M_Warden_Leather",
+    "material": "/Game/LastBell/Characters/Warden/Materials/M_Warden_Leather.M_Warden_Leather"
+   },
+   {
+    "slot": "M_Warden_ChainIron",
+    "imported": "M_Warden_ChainIron",
+    "material": "/Game/LastBell/Characters/Warden/Materials/MI_Warden_ChainIron.MI_Warden_ChainIron"
+   }
+  ],
+  "skeleton": "/Game/LastBell/Characters/Warden/Meshes/SK_Warden_Skeleton.SK_Warden_Skeleton",
+  "physics_asset": "/Game/LastBell/Characters/Warden/Meshes/SK_Warden_PhysicsAsset.SK_Warden_PhysicsAsset",
+  "bounds_origin": [
+   -7.4988,
+   -15.4613,
+   145.0
+  ],
+  "bounds_extent": [
+   61.5105,
+   78.7845,
+   145.0
+  ],
+  "mesh_sockets": [
+   [
+    "mask",
+    "head",
+    [
+     0.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     0.0
+    ]
+   ]
+  ],
+  "skeleton_sockets": "unreadable: Skeleton: Property 'Sockets' for attribute 'sockets' on 'Skeleton' is protected ",
+  "toolset_socket_names": [
+   "mask"
+  ],
+  "toolset_bone_count": 110,
+  "source_files": [
+   "C:/Hemant/Prj/Learning/TheLastBell/SourceArt/Warden/V5_5w2/exports/SK_Warden_LOD0.fbx"
+  ],
+  "lod_build_settings": [
+   "(bRecomputeNormals=False,bRecomputeTangents=False,bUseMikkTSpace=False,bComputeWeightedNormals=True,bRemoveDegenerates=True,bUseHighPrecisionTangentBasis=False,bUseHighPrecisionSkinWeights=False,bUseFullPrecisionUVs=False,bUseBackwardsCompatibleF16TruncUVs=False,bOptimizeForInstancing=False,ThresholdPosition=0.000020,ThresholdTangentNormal=0.000020,ThresholdUV=0.000977,MorphThresholdPosition=0.015",
+   "(bRecomputeNormals=False,bRecomputeTangents=False,bUseMikkTSpace=False,bComputeWeightedNormals=True,bRemoveDegenerates=True,bUseHighPrecisionTangentBasis=False,bUseHighPrecisionSkinWeights=False,bUseFullPrecisionUVs=False,bUseBackwardsCompatibleF16TruncUVs=False,bOptimizeForInstancing=False,ThresholdPosition=0.000020,ThresholdTangentNormal=0.000020,ThresholdUV=0.000977,MorphThresholdPosition=0.015",
+   "(bRecomputeNormals=False,bRecomputeTangents=False,bUseMikkTSpace=False,bComputeWeightedNormals=True,bRemoveDegenerates=True,bUseHighPrecisionTangentBasis=False,bUseHighPrecisionSkinWeights=False,bUseFullPrecisionUVs=False,bUseBackwardsCompatibleF16TruncUVs=False,bOptimizeForInstancing=False,ThresholdPosition=0.000020,ThresholdTangentNormal=0.000020,ThresholdUV=0.000977,MorphThresholdPosition=0.015"
+  ]
+ },
+ "unchanged": true,
+ "differences": {},
+ "saved": true
+}

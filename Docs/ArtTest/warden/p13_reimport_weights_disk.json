@@ -1,0 +1,50 @@
+{
+ "dump": "C:/Users/heman/AppData/Local/Temp/claude/a067bed057fdb4b4/be0022a0-87e7-4517-81e3-bd2aaebbbccb/scratchpad/dump_disk.json",
+ "lods": [
+  {
+   "lod": 0,
+   "unreal_vertices": 50745,
+   "matched_in_position": 50745,
+   "no_match": 0,
+   "agree_with_new": 50745,
+   "agree_with_old": 35323,
+   "mean_L1_to_new": 3.5855797232276236e-05,
+   "mean_L1_to_old": 0.22987334159252013,
+   "at_changed_vertices": {
+    "unreal_vertices": 15120,
+    "equal_to_new_only": 15120,
+    "equal_to_old_only": 0
+   }
+  },
+  {
+   "lod": 1,
+   "unreal_vertices": 25636,
+   "matched_in_position": 25636,
+   "no_match": 0,
+   "agree_with_new": 25636,
+   "agree_with_old": 15285,
+   "mean_L1_to_new": 4.7799419364046555e-05,
+   "mean_L1_to_old": 0.3115152341111408,
+   "at_changed_vertices": {
+    "unreal_vertices": 10207,
+    "equal_to_new_only": 10207,
+    "equal_to_old_only": 0
+   }
+  },
+  {
+   "lod": 2,
+   "unreal_vertices": 10464,
+   "matched_in_position": 10464,
+   "no_match": 0,
+   "agree_with_new": 10464,
+   "agree_with_old": 6053,
+   "mean_L1_to_new": 5.004742039728242e-05,
+   "mean_L1_to_old": 0.3173929756629745,
+   "at_changed_vertices": {
+    "unreal_vertices": 4365,
+    "equal_to_new_only": 4365,
+    "equal_to_old_only": 0
+   }
+  }
+ ]
+}
