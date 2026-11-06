@@ -239,6 +239,22 @@ Sheet: `Docs/ArtTest/warden/p13_sheet_all.png`, plus one per clip.
 - Then `Tools/warden/check_warden.py --disk`, plus a read-back of slots, socket and LODs.
 - If an in-place re-import can't keep those, stop and report before changing anything.
 
+### P13-4c result (ad993fe, 2026-11-06), with the lead's review
+`SourceArt/Warden/V5_5w/` holds the variation (leg share 0.35, 3 smoothing passes): only weights changed, the topology is identical, and the V5_5 copy is untouched.
+- **Better:** the walk, run, crouch and attack sleeves follow the arms, and the robe moves with the legs.
+- **Still wrong:**
+  - **turns:** the old robe-weighted sleeve flaps fold into boxes at the hip (a regression);
+  - **feet:** flat slabs remain at floor level, from 108 wool vertices at z 0.15–0.22 weighted 100 % to the foot and leg bones, plus leather hem vertices mixing robe and foot;
+  - **untouched band:** shoulder and chest wool no rule covers.
+- **The stretch metric failed:** largest edge ratio 45–79 against 91–242 before; stretched share 8–12 % against 4–6 %. **The lead's 1.8 / 0.5 % thresholds were unrealistic** for 1 cm edges and a 40–60 cm limb swing.
+- **New acceptance from round 3 on:** by eye on the sheets. No slabs, boxes or floor fans in any of the 12 clips at 0/25/50/75 %, front and side. The largest ratio and stretched share are reported, not gated.
+
+**P13-4c round 3** (same agent, Blender only), on top of V5_5w, written to `SourceArt/Warden/V5_5w2/`:
+- **(A) Feet:** the foot-pinned wool and leather hem vertices (z < 0.30 with over 50 % weight on `foot_*` or `ball_*`) get the weights of their nearest lower-robe neighbours (the rule 2 blend), plus two smoothing passes over the band z 0–0.4.
+- **(B) Turns:** the old robe-weighted sleeve flaps below the armpit (z < 1.57, the 1,342 "near the arm" vertices that were 98 % robe) go back to the master's robe weights, blended 30 % towards `spine_03` / `pelvis` by height, **not** to the forearm.
+- **(C) Seams:** a 10 cm feather (smoothing) across the sleeve-to-body boundary and across the untouched shoulder and chest band edge.
+- **Attempt limit:** one try plus one variation, then stop with the sheets.
+
 ## 7. Stoop zones (lead fills the numbers in F0 from live transforms; unreal-blueprint-engineer places them)
 
 New C++ actor `ALBWardenStoopZone`: a box, no collision, editor-only sprite, with property `StoopAmount` 0–1. A world subsystem `ULBWardenStoopSubsystem` keeps the list. The Warden's anim instance asks it for the **highest `StoopAmount` among boxes containing the actor's location**, then eases towards it at 3 per second. Boxes are oriented with the wall. Each extends 150 cm on both sides of the opening, is as wide as the opening plus 20 cm each side, and runs from floor to floor + 300.
@@ -367,6 +383,13 @@ Compile with no warnings.
 - **Simulated:** every body on a `chain_*` or `robe_*` bone. **Kinematic:** everything else. Linear and angular damping 0.6 and 1.0 to start; constraints limited to 30° swing, 10° twist.
 - If those bones have no bodies, the physics asset needs adding in the editor's Physics Asset tool by the owner, about 10 minutes with exact steps. Report it before going on.
 - **Pass, in Simulate with the Warden walking a test loop:** settles within 1 s of stopping; no body flies off or jitters at rest; chains don't pass through the forearms by more than a few cm.
+
+### P13-6 follow-ups (4431dab, 2026-11-06)
+- **Knee pole:** Bone Space on the calf.
+- **Physics:** 51 bodies (8 new: `chain_r_00/02/06/08/10`, `chain_neck_01/09/13`); 32 simulated (16 chain, 16 robe), 19 kinematic; 50 constraints. Chain and robe limits: swing 30° / 30°, twist 10°. Damping 0.6 / 1.0 on chain and robe bodies.
+  - **Right and neck chain bodies** are sized to their short bones (2.5 and 1.9 cm links) instead of mirroring `chain_l` (17.5 cm). The two existing bodies, `chain_r_04` and `chain_neck_05`, were resized too.
+  - **To do:** the 16 robe capsules overlap; set every chain and robe body's collision response to Disabled, so they don't collide with each other.
+- **Not seen in motion.**
 
 ## 11. Hooking it up (unreal-blueprint-engineer, [EDITOR], F6)
 
