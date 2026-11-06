@@ -100,20 +100,32 @@ def step_edit():
 def body_setups():
     """bone name -> (setup object path, physicsType, linearDamping, angularDamping); the toolset has no damping setter, so ObjectTools."""
     out = {}
-    for i in range(0, 120):
+    for i in range(0, 60):
         p = f"{PA}:SkeletalBodySetup_{i}"
         try:
-            v = get_props(p, ["boneName", "physicsType", "defaultInstance"])
+            v = get_props(p, ["boneName", "physicsType", "defaultInstance", "collisionReponse"])
         except Exception:
             continue
         v = json.loads(v) if isinstance(v, str) else v
         di = v["defaultInstance"]
-        out[v["boneName"]] = (p, v["physicsType"], di["linearDamping"], di["angularDamping"])
+        out[v["boneName"]] = (p, v["physicsType"], di["linearDamping"], di["angularDamping"], v["collisionReponse"])
+    assert len(out) == 51, len(out)
     return out
 
 
+def step_collision(resp="BodyCollision_Disabled"):
+    """Chain and robe bodies stop colliding with anything (the robe capsules overlap); the property is spelt collisionReponse."""
+    for bone, v in body_setups().items():
+        if is_sim(bone):
+            set_props(v[0], {"collisionReponse": resp})
+    bs = body_setups()
+    bad = [b for b, v in bs.items() if is_sim(b) and v[4] != resp]
+    other = sorted({v[4] for b, v in bs.items() if not is_sim(b)})
+    print("collisionReponse", resp, "on", sum(1 for b in bs if is_sim(b)), "sim bodies; wrong:", bad, "; others:", other)
+
+
 def step_damping(lin=0.6, ang=1.0):
-    for bone, (p, _t, _l, _a) in body_setups().items():
+    for bone, (p, _t, _l, _a, _c) in body_setups().items():
         if is_sim(bone):
             set_props(p, {"defaultInstance": {"linearDamping": lin, "angularDamping": ang}})
     bs = body_setups()
@@ -126,6 +138,9 @@ def step_after():
     bs = body_setups()
     s["setupPhysicsType"] = {b: v[1] for b, v in bs.items()}
     s["damping"] = {b: {"linear": v[2], "angular": v[3]} for b, v in bs.items()}
+    s["collisionResponse"] = {b: v[4] for b, v in bs.items()}
+    print("collision sim:", sorted({v[4] for b, v in bs.items() if is_sim(b)}),
+          " other:", sorted({v[4] for b, v in bs.items() if not is_sim(b)}))
     print("setup physicsType (sim):", sorted({v[1] for b, v in bs.items() if is_sim(b)}),
           " (other):", sorted({v[1] for b, v in bs.items() if not is_sim(b)}))
     print("damping sim:", sorted({(round(v[2], 3), round(v[3], 3)) for b, v in bs.items() if is_sim(b)}),
