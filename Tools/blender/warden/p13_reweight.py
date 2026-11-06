@@ -9,6 +9,7 @@
       --out-root DIR     default SourceArt/Warden/V5_5w
       --leg-max F        L max, the largest share of a lower-robe vertex given to the legs (default 0.5)
       --smooth N         Laplacian passes over the sleeve region (default 2)
+      --round3 1         also apply P13-4c round 3: (A) feet, (B) turn flaps, (C) seam feather (options: --boot-core M, --feather-radius M, --feather-passes N, --flap-blend F, --band-passes N, --pin-leg SHARE)
       --tag NAME         key under which the numbers are stored in the report (default "reweight")
       --sleeve-near F    distance to the arm bones that also counts as sleeve (default 0.25 m)
   --mode measure    stretch metric: import --mesh (a mesh FBX) with each review clip (SourceArt/Warden/P13_review/AN_Warden_<Name>.fbx, the way
@@ -47,13 +48,16 @@ def parse():
     a = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
     o = {"mode": "reweight", "out_root": os.path.join(ROOT, "SourceArt", "Warden", "V5_5w"), "leg_max": 0.5, "smooth": 2, "tag": None, "mesh": None,
          "clips": "MutantWalking,MutantRun,CrouchedWalking,ZombieAttack", "report": os.path.join(ROOT, "Docs", "ArtTest", "warden", "p13_reweight.json"),
-         "sleeve_near": 0.25}
+         "sleeve_near": 0.25, "round3": "0", "boot_core": 0.0, "feather_radius": 0.10, "feather_passes": 60, "flap_blend": 0.30, "band_passes": 2, "pin_leg": 0.0}
     i = 0
     while i < len(a):
         k = a[i].lstrip("-").replace("-", "_")
         o[k] = a[i + 1]
         i += 2
     o["leg_max"], o["smooth"], o["sleeve_near"] = float(o["leg_max"]), int(o["smooth"]), float(o["sleeve_near"])
+    o["round3"] = o["round3"] == "1"
+    o["boot_core"], o["feather_radius"], o["flap_blend"] = float(o["boot_core"]), float(o["feather_radius"]), float(o["flap_blend"])
+    o["feather_passes"], o["band_passes"], o["pin_leg"] = int(o["feather_passes"]), int(o["band_passes"]), float(o["pin_leg"])
     return o
 
 
@@ -119,6 +123,154 @@ def prune_normalise(Wrows, max_inf=4):
     return out, lost
 
 
+def leg_blend(Wrows, zl, xl, gi, leg_max):
+    """Rule 2: scale the rows by 1 - L(z) and give the legs L(z), split left/right by x and thigh/calf by z. Returns (rows, L)."""
+    L = leg_max * smoothstep(0.0, 1.0, (1.57 - zl) / (1.57 - 0.60))
+    f = np.clip(0.5 + xl / 0.60, 0.1, 0.9)
+    c = smoothstep(0.0, 1.0, (0.84 - zl) / (0.84 - 0.40))
+    Wl = Wrows * (1.0 - L)[:, None]
+    for side, share in (("l", f), ("r", 1.0 - f)):
+        Wl[:, gi["thigh_" + side]] += L * share * (1.0 - c)
+        Wl[:, gi["calf_" + side]] += L * share * c
+    return Wl, L
+
+
+def smooth_rows(W, region, ed, passes, nbmask):
+    """Laplacian passes: each region vertex becomes 0.5 * itself + 0.5 * the mean of its edge neighbours that are in nbmask (Jacobi, in place)."""
+    n = len(W)
+    a, b = ed[:, 0], ed[:, 1]
+    m1, m2 = region[a] & nbmask[b], region[b] & nbmask[a]
+    src = np.concatenate([a[m1], b[m2]])
+    nbr = np.concatenate([b[m1], a[m2]])
+    deg = np.bincount(src, minlength=n).astype(float)
+    ri = np.where(region & (deg > 0))[0]
+    if not len(ri):
+        return W
+    cols = np.where((np.abs(W[ri]).sum(0) > 0) | (np.abs(W[np.unique(nbr)]).sum(0) > 0))[0]
+    for _ in range(passes):
+        new = {}
+        for g in cols:
+            mean = np.bincount(src, weights=W[nbr, g], minlength=n)[ri] / deg[ri]
+            new[g] = 0.5 * W[ri, g] + 0.5 * mean
+        for g, v in new.items():
+            W[ri, g] = v
+    return W
+
+
+def read_leather(ob):
+    me = ob.data
+    mi = np.zeros(len(me.polygons), int)
+    me.polygons.foreach_get("material_index", mi)
+    lv = np.zeros(len(me.loops), int)
+    me.loops.foreach_get("vertex_index", lv)
+    tot = np.zeros(len(me.polygons), int)
+    me.polygons.foreach_get("loop_total", tot)
+    slot = [m.name.split(".")[0] if m else None for m in me.materials].index("M_Warden_Leather")
+    leather = np.zeros(len(me.vertices), bool)
+    leather[lv[np.repeat(mi, tot) == slot]] = True
+    return leather
+
+
+def apply_round3(co, W0, W1, wool, leather, names, ed, bones, sleeve, lower, p, e_ref):
+    """P13-4c round 3 on top of the rules-1-3 result W1: (A) feet, (B) turn flaps, (C) seam feather. W0 is the master. Returns (W3, stats)."""
+    from mathutils import Vector, kdtree
+    gi = {nm: i for i, nm in enumerate(names)}
+    n = len(co)
+    x, z = co[:, 0], co[:, 2]
+    robe = [gi[nm] for nm in names if nm.startswith("robe_")]
+    foot = [gi[nm] for nm in names if nm.startswith(("foot_", "ball_"))]
+    arm_groups = [gi[nm] for nm in names if nm.startswith(("upperarm_", "lowerarm_", "hand_"))]
+    has_arm = W0[:, arm_groups].sum(1) > 0.0
+    W3 = W1.copy()
+    stats = {}
+    hem = wool | leather
+    robe_share0 = W0[:, robe].sum(1)
+
+    # ---- (A) feet: z < 0.30 wool and leather vertices with > 50 % on foot_* / ball_* take their nearest robe vertices' weights + the rule 2 blend
+    dfoot = np.full(n, 9.0)
+    for sd in ("l", "r"):
+        for b in ("foot", "ball"):
+            dfoot = np.minimum(dfoot, seg_dist(co, *bones["%s_%s" % (b, sd)]))
+    legfam = [gi[nm] for nm in names if nm.startswith(("thigh_", "calf_", "foot_", "ball_"))]
+    if p["pin_leg"] > 0:      # variation: any hem vertex with at least this share on thigh/calf/foot/ball (the strict rule misses vertices with exactly 0.5 foot + 0.5 calf)
+        pin_test = W0[:, legfam].sum(1) >= p["pin_leg"]
+    else:
+        pin_test = W0[:, foot].sum(1) > 0.5
+    pinned = hem & (z < 0.30) & pin_test & (dfoot > p["boot_core"])
+    ref = hem & (z < 1.57) & ~sleeve & (robe_share0 > 0.5) & ~pinned
+    ri = np.where(ref)[0]
+    kd = kdtree.KDTree(len(ri))
+    for k, v in enumerate(ri):
+        kd.insert(Vector(co[v]), k)
+    kd.balance()
+    pi = np.where(pinned)[0]
+    Wp = np.zeros((len(pi), W0.shape[1]))
+    for k, v in enumerate(pi):
+        hits = kd.find_n(Vector(co[v]), 4)
+        wts = np.array([1.0 / (d + 1e-3) for (_, _, d) in hits])
+        wts /= wts.sum()
+        for (_, idx, _), w in zip(hits, wts):
+            row = W0[ri[idx]][robe]
+            Wp[k, robe] += w * row / max(row.sum(), 1e-9)
+    Wp, _ = leg_blend(Wp, z[pi], x[pi], gi, p["leg_max"])
+    Wp, lost_a = prune_normalise(Wp)
+    W3[pi] = Wp
+    stats["A_pinned_vertices"] = int(len(pi))
+    stats["A_pinned_wool"] = int((pinned & wool).sum())
+    stats["A_pinned_leather"] = int((pinned & leather).sum())
+    stats["A_boot_core_excluded_m"] = p["boot_core"]
+    stats["A_pin_rule"] = ("thigh/calf/foot/ball share >= %.2f" % p["pin_leg"]) if p["pin_leg"] > 0 else "foot/ball share > 0.5"
+    stats["A_reference_vertices"] = int(len(ri))
+
+    # ---- (B) turn flaps: the old robe-weighted sleeve flaps below the armpit (z < 1.57) return to the master's robe weights (+ the rule 2 blend, like the rest
+    # of the lower robe), then 30 % towards spine_03 above z 1.2 or pelvis below
+    flap = sleeve & ~has_arm & (z < 1.57)
+    fi = np.where(flap)[0]
+    Wf, _ = leg_blend(W0[fi], z[fi], x[fi], gi, p["leg_max"])
+    tgt = np.where(z[fi] > 1.2, gi["spine_03"], gi["pelvis"])
+    Wf = Wf * (1.0 - p["flap_blend"])
+    Wf[np.arange(len(fi)), tgt] += p["flap_blend"]
+    Wf, lost_b = prune_normalise(Wf)
+    W3[fi] = Wf
+    stats["B_flap_vertices"] = int(len(fi))
+
+    # ---- band smoothing (A): passes over wool/leather robe vertices at z < 0.4 (the pinned ones included; a boot core kept out of A stays out)
+    band = hem & (z < 0.4) & (pinned | (lower & wool) | (leather & (robe_share0 > 0.5)))
+    smooth_rows(W3, band, ed, p["band_passes"], band)
+    stats["A_band_vertices"] = int(band.sum())
+
+    # ---- (C) feather: wool vertices within feather_radius of a seam are smoothed (neighbours = all wool), so the weights ramp across the seam.
+    # seam = a wool edge with at least one changed end whose two weight vectors differ by more than 0.3 (L1).
+    changed = np.any(np.abs(W3 - W0) > 1e-9, axis=1)
+    wl = wool[ed[:, 0]] & wool[ed[:, 1]] & (changed[ed[:, 0]] | changed[ed[:, 1]])
+    d1 = np.abs(W3[ed[:, 0]] - W3[ed[:, 1]]).sum(1)
+    seam = wl & (d1 > 0.3)
+    sv = np.unique(ed[seam].ravel())
+    region = np.zeros(n, bool)
+    if len(sv):
+        kd2 = kdtree.KDTree(len(sv))
+        for k, v in enumerate(sv):
+            kd2.insert(Vector(co[v]), k)
+        kd2.balance()
+        for v in np.where(wool)[0]:
+            if kd2.find_n(Vector(co[v]), 1)[0][2] <= p["feather_radius"]:
+                region[v] = True
+    passes = max(4, int(round(p["feather_passes"] * (e_ref / p["e_this"]) ** 2)))
+    smooth_rows(W3, region, ed, passes, wool)
+    stats.update({"C_seam_edges": int(seam.sum()), "C_seam_vertices": int(len(sv)), "C_feather_region_vertices": int(region.sum()), "C_feather_passes": passes,
+                  "C_feather_radius_m": p["feather_radius"]})
+
+    # ---- everything that moved in round 3: prune to 4, normalise
+    moved = np.any(np.abs(W3 - W1) > 1e-12, axis=1)
+    mi = np.where(moved)[0]
+    Wm, lost = prune_normalise(W3[mi])
+    W3[mi] = Wm
+    stats["round3_moved_vertices"] = int(len(mi))
+    stats["round3_pruned_mass_mean"] = float(lost.mean()) if len(mi) else 0.0
+    stats["round3_pruned_mass_max"] = float(lost.max()) if len(mi) else 0.0
+    return W3, stats
+
+
 def apply_rules(co, W, wool, names, ed, bones, p):
     """Return (W2, sleeve_mask, lower_mask, stats). bones: name -> (head, tail) numpy arrays in the master's frame."""
     gi = {nm: i for i, nm in enumerate(names)}
@@ -180,13 +332,7 @@ def apply_rules(co, W, wool, names, ed, bones, p):
     # ---- rule 2: lower robe
     li = np.where(lower)[0]
     zl, xl = z[li], x[li]
-    L = p["leg_max"] * smoothstep(0.0, 1.0, (1.57 - zl) / (1.57 - 0.60))
-    f = np.clip(0.5 + xl / 0.60, 0.1, 0.9)
-    c = smoothstep(0.0, 1.0, (0.84 - zl) / (0.84 - 0.40))
-    Wl = W[li] * (1.0 - L)[:, None]       # every existing weight scaled by 1 - L, so the legs get exactly L before pruning (the plan says "robe weights"; the other weights are tiny there)
-    for side, share in (("l", f), ("r", 1.0 - f)):
-        Wl[:, gi["thigh_" + side]] += L * share * (1.0 - c)
-        Wl[:, gi["calf_" + side]] += L * share * c
+    Wl, L = leg_blend(W[li], zl, xl, gi, p["leg_max"])    # every existing weight scaled by 1 - L, so the legs get exactly L before pruning (the plan says "robe weights"; the other weights are tiny there)
     Wl_p, lost_l = prune_normalise(Wl)
     W2[li] = Wl_p
     leg_cols = [gi[nm] for nm in names if nm.startswith(("thigh_", "calf_"))]
@@ -282,6 +428,9 @@ def mode_reweight(o):
     assert np.allclose(np.array([list(r) for r in arm.matrix_world]), np.eye(4)), "armature object is not at identity: the rules assume the master's frame"
     bones = {b.name: (np.array(b.head_local), np.array(b.tail_local)) for b in arm.data.bones}
     p = {"leg_max": o["leg_max"], "smooth": o["smooth"], "sleeve_near": o["sleeve_near"]}
+    if o["round3"]:
+        p.update({k: o[k] for k in ("boot_core", "feather_radius", "feather_passes", "flap_blend", "band_passes", "pin_leg")})
+    e_ref = None
     report = {"params": p, "source": SRC_BLEND, "source_md5": md5_before, "lods": {}}
     for nm in LODS:
         ob = bpy.data.objects[nm]
@@ -289,7 +438,16 @@ def mode_reweight(o):
         co, W, wool, names, ed = read_mesh(ob)
         nz = (W > 0).sum(1)
         W2, sleeve, lower, stats = apply_rules(co, W, wool, names, ed, bones, p)
-        changed = sleeve | lower
+        if o["round3"]:
+            leather = read_leather(ob)
+            ew = ed[wool[ed[:, 0]] & wool[ed[:, 1]]]
+            elen = float(np.linalg.norm(co[ew[:, 0]] - co[ew[:, 1]], axis=1).mean())
+            e_ref = e_ref or elen
+            p["e_this"] = elen
+            W2, st3 = apply_round3(co, W, W2, wool, leather, names, ed, bones, sleeve, lower, p, e_ref)
+            stats.update(st3)
+            stats["mean_wool_edge_m"] = elen
+        changed = np.any(W2 != W, axis=1)
         # never touch what the rules leave alone: the rows outside `changed` are identical by construction; assert
         assert np.array_equal(W2[~changed], W[~changed])
         write_weights(ob, W, W2, changed)
@@ -480,7 +638,7 @@ def mode_summary(o):
     """Collect the per-clip numbers of every measured tag into one table (report key "summary")."""
     with open(o["report"], encoding="utf-8") as fh:
         data = json.load(fh)
-    tags = [k for k in ("before", "after_attempt1", "after_variation1") if k in data]
+    tags = [k for k in data if k == "before" or k.startswith("after_")]
     table = {}
     for t in tags:
         table[t] = {c: {"max_ratio": round(v["max_ratio"], 1), "worst_frame_share_gt_1.5_pct": round(100 * v["worst_frame_share_gt_1.5"], 2),
