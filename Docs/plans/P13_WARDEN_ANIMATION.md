@@ -155,6 +155,18 @@ No limb stretches (every chain stays at or below 1.000 of its reference length).
    - How: the 12 Warden clips are exported to FBX with the Warden mesh, in headless Unreal Python, then rendered from the front and side at 0/25/50/75 % in neutral light.
    - Why: no capture session and no owner time, and a clearer read on twists and facing. The in-game look is judged in the playtest.
 
+### P13-2 follow-up result (8e522b9, 2026-11-06)
+`Tools/build_and_test.ps1`: **110 passed, 0 failed**. New tests: `Warden.Anim.FootTargetKeepsTheSwing` and `Warden.Anim.StoopPelvis`.
+
+- **Foot IK, as built:**
+  - `FootIKLeft` and `FootIKRight` hold a **delta in the foot bone's own space**: the foot's ground offset minus the pelvis drop already applied.
+  - The Two Bone IK nodes use **Bone Space**, with the effector target = the foot itself (the section 9 graph is updated).
+  - That way the effector follows the foot as animated this frame, so a swinging foot keeps its lift.
+  - **Why not the lead's wording:** reading last frame's foot back would have fed the IK its own output.
+- **Pelvis:** `PelvisOffset.Z` = clamp(foot pelvis drop − `StoopPelvisDrop` × `StoopAlpha`, −(`MaxPelvisDrop` + `StoopPelvisDrop`), 0). `StoopPelvisDrop` is 40.
+- **While stooping:** foot IK is forced on and the traces run at any speed.
+- **Not seen on screen.**
+
 ### P13-5 result (00c5db6, 2026-11-06): the retarget is wrong
 Sheet: `Docs/ArtTest/warden/p13_sheet_all.png`, plus one per clip.
 - **Arms:** in **every clip, the idle included,** the arms stick out horizontally at shoulder height, one forward and one back.
@@ -276,8 +288,8 @@ Pure logic in testable functions, as in `LBWardenLogic`. No hard asset reference
 [Blend Space Player: BS_Warden_Stoop,      X ← GroundSpeed] ──B─┘
    → (local to component, added automatically)
    → [Transform (Modify) Bone: pelvis, Translation ← PelvisOffset, Add to Existing, Component Space, Alpha ← FootIKAlpha]
-   → [Two Bone IK: IK bone foot_l, Effector ← FootIKLeft (Component Space), Joint Target calf_l (Parent Bone Space), Alpha ← FootIKAlpha]
-   → [Two Bone IK: IK bone foot_r, Effector ← FootIKRight (Component Space), Joint Target calf_r, Alpha ← FootIKAlpha]
+   → [Two Bone IK: IK bone foot_l, Effector Location Space = Bone Space, Effector Target = foot_l, Effector Location ← FootIKLeft, Joint Target calf_l (Parent Bone Space), Alpha ← FootIKAlpha]
+   → [Two Bone IK: IK bone foot_r, Effector Location Space = Bone Space, Effector Target = foot_r, Effector Location ← FootIKRight, Joint Target calf_r (Parent Bone Space), Alpha ← FootIKAlpha]
    → [RigidBody: Simulation Space Component Space, LOD Threshold 1, Alpha ← PhysicsAlpha]
    → (component to local, added automatically) → [Output Pose]
 ```
