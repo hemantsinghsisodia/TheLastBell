@@ -424,6 +424,15 @@ Compile with no warnings.
 4. **Stoop zones** placed in `L_Monastery` per section 7, folder `Gameplay/Warden/StoopZones`.
 5. Save each package explicitly. The map is saved once, before any template edit, as in fix set 1. Then `Tools/warden/check_warden.py` gets checks for all of this.
 
+### P13-4c re-import (d4498ad, 2026-11-06)
+`SK_Warden` holds the V5_5w2 weights on all 3 LODs, re-imported in place, headless, with the editor closed.
+- **LOD0:** `AssetImportTask` with `replace_existing`, using the asset's stored options (Force Front X).
+- **LOD1 and LOD2:** `SkeletalMeshEditorSubsystem.import_lod` from copies pre-rotated +90°, because `import_lod` ignores Force Front X. The LOD build settings are restored afterwards.
+- **Unchanged, from disk:** LOD count, vertex counts (75,603 / 45,003 / 22,347), sections and slots, materials, skeleton, physics asset, socket `mask`, bounds, 110 bones.
+- **Weights:** every changed vertex matches V5_5w2 (mean L1 difference 4e-5).
+- **Checks:** `check_warden.py --disk` 32/32.
+- **Not readable from Python:** the LOD screen sizes; the lead checks them in the editor.
+
 ### P13-7 result (d3be054, 2026-11-06): hookup done
 - **`BP_Warden`:** `CharacterMesh0` runs `ABP_Warden_C`, ticks montages only when unseen, and has update-rate optimisation on.
   - `ShowWindupTell` → `PlayAttackAnim`.
