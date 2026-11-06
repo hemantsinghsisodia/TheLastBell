@@ -277,3 +277,8 @@ Scripts: `Tools/warden/p13_abp_graph.py` (steps `create props read save`; `P13_T
    - No tool for body or constraint damping, per-pair collision disabling, or constraint reference frames. Body damping is reachable through ObjectTools: the body setups are sub-objects `<PA>:SkeletalBodySetup_<N>` (find the bone by reading `boneName`), set `{"defaultInstance": {"linearDamping": x, "angularDamping": y}}`. Constraint templates are `<PA>:PhysicsConstraintTemplate_<N>`. The array properties on the asset itself can't be read.
    - Probing 120 setup names takes a few minutes, so do it once per script.
 9. **Bone lengths for capsule sizing** (no MCP tool for bone transforms): a read-only headless script, `Tools/warden/p13_bone_probe.py`, ran with the editor open (`UnrealEditor-Cmd -run=pythonscript`, exit 0, saves nothing), using `AnimPoseExtensions.get_reference_pose(skeleton)` + `get_bone_pose(..., LOCAL)`.
+
+## Blend spaces built by script need the editor once (Phase 13)
+A blend space whose `sampleData` is set through properties or Python reads back fine, but has **no runtime data** (0 segments): only `UBlendSpace::ResampleData()` builds it, and that isn't reachable from Python. The Blend Space editor calls it when it opens. In game such a blend space returns nothing, so the graph outputs the reference pose while montages still play (P13: the Warden glided frozen).
+- **Fix:** open the blend space in its editor and save. Then check with `LastBell.Functional.Warden.Anim.LocomotionMovesTheFeet`, or with `lb.Warden.AnimDebug 1`, which logs "runtime data: N segments".
+- **Side effect:** opening that editor rewrites `Config/DefaultEditor.ini`'s preview-scene profiles. Restore it with `git checkout -- Config/DefaultEditor.ini`.
