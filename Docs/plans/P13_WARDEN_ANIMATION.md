@@ -509,7 +509,16 @@ Shot 2 shows its cost alone. There the Warden was off screen, so its own graph w
 
 That is about half of the animation cost in shots 1 and 3.
 
-**Fix (pending the owner's go):** in the `ALBWardenApparition` constructor, set `Figure->VisibilityBasedAnimTickOption = OnlyTickPoseWhenRendered`, plus a test. No asset save is needed: the placed instances hold the default.
+**Fix (owner's go, d5324ab):** `ALBWardenApparition`'s constructor sets `Figure->VisibilityBasedAnimTickOption = OnlyTickPoseWhenRendered`. No asset was saved.
+
+**Tests:**
+- new `LastBell.Warden.Apparition.FigureAnimatesOnlyWhenRendered` (the class default);
+- an assertion on the spawned apparition in the functional apparition setup;
+- `Monastery.StagesRelocateTheWarden` now checks every placed apparition in L_Monastery: both report the new value at runtime.
+
+**Real-project suite:** 112 passed, 0 failed, 0 invalid tags. This includes `Warden.Anim.LocomotionMovesTheFeet`, which is now green.
+
+**Not yet seen in game:** whether `stat anim` drops to one evaluation when no Warden is on screen. That is checked in the owner playtest.
 
 ## 12. Look test, performance and playtest (lead and owner)
 
