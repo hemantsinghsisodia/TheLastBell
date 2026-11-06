@@ -331,6 +331,11 @@ Owner playtest: "all good". Wrap-up:
 
 **Final real-project suite: 112/112.** The apparition functional tests passed 3 more runs, 7/7 each.
 
+**Editor read-back (2026-11-07):**
+- `check_warden.py`: 61/61; `--bp` 56/56; `--disk` 32/32. The checker now expects `turnRate` 90 and reads an empty byte default as 0 (3bcec37).
+- `BP_Warden` `RotationRate` yaw is 120, on the class default and the placed instance (QA C7).
+- Both placed apparitions' `Figure`: `OnlyTickPoseWhenRendered`.
+
 **Open items, for the owner's review:**
 - coverage gaps: no automated test for foot IK, turn montages, look-around or foot sliding (owner-verified in play);
 - three unused retargeted clips, which stay in the project unreferenced.
