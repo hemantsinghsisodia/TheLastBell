@@ -201,7 +201,43 @@ Sheet: `Docs/ArtTest/warden/p13_sheet_all.png`, plus one per clip.
   - the **hem** (wool below 60 cm, 4,827 vertices) is weighted 98 % to the `robe_*` bones, which hang from `pelvis` and aren't driven by any clip, so the legs stride through it; 105 vertices are partly on leg bones and stretch;
   - the **sleeves** (1,528 vertices) are split, 59 % arm and 39 % robe bones, so polygons between them stretch when an arm swings.
 
-  The fix is in the skin weights (sleeves onto the arm bones; the lower robe blended towards the thighs and calves), and P13-7's physics adds sway on top. **The owner decides who reweights** (their tool, or our agent on the project's copy, then re-import `SK_Warden` keeping its skeleton).
+  The fix is in the skin weights (sleeves onto the arm bones; the lower robe blended towards the thighs and calves), and P13-7's physics adds sway on top. **Owner's decision (2026-11-06): our agent reweights in Blender** (P13-4c below).
+
+### P13-4c: reweight the robe and sleeves (technical-artist; Blender headless, then a headless Unreal re-import)
+**Source:** `SourceArt/Warden/V5_5/Warden_Rigged.blend`, the project's copy (md5 `4445c23d…`). **Write a new file**, `SourceArt/Warden/V5_5w/Warden_Rigged.blend`; the V5_5 copy and the owner's folder stay untouched.
+
+**Must not change:** bone names, hierarchy, rest pose, mesh topology, vertex order and counts, UVs, material slots. Only vertex-group weights change, on **all three LODs** (`SK_Warden_LOD0/1/2`).
+
+**Rules** (positions in the master's frame, metres; +x is the Warden's left, as `hand_l` is at x +0.42):
+1. **Sleeves:**
+   - **Which vertices:** wool vertices with any weight on `upperarm_*`, `lowerarm_*` or `hand_*`, or within 0.25 m of those bones' segments, with 1.0 < z < 2.3 and |x| > 0.25.
+   - **New weights:** remove every `robe_*` weight. Weight the vertex to its own side's `clavicle`, `upperarm`, `lowerarm` and `hand` by inverse squared distance to each bone segment, keeping the two highest and normalising.
+   - **Shoulder seam:** blend towards `spine_03` with weight 1 − smoothstep(0.25 m → 0.45 m of |x|).
+   - **Smoothing:** two Laplacian smoothing passes over the sleeve region only.
+2. **Lower robe:**
+   - **Which vertices:** wool vertices with z < 1.57 (the hip), not already sleeve vertices.
+   - **Leg share:** L(z) = 0.5 × smoothstep from z 1.57 down to 0.60.
+   - **Left/right split:** left fraction f = clamp(0.5 + x / 0.60, 0.1, 0.9); the right leg gets 1 − f.
+   - **Bones:** each side's share goes to `thigh` above the knee (z 0.84). Below the knee it blends to `calf` by smoothstep from 0.84 down to 0.40.
+   - **Robe bones:** the existing `robe_*` weights are scaled by 1 − L.
+   - **Result:** the robe follows the legs at up to half strength without splitting, and the robe bones keep the rest for physics sway.
+3. **Everything else:** unchanged.
+
+**Measured before and after** (`Tools/blender/warden/p13_reweight.py`, plus a JSON report). Over every frame of the review FBX exports of MutantWalking, MutantRun, CrouchedWalking and ZombieAttack:
+- the **largest edge stretch ratio** on wool polygons (deformed length ÷ rest length), and the share of wool edges above 1.5;
+- **pass:** largest ratio ≤ **1.8**, and under 0.5 % of edges above 1.5. Report the before values too.
+
+**Look:**
+- rerun the contact sheet with the new mesh (LOD0 exported from the new blend), all 12 clips, and LOOK;
+- no slabs, and no robe passing through itself badly at 25 % and 75 % of walk and run.
+- **Attempt limit:** if a rule makes things worse, try one variation (for example L max 0.35, or three smoothing passes), then stop and report with images.
+
+**Export:** 3 LOD FBX with the owner's own export settings (read `C:\Hemant\Prj\Learning\Warden\output\warden_art_v5_5\scripts\export.py`, read-only), to `SourceArt/Warden/V5_5w/exports/`.
+
+**Re-import into Unreal** (headless Python, editor closed, after the look passes): replace `SK_Warden`'s geometry and weights **in place**, keeping the asset, `SK_Warden_Skeleton`, `SK_Warden_PhysicsAsset`, the 6 slot material assignments, socket `mask` and the 3 LODs (vertex counts as before: 75,603 / 45,003 / 22,347).
+- Use a re-import or LOD import that keeps the existing asset. Never delete `SK_Warden`, because every clip, Blueprint and the apparition reference it.
+- Then `Tools/warden/check_warden.py --disk`, plus a read-back of slots, socket and LODs.
+- If an in-place re-import can't keep those, stop and report before changing anything.
 
 ## 7. Stoop zones (lead fills the numbers in F0 from live transforms; unreal-blueprint-engineer places them)
 
