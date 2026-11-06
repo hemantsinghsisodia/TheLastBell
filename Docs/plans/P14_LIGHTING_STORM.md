@@ -1,0 +1,675 @@
+# Phase 14: Lighting and the storm's light: plan
+
+**Status:** draft for the owner's approval (2026-11-07). Nothing starts before the owner's "go".
+
+**Branch:** `claude/phase-14-lighting-storm`, from `main` (f13721b).
+
+**Rules:**
+- D-048 applies. The lead plans in Opus 5.5 at xhigh. Every implementer is spawned with `model: "sonnet", effort: "high"`.
+- The owner is told before any capture over about 15 minutes. Agents never run the capture tool and never operate the desktop.
+- The repo is public: no non-redistributable asset is committed (D-094, D-095). This phase brings in no external asset.
+
+## 1. Goal and the owner's choices (2026-11-07)
+**Goal:** make the night feel like a storm, and finish the lighting:
+- lightning lights the sky and, through the windows, the interiors;
+- the wind moves the plants;
+- the storm grows with the story;
+- some lights die as the rituals are completed;
+- every area meets a readability floor and an agreed colour grade, at a measured frame cost.
+
+**The owner's choices:**
+
+| Question | Choice |
+|---|---|
+| Phase 14 scope | **Lighting plus the storm's light and motion.** Phase 15 gets the particles: rain, splashes, drips, dust, candle-flame effects, cloth |
+| Storm arc | **Builds with the story:** strong at the arrival, quieter indoors, rising through the cloister, peaking at the tower top and the finale |
+| Lightning | **Atmosphere, scripted beats, and reveals.** Flashes can briefly reveal the Warden or hidden details |
+| Story-driven light changes | **Yes, a small set:** 2–3 changes per mechanism, restored correctly after a checkpoint load |
+
+## 2. Exit conditions
+1. **Storm arc:** storm strength follows the table in section 5.2, and lightning comes more often as it rises. Shown by tests and the owner's playtest.
+2. **Flash coverage:** a flash lights the following:
+   - the cloud dome, with a bright patch that moves from flash to flash;
+   - everything the moon lights;
+   - the interiors, through the chapel lancets and roof hole, the crypt grates and the tower slits;
+   - the stained glass, the light shafts and the chapel's light pools.
+   
+   A sealed room does not light up. At `cr_torch_t1_3m`, a crypt corridor with no opening in view, mean luma changes by less than 10 % during a frozen flash at 0.8.
+3. **Reveals:**
+   - a strike when the player first looks at the tower after entering the courtyard;
+   - a strike after each ritual;
+   - strikes at the tower top and at the finale;
+   - a flash when the Warden is in view in an exposed space;
+   - the two apparitions appear with a flash;
+   - five chalk markings that are visible only during flashes, never carrying puzzle information.
+4. **Wind:** the courtyard, garth and passage plants and the ivy sway with gusts that follow the storm. Nothing visibly pops at the sway cut-off distance (owner).
+5. **Story light changes:** the changes in section 8 happen live, with a guttering fade, and are correct after a checkpoint load. Every critical-path viewpoint keeps its readability floor (section 9.3).
+6. **Lighting pass:**
+   - each post-process volume covers only its own area;
+   - the owner's chosen grade is applied everywhere;
+   - each area's exposure meets its target (section 9.3);
+   - no Lumen noise or light leak blocks the owner's approval (R-09);
+   - R-31 is closed by a measurement.
+7. **Viewpoints:** the owner approves the 19 viewpoints in section 10.
+8. **Performance:**
+   - GPU ≤ 16.6 ms at High at the six standard spots (section 11), with the storm at full strength and the wind on;
+   - against the P14-B baseline, storm and wind add no more than 0.6 ms of GPU and 0.3 ms of game thread at any spot.
+9. **Tests:** the suite passes, with the new tests in section 12.
+10. **Approval:** the owner approves the phase.
+
+## 3. What's there now (facts; research 2026-11-07)
+### World state and story
+`ULBWorldStateSubsystem` is a GameInstance subsystem.
+- **Delegates:** `OnStateChanged(Tag, bAdded)` fires per tag. `ReplaceState` and `ResetState` fire only `OnStateReplaced`; a checkpoint load calls `ReplaceState` before `OpenLevel`.
+- **Matching:** exact, so a parent tag doesn't match its children.
+
+**Story tags, in order:**
+1. `State.Event.CourtyardEntered`, with Stage.1
+2. `State.Chapel.CandlesSolved`
+3. `State.Ritual.1`, with Stage.2
+4. `State.Event.CryptEntered`, with Stage.3
+5. `State.Ritual.2`, with Stage.4
+6. `State.Event.CloisterEntered`, with Stage.5
+7. `State.Tower.BellsSolved`
+8. `State.Ritual.3`
+9. `State.Event.TowerTop`
+10. `State.Event.Finale`
+
+**Stage.6 is never granted** (finding; out of scope, section 15).
+
+### Lights
+| Light | Settings |
+|---|---|
+| Moon: actor label `DirectionalLight` (`DirectionalLight_1`) | 0.9 lux, (0.745, 0.804, 0.922), rotation (−38, 35, 0), shadowed |
+| `Moon_Fill` | 0.06 lux, shadowless (it must not flash: it would light the interiors) |
+| `SkyLight` | 0.28 |
+
+**Moonlight entry spots:**
+- Chapel: `Light_Chapel_Moon_S1/S2/S3`, 9100 lm, and `Light_Chapel_Moon_Roof`, 15000 lm. Shadowed, with gobos.
+- Crypt grates: `L_Crypt_Moon_G1`, 560 lm, shadowed; `G2`, 900 lm, shadowed; `G3`, 250 lm, shadowless.
+- Tower slits: `L_Tw_MoonSlit_F03/F07/F08`, 600 lm, shadowed.
+- Belfry fill: `L_Tw_BellFill`, 200 lm, moon colour.
+
+**Other lights:** the warm lights are listed in `census_p11.json` (59 lights).
+
+### Post-process
+Every volume uses a fixed exposure: histogram metering with min = max EV100.
+
+| Volume | EV100 | Other | Bounds and priority |
+|---|---|---|---|
+| `PostProcess_Exposure` | 3 | — | Unbound |
+| `PP_Outdoor_Night` | 1.15 | satShadows 0.65 | to X 5500, priority 1 |
+| `PP_Crypt` | 0.2 | bloom 0.27 | — |
+| `PP_Cloister` | 0.65 | satShadows 0.65 | [6000, −450, −40]..[13100, 3200, 4200], priority 1 |
+
+There is no chapel or tower volume. **The `PP_Cloister` box covers the chapel nave (Y ≥ −450).** That is the likely cause of the nave's luma rise from 0.10 (P8) to 0.20 (P11), which was never traced.
+
+### Sky
+- The `SkySphere` actor uses `MI_Env_NightSky`, a child of `MI_NightStormSky`, whose root is the engine's `/Engine/EngineSky/M_Sky_Panning_Clouds2` (opaque unlit).
+- No volumetric clouds (D-046).
+
+### Materials the storm can drive
+- `M_LB_StainedGlass` and `_Translucent` (`EmissiveIntensity`, `Tint`): lancet MIs `MI_Glass_Lancet_A/_B`; `MI_Glass_East` (translucent); `MI_Glass_Clue_Saints`, a puzzle clue.
+- `M_LB_LightShaft`: `MI_LightShaft_Window`, `_Roof`, `_Crypt`.
+- `M_LB_Decal_LightPool`: `MI_Decal_LightPool_Lancet`.
+- `M_LB_Decal_Chalk`: the existing textures `T_LB_Decal_ChalkSigil`, `_ChalkTally`, `_ChalkCircle` and `_DragMarks`.
+
+### Foliage
+**PCG plants:** 2248 instances in 312 ISM components on 19 `PCGV_*` volumes, with `M_LB_Foliage` MIs:
+- `MI_Foliage_GrassMedium02`, `_NettlePlant`, `_WeedPlant02`, `_Fern02`, `_WildRooibos`, `_SearsiaLucida`, `_Moss01`;
+- grass taller than 60 cm casts shadows.
+
+**Other plants:**
+- 175 `CLA_Garth*` and 32 `PSA_Weed_*` static-mesh actors;
+- 32 ivy card actors on `M_LB_FoliageMasked` (`MI_Ivy_Green`, `MI_Ivy_Dead`), with stems on `M_LB_Surface`.
+
+Neither foliage master has world position offset (WPO).
+
+### Player candle
+`ULBCandleComponent` sets its light's intensity every tick, so outside writes are overwritten. **This phase never touches the player candle.**
+
+### Performance
+P11-8 GPU at High, with headroom to 16.6 ms in brackets:
+
+| Spot | GPU ms |
+|---|---|
+| Chapel mid-nave | 14.96 (1.64) |
+| Cloister bells | 14.73 |
+| Crypt ossuary | 14.13 |
+| Belfry | 12.89 |
+| Tower mid-stair | 12.71 |
+| Courtyard garth | 12.27 |
+
+The exact P11 camera poses were never recorded; section 11 fixes them from now on.
+
+### No storm code or assets yet
+There is no `MPC_LB_Wind`, no storm tag and no storm code. `MPC_LB_GrowthObstacles` is the only material parameter collection (MPC).
+
+## 4. Architecture (C++ owns the storm; content stays in data)
+New folder `Source/LastBell/Storm/`. The design rules apply: composition, subsystems, gameplay tags for state, no hard asset references in C++.
+
+| Unit | Kind | Purpose |
+|---|---|---|
+| `LBStormLogic.h/.cpp` | pure functions (namespace `LBStormLogic`) | The maths: story intensity, flash envelopes, schedule intervals, wind, exposure, reveal decision, light-rule choice and flicker. Unit tested |
+| `ULBStormSettings` (`LBStormSettings.h/.cpp`) | `UPrimaryDataAsset` → `/Game/LastBell/Data/DA_StormSettings` | Every number in section 5, plus the MPC as a soft pointer |
+| `ULBStormSubsystem` (`LBStormSubsystem.h/.cpp`) | `UTickableWorldSubsystem` | The storm controller (section 5) |
+| `ALBStormZone` (`LBStormZone.h/.cpp`) | `AActor` with a `UBoxComponent` (no collision) | How exposed a space is to the sky, 0–1; registers with the subsystem the way the stoop zones do |
+| `ALBStateLightGroup` (`LBStateLightGroup.h/.cpp`) | `AActor` | Dims, kills or flickers listed lights from the story tags (section 8) |
+
+**Settings lookup:**
+- `ULBGameSettings` (`Systems/LBGameSettings.h`) gets `UPROPERTY(Config, EditAnywhere) TSoftObjectPtr<ULBStormSettings> StormSettings`.
+- `Config/DefaultGame.ini` `[/Script/LastBell.LBGameSettings]` gets `StormSettings=/Game/LastBell/Data/DA_StormSettings.DA_StormSettings`.
+- The subsystem loads it synchronously in `OnWorldBeginPlay`. If it's missing, the subsystem logs one warning and stays inactive.
+
+**Activation:**
+- `ShouldCreateSubsystem` is true only for Game and PIE worlds.
+- In `OnWorldBeginPlay` the subsystem looks for an `ADirectionalLight` with the actor tag `LB_StormMoon`.
+  - If there is none, it stays inactive: no ticking, no MPC writes. So `L_MainMenu` and the test maps without a tagged moon are unaffected.
+  - If there are several, it logs a warning and uses the first.
+- Enums: `ELBFlashProfile` { Sheet, Double, Triple, Auto }; `ELBFlashReason` { Ambient, Scripted, WardenReveal, Apparition, Debug }; `ELBLightStateMode` { On, Dim, Off, Flicker }.
+- `RefreshLinkedLights()` (BlueprintCallable) rescans; tests use it.
+
+**Linked lights** are found by actor tag at BeginPlay, with their base intensity recorded:
+
+| Tag | Flash rule (F = flash value 0–1) |
+|---|---|
+| `LB_StormMoon` | intensity = base + `FlashLux` × F (the moon) |
+| `LB_StormMoonSpot` | intensity = base × (1 + `SpotFlashGain` × F) |
+| `LB_StormFill` | intensity = base × (1 + `FillFlashGain` × F) |
+| `LB_StormSky` | intensity = base × (1 + `SkyFlashGain` × F) (the SkyLight) |
+
+- Intensities are written only while a flash is running, and once more when it ends, so the render state isn't dirtied every frame.
+- A linked light that disappears (streaming) is skipped, never dereferenced.
+
+**MPC `/Game/LastBell/Materials/MPC_LB_Storm`.** It replaces the planned `MPC_LB_Wind` (D-096). The subsystem writes these every frame:
+
+| Kind | Name | Meaning |
+|---|---|---|
+| Scalar | `StormIntensity` | 0–1 |
+| Scalar | `LightningFlash` | F |
+| Scalar | `WindStrength` | 0–1 |
+| Scalar | `WindPhase` | radians, wrapped at 100 × 2π |
+| Scalar | `PlayerExposure` | 0–1; used from Phase 15 on |
+| Scalar | `DomeFlashGain`, `DomeFlashAdd`, `GlassFlashGain`, `ShaftFlashGain`, `PoolFlashGain`, `RevealGain`, `RevealEmissive` | copied from the settings each frame, so a live edit of the data asset shows at once |
+| Vector | `WindDirection` | xyz, w unused |
+| Vector | `FlashDirection` | unit vector toward the bright patch in the clouds |
+| Vector | `FlashTint` | (0.75, 0.82, 1.0, 1) |
+
+**Interface:**
+- `RequestFlash(float Brightness, float DelaySeconds, ELBFlashReason Reason, ELBFlashProfile Profile = Auto)` (BlueprintCallable). The reasons are Ambient, Scripted, WardenReveal, Apparition and Debug.
+- `GetStormIntensity()`, `GetExposureAt(FVector)`, `GetPlayerExposure()` (BlueprintPure).
+- `OnLightningFlash(float Brightness, ELBFlashReason Reason)`, a dynamic multicast delegate fired at each flash's first pulse. Phase 16 hangs thunder on it.
+
+**Console** (non-shipping, `Systems/LBConsoleCommands.cpp`):
+- `lb.Storm.Flash [brightness=1] [profile=-1]`: profile −1 is random; 0 sheet, 1 double, 2 triple.
+- `lb.Storm.Intensity <0..1 | -1>`: override, or clear with −1.
+- `lb.Storm.Freeze <0..1 | -1>`: holds F at the value and pauses the schedule.
+- CVar `lb.Storm.Enabled`, default 1. At 0 there are no flashes, the wind is 0 and F is 0.
+- CVar `lb.Storm.Debug`, default 0. At 1 it puts on screen: intensity, target, seconds to the next flash, wind, player exposure, and the last reveal decision with its reason.
+
+**Live tuning:**
+- `DA_StormSettings` is read through its pointer every frame. An edit in the Details panel or through MCP `set_properties` during PIE shows immediately.
+- `DebugFreezeFlash` (default −1) and `DebugIntensityOverride` (default −1) on the asset do the same as the console commands. That lets the lead freeze a flash for captures over MCP, which has no console.
+- **Never save the asset with either one ≠ −1.** The QA check reads them.
+
+## 5. The storm (numbers are `DA_StormSettings` defaults; field names in `code` font)
+### 5.1 Exposure zones
+**Exposure at a point** is the `Exposure` of the highest-`Priority` zone that contains it; on a tie, the lowest `Exposure` wins. With no zone it is `DefaultExposure` = 1.0, the open sky. The exposure is used for:
+- the reveal rule;
+- `PlayerExposure`, which the subsystem samples every 0.25 s at the camera location.
+
+**Zones placed in P14-3** (bounds in cm):
+
+| Actor | X | Y | Z | Exposure | Priority |
+|---|---|---|---|---|---|
+| `SZN_Chapel` | 6000 … 9100 | −1550 … 860 | −40 … 2400 | 0.35 | 1 |
+| `SZN_Crypt` | 6300 … 12000 | −2950 … 520 | −1200 … −45 | 0.0 | 2 |
+| `SZN_Passage` | 6040 … 9460 | 900 … 2600 | −40 … 1200 | 0.3 | 1 |
+| `SZN_Cloister` | 9460 … 12040 | 500 … 3040 | −40 … 1500 | 0.6 | 1 |
+| `SZN_Garth` | from F0 (the garth's open bounds) | | −40 … 1500 | 1.0 | 2 |
+| `SZN_TowerShaft` | 11990 … 13010 | 1490 … 2510 | −40 … 2650 | 0.25 | 3 |
+| `SZN_Belfry` | 11990 … 13010 | 1490 … 2510 | 2650 … 4800 | 0.85 | 3 |
+
+`SZN_Garth`'s bounds are the min/max X and Y of the 175 `CLA_Garth*` actor locations, each extended by 100 cm (F0).
+
+### 5.2 Story intensity
+**Target:** the `Intensity` of the last `StoryIntensity` entry whose tag is present. With none present it is `DefaultIntensity` 0.55.
+
+| # | Tag | Intensity |
+|---|---|---|
+| 1 | `State.Event.CourtyardEntered` | 0.60 |
+| 2 | `State.Ritual.1` | 0.55 |
+| 3 | `State.Event.CryptEntered` | 0.50 |
+| 4 | `State.Ritual.2` | 0.65 |
+| 5 | `State.Event.CloisterEntered` | 0.80 |
+| 6 | `State.Ritual.3` | 0.90 |
+| 7 | `State.Event.TowerTop` | 1.00 |
+| 8 | `State.Event.Finale` | 1.00 |
+
+**Response:**
+- The live intensity moves toward the target at `IntensityRatePerSecond` 0.02, so 0.5 → 1.0 takes 25 s.
+- `OnStateReplaced` and BeginPlay **snap** to the target.
+- `DebugIntensityOverride` or the console override replaces the target and snaps.
+
+### 5.3 Lightning schedule
+**Interval to the next ambient flash:** uniform in [lerp(`MinIntervalLow` 30, `MinIntervalHigh` 6, I), lerp(`MaxIntervalLow` 60, `MaxIntervalHigh` 14, I)] s, where I is the live intensity.
+- The first flash after BeginPlay waits × `FirstFlashScale` 0.5.
+- Any flash, whatever its source, is kept at least `MinGapSeconds` 2.5 after the previous one ended. A request that arrives inside the gap waits for it.
+- The one exception is the strikes of one scripted sequence (section 5.6 b): they follow their own `Spacing`, start to start, and the gap applies only before the first strike and after the last.
+- Ambient flashes are not scheduled while a scripted sequence or a reveal is pending or running. The ambient timer restarts when the sequence ends.
+
+**Each ambient flash:**
+- Profile: Sheet with weight 0.5, Double 0.35, Triple 0.15.
+- Brightness: lerp(`BrightnessMin` 0.55, 1, random) × lerp(`BrightnessFloorLow` 0.7, 1, I).
+- Direction: random azimuth 0–360°, elevation uniform 15–35°.
+- `FRandomStream` seeded by `RandomSeed`. 0 means seed from the time; tests set 1401.
+
+**Envelope (`LBStormLogic::EvaluateFlash`).** Each pulse starts at s and has peak p, attack A, hold H and decay τ. For u = t − s:
+
+| u | v(u) |
+|---|---|
+| u < 0 | 0 |
+| u < A | u / A |
+| u < A + H | 1 |
+| otherwise | exp(−(u − A − H) / τ) |
+
+- F(t) = min(1, Brightness × max over pulses of p × v).
+- The flash ends when t > last s + A + H + 5.3 τ (v < 0.005).
+
+| Profile | Pulses (start s, peak p) | A / H / τ (s) |
+|---|---|---|
+| Sheet | (0, 1.0) | 0.08 / 0.10 / 0.25 |
+| Double | (0, 0.55), (g, 1.0) | 0.03 / 0.04 / 0.12 |
+| Triple | (0, 0.5), (g1, 1.0), (g1 + g2, 0.7) | 0.03 / 0.04 / 0.12 |
+
+The gaps g, g1 and g2 are uniform in [`GapMin` 0.07, `GapMax` 0.16].
+
+### 5.4 Flash output (defaults = preset B, chosen in P14-4)
+| Field | A, subtle | **B, strong** | C, blinding |
+|---|---|---|---|
+| `FlashLux` (moon +lux) | 4 | **8** | 16 |
+| `SpotFlashGain` | 1.5 | **3** | 6 |
+| `FillFlashGain` | 0.75 | **1.5** | 3 |
+| `SkyFlashGain` | 0.3 | **0.6** | 1.0 |
+| `DomeFlashGain` | 3 | **6** | 10 |
+| `DomeFlashAdd` | 0.03 | **0.05** | 0.08 |
+| `GlassFlashGain` | 1.2 | **2.5** | 4 |
+| `ShaftFlashGain` | 1.5 | **3** | 5 |
+| `PoolFlashGain` | 1.2 | **2.5** | 4 |
+| `RevealGain` / `RevealEmissive` | 4 / 2 | **4 / 3** | 4 / 4 |
+
+**Fallback:** if Lumen's lagging bounce light looks like a smear after the flash (R-59), set `SkyFlashGain` to 0 and keep the direct light.
+
+### 5.5 Wind
+**Inputs:** I is the live intensity and t is game time.
+- Base = lerp(`WindBaseLow` 0.2, `WindBaseHigh` 0.65, I).
+- Gust = lerp(`GustLow` 0.15, `GustHigh` 0.4, I) × max(0, 2 × `FMath::PerlinNoise1D`(t × `GustFrequency` 0.12)).
+
+**Outputs:**
+- `WindStrength` = clamp(Base + Gust, 0, 1).
+- `WindPhase` += dt × lerp(`PhaseSpeedLow` 1.2, `PhaseSpeedHigh` 2.4, `WindStrength`) rad/s, wrapped at 100 × 2π. The material only uses whole-number multiples of the phase, so the wrap never shows.
+- `WindDirection` = normalised `WindDirection` (0.87, 0.5, 0), blowing from the west-south-west.
+
+The wind is global: indoor foliage is negligible.
+
+### 5.6 Reveals
+**(a) Warden reveal** (`LBStormLogic::ShouldReveal`), checked at `RevealCheckHz` 5. All of these must hold:
+- `bRevealEnabled`;
+- intensity ≥ `RevealMinIntensity` 0.4;
+- an `ALBWarden` exists and isn't `IsDormantPresentation()`;
+- the head point (actor location + (0, 0, `WardenHeadOffsetZ` 140)) is between `RevealMinDistance` 800 and `RevealMaxDistance` 4000 cm from the camera;
+- the head point is within `RevealConeDegrees` 30 of the camera's forward;
+- a visibility line trace (`ECC_Visibility`) from the camera to the head point is clear, ignoring the player pawn and the Warden;
+- `GetExposureAt(Warden location)` ≥ `RevealMinExposure` 0.5;
+- at least `RevealCooldownSeconds` 30 have passed since the last reveal;
+- no flash is running or pending.
+
+**Result:** a `WardenReveal` flash with brightness 1, profile Double, after a delay uniform in [0.3, 0.9] s. The `FlashDirection` is the camera-to-Warden direction, flattened, then raised 20°.
+
+Only the cloister walk (0.6) and the garth (1.0) pass the exposure test, which is where the hunt happens.
+
+**(b) Scripted strikes** (`ScriptedStrikes`, `FLBStormStrike`):
+- They fire only on `OnStateChanged` with the tag added. They never fire from BeginPlay or `OnStateReplaced`, so a reload doesn't repeat them, and no new tags are needed.
+
+| Trigger tag | Delay (s) | Count | Spacing (s) | Brightness | Look gate |
+|---|---|---|---|---|---|
+| `State.Event.CourtyardEntered` | 0.4 after the look | 2 | 1.6 | 1.0 | **yes:** `LookTarget` (12500, 2000, 3800), cone 20°, `LookTimeout` 90 s; if never looked at, it doesn't fire; `FlashDirection` toward the target |
+| `State.Ritual.1` | 1.2 | 1 | — | 1.0 | no |
+| `State.Ritual.2` | 1.2 | 1 | — | 1.0 | no |
+| `State.Ritual.3` | 1.2 | 1 | — | 1.0 | no |
+| `State.Event.TowerTop` | 2.0 | 3 | 2.5 | 1.0 | no |
+| `State.Event.Finale` | 0.3 | 2 | 0.8 | 1.0 | no |
+
+Strikes use profile Double, with Triple for TowerTop's second strike.
+
+**(c) Apparitions:**
+- `FLBApparitionStation` gets `bool bLightningOnHold = false`.
+- When a station enters Hold, `ALBWardenApparition` calls `RequestFlash(1.0, 0.15, Apparition, Double)` on the storm subsystem, if one exists.
+- It is set on both placed apparitions in P14-3: the courtyard roofline, and the chapel rail, which the S3 lancet lights.
+
+**(d) Lightning-only chalk markings:**
+- A new deferred-decal master `M_LB_Decal_LightningReveal`: a duplicate of `M_LB_Decal_Chalk` with Opacity × saturate(`LightningFlash` × `RevealGain`) and Emissive = chalk colour × `FlashTint` × `LightningFlash` × `RevealEmissive`. It is invisible when F = 0.
+- They are atmosphere only. **No puzzle information may depend on them**: the accessibility rule.
+- They reuse the existing chalk textures.
+
+| Actor | Texture (MI) | Where (F0 fixes the exact surface point by trace) | Size (cm) |
+|---|---|---|---|
+| `RV_Gate_Sigil` | `T_LB_Decal_ChalkSigil` (`MI_Reveal_Sigil`) | Gatehouse inner face, courtyard side, 500 cm from the arch centre toward +Y, centre Z 260 | 220 × 220 |
+| `RV_WellHouse_Tally` | `_ChalkTally` (`MI_Reveal_Tally`) | Well-house outer wall facing the key route, centre Z 140 | 120 × 80 |
+| `RV_Chapel_Circle` | `_ChalkCircle` (`MI_Reveal_Circle`) | Chapel floor, centred on the S2 lancet light pool decal | Ø 180 |
+| `RV_Garth_Drag` | `_DragMarks` (`MI_Reveal_Drag`) | The garth-facing arcade wall nearest the `cl_tall_north_15m` view centre, Z 240–300 | 220 × 60 |
+| `RV_Belfry_Tally` | `_ChalkTally` (`MI_Reveal_Tally`) | Belfry wall between the two south lancets, centre Z 2850 | 100 × 100 |
+
+## 6. Materials (technical-artist, [EDITOR], P14-2)
+**Rules for every material in this task:**
+- Read the graph before editing.
+- Compile, and check that there are no errors and no warnings.
+- Do a thumbnail and a capture check.
+- One package per save; never save-all.
+- **`M_LB_Surface` is never opened for writing or saved.**
+
+**Shared flash function.** `MF_LB_StormFlash` (`/Game/LastBell/Materials/Functions/`):
+- Inputs: `Gain` (scalar), `Response` (scalar, default 1).
+- Output: `Mul` = 1 + Gain × `LightningFlash` (MPC) × Response.
+- It is used by all the flash edits below.
+
+1. **Sky.**
+   - Duplicate `/Engine/EngineSky/M_Sky_Panning_Clouds2` to `/Game/LastBell/Environments/Sky/M_LB_StormSky`.
+   - Then: final emissive = original emissive × (1 + `DomeFlashGain` × F × Hot) + `FlashTint` × F × Hot × `DomeFlashAdd`, where Hot = 0.3 + 0.7 × saturate(dot(−CameraVector, `FlashDirection`))⁶.
+   - Reparent `MI_NightStormSky` to `M_LB_StormSky`. Read back every parameter override of `MI_NightStormSky` and `MI_Env_NightSky` before and after; they must match.
+   - With F = 0 the sky must look unchanged. The lead checks this at the start of P14-4 with the owner present: a capture against the F0 capture, mean absolute difference ≤ 2/255.
+2. **Glass.**
+   - In `M_LB_StainedGlass` and `_Translucent`, multiply the emissive by `MF_LB_StormFlash(GlassFlashGain, FlashResponse)`. `FlashResponse` is a new scalar, default 1.
+   - Set it to 0 on `MI_Glass_Clue_Saints` (puzzle clue glass stays stable) and on any glass MI that F0 finds with no sky behind it.
+3. **Shafts.** `M_LB_LightShaft`: Intensity × `MF_LB_StormFlash(ShaftFlashGain, FlashResponse)`, with `FlashResponse` 1 on all three MIs.
+4. **Light pools.** `M_LB_Decal_LightPool`: emissive × `MF_LB_StormFlash(PoolFlashGain, 1)`.
+5. **Reveal decals.** `M_LB_Decal_LightningReveal` as in section 5.6(d), with four MIs: `MI_Reveal_Sigil`, `_Tally`, `_Circle`, `_Drag`.
+6. **Wind sway.** `MF_LB_WindSway` (`/Game/LastBell/Materials/Functions/`), two modes chosen by a static bool input `bFlutter`.
+   - **Bend** (grass, weeds, ferns, shrubs):
+     - h = saturate(PreSkinnedLocalPosition.z / `WindRefHeightCm`).
+     - Pivot = `TransformPosition(Instance&Particle → World, 0)`.
+     - φ = `WindPhase` + dot(Pivot.xy, (0.0031, 0.0047)).
+     - s = 0.6·sin φ + 0.4·sin(2φ + 1.3).
+     - d = `WindDirection` × `WindStrength` × (0.55 + 0.45 s) × h² × `WindAmplitudeCm`.
+     - WPO = d + (0, 0, −0.25 × |d| × h).
+   - **Flutter** (ivy leaves):
+     - a = saturate(PreSkinnedLocalPosition.y / 20). The wall side is at local Y 0.
+     - φ = 3 × `WindPhase` + dot(WorldPosition, (0.05, 0.07, 0.03)).
+     - WPO = VertexNormalWS × `WindStrength` × sin φ × a × `WindAmplitudeCm`.
+7. **Foliage masters.** In `M_LB_Foliage` and `M_LB_FoliageMasked`:
+   - add a static switch `bWind` (default false) feeding `MF_LB_WindSway` into WPO;
+   - add scalars `WindAmplitudeCm` and `WindRefHeightCm`;
+   - Max WPO displacement: 40 cm (Foliage), 6 cm (Masked).
+8. **Foliage MIs:**
+
+| MI | `bWind` | `WindAmplitudeCm` | `WindRefHeightCm` |
+|---|---|---|---|
+| `MI_Foliage_GrassMedium02` | on | 16 | 90 |
+| `MI_Foliage_NettlePlant` | on | 9 | 70 |
+| `MI_Foliage_WeedPlant02` | on | 6 | 30 |
+| `MI_Foliage_Fern02` | on | 10 | 60 |
+| `MI_Foliage_WildRooibos` | on | 7 | 80 |
+| `MI_Foliage_SearsiaLucida` | on | 5 | 200 |
+| `MI_Foliage_Moss01` | off | — | — |
+| `MI_Ivy_Green`, `MI_Ivy_Dead` | on (Flutter) | 2.0 | — |
+
+   - Any other `M_LB_Foliage` MI that F0 finds (for example on the `CLA_Garth*` plants) gets amplitude 6 and height 60, listed in the report.
+   - The dead tree and its snag stay static: their bark is on `M_LB_Surface` (D-060).
+9. **Assets.**
+   - `MPC_LB_Storm`: the parameters from section 4, with defaults of 0 and the direction (0.87, 0.5, 0).
+   - `DA_StormSettings`: every default in section 5, the MPC soft pointer, and `RandomSeed` 0.
+   - Then `DefaultGame.ini` gets the settings path. The P14-1 code reads it.
+
+## 7. Level work (lighting-vfx, [EDITOR], P14-3; `L_Monastery` is saved once at the end, after a census)
+1. **Link tags** (actor `Tags`):
+   - `LB_StormMoon`: on `DirectionalLight` (`DirectionalLight_1`).
+   - `LB_StormMoonSpot`: on `Light_Chapel_Moon_S1/S2/S3/_Roof`, `L_Crypt_Moon_G1/G2/G3` and `L_Tw_MoonSlit_F03/F07/F08`.
+   - `LB_StormFill`: on `L_Tw_BellFill`.
+   - `LB_StormSky`: on `SkyLight`.
+   - `Moon_Fill` gets no tag.
+2. **Zones:** the seven `ALBStormZone` actors from section 5.1.
+3. **Post-process restructure:**
+
+| Volume | Change |
+|---|---|
+| `PP_Cloister` | Shrink to X 6040 … 12040, Y 900 … 3200, Z −40 … 4200; values unchanged |
+| `PP_Chapel` (new) | X 6000 … 9100, Y −1550 … 860, Z −40 … 2400; priority 2; blend 200; fixed EV100 **0.65**, the value the nave shows today, so nothing changes until the P14-4 choice |
+| `PP_Tower` (new) | X 11990 … 13010, Y 1490 … 2510, Z −40 … 5000; priority 3; blend 200; fixed EV100 **0.65**, the value the tower shows today |
+| `PP_Crypt`, `PP_Outdoor_Night`, `PostProcess_Exposure` | Unchanged |
+
+   - The new volumes copy `PP_Cloister`'s metering mode and its satShadows 0.65.
+   - The agent reads back every volume's bounds, priority and exposure fields.
+   - The visual check comes at the start of P14-4, with the owner present: the 19 viewpoints against the F0 set. The mean absolute difference must be ≤ 2/255, except in the chapel south aisle and the sacristy (Y < −450), which today get EV 3. That difference is shown to the owner, not hidden.
+4. **State light groups:** the actors in section 8.
+5. **Reveal decals:** the five `RV_*` from section 5.6(d), each `DecalComponent` sized as listed.
+6. **Apparitions:** `bLightningOnHold` = true on the station of `Apparition_Courtyard`, and on station 0 of `Apparition_Chapel`.
+7. **WPO distance:**
+   - Set `WorldPositionOffsetDisableDistance` = 4000 on all 312 PCG ISM components and on the static-mesh components of the `CLA_Garth*`, `PSA_Weed_*`, searsia and ivy actors.
+   - Script it: `Tools/lighting/p14_wpo_distance.py`, with `--apply`, `--check`.
+   - Regenerating the PCG volumes resets it; the script note goes into `MCP_NOTES.md`.
+8. **Final check:** census the actor count, which must be the F0 count + 23 (7 zones + 9 groups + 2 PP volumes + 5 decals). Then save `L_Monastery` once, and run `--check`.
+
+## 8. Story-driven light changes (`ALBStateLightGroup`)
+**Properties:**
+- `TArray<TObjectPtr<ALight>> Lights`: placed light actors only. Never a Blueprint light, a puzzle-candle `FlameLight`, the Warden's `TellLight` or the player candle.
+- `TArray<TObjectPtr<AActor>> EmissiveActors`: hidden when the mode is Off. These are flame or glow meshes.
+- `TArray<FLBLightStateRule> Rules`: in story order; **the last rule whose tag is present wins**. With none present, the mode is On at scale 1.
+- `float FadeSeconds` 1.5.
+
+`FLBLightStateRule` fields: `RequiredTag`; `Mode` (On, Dim, Off, Flicker); `IntensityScale` (Dim and Flicker), `FlickerAmount`, `FlickerSpeed`.
+
+**Behaviour:**
+- **Base intensities:** recorded per light component at BeginPlay.
+- **Instant apply:** BeginPlay and `OnStateReplaced` apply the rule instantly, so a checkpoint load is correct.
+- **Live change:** a change through `OnStateChanged` fades over `FadeSeconds`, multiplied by a gutter noise of 0.6 + 0.4 × Perlin(t × 9).
+- **Flicker:** scale × (1 − Amount × (0.5 + 0.5 × Perlin(t × Speed + seed))), with the seed from the light's name hash.
+- **Ticking:** the actor ticks only while fading or in Flicker.
+- **Validation:** a light listed in two groups is an error, logged at BeginPlay and caught by the setup test.
+
+**The changes** (the light labels come from the census; F0 confirms them):
+
+| Group | Lights | Rules (tag → mode) | Seen when |
+|---|---|---|---|
+| `SLG_Chapel_Altar` | `Light_Chapel_Altar_N`, `_S` | `State.Ritual.1` → Flicker, scale 0.25, amount 0.45, speed 7 | Live, at the altar |
+| `SLG_Chapel_Dais` | `Light_Chapel_Statue`, `Light_Chapel_DaisFill` | `State.Ritual.1` → Off | Live |
+| `SLG_Crypt_Torches` | the three torch lights D-072 calls T1–T3 | `State.Ritual.2` → Flicker, scale 0.6, amount 0.45, speed 9 | On the way out |
+| `SLG_Crypt_Niches` | the five niche candle lights (90 lm), plus their flame meshes (F0: the `SM_LB_Prop_CandleFlame_A` actors within 60 cm) | `State.Ritual.2` → Off | On the way out |
+| `SLG_Cloister_Bells` | `L_Cl_Bells` | `State.Event.CloisterEntered` → Flicker, scale 0.85, amount 0.3, speed 5 | During the hunt |
+| `SLG_Cloister_West` | `L_Cl_West` | `CloisterEntered` → Flicker (0.85, 0.3, 5); `State.Ritual.3` → Off | Hunt, then behind you |
+| `SLG_Cloister_Entry` | `L_Cl_Entry` | `State.Ritual.3` → Off | Behind you |
+| `SLG_Tower_Landings` | `L_Tw_Land4/7/10` | `State.Ritual.3` → Flicker, scale 0.9, amount 0.2, speed 4 | Climbing |
+| `SLG_Tower_Bell` | `L_Tw_Bell` | `State.Event.TowerTop` → Flicker, scale 0.8, amount 0.5, speed 8 | At the top |
+
+**Readability fallback:** if a critical-path viewpoint fails its floor (section 9.3) after its change, change that group's Off to Dim at scale 0.3, or a Flicker scale to +0.2. Then record it in DECISIONS.
+
+## 9. Lighting pass
+### 9.1 Look session (owner and lead, P14-4)
+**1. Flash preset (live in PIE).**
+- The owner stands at three spots and fires `lb.Storm.Flash` a few times: `cy_west_front_15m`, `ch_tall_east_15m` and `cl_tall_north_15m`.
+- Meanwhile the lead switches `DA_StormSettings` between presets A, B and C (section 5.4) over MCP.
+- The owner picks one, or asks for values in between.
+- The lead checks the Lumen smear (R-59).
+
+**2. Chapel exposure.** Three captures each of `ch_tall_east_15m` and `ch_sacristy_3m`:
+- EV100 0.65 (today's nave);
+- 1.6 (middle);
+- 3.0 (the P8 look).
+
+The owner picks one value for the whole chapel.
+
+**3. Grade.** Six viewpoints (`cy_west_front_15m`, `ch_tall_east_15m`, `cr_tall_ossuary_15m`, `cl_tall_north_15m`, `tw_mid_stair`, `tw_belfry`) × three grades, on the PIE-world `PostProcess_Exposure`. Never saved in this step.
+
+| Setting | A, current | B, storm teal | C, bleak |
+|---|---|---|---|
+| ColorSaturation (RGBY) | unchanged | (0.92, 0.95, 1.0, 0.85) | (1, 1, 1, 0.70) |
+| ColorContrast (Y) | unchanged | 1.06 | 1.10 |
+| ColorGammaShadows | unchanged | (0.97, 1.0, 1.06, 1) | (0.98, 1.0, 1.03, 1) |
+| ColorGainHighlights | unchanged | (1.04, 1.0, 0.94, 1) | (1.06, 1.0, 0.92, 1) |
+| FilmGrainIntensity | 0 | 0.18 | 0.25 |
+| VignetteIntensity | unchanged | 0.45 | 0.55 |
+
+For B and C, the per-area satShadows overrides are cleared, because the grade lives on the global volume only.
+
+**4. Wind.** The owner watches the courtyard and the garth in PIE at intensity 0.6 and 1.0 (`lb.Storm.Intensity`). Too much, too little, or right; plus any pop at 40 m.
+
+**5. R-31.** A capture from `p14_cy_tower_reveal` [600, 0, 170, 14, 9.5]; F0 confirms the tower top is in the frame.
+- R-31 closes if the tower's median luma ≤ the median luma of the surrounding sky.
+- Otherwise the cause is reported, with no fix in this phase without a decision.
+
+### 9.2 Apply (lighting-vfx, P14-5)
+Apply the chosen preset, chapel EV and grade, then save `DA_StormSettings` and `L_Monastery` once each.
+
+**R-09** (noise and leaks), from the viewpoint captures. Fix only what blocks approval, in this order:
+1. That area volume's `LumenFinalGatherQuality` 1 → 1.5 (re-measure the GPU);
+2. a hidden-in-game, shadow-only blocker at a leak, `SM_LB_LeakBlocker`: a kit cube with `bHiddenInGame`, `CastShadow`, lighting channel 0;
+3. otherwise report it.
+
+### 9.3 Exposure targets and readability floor
+**Method:**
+- Captures in PIE Simulate, run by the lead with the owner present, at the section 10 viewpoints.
+- Before them, the lead sets `DebugFreezeFlash` 0 on `DA_StormSettings` (no flash) over MCP.
+- They use the player candle proxy (`capture_poses.py --light`) and are written to `Docs/ArtTest/lighting/`.
+- Metrics from `Tools/crypt/luma_report.py`:
+  - **mean:** mean luma;
+  - **central:** the central 40 % mean.
+
+| Area | Mean luma target | Central-40 % floor |
+|---|---|---|
+| Courtyard | 0.04 – 0.07 (D-058) | ≥ 0.025 |
+| Chapel | set by the P14-4 choice (the value at the chosen EV) ± 20 % | ≥ 0.030 |
+| Crypt | 0.025 – 0.05 | ≥ 0.020 (the candle leads) |
+| Cloister | 0.04 – 0.07 | ≥ 0.025 |
+| Tower | 0.035 – 0.06 | ≥ 0.025 |
+
+**Adjustments:**
+- Exposure is adjusted only through the area's EV100, in steps of 0.25.
+- After the story changes: the same captures again, with the tags added. MCP has no console, so **the owner types** `lb.State.Add <tag>` in the Output Log's Cmd box when the lead asks, between capture batches: `State.Ritual.1`, then `State.Ritual.2`, then `State.Event.CloisterEntered` and `State.Ritual.3`, then `State.Event.TowerTop`.
+- Each floor must still hold; otherwise apply the section 8 fallback.
+
+## 10. Viewpoints for the owner's approval (P14-6)
+Pose format: [x, y, z, pitch, yaw]. The file is `Tools/lighting/poses/p14_viewpoints.json`; the names come from `p11_poses.json` unless new.
+
+| Area | Viewpoints |
+|---|---|
+| Courtyard | `cy_west_front_15m`, `cy_tall_north_15m`, `cy_lantern_gate_3m` |
+| Chapel | `ch_tall_east_15m`, `ch_candle_altar_3m`, `ch_sacristy_3m` |
+| Crypt | `cr_tall_ossuary_15m`, `cr_chain_chamber`, `cr_torch_t1_3m` |
+| Cloister | `cl_tall_north_15m`, `cl_lantern_bells_3m`, `ps_lantern_joints` |
+| Tower | `tw_mid_stair`, `tw_belfry`, new `tw_base` [12200, 2000, 170, 5, 0] |
+| Storm moments (`DebugFreezeFlash` 0.8) | `p14_cy_tower_reveal`, `ch_tall_east_15m`, `cl_tall_north_15m`, `tw_belfry` |
+
+**Capture:** 19 images, about 12 minutes, with the owner present and Unreal in front.
+
+**Then a PIE run-through of the storm beats (owner, about 15 minutes):**
+1. Arrival: look at the tower.
+2. `lb.State.Add State.Ritual.1` at the altar: the strike, the light changes, the apparition flash.
+3. Crypt `State.Ritual.2`.
+4. Cloister `State.Event.CloisterEntered`, then the Warden reveal in the garth.
+5. `State.Ritual.3`.
+6. `State.Event.TowerTop`.
+
+## 11. Performance (owner; standard spots fixed from now on)
+Each spot is reached in PIE with `BugItGo X Y Z Pitch Yaw Roll`.
+
+| Spot | `BugItGo` |
+|---|---|
+| Courtyard | `BugItGo 4500 0 170 12 0 0` |
+| Chapel | `BugItGo 7400 0 170 15 0 0` |
+| Crypt ossuary | `BugItGo 7400 -2350 -440 8 0 0` |
+| Cloister bells | `BugItGo 11700 2380 170 5 0 0` |
+| Tower mid-stair | `BugItGo 12835 1665 1534 10 180 0` |
+| Belfry | `BugItGo 12500 2150 2670 25 -135 0` |
+
+**Readings:** at each spot, `scalability 2`, `r.SetRes 1920x1080w`, `stat unit` and `stat gpu`, with a screenshot (`shot showui`) per reading.
+
+- **P14-B (baseline, before any change):** one reading per spot. About 10 minutes, in the F0 session.
+- **P14-7:**
+  - one reading per spot with `lb.Storm.Intensity 1` (flashes running) and the wind on;
+  - at the courtyard and the chapel, a second reading with `lb.Storm.Enabled 0`;
+  - about 15 minutes.
+
+**Pass:** GPU ≤ 16.6 ms; each spot's GPU ≤ its P14-B value + 0.6 ms; and each spot's game thread ≤ its P14-B value + 0.3 ms.
+
+**If the courtyard fails** (wind WPO and VSM, R-60), go down this ladder, re-measuring after each step:
+1. `ShadowCacheInvalidationBehavior` = Rigid on the shadow-casting `GrassMedium02` ISM components;
+2. disable distance 4000 → 2500;
+3. cast shadows off on `GrassMedium02`.
+
+The performance-engineer reads the screenshots and logs, and writes the `PERFORMANCE_BUDGET.md` rows.
+
+## 12. Tests (gameplay-programmer, P14-1; the suite grows from 112)
+**Unit tests** (`Source/LastBellTests/Tests/LBStormTests.cpp`, `LB_TEST_FLAGS`, prefix `LastBell.Storm.`):
+1. `Logic.StoryIntensity`: the last present entry wins; no entry gives the default; tags out of order still give the highest-index present entry.
+2. `Logic.FlashEnvelope`:
+   - Sheet values at t = 0, 0.04, 0.12, 0.43 and the end;
+   - Double has 2 peaks, and the maximum ≤ 1 × brightness;
+   - every profile ends at its formula time;
+   - F ≥ 0 everywhere.
+3. `Logic.Schedule`: the interval bounds at I = 0, 0.5 and 1; seed 1401 gives the same sequence twice; the minimum gap is respected.
+4. `Logic.Wind`: strength in [0, 1]; the mean over 60 s rises with I; the phase is continuous across the wrap (no step > 0.1 rad at 60 fps).
+5. `Logic.Exposure`: highest priority wins; ties take the lowest exposure; no zone gives the default.
+6. `Logic.RevealRule`: each condition false on its own gives no reveal; all true gives a reveal.
+7. `Logic.LightRules`: the last present rule wins; none gives On ×1; Off gives 0; Dim gives the scale; Flicker stays within [scale × (1 − amount), scale].
+
+**Functional tests** (PIE, `LastBell.Functional.Storm.`; `L_Test_Warden` unless stated):
+1. `FlashDrivesLightsAndMPC`:
+   - spawn a tagged directional light and spot, then `RefreshLinkedLights()`, then `RequestFlash(1, 0, Debug, Sheet)`;
+   - at the peak, the moon ≥ base + 0.9 × `FlashLux`, the spot ≥ base × (1 + 0.9 × gain), and MPC `LightningFlash` ≥ 0.9;
+   - 2 s later, all are back within 1 %.
+2. `IntensityFollowsStory`: adding `State.Ritual.2` moves the target to 0.65 and the intensity rises at 0.02/s; `ReplaceState` with `CloisterEntered` snaps to 0.8.
+3. `ScriptedStrikeOnTagOnly`: adding `State.Ritual.1` flashes within 1.2 + 0.3 s; `ReplaceState` containing it gives no flash in 3 s.
+4. `WardenRevealFlash`:
+   - a zone at exposure 1 and a visible Warden 2000 cm ahead, with the stage forced to 3, gives a reveal within 1.5 s;
+   - the same behind a wall gives none in 3 s;
+   - a second reveal is blocked inside the cooldown.
+5. `StateLightGroupFollowsTags`:
+   - an added tag gives 0 after the fade;
+   - `ReplaceState` without the tag restores the base instantly;
+   - with the tag present at BeginPlay, the light is off on the first frame.
+6. `ApparitionHoldRequestsFlash`: an apparition with `bLightningOnHold` flashes on entering Hold.
+7. `Monastery.StormSetup` (`L_Monastery`):
+   - exactly one `LB_StormMoon`;
+   - 10 `LB_StormMoonSpot`, 1 `LB_StormFill`, 1 `LB_StormSky`;
+   - 7 zones;
+   - 9 light groups, each light valid and in one group only;
+   - `DA_StormSettings` loads with both debug fields at −1;
+   - the MPC has every parameter;
+   - both apparitions have `bLightningOnHold`.
+
+## 13. Tasks
+| Task | Scope | Owner | Needs | Depends on |
+|---|---|---|---|---|
+| P14-0 | Plan approval; D-096 (storm), D-097 (light changes), D-098 (lighting pass method); R-59…R-63; `IMPLEMENTATION_PLAN.md` Phase 14 table; Phase 15 listed as particles | lead + owner | — | — |
+| F0 | Survey: dump every light, PP volume, sky MI chain and its parameters, glass, shaft and pool actors with their MIs, foliage MIs, the ISM count and WPO settings, `CLA_Garth*` bounds, flame meshes near the group lights, the five decal surface points (trace), the torch and niche light labels, and the tower-reveal pose check. Output `Docs/ArtTest/lighting/p14_f0_inventory.json` + `p14_f0_tables.md`; this plan's open values are filled from it | lead [EDITOR read-only] | Unreal open | P14-0 |
+| P14-B | Baseline readings at the six spots (section 11), plus the "before" capture set: the 19 section 10 viewpoints, run by the lead with the owner present | **owner**, about 25 min in all (readings 10, captures about 12) | Unreal in front | P14-0 (same session as F0) |
+| P14-1 | Section 4, 5 and 8 code, console commands, `ULBGameSettings` field, the apparition flag, section 12 tests | gameplay-programmer | **Unreal closed** for the real build | P14-0 |
+| P14-2 | Section 6 materials and assets | technical-artist [EDITOR] | Unreal open | P14-1 (needs the classes), F0 |
+| P14-3 | Section 7 level work | lighting-vfx [EDITOR] | Unreal open | P14-2 |
+| P14-4 | Look session (section 9.1) | lead + **owner**, about 30 min (captures about 12 min) | Unreal in front | P14-3 |
+| P14-5 | Apply the choices, exposure targets, story-change readability captures, R-09 fixes | lighting-vfx [EDITOR]; captures with the owner | | P14-4 |
+| P14-6 | Viewpoint approval and storm run-through (section 10) | **owner** (about 30 min) | | P14-5 |
+| P14-7 | Performance (section 11), report | **owner** + performance-engineer | | P14-6 |
+| P14-8 | QA (qa-reviewer), docs (TECHNICAL_DESIGN "Storm and light", MCP_NOTES, PERFORMANCE_BUDGET, RISKS), the full suite, playtest; "PHASE 14 READY FOR YOUR REVIEW" | qa-reviewer, lead, owner | Unreal closed for the suite | all |
+
+One editor agent at a time. Each agent commits on this branch only and never switches, merges or pushes.
+
+## 14. Risks (added to `RISKS.md` at P14-0)
+| Id | Risk | Mitigation |
+|---|---|---|
+| R-59 | Lumen's bounce light lags the flash, so the flash smears or lingers | The direct light carries the flash; `SkyFlashGain` → 0 fallback; judged live in P14-4 |
+| R-60 | Wind WPO costs GPU through VSM invalidation by shadow-casting grass (D-060 estimated +0.3–1.5 ms) | 40 m disable distance; the section 11 ladder; measured against P14-B |
+| R-61 | Story light changes make critical paths unreadable | Readability floors measured after each change; the Dim fallback |
+| R-62 | The Warden reveal flash makes stealth easier | Only in exposed spaces, 30 s cooldown, the `bRevealEnabled` switch; judged in the owner's playtest |
+| R-63 | The exposure restructure changes looks the owner already approved (chapel nave 0.20 against the P8 0.10) | No change until the owner picks in P14-4; before and after captures |
+
+**Updates:** R-09 is closed by P14-5/P14-6. R-31 is updated: its lights are gone, and it closes by the P14-4 measurement.
+
+## 15. Not in this phase
+- **Phase 15 (particles):** rain, splashes, drips, puddle ripples, dust and mist particles, visible lightning bolts (Niagara), candle-flame effects, cloth (tower cloth, banners).
+- **Phase 16:** thunder and all audio. `OnLightningFlash` is the hook.
+- **Not done here:**
+  - Granting `State.Warden.Stage.6` and the tower Warden spawn: a Phase 17 (finale) question, reported to the owner.
+  - Dead-tree twig sway: it would need a new bark master.
+  - Player-candle snuff beats.
+  - Scalability menus (Phase 18).
+  - Any change to AI timing or behaviour.
