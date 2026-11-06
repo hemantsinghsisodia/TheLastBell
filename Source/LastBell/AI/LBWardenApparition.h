@@ -9,6 +9,7 @@
 class UMaterialInstanceDynamic;
 class UMeshComponent;
 class USceneComponent;
+class USkeletalMeshComponent;
 class UStaticMeshComponent;
 
 /**
@@ -20,8 +21,12 @@ class UStaticMeshComponent;
  * player, fades in, holds and fades out. After the last station it never runs again, and if the tag is already present at
  * BeginPlay (a checkpoint reload) it starts finished. The sequence itself is in LBApparitionLogic (unit tested).
  *
+ * A station with a WalkPath (P13) adds a Walk phase between Hold and FadeOut: the figure walks the path at WalkSpeed, turning at
+ * up to 180 degrees per second, and fades out when the path ends, or at once if the player comes within MinPlayerDistance of it.
+ *
  * Meshes and materials are set in the Blueprint. Every material slot of Body and Glow gets a dynamic instance, and the scalar
- * parameter "Fade" is set on all of them to the current alpha.
+ * parameter "Fade" is set on all of them to the current alpha. With bUseSkeletalFigure the animated Figure (the Warden's skeletal
+ * mesh with its Animation Blueprint) is shown instead of Body, and its slots get the fade instances.
  */
 UCLASS(Blueprintable)
 class LASTBELL_API ALBWardenApparition : public AActor
@@ -50,6 +55,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Apparition", meta = (ClampMin = "0", Units = "cm"))
 	float GlowSizeCm = 0.f;
 
+	/**
+	 * Show the skeletal Figure (animated, walks) instead of the static Body. Set in the Blueprint together with the Figure's mesh and
+	 * Animation Blueprint. When false the Figure stays hidden and has no fade materials.
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Apparition", meta = (ExposeOnSpawn = "true"))
+	bool bUseSkeletalFigure = false;
+
 	/** The figure's fade, 0 (hidden) to 1 (fully there). */
 	UFUNCTION(BlueprintPure, Category = "Apparition")
 	float GetAlpha() const { return Run.Alpha; }
@@ -62,6 +74,7 @@ public:
 	int32 GetStationIndex() const { return Run.Station; }
 
 	UStaticMeshComponent* GetBody() const { return Body; }
+	USkeletalMeshComponent* GetFigure() const { return Figure; }
 	UStaticMeshComponent* GetGlow() const { return Glow; }
 
 protected:
@@ -81,6 +94,8 @@ private:
 	void BeginRun();
 	void MakeFadeMaterials(UMeshComponent* Mesh);
 	void ApplyAlpha();
+	/** Moves and turns along the station's WalkPath for this tick. Returns true once the last point is reached. */
+	bool AdvanceWalk(const FLBApparitionStation& Station, float DeltaSeconds);
 	bool IsTagPresent() const;
 	bool IsLookedAt(const FLBApparitionStation& Station, const FVector& CameraLocation, const FRotator& CameraRotation) const;
 
@@ -93,8 +108,16 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UStaticMeshComponent> Glow;
 
+	/** Optional animated figure (P13). Hidden unless bUseSkeletalFigure. No collision, no shadows. */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<USkeletalMeshComponent> Figure;
+
 	UPROPERTY(Transient)
 	TArray<TObjectPtr<UMaterialInstanceDynamic>> FadeMaterials;
 
 	FLBApparitionRun Run;
+
+	/** Next point of the current station's WalkPath. */
+	int32 WalkIndex = 0;
+	bool bWalkFinished = false;
 };

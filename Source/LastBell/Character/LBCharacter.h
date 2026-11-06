@@ -16,6 +16,19 @@ class ULBInspectionComponent;
 class UAIPerceptionStimuliSourceComponent;
 struct FInputActionValue;
 
+/** Where the catch camera looks. Public so tests can compare the view against the same point. */
+namespace LBCatchCamera
+{
+	/** Name of the socket on the killer's skeletal mesh the view turns to. */
+	LASTBELL_API const FName& MaskSocketName();
+
+	/** Distance above the killer's location used when it has no mask socket, cm. */
+	constexpr double FallbackHeight = 230.0;
+
+	/** The point the view is pulled to: the killer's mask socket, or its location plus FallbackHeight. */
+	LASTBELL_API FVector ResolveLookTarget(const AActor* Killer);
+}
+
 UCLASS()
 class LASTBELL_API ALBCharacter : public ACharacter
 {
@@ -24,9 +37,16 @@ class LASTBELL_API ALBCharacter : public ACharacter
 public:
 	ALBCharacter();
 
-	/** Disables input and asks the game mode to handle death. Safe to call repeatedly. */
+	/**
+	 * Disables input and asks the game mode to handle death. Safe to call repeatedly.
+	 *
+	 * With a Killer (the Warden's catch) the death is not immediate: the view turns to the killer's "mask" socket (or its location
+	 * plus 230 cm without one) over CatchLookSeconds, holds for CatchHoldSeconds, the camera fades to black over CatchFadeSeconds,
+	 * and only then does the game mode handle the death. IsDead() is true from the moment of the call. With no Killer (console,
+	 * kill volumes) the death is handled at once, exactly as before.
+	 */
 	UFUNCTION(BlueprintCallable, Category = "LastBell|Player")
-	void Kill();
+	void Kill(AActor* Killer = nullptr);
 
 	UFUNCTION(BlueprintPure, Category = "LastBell|Player")
 	bool IsDead() const { return bIsDead; }
@@ -126,6 +146,24 @@ private:
 	bool IsInspecting() const;
 	/** Re-derives bSprinting from the current inputs and applies MaxWalkSpeed. Called whenever one of those inputs changes. */
 	void UpdateSprintState();
+
+	/** Moves the catch camera along (look, hold, fade) and hands over to the game mode at the end. */
+	void TickCatch(float DeltaSeconds);
+	void FinishDeath();
+
+	enum class ECatchStage : uint8
+	{
+		None,
+		Look,
+		Hold,
+		Fade
+	};
+
+	ECatchStage CatchStage = ECatchStage::None;
+	float CatchStageTime = 0.f;
+	FRotator CatchStartRotation = FRotator::ZeroRotator;
+	FVector CatchLastTarget = FVector::ZeroVector;
+	TWeakObjectPtr<AActor> CatchKiller;
 
 	bool bIsDead = false;
 	bool bSprintHeld = false;

@@ -3,6 +3,7 @@
 #include "Systems/LBWorldStateSubsystem.h"
 #include "Camera/PlayerCameraManager.h"
 #include "Components/SceneComponent.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/World.h"
 #include "GameFramework/PlayerController.h"
@@ -13,11 +14,15 @@ namespace
 {
 	const FName FadeParameter(TEXT("Fade"));
 
+	/** The walking figure turns at up to this many degrees per second. */
+	constexpr float WalkTurnDegreesPerSecond = 180.f;
+
 	/** No collision, no shadows, no navigation: a visual only. */
-	void MakeVisualOnly(UStaticMeshComponent* Mesh)
+	void MakeVisualOnly(UPrimitiveComponent* Mesh)
 	{
 		Mesh->SetMobility(EComponentMobility::Movable);
 		Mesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		Mesh->SetGenerateOverlapEvents(false);
 		Mesh->SetCanEverAffectNavigation(false);
 		Mesh->SetCastShadow(false);
 		Mesh->bReceivesDecals = false;
@@ -40,6 +45,12 @@ ALBWardenApparition::ALBWardenApparition()
 	Glow = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Glow"));
 	Glow->SetupAttachment(Root);
 	MakeVisualOnly(Glow);
+
+	// The animated figure: hidden unless bUseSkeletalFigure.
+	Figure = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Figure"));
+	Figure->SetupAttachment(Root);
+	MakeVisualOnly(Figure);
+	Figure->SetVisibility(false);
 }
 
 bool ALBWardenApparition::IsTagPresent() const
@@ -81,8 +92,12 @@ void ALBWardenApparition::BeginPlay()
 		Glow->SetVisibility(false);
 	}
 
+	// Either the static Body or the animated Figure is the figure; the other stays hidden and gets no fade materials.
+	Body->SetVisibility(!bUseSkeletalFigure);
+	Figure->SetVisibility(bUseSkeletalFigure);
+
 	FadeMaterials.Reset();
-	MakeFadeMaterials(Body);
+	MakeFadeMaterials(bUseSkeletalFigure ? static_cast<UMeshComponent*>(Figure) : static_cast<UMeshComponent*>(Body));
 	MakeFadeMaterials(Glow);
 
 	LBApparition::Reset(Run);
@@ -184,6 +199,47 @@ bool ALBWardenApparition::IsLookedAt(const FLBApparitionStation& Station, const 
 	return !World->LineTraceTestByChannel(CameraLocation, LookPoint, ECC_Visibility, Params);
 }
 
+bool ALBWardenApparition::AdvanceWalk(const FLBApparitionStation& Station, float DeltaSeconds)
+{
+	if (WalkIndex >= Station.WalkPath.Num())
+	{
+		return true;
+	}
+
+	FVector Location = GetActorLocation();
+	FRotator Rotation = GetActorRotation();
+
+	// Turn towards the next point (yaw only), at a limited rate.
+	const FVector ToTarget = Station.WalkPath[WalkIndex] - Location;
+	const FVector Flat(ToTarget.X, ToTarget.Y, 0.0);
+	if (Flat.SizeSquared() > 1.0)
+	{
+		Rotation.Yaw = FMath::FixedTurn(static_cast<float>(Rotation.Yaw), static_cast<float>(Flat.Rotation().Yaw), WalkTurnDegreesPerSecond * DeltaSeconds);
+	}
+
+	// Move along the path; a long frame may cover several points.
+	float Budget = FMath::Max(Station.WalkSpeed, 1.f) * FMath::Max(DeltaSeconds, 0.f);
+	while (Budget > 0.f && WalkIndex < Station.WalkPath.Num())
+	{
+		const FVector Delta = Station.WalkPath[WalkIndex] - Location;
+		const float Distance = static_cast<float>(Delta.Size());
+		if (Distance <= Budget)
+		{
+			Location = Station.WalkPath[WalkIndex];
+			Budget -= Distance;
+			++WalkIndex;
+		}
+		else
+		{
+			Location += Delta / Distance * Budget;
+			Budget = 0.f;
+		}
+	}
+
+	SetActorLocationAndRotation(Location, Rotation, false, nullptr, ETeleportType::None);
+	return WalkIndex >= Station.WalkPath.Num();
+}
+
 void ALBWardenApparition::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
@@ -192,13 +248,20 @@ void ALBWardenApparition::Tick(float DeltaSeconds)
 	Facts.DeltaSeconds = DeltaSeconds;
 
 	const FLBApparitionStation* Station = Stations.IsValidIndex(Run.Station) ? &Stations[Run.Station] : nullptr;
+	if (Station && Run.Phase == ELBApparitionPhase::Walk)
+	{
+		Facts.bWalkFinished = AdvanceWalk(*Station, DeltaSeconds);
+	}
+
 	const APlayerController* PC = GetWorld() ? GetWorld()->GetFirstPlayerController() : nullptr;
 	const APlayerCameraManager* Camera = PC ? PC->PlayerCameraManager.Get() : nullptr;
 	FVector CameraLocation = FVector::ZeroVector;
 	if (Camera && Station)
 	{
 		CameraLocation = Camera->GetCameraLocation();
-		Facts.PlayerDistance = static_cast<float>(FVector::DistXY(CameraLocation, Station->Location));
+		// While walking, "too close" is about the figure, which has left the station.
+		const FVector& From = Run.Phase == ELBApparitionPhase::Walk ? GetActorLocation() : Station->Location;
+		Facts.PlayerDistance = static_cast<float>(FVector::DistXY(CameraLocation, From));
 		if (Run.Phase == ELBApparitionPhase::WaitForLook)
 		{
 			Facts.bLookedAt = IsLookedAt(*Station, CameraLocation, Camera->GetCameraRotation());
@@ -217,6 +280,18 @@ void ALBWardenApparition::Tick(float DeltaSeconds)
 	else if (PhaseBefore == ELBApparitionPhase::WaitForLook && Run.Station == StationBefore + 1)
 	{
 		UE_LOG(LogLBWarden, Log, TEXT("%s: station %d skipped, player too close (%.0f cm)"), *GetName(), StationBefore, Facts.PlayerDistance);
+	}
+	if (PhaseBefore != ELBApparitionPhase::Walk && Run.Phase == ELBApparitionPhase::Walk)
+	{
+		WalkIndex = 0;
+		bWalkFinished = false;
+		UE_LOG(LogLBWarden, Log, TEXT("%s: station %d walk started (%d points, %.0f cm/s)"), *GetName(), Run.Station, Station ? Station->WalkPath.Num() : 0, Station ? Station->WalkSpeed : 0.f);
+	}
+	else if (PhaseBefore == ELBApparitionPhase::Walk && Run.Phase != ELBApparitionPhase::Walk)
+	{
+		bWalkFinished = Facts.bWalkFinished;
+		UE_LOG(LogLBWarden, Log, TEXT("%s: station %d walk ended (%s) at %s, player %.0f cm away"), *GetName(), StationBefore,
+			bWalkFinished ? TEXT("path finished") : TEXT("cut short, player too close"), *GetActorLocation().ToCompactString(), Facts.PlayerDistance);
 	}
 	if (PhaseBefore != ELBApparitionPhase::Done && Run.Phase == ELBApparitionPhase::Done)
 	{

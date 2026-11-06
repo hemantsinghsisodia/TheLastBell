@@ -426,7 +426,12 @@ void ULBWardenBrainComponent::KillPlayer()
 	if (ALBCharacter* Player = KnownPlayer.Get())
 	{
 		UE_LOG(LogLBWarden, Log, TEXT("%s: attack landed on %s"), *GetNameSafe(GetWarden()), *GetNameSafe(Player));
-		Player->Kill();
+		if (!Player->IsDead())
+		{
+			OnPlayerCaught.Broadcast();
+		}
+		// The Warden is the killer: the player's view turns to its mask before the death is handled.
+		Player->Kill(GetWarden());
 	}
 }
 

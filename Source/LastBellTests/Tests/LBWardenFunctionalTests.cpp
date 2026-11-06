@@ -49,8 +49,11 @@ void ULBWardenTestSink::HandleLost()
 #include "Engine/StaticMesh.h"
 #include "Engine/StaticMeshActor.h"
 #include "Engine/TargetPoint.h"
+#include "Camera/PlayerCameraManager.h"
+#include "Components/BoxComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/MeshComponent.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -67,6 +70,8 @@ void ULBWardenTestSink::HandleLost()
 #include "Misc/OutputDevice.h"
 #include "Misc/PackageName.h"
 #include "AI/LBWarden.h"
+#include "AI/LBWardenStoopSubsystem.h"
+#include "AI/LBWardenStoopZone.h"
 #include "AI/LBWardenController.h"
 #include "AI/LBWardenMarkers.h"
 #include "AI/LBWardenTuningData.h"
@@ -1811,6 +1816,183 @@ bool FLBWardenCatchTest::RunTest(const FString& Parameters)
 		Note(TEXT("death reload confirmed"));
 		return true;
 	}, 60.f, true);
+
+	Enqueue(R);
+	return true;
+}
+
+// P13: the catch camera. When the attack lands the player's view turns to the Warden's mask (the "mask" socket, or the Warden's
+// location + 230 cm if the mesh has none) and holds; the reload only comes after the hold and the fade, about 1.55 s after the catch.
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBWardenCatchCameraTest, "LastBell.Functional.Warden.Attack.CatchTurnsTheViewToTheMaskBeforeTheReload",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
+bool FLBWardenCatchCameraTest::RunTest(const FString& Parameters)
+{
+	TSharedPtr<FWRunner> R = StartSession(this);
+	const TSharedRef<FWS> S = R->S;
+	FAutomationTestBase* Test = this;
+	AddSetupSteps(*R, FSetup(), Test);
+	R->Add(TEXT("Stage 5"), [](FWCtx& C) { SetStage(C.W, 5); return true; });
+	AddWaitForWarden(*R, Test);
+
+	// The point the view should be on: the mask socket if the mesh has one, otherwise Warden + 230 cm (the plan's fallback).
+	auto MaskPoint = [](const ALBWarden* Warden, bool& bOutSocket)
+	{
+		const USkeletalMeshComponent* Mesh = Warden ? Warden->GetMesh() : nullptr;
+		bOutSocket = Mesh && Mesh->DoesSocketExist(TEXT("mask"));
+		return bOutSocket ? Mesh->GetSocketLocation(TEXT("mask")) : (Warden ? Warden->GetActorLocation() : FVector::ZeroVector) + FVector(0.0, 0.0, 230.0);
+	};
+	auto AngleToMask = [MaskPoint](FWCtx& C, bool& bOutSocket)
+	{
+		const APlayerController* PC = Cast<APlayerController>(C.Pawn->GetController());
+		const APlayerCameraManager* Camera = PC ? PC->PlayerCameraManager.Get() : nullptr;
+		if (!Camera || !C.Warden())
+		{
+			return 180.f;
+		}
+		const FVector Wanted = (MaskPoint(C.Warden(), bOutSocket) - Camera->GetCameraLocation()).GetSafeNormal();
+		return FMath::RadiansToDegrees(FMath::Acos(FMath::Clamp(static_cast<float>(FVector::DotProduct(Camera->GetCameraRotation().Vector(), Wanted)), -1.f, 1.f)));
+	};
+
+	R->Add(TEXT("Player stands still 300 cm from the Warden: attack windup"), [S, Test](FWCtx& C)
+	{
+		if (C.bFirst)
+		{
+			PlacePlayer(C, AttackStand, 180.f);
+		}
+		if (S->Sink->WindupTimes.Num() > 0)
+		{
+			return true;
+		}
+		if (C.Elapsed > 10.0)
+		{
+			Test->AddError(TEXT("The Warden never started an attack"));
+			return true;
+		}
+		return false;
+	});
+
+	R->Add(TEXT("The windup ends: the player is caught"), [S, Test, AngleToMask](FWCtx& C)
+	{
+		if (C.Pawn->IsDead())
+		{
+			bool bSocket = false;
+			S->T1 = C.Now;
+			S->OldWorld = C.W;
+			S->F0 = AngleToMask(C, bSocket);
+			S->B0 = bSocket;
+			Note(FString::Printf(TEXT("caught: the view is %.1f deg off the %s at the moment of death"), S->F0, bSocket ? TEXT("mask socket") : TEXT("fallback point (no mask socket at runtime)")));
+			return true;
+		}
+		if (C.Elapsed > 6.0)
+		{
+			Test->AddError(TEXT("The attack never killed the player"));
+			return true;
+		}
+		return false;
+	});
+
+	R->Add(TEXT("The view is on the mask before the reload starts"), [S, Test, AngleToMask](FWCtx& C)
+	{
+		if (C.W != S->OldWorld.Get())
+		{
+			Test->AddError(TEXT("The level reloaded before the catch camera could be checked: the death is not delayed by the look, hold and fade"));
+			return true;
+		}
+		// Look 0.25 s + hold 0.8 s: at 0.9 s the view has long arrived and is holding.
+		if (C.Now - S->T1 < 0.9)
+		{
+			return false;
+		}
+		bool bSocket = false;
+		const float Degrees = AngleToMask(C, bSocket);
+		Note(FString::Printf(TEXT("%.2fs after the catch the view is %.1f deg off the %s (was %.1f at the catch)"), C.Now - S->T1, Degrees, bSocket ? TEXT("mask socket") : TEXT("fallback point"), S->F0));
+		Test->TestTrue(FString::Printf(TEXT("The view ends within 10 deg of the %s (%.1f deg off)"), bSocket ? TEXT("mask socket") : TEXT("Warden + 230 cm"), Degrees), Degrees < 10.f);
+		Test->TestEqual(TEXT("The socket check agrees with the moment of death"), bSocket, S->B0);
+		Test->TestTrue(TEXT("The player is dead, in the old world: the reload has not started"), C.Pawn->IsDead() && C.W == S->OldWorld.Get());
+		return true;
+	}, 20.f);
+
+	R->Add(TEXT("Then the reload: a living player and a dormant Warden"), [S, Test](FWCtx& C)
+	{
+		if (!C.W || C.W == S->OldWorld.Get() || !LBPie::WorldReady())
+		{
+			return false;
+		}
+		if (C.Frames < 20)
+		{
+			return false;
+		}
+		Test->TestFalse(TEXT("New pawn is alive"), C.Pawn->IsDead());
+		Note(TEXT("death reload confirmed after the catch camera"));
+		return true;
+	}, 60.f, true);
+
+	Enqueue(R);
+	return true;
+}
+
+// =====================================================================================================================
+// Stoop zones (P13)
+// =====================================================================================================================
+
+// Spawned zones register with the subsystem, the query returns the highest amount of the zones that contain the point (the box
+// is tested in its own, rotated frame), and a destroyed zone is gone from the query.
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBWardenStoopZoneTest, "LastBell.Functional.Warden.Stoop.ZoneQueryUsesRotatedBoxesAndTheHighestAmount",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
+bool FLBWardenStoopZoneTest::RunTest(const FString& Parameters)
+{
+	TSharedPtr<FWRunner> R = StartSession(this);
+	FAutomationTestBase* Test = this;
+	R->Add(TEXT("PIE ready"), [](FWCtx& C) { return LBPie::WorldReady() && C.Frames >= 5; }, 60.f);
+
+	R->Add(TEXT("Zones register, the query is right inside and outside, destroyed zones are gone"), [Test](FWCtx& C)
+	{
+		ULBWardenStoopSubsystem* Subsystem = C.W->GetSubsystem<ULBWardenStoopSubsystem>();
+		if (!Test->TestNotNull(TEXT("The stoop subsystem exists in the PIE world"), Subsystem))
+		{
+			return true;
+		}
+		const int32 Before = Subsystem->GetZoneCount();
+		const FVector Centre(40000.0, 40000.0, 200.0);
+		const FVector Along = FRotator(0.f, 45.f, 0.f).Vector();
+
+		// A: 300 x 124 x 300 cm, turned 45 degrees, amount 1. B: a big unturned box of amount 0.3 around it.
+		ALBWardenStoopZone* A = C.W->SpawnActor<ALBWardenStoopZone>(Centre, FRotator(0.f, 45.f, 0.f));
+		ALBWardenStoopZone* B = C.W->SpawnActor<ALBWardenStoopZone>(Centre, FRotator::ZeroRotator);
+		if (!Test->TestTrue(TEXT("Both zones spawned"), A && B))
+		{
+			return true;
+		}
+		A->StoopAmount = 1.f;
+		A->GetBox()->SetBoxExtent(FVector(150.0, 62.0, 150.0));
+		B->StoopAmount = 0.3f;
+		B->GetBox()->SetBoxExtent(FVector(400.0, 400.0, 400.0));
+
+		Test->TestEqual(TEXT("Both zones registered on BeginPlay"), Subsystem->GetZoneCount(), Before + 2);
+		Test->TestEqual(TEXT("Zones have no collision"), static_cast<int32>(A->GetBox()->GetCollisionEnabled()), static_cast<int32>(ECollisionEnabled::NoCollision));
+
+		auto Amount = [Subsystem](const FVector& P) { return Subsystem->GetStoopAmount(P); };
+		Test->TestEqual(TEXT("Centre: the highest of the two (1.0)"), Amount(Centre), 1.f);
+		Test->TestEqual(TEXT("140 cm along the turned long axis: inside A (1.0)"), Amount(Centre + Along * 140.0), 1.f);
+		Test->TestEqual(TEXT("200 cm along it: outside A, inside B (0.3)"), Amount(Centre + Along * 200.0), 0.3f);
+		Test->TestEqual(TEXT("130 cm along world X: inside A's unturned footprint, outside the turned box (0.3, not 1.0)"), Amount(Centre + FVector(130.0, 0.0, 0.0)), 0.3f);
+		Test->TestEqual(TEXT("350 cm above the centre: above A, inside B (0.3)"), Amount(Centre + FVector(0.0, 0.0, 350.0)), 0.3f);
+		Test->TestEqual(TEXT("900 cm away: outside both (0)"), Amount(Centre + FVector(900.0, 0.0, 0.0)), 0.f);
+
+		// A moved zone is tested where it is now, not where it was.
+		A->SetActorLocation(Centre + FVector(2000.0, 0.0, 0.0));
+		Test->TestEqual(TEXT("A moved away: the centre is only in B (0.3)"), Amount(Centre), 0.3f);
+		Test->TestEqual(TEXT("A moved away: its new place is in A (1.0)"), Amount(Centre + FVector(2000.0, 0.0, 0.0)), 1.f);
+		A->SetActorLocation(Centre);
+
+		A->Destroy();
+		Test->TestEqual(TEXT("A destroyed: unregistered on EndPlay"), Subsystem->GetZoneCount(), Before + 1);
+		Test->TestEqual(TEXT("A destroyed: the centre is only in B (0.3)"), Amount(Centre), 0.3f);
+		B->Destroy();
+		Test->TestEqual(TEXT("B destroyed: all gone"), Subsystem->GetZoneCount(), Before);
+		Test->TestEqual(TEXT("B destroyed: the centre is 0"), Amount(Centre), 0.f);
+		return true;
+	}, 30.f);
 
 	Enqueue(R);
 	return true;

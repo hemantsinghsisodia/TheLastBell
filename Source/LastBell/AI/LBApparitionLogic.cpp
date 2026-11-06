@@ -118,7 +118,16 @@ namespace LBApparition
 			{
 				Run.PhaseTime -= Station->HoldSeconds;
 				Run.FadeOutFrom = 1.f;
-				Run.Phase = ELBApparitionPhase::FadeOut;
+				// A station with a path walks it before fading; the time left over from the hold counts as walking time.
+				Run.Phase = Station->WalkPath.Num() > 0 ? ELBApparitionPhase::Walk : ELBApparitionPhase::FadeOut;
+			}
+			return false;
+
+		case ELBApparitionPhase::Walk:
+			Run.Alpha = 1.f;
+			if (bTooClose || Facts.bWalkFinished)
+			{
+				BeginFadeOut(Run);
 			}
 			return false;
 
@@ -157,6 +166,7 @@ namespace LBApparition
 		case ELBApparitionPhase::WaitForLook: return TEXT("WaitForLook");
 		case ELBApparitionPhase::FadeIn: return TEXT("FadeIn");
 		case ELBApparitionPhase::Hold: return TEXT("Hold");
+		case ELBApparitionPhase::Walk: return TEXT("Walk");
 		case ELBApparitionPhase::FadeOut: return TEXT("FadeOut");
 		case ELBApparitionPhase::Gap: return TEXT("Gap");
 		case ELBApparitionPhase::Done: return TEXT("Done");

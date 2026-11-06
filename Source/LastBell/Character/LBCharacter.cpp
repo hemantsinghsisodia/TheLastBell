@@ -8,6 +8,8 @@
 #include "Systems/LBGameMode.h"
 #include "Systems/LBUserSettings.h"
 #include "Camera/CameraComponent.h"
+#include "Camera/PlayerCameraManager.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "Perception/AIPerceptionStimuliSourceComponent.h"
 #include "Perception/AISense_Sight.h"
 #include "Components/CapsuleComponent.h"
@@ -18,6 +20,28 @@
 #include "GameFramework/Controller.h"
 #include "GameFramework/PlayerController.h"
 #include "LBLog.h"
+
+const FName& LBCatchCamera::MaskSocketName()
+{
+	static const FName Name(TEXT("mask"));
+	return Name;
+}
+
+FVector LBCatchCamera::ResolveLookTarget(const AActor* Killer)
+{
+	if (!Killer)
+	{
+		return FVector::ZeroVector;
+	}
+	if (const USkeletalMeshComponent* Mesh = Killer->FindComponentByClass<USkeletalMeshComponent>())
+	{
+		if (Mesh->DoesSocketExist(MaskSocketName()))
+		{
+			return Mesh->GetSocketLocation(MaskSocketName());
+		}
+	}
+	return Killer->GetActorLocation() + FVector(0.0, 0.0, FallbackHeight);
+}
 
 ALBCharacter::ALBCharacter()
 {
@@ -111,6 +135,10 @@ void ALBCharacter::Tick(float DeltaSeconds)
 	if (Candle)
 	{
 		Candle->SetGuttering(CachedGait == ELBGait::Sprint);
+	}
+	if (CatchStage != ECatchStage::None)
+	{
+		TickCatch(DeltaSeconds);
 	}
 }
 
@@ -281,7 +309,7 @@ void ALBCharacter::Interact()
 	}
 }
 
-void ALBCharacter::Kill()
+void ALBCharacter::Kill(AActor* Killer)
 {
 	if (bIsDead)
 	{
@@ -301,12 +329,83 @@ void ALBCharacter::Kill()
 	{
 		DisableInput(PC);
 	}
+
+	if (Killer && Cast<APlayerController>(PlayerController))
+	{
+		// The catch: the view goes to the killer's mask, holds and fades; FinishDeath then hands over to the game mode.
+		CatchKiller = Killer;
+		CatchLastTarget = LBCatchCamera::ResolveLookTarget(Killer);
+		CatchStartRotation = PlayerController->GetControlRotation().GetNormalized();
+		CatchStageTime = 0.f;
+		CatchStage = ECatchStage::Look;
+		UE_LOG(LogLB, Log, TEXT("Catch camera: turning to %s at %s"), *GetNameSafe(Killer), *CatchLastTarget.ToCompactString());
+		return;
+	}
+	FinishDeath();
+}
+
+void ALBCharacter::TickCatch(float DeltaSeconds)
+{
+	const ULBPlayerTuningData& T = GetTuning();
+	APlayerController* PC = Cast<APlayerController>(GetController());
+	if (!PC)
+	{
+		// The controller is gone: nothing to turn or fade any more.
+		CatchStage = ECatchStage::None;
+		FinishDeath();
+		return;
+	}
+
+	// Follow the killer's mask while it exists (its animation moves it); otherwise keep the last point.
+	if (const AActor* Killer = CatchKiller.Get())
+	{
+		CatchLastTarget = LBCatchCamera::ResolveLookTarget(Killer);
+	}
+	const FVector Eye = FirstPersonCamera ? FirstPersonCamera->GetComponentLocation() : GetActorLocation();
+	const FRotator TargetRotation = (CatchLastTarget - Eye).Rotation();
+
+	CatchStageTime += FMath::Max(DeltaSeconds, 0.f);
+
+	if (CatchStage == ECatchStage::Look)
+	{
+		const float Alpha = FMath::SmoothStep(0.f, 1.f, FMath::Clamp(CatchStageTime / FMath::Max(T.CatchLookSeconds, KINDA_SMALL_NUMBER), 0.f, 1.f));
+		const FRotator Delta = (TargetRotation - CatchStartRotation).GetNormalized();
+		PC->SetControlRotation(FRotator(CatchStartRotation.Pitch + Delta.Pitch * Alpha, CatchStartRotation.Yaw + Delta.Yaw * Alpha, 0.f));
+		if (CatchStageTime >= T.CatchLookSeconds)
+		{
+			CatchStage = ECatchStage::Hold;
+			CatchStageTime -= T.CatchLookSeconds;
+		}
+	}
+	if (CatchStage == ECatchStage::Hold)
+	{
+		PC->SetControlRotation(FRotator(TargetRotation.Pitch, TargetRotation.Yaw, 0.f));
+		if (CatchStageTime >= T.CatchHoldSeconds)
+		{
+			CatchStage = ECatchStage::Fade;
+			CatchStageTime -= T.CatchHoldSeconds;
+			if (PC->PlayerCameraManager)
+			{
+				PC->PlayerCameraManager->StartCameraFade(0.f, 1.f, T.CatchFadeSeconds, FLinearColor::Black, false, true);
+			}
+		}
+	}
+	else if (CatchStage == ECatchStage::Fade && CatchStageTime >= T.CatchFadeSeconds)
+	{
+		CatchStage = ECatchStage::None;
+		FinishDeath();
+	}
+}
+
+void ALBCharacter::FinishDeath()
+{
 	if (ALBGameMode* GameMode = GetWorld() ? GetWorld()->GetAuthGameMode<ALBGameMode>() : nullptr)
 	{
-		GameMode->HandlePlayerDeath(PlayerController);
+		GameMode->HandlePlayerDeath(GetController());
 	}
 	else
 	{
 		UE_LOG(LogLB, Warning, TEXT("Kill: no ALBGameMode, death not handled"));
 	}
 }
+

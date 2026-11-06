@@ -77,6 +77,13 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "LastBell|Warden")
 	FLBWardenSightSignature OnPlayerLost;
 
+	/**
+	 * Fired when an attack lands, just before the player is killed (the catch camera then pulls the view to the mask). BP_Warden
+	 * binds this to hold its grab pose. Not fired again for a player who is already dead.
+	 */
+	UPROPERTY(BlueprintAssignable, Category = "LastBell|Warden")
+	FLBWardenSightSignature OnPlayerCaught;
+
 	/** lb.Warden.Enabled (default 1). At 0 every Warden stays Dormant and hidden and checkpoints ignore it. */
 	UFUNCTION(BlueprintPure, Category = "LastBell|Warden")
 	static bool IsWardenSystemEnabled();

@@ -202,6 +202,19 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Inspection", meta = (ClampMin = "0"))
 	float InspectBlendTime = 0.25f;
 
+	// ---- Catch camera (a killer pulls the view to its face, P13) ----
+	/** Time for the view to turn to the killer's mask. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Catch", meta = (ClampMin = "0.01", Units = "s"))
+	float CatchLookSeconds = 0.25f;
+
+	/** Time the view stays on the mask before the screen fades. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Catch", meta = (ClampMin = "0", Units = "s"))
+	float CatchHoldSeconds = 0.8f;
+
+	/** Fade to black. The reload follows when it ends. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Catch", meta = (ClampMin = "0.01", Units = "s"))
+	float CatchFadeSeconds = 0.5f;
+
 	// ---- Queries ----
 	float GetStride(ELBGait Gait) const;
 	float GetLoudness(ELBGait Gait) const;

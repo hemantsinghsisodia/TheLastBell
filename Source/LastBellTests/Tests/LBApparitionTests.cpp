@@ -28,6 +28,15 @@ namespace
 		return S;
 	}
 
+	/** A station that walks (P13): a path of two points, nothing else changes. */
+	FLBApparitionStation MakeWalkStation(float In, float Hold, float Out, float Gap, float MinDistance = 0.f)
+	{
+		FLBApparitionStation S = MakeStation(In, Hold, Out, Gap, MinDistance);
+		S.WalkPath = { FVector(100.0, 0.0, 0.0), FVector(300.0, 200.0, 0.0) };
+		S.WalkSpeed = 110.f;
+		return S;
+	}
+
 	/** Steps a run at 60 Hz with the facts held constant until the test changes them. */
 	struct FSim
 	{
@@ -36,6 +45,7 @@ namespace
 		float ArmDelay = 0.f;
 		bool bLookedAt = false;
 		float Distance = 1000.f;
+		bool bWalkFinished = false;
 		float Time = 0.f;
 		int32 FadeInEntries = 0;
 
@@ -48,6 +58,7 @@ namespace
 			F.DeltaSeconds = Dt;
 			F.bLookedAt = bLookedAt;
 			F.PlayerDistance = Distance;
+			F.bWalkFinished = bWalkFinished;
 			Time += Dt;
 			const bool bEntered = LBApparition::Step(Run, Stations, ArmDelay, F);
 			FadeInEntries += bEntered ? 1 : 0;
@@ -453,6 +464,190 @@ bool FLBApparitionZeroDurationsTest::RunTest(const FString& Parameters)
 	return true;
 }
 
+// ---- P13: the Walk phase ----------------------------------------------------------------------------------------------------
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBApparitionWalkEnteredTest, "LastBell.Warden.Apparition.WalkPhaseFollowsHold", LB_TEST_FLAGS)
+bool FLBApparitionWalkEnteredTest::RunTest(const FString& Parameters)
+{
+	const float In = 0.5f, Hold = 1.f, Out = 0.5f;
+	FSim Sim;
+	Sim.Stations = { MakeWalkStation(In, Hold, Out, 0.f) };
+	Sim.bLookedAt = true;
+	Sim.Start();
+
+	TestTrue(TEXT("Reaches Hold"), Sim.TickUntil(ELBApparitionPhase::Hold));
+	TestTrue(TEXT("Then Walk, not FadeOut"), Sim.TickUntil(ELBApparitionPhase::Walk, 5.f));
+	TEST_ENUM(TEXT("In Walk"), Sim.Run.Phase, ELBApparitionPhase::Walk);
+	TestEqual(TEXT("Walk runs at full alpha"), Sim.Run.Alpha, 1.f);
+
+	// The path is not finished: it walks for as long as it takes, at full alpha, never fading.
+	bool bAlphaOk = true;
+	for (int32 i = 0; i < 60 * 30; ++i)
+	{
+		Sim.Tick();
+		bAlphaOk &= Sim.Run.Alpha == 1.f;
+	}
+	TEST_ENUM(TEXT("Still walking after 30 s without a finished path"), Sim.Run.Phase, ELBApparitionPhase::Walk);
+	TestTrue(TEXT("Alpha stays 1 the whole walk"), bAlphaOk);
+	TestEqual(TEXT("Same station"), Sim.Run.Station, 0);
+	TestEqual(TEXT("FadeIn was entered once"), Sim.FadeInEntries, 1);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBApparitionWalkFinishedTest, "LastBell.Warden.Apparition.WalkFinishedFadesOut", LB_TEST_FLAGS)
+bool FLBApparitionWalkFinishedTest::RunTest(const FString& Parameters)
+{
+	const float Out = 0.5f;
+	FSim Sim;
+	Sim.Stations = { MakeWalkStation(0.2f, 0.2f, Out, 0.25f), MakeStation(0.2f, 0.2f, 0.2f, 0.f) };
+	Sim.bLookedAt = true;
+	Sim.Start();
+
+	TestTrue(TEXT("Reaches Walk"), Sim.TickUntil(ELBApparitionPhase::Walk));
+	for (int32 i = 0; i < 30; ++i)
+	{
+		Sim.Tick();
+	}
+	TEST_ENUM(TEXT("Walking"), Sim.Run.Phase, ELBApparitionPhase::Walk);
+
+	// The actor reports the end of the path: FadeOut from alpha 1, on that very step.
+	Sim.bWalkFinished = true;
+	Sim.Tick();
+	TEST_ENUM(TEXT("Path finished: FadeOut"), Sim.Run.Phase, ELBApparitionPhase::FadeOut);
+	Sim.bWalkFinished = false;
+
+	float PrevAlpha = 1.f;
+	bool bFalling = true;
+	int32 Ticks = 0;
+	while (Sim.Run.Phase == ELBApparitionPhase::FadeOut && Ticks < 600)
+	{
+		Sim.Tick();
+		bFalling &= Sim.Run.Alpha <= PrevAlpha;
+		PrevAlpha = Sim.Run.Alpha;
+		++Ticks;
+	}
+	TestTrue(TEXT("Alpha falls through the fade-out"), bFalling);
+	TestTrue(FString::Printf(TEXT("The fade-out takes %d ticks, about %.0f"), Ticks, Out / Dt), FMath::Abs(Ticks - Out / Dt) <= 3.f);
+	TEST_ENUM(TEXT("Then the gap"), Sim.Run.Phase, ELBApparitionPhase::Gap);
+	TestEqual(TEXT("Hidden in the gap"), Sim.Run.Alpha, 0.f);
+
+	// The next station is a plain one: it never walks.
+	TestTrue(TEXT("Station 2 waits for the look"), Sim.TickUntil(ELBApparitionPhase::WaitForLook));
+	TestEqual(TEXT("On station 2"), Sim.Run.Station, 1);
+	TestTrue(TEXT("Station 2 fades in"), Sim.TickUntil(ELBApparitionPhase::FadeIn));
+	bool bWalked = false;
+	for (int32 i = 0; i < 60 * 5 && Sim.Run.Phase != ELBApparitionPhase::Done; ++i)
+	{
+		Sim.Tick();
+		bWalked |= Sim.Run.Phase == ELBApparitionPhase::Walk;
+	}
+	TestFalse(TEXT("Station 2 has no path: no Walk phase"), bWalked);
+	TEST_ENUM(TEXT("Done"), Sim.Run.Phase, ELBApparitionPhase::Done);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBApparitionWalkCutShortTest, "LastBell.Warden.Apparition.WalkCutShortByDistance", LB_TEST_FLAGS)
+bool FLBApparitionWalkCutShortTest::RunTest(const FString& Parameters)
+{
+	// Too close during the walk: straight to FadeOut from alpha 1, however far along the path it was.
+	{
+		FSim Sim;
+		Sim.Stations = { MakeWalkStation(0.2f, 0.2f, 0.5f, 0.f, 150.f) };
+		Sim.bLookedAt = true;
+		Sim.Distance = 1000.f;
+		Sim.Start();
+		TestTrue(TEXT("Reaches Walk"), Sim.TickUntil(ELBApparitionPhase::Walk));
+		for (int32 i = 0; i < 20; ++i)
+		{
+			Sim.Tick();
+		}
+		TEST_ENUM(TEXT("Far away: still walking"), Sim.Run.Phase, ELBApparitionPhase::Walk);
+
+		Sim.Distance = 100.f;
+		Sim.Tick();
+		TEST_ENUM(TEXT("Player within 150 cm: FadeOut"), Sim.Run.Phase, ELBApparitionPhase::FadeOut);
+		Sim.Tick();
+		TestTrue(TEXT("Falling from 1"), Sim.Run.Alpha < 1.f && Sim.Run.Alpha > 0.9f);
+		TestTrue(TEXT("Then the run finishes"), Sim.TickUntil(ELBApparitionPhase::Done, 2.f));
+	}
+
+	// No minimum distance: a close player changes nothing.
+	{
+		FSim Sim;
+		Sim.Stations = { MakeWalkStation(0.2f, 0.2f, 0.5f, 0.f, 0.f) };
+		Sim.bLookedAt = true;
+		Sim.Distance = 10.f;
+		Sim.Start();
+		TestTrue(TEXT("Reaches Walk"), Sim.TickUntil(ELBApparitionPhase::Walk));
+		for (int32 i = 0; i < 120; ++i)
+		{
+			Sim.Tick();
+		}
+		TEST_ENUM(TEXT("MinPlayerDistance 0: a player at 10 cm does not stop the walk"), Sim.Run.Phase, ELBApparitionPhase::Walk);
+	}
+
+	// Too close during the hold: the existing rule (fade from the hold) wins, no Walk at all.
+	{
+		FSim Sim;
+		Sim.Stations = { MakeWalkStation(0.2f, 1.f, 0.5f, 0.f, 150.f) };
+		Sim.bLookedAt = true;
+		Sim.Distance = 1000.f;
+		Sim.Start();
+		TestTrue(TEXT("Reaches Hold"), Sim.TickUntil(ELBApparitionPhase::Hold));
+		Sim.Distance = 100.f;
+		Sim.Tick();
+		TEST_ENUM(TEXT("Too close during Hold: FadeOut, never Walk"), Sim.Run.Phase, ELBApparitionPhase::FadeOut);
+	}
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBApparitionNoPathUnchangedTest, "LastBell.Warden.Apparition.StationWithoutPathHasNoWalk", LB_TEST_FLAGS)
+bool FLBApparitionNoPathUnchangedTest::RunTest(const FString& Parameters)
+{
+	// Without a WalkPath the sequence is exactly the old one, even when the actor claims a finished walk.
+	const float In = 1.f, Hold = 2.f, Out = 1.5f, Gap = 0.5f;
+	FSim Sim;
+	Sim.Stations = { MakeStation(In, Hold, Out, Gap) };
+	Sim.ArmDelay = 0.25f;
+	Sim.bLookedAt = true;
+	Sim.bWalkFinished = true;
+	Sim.Start();
+
+	bool bWalked = false;
+	float EntryTime = -1.f, DoneTime = -1.f;
+	bool bHoldToFadeOut = true;
+	ELBApparitionPhase Prev = ELBApparitionPhase::Idle;
+	for (int32 i = 0; i < 60 * 20 && Sim.Run.Phase != ELBApparitionPhase::Done; ++i)
+	{
+		if (Sim.Tick())
+		{
+			EntryTime = Sim.Time;
+		}
+		bWalked |= Sim.Run.Phase == ELBApparitionPhase::Walk;
+		if (Prev == ELBApparitionPhase::Hold && Sim.Run.Phase != ELBApparitionPhase::Hold)
+		{
+			bHoldToFadeOut &= Sim.Run.Phase == ELBApparitionPhase::FadeOut;
+		}
+		Prev = Sim.Run.Phase;
+		if (Sim.Run.Phase == ELBApparitionPhase::Done)
+		{
+			DoneTime = Sim.Time;
+		}
+	}
+	TestFalse(TEXT("Never enters Walk"), bWalked);
+	TestTrue(TEXT("Hold goes straight to FadeOut"), bHoldToFadeOut);
+	TEST_ENUM(TEXT("Done"), Sim.Run.Phase, ELBApparitionPhase::Done);
+	TestTrue(FString::Printf(TEXT("Entry to Done takes %.3f s, the sum of the phases is %.3f s"), DoneTime - EntryTime, In + Hold + Out + Gap),
+		FMath::Abs((DoneTime - EntryTime) - (In + Hold + Out + Gap)) <= 2.f * Dt + 0.001f);
+
+	// The default station has an empty path and 110 cm/s.
+	const FLBApparitionStation Default;
+	TestEqual(TEXT("Default WalkPath is empty"), Default.WalkPath.Num(), 0);
+	TestEqual(TEXT("Default WalkSpeed is 110"), Default.WalkSpeed, 110.f);
+	TestEqual(TEXT("Phase name"), FString(LBApparition::PhaseName(ELBApparitionPhase::Walk)), FString(TEXT("Walk")));
+	return true;
+}
+
 #endif // WITH_DEV_AUTOMATION_TESTS
 
 // =====================================================================================================================
@@ -468,6 +663,7 @@ bool FLBApparitionZeroDurationsTest::RunTest(const FString& Parameters)
 #include "Engine/StaticMeshActor.h"
 #include "Camera/PlayerCameraManager.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PlayerController.h"
@@ -518,6 +714,10 @@ namespace
 		float AlphaSeen = 0.f;
 		TWeakObjectPtr<AActor> Blocker;
 		int32 WaitFrames = 0;
+		// Walk test scratch.
+		double WalkStartTime = 0.0;
+		FVector LastLocation = FVector::ZeroVector;
+		float MaxStep = 0.f;
 
 		ALBWardenApparition* A() const { return Apparition.Get(); }
 	};
@@ -715,7 +915,7 @@ namespace
 	}
 
 	/** Spawns the apparition the way a placed one would be configured: deferred, so the tag and the stations are set before BeginPlay. */
-	ALBWardenApparition* SpawnApparition(UWorld* W, const FGameplayTag& Trigger, const TArray<FLBApparitionStation>& Stations)
+	ALBWardenApparition* SpawnApparition(UWorld* W, const FGameplayTag& Trigger, const TArray<FLBApparitionStation>& Stations, bool bSkeletalFigure = false)
 	{
 		ALBWardenApparition* A = W->SpawnActorDeferred<ALBWardenApparition>(ALBWardenApparition::StaticClass(), FTransform::Identity, nullptr, nullptr, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 		if (A)
@@ -724,16 +924,17 @@ namespace
 			A->ArmDelaySeconds = GArmDelay;
 			A->Stations = Stations;
 			A->GlowSizeCm = 300.f; // exercises the glow scale path; there is no mesh to see
+		A->bUseSkeletalFigure = bSkeletalFigure;
 			A->FinishSpawning(FTransform::Identity);
 		}
 		return A;
 	}
 
 	/** Adds the common start: PIE ready, floor and player, apparition spawned, player settled on the floor. */
-	void AddSetup(FAppRunner& R, FAutomationTestBase* Test, const TArray<FLBApparitionStation>& Stations, bool bTagFirst)
+	void AddSetup(FAppRunner& R, FAutomationTestBase* Test, const TArray<FLBApparitionStation>& Stations, bool bTagFirst, bool bSkeletalFigure = false)
 	{
 		const TSharedRef<FAppState> S = R.S;
-		R.Add(TEXT("PIE ready, floor, player, apparition spawned"), [S, Test, Stations, bTagFirst](FAppCtx& C)
+		R.Add(TEXT("PIE ready, floor, player, apparition spawned"), [S, Test, Stations, bTagFirst, bSkeletalFigure](FAppCtx& C)
 		{
 			if (!LBPie::WorldReady() || C.Frames < 5)
 			{
@@ -759,7 +960,7 @@ namespace
 			{
 				State->AddState(S->Trigger);
 			}
-			ALBWardenApparition* A = SpawnApparition(C.W, S->Trigger, Stations);
+			ALBWardenApparition* A = SpawnApparition(C.W, S->Trigger, Stations, bSkeletalFigure);
 			if (!Test->TestNotNull(TEXT("Apparition spawned"), A))
 			{
 				return true;
@@ -769,6 +970,10 @@ namespace
 			Test->TestEqual(TEXT("Alpha 0 at BeginPlay"), A->GetAlpha(), 0.f);
 			Test->TestFalse(TEXT("Tick is off before the trigger"), A->IsActorTickEnabled());
 			Test->TestNearlyEqual(TEXT("The Glow card is scaled to GlowSizeCm / 100"), static_cast<float>(A->GetGlow()->GetRelativeScale3D().X), 3.f);
+			Test->TestEqual(TEXT("The skeletal Figure is visible only with bUseSkeletalFigure"), A->GetFigure()->IsVisible(), bSkeletalFigure);
+			Test->TestEqual(TEXT("The static Body is visible only without bUseSkeletalFigure"), A->GetBody()->IsVisible(), !bSkeletalFigure);
+			Test->TestEqual(TEXT("The Figure has no collision"), static_cast<int32>(A->GetFigure()->GetCollisionEnabled()), static_cast<int32>(ECollisionEnabled::NoCollision));
+			Test->TestFalse(TEXT("The Figure casts no shadow"), A->GetFigure()->CastShadow);
 			return true;
 		});
 
@@ -1214,6 +1419,229 @@ bool FLBApparitionBlockedViewTest::RunTest(const FString& Parameters)
 		return false;
 	}, 15.f);
 
+	Enqueue(R);
+	return true;
+}
+
+// P13: a station with a WalkPath. The figure fades in, holds, walks the path (no mesh needed: the actor's location is the walk), and
+// only then fades out and finishes at the last point. WalkSpeed 400 cm/s over 300 + 300 + 600 cm is 3 s.
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBApparitionWalkPathTest, "LastBell.Functional.Warden.Apparition.WalkPathThenFade",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
+bool FLBApparitionWalkPathTest::RunTest(const FString& Parameters)
+{
+	const FVector P0(500.0, 300.0, GFloorTopZ);
+	const FVector P1(800.0, 300.0, GFloorTopZ);
+	const FVector P2(800.0, -300.0, GFloorTopZ);
+	constexpr float WalkSpeed = 400.f;
+	const float ExpectedWalkSeconds = (static_cast<float>(FVector::Dist(GStation1, P0) + FVector::Dist(P0, P1) + FVector::Dist(P1, P2))) / WalkSpeed;
+
+	FLBApparitionStation Station = MakeStation(GStation1);
+	Station.WalkPath = { P0, P1, P2 };
+	Station.WalkSpeed = WalkSpeed;
+
+	TSharedRef<FAppRunner> R = StartSession(this);
+	const TSharedRef<FAppState> S = R->S;
+	FAutomationTestBase* Test = this;
+	AddSetup(*R, Test, { Station }, false, false);
+
+	R->Add(TEXT("Tag added, looking at the station: it fades in at the station"), [S, Test, Station](FAppCtx& C)
+	{
+		ALBWardenApparition* A = S->A();
+		if (C.bFirst)
+		{
+			ULBWorldStateSubsystem::Get(C.W)->AddState(S->Trigger);
+		}
+		LookAtStation(C.Pawn, Station.Location);
+		if (A->GetAlpha() > 0.01f)
+		{
+			Test->TestTrue(TEXT("Standing at the station when it appears"), FVector::Dist(A->GetActorLocation(), Station.Location) < 1.f);
+			return true;
+		}
+		if (C.Elapsed > 5.0)
+		{
+			Test->AddError(TEXT("The fade-in never started"));
+			return true;
+		}
+		return false;
+	}, 15.f);
+
+	R->Add(TEXT("Hold ends: the walk begins at full alpha"), [S, Test, Station](FAppCtx& C)
+	{
+		ALBWardenApparition* A = S->A();
+		LookAtStation(C.Pawn, Station.Location);
+		if (A->GetPhase() == ELBApparitionPhase::Walk)
+		{
+			Test->TestEqual(TEXT("Walking at full alpha"), A->GetAlpha(), 1.f);
+			Test->TestFalse(TEXT("Visible while walking"), A->IsHidden());
+			S->WalkStartTime = C.W->GetTimeSeconds();
+			S->LastLocation = A->GetActorLocation();
+			S->MaxStep = 0.f;
+			return true;
+		}
+		Test->TestTrue(FString::Printf(TEXT("Only FadeIn or Hold before the walk (phase %s)"), LBApparition::PhaseName(A->GetPhase())),
+			A->GetPhase() == ELBApparitionPhase::FadeIn || A->GetPhase() == ELBApparitionPhase::Hold);
+		if (C.Elapsed > 5.0)
+		{
+			Test->AddError(TEXT("The Walk phase never began"));
+			return true;
+		}
+		return false;
+	}, 15.f);
+
+	R->Add(TEXT("Walks the path at WalkSpeed and ends on the last point"), [S, Test, Station, P1, P2, ExpectedWalkSeconds](FAppCtx& C)
+	{
+		ALBWardenApparition* A = S->A();
+		LookAtStation(C.Pawn, Station.Location);
+		const FVector Here = A->GetActorLocation();
+		S->MaxStep = FMath::Max(S->MaxStep, static_cast<float>(FVector::Dist(Here, S->LastLocation)));
+		S->LastLocation = Here;
+
+		if (A->GetPhase() == ELBApparitionPhase::Walk)
+		{
+			Test->TestEqual(TEXT("Alpha stays 1 during the walk"), A->GetAlpha(), 1.f);
+			if (C.Elapsed > ExpectedWalkSeconds + 3.f)
+			{
+				Test->AddError(FString::Printf(TEXT("Still walking after %.1f s (expected %.1f s) at %s"), C.Elapsed, ExpectedWalkSeconds, *Here.ToCompactString()));
+				return true;
+			}
+			return false;
+		}
+
+		// The first frame out of Walk: FadeOut, on the last point, after the right time, facing along the last leg.
+		Test->TestTrue(FString::Printf(TEXT("The walk ends in FadeOut (phase %s)"), LBApparition::PhaseName(A->GetPhase())), A->GetPhase() == ELBApparitionPhase::FadeOut);
+		Test->TestTrue(FString::Printf(TEXT("On the last point (%.2f cm off)"), FVector::Dist(Here, P2)), FVector::Dist(Here, P2) < 1.f);
+		const double WalkSeconds = C.W->GetTimeSeconds() - S->WalkStartTime;
+		Test->TestTrue(FString::Printf(TEXT("The walk took %.2f s, expected %.2f s"), WalkSeconds, ExpectedWalkSeconds), FMath::Abs(WalkSeconds - ExpectedWalkSeconds) < 0.4);
+		const float LastLegYaw = static_cast<float>((P2 - P1).Rotation().Yaw);
+		const float YawError = FMath::Abs(FMath::FindDeltaAngleDegrees(static_cast<float>(A->GetActorRotation().Yaw), LastLegYaw));
+		Test->TestTrue(FString::Printf(TEXT("Facing along the last leg (yaw %.1f, expected %.1f)"), A->GetActorRotation().Yaw, LastLegYaw), YawError < 10.f);
+		Note(FString::Printf(TEXT("walk finished in %.2f s (expected %.2f), biggest single-frame step %.1f cm"), WalkSeconds, ExpectedWalkSeconds, S->MaxStep));
+		return true;
+	}, 30.f);
+
+	R->Add(TEXT("It fades out where it stopped, then the run is done"), [S, Test, Station, P2](FAppCtx& C)
+	{
+		ALBWardenApparition* A = S->A();
+		LookAtStation(C.Pawn, Station.Location);
+		Test->TestTrue(TEXT("Stays on the last point while fading"), FVector::Dist(A->GetActorLocation(), P2) < 1.f);
+		if (A->GetPhase() == ELBApparitionPhase::Done)
+		{
+			Test->TestTrue(TEXT("Hidden when done"), A->IsHidden());
+			Test->TestEqual(TEXT("Alpha 0 when done"), A->GetAlpha(), 0.f);
+			Test->TestFalse(TEXT("Tick is off when done"), A->IsActorTickEnabled());
+			return true;
+		}
+		Test->TestTrue(FString::Printf(TEXT("FadeOut, gap or done after the walk (phase %s)"), LBApparition::PhaseName(A->GetPhase())),
+			A->GetPhase() == ELBApparitionPhase::FadeOut || A->GetPhase() == ELBApparitionPhase::Gap);
+		if (C.Elapsed > 4.0)
+		{
+			Test->AddError(TEXT("The run never finished after the walk"));
+			return true;
+		}
+		return false;
+	}, 15.f);
+
+	Enqueue(R);
+	return true;
+}
+
+// P13: the walk is cut short when the player comes within MinPlayerDistance of the figure.
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBApparitionWalkCutShortFunctionalTest, "LastBell.Functional.Warden.Apparition.WalkCutShortByPlayer",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
+bool FLBApparitionWalkCutShortFunctionalTest::RunTest(const FString& Parameters)
+{
+	// A long path along +Y at X = 500: the player (at the origin) can step up to the figure.
+	const FVector P0(500.0, 4000.0, GFloorTopZ);
+	FLBApparitionStation Station = MakeStation(GStation1);
+	Station.WalkPath = { P0 };
+	Station.WalkSpeed = 100.f;
+
+	TSharedRef<FAppRunner> R = StartSession(this);
+	const TSharedRef<FAppState> S = R->S;
+	FAutomationTestBase* Test = this;
+	AddSetup(*R, Test, { Station }, false, false);
+
+	R->Add(TEXT("Walking away from the station"), [S, Test, Station](FAppCtx& C)
+	{
+		ALBWardenApparition* A = S->A();
+		if (C.bFirst)
+		{
+			ULBWorldStateSubsystem::Get(C.W)->AddState(S->Trigger);
+		}
+		if (A->GetPhase() == ELBApparitionPhase::Walk && FVector::DistXY(A->GetActorLocation(), Station.Location) > 100.0)
+		{
+			return true;
+		}
+		LookAtStation(C.Pawn, Station.Location);
+		if (C.Elapsed > 8.0)
+		{
+			Test->AddError(FString::Printf(TEXT("It never started walking (phase %s)"), LBApparition::PhaseName(A->GetPhase())));
+			return true;
+		}
+		return false;
+	}, 20.f);
+
+	R->Add(TEXT("The player steps within 150 cm of it: the walk ends early"), [S, Test, P0](FAppCtx& C)
+	{
+		ALBWardenApparition* A = S->A();
+		if (C.bFirst)
+		{
+			// Teleport next to the figure (100 cm away).
+			const FVector Figure = A->GetActorLocation();
+			C.Pawn->SetActorLocation(FVector(Figure.X - 100.0, Figure.Y, Figure.Z + HalfHeight(C.Pawn) + 1.f), false, nullptr, ETeleportType::TeleportPhysics);
+			S->LastLocation = Figure;
+			return false;
+		}
+		if (A->GetPhase() != ELBApparitionPhase::Walk)
+		{
+			Test->TestTrue(FString::Printf(TEXT("Cut short: FadeOut (phase %s)"), LBApparition::PhaseName(A->GetPhase())),
+				A->GetPhase() == ELBApparitionPhase::FadeOut || A->GetPhase() == ELBApparitionPhase::Gap || A->GetPhase() == ELBApparitionPhase::Done);
+			Test->TestTrue(FString::Printf(TEXT("It stopped where it was (%.1f cm on)"), FVector::Dist(A->GetActorLocation(), S->LastLocation)), FVector::Dist(A->GetActorLocation(), S->LastLocation) < 30.f);
+			Test->TestTrue(TEXT("Not at the end of the path"), FVector::Dist(A->GetActorLocation(), P0) > 500.f);
+			return true;
+		}
+		if (C.Elapsed > 2.0)
+		{
+			Test->AddError(TEXT("The walk went on with the player standing next to the figure"));
+			return true;
+		}
+		return false;
+	}, 15.f);
+
+	Enqueue(R);
+	return true;
+}
+
+// P13: bUseSkeletalFigure swaps the static Body for the skeletal Figure.
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBApparitionSkeletalFigureTest, "LastBell.Functional.Warden.Apparition.SkeletalFigureReplacesBody",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
+bool FLBApparitionSkeletalFigureTest::RunTest(const FString& Parameters)
+{
+	TSharedRef<FAppRunner> R = StartSession(this);
+	FAutomationTestBase* Test = this;
+	// AddSetup asserts the Figure/Body visibility for the flag it was given (true here); then the first station runs normally.
+	AddSetup(*R, Test, { MakeStation(GStation1) }, false, true);
+	R->Add(TEXT("Tag added: runs"), [S = R->S, Test](FAppCtx& C)
+	{
+		if (C.bFirst)
+		{
+			ULBWorldStateSubsystem::Get(C.W)->AddState(S->Trigger);
+		}
+		LookAtStation(C.Pawn, GStation1);
+		ALBWardenApparition* A = S->A();
+		if (A->GetAlpha() > 0.5f)
+		{
+			Test->TestTrue(TEXT("Figure is the visible figure while it shows"), A->GetFigure()->IsVisible());
+			Test->TestFalse(TEXT("Body stays hidden while it shows"), A->GetBody()->IsVisible());
+			return true;
+		}
+		if (C.Elapsed > 5.0)
+		{
+			Test->AddError(TEXT("The fade-in never reached 0.5"));
+			return true;
+		}
+		return false;
+	}, 15.f);
 	Enqueue(R);
 	return true;
 }
