@@ -72,6 +72,7 @@ void ULBWardenTestSink::HandleLost()
 #include "Misc/PackageName.h"
 #include "AI/LBWarden.h"
 #include "AI/LBWardenAnimInstance.h"
+#include "AI/LBWardenApparition.h"
 #include "Animation/BlendSpace.h"
 #include "AI/LBWardenStoopSubsystem.h"
 #include "AI/LBWardenStoopZone.h"
@@ -2983,6 +2984,14 @@ bool FLBWardenMonasterySmokeTest::RunTest(const FString& Parameters)
 		{
 			return false;
 		}
+		int32 ApparitionCount = 0;
+		for (TActorIterator<ALBWardenApparition> It(C.W); It; ++It)
+		{
+			++ApparitionCount;
+			Test->TestEqual(FString::Printf(TEXT("%s: Figure only ticks its pose while rendered"), *It->GetName()),
+				static_cast<int32>(It->GetFigure()->VisibilityBasedAnimTickOption), static_cast<int32>(EVisibilityBasedAnimTickOption::OnlyTickPoseWhenRendered));
+		}
+		Test->TestTrue(TEXT("L_Monastery has its two Warden apparitions"), ApparitionCount >= 2);
 		for (TActorIterator<ALBWarden> It(C.W); It; ++It)
 		{
 			S->Warden = *It;

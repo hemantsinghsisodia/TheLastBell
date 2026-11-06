@@ -4,6 +4,7 @@
 
 #include "AI/LBApparitionLogic.h"
 #include "AI/LBWardenApparition.h"
+#include "Components/SkeletalMeshComponent.h"
 
 // P12 fix set 1 (F1): the scripted Warden appearances. Unit tests of the pure sequence logic (LastBell.Warden.Apparition.*), then
 // functional tests of ALBWardenApparition in a PIE session (LastBell.Functional.Warden.Apparition.*).
@@ -648,6 +649,19 @@ bool FLBApparitionNoPathUnchangedTest::RunTest(const FString& Parameters)
 	return true;
 }
 
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBApparitionFigureTickOptionTest, "LastBell.Warden.Apparition.FigureAnimatesOnlyWhenRendered", LB_TEST_FLAGS)
+bool FLBApparitionFigureTickOptionTest::RunTest(const FString& Parameters)
+{
+	const ALBWardenApparition* Cdo = GetDefault<ALBWardenApparition>();
+	if (!TestNotNull(TEXT("The class default has a Figure"), Cdo->GetFigure()))
+	{
+		return false;
+	}
+	TestEqual(TEXT("The Figure only ticks its pose while rendered"), static_cast<int32>(Cdo->GetFigure()->VisibilityBasedAnimTickOption),
+		static_cast<int32>(EVisibilityBasedAnimTickOption::OnlyTickPoseWhenRendered));
+	return true;
+}
+
 #endif // WITH_DEV_AUTOMATION_TESTS
 
 // =====================================================================================================================
@@ -974,6 +988,7 @@ namespace
 			Test->TestEqual(TEXT("The static Body is visible only without bUseSkeletalFigure"), A->GetBody()->IsVisible(), !bSkeletalFigure);
 			Test->TestEqual(TEXT("The Figure has no collision"), static_cast<int32>(A->GetFigure()->GetCollisionEnabled()), static_cast<int32>(ECollisionEnabled::NoCollision));
 			Test->TestFalse(TEXT("The Figure casts no shadow"), A->GetFigure()->CastShadow);
+			Test->TestEqual(TEXT("The Figure only ticks its pose while rendered"), static_cast<int32>(A->GetFigure()->VisibilityBasedAnimTickOption), static_cast<int32>(EVisibilityBasedAnimTickOption::OnlyTickPoseWhenRendered));
 			return true;
 		});
 

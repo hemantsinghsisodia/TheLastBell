@@ -51,6 +51,9 @@ ALBWardenApparition::ALBWardenApparition()
 	Figure->SetupAttachment(Root);
 	MakeVisualOnly(Figure);
 	Figure->SetVisibility(false);
+	// Animate only while on screen. Hidden (it is hidden whenever its fade alpha is 0, i.e. almost all game) it would otherwise
+	// run ABP_Warden and its rigid-body robe/chain physics every frame (P13-8 stat anim).
+	Figure->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::OnlyTickPoseWhenRendered;
 }
 
 bool ALBWardenApparition::IsTagPresent() const
