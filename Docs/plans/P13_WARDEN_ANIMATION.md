@@ -1,6 +1,6 @@
 # Phase 13: Warden animation: plan
 
-**Status: approved by the owner on 2026-11-06 ("go"). P13-0, P13-1 (13 files checked in Blender; registry 86cc8e8) and P13-2 (18df9d9, suite 108/108) done. F0, P13-3 (7e5e65d) and P13-4 (363f5ad) done. P13-5 sheet (00c5db6) shows the retarget is wrong; P13-4b (re-import rotated, retarget again) next. The foot IK and stoop fix is in progress.**
+**Status: approved by the owner on 2026-11-06 ("go"). P13-0, P13-1 (13 files checked in Blender; registry 86cc8e8) and P13-2 (18df9d9, suite 108/108) done. F0, P13-3 (7e5e65d) and P13-4 (363f5ad) done. P13-5 sheet (00c5db6) shows the retarget is wrong; P13-4b done (0ca768c): arms and posture fixed. The robe and sleeve skin weights need fixing (decision with the owner). P13-6 (graph) can go ahead in parallel.**
 **Branch:** `claude/phase-13-warden-animation`, from `main` (086d063).
 **Rules:** D-048. The lead plans; every implementer is spawned with `model: "sonnet", effort: "high"`. Nothing starts without the owner's "go"; the owner is told before any capture over about 15 minutes; agents never run the capture tool or operate the desktop.
 
@@ -188,6 +188,20 @@ Sheet: `Docs/ArtTest/warden/p13_sheet_all.png`, plus one per clip.
    - the pelvis-to-neck line within 15° of vertical in MutantIdle;
    - in every clip, no hand above Z 200 except in the attacks and LookAround.
 5. **Rerun the contact sheet and look at it** before reporting anything as fixed. Blend spaces, montages and the data asset keep their references; just re-verify them.
+
+### P13-4b result (0ca768c, 2026-11-06)
+- **What changed:** the Y Bot was re-imported facing +X (yaw −90; toes 14 cm ahead of the heels along +X). The retarget pose was reset and auto-aligned without a pelvis yaw, then the pelvis was reset alone and the chain bones re-aligned, so the robe hangs straight (1.6° in the idle). No `root` key.
+- **New sheet** (`p13_sheet_all.png`): the arms hang at the sides, the mask faces the direction of travel, and the feet are on the floor. The 4–6 cm sink is gone.
+- **Lead decisions:**
+  - the idle lean check (28.6°) **passes as the intended hunch**: the source Mutant Breathing Idle leans about 24°;
+  - **ZombieWalk is dropped** (zombie arms at 215 cm, drags a foot);
+  - picks: **Walk = MutantWalking, Run = MutantRun, Attack = ZombieAttack**, as already in the blend spaces and montages.
+- **Updated numbers:** natural walk 196.5, run 270.1; locomotion rate scales 0.7125 and 1.5550. `AttackHitTime` **1.0667 s**, `AttackPlayRate` **1.7778** (provisional until seen in motion). Crouched walk still 254 cm, so it relies on the 40 cm pelvis drop.
+- **New problem, found by the lead:** in the side views of walk and run, robe panels and sleeves stretch into big flat slabs as the limbs swing. Measured on LOD0 of the V5.5 master:
+  - the **hem** (wool below 60 cm, 4,827 vertices) is weighted 98 % to the `robe_*` bones, which hang from `pelvis` and aren't driven by any clip, so the legs stride through it; 105 vertices are partly on leg bones and stretch;
+  - the **sleeves** (1,528 vertices) are split, 59 % arm and 39 % robe bones, so polygons between them stretch when an arm swings.
+
+  The fix is in the skin weights (sleeves onto the arm bones; the lower robe blended towards the thighs and calves), and P13-7's physics adds sway on top. **The owner decides who reweights** (their tool, or our agent on the project's copy, then re-import `SK_Warden` keeping its skeleton).
 
 ## 7. Stoop zones (lead fills the numbers in F0 from live transforms; unreal-blueprint-engineer places them)
 
