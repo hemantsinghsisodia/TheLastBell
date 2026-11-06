@@ -520,6 +520,28 @@ That is about half of the animation cost in shots 1 and 3.
 
 **Not yet seen in game:** whether `stat anim` drops to one evaluation when no Warden is on screen. That is checked in the owner playtest.
 
+### Owner playtest (2026-11-07)
+- **Owner:** "all good, proceed now".
+- **No new screenshot was taken,** so the in-game `stat anim` check of the apparition fix wasn't recorded. The automated checks above cover the setting itself.
+
+### Wrap-up: Mixamo files kept out of the public repo (D-094, 2026-11-07)
+**Found:** the GitHub repo is public. This branch, not yet pushed, had committed two folders:
+- `Content/LastBell/Characters/Warden/Retarget/`: the Y Bot, 12 `AN_YBot_*` clips, the IK Rigs and the Retargeter, 18 files;
+- `SourceArt/Warden/P13_review/`: the 12 retargeted clips exported as stand-alone FBX.
+
+R-55 said the Y Bot stays out of git. The owner chose to keep both folders out of GitHub.
+
+**Done (Unreal closed):**
+1. **Backup:** copied both folders to `ExternalAssets/Incoming/mixamo/_p13_local_backup/` (git-ignored), with MD5 lists and the old branch head.
+2. **Rewrite:** `git filter-branch --prune-empty --index-filter 'git rm -r --cached --ignore-unmatch -q -- <both folders>' -- main..HEAD`. All 37 commits were kept. No commit in `main..HEAD` contains either path. Between the old and new heads the only tree change is the 30 removed files.
+3. **Restore:** put the files back from the backup; the MD5 checks pass. Both folders are now in `.gitignore`.
+4. **Packaging:** `+DirectoriesToNeverCook=(Path="/Game/LastBell/Characters/Warden/Retarget")` in `DefaultGame.ini`.
+5. **Checked before the rewrite (Unreal open):** no referencer outside `Retarget/`. The shipped clips, blend spaces, `ABP_Warden`, `DA_WardenAnimSet` and `SK_Warden` don't depend on it.
+6. **Spike:** deleted `ABP_P13_Spike`, which had no referencers.
+7. **Docs:** registry rows updated; R-55 updated; R-57 and R-58 closed.
+
+The commit hashes before the rewrite (for example d5324ab and a75a413) are now different: e5d1bcd and f431989. `refs/original/` keeps the old head until the merge.
+
 ## 12. Look test, performance and playtest (lead and owner)
 
 **Contact sheet (lead, about 10 minutes of capture, owner told first):**

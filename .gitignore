@@ -21,6 +21,11 @@ Plugins/*/Intermediate/
 ExternalAssets/Incoming/
 ExternalAssets/Generated/
 
+# Mixamo licence (R-55, D-094): the Y Bot, its raw Mixamo clips and the retarget rig stay local, as do the stand-alone FBX
+# exports of the retargeted clips. Only the retargeted AN_Warden_* uassets are committed.
+Content/LastBell/Characters/Warden/Retarget/
+SourceArt/Warden/P13_review/
+
 # Local Claude settings
 .claude/settings.local.json
 
