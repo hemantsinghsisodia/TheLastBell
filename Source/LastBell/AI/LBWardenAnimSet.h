@@ -46,9 +46,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Turn", meta = (ClampMin = "0.1", ClampMax = "4"))
 	float TurnPlayRate = 1.5f;
 
-	/** Yaw change over the last 0.5 s that starts a turn montage. */
+	/** Yaw change over the last 0.5 s that starts a turn montage. 45 so that a turn still triggers at the walk rotation rate of 120 deg/s (about 60 deg in 0.5 s) and the look-around rate of 90 deg/s (45 deg). */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Turn", meta = (ClampMin = "1", Units = "deg"))
-	float TurnTriggerDegrees = 60.f;
+	float TurnTriggerDegrees = 45.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Turn", meta = (ClampMin = "0", Units = "s"))
 	float TurnCooldownSeconds = 1.f;

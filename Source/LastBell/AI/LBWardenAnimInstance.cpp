@@ -1,7 +1,11 @@
 #include "AI/LBWardenAnimInstance.h"
 #include "AI/LBWardenAnimSet.h"
 #include "AI/LBWardenStoopSubsystem.h"
+#include "AnimNodes/AnimNode_BlendSpacePlayer.h"
+#include "Animation/AnimClassInterface.h"
 #include "Animation/AnimMontage.h"
+#include "Animation/AnimSequence.h"
+#include "Animation/BlendSpace.h"
 #include "Camera/PlayerCameraManager.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -24,6 +28,22 @@ namespace
 	constexpr float MaxFrameYawDegrees = 45.f;
 	/** Above this StoopAlpha the Warden counts as stooping: foot IK on, at any speed. */
 	constexpr float StoopActiveAlpha = 0.01f;
+
+	TAutoConsoleVariable<int32> CVarWardenAnimDebug(
+		TEXT("lb.Warden.AnimDebug"), 0,
+		TEXT("1: every Warden anim instance logs (LogLBWarden, once a second) its speed, the mesh tick state, foot_l and the blend space players."),
+		ECVF_Default);
+
+	const TCHAR* AnimationModeName(EAnimationMode::Type Mode)
+	{
+		switch (Mode)
+		{
+		case EAnimationMode::AnimationBlueprint: return TEXT("AnimationBlueprint");
+		case EAnimationMode::AnimationSingleNode: return TEXT("AnimationSingleNode");
+		case EAnimationMode::AnimationCustomMode: return TEXT("AnimationCustomMode");
+		default: return TEXT("?");
+		}
+	}
 }
 
 const ULBWardenAnimSet& ULBWardenAnimInstance::GetAnimSet() const
@@ -100,6 +120,94 @@ void ULBWardenAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	UpdateFootTargets(*Owner, *World);
 	UpdateTurn(*Owner, DeltaSeconds);
 	UpdateCatchHold();
+	LogAnimDebug(DeltaSeconds);
+}
+
+void ULBWardenAnimInstance::LogAnimDebug(float DeltaSeconds)
+{
+	++DebugUpdateCount;
+	if (CVarWardenAnimDebug.GetValueOnGameThread() == 0)
+	{
+		DebugLogTimer = 0.f;
+		DebugUpdateCount = 0;
+		return;
+	}
+	DebugLogTimer += DeltaSeconds;
+	if (DebugLogTimer < 1.f)
+	{
+		return;
+	}
+	DebugLogTimer = 0.f;
+
+	const AActor* Owner = GetOwningActor();
+	const ACharacter* Character = Cast<ACharacter>(Owner);
+	const UCharacterMovementComponent* Movement = Character ? Character->GetCharacterMovement() : nullptr;
+	USkeletalMeshComponent* Mesh = GetSkelMeshComponent();
+
+	FString Line = FString::Printf(TEXT("AnimDebug %s: GroundSpeed %.1f | Velocity2D %.1f MaxSpeed %.1f | StoopAlpha %.2f | IsAnyMontagePlaying %d | updates since last line %d"),
+		*GetNameSafe(Owner), GroundSpeed, Movement ? Movement->Velocity.Size2D() : -1.0, Movement ? Movement->GetMaxSpeed() : -1.f,
+		StoopAlpha, IsAnyMontagePlaying() ? 1 : 0, DebugUpdateCount);
+	DebugUpdateCount = 0;
+
+	if (Mesh)
+	{
+		const FVector FootRel = Mesh->GetSocketTransform(FootLeftBone, RTS_Component).GetLocation();
+		Line += FString::Printf(TEXT(" | Mesh mode %s, anim class %s, is-this-instance %d, ShouldTickPose %d, bRecentlyRendered %d, WasRecentlyRendered %d, predicted LOD %d, tick option %d, URO %d, foot_l (component space) %s"),
+			AnimationModeName(Mesh->GetAnimationMode()), *GetNameSafe(Mesh->GetAnimInstance() ? Mesh->GetAnimInstance()->GetClass() : nullptr),
+			Mesh->GetAnimInstance() == this ? 1 : 0, Mesh->ShouldTickPose() ? 1 : 0, Mesh->bRecentlyRendered ? 1 : 0, Mesh->WasRecentlyRendered() ? 1 : 0,
+			Mesh->GetPredictedLODLevel(), static_cast<int32>(Mesh->VisibilityBasedAnimTickOption), Mesh->bEnableUpdateRateOptimizations ? 1 : 0, *FootRel.ToCompactString());
+	}
+	else
+	{
+		Line += TEXT(" | no mesh");
+	}
+	UE_LOG(LogLBWarden, Log, TEXT("%s"), *Line);
+
+	// The blend space players of the graph: where they sample, what weights that gives, and whether the clip time moves.
+	const IAnimClassInterface* AnimClass = IAnimClassInterface::GetFromClass(GetClass());
+	if (!AnimClass)
+	{
+		UE_LOG(LogLBWarden, Log, TEXT("AnimDebug %s: no anim class interface"), *GetNameSafe(Owner));
+		return;
+	}
+	int32 PlayerIndex = 0;
+	for (const FStructProperty* Property : AnimClass->GetAnimNodeProperties())
+	{
+		if (!Property || !Property->Struct || !Property->Struct->IsChildOf(FAnimNode_BlendSpacePlayerBase::StaticStruct()))
+		{
+			continue;
+		}
+		const FAnimNode_BlendSpacePlayerBase* Node = Property->ContainerPtrToValuePtr<FAnimNode_BlendSpacePlayerBase>(this);
+		const UBlendSpace* BlendSpace = Node->GetBlendSpace();
+		const FVector Position = Node->GetPosition();
+		FString Weights;
+		FString Axis;
+		if (BlendSpace)
+		{
+			const FBlendParameter& Parameter = BlendSpace->GetBlendParameter(0);
+			const FBlendSpaceData& RuntimeData = BlendSpace->GetBlendSpaceData();
+			Axis = FString::Printf(TEXT("axis '%s' %.0f..%.0f, %d samples, runtime data: %d segments %d triangles%s"), *Parameter.DisplayName, Parameter.Min, Parameter.Max,
+				BlendSpace->GetBlendSamples().Num(), RuntimeData.Segments.Num(), RuntimeData.Triangles.Num(), RuntimeData.IsEmpty() ? TEXT(" (EMPTY: the blend space returns no clip)") : TEXT(""));
+			for (const FBlendSample& Sample : BlendSpace->GetBlendSamples())
+			{
+				Axis += FString::Printf(TEXT(" {%s at %.0f rate %.3f}"), *GetNameSafe(Sample.Animation), Sample.SampleValue.X, Sample.RateScale);
+			}
+			TArray<FBlendSampleData> SampleData;
+			int32 CachedIndex = -1;
+			BlendSpace->GetSamplesFromBlendInput(FVector(Position.X, Position.Y, Position.Z), SampleData, CachedIndex, true);
+			for (const FBlendSampleData& Data : SampleData)
+			{
+				Weights += FString::Printf(TEXT(" [%s w %.2f rate %.2f]"), *GetNameSafe(Data.Animation), Data.TotalWeight, Data.SamplePlayRate);
+			}
+		}
+		UE_LOG(LogLBWarden, Log, TEXT("AnimDebug %s: blend space player %d %s (%s) input X %.1f (filtered %.1f) asset time %.2f of %.2f, play rate %.2f; unfiltered weights:%s"),
+			*GetNameSafe(Owner), PlayerIndex++, *GetNameSafe(BlendSpace), *Axis, Position.X, Node->GetFilteredPosition().X,
+			Node->GetCurrentAssetTime(), Node->GetCurrentAssetLength(), Node->GetPlayRate(), *Weights);
+	}
+	if (PlayerIndex == 0)
+	{
+		UE_LOG(LogLBWarden, Log, TEXT("AnimDebug %s: this anim class has no blend space player (graph empty or replaced?)"), *GetNameSafe(Owner));
+	}
 }
 
 void ULBWardenAnimInstance::UpdateFootTargets(const AActor& Owner, const UWorld& World)

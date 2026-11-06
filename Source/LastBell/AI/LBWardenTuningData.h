@@ -47,7 +47,7 @@ public:
 
 	/** Yaw turn rate while standing still (look-around, facing the player during the attack windup), degrees per second. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Speed", meta = (ClampMin = "1"))
-	float TurnRate = 180.f;
+	float TurnRate = 90.f;
 
 	// ---- Sight ----
 	/** Stage 3 (Investigation). Stages below 3 reuse this value; the Warden is dormant there anyway. */

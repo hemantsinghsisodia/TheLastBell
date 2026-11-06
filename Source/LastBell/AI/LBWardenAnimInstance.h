@@ -94,6 +94,8 @@ private:
 	void UpdateTurn(const AActor& Owner, float DeltaSeconds);
 	/** Pauses the held attack once it has reached its hit time. */
 	void UpdateCatchHold();
+	/** lb.Warden.AnimDebug 1: one log line a second about the speed, the mesh's tick state, the foot and the blend space players. */
+	void LogAnimDebug(float DeltaSeconds);
 
 	// Game-thread state.
 	FLBYawHistory YawHistory;
@@ -105,6 +107,8 @@ private:
 	bool bHasLastYaw = false;
 	bool bHoldingCatchPose = false;
 	bool bCatchPoseFrozen = false;
+	float DebugLogTimer = 0.f;
+	int32 DebugUpdateCount = 0;
 
 	// Targets written by the game thread and eased towards by the thread-safe update. Plain values only.
 	float TargetStoop = 0.f;

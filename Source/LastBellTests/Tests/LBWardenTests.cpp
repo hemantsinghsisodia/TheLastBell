@@ -2,7 +2,9 @@
 
 #if WITH_DEV_AUTOMATION_TESTS
 
+#include "AI/LBWarden.h"
 #include "AI/LBWardenLogic.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "AI/LBWardenTuningData.h"
 #include "Character/LBPlayerTuningData.h"
 #include "LBGameplayTags.h"
@@ -545,6 +547,11 @@ bool FLBWardenTuningTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("Investigate speed"), T.InvestigateSpeed, 190.f);
 	TestEqual(TEXT("Search speed"), T.SearchSpeed, 170.f);
 	TestEqual(TEXT("Chase speed"), T.ChaseSpeed, 420.f);
+	TestEqual(TEXT("Turn rate while standing (slowed from 180 for the P13 stalker feel)"), T.TurnRate, 90.f);
+	if (const UCharacterMovementComponent* Movement = GetDefault<ALBWarden>()->GetCharacterMovement())
+	{
+		TestEqual(TEXT("Rotation rate while walking (slowed from 360 for the P13 stalker feel)"), static_cast<float>(Movement->RotationRate.Yaw), 120.f);
+	}
 	TestTrue(TEXT("Chase is slower than the player's sprint"), T.ChaseSpeed < Player.SprintSpeed);
 	TestTrue(TEXT("Chase is faster than the player's walk"), T.ChaseSpeed > Player.WalkSpeed);
 	TestTrue(TEXT("Only chase outruns a walking player"), T.InvestigateSpeed < Player.WalkSpeed && T.SearchSpeed < Player.WalkSpeed);

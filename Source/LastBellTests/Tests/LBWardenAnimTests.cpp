@@ -321,7 +321,7 @@ bool FLBAnimDefaultsTest::RunTest(const FString& Parameters)
 	// The numbers the plan fixes (P13 plan, section 8), and the catch camera tuning.
 	const ULBWardenAnimSet& Set = *GetDefault<ULBWardenAnimSet>();
 	TestEqual(TEXT("TurnPlayRate"), Set.TurnPlayRate, 1.5f);
-	TestEqual(TEXT("TurnTriggerDegrees"), Set.TurnTriggerDegrees, 60.f);
+	TestEqual(TEXT("TurnTriggerDegrees"), Set.TurnTriggerDegrees, 45.f);
 	TestEqual(TEXT("TurnCooldownSeconds"), Set.TurnCooldownSeconds, 1.f);
 	TestEqual(TEXT("StoopEaseRate"), Set.StoopEaseRate, 3.f);
 	TestEqual(TEXT("StoopPelvisDrop"), Set.StoopPelvisDrop, 40.f);

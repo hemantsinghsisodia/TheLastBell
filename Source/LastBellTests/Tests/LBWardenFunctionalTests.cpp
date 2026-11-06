@@ -67,9 +67,12 @@ void ULBWardenTestSink::HandleLost()
 #include "NavMesh/RecastNavMesh.h"
 #include "AI/Navigation/NavigationTypes.h"
 #include "NavMesh/NavMeshBoundsVolume.h"
+#include "HAL/IConsoleManager.h"
 #include "Misc/OutputDevice.h"
 #include "Misc/PackageName.h"
 #include "AI/LBWarden.h"
+#include "AI/LBWardenAnimInstance.h"
+#include "Animation/BlendSpace.h"
 #include "AI/LBWardenStoopSubsystem.h"
 #include "AI/LBWardenStoopZone.h"
 #include "AI/LBWardenController.h"
@@ -1993,6 +1996,175 @@ bool FLBWardenStoopZoneTest::RunTest(const FString& Parameters)
 		Test->TestEqual(TEXT("B destroyed: the centre is 0"), Amount(Centre), 0.f);
 		return true;
 	}, 30.f);
+
+	Enqueue(R);
+	return true;
+}
+
+// =====================================================================================================================
+// Animation: does the walking Warden's skeleton actually move (P13 playtest: it glided, legs and arms still)
+// =====================================================================================================================
+
+namespace
+{
+	/** Everything the locomotion test records over its window. Boxes are in the mesh's component space (+X is the way the Warden faces). */
+	struct FLocomotionRecord
+	{
+		int32 Frames = 0;
+		int32 MovingFrames = 0; // frames with GroundSpeed above 100
+		int32 PatrolFrames = 0;
+		float MaxGroundSpeed = 0.f;
+		float MaxVelocity = 0.f;
+		float MinMovingGroundSpeed = TNumericLimits<float>::Max();
+		FBox FootLMoving = FBox(ForceInit);
+		FBox FootRMoving = FBox(ForceInit);
+		FBox HandLMoving = FBox(ForceInit);
+		FBox HandRMoving = FBox(ForceInit);
+		FBox FootLAll = FBox(ForceInit);
+		FBox HandLAll = FBox(ForceInit);
+		FBox PelvisAll = FBox(ForceInit);
+		int32 PreviousDebug = 0;
+		bool bStarted = false;
+	};
+
+	FString RangeText(const FBox& Box)
+	{
+		if (!Box.IsValid)
+		{
+			return TEXT("no samples");
+		}
+		const FVector Size = Box.GetSize();
+		return FString::Printf(TEXT("x %.1f..%.1f (range %.1f), y range %.1f, z range %.1f"), Box.Min.X, Box.Max.X, Size.X, Size.Y, Size.Z);
+	}
+
+	float ForwardRange(const FBox& Box)
+	{
+		return Box.IsValid ? static_cast<float>(Box.Max.X - Box.Min.X) : 0.f;
+	}
+}
+
+// The Warden patrols with its real Animation Blueprint. Over 5 s the test records GroundSpeed, the velocity and the component-space
+// positions of foot_l, foot_r, hand_l, hand_r and pelvis every frame. A headless run does not render, so the mesh is told to tick its
+// pose and bones regardless of visibility (the shipped setting, OnlyTickMontagesWhenNotRendered, would skip the locomotion graph).
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBWardenAnimLocomotionTest, "LastBell.Functional.Warden.Anim.LocomotionMovesTheFeet",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
+bool FLBWardenAnimLocomotionTest::RunTest(const FString& Parameters)
+{
+	TSharedPtr<FWRunner> R = StartSession(this);
+	const TSharedRef<FWS> S = R->S;
+	FAutomationTestBase* Test = this;
+	const TSharedRef<FLocomotionRecord> Rec = MakeShared<FLocomotionRecord>();
+
+	FSetup Setup = RingSetup();
+	Setup.bPatrolRoute = true;
+	Setup.bSearchPoints = false;
+	AddSetupSteps(*R, Setup, Test);
+	R->Add(TEXT("Stage 4 (patrol)"), [](FWCtx& C) { SetStage(C.W, 4); return true; });
+	AddWaitForWarden(*R, Test);
+
+	// A blend space saved without its runtime data (BlendSpaceData: the segments or triangles the Persona editor builds with ResampleData)
+	// returns no clip: the graph then outputs the reference pose and the Warden glides with its limbs still (the P13 playtest).
+	R->Add(TEXT("The locomotion blend spaces carry runtime data"), [Test](FWCtx& C)
+	{
+		for (const TCHAR* Path : { TEXT("/Game/LastBell/Characters/Warden/Anims/BS_Warden_Locomotion.BS_Warden_Locomotion"),
+			TEXT("/Game/LastBell/Characters/Warden/Anims/BS_Warden_Stoop.BS_Warden_Stoop") })
+		{
+			const UBlendSpace* BlendSpace = LoadObject<UBlendSpace>(nullptr, Path);
+			if (!Test->TestNotNull(*FString::Printf(TEXT("%s loads"), Path), BlendSpace))
+			{
+				continue;
+			}
+			const FBlendSpaceData& Data = BlendSpace->GetBlendSpaceData();
+			Note(FString::Printf(TEXT("%s: %d samples, runtime data %d segments %d triangles"), *BlendSpace->GetName(), BlendSpace->GetBlendSamples().Num(), Data.Segments.Num(), Data.Triangles.Num()));
+			Test->TestFalse(*FString::Printf(TEXT("%s has runtime data (open it in the Blend Space editor and save: the editor resamples it)"), *BlendSpace->GetName()), Data.IsEmpty());
+		}
+		return true;
+	});
+
+	R->Add(TEXT("Mesh set to tick always, debug log on"), [S, Test, Rec](FWCtx& C)
+	{
+		USkeletalMeshComponent* Mesh = C.Warden() ? C.Warden()->GetMesh() : nullptr;
+		if (!Test->TestNotNull(TEXT("The Warden has a mesh"), Mesh))
+		{
+			return true;
+		}
+		Mesh->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::AlwaysTickPoseAndRefreshBones;
+		if (IConsoleVariable* Debug = IConsoleManager::Get().FindConsoleVariable(TEXT("lb.Warden.AnimDebug")))
+		{
+			Rec->PreviousDebug = Debug->GetInt();
+			Debug->Set(1, ECVF_SetByCode);
+			S->Cleanups.Add([Debug, Rec]() { Debug->Set(Rec->PreviousDebug, ECVF_SetByCode); });
+		}
+		else
+		{
+			Test->AddError(TEXT("The console variable lb.Warden.AnimDebug does not exist"));
+		}
+		UAnimInstance* Instance = Mesh->GetAnimInstance();
+		Note(FString::Printf(TEXT("anim: mode %d (0 = Animation Blueprint), anim instance %s, mesh asset %s, bones %d, tick option set to AlwaysTickPoseAndRefreshBones"),
+			static_cast<int32>(Mesh->GetAnimationMode()), *GetNameSafe(Instance ? Instance->GetClass() : nullptr),
+			*GetNameSafe(Mesh->GetSkeletalMeshAsset()), Mesh->GetNumBones()));
+		Test->TestTrue(TEXT("The mesh runs an Animation Blueprint"), Mesh->GetAnimationMode() == EAnimationMode::AnimationBlueprint);
+		Test->TestTrue(TEXT("The anim instance is a ULBWardenAnimInstance (ABP_Warden)"), Cast<ULBWardenAnimInstance>(Instance) != nullptr);
+		return true;
+	});
+
+	R->Add(TEXT("Patrol for 5 s: record speed and bone positions every frame"), [S, Test, Rec](FWCtx& C)
+	{
+		if (!Rec->bStarted)
+		{
+			Rec->bStarted = true;
+			S->T0 = C.Now;
+		}
+		const ALBWarden* Warden = C.Warden();
+		USkeletalMeshComponent* Mesh = Warden ? Warden->GetMesh() : nullptr;
+		const ULBWardenAnimInstance* Anim = Mesh ? Cast<ULBWardenAnimInstance>(Mesh->GetAnimInstance()) : nullptr;
+		if (!Anim)
+		{
+			Test->AddError(TEXT("No ULBWardenAnimInstance on the Warden's mesh"));
+			return true;
+		}
+		const float Ground = Anim->GroundSpeed;
+		++Rec->Frames;
+		if (C.State() == ELBWardenState::Patrol)
+		{
+			++Rec->PatrolFrames;
+		}
+		Rec->MaxGroundSpeed = FMath::Max(Rec->MaxGroundSpeed, Ground);
+		Rec->MaxVelocity = FMath::Max(Rec->MaxVelocity, Speed2D(Warden));
+
+		auto Bone = [Mesh](const TCHAR* Name) { return Mesh->GetSocketTransform(Name, RTS_Component).GetLocation(); };
+		const FVector FootL = Bone(TEXT("foot_l")), FootR = Bone(TEXT("foot_r")), HandL = Bone(TEXT("hand_l")), HandR = Bone(TEXT("hand_r"));
+		Rec->FootLAll += FootL;
+		Rec->HandLAll += HandL;
+		Rec->PelvisAll += Bone(TEXT("pelvis"));
+		if (Ground > 100.f)
+		{
+			++Rec->MovingFrames;
+			Rec->MinMovingGroundSpeed = FMath::Min(Rec->MinMovingGroundSpeed, Ground);
+			Rec->FootLMoving += FootL;
+			Rec->FootRMoving += FootR;
+			Rec->HandLMoving += HandL;
+			Rec->HandRMoving += HandR;
+		}
+		return C.Now - S->T0 >= 5.0;
+	}, 60.f);
+
+	R->Add(TEXT("Report the recorded ranges and check them"), [Test, Rec](FWCtx& C)
+	{
+		Note(FString::Printf(TEXT("locomotion record: %d frames in 5 s (%d in Patrol), %d with GroundSpeed > 100 (lowest of those %.1f); GroundSpeed max %.1f, velocity max %.1f"),
+			Rec->Frames, Rec->PatrolFrames, Rec->MovingFrames, Rec->MovingFrames > 0 ? Rec->MinMovingGroundSpeed : 0.f, Rec->MaxGroundSpeed, Rec->MaxVelocity));
+		Note(FString::Printf(TEXT("locomotion record, moving frames: foot_l %s"), *RangeText(Rec->FootLMoving)));
+		Note(FString::Printf(TEXT("locomotion record, moving frames: foot_r %s"), *RangeText(Rec->FootRMoving)));
+		Note(FString::Printf(TEXT("locomotion record, moving frames: hand_l %s"), *RangeText(Rec->HandLMoving)));
+		Note(FString::Printf(TEXT("locomotion record, moving frames: hand_r %s"), *RangeText(Rec->HandRMoving)));
+		Note(FString::Printf(TEXT("locomotion record, all frames: foot_l %s | hand_l %s | pelvis %s"), *RangeText(Rec->FootLAll), *RangeText(Rec->HandLAll), *RangeText(Rec->PelvisAll)));
+
+		Test->TestTrue(FString::Printf(TEXT("GroundSpeed reaches above 50 while the Warden moves (max %.1f, velocity max %.1f)"), Rec->MaxGroundSpeed, Rec->MaxVelocity), Rec->MaxGroundSpeed > 50.f);
+		Test->TestTrue(FString::Printf(TEXT("The Warden was above 100 cm/s for at least 30 frames (%d)"), Rec->MovingFrames), Rec->MovingFrames >= 30);
+		Test->TestTrue(FString::Printf(TEXT("foot_l moves at least 15 cm along the forward axis while GroundSpeed > 100 (%.1f cm)"), ForwardRange(Rec->FootLMoving)), ForwardRange(Rec->FootLMoving) >= 15.f);
+		Test->TestTrue(FString::Printf(TEXT("hand_l moves at least 5 cm along the forward axis while GroundSpeed > 100 (%.1f cm)"), ForwardRange(Rec->HandLMoving)), ForwardRange(Rec->HandLMoving) >= 5.f);
+		return true;
+	});
 
 	Enqueue(R);
 	return true;

@@ -25,7 +25,7 @@ ALBWarden::ALBWarden()
 	UCharacterMovementComponent* Movement = GetCharacterMovement();
 	Movement->bOrientRotationToMovement = true;
 	Movement->bUseControllerDesiredRotation = false;
-	Movement->RotationRate = FRotator(0.f, 360.f, 0.f);
+	Movement->RotationRate = FRotator(0.f, 120.f, 0.f);
 	Movement->MaxWalkSpeed = Defaults->PatrolSpeed;
 	Movement->MaxAcceleration = 1200.f;
 	Movement->BrakingDecelerationWalking = 2000.f;
