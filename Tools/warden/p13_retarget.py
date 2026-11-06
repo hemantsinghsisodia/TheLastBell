@@ -19,6 +19,9 @@ Steps (each safe to rerun: what exists and verifies is skipped, what doesn't is 
     animset  /Game/LastBell/Data/DA_WardenAnimSet
     abp      ABP_Warden, ABP_P13_Spike (created, class defaults set, compiled; no graph)
     verify   read everything back
+P13-4b: run `rigs,rtg,batch` with $env:P13_REBUILD=1 after Tools/warden/p13_reimport_ybot.py (the Y Bot now faces +X: no pelvis yaw, no root key);
+the measure step fails (after writing the files) when the pose checks fail: MutantIdle hands below Z 160 and within 60 cm sideways of the pelvis, pelvis-to-neck
+within 15 deg of vertical, no hand above Z 200 in any clip except ZombieAttack, MutantSwiping, LookAround.
 Never touches SK_Warden, its skeleton or physics asset, AN_Warden_Idle/Walk/DoorwayStoop, BP_Warden or any map.
 """
 import json
@@ -51,11 +54,10 @@ PICK_IDLE, PICK_STOOP_IDLE, PICK_STOOP_WALK = "MutantIdle", "CrouchingIdle", "Cr
 WINDUP = 0.6
 PATROL_SPEED, CHASE_SPEED, MAX_SPEED = 140.0, 420.0, 450.0
 STRETCH_FLAG = 1.02
-# Facing fix. Mixamo's Y Bot imports facing +Y (hip line along X); the Warden faces +X (hip line along Y), like AN_Warden_Walk. The retargeter copies
-# global-space deltas, so without a fix every stride comes out sideways. Fix: the TARGET retarget pose is yawed POSE_YAW so the Warden "faces +Y" like
-# the source, the retarget runs, and every AN_Warden_* then gets a constant ROOT_YAW key on the (otherwise identity) 'root' bone to turn it back to +X.
-POSE_YAW = float(os.environ.get("P13_POSE_YAW", "90"))
-ROOT_YAW = -POSE_YAW
+HANDS_UP_OK = ("ZombieAttack", "MutantSwiping", "LookAround")  # clips allowed to raise a hand above Z 200
+# P13-4b: the Y Bot is re-imported with an FBX import rotation so it faces +X like the Warden (Tools/warden/p13_reimport_ybot.py); there is no
+# pelvis yaw in the retarget pose and no root key on the clips any more.
+FORCE = os.environ.get("P13_REBUILD", "") == "1"  # rebuild rigs, retargeter and the 12 clips in place (after the Y Bot sources were re-imported)
 ROOT_BONE = "root"
 
 AT = unreal.AssetToolsHelpers.get_asset_tools()
@@ -192,6 +194,8 @@ def rig_problems(name, mesh_path, root, seq_path, forbid):
 def build_rig(name, mesh_path, root, seq_path, forbid):
     path = ap(RET, name)
     probs = rig_problems(name, mesh_path, root, seq_path, forbid)
+    if FORCE and not probs:
+        probs = ["forced rebuild"]
     if not probs:
         log("skip %s: exists and verifies" % name)
         return
@@ -199,6 +203,10 @@ def build_rig(name, mesh_path, root, seq_path, forbid):
         log("rebuild %s in place: %s" % (name, probs))
     rig = create(name, RET, unreal.IKRigDefinition, unreal.IKRigDefinitionFactory())
     c = unreal.IKRigController.get_controller(rig)
+    for ch in list(c.get_retarget_chains()):  # an in-place rebuild starts from no chains and no goals
+        c.remove_retarget_chain(ch.get_editor_property("chain_name"))
+    for g in list(c.get_all_goals()):
+        c.remove_goal(g.get_editor_property("goal_name"))
     log("  set_skeletal_mesh(%s) -> %s" % (mesh_path, c.set_skeletal_mesh(load(mesh_path))))
     log("  apply_auto_generated_retarget_definition -> %s" % c.apply_auto_generated_retarget_definition())
     if str(c.get_retarget_root()).lower() != root.lower():
@@ -285,14 +293,15 @@ def rtg_ok():
     i = op_index(c, "Root Motion")
     if i < 0 or c.get_retarget_op_enabled(i):
         return False  # the Root Motion op copies Hips onto 'root'; the clips are in place, so it stays off
-    if abs(quat_yaw_deg(c.get_rotation_offset_for_retarget_pose_bone("pelvis", TGT)) - POSE_YAW) > 10.0:
-        return False
+    q = c.get_rotation_offset_for_retarget_pose_bone("pelvis", TGT)
+    if 2.0 * math.degrees(math.acos(min(1.0, abs(q.w)))) > 5.0:
+        return False  # the pelvis keeps its reference orientation (see step_rtg); a pelvis yaw / pitch offset tilts the robe
     return c.get_num_retarget_ops() > 0
 
 
 def step_rtg():
     path = ap(RET, RTG)
-    if rtg_ok():
+    if rtg_ok() and not FORCE:
         log("skip %s: exists and verifies" % RTG)
     else:
         rtg = create(RTG, RET, unreal.IKRetargeter, unreal.IKRetargetFactory())
@@ -308,16 +317,27 @@ def step_rtg():
         c.add_default_ops()
         c.assign_ik_rig_to_all_ops(TGT, ik_w)
         c.auto_map_chains(unreal.AutoMapChainType.EXACT, True)
-        # Root Motion op off (see ROOT_BONE note); facing fix: yaw the target pelvis in the retarget pose BEFORE the auto-align
+        # Root Motion op off: it copies the source Hips onto the target 'root' bone (the clips are in place)
         i = op_index(c, "Root Motion")
         if i >= 0:
             log("  Root Motion op index %d: set_retarget_op_enabled(False) -> %s" % (i, c.set_retarget_op_enabled(i, False)))
-        # the auto-align also sets the pelvis offset (it overwrites a yaw set before it), so: align first, then yaw the pelvis on top of that offset
+        # both skeletons face +X now: default retarget poses, then the plain auto-align, no pelvis yaw
         c.auto_align_all_bones(TGT, unreal.RetargetAutoAlignMethod.CHAIN_TO_CHAIN)
-        e = c.get_rotation_offset_for_retarget_pose_bone("pelvis", TGT)
-        comp = unreal.MathLibrary.compose_rotators(e.rotator(), unreal.Rotator(roll=0.0, pitch=0.0, yaw=POSE_YAW))
-        log("  pelvis offset after auto-align %s ; composed with yaw %.1f -> %s" % (e.rotator(), POSE_YAW, comp))
-        c.set_rotation_offset_for_retarget_pose_bone("pelvis", comp.quaternion(), TGT)
+        log("  pelvis offset after the auto-align: %s" % c.get_rotation_offset_for_retarget_pose_bone("pelvis", TGT).rotator())
+        # P13-4b attempt B. The auto-align pitches the Warden's pelvis ~32 deg to straighten its hunched spine; the robe bones hang from the pelvis and are in no
+        # chain, so they tilted with it (robe tilt 33 deg in the idle). The pose offsets are hierarchical, so resetting the pelvis alone throws the whole upper body
+        # forward (44 deg). So: reset the pelvis, then align every chain bone again (parents before children) with the pelvis at its reference orientation: the
+        # spine bones take the straightening themselves.
+        c.reset_retarget_pose(c.get_current_retarget_pose_name(TGT), ["pelvis"], TGT)
+        log("  pelvis offset after resetting the pelvis only: %s" % c.get_rotation_offset_for_retarget_pose_bone("pelvis", TGT).rotator())
+        tc = unreal.IKRigController.get_controller(load(ap(RET, "IK_LB_Warden")))
+        ordered = []
+        for ch in tc.get_retarget_chains():
+            ordered += list(reversed(chain_bones(tc, str(ch.get_editor_property("chain_name")), ANI + "/AN_Warden_Idle")))
+        c.auto_align_bones(ordered, unreal.RetargetAutoAlignMethod.CHAIN_TO_CHAIN, TGT)
+        log("  pelvis offset after re-aligning the chain bones: %s" % c.get_rotation_offset_for_retarget_pose_bone("pelvis", TGT).rotator())
+        for b in ("spine_01", "spine_02", "spine_03", "neck_01", "head", "thigh_l", "upperarm_l"):
+            log("    offset %s: %s" % (b, c.get_rotation_offset_for_retarget_pose_bone(b, TGT).rotator()))
         save(path)
         if not rtg_ok():
             rtg_report()
@@ -342,34 +362,18 @@ def batch_ok(n):
     if not (b["skeleton"].endswith("SK_Warden_Skeleton.SK_Warden_Skeleton") and abs(a["length"] - b["length"]) < 0.01 and a["frames"] == b["frames"]):
         return False
     s = load(dst)
-    for fi in (0, b["frames"] // 2, b["frames"]):
-        t = unreal.AnimationLibrary.get_bone_pose_for_frame(s, ROOT_BONE, fi, False)
-        yaw = float(t.rotation.rotator().yaw)
-        if abs(((yaw - ROOT_YAW + 180.0) % 360.0) - 180.0) > 0.5 or abs(t.translation.x) + abs(t.translation.y) + abs(t.translation.z) > 0.01:
-            return False
-    return True
-
-
-def fix_root(path, nframes):
-    """Constant yaw key ROOT_YAW on the 'root' bone (identity before: the Root Motion op is off). Refuses to touch a root track that is not identity."""
-    s = load(path)
-    for fi in range(nframes + 1):
+    for fi in (0, b["frames"] // 2, b["frames"]):  # no root key any more: the root track must be the identity
         t = unreal.AnimationLibrary.get_bone_pose_for_frame(s, ROOT_BONE, fi, False)
         r = t.rotation
         if abs(t.translation.x) + abs(t.translation.y) + abs(t.translation.z) > 0.01 or abs(r.x) + abs(r.y) + abs(r.z) > 0.001:
-            raise RuntimeError("%s: root track is not identity at frame %d (%s, %s); not overwriting" % (path, fi, t.translation, r.rotator()))
-    q = unreal.Rotator(roll=0.0, pitch=0.0, yaw=ROOT_YAW).quaternion()
-    n = nframes + 1
-    ok = s.controller.set_bone_track_keys(ROOT_BONE, [unreal.Vector(0, 0, 0)] * n, [q] * n, [unreal.Vector(1, 1, 1)] * n)
-    log("  %s: root yaw %.1f key x%d -> %s" % (path.rsplit("/", 1)[1], ROOT_YAW, n, ok))
-    if not ok:
-        raise RuntimeError("set_bone_track_keys failed on " + path)
+            return False
+    return True
 
 
 def step_batch():
     todo = []
     for n in CLIPS:
-        if batch_ok(n):
+        if batch_ok(n) and not FORCE:
             log("skip AN_Warden_%s: exists and verifies" % n)
         else:
             if exists(ap(ANI, "AN_Warden_" + n)):
@@ -393,7 +397,6 @@ def step_batch():
             p = ap(ANI, "AN_Warden_" + n)
             if not exists(p):
                 raise RuntimeError("batch did not create " + p)
-            fix_root(p, seq_stats(p)["frames"])
             save(p)
     bad = []
     for n in CLIPS:
@@ -413,7 +416,8 @@ def step_batch():
 # ----------------------------------------------------------------------------------------------------------------------
 # step: measure
 # ----------------------------------------------------------------------------------------------------------------------
-MB = ["pelvis", "head", "thigh_l", "thigh_r", "calf_l", "calf_r", "foot_l", "foot_r", "upperarm_l", "upperarm_r",
+ROBE_TIPS = ["robe_%02d_02" % i for i in range(8)]
+MB = ROBE_TIPS + ["pelvis", "neck_01", "head", "thigh_l", "thigh_r", "calf_l", "calf_r", "foot_l", "foot_r", "upperarm_l", "upperarm_r",
       "lowerarm_l", "lowerarm_r", "hand_l", "hand_r"]
 LIMBS = {"arm_l": ("upperarm_l", "lowerarm_l", "hand_l"), "arm_r": ("upperarm_r", "lowerarm_r", "hand_r"),
          "leg_l": ("thigh_l", "calf_l", "foot_l"), "leg_r": ("thigh_r", "calf_r", "foot_r")}
@@ -456,6 +460,11 @@ def facing(fr):
     r = (fr["thigh_r"][0] - fr["thigh_l"][0], fr["thigh_r"][1] - fr["thigh_l"][1])
     m = math.hypot(*r) or 1.0
     return (r[1] / m, -r[0] / m)
+
+
+def robe_vec(f):
+    c = [sum(f[b][i] for b in ROBE_TIPS) / len(ROBE_TIPS) - f["pelvis"][i] for i in range(3)]
+    return c
 
 
 def measure_clip(n, ref):
@@ -527,6 +536,23 @@ def measure_clip(n, ref):
                 a += 360
         sh_yaw.append(a)
         prev = a
+    # P13-4b pose checks: hand height, hand offset sideways from the pelvis (along the hip line), pelvis-to-neck lean from vertical
+    hand_z_max = max(max(f["hand_l"][2], f["hand_r"][2]) for f in fr)
+    lateral = []
+    for i, f in enumerate(fr):
+        rx, ry = f["thigh_r"][0] - f["thigh_l"][0], f["thigh_r"][1] - f["thigh_l"][1]
+        m = math.hypot(rx, ry) or 1.0
+        for h in ("hand_l", "hand_r"):
+            lateral.append(abs(((f[h][0] - f["pelvis"][0]) * rx + (f[h][1] - f["pelvis"][1]) * ry) / m))
+    lean = max(math.degrees(math.atan2(math.hypot(f["neck_01"][0] - f["pelvis"][0], f["neck_01"][1] - f["pelvis"][1]), f["neck_01"][2] - f["pelvis"][2])) for f in fr)
+    # robe tilt: the 8 robe tips hang from the pelvis; this is the angle between pelvis-to-tip-centroid now and in the reference pose (0 = the robe hangs as modelled)
+    rv0 = robe_vec({b: ref[b] for b in MB})
+    n0 = math.sqrt(sum(x * x for x in rv0))
+    robe_tilt = 0.0
+    for f in fr:
+        rv = robe_vec(f)
+        nv = math.sqrt(sum(x * x for x in rv))
+        robe_tilt = max(robe_tilt, math.degrees(math.acos(max(-1.0, min(1.0, sum(a * b for a, b in zip(rv, rv0)) / (n0 * nv))))))
     ih = max(range(len(reach)), key=lambda i: reach[i])
     io = max(range(len(reach_origin)), key=lambda i: reach_origin[i])
     # stretch
@@ -554,6 +580,7 @@ def measure_clip(n, ref):
         "total_yaw_deg": round(yaw[-1] - yaw[0], 2), "max_abs_yaw_from_f0_deg": round(max(abs(y - yaw[0]) for y in yaw), 2),
         "hit_time_s": round(ih * dt, 4), "hit_frame": ih, "hit_forward_of_pelvis_cm": round(reach[ih], 2),
         "hit_time_from_origin_s": round(io * dt, 4), "hit_frame_from_origin": io,
+        "hand_z_max_cm": round(hand_z_max, 1), "hand_lateral_from_pelvis_max_cm": round(max(lateral), 1), "pelvis_to_neck_lean_max_deg": round(lean, 1), "robe_tilt_max_deg": round(robe_tilt, 1),
         "stretch": stretch, "stretch_flagged": flagged,
         "forward_reach_per_frame_cm": [round(x, 1) for x in reach],
         "shoulder_yaw_per_frame_deg": [round(x, 1) for x in sh_yaw],
@@ -578,9 +605,23 @@ def step_measure():
                        "lowest_foot_z_cm": round(min(min(f["foot_l"][2], f["foot_r"][2]) for f in fr), 2)}
         except Exception as e:  # noqa: BLE001
             cmp_[k] = {"error": repr(e)}
+    # P13-4b checks: any failure stops the task (raised after the files are written)
+    checks, failed = [], []
+    idle = res["MutantIdle"]
+    for name, val, ok in (("MutantIdle hands below Z 160 (max hand Z)", idle["hand_z_max_cm"], idle["hand_z_max_cm"] < 160.0),
+                          ("MutantIdle hands within 60 cm of the pelvis sideways (max)", idle["hand_lateral_from_pelvis_max_cm"], idle["hand_lateral_from_pelvis_max_cm"] < 60.0),
+                          ("MutantIdle pelvis-to-neck line within 15 deg of vertical (max)", idle["pelvis_to_neck_lean_max_deg"], idle["pelvis_to_neck_lean_max_deg"] < 15.0)):
+        checks.append({"check": name, "value": val, "pass": bool(ok)})
+    for n in CLIPS:
+        if n in HANDS_UP_OK:
+            continue
+        v = res[n]["hand_z_max_cm"]
+        checks.append({"check": "%s no hand above Z 200 (max hand Z)" % n, "value": v, "pass": v <= 200.0})
+    failed = [c for c in checks if not c["pass"]]
     os.makedirs(OUT_DIR, exist_ok=True)
     with open(OUT_JSON, "w", encoding="utf-8") as fh:
-        json.dump({"note": "P13-4 measurements, component space (cm), headless; see Tools/warden/p13_retarget.py", "clips": res, "existing_clips_for_comparison": cmp_}, fh, indent=2)
+        json.dump({"note": "P13-4b measurements, component space (cm), headless; see Tools/warden/p13_retarget.py", "clips": res, "checks_p13_4b": checks,
+                   "existing_clips_for_comparison": cmp_}, fh, indent=2)
     lines = ["P13-4 clip measurements (cm, seconds, degrees). natural = planted foot backward speed along the hip-line facing.", ""]
     hdr = "%-17s %6s %5s %8s %8s %9s %8s %8s %8s %8s %7s %5s  %s" % ("clip", "len_s", "fr", "natural", "head+50", "foot_low", "drift_e", "drift_mx", "yaw_tot", "hit_s", "yaw_f0", "axis", "stretch (max reach/ref | max seg/ref)")
     lines.append(hdr)
@@ -592,12 +633,19 @@ def step_measure():
             r["lowest_foot_z_cm"], r["pelvis_drift_end_cm"], r["pelvis_drift_max_cm"], r["total_yaw_deg"], r["hit_time_s"], r["facing_yaw_f0_deg"], r["foot_travel_axis_deg_from_plus_x"], st,
             ("   STRETCH: " + ",".join(r["stretch_flagged"])) if r["stretch_flagged"] else ""))
     lines.append("")
+    lines.append("robe tilt vs the reference pose (max over frames, deg): " + ", ".join("%s %.0f" % (n, res[n]["robe_tilt_max_deg"]) for n in CLIPS))
+    lines.append("P13-4b checks:")
+    for c in checks:
+        lines.append("   %-70s %8s  %s" % (c["check"], c["value"], "PASS" if c["pass"] else "FAIL"))
+    lines.append("")
     lines.append("existing clips (comparison): " + json.dumps(cmp_))
     with open(OUT_TXT, "w", encoding="utf-8") as fh:
         fh.write("\n".join(lines) + "\n")
     for l in lines:
         log(l)
     log("wrote %s and %s" % (OUT_JSON, OUT_TXT))
+    if failed:
+        raise RuntimeError("P13-4b pose checks FAILED: %s" % [c["check"] for c in failed])
 
 
 # ----------------------------------------------------------------------------------------------------------------------

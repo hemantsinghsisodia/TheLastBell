@@ -13,7 +13,7 @@
 Never saves a .blend. Nothing is read from or written to Unreal.
 
 What it builds per clip (a fresh empty scene each time):
-  * the animation FBX from Unreal (armature only; its root node carries the constant root yaw key) and the Warden mesh from the P12 source FBX
+  * the animation FBX from Unreal (armature only; since P13-4b there is no root key) and the Warden mesh from the P12 source FBX
     (SourceArt/Warden/V5_5/exports/SK_Warden_LOD0.fbx; the Unreal preview-mesh export asserts under -nullrhi). The mesh is parented to the clip's
     armature and turned +90 deg about Z, which maps the mesh's Blender authoring frame onto the frame the Unreal-exported skeleton uses (the bone
     rest positions match; checked in the probe, see the report). In that frame the Warden faces +X and its left side is +Y (Y is mirrored by the
