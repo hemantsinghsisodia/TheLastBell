@@ -1,6 +1,6 @@
 # Phase 13: Warden animation: plan
 
-**Status: approved by the owner on 2026-11-06 ("go"). P13-0, P13-1 (13 files checked in Blender; registry 86cc8e8) and P13-2 (18df9d9, suite 108/108) done. F0, P13-3 (b4774f7) and P13-4 (b66132f) done. P13-5 sheet (b0206c3) shows the retarget is wrong; P13-4b done (2f342c4): arms and posture fixed. The robe and sleeve skin weights need fixing (decision with the owner). P13-6 (graph) can go ahead in parallel.**
+**Status (2026-11-07): P13-0 to P13-9 done.** Owner's look and playtest: "all good". Turns slowed; the blend spaces were re-saved; the hidden-apparition tick was fixed; the Mixamo files were kept out of the public repo (D-094); QA passed with caveats (`Docs/ArtTest/warden/p13_qa.md`). The history is in the result sections below. Waiting for the owner's phase review.
 **Branch:** `claude/phase-13-warden-animation`, from `main` (086d063).
 **Rules:** D-048. The lead plans; every implementer is spawned with `model: "sonnet", effort: "high"`. Nothing starts without the owner's "go"; the owner is told before any capture over about 15 minutes; agents never run the capture tool or operate the desktop.
 
@@ -24,7 +24,7 @@ Make the Warden move like a **slow, heavy stalker**: deliberate long strides and
 5. **Feet** sit on stair treads; nothing pops on flat floors.
 6. **Catch camera:** on a catch the view turns to the mask, holds, fades to black, then reloads. The Warden holds its grab pose.
 7. **Chapel:** it forms at the rail, walks into the sacristy, stooping at the door, and fades.
-8. The suite passes, with new tests for everything in this plan. **Animation adds ≤ 1.0 ms of game thread** against the same view with Phase 12's single clip. GPU stays ≤ 16.6 ms at High.
+8. The suite passes, with new tests for everything in this plan. **Animation adds ≤ 1.0 ms of game thread** against the same view with Phase 12's single clip (P13-8 measured the animation's own game-thread time with `stat anim` instead; see the P13-8 readings). GPU stays ≤ 16.6 ms at High.
 9. **The owner approves.**
 
 ## 3. What's there now (facts)
@@ -33,7 +33,7 @@ Make the Warden move like a **slow, heavy stalker**: deliberate long strides and
 - **Physics asset:** `SK_Warden_PhysicsAsset`, 43 bodies and 42 constraints. Which bones they're on is read in F0.
 - **Clips:** `AN_Warden_Idle`, `AN_Warden_Walk` and `AN_Warden_DoorwayStoop` (owner, V5.5). Walk barely moves the arms (R-52). They stay as fallbacks.
 - **`BP_Warden`:** `CharacterMesh0` in single-clip mode with `AN_Warden_Idle`, `AlwaysTickPose`. Hooks: `PlayStateFeedback(NewState)`, `PlayWindupTell`, `ShowWindupTell`, `EndWindupTell`, the light and the mask glow (fix set 1).
-- **AI** (`DA_WardenTuning`, unchanged by this phase): patrol 140, investigate 190, search 170, return 170, chase 420; turn rate 180°/s; look-around ±70°; search pause 2 s; attack range 140; windup 0.6 s. Movement: `bOrientRotationToMovement`, rotation rate 360.
+- **AI** (`DA_WardenTuning`; unchanged by this phase except the turn speeds the owner asked to slow after the first look: turn rate 180 → 90°/s, `RotationRate` yaw 360 → 120): patrol 140, investigate 190, search 170, return 170, chase 420; turn rate 180°/s (then); look-around ±70°; search pause 2 s; attack range 140; windup 0.6 s. Movement: `bOrientRotationToMovement`, rotation rate 360.
 - **Death:** `ALBCharacter::Kill()` disables input and calls `ALBGameMode::HandlePlayerDeath`, which reloads the checkpoint at once. The brain calls `Player->Kill()` when an attack lands.
 - **Apparitions:** `ALBWardenApparition` (static `Body` plus `Glow`, station logic in `LBApparitionLogic`). `Apparition_Chapel` has stations at the rail (8380, −120, 0) and the sacristy (8500, −930, 0).
 - **Tools:** the Unreal MCP tools can import skeletal meshes and clips, edit Blueprint event graphs, and run Control Rig and Sequencer. They **can't**:
@@ -296,7 +296,7 @@ Pure logic in testable functions, as in `LBWardenLogic`. No hard asset reference
 
 **`ULBWardenAnimSet : UPrimaryDataAsset`** (`Source/LastBell/AI/LBWardenAnimSet.h`). Saved as `/Game/LastBell/Data/DA_WardenAnimSet`.
 - Montages: `Attack`, `TurnLeft90`, `TurnRight90`, `LookAround`.
-- Numbers: `AttackPlayRate`, `TurnPlayRate` 1.5, `TurnTriggerDegrees` 60, `TurnCooldownSeconds` 1.0, `StoopEaseRate` 3.0, `FootTraceUp` 50, `FootTraceDown` 75, `FootIKInterpSpeed` 15, `MaxPelvisDrop` 35, `PhysicsMaxDistance` 2500.
+- Numbers: `AttackPlayRate`, `TurnPlayRate` 1.5, `TurnTriggerDegrees` 60 (45 after the first look), `TurnCooldownSeconds` 1.0, `StoopEaseRate` 3.0, `FootTraceUp` 50, `FootTraceDown` 75, `FootIKInterpSpeed` 15, `MaxPelvisDrop` 35, `PhysicsMaxDistance` 2500.
 
 **`ULBWardenAnimInstance : UAnimInstance`** (`Source/LastBell/AI/LBWardenAnimInstance.h/.cpp`). Variables (`BlueprintReadOnly`, category `Warden`) bound in the graph: `GroundSpeed`, `StoopAlpha`, `FootIKLeft`, `FootIKRight` (component-space effectors), `PelvisOffset`, `FootIKAlpha`, `PhysicsAlpha`.
 - **Game-thread update** (`NativeUpdateAnimation`):
@@ -549,7 +549,7 @@ Every commit hash in this file and the other docs was switched to the rewritten 
 - Judged: broken limbs, hunch and stalker feel, crouch height, and which of each pair to keep.
 - The sheet goes to the owner.
 
-**Performance (owner, about 5 minutes, High, `stat unit`):**
+**Performance (owner, about 5 minutes, High, `stat unit`).** Superseded in P13-8: `stat anim` read the animation's cost directly; the A/B, `p.RigidBodyNode 0` and the trace were dropped (see the P13-8 readings). The original plan was:
 - Crypt chase in view, with `ABP_Warden`.
 - Then the same view with `a.ParallelAnimUpdate 1` left on and `p.RigidBodyNode 0` to see the physics share.
 - Then the same view with Phase 12's single clip (lead switches it with a temporary toggle and puts it back).
