@@ -470,6 +470,11 @@ Compile with no warnings.
 
 All 32 earlier Warden functional tests pass with it. `DA_WardenTuning` and `DA_WardenAnimSet` store no explicit values, so the new defaults apply. The real-project suite: 110 passed, 1 failed (the new test, until the blend spaces are resampled).
 
+### Second look (owner, 2026-11-06), after the blend-space resave (791c1ed)
+- **Mirror:** `LastBell.Functional.Warden.Anim` passes; both blend spaces carry runtime data (2 segments each).
+- **Owner:** "legs and arms move now, all good now".
+- **Still to read item by item** in the P13-8 performance session and the P13-9 playtest: robe and chain swing, turn speed and turn steps, stoops, the catch camera, the chase run and mask glow, the chapel walk, feet on stairs, LOD pops and a `stat unit` reading.
+
 ## 12. Look test, performance and playtest (lead and owner)
 
 **Contact sheet (lead, about 10 minutes of capture, owner told first):**
