@@ -50,6 +50,7 @@ def main():
     meta = json.load(open(mp, encoding="utf-8"))
     out, res = meta["out"], meta["res"]
     pcts = meta["pcts"]
+    prefix = meta.get("prefix", "p13")
     hf = font(22)
     for clip in meta["clips"]:
         name = clip["name"]
@@ -64,7 +65,7 @@ def main():
             im = Image.open(p["file"])
             im = decorate(im, meta, "%s  %d%% (%.2fs)  %s" % (name, p["pct"], p["t"], p["view"]))
             sheet.paste(im, (8 + col * (res + 8), 38 + 8 + row * (res + 8) - 8 + 8))
-        fn = os.path.join(out, "p13_sheet_%s.png" % name)
+        fn = os.path.join(out, "%s_sheet_%s.png" % (prefix, name))
         sheet.save(fn)
         print("wrote %s %dx%d" % (fn, sheet.size[0], sheet.size[1]))
     # overview: 50 % frames, front then side, 6 clips per row pair
@@ -76,7 +77,7 @@ def main():
     H = rows_pairs * 2 * pw + (rows_pairs * 2 + 1) * 6 + 34
     sheet = Image.new("RGB", (W, H), (12, 12, 12))
     d = ImageDraw.Draw(sheet)
-    d.text((6, 6), "P13 clips at 50%: front (top) and side (below) per row; red line 220 cm, blue line 290 cm, grid 50 cm", fill=(255, 255, 255), font=hf)
+    d.text((6, 6), "%s clips at 50%%: front (top) and side (below) per row; red line 220 cm, blue line 290 cm, grid 50 cm" % prefix, fill=(255, 255, 255), font=hf)
     for i, clip in enumerate(clips):
         r, c = divmod(i, cols)
         for view, vr in (("FRONT", 0), ("SIDE", 1)):
@@ -84,7 +85,7 @@ def main():
             im = Image.open(p["file"]).resize((pw, pw), Image.LANCZOS)
             im = decorate(im, meta, "%s %s" % (clip["name"], view))
             sheet.paste(im, (6 + c * (pw + 6), 34 + 6 + (r * 2 + vr) * (pw + 6)))
-    fn = os.path.join(out, "p13_sheet_all.png")
+    fn = os.path.join(out, "%s_sheet_all.png" % prefix)
     sheet.save(fn)
     print("wrote %s %dx%d" % (fn, sheet.size[0], sheet.size[1]))
     if not keep:

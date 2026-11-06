@@ -1,0 +1,715 @@
+{
+ "before": {
+  "mesh": "C:\\Hemant\\Prj\\Learning\\TheLastBell\\SourceArt\\Warden\\V5_5\\exports\\SK_Warden_LOD0.fbx",
+  "mesh_md5": "743f0909336aa6d9f7e6c9af5fa8f3e9",
+  "clips": {
+   "MutantWalking": {
+    "frames": 45,
+    "wool_edges": 50303,
+    "vertices": 50745,
+    "max_ratio": 124.19188572680083,
+    "worst_frame_share_gt_1.5": 0.03946086714510069,
+    "union_share_gt_1.5": 0.048684969087330776,
+    "edges_ever_gt_1.5": 2449,
+    "p99.9_of_per_edge_max": 45.09862096583422,
+    "p99_of_per_edge_max": 9.6369203962438,
+    "band_max_ratio": {
+     "hem_z<0.6": 120.28677687243359,
+     "robe_0.6-1.57": 65.77827410690321,
+     "upper_z>=1.57": 124.19188572680083
+    },
+    "band_worst_frame_share_gt_1.5": {
+     "hem_z<0.6": 0.011512925554456844,
+     "robe_0.6-1.57": 0.0071729299859660065,
+     "upper_z>=1.57": 0.09990535904412634
+    },
+    "worst": {
+     "ratio": 124.19188572680083,
+     "frame": 11,
+     "rest_length_cm": 0.46545391455836066,
+     "mid_rest_xyz": [
+      -36.26539611816406,
+      -12.347835063934326,
+      181.24310302734375
+     ],
+     "mid_height_m": 1.8124310302734374
+    }
+   },
+   "MutantRun": {
+    "frames": 28,
+    "wool_edges": 50303,
+    "vertices": 50745,
+    "max_ratio": 188.66886333229243,
+    "worst_frame_share_gt_1.5": 0.04055424129773572,
+    "union_share_gt_1.5": 0.05118978987336739,
+    "edges_ever_gt_1.5": 2575,
+    "p99.9_of_per_edge_max": 60.915395122250416,
+    "p99_of_per_edge_max": 9.550567068518122,
+    "band_max_ratio": {
+     "hem_z<0.6": 110.54233166860227,
+     "robe_0.6-1.57": 102.88597573139437,
+     "upper_z>=1.57": 188.66886333229243
+    },
+    "band_worst_frame_share_gt_1.5": {
+     "hem_z<0.6": 0.01137166266421811,
+     "robe_0.6-1.57": 0.01112323925359946,
+     "upper_z>=1.57": 0.09943215426475807
+    },
+    "worst": {
+     "ratio": 188.66886333229243,
+     "frame": 5,
+     "rest_length_cm": 0.46545391455836066,
+     "mid_rest_xyz": [
+      -36.26539611816406,
+      -12.347835063934326,
+      181.24310302734375
+     ],
+     "mid_height_m": 1.8124310302734374
+    }
+   },
+   "CrouchedWalking": {
+    "frames": 33,
+    "wool_edges": 50303,
+    "vertices": 50745,
+    "max_ratio": 91.49762332074057,
+    "worst_frame_share_gt_1.5": 0.037353636960022266,
+    "union_share_gt_1.5": 0.043317495974395166,
+    "edges_ever_gt_1.5": 2179,
+    "p99.9_of_per_edge_max": 48.58912972491207,
+    "p99_of_per_edge_max": 7.599790582305224,
+    "band_max_ratio": {
+     "hem_z<0.6": 91.49762332074057,
+     "robe_0.6-1.57": 55.424943647185096,
+     "upper_z>=1.57": 51.87998376292276
+    },
+    "band_worst_frame_share_gt_1.5": {
+     "hem_z<0.6": 0.011301031219098742,
+     "robe_0.6-1.57": 0.008992151359218254,
+     "upper_z>=1.57": 0.09168342600260262
+    },
+    "worst": {
+     "ratio": 91.49762332074057,
+     "frame": 8,
+     "rest_length_cm": 1.4608856756934192,
+     "mid_rest_xyz": [
+      12.556172370910645,
+      -21.845433235168457,
+      22.21486759185791
+     ],
+     "mid_height_m": 0.22214867591857912
+    }
+   },
+   "ZombieAttack": {
+    "frames": 81,
+    "wool_edges": 50303,
+    "vertices": 50745,
+    "max_ratio": 242.12710930732737,
+    "worst_frame_share_gt_1.5": 0.06099039818698686,
+    "union_share_gt_1.5": 0.08564101544639485,
+    "edges_ever_gt_1.5": 4308,
+    "p99.9_of_per_edge_max": 71.11232125320149,
+    "p99_of_per_edge_max": 15.555871856635001,
+    "band_max_ratio": {
+     "hem_z<0.6": 71.20681521137291,
+     "robe_0.6-1.57": 176.62598143011343,
+     "upper_z>=1.57": 242.12710930732737
+    },
+    "band_worst_frame_share_gt_1.5": {
+     "hem_z<0.6": 0.01115976832886001,
+     "robe_0.6-1.57": 0.02448152190862311,
+     "upper_z>=1.57": 0.15219448716432035
+    },
+    "worst": {
+     "ratio": 242.12710930732737,
+     "frame": 33,
+     "rest_length_cm": 0.46545391455836066,
+     "mid_rest_xyz": [
+      -36.26539611816406,
+      -12.347835063934326,
+      181.24310302734375
+     ],
+     "mid_height_m": 1.8124310302734374
+    }
+   }
+  },
+  "overall": {
+   "max_ratio": 242.12710930732737,
+   "worst_frame_share_gt_1.5": 0.06099039818698686,
+   "union_share_gt_1.5": 0.08564101544639485
+  },
+  "pass": false,
+  "pass_strict_union": false
+ },
+ "attempt1": {
+  "params": {
+   "leg_max": 0.5,
+   "smooth": 2,
+   "sleeve_near": 0.25
+  },
+  "source": "C:\\Hemant\\Prj\\Learning\\TheLastBell\\SourceArt\\Warden\\V5_5\\Warden_Rigged.blend",
+  "source_md5": "4445c23dc7f727b28d4146f4ca6e16ed",
+  "lods": {
+   "SK_Warden_LOD0": {
+    "wool_vertices": 17250,
+    "sleeve_vertices": 2918,
+    "sleeve_by_arm_weight_only": 1576,
+    "lower_robe_vertices": 10318,
+    "sleeve_pruned_mass_mean": 0.0,
+    "sleeve_pruned_mass_max": 0.0,
+    "lower_pruned_mass_mean": 0.03870334056392306,
+    "lower_pruned_mass_max": 0.3305763173962879,
+    "lower_leg_share_designed_mean": 0.39382341440228835,
+    "lower_leg_share_after_mean": 0.3880909933604236,
+    "lower_leg_share_before_mean": 0.002813723781526112,
+    "lower_robe_share_before_mean": 0.9841054494973939,
+    "lower_robe_share_after_mean": 0.6046897801971806,
+    "sleeve_arm_share_after_mean": 0.5439552720788701,
+    "sleeve_robe_share_before_mean": 0.45187308336248055,
+    "sleeve_robe_share_after_mean": 0.0,
+    "vertices": 50745,
+    "changed_vertices": 13236,
+    "max_influences_before": 4,
+    "max_influences_after": 4,
+    "weight_sum_min_after": 0.9999998733401299,
+    "weight_sum_max_after": 1.000000149011612
+   },
+   "SK_Warden_LOD1": {
+    "wool_vertices": 11350,
+    "sleeve_vertices": 2095,
+    "sleeve_by_arm_weight_only": 1179,
+    "lower_robe_vertices": 6670,
+    "sleeve_pruned_mass_mean": 0.0,
+    "sleeve_pruned_mass_max": 0.0,
+    "lower_pruned_mass_mean": 0.039721618429429624,
+    "lower_pruned_mass_max": 0.3305763173962879,
+    "lower_leg_share_designed_mean": 0.40239305230402234,
+    "lower_leg_share_after_mean": 0.3971403946881868,
+    "lower_leg_share_before_mean": 0.003468049045881142,
+    "lower_robe_share_before_mean": 0.9796905188289879,
+    "lower_robe_share_after_mean": 0.5935822663708612,
+    "sleeve_arm_share_after_mean": 0.5678750585382982,
+    "sleeve_robe_share_before_mean": 0.4311948744703055,
+    "sleeve_robe_share_after_mean": 0.0,
+    "vertices": 25636,
+    "changed_vertices": 8765,
+    "max_influences_before": 4,
+    "max_influences_after": 4,
+    "weight_sum_min_after": 0.9999998889034032,
+    "weight_sum_max_after": 1.0000001527369022
+   },
+   "SK_Warden_LOD2": {
+    "wool_vertices": 4715,
+    "sleeve_vertices": 907,
+    "sleeve_by_arm_weight_only": 585,
+    "lower_robe_vertices": 2705,
+    "sleeve_pruned_mass_mean": 0.0,
+    "sleeve_pruned_mass_max": 0.0,
+    "lower_pruned_mass_mean": 0.039864622237774164,
+    "lower_pruned_mass_max": 0.32424057150908814,
+    "lower_leg_share_designed_mean": 0.40410865555379194,
+    "lower_leg_share_after_mean": 0.39878671214274036,
+    "lower_leg_share_before_mean": 0.002615235270777383,
+    "lower_robe_share_before_mean": 0.9807939538786116,
+    "lower_robe_share_after_mean": 0.5923277926752847,
+    "sleeve_arm_share_after_mean": 0.5998141717547004,
+    "sleeve_robe_share_before_mean": 0.36941151425267704,
+    "sleeve_robe_share_after_mean": 0.0,
+    "vertices": 10456,
+    "changed_vertices": 3612,
+    "max_influences_before": 4,
+    "max_influences_after": 4,
+    "weight_sum_min_after": 0.9999999031424522,
+    "weight_sum_max_after": 1.000000149011612
+   }
+  },
+  "identity_check": {
+   "verts_per_lod": {
+    "SK_Warden_LOD0": 50745,
+    "SK_Warden_LOD1": 25636,
+    "SK_Warden_LOD2": 10456
+   },
+   "differences": [],
+   "compared": "vertex positions (md5 of all coordinates), polygon loop vertex indices, material indices, UVs, material slots, vertex-group names and order, parent, modifiers, object matrices, armature bones (name/parent/head/tail/matrix) and actions"
+  },
+  "exports": {
+   "SK_Warden_LOD0.fbx": 8166972,
+   "SK_Warden_LOD1.fbx": 4454716,
+   "SK_Warden_LOD2.fbx": 2060604
+  },
+  "source_md5_after": "4445c23dc7f727b28d4146f4ca6e16ed",
+  "source_unchanged": true,
+  "new_blend_bytes": 66079520
+ },
+ "after_attempt1": {
+  "mesh": "C:\\Hemant\\Prj\\Learning\\TheLastBell\\SourceArt\\Warden\\V5_5w\\exports\\SK_Warden_LOD0.fbx",
+  "mesh_md5": "9018036f6c13a45759447a25e0fcdc03",
+  "clips": {
+   "MutantWalking": {
+    "frames": 45,
+    "wool_edges": 50303,
+    "vertices": 50745,
+    "max_ratio": 61.5449106525433,
+    "worst_frame_share_gt_1.5": 0.11591753970936126,
+    "union_share_gt_1.5": 0.14959346361052026,
+    "edges_ever_gt_1.5": 7525,
+    "p99.9_of_per_edge_max": 21.37269457766581,
+    "p99_of_per_edge_max": 7.268390634389928,
+    "band_max_ratio": {
+     "hem_z<0.6": 61.5449106525433,
+     "robe_0.6-1.57": 33.777620760394164,
+     "upper_z>=1.57": 27.31317742951675
+    },
+    "band_worst_frame_share_gt_1.5": {
+     "hem_z<0.6": 0.13575363751942365,
+     "robe_0.6-1.57": 0.0693383231976714,
+     "upper_z>=1.57": 0.15231278835916243
+    },
+    "worst": {
+     "ratio": 61.5449106525433,
+     "frame": 12,
+     "rest_length_cm": 1.2041523621352315,
+     "mid_rest_xyz": [
+      -0.425836905837059,
+      -22.699496269226074,
+      19.361205101013184
+     ],
+     "mid_height_m": 0.19361205101013185
+    }
+   },
+   "MutantRun": {
+    "frames": 28,
+    "wool_edges": 50303,
+    "vertices": 50745,
+    "max_ratio": 56.664281924140944,
+    "worst_frame_share_gt_1.5": 0.11788561318410433,
+    "union_share_gt_1.5": 0.16981094566924437,
+    "edges_ever_gt_1.5": 8542,
+    "p99.9_of_per_edge_max": 27.75136372120609,
+    "p99_of_per_edge_max": 8.747627653031598,
+    "band_max_ratio": {
+     "hem_z<0.6": 56.664281924140944,
+     "robe_0.6-1.57": 41.52986850130936,
+     "upper_z>=1.57": 54.95684561386139
+    },
+    "band_worst_frame_share_gt_1.5": {
+     "hem_z<0.6": 0.1268540754343834,
+     "robe_0.6-1.57": 0.09007744685274702,
+     "upper_z>=1.57": 0.1501833668520052
+    },
+    "worst": {
+     "ratio": 56.664281924140944,
+     "frame": 6,
+     "rest_length_cm": 1.2041523621352315,
+     "mid_rest_xyz": [
+      -0.425836905837059,
+      -22.699496269226074,
+      19.361205101013184
+     ],
+     "mid_height_m": 0.19361205101013185
+    }
+   },
+   "CrouchedWalking": {
+    "frames": 33,
+    "wool_edges": 50303,
+    "vertices": 50745,
+    "max_ratio": 45.77581379013872,
+    "worst_frame_share_gt_1.5": 0.09727054052442201,
+    "union_share_gt_1.5": 0.12188139872373417,
+    "edges_ever_gt_1.5": 6131,
+    "p99.9_of_per_edge_max": 26.98216894574445,
+    "p99_of_per_edge_max": 7.534546459003379,
+    "band_max_ratio": {
+     "hem_z<0.6": 45.77581379013872,
+     "robe_0.6-1.57": 39.260303132597755,
+     "upper_z>=1.57": 43.33104414642666
+    },
+    "band_worst_frame_share_gt_1.5": {
+     "hem_z<0.6": 0.06851250176578613,
+     "robe_0.6-1.57": 0.09293622329642913,
+     "upper_z>=1.57": 0.12835679640364367
+    },
+    "worst": {
+     "ratio": 45.77581379013872,
+     "frame": 8,
+     "rest_length_cm": 1.4608856756934192,
+     "mid_rest_xyz": [
+      12.556172370910645,
+      -21.845433235168457,
+      22.21486759185791
+     ],
+     "mid_height_m": 0.22214867591857912
+    }
+   },
+   "ZombieAttack": {
+    "frames": 81,
+    "wool_edges": 50303,
+    "vertices": 50745,
+    "max_ratio": 73.45585663872787,
+    "worst_frame_share_gt_1.5": 0.12448561716001033,
+    "union_share_gt_1.5": 0.17203745303461027,
+    "edges_ever_gt_1.5": 8654,
+    "p99.9_of_per_edge_max": 35.52094851915731,
+    "p99_of_per_edge_max": 11.928322085892196,
+    "band_max_ratio": {
+     "hem_z<0.6": 35.532223476614355,
+     "robe_0.6-1.57": 66.23000982589546,
+     "upper_z>=1.57": 73.45585663872787
+    },
+    "band_worst_frame_share_gt_1.5": {
+     "hem_z<0.6": 0.044356547534962563,
+     "robe_0.6-1.57": 0.0995893757471802,
+     "upper_z>=1.57": 0.23151543830592688
+    },
+    "worst": {
+     "ratio": 73.45585663872787,
+     "frame": 33,
+     "rest_length_cm": 0.7891748844498826,
+     "mid_rest_xyz": [
+      -24.877436637878418,
+      -8.61410903930664,
+      201.83035278320312
+     ],
+     "mid_height_m": 2.0183035278320314
+    }
+   }
+  },
+  "overall": {
+   "max_ratio": 73.45585663872787,
+   "worst_frame_share_gt_1.5": 0.12448561716001033,
+   "union_share_gt_1.5": 0.17203745303461027
+  },
+  "pass": false,
+  "pass_strict_union": false
+ },
+ "variation1": {
+  "params": {
+   "leg_max": 0.35,
+   "smooth": 3,
+   "sleeve_near": 0.25
+  },
+  "source": "C:\\Hemant\\Prj\\Learning\\TheLastBell\\SourceArt\\Warden\\V5_5\\Warden_Rigged.blend",
+  "source_md5": "4445c23dc7f727b28d4146f4ca6e16ed",
+  "lods": {
+   "SK_Warden_LOD0": {
+    "wool_vertices": 17250,
+    "sleeve_vertices": 2918,
+    "sleeve_by_arm_weight_only": 1576,
+    "lower_robe_vertices": 10318,
+    "sleeve_pruned_mass_mean": 0.0,
+    "sleeve_pruned_mass_max": 0.0,
+    "lower_pruned_mass_mean": 0.03339958890198072,
+    "lower_pruned_mass_max": 0.27154421914989413,
+    "lower_leg_share_designed_mean": 0.2756763900816018,
+    "lower_leg_share_after_mean": 0.2626581690851768,
+    "lower_leg_share_before_mean": 0.002813723781526112,
+    "lower_robe_share_before_mean": 0.9841054494973939,
+    "lower_robe_share_after_mean": 0.7283789807885427,
+    "sleeve_arm_share_after_mean": 0.5439388259310345,
+    "sleeve_robe_share_before_mean": 0.45187308336248055,
+    "sleeve_robe_share_after_mean": 0.0,
+    "vertices": 50745,
+    "changed_vertices": 13236,
+    "max_influences_before": 4,
+    "max_influences_after": 4,
+    "weight_sum_min_after": 0.9999998733401299,
+    "weight_sum_max_after": 1.000000149011612
+   },
+   "SK_Warden_LOD1": {
+    "wool_vertices": 11350,
+    "sleeve_vertices": 2095,
+    "sleeve_by_arm_weight_only": 1179,
+    "lower_robe_vertices": 6670,
+    "sleeve_pruned_mass_mean": 0.0,
+    "sleeve_pruned_mass_max": 0.0,
+    "lower_pruned_mass_mean": 0.03442717812234175,
+    "lower_pruned_mass_max": 0.27154421914989413,
+    "lower_leg_share_designed_mean": 0.2816751366128156,
+    "lower_leg_share_after_mean": 0.2691170689663293,
+    "lower_leg_share_before_mean": 0.003468049045881142,
+    "lower_robe_share_before_mean": 0.9796905188289879,
+    "lower_robe_share_after_mean": 0.7193615994839994,
+    "sleeve_arm_share_after_mean": 0.5677971670022751,
+    "sleeve_robe_share_before_mean": 0.4311948744703055,
+    "sleeve_robe_share_after_mean": 0.0,
+    "vertices": 25636,
+    "changed_vertices": 8765,
+    "max_influences_before": 4,
+    "max_influences_after": 4,
+    "weight_sum_min_after": 0.9999998889034032,
+    "weight_sum_max_after": 1.0000001527369022
+   },
+   "SK_Warden_LOD2": {
+    "wool_vertices": 4715,
+    "sleeve_vertices": 907,
+    "sleeve_by_arm_weight_only": 585,
+    "lower_robe_vertices": 2705,
+    "sleeve_pruned_mass_mean": 3.3181121943383273e-07,
+    "sleeve_pruned_mass_max": 7.423074920143158e-05,
+    "lower_pruned_mass_mean": 0.034613488125328905,
+    "lower_pruned_mass_max": 0.27154421914989413,
+    "lower_leg_share_designed_mean": 0.2828760588876544,
+    "lower_leg_share_after_mean": 0.26971116037441034,
+    "lower_leg_share_before_mean": 0.002615235270777383,
+    "lower_robe_share_before_mean": 0.9807939538786116,
+    "lower_robe_share_after_mean": 0.7190335524045942,
+    "sleeve_arm_share_after_mean": 0.5994599309089997,
+    "sleeve_robe_share_before_mean": 0.36941151425267704,
+    "sleeve_robe_share_after_mean": 0.0,
+    "vertices": 10456,
+    "changed_vertices": 3612,
+    "max_influences_before": 4,
+    "max_influences_after": 4,
+    "weight_sum_min_after": 0.9999999031424522,
+    "weight_sum_max_after": 1.000000149011612
+   }
+  },
+  "identity_check": {
+   "verts_per_lod": {
+    "SK_Warden_LOD0": 50745,
+    "SK_Warden_LOD1": 25636,
+    "SK_Warden_LOD2": 10456
+   },
+   "differences": [],
+   "compared": "vertex positions (md5 of all coordinates), polygon loop vertex indices, material indices, UVs, material slots, vertex-group names and order, parent, modifiers, object matrices, armature bones (name/parent/head/tail/matrix) and actions"
+  },
+  "exports": {
+   "SK_Warden_LOD0.fbx": 8168684,
+   "SK_Warden_LOD1.fbx": 4456060,
+   "SK_Warden_LOD2.fbx": 2061676
+  },
+  "source_md5_after": "4445c23dc7f727b28d4146f4ca6e16ed",
+  "source_unchanged": true,
+  "new_blend_bytes": 42784282
+ },
+ "after_variation1": {
+  "mesh": "C:/Hemant/Prj/Learning/TheLastBell/SourceArt/Warden/V5_5w/exports/SK_Warden_LOD0.fbx",
+  "mesh_md5": "fec22fedfd8902b58eff25e4a91d76a3",
+  "clips": {
+   "MutantWalking": {
+    "frames": 45,
+    "wool_edges": 50303,
+    "vertices": 50745,
+    "max_ratio": 79.16719722248467,
+    "worst_frame_share_gt_1.5": 0.09345367075522334,
+    "union_share_gt_1.5": 0.12583742520326818,
+    "edges_ever_gt_1.5": 6330,
+    "p99.9_of_per_edge_max": 24.427634181475867,
+    "p99_of_per_edge_max": 7.074997621603416,
+    "band_max_ratio": {
+     "hem_z<0.6": 79.16719722248467,
+     "robe_0.6-1.57": 34.15003116060239,
+     "upper_z>=1.57": 27.048984605380646
+    },
+    "band_worst_frame_share_gt_1.5": {
+     "hem_z<0.6": 0.08334510524085323,
+     "robe_0.6-1.57": 0.06143770466240449,
+     "upper_z>=1.57": 0.14574707204542767
+    },
+    "worst": {
+     "ratio": 79.16719722248467,
+     "frame": 12,
+     "rest_length_cm": 1.2041523621352315,
+     "mid_rest_xyz": [
+      -0.425836905837059,
+      -22.699496269226074,
+      19.361205101013184
+     ],
+     "mid_height_m": 0.19361205101013185
+    }
+   },
+   "MutantRun": {
+    "frames": 28,
+    "wool_edges": 50303,
+    "vertices": 50745,
+    "max_ratio": 72.82743630780354,
+    "worst_frame_share_gt_1.5": 0.09570005765063713,
+    "union_share_gt_1.5": 0.13885851738464902,
+    "edges_ever_gt_1.5": 6985,
+    "p99.9_of_per_edge_max": 31.33957153112121,
+    "p99_of_per_edge_max": 8.599546921692767,
+    "band_max_ratio": {
+     "hem_z<0.6": 72.82743630780354,
+     "robe_0.6-1.57": 38.10603956760702,
+     "upper_z>=1.57": 51.839619013515495
+    },
+    "band_worst_frame_share_gt_1.5": {
+     "hem_z<0.6": 0.07486933182652918,
+     "robe_0.6-1.57": 0.07770674151463174,
+     "upper_z>=1.57": 0.14769904176032178
+    },
+    "worst": {
+     "ratio": 72.82743630780354,
+     "frame": 6,
+     "rest_length_cm": 1.2041523621352315,
+     "mid_rest_xyz": [
+      -0.425836905837059,
+      -22.699496269226074,
+      19.361205101013184
+     ],
+     "mid_height_m": 0.19361205101013185
+    }
+   },
+   "CrouchedWalking": {
+    "frames": 33,
+    "wool_edges": 50303,
+    "vertices": 50745,
+    "max_ratio": 59.4884803632658,
+    "worst_frame_share_gt_1.5": 0.08230125439834603,
+    "union_share_gt_1.5": 0.0993380116494046,
+    "edges_ever_gt_1.5": 4997,
+    "p99.9_of_per_edge_max": 32.03635200162184,
+    "p99_of_per_edge_max": 7.403745116615186,
+    "band_max_ratio": {
+     "hem_z<0.6": 59.4884803632658,
+     "robe_0.6-1.57": 36.48595898017739,
+     "upper_z>=1.57": 43.33104414642666
+    },
+    "band_worst_frame_share_gt_1.5": {
+     "hem_z<0.6": 0.03397372510241559,
+     "robe_0.6-1.57": 0.08072145121887832,
+     "upper_z>=1.57": 0.12492606175322371
+    },
+    "worst": {
+     "ratio": 59.4884803632658,
+     "frame": 8,
+     "rest_length_cm": 1.4608856756934192,
+     "mid_rest_xyz": [
+      12.556172370910645,
+      -21.845433235168457,
+      22.21486759185791
+     ],
+     "mid_height_m": 0.22214867591857912
+    }
+   },
+   "ZombieAttack": {
+    "frames": 81,
+    "wool_edges": 50303,
+    "vertices": 50745,
+    "max_ratio": 71.1408021814134,
+    "worst_frame_share_gt_1.5": 0.11601693735960082,
+    "union_share_gt_1.5": 0.16036816889648728,
+    "edges_ever_gt_1.5": 8067,
+    "p99.9_of_per_edge_max": 38.071730446675744,
+    "p99_of_per_edge_max": 12.903850733936824,
+    "band_max_ratio": {
+     "hem_z<0.6": 46.23087516158163,
+     "robe_0.6-1.57": 67.27614639011679,
+     "upper_z>=1.57": 71.1408021814134
+    },
+    "band_worst_frame_share_gt_1.5": {
+     "hem_z<0.6": 0.03263172764514762,
+     "robe_0.6-1.57": 0.09018140235979001,
+     "upper_z>=1.57": 0.22406246303087662
+    },
+    "worst": {
+     "ratio": 71.1408021814134,
+     "frame": 32,
+     "rest_length_cm": 0.6902020787410176,
+     "mid_rest_xyz": [
+      -24.93635082244873,
+      1.1620702147483826,
+      204.21615600585938
+     ],
+     "mid_height_m": 2.042161560058594
+    }
+   }
+  },
+  "overall": {
+   "max_ratio": 79.16719722248467,
+   "worst_frame_share_gt_1.5": 0.11601693735960082,
+   "union_share_gt_1.5": 0.16036816889648728
+  },
+  "pass": false,
+  "pass_strict_union": false
+ },
+ "summary": {
+  "criteria": "largest wool-edge stretch ratio <= 1.8 and < 0.5 % of wool edges above 1.5 (judged on the worst single frame; the 'ever' share is also given)",
+  "tags": [
+   "before",
+   "after_attempt1",
+   "after_variation1"
+  ],
+  "table": {
+   "before": {
+    "MutantWalking": {
+     "max_ratio": 124.2,
+     "worst_frame_share_gt_1.5_pct": 3.95,
+     "edges_ever_gt_1.5_pct": 4.87
+    },
+    "MutantRun": {
+     "max_ratio": 188.7,
+     "worst_frame_share_gt_1.5_pct": 4.06,
+     "edges_ever_gt_1.5_pct": 5.12
+    },
+    "CrouchedWalking": {
+     "max_ratio": 91.5,
+     "worst_frame_share_gt_1.5_pct": 3.74,
+     "edges_ever_gt_1.5_pct": 4.33
+    },
+    "ZombieAttack": {
+     "max_ratio": 242.1,
+     "worst_frame_share_gt_1.5_pct": 6.1,
+     "edges_ever_gt_1.5_pct": 8.56
+    },
+    "_pass": false
+   },
+   "after_attempt1": {
+    "MutantWalking": {
+     "max_ratio": 61.5,
+     "worst_frame_share_gt_1.5_pct": 11.59,
+     "edges_ever_gt_1.5_pct": 14.96
+    },
+    "MutantRun": {
+     "max_ratio": 56.7,
+     "worst_frame_share_gt_1.5_pct": 11.79,
+     "edges_ever_gt_1.5_pct": 16.98
+    },
+    "CrouchedWalking": {
+     "max_ratio": 45.8,
+     "worst_frame_share_gt_1.5_pct": 9.73,
+     "edges_ever_gt_1.5_pct": 12.19
+    },
+    "ZombieAttack": {
+     "max_ratio": 73.5,
+     "worst_frame_share_gt_1.5_pct": 12.45,
+     "edges_ever_gt_1.5_pct": 17.2
+    },
+    "_pass": false
+   },
+   "after_variation1": {
+    "MutantWalking": {
+     "max_ratio": 79.2,
+     "worst_frame_share_gt_1.5_pct": 9.35,
+     "edges_ever_gt_1.5_pct": 12.58
+    },
+    "MutantRun": {
+     "max_ratio": 72.8,
+     "worst_frame_share_gt_1.5_pct": 9.57,
+     "edges_ever_gt_1.5_pct": 13.89
+    },
+    "CrouchedWalking": {
+     "max_ratio": 59.5,
+     "worst_frame_share_gt_1.5_pct": 8.23,
+     "edges_ever_gt_1.5_pct": 9.93
+    },
+    "ZombieAttack": {
+     "max_ratio": 71.1,
+     "worst_frame_share_gt_1.5_pct": 11.6,
+     "edges_ever_gt_1.5_pct": 16.04
+    },
+    "_pass": false
+   }
+  }
+ },
+ "notes": {
+  "attempt1": "the plan's rules 1-3 as written (leg max 0.5, 2 smoothing passes). Its blend and exports were overwritten by variation1 in SourceArt/Warden/V5_5w; its numbers (reweight stats, after_attempt1 measurement) are kept here.",
+  "variation1": "leg max 0.35, 3 smoothing passes; everything else as the plan. This is what SourceArt/Warden/V5_5w holds. Both attempts fail the metric.",
+  "pass": "pass = largest ratio <= 1.8 and the worst single frame has < 0.5 % of wool edges above 1.5; pass_strict_union uses the share of edges above 1.5 in ANY frame.",
+  "diagnosis": {
+   "unmodified_shoulder_and_chest_wool": "~2,190 of the ~11,000 bad edges after the reweight are between vertices that no rule touches (z 1.6 to 2.5, |x| < 0.25: clavicle/upperarm/spine splits); this alone is 4.3 % of wool edges.",
+   "foot_pinned_hem": "108 wool vertices at z 0.15-0.22 are weighted 100 % to the leg/foot bones in the master; they, and leather hem vertices weighted partly to robe bones, cause every wool edge above 5x at z < 0.4 (158 wool edges, 168 leather edges, max 168x). The floor slabs on the sheets are these.",
+   "leg_split_gradient": "f = 0.5 + x/0.6 changes the left/right leg share by about 1.7 % per cm; with the legs 1.2 m apart in the stride a 1 cm hem edge stretches about 1 + L * 2, so even L = 0.35 gives many edges at 1.5-3x.",
+   "sleeve_flaps": "sleeve flap vertices that were weighted 98 % to robe bones (1,342 near-only vertices) now follow the forearm rigidly: good in walk, run and attack, but in TurnLeft90/TurnRight90 and ZombieAttack 25 % they fold into boxes at hip height."
+  }
+ }
+}

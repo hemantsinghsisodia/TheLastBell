@@ -8,6 +8,8 @@
       --samples N          Cycles samples per panel (default 24)
       --res N              panel size in px (default 560)
       --keep               keep the panel PNGs
+      --mesh FBX           the Warden mesh FBX to use (default: the V5.5 LOD0 export; P13-4c uses SourceArt/Warden/V5_5w/exports/SK_Warden_LOD0.fbx)
+      --prefix NAME        file name prefix of the sheets (default p13 -> p13_sheet_<Name>.png; P13-4c uses p13w)
       --rest               show the armature's rest pose instead of the animation (checks the mesh/armature assembly)
 
 Never saves a .blend. Nothing is read from or written to Unreal.
@@ -36,6 +38,7 @@ from mathutils import Matrix, Vector
 ROOT = r"C:\Hemant\Prj\Learning\TheLastBell"
 REVIEW = os.path.join(ROOT, "SourceArt", "Warden", "P13_review")
 MESH_FBX = os.path.join(ROOT, "SourceArt", "Warden", "V5_5", "exports", "SK_Warden_LOD0.fbx")
+MESH = MESH_FBX
 COMPOSER = os.path.join(ROOT, "Tools", "blender", "warden", "p13_sheet_compose.py")
 PY = r"C:\Users\heman\AppData\Local\Python\pythoncore-3.14-64\python.exe"
 CLIPS = ["MutantWalking", "ZombieWalk", "MutantRun", "ZombieRunning", "MutantIdle", "CrouchedWalking", "CrouchingIdle",
@@ -47,7 +50,8 @@ MASK_SLOT = "M_Warden_BellMetal"
 
 def args():
     a = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
-    o = {"clips": "all", "out": os.path.join(ROOT, "Docs", "ArtTest", "warden"), "tmp": None, "python": PY, "samples": 24, "res": 560, "keep": False, "rest": False}
+    o = {"clips": "all", "out": os.path.join(ROOT, "Docs", "ArtTest", "warden"), "tmp": None, "python": PY, "samples": 24, "res": 560, "keep": False, "rest": False,
+         "mesh": MESH_FBX, "prefix": "p13"}
     i = 0
     while i < len(a):
         if a[i] in ("--keep", "--rest"):
@@ -165,7 +169,7 @@ def build_scene(clip, res, samples):
     TARGET.location = (0, 0, ZC)
 
     before = set(bpy.data.objects)
-    bpy.ops.import_scene.fbx(filepath=MESH_FBX)
+    bpy.ops.import_scene.fbx(filepath=MESH)
     mesh_objs = set(bpy.data.objects) - before
     mesh = next(o for o in mesh_objs if o.type == "MESH")
     old_arm = next(o for o in mesh_objs if o.type == "ARMATURE")
@@ -207,9 +211,11 @@ def build_scene(clip, res, samples):
 
 def main():
     o = args()
+    global MESH
+    MESH = o["mesh"]
     clips = CLIPS if o["clips"] == "all" else o["clips"].split(",")
     os.makedirs(o["tmp"], exist_ok=True)
-    meta = {"out": o["out"], "res": o["res"], "scale": SCALE, "zc": ZC, "pcts": PCTS, "clips": []}
+    meta = {"prefix": o["prefix"], "mesh": o["mesh"], "out": o["out"], "res": o["res"], "scale": SCALE, "zc": ZC, "pcts": PCTS, "clips": []}
     for clip in clips:
         sc, arm, cams = build_scene(clip, o["res"], o["samples"])
         if o["rest"]:
