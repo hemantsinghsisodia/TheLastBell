@@ -154,6 +154,8 @@ A state that a lowered stage forbids (a reload) is left through Return. Any acti
 
 ### Warden animation (Phase 13, D-093, `Docs/plans/P13_WARDEN_ANIMATION.md`)
 - **Clips.** Mixamo motion capture retargeted onto `SK_Warden`: `AN_Warden_*` in `/Game/LastBell/Characters/Warden/Anims/`.
+  - **The 12 Mixamo clips are local only** (git-ignored, D-095, because the repo is public). The blend spaces, montages, `ABP_Warden`, `DA_WardenAnimSet` and the owner's own `AN_Warden_Idle`/`Walk`/`DoorwayStoop` are committed.
+  - A fresh clone therefore has an unanimated Warden, and the clip-dependent tests fail there. Copy the clips from the owner's private backup (`ExternalAssets/Incoming/mixamo/_p13_local_backup/Anims/`).
   - The retarget source, the Y Bot, its raw clips, the IK Rigs and `RTG_LB_YBot_To_Warden`, lives in `Retarget/`. That folder is **local only**: git-ignored and never cooked (R-55, D-094).
   - It is rebuilt from the raw FBX with `Tools/warden/p13_import.py`, `p13_reimport_ybot.py` and `p13_retarget.py`.
 - **`ULBWardenAnimInstance`** (`AI/LBWardenAnimInstance`), the parent of `ABP_Warden`. In `NativeUpdateAnimation` it computes:

@@ -326,19 +326,21 @@ Owner playtest: "all good". Wrap-up:
 - **Docs:** updated.
 
 **QA (P13-9, `Docs/ArtTest/warden/p13_qa.md`): PASS WITH CAVEATS, no high-severity findings.**
-- **C1, a flaky apparition wait from Phase 12:** fixed in a69f97e. The test now waits for `Hold`, then checks the alpha.
+- **C1, a flaky apparition wait from Phase 12:** fixed in 5fab227. The test now waits for `Hold`, then checks the alpha.
 - **Doc flags:** fixed.
 
 **Final real-project suite: 112/112.** The apparition functional tests passed 3 more runs, 7/7 each.
 
 **Editor read-back (2026-11-07):**
-- `check_warden.py`: 61/61; `--bp` 56/56; `--disk` 32/32. The checker now expects `turnRate` 90 and reads an empty byte default as 0 (3bcec37).
+- `check_warden.py`: 61/61; `--bp` 56/56; `--disk` 32/32. The checker now expects `turnRate` 90 and reads an empty byte default as 0 (4335df4).
 - `BP_Warden` `RotationRate` yaw is 120, on the class default and the placed instance (QA C7).
 - Both placed apparitions' `Figure`: `OnlyTickPoseWhenRendered`.
 
 **Open items, for the owner's review:**
 - coverage gaps: no automated test for foot IK, turn montages, look-around or foot sliding (owner-verified in play);
 - three unused retargeted clips, which stay in the project unreferenced.
+
+**Owner review (D-095):** the 12 retargeted Mixamo clips are now kept out of the public repo as well (git-ignored, history rewritten again). A fresh clone has an unanimated Warden; the owner keeps a private copy of `ExternalAssets/Incoming/mixamo/`.
 
 ## Deferred to Phase 14–15 (Lighting, VFX: storm work)
 Items the owner asked to fold into the storm pass. Plan them in detail (Docs/plans/) when Phase 14–15 starts.

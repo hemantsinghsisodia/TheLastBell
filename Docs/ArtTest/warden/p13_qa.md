@@ -1,6 +1,6 @@
 # Phase 13 (Warden animation): independent QA report (P13-9)
 
-Reviewer: qa-reviewer (Sonnet 5.5). Branch `claude/phase-13-warden-animation`, head `160b1eb`. Unreal was closed; no MCP; read-only except this file.
+Reviewer: qa-reviewer (Sonnet 5.5). Branch `claude/phase-13-warden-animation`, head `5316c15`. Unreal was closed; no MCP; read-only except this file.
 Date of the run: 2026-11-07 (log timestamps are UTC, 18:50 to 19:05).
 
 ## 1. Verdict: PASS WITH CAVEATS
@@ -104,11 +104,11 @@ Nothing else found in: `LBWardenStoopSubsystem` (weak pointers, swap-remove, reg
 | 6 | Catch camera: view to the mask, hold, fade, reload; the Warden holds its grab pose | Test `Warden.Attack.CatchTurnsTheViewToTheMaskBeforeTheReload`: pass (view within 10 deg of the mask socket at 0.9 s, still in the old world, then the reload). `CatchKillsAfterWindupAndReloads`: pass. The fade and the held pose have no assertion; owner playtest "the attack and the catch camera" on the checklist, "all good" | **Verified** for look, hold and delayed reload; **owner-verified** for the fade and the pose |
 | 7 | Chapel: forms at the rail, walks into the sacristy, stoops at the door, fades | Tests `Apparition.WalkPathThenFade`, `WalkCutShortByPlayer`, `SkeletalFigureReplacesBody` and the unit `Warden.Apparition.Walk*`: pass, but on spawned apparitions, not the chapel actor with its real path and zone. Owner playtest "the chapel walk" on the checklist, "all good" | **Owner-verified** (mechanism verified by tests) |
 | 8a | Suite passes, new tests for everything in the plan | Run in A: 111 of 112; the one failure is the C1 flake, not a P13 feature. Not everything in the plan has a test (C3) | **Partly verified** |
-| 8b | Animation adds at most 1.0 ms of game thread | P13-8 `stat anim`: `AnimGameThreadTime` average 0.20, 0.18, 0.18 ms (image 1 shows a max of 0.87 ms; the limit is 1.0, so the peak is close). Measured as the absolute animation cost, not against the single-clip view (the A/B was dropped and recorded as a method change). Taken before the apparition tick fix `e5d1bcd`; not re-measured since | **Verified** (owner screenshots) |
+| 8b | Animation adds at most 1.0 ms of game thread | P13-8 `stat anim`: `AnimGameThreadTime` average 0.20, 0.18, 0.18 ms (image 1 shows a max of 0.87 ms; the limit is 1.0, so the peak is close). Measured as the absolute animation cost, not against the single-clip view (the A/B was dropped and recorded as a method change). Taken before the apparition tick fix `369f3cd`; not re-measured since | **Verified** (owner screenshots) |
 | 8c | GPU at most 16.6 ms at High | P13-8: 14.23, 13.61, 14.18 ms (image 1: GPU Time 14.23 ms) | **Verified** (owner screenshots) |
 | 9 | The owner approves | The owner said "all good, proceed now" after the playtest (plan, 2026-11-07). That covers the playtest. The phase approval comes after the PHASE 13 READY FOR YOUR REVIEW report (CLAUDE.md) and has not been given | **Owner-verified for the playtest; phase approval pending** |
 
-Not yet seen in game (stated in the plan): whether `stat anim` drops to one evaluation when no Warden is on screen (apparition fix `e5d1bcd`, tests only).
+Not yet seen in game (stated in the plan): whether `stat anim` drops to one evaluation when no Warden is on screen (apparition fix `369f3cd`, tests only).
 
 ## E. Docs consistency
 
@@ -128,7 +128,7 @@ Stale or contradicting statements (all P3):
 ## Needs the owner / human testing
 
 - Final in-game look at the items no test covers: foot placement on the real stair treads, head clearance at each `SZ_*` zone (especially the 224 cm tower door and the sacristy stair at 0.7), robe and chain swing and settle, turn montages against the 90 deg/s AI turn (C6), look-around at search points, and the chapel walk with its sacristy stoop on the real map.
-- Re-run `stat anim` with the Warden off screen to confirm the hidden chapel `Figure` no longer evaluates (apparition fix `e5d1bcd`; the plan says it was not re-measured).
+- Re-run `stat anim` with the Warden off screen to confirm the hidden chapel `Figure` no longer evaluates (apparition fix `369f3cd`; the plan says it was not re-measured).
 - Fix or accept the flaky `StateReplacedMidRunStops` assertion (C1) before relying on a 112/112 gate.
 - Decide whether to keep the three unused retargeted clips (B-3) and the local rollback ref `refs/original` (B-1), and give the phase approval after the lead report PHASE 13 READY FOR YOUR REVIEW.
 - Confirm that the saved `RotationRate` of `BP_Warden` is 120 (C7) with a one-line PIE read or an MCP property read (Unreal was closed for this review).

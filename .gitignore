@@ -21,10 +21,23 @@ Plugins/*/Intermediate/
 ExternalAssets/Incoming/
 ExternalAssets/Generated/
 
-# Mixamo licence (R-55, D-094): the Y Bot, its raw Mixamo clips and the retarget rig stay local, as do the stand-alone FBX
-# exports of the retargeted clips. Only the retargeted AN_Warden_* uassets are committed.
+# Mixamo licence (R-55, D-094, D-095): the Y Bot, its raw Mixamo clips, the retarget rig, the stand-alone FBX exports and
+# the 12 retargeted Mixamo clips stay local (the repo is public). The owner's own AN_Warden_Idle/Walk/DoorwayStoop and the
+# blend spaces, montages and ABP_Warden that use the clips are committed; a fresh clone has an unanimated Warden.
 Content/LastBell/Characters/Warden/Retarget/
 SourceArt/Warden/P13_review/
+Content/LastBell/Characters/Warden/Anims/AN_Warden_CrouchedWalking.uasset
+Content/LastBell/Characters/Warden/Anims/AN_Warden_CrouchingIdle.uasset
+Content/LastBell/Characters/Warden/Anims/AN_Warden_LookAround.uasset
+Content/LastBell/Characters/Warden/Anims/AN_Warden_MutantIdle.uasset
+Content/LastBell/Characters/Warden/Anims/AN_Warden_MutantRun.uasset
+Content/LastBell/Characters/Warden/Anims/AN_Warden_MutantSwiping.uasset
+Content/LastBell/Characters/Warden/Anims/AN_Warden_MutantWalking.uasset
+Content/LastBell/Characters/Warden/Anims/AN_Warden_TurnLeft90.uasset
+Content/LastBell/Characters/Warden/Anims/AN_Warden_TurnRight90.uasset
+Content/LastBell/Characters/Warden/Anims/AN_Warden_ZombieAttack.uasset
+Content/LastBell/Characters/Warden/Anims/AN_Warden_ZombieRunning.uasset
+Content/LastBell/Characters/Warden/Anims/AN_Warden_ZombieWalk.uasset
 
 # Local Claude settings
 .claude/settings.local.json
