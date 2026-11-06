@@ -5,6 +5,8 @@
 #include "Engine/World.h"
 #include "LBGameSettings.generated.h"
 
+class ULBStormSettings;
+
 /** Project Settings > Game > The Last Bell. */
 UCLASS(Config = Game, defaultconfig, meta = (DisplayName = "The Last Bell"))
 class LASTBELL_API ULBGameSettings : public UDeveloperSettings
@@ -21,4 +23,8 @@ public:
 
 	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Maps")
 	TSoftObjectPtr<UWorld> NewGameMap;
+
+	/** DA_StormSettings: every number of the storm (P14). Unset: the storm subsystem stays inactive. */
+	UPROPERTY(Config, EditAnywhere, Category = "Storm")
+	TSoftObjectPtr<ULBStormSettings> StormSettings;
 };

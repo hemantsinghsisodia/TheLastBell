@@ -54,6 +54,10 @@ struct LASTBELL_API FLBApparitionStation
 	/** Walking speed along WalkPath. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Apparition|Walk", meta = (ClampMin = "1", Units = "cm/s"))
 	float WalkSpeed = 110.f;
+
+	/** P14: a lightning flash (ULBStormSubsystem, reason Apparition) when this station's Hold begins, so the figure appears with a flash. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Apparition|Storm")
+	bool bLightningOnHold = false;
 };
 
 UENUM(BlueprintType)

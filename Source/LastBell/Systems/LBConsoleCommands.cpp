@@ -11,6 +11,7 @@
 #include "Character/LBCharacter.h"
 #include "GameFramework/PlayerController.h"
 #include "Systems/LBUserSettings.h"
+#include "Storm/LBStormSubsystem.h"
 #include "Misc/DefaultValueHelper.h"
 #include "LBLog.h"
 
@@ -162,6 +163,65 @@ namespace LBConsole
 		}
 	}
 
+	static ULBStormSubsystem* GetStorm(UWorld* World, const TCHAR* Cmd)
+	{
+		ULBStormSubsystem* Storm = World ? World->GetSubsystem<ULBStormSubsystem>() : nullptr;
+		if (!Storm || !Storm->IsActive())
+		{
+			UE_LOG(LogLB, Warning, TEXT("%s: the storm is not active in this world (needs an actor tagged LB_StormMoon and DA_StormSettings)"), Cmd);
+			return nullptr;
+		}
+		return Storm;
+	}
+
+	/** lb.Storm.Flash [brightness=1] [profile=-1]: profile -1 is random, 0 sheet, 1 double, 2 triple. */
+	static void StormFlash(const TArray<FString>& Args, UWorld* World)
+	{
+		ULBStormSubsystem* Storm = GetStorm(World, TEXT("lb.Storm.Flash"));
+		if (!Storm)
+		{
+			return;
+		}
+		float Brightness = 1.f;
+		int32 Profile = -1;
+		if (Args.Num() > 0 && !FDefaultValueHelper::ParseFloat(Args[0], Brightness))
+		{
+			UE_LOG(LogLB, Error, TEXT("lb.Storm.Flash: expected [brightness] [profile]"));
+			return;
+		}
+		if (Args.Num() > 1 && !FDefaultValueHelper::ParseInt(Args[1], Profile))
+		{
+			UE_LOG(LogLB, Error, TEXT("lb.Storm.Flash: profile must be -1 (random), 0 (sheet), 1 (double) or 2 (triple)"));
+			return;
+		}
+		const ELBFlashProfile Chosen = Profile == 0 ? ELBFlashProfile::Sheet : Profile == 1 ? ELBFlashProfile::Double : Profile == 2 ? ELBFlashProfile::Triple : ELBFlashProfile::Auto;
+		Storm->RequestFlash(FMath::Clamp(Brightness, 0.f, 1.f), 0.f, ELBFlashReason::Debug, Chosen);
+	}
+
+	/** lb.Storm.Intensity <0..1 | -1>: overrides the story intensity (-1 clears it). */
+	static void StormIntensity(const TArray<FString>& Args, UWorld* World)
+	{
+		ULBStormSubsystem* Storm = GetStorm(World, TEXT("lb.Storm.Intensity"));
+		float Value = -1.f;
+		if (Storm && ParseFloat(Args, TEXT("lb.Storm.Intensity"), Value))
+		{
+			Storm->SetConsoleIntensityOverride(Value < 0.f ? -1.f : FMath::Clamp(Value, 0.f, 1.f));
+			UE_LOG(LogLB, Display, TEXT("lb.Storm.Intensity = %.2f%s"), Value, Value < 0.f ? TEXT(" (cleared)") : TEXT(""));
+		}
+	}
+
+	/** lb.Storm.Freeze <0..1 | -1>: holds the flash value there and pauses the schedule (-1 clears it). */
+	static void StormFreeze(const TArray<FString>& Args, UWorld* World)
+	{
+		ULBStormSubsystem* Storm = GetStorm(World, TEXT("lb.Storm.Freeze"));
+		float Value = -1.f;
+		if (Storm && ParseFloat(Args, TEXT("lb.Storm.Freeze"), Value))
+		{
+			Storm->SetConsoleFreeze(Value < 0.f ? -1.f : FMath::Clamp(Value, 0.f, 1.f));
+			UE_LOG(LogLB, Display, TEXT("lb.Storm.Freeze = %.2f%s"), Value, Value < 0.f ? TEXT(" (cleared)") : TEXT(""));
+		}
+	}
+
 	static FAutoConsoleCommand CmdSensitivity(TEXT("lb.Sensitivity"), TEXT("lb.Sensitivity <float>: mouse sensitivity (saved)"),
 		FConsoleCommandWithArgsDelegate::CreateStatic(&Sensitivity));
 	static FAutoConsoleCommand CmdInvertY(TEXT("lb.InvertY"), TEXT("lb.InvertY 0|1: invert look Y (saved)"),
@@ -183,6 +243,12 @@ namespace LBConsole
 		FConsoleCommandWithWorldAndArgsDelegate::CreateStatic(&Menu));
 	static FAutoConsoleCommandWithWorldAndArgs CmdCompleteGame(TEXT("lb.CompleteGame"), TEXT("Delete save, reset progress, return to the main menu"),
 		FConsoleCommandWithWorldAndArgsDelegate::CreateStatic(&CompleteGame));
+	static FAutoConsoleCommandWithWorldAndArgs CmdStormFlash(TEXT("lb.Storm.Flash"), TEXT("lb.Storm.Flash [brightness=1] [profile=-1]: a lightning flash now (profile -1 random, 0 sheet, 1 double, 2 triple)"),
+		FConsoleCommandWithWorldAndArgsDelegate::CreateStatic(&StormFlash));
+	static FAutoConsoleCommandWithWorldAndArgs CmdStormIntensity(TEXT("lb.Storm.Intensity"), TEXT("lb.Storm.Intensity <0..1 | -1>: override the storm intensity, -1 clears"),
+		FConsoleCommandWithWorldAndArgsDelegate::CreateStatic(&StormIntensity));
+	static FAutoConsoleCommandWithWorldAndArgs CmdStormFreeze(TEXT("lb.Storm.Freeze"), TEXT("lb.Storm.Freeze <0..1 | -1>: hold the flash value and pause the schedule, -1 clears"),
+		FConsoleCommandWithWorldAndArgsDelegate::CreateStatic(&StormFreeze));
 	static FAutoConsoleCommandWithWorldAndArgs CmdKill(TEXT("lb.Kill"), TEXT("Kill the local player (death path)"),
 		FConsoleCommandWithWorldAndArgsDelegate::CreateStatic(&Kill));
 }

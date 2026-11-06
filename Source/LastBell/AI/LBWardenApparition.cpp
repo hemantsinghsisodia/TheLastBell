@@ -1,5 +1,6 @@
 #include "AI/LBWardenApparition.h"
 #include "AI/LBWardenLogic.h"
+#include "Storm/LBStormSubsystem.h"
 #include "Systems/LBWorldStateSubsystem.h"
 #include "Camera/PlayerCameraManager.h"
 #include "Components/SceneComponent.h"
@@ -299,6 +300,18 @@ void ALBWardenApparition::Tick(float DeltaSeconds)
 	if (PhaseBefore != ELBApparitionPhase::Done && Run.Phase == ELBApparitionPhase::Done)
 	{
 		UE_LOG(LogLBWarden, Log, TEXT("%s: run done"), *GetName());
+	}
+
+	// P14: the figure appears with a flash of lightning (the station opts in).
+	if (PhaseBefore != ELBApparitionPhase::Hold && Run.Phase == ELBApparitionPhase::Hold && Stations.IsValidIndex(Run.Station) && Stations[Run.Station].bLightningOnHold)
+	{
+		if (ULBStormSubsystem* Storm = GetWorld() ? GetWorld()->GetSubsystem<ULBStormSubsystem>() : nullptr)
+		{
+			if (Storm->IsActive())
+			{
+				Storm->RequestFlash(1.f, 0.15f, ELBFlashReason::Apparition, ELBFlashProfile::Double);
+			}
+		}
 	}
 
 	if (bEnteredFadeIn && Station)
