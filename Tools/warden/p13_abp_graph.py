@@ -122,7 +122,7 @@ def step_props():
                       "effectorLocationSpace": "BCS_BoneSpace",
                       "effectorTarget": {"bUseSocket": False, "boneReference": {"boneName": foot}},
                       "jointTarget": {"bUseSocket": False, "boneReference": {"boneName": calf}},
-                      "jointTargetLocationSpace": "BCS_ParentBoneSpace",
+                      "jointTargetLocationSpace": "BCS_BoneSpace",
                       "alphaInputType": "Float"})
     rb = by_class("AnimGraphNode_RigidBody")[0]
     set_node(rb, {"simulationSpace": "ComponentSpace", "lODThreshold": 1})

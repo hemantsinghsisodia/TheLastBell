@@ -1,0 +1,2094 @@
+{
+ "asset": "/Game/LastBell/Characters/Warden/Meshes/SK_Warden_PhysicsAsset.SK_Warden_PhysicsAsset",
+ "bodyNames": [
+  "pelvis",
+  "spine_01",
+  "spine_02",
+  "spine_03",
+  "neck_01",
+  "head",
+  "chain_neck_05",
+  "clavicle_l",
+  "upperarm_l",
+  "lowerarm_l",
+  "hand_l",
+  "thumb_01_l",
+  "middle_01_l",
+  "chain_l_00",
+  "chain_l_02",
+  "chain_l_04",
+  "chain_l_06",
+  "chain_l_08",
+  "chain_l_10",
+  "clavicle_r",
+  "upperarm_r",
+  "lowerarm_r",
+  "hand_r",
+  "middle_01_r",
+  "chain_r_04",
+  "foot_l",
+  "foot_r",
+  "robe_00_01",
+  "robe_00_02",
+  "robe_01_01",
+  "robe_01_02",
+  "robe_02_01",
+  "robe_02_02",
+  "robe_03_01",
+  "robe_03_02",
+  "robe_04_01",
+  "robe_04_02",
+  "robe_05_01",
+  "robe_05_02",
+  "robe_06_01",
+  "robe_06_02",
+  "robe_07_01",
+  "robe_07_02",
+  "chain_r_00",
+  "chain_r_02",
+  "chain_r_06",
+  "chain_r_08",
+  "chain_r_10",
+  "chain_neck_01",
+  "chain_neck_09",
+  "chain_neck_13"
+ ],
+ "bodies": {
+  "pelvis": {
+   "mode": "Kinematic",
+   "massScale": 1,
+   "shapes": [
+    {
+     "shapeName": "None",
+     "shapeType": "Capsule",
+     "center": {
+      "x": 5.731942765295406,
+      "y": 0.5927411477810516,
+      "z": -71.7066565788079
+     },
+     "rotation": {
+      "pitch": -0.4171960891774836,
+      "yaw": -90.00000000000001,
+      "roll": -3.143846141315934
+     },
+     "radius": 28.135257720947266,
+     "length": 84.30211639404297,
+     "extentX": 0,
+     "extentY": 0,
+     "extentZ": 0
+    }
+   ]
+  },
+  "spine_01": {
+   "mode": "Kinematic",
+   "massScale": 1,
+   "shapes": [
+    {
+     "shapeName": "None",
+     "shapeType": "Capsule",
+     "center": {
+      "x": -3.146017383180034,
+      "y": -0.7143535427755978,
+      "z": 16.696764962598373
+     },
+     "rotation": {
+      "pitch": 27.429899282032842,
+      "yaw": 2.181624168893529,
+      "roll": -90.00000129985675
+     },
+     "radius": 29.08456039428711,
+     "length": 36.53532409667969,
+     "extentX": 0,
+     "extentY": 0,
+     "extentZ": 0
+    }
+   ]
+  },
+  "spine_02": {
+   "mode": "Kinematic",
+   "massScale": 1,
+   "shapes": [
+    {
+     "shapeName": "None",
+     "shapeType": "Capsule",
+     "center": {
+      "x": 1.4455484907806488,
+      "y": -0.4658866593420037,
+      "z": 4.663199354981856
+     },
+     "rotation": {
+      "pitch": 6.3611093629270335e-15,
+      "yaw": 90.19490781609717,
+      "roll": -56.54202313347241
+     },
+     "radius": 26.3073673248291,
+     "length": 32.25522994995117,
+     "extentX": 0,
+     "extentY": 0,
+     "extentZ": 0
+    }
+   ]
+  },
+  "spine_03": {
+   "mode": "Kinematic",
+   "massScale": 1,
+   "shapes": [
+    {
+     "shapeName": "None",
+     "shapeType": "Capsule",
+     "center": {
+      "x": -8.387580772689814,
+      "y": -1.7385401573534862,
+      "z": -7.673351761839049
+     },
+     "rotation": {
+      "pitch": 4.242733730545445,
+      "yaw": -90.00000000000001,
+      "roll": 36.10560817438727
+     },
+     "radius": 20.513296127319336,
+     "length": 42.73261642456055,
+     "extentX": 0,
+     "extentY": 0,
+     "extentZ": 0
+    }
+   ]
+  },
+  "neck_01": {
+   "mode": "Kinematic",
+   "massScale": 1,
+   "shapes": [
+    {
+     "shapeName": "None",
+     "shapeType": "Capsule",
+     "center": {
+      "x": 0.771009694151467,
+      "y": -1.3058559574697497,
+      "z": -0.5643069895939359
+     },
+     "rotation": {
+      "pitch": 0,
+      "yaw": 86.59595754891775,
+      "roll": -72.49807152109564
+     },
+     "radius": 13.465765953063965,
+     "length": 24.714717864990234,
+     "extentX": 0,
+     "extentY": 0,
+     "extentZ": 0
+    }
+   ]
+  },
+  "head": {
+   "mode": "Kinematic",
+   "massScale": 1,
+   "shapes": [
+    {
+     "shapeName": "None",
+     "shapeType": "Capsule",
+     "center": {
+      "x": 0.6300427931098896,
+      "y": -1.0145591813325971,
+      "z": 16.243814743818096
+     },
+     "rotation": {
+      "pitch": -1.9271899329001319,
+      "yaw": -90.00000000000003,
+      "roll": 8.125755057557559
+     },
+     "radius": 23.73047637939453,
+     "length": 34.2396240234375,
+     "extentX": 0,
+     "extentY": 0,
+     "extentZ": 0
+    }
+   ]
+  },
+  "chain_neck_05": {
+   "mode": "Simulated",
+   "massScale": 1,
+   "shapes": [
+    {
+     "shapeName": "None",
+     "shapeType": "Capsule",
+     "center": {
+      "x": 0,
+      "y": 0,
+      "z": 3.75
+     },
+     "rotation": {
+      "pitch": 0,
+      "yaw": -90,
+      "roll": 0
+     },
+     "radius": 2.380000114440918,
+     "length": 2.740000009536743,
+     "extentX": 0,
+     "extentY": 0,
+     "extentZ": 0
+    }
+   ]
+  },
+  "clavicle_l": {
+   "mode": "Kinematic",
+   "massScale": 1,
+   "shapes": [
+    {
+     "shapeName": "None",
+     "shapeType": "Capsule",
+     "center": {
+      "x": -5.457237440547518,
+      "y": 6.202850394266326,
+      "z": 13.911939546462637
+     },
+     "rotation": {
+      "pitch": 0,
+      "yaw": -159.63752433786453,
+      "roll": -81.77188135269394
+     },
+     "radius": 19.9620304107666,
+     "length": 29.235109329223633,
+     "extentX": 0,
+     "extentY": 0,
+     "extentZ": 0
+    }
+   ]
+  },
+  "upperarm_l": {
+   "mode": "Kinematic",
+   "massScale": 1,
+   "shapes": [
+    {
+     "shapeName": "None",
+     "shapeType": "Capsule",
+     "center": {
+      "x": -4.151740852421552,
+      "y": 10.534325495746657,
+      "z": 20.957386762938206
+     },
+     "rotation": {
+      "pitch": 11.326646113328948,
+      "yaw": -90,
+      "roll": 9.853295605532878
+     },
+     "radius": 21.26654815673828,
+     "length": 37.03703308105469,
+     "extentX": 0,
+     "extentY": 0,
+     "extentZ": 0
+    }
+   ]
+  },
+  "lowerarm_l": {
+   "mode": "Kinematic",
+   "massScale": 1,
+   "shapes": [
+    {
+     "shapeName": "None",
+     "shapeType": "Capsule",
+     "center": {
+      "x": 5.90628610820028,
+      "y": 2.824838652084364,
+      "z": 32.02932815290847
+     },
+     "rotation": {
+      "pitch": -2.7442534932484914,
+      "yaw": -90.00000000000001,
+      "roll": -3.3833432139827546
+     },
+     "radius": 13.31139087677002,
+     "length": 35.36624526977539,
+     "extentX": 0,
+     "extentY": 0,
+     "extentZ": 0
+    }
+   ]
+  },
+  "hand_l": {
+   "mode": "Kinematic",
+   "massScale": 1,
+   "shapes": [
+    {
+     "shapeName": "None",
+     "shapeType": "Capsule",
+     "center": {
+      "x": 1.8950978165583658,
+      "y": 2.683948427932728,
+      "z": 22.161034106703536
+     },
+     "rotation": {
+      "pitch": 0.6779616471380744,
+      "yaw": -90.00000000000001,
+      "roll": 1.2166503858471365
+     },
+     "radius": 8.023521423339844,
+     "length": 27.34420394897461,
+     "extentX": 0,
+     "extentY": 0,
+     "extentZ": 0
+    }
+   ]
+  },
+  "thumb_01_l": {
+   "mode": "Kinematic",
+   "massScale": 1,
+   "shapes": [
+    {
+     "shapeName": "None",
+     "shapeType": "Capsule",
+     "center": {
+      "x": -0.8940044169314012,
+      "y": 0.7244420991665066,
+      "z": 5.819004117276787
+     },
+     "rotation": {
+      "pitch": 0.583111435014925,
+      "yaw": -90.00000000000001,
+      "roll": -16.709543910779644
+     },
+     "radius": 5.958916187286377,
+     "length": 12.421875953674316,
+     "extentX": 0,
+     "extentY": 0,
+     "extentZ": 0
+    }
+   ]
+  },
+  "middle_01_l": {
+   "mode": "Kinematic",
+   "massScale": 1,
+   "shapes": [
+    {
+     "shapeName": "None",
+     "shapeType": "Capsule",
+     "center": {
+      "x": 0.41626081663339987,
+      "y": 0.8308280103370117,
+      "z": 8.229753590404721
+     },
+     "rotation": {
+      "pitch": -1.8439147548538306,
+      "yaw": -90,
+      "roll": 11.466443263959185
+     },
+     "radius": 6.9211320877075195,
+     "length": 15.772948265075684,
+     "extentX": 0,
+     "extentY": 0,
+     "extentZ": 0
+    }
+   ]
+  },
+  "chain_l_00": {
+   "mode": "Simulated",
+   "massScale": 1,
+   "shapes": [
+    {
+     "shapeName": "None",
+     "shapeType": "Capsule",
+     "center": {
+      "x": -6.336620992868688e-06,
+      "y": -0.00042098958185385923,
+      "z": 15.312500869113508
+     },
+     "rotation": {
+      "pitch": -0.011248356997797316,
+      "yaw": -90,
+      "roll": -0.0004585031123360827
+     },
+     "radius": 2.3761067390441895,
+     "length": 18.950132369995117,
+     "extentX": 0,
+     "extentY": 0,
+     "extentZ": 0
+    }
+   ]
+  },
+  "chain_l_02": {
+   "mode": "Simulated",
+   "massScale": 1,
+   "shapes": [
+    {
+     "shapeName": "None",
+     "shapeType": "Capsule",
+     "center": {
+      "x": -1.5611173923625295e-05,
+      "y": -0.0004291496191192064,
+      "z": 15.312515770263126
+     },
+     "rotation": {
+      "pitch": -0.011249800316161558,
+      "yaw": -90,
+      "roll": -0.00045912557242697025
+     },
+     "radius": 2.3761069774627686,
+     "length": 18.950136184692383,
+     "extentX": 0,
+     "extentY": 0,
+     "extentZ": 0
+    }
+   ]
+  },
+  "chain_l_04": {
+   "mode": "Simulated",
+   "massScale": 1,
+   "shapes": [
+    {
+     "shapeName": "None",
+     "shapeType": "Capsule",
+     "center": {
+      "x": -2.3119348736523864e-05,
+      "y": -0.0004292717565962201,
+      "z": 15.312516366310508
+     },
+     "rotation": {
+      "pitch": -0.011249871801143603,
+      "yaw": -90,
+      "roll": -0.0004591790560108711
+     },
+     "radius": 2.3761067390441895,
+     "length": 18.950132369995117,
+     "extentX": 0,
+     "extentY": 0,
+     "extentZ": 0
+    }
+   ]
+  },
+  "chain_l_06": {
+   "mode": "Simulated",
+   "massScale": 1,
+   "shapes": [
+    {
+     "shapeName": "None",
+     "shapeType": "Capsule",
+     "center": {
+      "x": 2.5972838578752597,
+      "y": -0.3354679471375892,
+      "z": 13.51629653247199
+     },
+     "rotation": {
+      "pitch": -4.025022962128913,
+      "yaw": -90,
+      "roll": 21.610301105919525
+     },
+     "radius": 6.124534606933594,
+     "length": 16.880443572998047,
+     "extentX": 0,
+     "extentY": 0,
+     "extentZ": 0
+    }
+   ]
+  },
+  "chain_l_08": {
+   "mode": "Simulated",
+   "massScale": 1,
+   "shapes": [
+    {
+     "shapeName": "None",
+     "shapeType": "Capsule",
+     "center": {
+      "x": 0.00045316155277154695,
+      "y": 0.0010140430820524463,
+      "z": 15.306381200251165
+     },
+     "rotation": {
+      "pitch": 0.02709865301855928,
+      "yaw": -90,
+      "roll": -0.012533140924430981
+     },
+     "radius": 2.379767656326294,
+     "length": 18.943992614746094,
+     "extentX": 0,
+     "extentY": 0,
+     "extentZ": 0
+    }
+   ]
+  },
+  "chain_l_10": {
+   "mode": "Simulated",
+   "massScale": 1,
+   "shapes": [
+    {
+     "shapeName": "None",
+     "shapeType": "Capsule",
+     "center": {
+      "x": -3.325972140423485e-05,
+      "y": -2.2649872666470356e-05,
+      "z": 17.493019463343845
+     },
+     "rotation": {
+      "pitch": 0.02315818627036391,
+      "yaw": -90,
+      "roll": -0.005866691275060164
+     },
+     "radius": 2.3806445598602295,
+     "length": 21.152498245239258,
+     "extentX": 0,
+     "extentY": 0,
+     "extentZ": 0
+    }
+   ]
+  },
+  "clavicle_r": {
+   "mode": "Kinematic",
+   "massScale": 1,
+   "shapes": [
+    {
+     "shapeName": "None",
+     "shapeType": "Capsule",
+     "center": {
+      "x": -3.5463538629691325,
+      "y": -8.271353960152064,
+      "z": 13.014117388422642
+     },
+     "rotation": {
+      "pitch": 3.975693351829396e-16,
+      "yaw": -6.50453307820536,
+      "roll": -79.0168356444525
+     },
+     "radius": 18.522216796875,
+     "length": 30.64796257019043,
+     "extentX": 0,
+     "extentY": 0,
+     "extentZ": 0
+    }
+   ]
+  },
+  "upperarm_r": {
+   "mode": "Kinematic",
+   "massScale": 1,
+   "shapes": [
+    {
+     "shapeName": "None",
+     "shapeType": "Capsule",
+     "center": {
+      "x": -1.5659609281229026,
+      "y": -10.74224857009136,
+      "z": 20.67151999520168
+     },
+     "rotation": {
+      "pitch": -11.068989692596801,
+      "yaw": -90,
+      "roll": 11.011791934078811
+     },
+     "radius": 18.892120361328125,
+     "length": 35.94669723510742,
+     "extentX": 0,
+     "extentY": 0,
+     "extentZ": 0
+    }
+   ]
+  },
+  "lowerarm_r": {
+   "mode": "Kinematic",
+   "massScale": 1,
+   "shapes": [
+    {
+     "shapeName": "None",
+     "shapeType": "Capsule",
+     "center": {
+      "x": 5.363033054593334,
+      "y": -3.8685272102338724,
+      "z": 32.518484876564024
+     },
+     "rotation": {
+      "pitch": 7.224801959326127,
+      "yaw": -90.00000000000001,
+      "roll": -3.038938540557832
+     },
+     "radius": 13.369864463806152,
+     "length": 36.04170227050781,
+     "extentX": 0,
+     "extentY": 0,
+     "extentZ": 0
+    }
+   ]
+  },
+  "hand_r": {
+   "mode": "Kinematic",
+   "massScale": 1,
+   "shapes": [
+    {
+     "shapeName": "None",
+     "shapeType": "Capsule",
+     "center": {
+      "x": 0.964085673484465,
+      "y": -3.988543502999008,
+      "z": 22.382493920474687
+     },
+     "rotation": {
+      "pitch": 2.728092670503059,
+      "yaw": -90.00000000000001,
+      "roll": 4.19639890882687
+     },
+     "radius": 11.293509483337402,
+     "length": 27.16667366027832,
+     "extentX": 0,
+     "extentY": 0,
+     "extentZ": 0
+    }
+   ]
+  },
+  "middle_01_r": {
+   "mode": "Kinematic",
+   "massScale": 1,
+   "shapes": [
+    {
+     "shapeName": "None",
+     "shapeType": "Capsule",
+     "center": {
+      "x": 0.23017440017376994,
+      "y": -0.26934600811751086,
+      "z": 7.3915672736010345
+     },
+     "rotation": {
+      "pitch": 0.9372292673501826,
+      "yaw": -90.00000000000001,
+      "roll": 8.666371293809492
+     },
+     "radius": 6.851980209350586,
+     "length": 17.068531036376953,
+     "extentX": 0,
+     "extentY": 0,
+     "extentZ": 0
+    }
+   ]
+  },
+  "chain_r_04": {
+   "mode": "Simulated",
+   "massScale": 1,
+   "shapes": [
+    {
+     "shapeName": "None",
+     "shapeType": "Capsule",
+     "center": {
+      "x": 0,
+      "y": 0,
+      "z": 2.5
+     },
+     "rotation": {
+      "pitch": 0,
+      "yaw": -90,
+      "roll": 0
+     },
+     "radius": 2.380000114440918,
+     "length": 0.23999999463558197,
+     "extentX": 0,
+     "extentY": 0,
+     "extentZ": 0
+    }
+   ]
+  },
+  "foot_l": {
+   "mode": "Kinematic",
+   "massScale": 1,
+   "shapes": [
+    {
+     "shapeName": "None",
+     "shapeType": "Capsule",
+     "center": {
+      "x": -0.227956982076579,
+      "y": 1.9326035670731834,
+      "z": 11.457093234629443
+     },
+     "rotation": {
+      "pitch": 4.961745281801106,
+      "yaw": -90.00000000000001,
+      "roll": -25.09920792816348
+     },
+     "radius": 15.659159660339355,
+     "length": 23.538951873779297,
+     "extentX": 0,
+     "extentY": 0,
+     "extentZ": 0
+    }
+   ]
+  },
+  "foot_r": {
+   "mode": "Kinematic",
+   "massScale": 1,
+   "shapes": [
+    {
+     "shapeName": "None",
+     "shapeType": "Capsule",
+     "center": {
+      "x": -0.07138302163474819,
+      "y": -2.0947233774464955,
+      "z": 11.02975704001582
+     },
+     "rotation": {
+      "pitch": -7.44397862438977,
+      "yaw": -90.00000000000001,
+      "roll": -25.846124796042865
+     },
+     "radius": 16.88243865966797,
+     "length": 23.31756591796875,
+     "extentX": 0,
+     "extentY": 0,
+     "extentZ": 0
+    }
+   ]
+  },
+  "robe_00_01": {
+   "mode": "Simulated",
+   "massScale": 1,
+   "shapes": [
+    {
+     "shapeName": "None",
+     "shapeType": "Capsule",
+     "center": {
+      "x": -6.449145264144781,
+      "y": -0.10782105547676846,
+      "z": 44.845939915664545
+     },
+     "rotation": {
+      "pitch": -0.6618153851170748,
+      "yaw": -90.00000000000003,
+      "roll": -4.642561862350971
+     },
+     "radius": 12.706976890563965,
+     "length": 48.32359313964844,
+     "extentX": 0,
+     "extentY": 0,
+     "extentZ": 0
+    }
+   ]
+  },
+  "robe_00_02": {
+   "mode": "Simulated",
+   "massScale": 1,
+   "shapes": [
+    {
+     "shapeName": "None",
+     "shapeType": "Capsule",
+     "center": {
+      "x": 2.863652848467596,
+      "y": -0.4426638411423951,
+      "z": 46.07241408751731
+     },
+     "rotation": {
+      "pitch": 0.4795064073346119,
+      "yaw": -90.00000000000001,
+      "roll": 3.9051644780826162
+     },
+     "radius": 23.75050926208496,
+     "length": 59.26688003540039,
+     "extentX": 0,
+     "extentY": 0,
+     "extentZ": 0
+    }
+   ]
+  },
+  "robe_01_01": {
+   "mode": "Simulated",
+   "massScale": 1,
+   "shapes": [
+    {
+     "shapeName": "None",
+     "shapeType": "Capsule",
+     "center": {
+      "x": -3.042043190044595,
+      "y": 3.708236649404979,
+      "z": 45.221807864500526
+     },
+     "rotation": {
+      "pitch": 1.766748135268215,
+      "yaw": -90,
+      "roll": -4.431614458437796
+     },
+     "radius": 12.115080833435059,
+     "length": 48.0212287902832,
+     "extentX": 0,
+     "extentY": 0,
+     "extentZ": 0
+    }
+   ]
+  },
+  "robe_01_02": {
+   "mode": "Simulated",
+   "massScale": 1,
+   "shapes": [
+    {
+     "shapeName": "None",
+     "shapeType": "Capsule",
+     "center": {
+      "x": 3.292971908192248,
+      "y": -0.5711820201084961,
+      "z": 45.9774540019247
+     },
+     "rotation": {
+      "pitch": -3.8602101608990838,
+      "yaw": -90.00000000000004,
+      "roll": 3.2887907313816274
+     },
+     "radius": 28.362571716308594,
+     "length": 58.86100769042969,
+     "extentX": 0,
+     "extentY": 0,
+     "extentZ": 0
+    }
+   ]
+  },
+  "robe_02_01": {
+   "mode": "Simulated",
+   "massScale": 1,
+   "shapes": [
+    {
+     "shapeName": "None",
+     "shapeType": "Capsule",
+     "center": {
+      "x": 2.7583561873659317,
+      "y": -8.858367605948356,
+      "z": 42.087619237503525
+     },
+     "rotation": {
+      "pitch": 5.547759338977276,
+      "yaw": -90.00000000000003,
+      "roll": -2.689134212948766
+     },
+     "radius": 18.225820541381836,
+     "length": 50.12156295776367,
+     "extentX": 0,
+     "extentY": 0,
+     "extentZ": 0
+    }
+   ]
+  },
+  "robe_02_02": {
+   "mode": "Simulated",
+   "massScale": 1,
+   "shapes": [
+    {
+     "shapeName": "None",
+     "shapeType": "Capsule",
+     "center": {
+      "x": -0.037316150725915875,
+      "y": 5.911421165873913,
+      "z": 47.6793224173504
+     },
+     "rotation": {
+      "pitch": -6.363460517864292,
+      "yaw": -90.00000000000003,
+      "roll": 1.035345513399914
+     },
+     "radius": 20.607969284057617,
+     "length": 57.16923904418945,
+     "extentX": 0,
+     "extentY": 0,
+     "extentZ": 0
+    }
+   ]
+  },
+  "robe_03_01": {
+   "mode": "Simulated",
+   "massScale": 1,
+   "shapes": [
+    {
+     "shapeName": "None",
+     "shapeType": "Capsule",
+     "center": {
+      "x": 3.410208724084803,
+      "y": 3.3876404387354926,
+      "z": 44.077419813849325
+     },
+     "rotation": {
+      "pitch": 1.855486734021642,
+      "yaw": -90.00000000000001,
+      "roll": 0.6828834580997805
+     },
+     "radius": 13.8294095993042,
+     "length": 47.87132263183594,
+     "extentX": 0,
+     "extentY": 0,
+     "extentZ": 0
+    }
+   ]
+  },
+  "robe_03_02": {
+   "mode": "Simulated",
+   "massScale": 1,
+   "shapes": [
+    {
+     "shapeName": "None",
+     "shapeType": "Capsule",
+     "center": {
+      "x": 3.1166523362785137,
+      "y": 3.4696963599853463,
+      "z": 46.58877767127456
+     },
+     "rotation": {
+      "pitch": -4.55758047906259,
+      "yaw": -90,
+      "roll": 2.1715758441692636
+     },
+     "radius": 16.668109893798828,
+     "length": 58.20952606201172,
+     "extentX": 0,
+     "extentY": 0,
+     "extentZ": 0
+    }
+   ]
+  },
+  "robe_04_01": {
+   "mode": "Simulated",
+   "massScale": 1,
+   "shapes": [
+    {
+     "shapeName": "None",
+     "shapeType": "Capsule",
+     "center": {
+      "x": 7.362108516889364,
+      "y": 0.47640281443790755,
+      "z": 44.34862416994299
+     },
+     "rotation": {
+      "pitch": -0.5974086248979098,
+      "yaw": -90,
+      "roll": 4.467582448336272
+     },
+     "radius": 15.294854164123535,
+     "length": 48.19292449951172,
+     "extentX": 0,
+     "extentY": 0,
+     "extentZ": 0
+    }
+   ]
+  },
+  "robe_04_02": {
+   "mode": "Simulated",
+   "massScale": 1,
+   "shapes": [
+    {
+     "shapeName": "None",
+     "shapeType": "Capsule",
+     "center": {
+      "x": 8.352211212895634,
+      "y": -0.3515164565182749,
+      "z": 41.53180783881575
+     },
+     "rotation": {
+      "pitch": 1.0962555354292909,
+      "yaw": -90,
+      "roll": 3.8315651624831832
+     },
+     "radius": 13.151959419250488,
+     "length": 60.01527404785156,
+     "extentX": 0,
+     "extentY": 0,
+     "extentZ": 0
+    }
+   ]
+  },
+  "robe_05_01": {
+   "mode": "Simulated",
+   "massScale": 1,
+   "shapes": [
+    {
+     "shapeName": "None",
+     "shapeType": "Capsule",
+     "center": {
+      "x": 3.839975406945187,
+      "y": -3.527254585101487,
+      "z": 43.04205399402112
+     },
+     "rotation": {
+      "pitch": -0.42096116060117766,
+      "yaw": -90.00000000000001,
+      "roll": 0.7124043794035851
+     },
+     "radius": 13.848668098449707,
+     "length": 46.564697265625,
+     "extentX": 0,
+     "extentY": 0,
+     "extentZ": 0
+    }
+   ]
+  },
+  "robe_05_02": {
+   "mode": "Simulated",
+   "massScale": 1,
+   "shapes": [
+    {
+     "shapeName": "None",
+     "shapeType": "Capsule",
+     "center": {
+      "x": 2.897446786346771,
+      "y": -3.0789265093645586,
+      "z": 45.38453904656266
+     },
+     "rotation": {
+      "pitch": 4.634879790923122,
+      "yaw": -90.00000000000001,
+      "roll": 2.1530997596498227
+     },
+     "radius": 16.55268669128418,
+     "length": 59.3772087097168,
+     "extentX": 0,
+     "extentY": 0,
+     "extentZ": 0
+    }
+   ]
+  },
+  "robe_06_01": {
+   "mode": "Simulated",
+   "massScale": 1,
+   "shapes": [
+    {
+     "shapeName": "None",
+     "shapeType": "Capsule",
+     "center": {
+      "x": 3.1479413257886373,
+      "y": 9.236781103071385,
+      "z": 40.48072780272592
+     },
+     "rotation": {
+      "pitch": -5.60746680010472,
+      "yaw": -90,
+      "roll": -1.6332797596978201
+     },
+     "radius": 17.735437393188477,
+     "length": 48.31595230102539,
+     "extentX": 0,
+     "extentY": 0,
+     "extentZ": 0
+    }
+   ]
+  },
+  "robe_06_02": {
+   "mode": "Simulated",
+   "massScale": 1,
+   "shapes": [
+    {
+     "shapeName": "None",
+     "shapeType": "Capsule",
+     "center": {
+      "x": 1.001766267674288,
+      "y": -5.219912456183712,
+      "z": 47.69472303798644
+     },
+     "rotation": {
+      "pitch": 5.66973853107776,
+      "yaw": -90,
+      "roll": 0.6755096333916016
+     },
+     "radius": 19.59273338317871,
+     "length": 55.55387878417969,
+     "extentX": 0,
+     "extentY": 0,
+     "extentZ": 0
+    }
+   ]
+  },
+  "robe_07_01": {
+   "mode": "Simulated",
+   "massScale": 1,
+   "shapes": [
+    {
+     "shapeName": "None",
+     "shapeType": "Capsule",
+     "center": {
+      "x": -3.4639487157124753,
+      "y": -3.778266407677272,
+      "z": 45.47744269920944
+     },
+     "rotation": {
+      "pitch": -1.6839815762146602,
+      "yaw": -90.00000000000001,
+      "roll": -3.8208104599498482
+     },
+     "radius": 12.04522705078125,
+     "length": 48.44707107543945,
+     "extentX": 0,
+     "extentY": 0,
+     "extentZ": 0
+    }
+   ]
+  },
+  "robe_07_02": {
+   "mode": "Simulated",
+   "massScale": 1,
+   "shapes": [
+    {
+     "shapeName": "None",
+     "shapeType": "Capsule",
+     "center": {
+      "x": 3.256847082421988,
+      "y": 1.4265509489811776,
+      "z": 44.914434669228896
+     },
+     "rotation": {
+      "pitch": 3.280570246787951,
+      "yaw": -90.00000000000001,
+      "roll": 3.652089934451967
+     },
+     "radius": 27.536548614501953,
+     "length": 60.1748046875,
+     "extentX": 0,
+     "extentY": 0,
+     "extentZ": 0
+    }
+   ]
+  },
+  "chain_r_00": {
+   "mode": "Simulated",
+   "massScale": 1,
+   "shapes": [
+    {
+     "shapeName": "None",
+     "shapeType": "Capsule",
+     "center": {
+      "x": 0,
+      "y": 0,
+      "z": 2.5
+     },
+     "rotation": {
+      "pitch": 0,
+      "yaw": -90,
+      "roll": 0
+     },
+     "radius": 2.380000114440918,
+     "length": 0.23999999463558197,
+     "extentX": 0,
+     "extentY": 0,
+     "extentZ": 0
+    }
+   ]
+  },
+  "chain_r_02": {
+   "mode": "Simulated",
+   "massScale": 1,
+   "shapes": [
+    {
+     "shapeName": "None",
+     "shapeType": "Capsule",
+     "center": {
+      "x": 0,
+      "y": 0,
+      "z": 2.5
+     },
+     "rotation": {
+      "pitch": 0,
+      "yaw": -90,
+      "roll": 0
+     },
+     "radius": 2.380000114440918,
+     "length": 0.23999999463558197,
+     "extentX": 0,
+     "extentY": 0,
+     "extentZ": 0
+    }
+   ]
+  },
+  "chain_r_06": {
+   "mode": "Simulated",
+   "massScale": 1,
+   "shapes": [
+    {
+     "shapeName": "None",
+     "shapeType": "Capsule",
+     "center": {
+      "x": 0,
+      "y": 0,
+      "z": 2.5
+     },
+     "rotation": {
+      "pitch": 0,
+      "yaw": -90,
+      "roll": 0
+     },
+     "radius": 2.380000114440918,
+     "length": 0.23999999463558197,
+     "extentX": 0,
+     "extentY": 0,
+     "extentZ": 0
+    }
+   ]
+  },
+  "chain_r_08": {
+   "mode": "Simulated",
+   "massScale": 1,
+   "shapes": [
+    {
+     "shapeName": "None",
+     "shapeType": "Capsule",
+     "center": {
+      "x": 0,
+      "y": 0,
+      "z": 2.5
+     },
+     "rotation": {
+      "pitch": 0,
+      "yaw": -90,
+      "roll": 0
+     },
+     "radius": 2.380000114440918,
+     "length": 0.23999999463558197,
+     "extentX": 0,
+     "extentY": 0,
+     "extentZ": 0
+    }
+   ]
+  },
+  "chain_r_10": {
+   "mode": "Simulated",
+   "massScale": 1,
+   "shapes": [
+    {
+     "shapeName": "None",
+     "shapeType": "Capsule",
+     "center": {
+      "x": 0,
+      "y": 0,
+      "z": 2.5
+     },
+     "rotation": {
+      "pitch": 0,
+      "yaw": -90,
+      "roll": 0
+     },
+     "radius": 2.380000114440918,
+     "length": 0.23999999463558197,
+     "extentX": 0,
+     "extentY": 0,
+     "extentZ": 0
+    }
+   ]
+  },
+  "chain_neck_01": {
+   "mode": "Simulated",
+   "massScale": 1,
+   "shapes": [
+    {
+     "shapeName": "None",
+     "shapeType": "Capsule",
+     "center": {
+      "x": 0,
+      "y": 0,
+      "z": 3.75
+     },
+     "rotation": {
+      "pitch": 0,
+      "yaw": -90,
+      "roll": 0
+     },
+     "radius": 2.380000114440918,
+     "length": 2.740000009536743,
+     "extentX": 0,
+     "extentY": 0,
+     "extentZ": 0
+    }
+   ]
+  },
+  "chain_neck_09": {
+   "mode": "Simulated",
+   "massScale": 1,
+   "shapes": [
+    {
+     "shapeName": "None",
+     "shapeType": "Capsule",
+     "center": {
+      "x": 0,
+      "y": 0,
+      "z": 3.75
+     },
+     "rotation": {
+      "pitch": 0,
+      "yaw": -90,
+      "roll": 0
+     },
+     "radius": 2.380000114440918,
+     "length": 2.740000009536743,
+     "extentX": 0,
+     "extentY": 0,
+     "extentZ": 0
+    }
+   ]
+  },
+  "chain_neck_13": {
+   "mode": "Simulated",
+   "massScale": 1,
+   "shapes": [
+    {
+     "shapeName": "None",
+     "shapeType": "Capsule",
+     "center": {
+      "x": 0,
+      "y": 0,
+      "z": 3.75
+     },
+     "rotation": {
+      "pitch": 0,
+      "yaw": -90,
+      "roll": 0
+     },
+     "radius": 2.380000114440918,
+     "length": 2.740000009536743,
+     "extentX": 0,
+     "extentY": 0,
+     "extentZ": 0
+    }
+   ]
+  }
+ },
+ "constraints": [
+  {
+   "bone1Name": "spine_01",
+   "bone2Name": "pelvis",
+   "swing1Motion": "Limited",
+   "swing1LimitDegrees": 45,
+   "swing2Motion": "Limited",
+   "swing2LimitDegrees": 45,
+   "twistMotion": "Limited",
+   "twistLimitDegrees": 45
+  },
+  {
+   "bone1Name": "spine_02",
+   "bone2Name": "spine_01",
+   "swing1Motion": "Limited",
+   "swing1LimitDegrees": 45,
+   "swing2Motion": "Limited",
+   "swing2LimitDegrees": 45,
+   "twistMotion": "Limited",
+   "twistLimitDegrees": 45
+  },
+  {
+   "bone1Name": "spine_03",
+   "bone2Name": "spine_02",
+   "swing1Motion": "Limited",
+   "swing1LimitDegrees": 45,
+   "swing2Motion": "Limited",
+   "swing2LimitDegrees": 45,
+   "twistMotion": "Limited",
+   "twistLimitDegrees": 45
+  },
+  {
+   "bone1Name": "neck_01",
+   "bone2Name": "spine_03",
+   "swing1Motion": "Limited",
+   "swing1LimitDegrees": 45,
+   "swing2Motion": "Limited",
+   "swing2LimitDegrees": 45,
+   "twistMotion": "Limited",
+   "twistLimitDegrees": 45
+  },
+  {
+   "bone1Name": "head",
+   "bone2Name": "neck_01",
+   "swing1Motion": "Limited",
+   "swing1LimitDegrees": 45,
+   "swing2Motion": "Limited",
+   "swing2LimitDegrees": 45,
+   "twistMotion": "Limited",
+   "twistLimitDegrees": 45
+  },
+  {
+   "bone1Name": "clavicle_l",
+   "bone2Name": "spine_03",
+   "swing1Motion": "Limited",
+   "swing1LimitDegrees": 45,
+   "swing2Motion": "Limited",
+   "swing2LimitDegrees": 45,
+   "twistMotion": "Limited",
+   "twistLimitDegrees": 45
+  },
+  {
+   "bone1Name": "upperarm_l",
+   "bone2Name": "clavicle_l",
+   "swing1Motion": "Limited",
+   "swing1LimitDegrees": 45,
+   "swing2Motion": "Limited",
+   "swing2LimitDegrees": 45,
+   "twistMotion": "Limited",
+   "twistLimitDegrees": 45
+  },
+  {
+   "bone1Name": "lowerarm_l",
+   "bone2Name": "upperarm_l",
+   "swing1Motion": "Limited",
+   "swing1LimitDegrees": 45,
+   "swing2Motion": "Limited",
+   "swing2LimitDegrees": 45,
+   "twistMotion": "Limited",
+   "twistLimitDegrees": 45
+  },
+  {
+   "bone1Name": "hand_l",
+   "bone2Name": "lowerarm_l",
+   "swing1Motion": "Limited",
+   "swing1LimitDegrees": 45,
+   "swing2Motion": "Limited",
+   "swing2LimitDegrees": 45,
+   "twistMotion": "Limited",
+   "twistLimitDegrees": 45
+  },
+  {
+   "bone1Name": "thumb_01_l",
+   "bone2Name": "hand_l",
+   "swing1Motion": "Limited",
+   "swing1LimitDegrees": 45,
+   "swing2Motion": "Limited",
+   "swing2LimitDegrees": 45,
+   "twistMotion": "Limited",
+   "twistLimitDegrees": 45
+  },
+  {
+   "bone1Name": "middle_01_l",
+   "bone2Name": "hand_l",
+   "swing1Motion": "Limited",
+   "swing1LimitDegrees": 45,
+   "swing2Motion": "Limited",
+   "swing2LimitDegrees": 45,
+   "twistMotion": "Limited",
+   "twistLimitDegrees": 45
+  },
+  {
+   "bone1Name": "chain_l_00",
+   "bone2Name": "lowerarm_l",
+   "swing1Motion": "Limited",
+   "swing1LimitDegrees": 30,
+   "swing2Motion": "Limited",
+   "swing2LimitDegrees": 30,
+   "twistMotion": "Limited",
+   "twistLimitDegrees": 10
+  },
+  {
+   "bone1Name": "chain_l_02",
+   "bone2Name": "chain_l_00",
+   "swing1Motion": "Limited",
+   "swing1LimitDegrees": 30,
+   "swing2Motion": "Limited",
+   "swing2LimitDegrees": 30,
+   "twistMotion": "Limited",
+   "twistLimitDegrees": 10
+  },
+  {
+   "bone1Name": "chain_l_04",
+   "bone2Name": "chain_l_02",
+   "swing1Motion": "Limited",
+   "swing1LimitDegrees": 30,
+   "swing2Motion": "Limited",
+   "swing2LimitDegrees": 30,
+   "twistMotion": "Limited",
+   "twistLimitDegrees": 10
+  },
+  {
+   "bone1Name": "chain_l_06",
+   "bone2Name": "chain_l_04",
+   "swing1Motion": "Limited",
+   "swing1LimitDegrees": 30,
+   "swing2Motion": "Limited",
+   "swing2LimitDegrees": 30,
+   "twistMotion": "Limited",
+   "twistLimitDegrees": 10
+  },
+  {
+   "bone1Name": "chain_l_08",
+   "bone2Name": "chain_l_06",
+   "swing1Motion": "Limited",
+   "swing1LimitDegrees": 30,
+   "swing2Motion": "Limited",
+   "swing2LimitDegrees": 30,
+   "twistMotion": "Limited",
+   "twistLimitDegrees": 10
+  },
+  {
+   "bone1Name": "chain_l_10",
+   "bone2Name": "chain_l_08",
+   "swing1Motion": "Limited",
+   "swing1LimitDegrees": 30,
+   "swing2Motion": "Limited",
+   "swing2LimitDegrees": 30,
+   "twistMotion": "Limited",
+   "twistLimitDegrees": 10
+  },
+  {
+   "bone1Name": "clavicle_r",
+   "bone2Name": "spine_03",
+   "swing1Motion": "Limited",
+   "swing1LimitDegrees": 45,
+   "swing2Motion": "Limited",
+   "swing2LimitDegrees": 45,
+   "twistMotion": "Limited",
+   "twistLimitDegrees": 45
+  },
+  {
+   "bone1Name": "upperarm_r",
+   "bone2Name": "clavicle_r",
+   "swing1Motion": "Limited",
+   "swing1LimitDegrees": 45,
+   "swing2Motion": "Limited",
+   "swing2LimitDegrees": 45,
+   "twistMotion": "Limited",
+   "twistLimitDegrees": 45
+  },
+  {
+   "bone1Name": "lowerarm_r",
+   "bone2Name": "upperarm_r",
+   "swing1Motion": "Limited",
+   "swing1LimitDegrees": 45,
+   "swing2Motion": "Limited",
+   "swing2LimitDegrees": 45,
+   "twistMotion": "Limited",
+   "twistLimitDegrees": 45
+  },
+  {
+   "bone1Name": "hand_r",
+   "bone2Name": "lowerarm_r",
+   "swing1Motion": "Limited",
+   "swing1LimitDegrees": 45,
+   "swing2Motion": "Limited",
+   "swing2LimitDegrees": 45,
+   "twistMotion": "Limited",
+   "twistLimitDegrees": 45
+  },
+  {
+   "bone1Name": "middle_01_r",
+   "bone2Name": "hand_r",
+   "swing1Motion": "Limited",
+   "swing1LimitDegrees": 45,
+   "swing2Motion": "Limited",
+   "swing2LimitDegrees": 45,
+   "twistMotion": "Limited",
+   "twistLimitDegrees": 45
+  },
+  {
+   "bone1Name": "foot_l",
+   "bone2Name": "pelvis",
+   "swing1Motion": "Limited",
+   "swing1LimitDegrees": 45,
+   "swing2Motion": "Limited",
+   "swing2LimitDegrees": 45,
+   "twistMotion": "Limited",
+   "twistLimitDegrees": 45
+  },
+  {
+   "bone1Name": "foot_r",
+   "bone2Name": "pelvis",
+   "swing1Motion": "Limited",
+   "swing1LimitDegrees": 45,
+   "swing2Motion": "Limited",
+   "swing2LimitDegrees": 45,
+   "twistMotion": "Limited",
+   "twistLimitDegrees": 45
+  },
+  {
+   "bone1Name": "robe_00_01",
+   "bone2Name": "pelvis",
+   "swing1Motion": "Limited",
+   "swing1LimitDegrees": 30,
+   "swing2Motion": "Limited",
+   "swing2LimitDegrees": 30,
+   "twistMotion": "Limited",
+   "twistLimitDegrees": 10
+  },
+  {
+   "bone1Name": "robe_00_02",
+   "bone2Name": "robe_00_01",
+   "swing1Motion": "Limited",
+   "swing1LimitDegrees": 30,
+   "swing2Motion": "Limited",
+   "swing2LimitDegrees": 30,
+   "twistMotion": "Limited",
+   "twistLimitDegrees": 10
+  },
+  {
+   "bone1Name": "robe_01_01",
+   "bone2Name": "pelvis",
+   "swing1Motion": "Limited",
+   "swing1LimitDegrees": 30,
+   "swing2Motion": "Limited",
+   "swing2LimitDegrees": 30,
+   "twistMotion": "Limited",
+   "twistLimitDegrees": 10
+  },
+  {
+   "bone1Name": "robe_01_02",
+   "bone2Name": "robe_01_01",
+   "swing1Motion": "Limited",
+   "swing1LimitDegrees": 30,
+   "swing2Motion": "Limited",
+   "swing2LimitDegrees": 30,
+   "twistMotion": "Limited",
+   "twistLimitDegrees": 10
+  },
+  {
+   "bone1Name": "robe_02_01",
+   "bone2Name": "pelvis",
+   "swing1Motion": "Limited",
+   "swing1LimitDegrees": 30,
+   "swing2Motion": "Limited",
+   "swing2LimitDegrees": 30,
+   "twistMotion": "Limited",
+   "twistLimitDegrees": 10
+  },
+  {
+   "bone1Name": "robe_02_02",
+   "bone2Name": "robe_02_01",
+   "swing1Motion": "Limited",
+   "swing1LimitDegrees": 30,
+   "swing2Motion": "Limited",
+   "swing2LimitDegrees": 30,
+   "twistMotion": "Limited",
+   "twistLimitDegrees": 10
+  },
+  {
+   "bone1Name": "robe_03_01",
+   "bone2Name": "pelvis",
+   "swing1Motion": "Limited",
+   "swing1LimitDegrees": 30,
+   "swing2Motion": "Limited",
+   "swing2LimitDegrees": 30,
+   "twistMotion": "Limited",
+   "twistLimitDegrees": 10
+  },
+  {
+   "bone1Name": "robe_03_02",
+   "bone2Name": "robe_03_01",
+   "swing1Motion": "Limited",
+   "swing1LimitDegrees": 30,
+   "swing2Motion": "Limited",
+   "swing2LimitDegrees": 30,
+   "twistMotion": "Limited",
+   "twistLimitDegrees": 10
+  },
+  {
+   "bone1Name": "robe_04_01",
+   "bone2Name": "pelvis",
+   "swing1Motion": "Limited",
+   "swing1LimitDegrees": 30,
+   "swing2Motion": "Limited",
+   "swing2LimitDegrees": 30,
+   "twistMotion": "Limited",
+   "twistLimitDegrees": 10
+  },
+  {
+   "bone1Name": "robe_04_02",
+   "bone2Name": "robe_04_01",
+   "swing1Motion": "Limited",
+   "swing1LimitDegrees": 30,
+   "swing2Motion": "Limited",
+   "swing2LimitDegrees": 30,
+   "twistMotion": "Limited",
+   "twistLimitDegrees": 10
+  },
+  {
+   "bone1Name": "robe_05_01",
+   "bone2Name": "pelvis",
+   "swing1Motion": "Limited",
+   "swing1LimitDegrees": 30,
+   "swing2Motion": "Limited",
+   "swing2LimitDegrees": 30,
+   "twistMotion": "Limited",
+   "twistLimitDegrees": 10
+  },
+  {
+   "bone1Name": "robe_05_02",
+   "bone2Name": "robe_05_01",
+   "swing1Motion": "Limited",
+   "swing1LimitDegrees": 30,
+   "swing2Motion": "Limited",
+   "swing2LimitDegrees": 30,
+   "twistMotion": "Limited",
+   "twistLimitDegrees": 10
+  },
+  {
+   "bone1Name": "robe_06_01",
+   "bone2Name": "pelvis",
+   "swing1Motion": "Limited",
+   "swing1LimitDegrees": 30,
+   "swing2Motion": "Limited",
+   "swing2LimitDegrees": 30,
+   "twistMotion": "Limited",
+   "twistLimitDegrees": 10
+  },
+  {
+   "bone1Name": "robe_06_02",
+   "bone2Name": "robe_06_01",
+   "swing1Motion": "Limited",
+   "swing1LimitDegrees": 30,
+   "swing2Motion": "Limited",
+   "swing2LimitDegrees": 30,
+   "twistMotion": "Limited",
+   "twistLimitDegrees": 10
+  },
+  {
+   "bone1Name": "robe_07_01",
+   "bone2Name": "pelvis",
+   "swing1Motion": "Limited",
+   "swing1LimitDegrees": 30,
+   "swing2Motion": "Limited",
+   "swing2LimitDegrees": 30,
+   "twistMotion": "Limited",
+   "twistLimitDegrees": 10
+  },
+  {
+   "bone1Name": "robe_07_02",
+   "bone2Name": "robe_07_01",
+   "swing1Motion": "Limited",
+   "swing1LimitDegrees": 30,
+   "swing2Motion": "Limited",
+   "swing2LimitDegrees": 30,
+   "twistMotion": "Limited",
+   "twistLimitDegrees": 10
+  },
+  {
+   "bone1Name": "chain_r_00",
+   "bone2Name": "lowerarm_r",
+   "swing1Motion": "Limited",
+   "swing1LimitDegrees": 30,
+   "swing2Motion": "Limited",
+   "swing2LimitDegrees": 30,
+   "twistMotion": "Limited",
+   "twistLimitDegrees": 10
+  },
+  {
+   "bone1Name": "chain_r_02",
+   "bone2Name": "chain_r_00",
+   "swing1Motion": "Limited",
+   "swing1LimitDegrees": 30,
+   "swing2Motion": "Limited",
+   "swing2LimitDegrees": 30,
+   "twistMotion": "Limited",
+   "twistLimitDegrees": 10
+  },
+  {
+   "bone1Name": "chain_r_04",
+   "bone2Name": "chain_r_02",
+   "swing1Motion": "Limited",
+   "swing1LimitDegrees": 30,
+   "swing2Motion": "Limited",
+   "swing2LimitDegrees": 30,
+   "twistMotion": "Limited",
+   "twistLimitDegrees": 10
+  },
+  {
+   "bone1Name": "chain_r_06",
+   "bone2Name": "chain_r_04",
+   "swing1Motion": "Limited",
+   "swing1LimitDegrees": 30,
+   "swing2Motion": "Limited",
+   "swing2LimitDegrees": 30,
+   "twistMotion": "Limited",
+   "twistLimitDegrees": 10
+  },
+  {
+   "bone1Name": "chain_r_08",
+   "bone2Name": "chain_r_06",
+   "swing1Motion": "Limited",
+   "swing1LimitDegrees": 30,
+   "swing2Motion": "Limited",
+   "swing2LimitDegrees": 30,
+   "twistMotion": "Limited",
+   "twistLimitDegrees": 10
+  },
+  {
+   "bone1Name": "chain_r_10",
+   "bone2Name": "chain_r_08",
+   "swing1Motion": "Limited",
+   "swing1LimitDegrees": 30,
+   "swing2Motion": "Limited",
+   "swing2LimitDegrees": 30,
+   "twistMotion": "Limited",
+   "twistLimitDegrees": 10
+  },
+  {
+   "bone1Name": "chain_neck_01",
+   "bone2Name": "neck_01",
+   "swing1Motion": "Limited",
+   "swing1LimitDegrees": 30,
+   "swing2Motion": "Limited",
+   "swing2LimitDegrees": 30,
+   "twistMotion": "Limited",
+   "twistLimitDegrees": 10
+  },
+  {
+   "bone1Name": "chain_neck_05",
+   "bone2Name": "chain_neck_01",
+   "swing1Motion": "Limited",
+   "swing1LimitDegrees": 30,
+   "swing2Motion": "Limited",
+   "swing2LimitDegrees": 30,
+   "twistMotion": "Limited",
+   "twistLimitDegrees": 10
+  },
+  {
+   "bone1Name": "chain_neck_09",
+   "bone2Name": "chain_neck_05",
+   "swing1Motion": "Limited",
+   "swing1LimitDegrees": 30,
+   "swing2Motion": "Limited",
+   "swing2LimitDegrees": 30,
+   "twistMotion": "Limited",
+   "twistLimitDegrees": 10
+  },
+  {
+   "bone1Name": "chain_neck_13",
+   "bone2Name": "chain_neck_09",
+   "swing1Motion": "Limited",
+   "swing1LimitDegrees": 30,
+   "swing2Motion": "Limited",
+   "swing2LimitDegrees": 30,
+   "twistMotion": "Limited",
+   "twistLimitDegrees": 10
+  }
+ ],
+ "setupPhysicsType": {
+  "pelvis": "PhysType_Kinematic",
+  "spine_01": "PhysType_Kinematic",
+  "spine_02": "PhysType_Kinematic",
+  "spine_03": "PhysType_Kinematic",
+  "neck_01": "PhysType_Kinematic",
+  "head": "PhysType_Kinematic",
+  "chain_neck_05": "PhysType_Simulated",
+  "clavicle_l": "PhysType_Kinematic",
+  "upperarm_l": "PhysType_Kinematic",
+  "lowerarm_l": "PhysType_Kinematic",
+  "hand_l": "PhysType_Kinematic",
+  "thumb_01_l": "PhysType_Kinematic",
+  "middle_01_l": "PhysType_Kinematic",
+  "chain_l_00": "PhysType_Simulated",
+  "chain_l_02": "PhysType_Simulated",
+  "chain_l_04": "PhysType_Simulated",
+  "chain_l_06": "PhysType_Simulated",
+  "chain_l_08": "PhysType_Simulated",
+  "chain_l_10": "PhysType_Simulated",
+  "clavicle_r": "PhysType_Kinematic",
+  "upperarm_r": "PhysType_Kinematic",
+  "lowerarm_r": "PhysType_Kinematic",
+  "hand_r": "PhysType_Kinematic",
+  "middle_01_r": "PhysType_Kinematic",
+  "chain_r_04": "PhysType_Simulated",
+  "foot_l": "PhysType_Kinematic",
+  "foot_r": "PhysType_Kinematic",
+  "robe_00_01": "PhysType_Simulated",
+  "robe_00_02": "PhysType_Simulated",
+  "robe_01_01": "PhysType_Simulated",
+  "robe_01_02": "PhysType_Simulated",
+  "robe_02_01": "PhysType_Simulated",
+  "robe_02_02": "PhysType_Simulated",
+  "robe_03_01": "PhysType_Simulated",
+  "robe_03_02": "PhysType_Simulated",
+  "robe_04_01": "PhysType_Simulated",
+  "robe_04_02": "PhysType_Simulated",
+  "robe_05_01": "PhysType_Simulated",
+  "robe_05_02": "PhysType_Simulated",
+  "robe_06_01": "PhysType_Simulated",
+  "robe_06_02": "PhysType_Simulated",
+  "robe_07_01": "PhysType_Simulated",
+  "robe_07_02": "PhysType_Simulated",
+  "chain_r_00": "PhysType_Simulated",
+  "chain_r_02": "PhysType_Simulated",
+  "chain_r_06": "PhysType_Simulated",
+  "chain_r_08": "PhysType_Simulated",
+  "chain_r_10": "PhysType_Simulated",
+  "chain_neck_01": "PhysType_Simulated",
+  "chain_neck_09": "PhysType_Simulated",
+  "chain_neck_13": "PhysType_Simulated"
+ },
+ "damping": {
+  "pelvis": {
+   "linear": 0.009999999776482582,
+   "angular": 0
+  },
+  "spine_01": {
+   "linear": 0.009999999776482582,
+   "angular": 0
+  },
+  "spine_02": {
+   "linear": 0.009999999776482582,
+   "angular": 0
+  },
+  "spine_03": {
+   "linear": 0.009999999776482582,
+   "angular": 0
+  },
+  "neck_01": {
+   "linear": 0.009999999776482582,
+   "angular": 0
+  },
+  "head": {
+   "linear": 0.009999999776482582,
+   "angular": 0
+  },
+  "chain_neck_05": {
+   "linear": 0.6000000238418579,
+   "angular": 1
+  },
+  "clavicle_l": {
+   "linear": 0.009999999776482582,
+   "angular": 0
+  },
+  "upperarm_l": {
+   "linear": 0.009999999776482582,
+   "angular": 0
+  },
+  "lowerarm_l": {
+   "linear": 0.009999999776482582,
+   "angular": 0
+  },
+  "hand_l": {
+   "linear": 0.009999999776482582,
+   "angular": 0
+  },
+  "thumb_01_l": {
+   "linear": 0.009999999776482582,
+   "angular": 0
+  },
+  "middle_01_l": {
+   "linear": 0.009999999776482582,
+   "angular": 0
+  },
+  "chain_l_00": {
+   "linear": 0.6000000238418579,
+   "angular": 1
+  },
+  "chain_l_02": {
+   "linear": 0.6000000238418579,
+   "angular": 1
+  },
+  "chain_l_04": {
+   "linear": 0.6000000238418579,
+   "angular": 1
+  },
+  "chain_l_06": {
+   "linear": 0.6000000238418579,
+   "angular": 1
+  },
+  "chain_l_08": {
+   "linear": 0.6000000238418579,
+   "angular": 1
+  },
+  "chain_l_10": {
+   "linear": 0.6000000238418579,
+   "angular": 1
+  },
+  "clavicle_r": {
+   "linear": 0.009999999776482582,
+   "angular": 0
+  },
+  "upperarm_r": {
+   "linear": 0.009999999776482582,
+   "angular": 0
+  },
+  "lowerarm_r": {
+   "linear": 0.009999999776482582,
+   "angular": 0
+  },
+  "hand_r": {
+   "linear": 0.009999999776482582,
+   "angular": 0
+  },
+  "middle_01_r": {
+   "linear": 0.009999999776482582,
+   "angular": 0
+  },
+  "chain_r_04": {
+   "linear": 0.6000000238418579,
+   "angular": 1
+  },
+  "foot_l": {
+   "linear": 0.009999999776482582,
+   "angular": 0
+  },
+  "foot_r": {
+   "linear": 0.009999999776482582,
+   "angular": 0
+  },
+  "robe_00_01": {
+   "linear": 0.6000000238418579,
+   "angular": 1
+  },
+  "robe_00_02": {
+   "linear": 0.6000000238418579,
+   "angular": 1
+  },
+  "robe_01_01": {
+   "linear": 0.6000000238418579,
+   "angular": 1
+  },
+  "robe_01_02": {
+   "linear": 0.6000000238418579,
+   "angular": 1
+  },
+  "robe_02_01": {
+   "linear": 0.6000000238418579,
+   "angular": 1
+  },
+  "robe_02_02": {
+   "linear": 0.6000000238418579,
+   "angular": 1
+  },
+  "robe_03_01": {
+   "linear": 0.6000000238418579,
+   "angular": 1
+  },
+  "robe_03_02": {
+   "linear": 0.6000000238418579,
+   "angular": 1
+  },
+  "robe_04_01": {
+   "linear": 0.6000000238418579,
+   "angular": 1
+  },
+  "robe_04_02": {
+   "linear": 0.6000000238418579,
+   "angular": 1
+  },
+  "robe_05_01": {
+   "linear": 0.6000000238418579,
+   "angular": 1
+  },
+  "robe_05_02": {
+   "linear": 0.6000000238418579,
+   "angular": 1
+  },
+  "robe_06_01": {
+   "linear": 0.6000000238418579,
+   "angular": 1
+  },
+  "robe_06_02": {
+   "linear": 0.6000000238418579,
+   "angular": 1
+  },
+  "robe_07_01": {
+   "linear": 0.6000000238418579,
+   "angular": 1
+  },
+  "robe_07_02": {
+   "linear": 0.6000000238418579,
+   "angular": 1
+  },
+  "chain_r_00": {
+   "linear": 0.6000000238418579,
+   "angular": 1
+  },
+  "chain_r_02": {
+   "linear": 0.6000000238418579,
+   "angular": 1
+  },
+  "chain_r_06": {
+   "linear": 0.6000000238418579,
+   "angular": 1
+  },
+  "chain_r_08": {
+   "linear": 0.6000000238418579,
+   "angular": 1
+  },
+  "chain_r_10": {
+   "linear": 0.6000000238418579,
+   "angular": 1
+  },
+  "chain_neck_01": {
+   "linear": 0.6000000238418579,
+   "angular": 1
+  },
+  "chain_neck_09": {
+   "linear": 0.6000000238418579,
+   "angular": 1
+  },
+  "chain_neck_13": {
+   "linear": 0.6000000238418579,
+   "angular": 1
+  }
+ }
+}

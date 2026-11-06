@@ -252,3 +252,28 @@ Script: `Tools/warden/p13_retarget.py` (steps `rigs, rtg, batch, measure, blend,
 10. **Data asset of a C++ class:** `f = unreal.DataAssetFactory(); f.set_editor_property('data_asset_class', unreal.LBWardenAnimSet)`, `create_asset(name, folder, unreal.LBWardenAnimSet, f)`, then `set_object_properties` with `{"attack": {"refPath": "/Game/X/AM_X.AM_X"}, "attackPlayRate": 1.1}`.
 11. **Animation Blueprint without a dialog:** `f = unreal.AnimBlueprintFactory(); f.set_editor_property('parent_class', unreal.load_class(None, '/Script/LastBell.LBWardenAnimInstance')); f.set_editor_property('target_skeleton', skel)` (read back with `ToolsetLibrary.get_object_properties(f, ["ParentClass","TargetSkeleton"])`), `create_asset(name, folder, unreal.AnimBlueprint, f)`, `unreal.BlueprintEditorLibrary.compile_blueprint(abp)` (an empty graph compiles `BS_UP_TO_DATE` with no warnings), class default: `unreal.get_default_object(abp.generated_class()).set_editor_property('anim_set', da)`, compile again, save. Read back: `abp.get_blueprint_parent_class()`, `abp.get_editor_property('target_skeleton')`, `abp.get_animation_graphs()`. This is the BlueprintTools.create dialog problem (item 4 of the Phase 12 section) solved for Animation Blueprints.
 12. **Measuring a clip:** `opts = unreal.AnimPoseEvaluationOptions()` (RAW, `should_retarget` False, root motion off), `pose = unreal.AnimPoseExtensions.get_anim_pose_at_frame(seq, i, opts)`, `unreal.AnimPoseExtensions.get_bone_pose(pose, 'foot_l', unreal.AnimPoseSpaces.WORLD)` (WORLD = component space). Frames: `unreal.AnimationLibrary.get_num_frames(seq)`; there are frames + 1 keys. `get_bone_pose_for_frame(seq, bone, frame, False)` gives the local track value. `AnimationLibrary.find_bone_path_to_root(seq, bone)` gives the parent chain.
+
+## Animation Blueprint graph and physics asset through MCP (Phase 13, P13-6)
+Scripts: `Tools/warden/p13_abp_graph.py` (steps `create props read save`; `P13_TARGET=spike` aims it at the spike), `p13_physics.py` (`before edit damping after save`), helpers in `p13_abp_lib.py`. The editor must be open.
+1. **The AnimGraph can be built with `BlueprintTools`.** `list_graphs` / `get_graph(bp, "AnimGraph")` gives the graph; Output Pose is the `AnimGraphNode_Root_0` that `find_nodes(graph, "")` returns. `find_node_types` with a filter such as `Animation|` lists the anim node types.
+2. **Type ids used:**
+   - `Animation|BlendSpaces|BlendspacePlayer'BS_Warden_Locomotion'`: the typed form places the player with its blend space already set. The untyped `...|BlendspacePlayer` has no asset and fails the compile.
+   - `Animation|Blends|TwoWayBlend`
+   - `Animation|Montage|Slot'DefaultSlot'`
+   - `Animation|ConvertSpaces|LocalToComponent` and `ComponentToLocal`
+   - `Animation|SkeletalControls|Transform(Modify)Bone`
+   - `Animation|SkeletalControls|TwoBoneIK`
+   - `Animation|Dynamics|RigidBody`
+   - Variable getters: `Variables|Warden|Get<Variable>`.
+3. **Conversion nodes are not added automatically.** `connect_pins` does not insert Local to Component or Component to Local: place them yourself between the local-space and component-space nodes.
+4. **Wiring:** `create_node(graph, type_id, pos)` returns the node; `connect_pins(output_pin, input_pin)` takes `{node, direction, index_id}`; pin indexes come from `get_node_type_pins`. A getter wired to a pin binds the variable (Alpha pins are on by default, `alphaInputType` Float).
+5. **Node options:** `ObjectTools.set_properties(node, {"Node": {...}})` (`values` as a JSON string) and `get_properties(node, ["Node"])`. Names are camelCase struct fields: `boneToModify.boneName`, `translationMode` (`BMM_Additive`), `translationSpace` (`BCS_ComponentSpace`), `iKBone`, `effectorLocationSpace`, `effectorTarget.boneReference.boneName`, `jointTarget...`, `jointTargetLocationSpace`, `simulationSpace`, `lODThreshold`. Read each back.
+6. **Compile result:** `compile_blueprint` returns None when clean and raises (`failed to compile. Compile Errors: [...]`) on an error; with `warnings_as_errors` true it also raises on warnings. A deliberately broken node proved it. An unconnected stray node is not compiled, so it proves nothing. The log lines are `LogBlueprint: Error: ... [Compiler] ...`.
+7. **Two Bone IK joint target:** Parent Bone Space with location (0,0,0) puts the pole at the hip. Use Bone Space on the calf so the pole is the animated knee.
+8. **Physics asset (`PhysicsToolsets.PhysicsAssetToolset`):**
+   - `GetBodyNames`, `GetBodyShapes`, `GetBodyPhysicsMode`, `GetConstraints` read everything; `AddBody`, `SetCapsule`, `AddConstraint (child, parent)`, `RemoveConstraint`, `SetBodyPhysicsMode`, `SetConstraintLimits` edit it.
+   - `SetCapsule`'s long axis is the capsule's local Z; the shapes here are all named "None".
+   - A new body is empty until `SetCapsule`. To re-parent a chain body, `RemoveConstraint` then `AddConstraint`.
+   - No tool for body or constraint damping, per-pair collision disabling, or constraint reference frames. Body damping is reachable through ObjectTools: the body setups are sub-objects `<PA>:SkeletalBodySetup_<N>` (find the bone by reading `boneName`), set `{"defaultInstance": {"linearDamping": x, "angularDamping": y}}`. Constraint templates are `<PA>:PhysicsConstraintTemplate_<N>`. The array properties on the asset itself can't be read.
+   - Probing 120 setup names takes a few minutes, so do it once per script.
+9. **Bone lengths for capsule sizing** (no MCP tool for bone transforms): a read-only headless script, `Tools/warden/p13_bone_probe.py`, ran with the editor open (`UnrealEditor-Cmd -run=pythonscript`, exit 0, saves nothing), using `AnimPoseExtensions.get_reference_pose(skeleton)` + `get_bone_pose(..., LOCAL)`.
