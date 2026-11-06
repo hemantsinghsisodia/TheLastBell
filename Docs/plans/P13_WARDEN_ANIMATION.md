@@ -1,6 +1,6 @@
 # Phase 13: Warden animation: plan
 
-**Status: approved by the owner on 2026-11-06 ("go"). P13-0, P13-1 (13 files checked in Blender; registry 86cc8e8) and P13-2 (18df9d9, suite 108/108) done. F0 and P13-3 next.**
+**Status: approved by the owner on 2026-11-06 ("go"). P13-0, P13-1 (13 files checked in Blender; registry 86cc8e8) and P13-2 (18df9d9, suite 108/108) done. F0, P13-3 (7e5e65d) and P13-4 (363f5ad) done. Next: the foot IK and stoop fix, and the contact sheet rendered in Blender.**
 **Branch:** `claude/phase-13-warden-animation`, from `main` (086d063).
 **Rules:** D-048. The lead plans; every implementer is spawned with `model: "sonnet", effort: "high"`. Nothing starts without the owner's "go"; the owner is told before any capture over about 15 minutes; agents never run the capture tool or operate the desktop.
 
@@ -117,6 +117,43 @@ The existing `AN_` stays for sequences.
 | `AM_Warden_LookAround` | Slot `DefaultSlot`, blend 0.3 / 0.3, trimmed to at most 2.0 s, because the search pause is 2 s |
 
 The `DefaultSlot` group is the engine default. Play rates are stored in `DA_WardenAnimSet` (section 8), not on the montages, so they can be tuned without re-saving the clips.
+
+### P13-4 result (363f5ad, 2026-11-06), measurements in `Docs/ArtTest/warden/p13_clips.json`
+All built in headless Python on the real project with the editor closed:
+- `IK_LB_YBot` and `IK_LB_Warden`, 21 chains each, no `chain_*` or `robe_*` bone in any chain;
+- `RTG_LB_YBot_To_Warden`;
+- 12 `AN_Warden_*` clips;
+- `BS_Warden_Locomotion` and `BS_Warden_Stoop`;
+- 4 `AM_Warden_*` montages;
+- `DA_WardenAnimSet` (`AttackHitTime` 0.667 s, `AttackPlayRate` 1.111);
+- `ABP_Warden`, with its `AnimSet` set, and `ABP_P13_Spike`. Both compile, with empty graphs.
+
+No limb stretches (every chain stays at or below 1.000 of its reference length). **Nothing has been seen on screen.**
+
+| Clip | Natural speed (cm/s) | Head top + 50 | Note |
+|---|---|---|---|
+| MutantWalking | 194.6 | 289.5 | walk at 140 plays at 0.72×; feet sink about 4 cm |
+| ZombieWalk | unreliable | 281.1 | drags one foot |
+| MutantRun | 296.4 | 270.4 | chase at 420 would play at 1.42× |
+| ZombieRunning | 371.1 | 264.9 | chase at 1.13× |
+| CrouchedWalking | 159.0 | **256.4** | **too tall for the doors** |
+| CrouchingIdle | 0 | 186.0 | |
+| ZombieAttack | — | 285.7 | two swipes; hit 0.667 s, reach 106 cm |
+| MutantSwiping | — | 280.2 | hit 1.333 s, reach 130 cm |
+| TurnLeft90 / TurnRight90 | — | ~291 | −90.0° / +102.6° |
+| LookAround | — | 285.4 | trimmed to 2.0 s in the montage |
+
+**Lead decisions:**
+1. **Facing:** the Y Bot faces +Y and the Warden +X. The retarget pose turns the pelvis +90°, and every `AN_Warden_*` from Mixamo carries a constant −90° yaw key on `root`. **Accepted.** Re-importing the Y Bot rotated would redo P13-3. Consequence: don't blend these clips with the old identity-root `AN_Warden_Idle`/`Walk`/`DoorwayStoop`.
+2. **Stoop height:** procedural, no new download. The anim set gets `StoopPelvisDrop` (40 cm). The anim instance adds −`StoopPelvisDrop` × `StoopAlpha` to `PelvisOffset.Z`, and foot IK is forced on while `StoopAlpha` > 0, keeping the feet on the floor. Expected top: 256 − 40 = **216** at full stoop, and 0.7 × that drop on the stairs. Checked on the contact sheet and the playtest.
+3. **Foot IK is offset-based, not absolute:**
+   - The fix: each foot target = the animated foot (previous frame, component space) + (ground hit Z under that foot − the capsule's floor Z), and `PelvisOffset.Z` = the lower foot's negative offset, at most `MaxPelvisDrop`.
+   - Why: P13-2 set the foot Z to the ground plus the ankle height, which would pin a swinging foot to the floor on stairs.
+   - Effect: on flat floor the offsets are 0. The 4–6 cm foot sink of four clips stays and is judged by eye, because the robe mostly hides the feet.
+4. **Run:** ZombieRunning fits the 420 chase better (1.13× against 1.42×). It's the lead's pick unless the sheet shows a problem; the blend space gets updated if so.
+5. **The contact sheet is rendered in Blender instead of captured in Simulate.**
+   - How: the 12 Warden clips are exported to FBX with the Warden mesh, in headless Unreal Python, then rendered from the front and side at 0/25/50/75 % in neutral light.
+   - Why: no capture session and no owner time, and a clearer read on twists and facing. The in-game look is judged in the playtest.
 
 ## 7. Stoop zones (lead fills the numbers in F0 from live transforms; unreal-blueprint-engineer places them)
 
