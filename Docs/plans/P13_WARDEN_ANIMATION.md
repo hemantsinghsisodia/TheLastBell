@@ -475,6 +475,42 @@ All 32 earlier Warden functional tests pass with it. `DA_WardenTuning` and `DA_W
 - **Owner:** "legs and arms move now, all good now".
 - **Still to read item by item** in the P13-8 performance session and the P13-9 playtest: robe and chain swing, turn speed and turn steps, stoops, the catch camera, the chase run and mask glow, the chapel walk, feet on stairs, LOD pops and a `stat unit` reading.
 
+### P13-8 performance readings (owner, 2026-11-06)
+- **Setup:** PIE new window, `scalability 2`, `r.SetRes 1920x1080w`, `stat unit` + `stat anim`, crypt checkpoint, the Warden animating close in view.
+- **Images:** `Docs/ArtTest/warden/p13_8_perf_1..3.png`.
+
+| Reading | Shot 1 | Shot 2 | Shot 3 | Limit |
+|---|---|---|---|---|
+| Game thread (`stat unit`) | 10.67 ms | 10.70 ms | 10.69 ms | — |
+| `AnimGameThreadTime` (avg) | 0.20 ms | 0.18 ms | 0.18 ms | **≤ 1.0 ms: pass** |
+| `SkinnedMeshComp Tick` (avg) | 0.15 ms | 0.13 ms | 0.13 ms | — |
+| `PerformAnimEvaluation_WorkerThread` (avg, worker) | 0.75 ms | 0.59 ms | 0.74 ms | — |
+| of which `RigidBody_Eval` (worker), calls | 0.50 ms, 2 | 0.39 ms, 1 | 0.49 ms, 2 | — |
+| GPU | 14.23 ms | 13.61 ms | 14.18 ms | **≤ 16.6 ms: pass** |
+
+**Reading the numbers:**
+- **On the game thread, animation costs about 0.2 ms.** The graph and the robe/chain physics run on worker threads (`a.ParallelAnimUpdate 1`).
+- The frame is held at 16.67 ms: frame smoothing caps it at 60 fps.
+- **Earlier figure not reproduced:** the P12 crypt reading of 17.47 ms on the game thread doesn't recur; it reads 10.7 ms with the Warden active.
+- **No extra logging was running.** The red "PROFILING WITH AI LOGGING ON!" line appears whenever stats are collected and `bDisableAILogging` is false, which is the engine default.
+- **Method change:** the single-clip A/B, `p.RigidBodyNode 0` and the Insights trace were dropped, because `stat anim` reads the animation's cost directly. The owner couldn't hold the view anyway: the Warden catches the player first.
+
+**Found:** two graph and rigid-body evaluations per frame, with one Warden in view. The second is `Apparition_Chapel`'s `Figure`:
+- `SK_Warden` + `ABP_Warden_C`, hidden;
+- `VisibilityBasedAnimTickOption` = `AlwaysTickPoseAndRefreshBones` (the `USkinnedMeshComponent` default; `ALBWardenApparition` never overrode it);
+- URO off.
+
+So it runs the whole graph and the physics every frame, on the far side of the map, for the whole game.
+
+Shot 2 shows its cost alone. There the Warden was off screen, so its own graph was skipped (`OnlyTickMontagesWhenNotRendered`), and one evaluation remained:
+- `EvaluateAnimGraph` 0.45 ms;
+- `RigidBody_Eval` 0.39 ms (worker);
+- most of the 0.18 ms `AnimGameThreadTime`.
+
+That is about half of the animation cost in shots 1 and 3.
+
+**Fix (pending the owner's go):** in the `ALBWardenApparition` constructor, set `Figure->VisibilityBasedAnimTickOption = OnlyTickPoseWhenRendered`, plus a test. No asset save is needed: the placed instances hold the default.
+
 ## 12. Look test, performance and playtest (lead and owner)
 
 **Contact sheet (lead, about 10 minutes of capture, owner told first):**
