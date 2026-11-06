@@ -110,7 +110,7 @@ Not built: multiple slots, free saving or whole-world serialization.
 The brain is a **C++ state machine**, not a State Tree (D-037). The decisions are pure and unit tested; the component only gathers facts and acts.
 
 **Classes**
-- `ALBWarden : ACharacter`: collision capsule radius 42, half height 110 (D-038: it must fit the 104 x 230 cm doorways; the taller visual body lives in `BP_Warden`: `SK_Warden` from `/Game/LastBell/Characters/Warden/`, D-091, on `CharacterMesh0` at yaw 0, Z −110, `NoCollision`, playing `AN_Warden_Idle` single-node until Phase 13). `TellLight` (no shadows, 5000 unitless, radius 700) sits about 40 cm in front of the mask, a child of `PlaceholderBody` at (110, 0, 235); it shows during the attack windup. The mask glows red through a dynamic instance of the slot `M_Warden_BellMetal` (`TellGlow`: 0.25 while chasing, 1 in the windup, otherwise 0), set from `PlayStateFeedback`, `ShowWindupTell` and `EndWindupTell` (D-092). Socket `mask` on bone `head` stays for Phase 13. Capsule size and eye height come from the tuning asset. No mesh in C++. It starts hidden and without collision (dormant presentation) and is placed once in the persistent level. **Never saved** (D-012): it is rebuilt from the stage tags.
+- `ALBWarden : ACharacter`: collision capsule radius 42, half height 110 (D-038: it must fit the 104 x 230 cm doorways; the taller visual body lives in `BP_Warden`: `SK_Warden` from `/Game/LastBell/Characters/Warden/`, D-091, on `CharacterMesh0` at yaw 0, Z −110, `NoCollision`, animated by `ABP_Warden` since Phase 13, see "Warden animation" below; `OnlyTickMontagesWhenNotRendered`, update-rate optimisation on). `TellLight` (no shadows, 5000 unitless, radius 700) sits about 40 cm in front of the mask, a child of `PlaceholderBody` at (110, 0, 235); it shows during the attack windup. The mask glows red through a dynamic instance of the slot `M_Warden_BellMetal` (`TellGlow`: 0.25 while chasing, 1 in the windup, otherwise 0), set from `PlayStateFeedback`, `ShowWindupTell` and `EndWindupTell` (D-092). Socket `mask` on bone `head` stays for Phase 13. Capsule size and eye height come from the tuning asset. No mesh in C++. It starts hidden and without collision (dormant presentation) and is placed once in the persistent level. **Never saved** (D-012): it is rebuilt from the stage tags.
 - `ALBWardenController : AAIController`: `UAIPerceptionComponent` with Sight and Hearing (enemies, neutrals and friendlies all detected, because the player is neutral), plus `ULBWardenBrainComponent`. It forwards `OnTargetPerceptionUpdated` and `OnMoveCompleted` to the brain and holds no decision logic. The sight sense is configured for the largest effective radius (stage radius x candle multiplier) and narrowed per target by the brain.
 - `ULBWardenBrainComponent` lives on the **controller**: it already owns perception and path following, and the checkpoint rule finds it through `UWorld::GetControllerIterator()`, so there is no manager actor and no registry.
 - `ULBWardenTuningData` (`DA_WardenTuning`): every number (see the file; defaults are the Phase 5 starting values and the fallback when no asset is assigned).
@@ -152,6 +152,36 @@ A state that a lowered stage forbids (a reload) is left through Return. Any acti
 **Known limitation.** A partial patrol path counts as arrived, so a broken route truncates silently. `Warden.MonasteryReachability` guards against this by checking every patrol and spawn segment is a complete nav path.
 **Tests.** `LastBell.Warden.*` (pure logic: stage gating, the full transition table plus an exhaustive invariant sweep, attack windup, sight confirm timing, candle multiplier, search point selection, stuck detector, spawn selection, tuning defaults). Functional: `LastBell.Functional.Warden.*` (22 tests in `L_Test_Warden` and `L_Monastery`: gating, sight, candle, hearing, lose target, unreachable, stuck, chase speed, catch and escape, checkpoint refusal, repeated chases, flip-flop, stage relocation, reachability).
 
+### Warden animation (Phase 13, D-093, `Docs/plans/P13_WARDEN_ANIMATION.md`)
+- **Clips.** Mixamo motion capture retargeted onto `SK_Warden`: `AN_Warden_*` in `/Game/LastBell/Characters/Warden/Anims/`.
+  - The retarget source, the Y Bot, its raw clips, the IK Rigs and `RTG_LB_YBot_To_Warden`, lives in `Retarget/`. That folder is **local only**: git-ignored and never cooked (R-55, D-094).
+  - It is rebuilt from the raw FBX with `Tools/warden/p13_import.py`, `p13_reimport_ybot.py` and `p13_retarget.py`.
+- **`ULBWardenAnimInstance`** (`AI/LBWardenAnimInstance`), the parent of `ABP_Warden`. In `NativeUpdateAnimation` it computes:
+  - `GroundSpeed`: from `CharacterMovement` velocity, or from the location delta for a non-character such as the apparition;
+  - the stoop target, from `ULBWardenStoopSubsystem`;
+  - foot traces, giving bone-space deltas for two Two Bone IK nodes and a pelvis drop;
+  - `PhysicsAlpha`: 1 within `PhysicsMaxDistance` of the camera;
+  - turn-on-the-spot detection, from a yaw history, which plays `TurnLeft90` or `TurnRight90`.
+
+  The easing runs in `NativeThreadSafeUpdateAnimation`. BlueprintCallable: `PlayAttack`, `PlayLookAround`, `HoldCatchPose`. Pure helpers live in `LBWardenAnim` (stoop, easing, turn decision, foot and pelvis maths, attack play rate). Debug: `lb.Warden.AnimDebug 1`.
+- **`ULBWardenAnimSet`** (`DA_WardenAnimSet`): the montages (Attack, TurnLeft90, TurnRight90, LookAround) and every animation number (turn trigger and cooldown, stoop ease, foot trace and IK speed, pelvis limits, physics distance, attack timing).
+  - The attack montage is scaled so its hit lands at the end of the AI's `AttackWindupSeconds`.
+- **`ABP_Warden` graph:**
+  1. `BS_Warden_Locomotion` and `BS_Warden_Stoop`, blended by `StoopAlpha`;
+  2. Slot `DefaultSlot`;
+  3. pelvis offset;
+  4. two Two Bone IK nodes;
+  5. `RigidBody` (robe and chain bodies of `SK_Warden_PhysicsAsset`, LOD threshold 1), weighted by `PhysicsAlpha`.
+
+  A blend space whose samples are set by script needs one open-and-save in the Blend Space editor, because `ResampleData` runs only there (`MCP_NOTES.md`).
+- **Stooping.** `ALBWardenStoopZone` boxes (`StoopAmount` 0–1) are placed at the low doors and stair ends of L_Monastery (`SZ_*`, 12) and registered with `ULBWardenStoopSubsystem`, a world subsystem. The anim instance queries `GetStoopAmount(Location)`, with no ceiling traces.
+- **`BP_Warden` hooks:** `PlayAttackAnim` (in the windup), `UpdateAnimState` (Search sets look-around; Dormant stops the montages), `CheckSearchPause` (0.25 s timer: still for 0.5 s in Search plays `PlayLookAround`), and `HandlePlayerCaught` (stop moving, `HoldCatchPose`).
+- **Catch camera.** `ALBCharacter::Kill(AActor* Killer)`:
+  - with a Warden killer, the view turns to its mask over `CatchLookSeconds`, holds for `CatchHoldSeconds` and fades over `CatchFadeSeconds` (all in `ULBPlayerTuningData`); then the normal death and reload follow;
+  - without a killer (pits), death stays immediate;
+  - the brain broadcasts `OnPlayerCaught` and passes the Warden.
+- **Cost (P13-8):** about 0.2 ms on the game thread for the animation. The graph and physics run on worker threads (`a.ParallelAnimUpdate`).
+
 ## 9. Gameplay Tags
 - **Native** (referenced from C++): `State.Warden.Stage.1..6`, and `AI.Stimulus.*` from Phase 5.
 - **Ini** (`Config/Tags/LBGameplayTags.ini`, edited as text **only while the editor is closed**, D-024): `State.Ritual.1..3`, `State.Door.<Name>.Open`, `State.Item.<Name>`, `State.Event.<Name>`, `State.Test.*`, `Objective.<Area>.<Name>`.
@@ -163,7 +193,7 @@ These live in `Content/LastBell/Blueprints/`:
 - `Interactables/` contains:
   - `BP_Door_Base`: rotates, locks via `RequiredStateTags`, stores its open state as a tag and snaps instantly on restore.
   - `BP_Lever`, `BP_RitualMechanism`, `BP_TagInteractable` (pickups, candles, bell), `BP_TagTrigger`, `BP_TagVisibility`, `BP_KillVolume`.
-  - Warden stand-ins: `ALBWardenApparition` / `BP_WardenApparition` (`AI/LBWardenApparition`, logic in `LBApparitionLogic`, D-092; replaced the Phase 2 `BP_WardenSilhouette`). A one-shot scripted appearance, not the AI: a world-state tag starts it, and at each station it waits until the player looks, faces them, fades in (dithered, parameter `Fade` on every slot), holds and fades out; it never repeats after a reload. Placed as `Apparition_Courtyard` and `Apparition_Chapel`. The Phase 2 `BP_WardenPlaceholderKill`, unused since the AI pawn arrived, was removed at the end of Phase 12 with its `M_LB_Silhouette` material.
+  - Warden stand-ins: `ALBWardenApparition` / `BP_WardenApparition` (`AI/LBWardenApparition`, logic in `LBApparitionLogic`, D-092; replaced the Phase 2 `BP_WardenSilhouette`). A one-shot scripted appearance, not the AI: a world-state tag starts it, and at each station it waits until the player looks, faces them, fades in (dithered, parameter `Fade` on every slot), holds and fades out; it never repeats after a reload. Placed as `Apparition_Courtyard` and `Apparition_Chapel`. Phase 13: a station can carry a `WalkPath` (`WalkSpeed` 110), and with `bUseSkeletalFigure` the figure is the `Figure` skeletal component running `ABP_Warden`. The chapel walks from the altar rail into the sacristy; the courtyard stays a static `Body`. `Figure` ticks only while rendered (`OnlyTickPoseWhenRendered`), so the hidden apparition costs nothing (P13-8). The Phase 2 `BP_WardenPlaceholderKill`, unused since the AI pawn arrived, was removed at the end of Phase 12 with its `M_LB_Silhouette` material.
   - All of these share the pattern: snap to state at BeginPlay, bind `OnStateChanged`, unbind at EndPlay. A shared base (`ALBTagReactiveActor`) was considered and deferred (D-032).
   - **Art children (D-071, D-076, D-081; Phases 8–10).** An area's art lives in child Blueprints: each child sets the art mesh, the collision and its per-instance values in its construction script, and the gameplay logic stays in the parent.
     - Doors: `BP_Door_Base_Dungeon` (chapel main, sacristy, `Door_Tower`, `Door_Shortcut`).

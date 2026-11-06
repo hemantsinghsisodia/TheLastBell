@@ -311,6 +311,22 @@ Branch `claude/phase-13-warden-animation`. Spec: `Docs/plans/P13_WARDEN_ANIMATIO
 | P13-8 | Performance readings, Insights trace | owner + performance-engineer | P13-7 |
 | P13-9 | QA, docs, playtest; PHASE 13 READY FOR YOUR REVIEW | qa-reviewer + lead + owner | all |
 
+**Status, 2026-11-07:** P13-0 to P13-8 are done. In-game look and fixes:
+- **Turns:** turn speeds slowed at the owner's request (RotationRate 120, TurnRate 90, trigger 45°).
+- **Frozen limbs:** the blend spaces lacked runtime data. The owner re-saved them in the Blend Space editor, and the limbs move.
+- **Second look:** "legs and arms move now, all good now".
+
+P13-8, `stat anim`:
+- animation about 0.2 ms on the game thread; GPU 13.6–14.2 ms;
+- the hidden chapel apparition no longer animates every frame.
+
+Owner playtest: "all good". Wrap-up:
+- **Mixamo files (D-094):** the Y Bot, its raw clips and the review FBX are kept out of the public repo (git-ignored; branch history rewritten before any push) and are never cooked.
+- **Leftovers:** `ABP_P13_Spike` deleted.
+- **Docs:** updated.
+
+Real-project suite 112/112 before the wrap-up. QA and the final suite run are next, then "PHASE 13 READY FOR YOUR REVIEW".
+
 ## Deferred to Phase 14–15 (Lighting, VFX: storm work)
 Items the owner asked to fold into the storm pass. Plan them in detail (Docs/plans/) when Phase 14–15 starts.
 

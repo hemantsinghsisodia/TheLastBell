@@ -1,6 +1,6 @@
 # Phase 13: Warden animation: plan
 
-**Status: approved by the owner on 2026-11-06 ("go"). P13-0, P13-1 (13 files checked in Blender; registry 86cc8e8) and P13-2 (18df9d9, suite 108/108) done. F0, P13-3 (7e5e65d) and P13-4 (363f5ad) done. P13-5 sheet (00c5db6) shows the retarget is wrong; P13-4b done (0ca768c): arms and posture fixed. The robe and sleeve skin weights need fixing (decision with the owner). P13-6 (graph) can go ahead in parallel.**
+**Status: approved by the owner on 2026-11-06 ("go"). P13-0, P13-1 (13 files checked in Blender; registry 86cc8e8) and P13-2 (18df9d9, suite 108/108) done. F0, P13-3 (b4774f7) and P13-4 (b66132f) done. P13-5 sheet (b0206c3) shows the retarget is wrong; P13-4b done (2f342c4): arms and posture fixed. The robe and sleeve skin weights need fixing (decision with the owner). P13-6 (graph) can go ahead in parallel.**
 **Branch:** `claude/phase-13-warden-animation`, from `main` (086d063).
 **Rules:** D-048. The lead plans; every implementer is spawned with `model: "sonnet", effort: "high"`. Nothing starts without the owner's "go"; the owner is told before any capture over about 15 minutes; agents never run the capture tool or operate the desktop.
 
@@ -118,7 +118,7 @@ The existing `AN_` stays for sequences.
 
 The `DefaultSlot` group is the engine default. Play rates are stored in `DA_WardenAnimSet` (section 8), not on the montages, so they can be tuned without re-saving the clips.
 
-### P13-4 result (363f5ad, 2026-11-06), measurements in `Docs/ArtTest/warden/p13_clips.json`
+### P13-4 result (b66132f, 2026-11-06), measurements in `Docs/ArtTest/warden/p13_clips.json`
 All built in headless Python on the real project with the editor closed:
 - `IK_LB_YBot` and `IK_LB_Warden`, 21 chains each, no `chain_*` or `robe_*` bone in any chain;
 - `RTG_LB_YBot_To_Warden`;
@@ -155,7 +155,7 @@ No limb stretches (every chain stays at or below 1.000 of its reference length).
    - How: the 12 Warden clips are exported to FBX with the Warden mesh, in headless Unreal Python, then rendered from the front and side at 0/25/50/75 % in neutral light.
    - Why: no capture session and no owner time, and a clearer read on twists and facing. The in-game look is judged in the playtest.
 
-### P13-2 follow-up result (8e522b9, 2026-11-06)
+### P13-2 follow-up result (b09c27d, 2026-11-06)
 `Tools/build_and_test.ps1`: **110 passed, 0 failed**. New tests: `Warden.Anim.FootTargetKeepsTheSwing` and `Warden.Anim.StoopPelvis`.
 
 - **Foot IK, as built:**
@@ -167,7 +167,7 @@ No limb stretches (every chain stays at or below 1.000 of its reference length).
 - **While stooping:** foot IK is forced on and the traces run at any speed.
 - **Not seen on screen.**
 
-### P13-5 result (00c5db6, 2026-11-06): the retarget is wrong
+### P13-5 result (b0206c3, 2026-11-06): the retarget is wrong
 Sheet: `Docs/ArtTest/warden/p13_sheet_all.png`, plus one per clip.
 - **Arms:** in **every clip, the idle included,** the arms stick out horizontally at shoulder height, one forward and one back.
 - **Torso and robe:** they lean 20–25° and bend.
@@ -189,7 +189,7 @@ Sheet: `Docs/ArtTest/warden/p13_sheet_all.png`, plus one per clip.
    - in every clip, no hand above Z 200 except in the attacks and LookAround.
 5. **Rerun the contact sheet and look at it** before reporting anything as fixed. Blend spaces, montages and the data asset keep their references; just re-verify them.
 
-### P13-4b result (0ca768c, 2026-11-06)
+### P13-4b result (2f342c4, 2026-11-06)
 - **What changed:** the Y Bot was re-imported facing +X (yaw −90; toes 14 cm ahead of the heels along +X). The retarget pose was reset and auto-aligned without a pelvis yaw, then the pelvis was reset alone and the chain bones re-aligned, so the robe hangs straight (1.6° in the idle). No `root` key.
 - **New sheet** (`p13_sheet_all.png`): the arms hang at the sides, the mask faces the direction of travel, and the feet are on the floor. The 4–6 cm sink is gone.
 - **Lead decisions:**
@@ -239,7 +239,7 @@ Sheet: `Docs/ArtTest/warden/p13_sheet_all.png`, plus one per clip.
 - Then `Tools/warden/check_warden.py --disk`, plus a read-back of slots, socket and LODs.
 - If an in-place re-import can't keep those, stop and report before changing anything.
 
-### P13-4c result (ad993fe, 2026-11-06), with the lead's review
+### P13-4c result (de781af, 2026-11-06), with the lead's review
 `SourceArt/Warden/V5_5w/` holds the variation (leg share 0.35, 3 smoothing passes): only weights changed, the topology is identical, and the V5_5 copy is untouched.
 - **Better:** the walk, run, crouch and attack sleeves follow the arms, and the robe moves with the legs.
 - **Still wrong:**
@@ -255,7 +255,7 @@ Sheet: `Docs/ArtTest/warden/p13_sheet_all.png`, plus one per clip.
 - **(C) Seams:** a 10 cm feather (smoothing) across the sleeve-to-body boundary and across the untouched shoulder and chest band edge.
 - **Attempt limit:** one try plus one variation, then stop with the sheets.
 
-### P13-4c round 3 result (c5e93b0, 2026-11-06): **V5_5w2 accepted by the lead**
+### P13-4c round 3 result (43ee930, 2026-11-06): **V5_5w2 accepted by the lead**
 Sheets: `p13w2_sheet_*.png`. Only weights changed, verified against disk; `V5_5/` is untouched.
 - **Fixed:**
   - **Feet:** 576 foot-pinned wool and leather hem vertices take their nearest robe neighbours' weights plus the leg blend.
@@ -374,7 +374,7 @@ Pure logic in testable functions, as in `LBWardenLogic`. No hard asset reference
 
 Compile with no warnings.
 
-### P13-6 result (5b53ceb, 2026-11-06): graph built through the editor tools; no owner step
+### P13-6 result (ef7fac1, 2026-11-06): graph built through the editor tools; no owner step
 `ABP_Warden`'s AnimGraph is built with `create_node` and `connect_pins` (the Blend Space Player has a typed form with its asset already set), with node options set through `set_properties {"Node": ...}`.
 - **Chain:** two Blend Space Players → Blend (StoopAlpha) → Slot `DefaultSlot` → Local to Component → pelvis Transform (Modify) Bone → two Two Bone IK → RigidBody (LOD Threshold 1) → Component to Local → Output Pose.
 - **Compile:** a strict compile reports no errors and no warnings. A deliberately broken control proved the compile does raise on errors.
@@ -396,7 +396,7 @@ Compile with no warnings.
 - If those bones have no bodies, the physics asset needs adding in the editor's Physics Asset tool by the owner, about 10 minutes with exact steps. Report it before going on.
 - **Pass, in Simulate with the Warden walking a test loop:** settles within 1 s of stopping; no body flies off or jitters at rest; chains don't pass through the forearms by more than a few cm.
 
-### P13-6 follow-ups (4431dab, 2026-11-06)
+### P13-6 follow-ups (ab89c62, 2026-11-06)
 - **Knee pole:** Bone Space on the calf.
 - **Physics:** 51 bodies (8 new: `chain_r_00/02/06/08/10`, `chain_neck_01/09/13`); 32 simulated (16 chain, 16 robe), 19 kinematic; 50 constraints. Chain and robe limits: swing 30° / 30°, twist 10°. Damping 0.6 / 1.0 on chain and robe bodies.
   - **Right and neck chain bodies** are sized to their short bones (2.5 and 1.9 cm links) instead of mirroring `chain_l` (17.5 cm). The two existing bodies, `chain_r_04` and `chain_neck_05`, were resized too.
@@ -424,7 +424,7 @@ Compile with no warnings.
 4. **Stoop zones** placed in `L_Monastery` per section 7, folder `Gameplay/Warden/StoopZones`.
 5. Save each package explicitly. The map is saved once, before any template edit, as in fix set 1. Then `Tools/warden/check_warden.py` gets checks for all of this.
 
-### P13-4c re-import (d4498ad, 2026-11-06)
+### P13-4c re-import (31ccd7e, 2026-11-06)
 `SK_Warden` holds the V5_5w2 weights on all 3 LODs, re-imported in place, headless, with the editor closed.
 - **LOD0:** `AssetImportTask` with `replace_existing`, using the asset's stored options (Force Front X).
 - **LOD1 and LOD2:** `SkeletalMeshEditorSubsystem.import_lod` from copies pre-rotated +90°, because `import_lod` ignores Force Front X. The LOD build settings are restored afterwards.
@@ -433,7 +433,7 @@ Compile with no warnings.
 - **Checks:** `check_warden.py --disk` 32/32.
 - **Not readable from Python:** the LOD screen sizes; the lead checks them in the editor.
 
-### P13-7 result (d3be054, 2026-11-06): hookup done
+### P13-7 result (a647646, 2026-11-06): hookup done
 - **`BP_Warden`:** `CharacterMesh0` runs `ABP_Warden_C`, ticks montages only when unseen, and has update-rate optimisation on.
   - `ShowWindupTell` → `PlayAttackAnim`.
   - `OnPlayerCaught` → `HandlePlayerCaught` (`DisableMovement`, then `HoldCatchPose`).
@@ -447,7 +447,7 @@ Compile with no warnings.
 - **Noted:** `Apparition_Courtyard`'s own `Figure` was saved empty, which doesn't matter while it stays static; set it at the next legitimate map save. The search timer runs for the actor's whole life.
 - **Not seen on screen:** motion, physics, foot IK, the catch, stoops, the chapel walk, the look-around, cost.
 
-### First look in the game (owner, 2026-11-06) and the fix (bc7a6b3)
+### First look in the game (owner, 2026-11-06) and the fix (9a76553)
 **Owner:**
 - **Walking:** while it walks, the legs and arms don't move.
 - **Attack:** up close, it lunges with its arms.
@@ -470,7 +470,7 @@ Compile with no warnings.
 
 All 32 earlier Warden functional tests pass with it. `DA_WardenTuning` and `DA_WardenAnimSet` store no explicit values, so the new defaults apply. The real-project suite: 110 passed, 1 failed (the new test, until the blend spaces are resampled).
 
-### Second look (owner, 2026-11-06), after the blend-space resave (791c1ed)
+### Second look (owner, 2026-11-06), after the blend-space resave (10d15ac)
 - **Mirror:** `LastBell.Functional.Warden.Anim` passes; both blend spaces carry runtime data (2 segments each).
 - **Owner:** "legs and arms move now, all good now".
 - **Still to read item by item** in the P13-8 performance session and the P13-9 playtest: robe and chain swing, turn speed and turn steps, stoops, the catch camera, the chase run and mask glow, the chapel walk, feet on stairs, LOD pops and a `stat unit` reading.
@@ -509,7 +509,7 @@ Shot 2 shows its cost alone. There the Warden was off screen, so its own graph w
 
 That is about half of the animation cost in shots 1 and 3.
 
-**Fix (owner's go, d5324ab):** `ALBWardenApparition`'s constructor sets `Figure->VisibilityBasedAnimTickOption = OnlyTickPoseWhenRendered`. No asset was saved.
+**Fix (owner's go, e5d1bcd):** `ALBWardenApparition`'s constructor sets `Figure->VisibilityBasedAnimTickOption = OnlyTickPoseWhenRendered`. No asset was saved.
 
 **Tests:**
 - new `LastBell.Warden.Apparition.FigureAnimatesOnlyWhenRendered` (the class default);
@@ -540,7 +540,7 @@ R-55 said the Y Bot stays out of git. The owner chose to keep both folders out o
 6. **Spike:** deleted `ABP_P13_Spike`, which had no referencers.
 7. **Docs:** registry rows updated; R-55 updated; R-57 and R-58 closed.
 
-The commit hashes before the rewrite (for example d5324ab and a75a413) are now different: e5d1bcd and f431989. `refs/original/` keeps the old head until the merge.
+Every commit hash in this file and the other docs was switched to the rewritten one; the old-to-new map is in `ExternalAssets/Incoming/mixamo/_p13_local_backup/hash_map.txt` (local). `refs/original/` keeps the old head until the merge.
 
 ## 12. Look test, performance and playtest (lead and owner)
 
