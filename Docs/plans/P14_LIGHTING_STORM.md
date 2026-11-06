@@ -673,3 +673,22 @@ One editor agent at a time. Each agent commits on this branch only and never swi
   - Player-candle snuff beats.
   - Scalability menus (Phase 18).
   - Any change to AI timing or behaviour.
+
+## Results
+
+### P14-1 result (da7d195, 2026-11-07)
+**Built:**
+- `Source/LastBell/Storm/`: `LBStormTypes.h`, `LBStormLogic`, `ULBStormSettings`, `ULBStormSubsystem`, `ALBStormZone`, `ALBStateLightGroup`;
+- the apparition's `bLightningOnHold`;
+- `ULBGameSettings::StormSettings`;
+- `lb.Storm.Flash`, `lb.Storm.Intensity` and `lb.Storm.Freeze`, plus the CVars `lb.Storm.Enabled` and `lb.Storm.Debug`.
+
+**Real-project suite:** 125 passed, 1 failed, 0 invalid tags. The failure is `Functional.Storm.Monastery.StormSetup`, expected red until P14-2 and P14-3; its messages list what's missing.
+
+**Notes for the editor tasks:**
+- **Tag arrays:** `StoryIntensity` and `ScriptedStrikes` are empty by default. Call `FillPlanTagDefaults()` (CallInEditor) when creating `DA_StormSettings`, then add the `StormSettings=` line to `DefaultGame.ini`.
+- **Light mobility:** `SetIntensity` does nothing on a **Static** light. F0 must report the mobility of every tagged and grouped light. Any Static one is made Movable in P14-3, recorded, and its cost checked.
+- **Sky light:** handled as a `USkyLightComponent`, because `ASkyLight` isn't an `ALight`.
+- **Look gate:** a view-cone check only, with no trace, so the tower itself can't block it. Accepted.
+- **`WardenRevealFlash`:** runs with `lb.Warden.Enabled 0` and `SetDormantPresentation(false)`, on its own floor and wall. Accepted: it isolates the rule from the brain.
+- **Monastery tests:** once the storm is active in `L_Monastery` (after P14-3), the existing Monastery tests run with ambient flashes. That's harmless, but watch it.
