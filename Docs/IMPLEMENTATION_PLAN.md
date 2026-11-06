@@ -342,6 +342,8 @@ Owner playtest: "all good". Wrap-up:
 
 **Owner review (D-095):** the 12 retargeted Mixamo clips are now kept out of the public repo as well (git-ignored, history rewritten again). A fresh clone has an unanimated Warden; the owner keeps a private copy of `ExternalAssets/Incoming/mixamo/`.
 
+**Approved and merged by the owner on 2026-11-07** ("approve and merge"). Next: Phase 14, which doesn't start until the owner approves its plan.
+
 ## Deferred to Phase 14–15 (Lighting, VFX: storm work)
 Items the owner asked to fold into the storm pass. Plan them in detail (Docs/plans/) when Phase 14–15 starts.
 
