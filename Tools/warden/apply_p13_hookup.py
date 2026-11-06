@@ -595,7 +595,8 @@ def check_update_anim_state(ue, g):
     bad = []
     if not any(p["name"] == "NewState" and "Byte" in p["type_id"] for p in entry["output_pins"]):
         bad.append("UpdateAnimState needs a byte input NewState")
-    by_b = {g.value(e, "B"): e for e in eqs}
+    # A byte pin whose default is 0 reads back as '' after the Blueprint is saved and reloaded ('' compiles to 0).
+    by_b = {(g.value(e, "B") or "0"): e for e in eqs}
     if set(by_b) != {str(STATE_SEARCH), str(STATE_DORMANT)}:
         return bad + [f"the two comparisons must be against {STATE_SEARCH} (Search) and {STATE_DORMANT} (Dormant), got {sorted(by_b)}"]
     e_search, e_dormant = by_b[str(STATE_SEARCH)], by_b[str(STATE_DORMANT)]

@@ -307,8 +307,10 @@ def check_bp(ue, res, rep, snap_path=None):
     cap = ap.read_props(ue, ap.CAPSULE, ["capsuleRadius", "capsuleHalfHeight"])
     res.check(close(cap["capsuleRadius"], 42) and close(cap["capsuleHalfHeight"], 110), "BP_Warden capsule 42 / 110", "got %s" % cap)
     tun = ap.tuning_values(ue)
-    res.check(tun == snap["tuning_asset"] and close(tun["capsuleRadius"], 42) and close(tun["capsuleHalfHeight"], 110),
-              "DA_WardenTuning: all %d values equal the snapshot, capsule 42 / 110" % len(tun), "differs: %s" % [k for k in tun if tun[k] != snap["tuning_asset"].get(k)])
+    # P13 (owner, 2026-11-06): turning slowed, TurnRate 180 -> 90; the snapshot itself is a P12 record and stays unchanged.
+    expected_tuning = dict(snap["tuning_asset"], turnRate=90)
+    res.check(tun == expected_tuning and close(tun["capsuleRadius"], 42) and close(tun["capsuleHalfHeight"], 110),
+              "DA_WardenTuning: all %d values equal the snapshot (turnRate 90 since P13), capsule 42 / 110" % len(tun), "differs: %s" % [k for k in tun if tun[k] != expected_tuning.get(k)])
 
     # --- placed BP_Warden in the open level (in memory): INFO only (stale after a template write; --disk checks the saved map)
     if ap.level_ok(ue):
