@@ -72,7 +72,7 @@ We need "With Skin" because the import tool refuses clip-only FBX files.
 
 If a name isn't found exactly, the owner picks the closest match by the description and tells the lead which one. Pairs 1/2, 3/4 and 10/11 are compared at the look test, and one of each is kept.
 
-**Licence (R-55):** Adobe's Mixamo FAQ allows characters and animations royalty-free in personal and commercial projects, including games, but not redistributing the raw files. The raw FBX files stay out of git; only the retargeted Warden clips go into Content. The asset-curator records each file in `ASSET_REGISTRY.md` with the FAQ's URL. Not legal advice.
+**Licence (R-55, checked 2026-11-06):** Adobe's Mixamo FAQ allows characters and animations royalty-free in personal and commercial projects, including video games, and states no attribution requirement. Adobe's General Terms of Use forbid distributing its content files as stand-alone files, which we apply to the raw downloads. The raw FBX files stay out of git; only the retargeted Warden clips go into Content. The asset-curator records each file in `ASSET_REGISTRY.md` with the FAQ's URL. Not legal advice.
 
 ## 5. Import and retarget (animation-specialist)
 
