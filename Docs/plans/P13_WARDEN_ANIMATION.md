@@ -122,17 +122,22 @@ The `DefaultSlot` group is the engine default. Play rates are stored in `DA_Ward
 
 New C++ actor `ALBWardenStoopZone`: a box, no collision, editor-only sprite, with property `StoopAmount` 0–1. A world subsystem `ULBWardenStoopSubsystem` keeps the list. The Warden's anim instance asks it for the **highest `StoopAmount` among boxes containing the actor's location**, then eases towards it at 3 per second. Boxes are oriented with the wall. Each extends 150 cm on both sides of the opening, is as wide as the opening plus 20 cm each side, and runs from floor to floor + 300.
 
-| Zone | Opening | StoopAmount |
-|---|---|---|
-| `SZ_Door_Sacristy` | `Door_Sacristy` (8020, −1159, 0), 104 × 230 | 1.0 |
-| `SZ_Door_ChapelMain` | `Door_ChapelMain` (6020, −59, 0), 104 × 230 | 1.0 |
-| `SZ_Door_Tower` | `Door_Tower` (12020, 1950, 0), 104 × 224 | 1.0 |
-| `SZ_Door_Shortcut` | `Door_Shortcut` (6020, 1941, 0), 104 × 230 | 1.0 |
-| `SZ_Cell_N9900`, `SZ_Cell_N10500`, `SZ_Cell_N11100` | cloister cell doors (x, 3000), 110 × 250 apex | 1.0 |
-| `SZ_Cell_W900`, `SZ_Cell_W2700` | cloister cell doors (9500, y), 110 × 250 apex | 1.0 |
-| `SZ_Stair_Sacristy` | sacristy stair, steps 17–19 (X 7310–7400), headroom 256–286 | 0.5 |
-| `SZ_Stair_Exit` | exit stair, steps 17–19 (Y −190…−100), headroom 256–286 | 0.5 |
-| `SZ_Chapel_SacristyDoorway` | (8500, −780), 120 × 240 springline / 340 apex | 0.6 |
+**F0 (lead, 2026-11-06, read live): exact boxes**, world-aligned, rotation 0. Centre (x, y, z) and half-extents (x, y, z) in cm.
+- The `BP_Door_Base_Dungeon` actors stand at the hinge: the opening's centre is 59 cm further along +Y, for example `Door_ChapelMain` at Y −59 for a chapel door centred at 0. Half-widths along the wall are 100 to allow for that.
+- Stair floors come from downward traces, which hit the visible treads (15 cm rise per 30), not a hidden ramp. So foot IK will place the feet on the steps.
+- The ceiling is the ground slab underside at Z −40.
+
+| Zone | Centre | Half-extents | StoopAmount | Why |
+|---|---|---|---|---|
+| `SZ_Door_Sacristy` | (8020, −1100, 150) | (150, 100, 150) | 1.0 | 104 × 230 door, crossed along X |
+| `SZ_Door_ChapelMain` | (6020, 0, 150) | (150, 100, 150) | 1.0 | 104 × 230, along X |
+| `SZ_Door_Shortcut` | (6020, 2000, 150) | (150, 100, 150) | 1.0 | 104 × 230, along X |
+| `SZ_Door_Tower` | (12020, 2009, 150) | (150, 100, 150) | 1.0 | 104 × 224, along X |
+| `SZ_Cell_N9900` / `N10500` / `N11100` | (9900 / 10500 / 11100, 3000, 150) | (100, 150, 150) | 1.0 | cell door 110 wide, shoulders 220, crossed along Y |
+| `SZ_Cell_W900` / `W2700` | (9500, 900 / 2700, 150) | (150, 100, 150) | 1.0 | cell door, crossed along X |
+| `SZ_Stair_Sacristy` | (7290, −1100, −285) | (140, 150, 185) | **0.7** | treads rise along +X from Z −585 (X 6820) to −60 (X 7870); under the slab until X 7400, where the tread is −300 and the head would be 34 cm into the ceiling. The zone starts about 150 cm early so the stoop is complete in time |
+| `SZ_Stair_Exit` | (10650, −170, −290) | (150, 150, 190) | **0.7** | treads rise along +Y from −585 (Y −700) to −60 (Y 350); ceiling −40 over Y −190…−70, where the head would be up to 45 cm into it |
+| `SZ_Chapel_SacristyDoorway` | (8500, −780, 150) | (80, 150, 150) | 0.6 | 120 × 240 springline / 340 apex, crossed along Y; chapel apparition only |
 
 The acceptance check is per zone at the look test: the highest head Z plus 50 cm, at that zone's `StoopAmount`, is at least 5 cm below the opening's lowest point on the Warden's line. If any fails, raise that zone's amount.
 
@@ -222,7 +227,15 @@ Compile with no warnings.
 
 ## 10. Robe and chain physics (animation-specialist, [EDITOR], F6)
 
-- F0 reads the 43 bodies.
+- **F0 (read 2026-11-06): 43 bodies.**
+  - Body: `pelvis`, `spine_01..03`, `neck_01`, `head`, clavicles, upper and lower arms, hands, `thumb_01_l`, `middle_01_l`, `middle_01_r`, feet.
+  - Chains: `chain_neck_05`; **`chain_l_00/02/04/06/08/10`**; **only `chain_r_04`**.
+  - Robe: **all 16** `robe_00..07_01/02`.
+- **Missing bodies to add first**, with the PhysicsToolsets tools (`AddBody`, `SetCapsule`, `AddConstraint`; no owner step):
+  - `chain_r_00/02/06/08/10`, mirroring `chain_l`'s sizes and constraints;
+  - `chain_neck_01`, `chain_neck_09` and `chain_neck_13`, matching `chain_neck_05`.
+
+  Read every body and constraint back afterwards.
 - **Simulated:** every body on a `chain_*` or `robe_*` bone. **Kinematic:** everything else. Linear and angular damping 0.6 and 1.0 to start; constraints limited to 30° swing, 10° twist.
 - If those bones have no bodies, the physics asset needs adding in the editor's Physics Asset tool by the owner, about 10 minutes with exact steps. Report it before going on.
 - **Pass, in Simulate with the Warden walking a test loop:** settles within 1 s of stopping; no body flies off or jitters at rest; chains don't pass through the forearms by more than a few cm.
