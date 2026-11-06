@@ -1,6 +1,6 @@
 # Phase 13: Warden animation: plan
 
-**Status: approved by the owner on 2026-11-06 ("go"). P13-0 done; P13-1 (owner's downloads), P13-2 (code) and F0 next.**
+**Status: approved by the owner on 2026-11-06 ("go"). P13-0, P13-1 (13 files checked in Blender; registry 86cc8e8) and P13-2 (18df9d9, suite 108/108) done. F0 and P13-3 next.**
 **Branch:** `claude/phase-13-warden-animation`, from `main` (086d063).
 **Rules:** D-048. The lead plans; every implementer is spawned with `model: "sonnet", effort: "high"`. Nothing starts without the owner's "go"; the owner is told before any capture over about 15 minutes; agents never run the capture tool or operate the desktop.
 
@@ -184,6 +184,22 @@ Pure logic in testable functions, as in `LBWardenLogic`. No hard asset reference
 
 **Build:** mirror build plus filtered tests while working; then `Tools/build_and_test.ps1` with Unreal closed. Pass: everything that passed before, plus the new tests, no `Result={Fail`.
 
+### P13-2 result (18df9d9, 2026-11-06)
+`Tools/build_and_test.ps1` on the real project: **108 passed, 0 failed** (92 before plus 11 unit and 5 functional). No existing test was changed. `CatchTurnsTheViewToTheMaskBeforeTheReload`: the view went from 132.8° off the mask to 0.0° in 0.9 s, using the real `mask` socket.
+
+- **Differs from the plan:**
+  - `PelvisOffset` is a vector, because the Transform (Modify) Bone node's Translation pin needs one; only Z is used.
+  - `DA_WardenAnimSet` gets `AttackHitTime`, set from `p13_clips.json`, so `HoldCatchPose` knows the hit moment.
+  - `ELBApparitionPhase` now has `Walk` after `Hold`, which renumbers the later values. Nothing stores them.
+  - The stoop zone has no sprite, because a billboard needs a texture reference; its box shows in the editor.
+- **Behaviour notes:**
+  - Turn detection ignores single-frame yaw jumps over 45°, such as the apparition's turn to face the player.
+  - Speed jumps over 2000 cm/s read as 0, such as teleports.
+  - Foot IK uses last frame's foot X/Y.
+  - "Too close" during an apparition walk is measured to the figure.
+- **Not seen:** anything with real clips, the Animation Blueprint, the skeletal figure, or the catch camera on screen.
+- **For P13-7:** after a catch the brain keeps running for about 1.55 s, so `BP_Warden`'s `OnPlayerCaught` handler must also call `CharacterMovement` → `DisableMovement` (then `HoldCatchPose`). Otherwise it could walk away in its frozen pose while the view tracks it.
+
 ## 9. Animation Blueprint `ABP_Warden` (owner UI, F4)
 
 **Create** (headless Python with `AnimBlueprintFactory` if it works without a dialog; otherwise the owner, about 1 minute): parent `LBWardenAnimInstance`, skeleton `SK_Warden_Skeleton`, at `/Game/LastBell/Characters/Warden/ABP_Warden`.
@@ -217,7 +233,7 @@ Compile with no warnings.
    - `CharacterMesh0`: animation mode Blueprint, class `ABP_Warden_C`, and the anim set `DA_WardenAnimSet` (a property on the anim instance class default).
    - `PlayStateFeedback`: Search plus stationary for 0.3 s calls `PlayLookAround`; Dormant calls `StopAllAnimMontages`.
    - `ShowWindupTell` calls `PlayAttack`.
-   - Bind `OnPlayerCaught` (in `BindtoBrain`, like the other hooks) to call `HoldCatchPose`.
+   - Bind `OnPlayerCaught` (in `BindtoBrain`, like the other hooks) to call `CharacterMovement` → `DisableMovement`, then `HoldCatchPose`.
    - Keep the light and glow logic from fix set 1.
 2. **`M_Warden_Apparition`:** turn on `bUsedWithSkeletalMesh`, recompile, validate.
    - `BP_WardenApparition` gets a `Figure` = `SK_Warden` with `ABP_Warden`.
