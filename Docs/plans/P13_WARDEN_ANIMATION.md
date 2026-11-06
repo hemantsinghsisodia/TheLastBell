@@ -1,6 +1,6 @@
 # Phase 13: Warden animation: plan
 
-**Status: waiting for the owner's "go". Nothing has started.**
+**Status: approved by the owner on 2026-11-06 ("go"). P13-0 done; P13-1 (owner's downloads), P13-2 (code) and F0 next.**
 **Branch:** `claude/phase-13-warden-animation`, from `main` (086d063).
 **Rules:** D-048. The lead plans; every implementer is spawned with `model: "sonnet", effort: "high"`. Nothing starts without the owner's "go"; the owner is told before any capture over about 15 minutes; agents never run the capture tool or operate the desktop.
 

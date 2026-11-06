@@ -293,6 +293,24 @@ Branch `claude/phase-12-warden-visual`. Spec: `Docs/plans/P12_WARDEN_VISUAL.md` 
 
 Status 2026-11-04: P12-0…P12-3 done; the owner chose their own Warden Art V5 (D-090), so the scripted build is dropped. P12-4 to P12-8 done on V5.5 (D-091): read review passed, wired into `BP_Warden` and both silhouettes, suite 79/79, QA passed with caveats. GPU readings passed (highest 15.33 ms). The owner's playtest led to fix set 1 (`Docs/plans/P12_FIX1_WARDEN_APPEARANCES.md`, D-092): done on 2026-11-06, owner's playtest "all good", QA passed with caveats, suite 92/92. **Approved and merged by the owner on 2026-11-06** after the leftovers were deleted. Next: Phase 13 (animation), not started until the owner approves its plan.
 
+## Phase 13 — Warden animation: task breakdown
+
+Branch `claude/phase-13-warden-animation`. Spec: `Docs/plans/P13_WARDEN_ANIMATION.md` (D-093). Owner approved the plan on 2026-11-06: Mixamo motion capture, slow heavy stalker, all four extras.
+
+| Task | Scope | Owner | Depends on |
+|---|---|---|---|
+| P13-0 | Plan approval; D-093, R-55…R-58 | lead + owner | — |
+| P13-1 | Mixamo downloads | owner | P13-0 |
+| P13-2 | Anim instance, anim set, stoop zones, catch camera, apparition walk, tests | gameplay-programmer | P13-0 |
+| F0 | Physics bodies, door and stair transforms | lead [EDITOR read-only] | P13-0 |
+| P13-3 | Import Y Bot and clips; registry rows | animation-specialist [EDITOR], asset-curator | P13-1 |
+| P13-4 | Retarget, measure, blend spaces, montages | animation-specialist (headless) | P13-3 |
+| P13-5 | Contact sheet and clip choices | lead + owner | P13-4 |
+| P13-6 | `ABP_Warden` and its graph | animation-specialist, owner if needed | P13-5 |
+| P13-7 | Physics and hookup | animation-specialist, unreal-blueprint-engineer [EDITOR] | P13-6 |
+| P13-8 | Performance readings, Insights trace | owner + performance-engineer | P13-7 |
+| P13-9 | QA, docs, playtest; PHASE 13 READY FOR YOUR REVIEW | qa-reviewer + lead + owner | all |
+
 ## Deferred to Phase 14–15 (Lighting, VFX: storm work)
 Items the owner asked to fold into the storm pass. Plan them in detail (Docs/plans/) when Phase 14–15 starts.
 
