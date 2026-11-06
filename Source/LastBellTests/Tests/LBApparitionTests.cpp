@@ -1042,9 +1042,10 @@ namespace
 		{
 			ALBWardenApparition* A = S->A();
 			LookAtStation(C.Pawn, Station);
-			if (A && A->GetAlpha() >= 0.999f)
+			// Wait for the phase, then check the alpha: the SmoothStep fade passes 0.999 a frame before the phase flips to Hold.
+			if (A && A->GetPhase() == ELBApparitionPhase::Hold)
 			{
-				Test->TestTrue(TEXT("Hold at full alpha"), A->GetPhase() == ELBApparitionPhase::Hold);
+				Test->TestTrue(TEXT("Full alpha in Hold"), A->GetAlpha() >= 0.999f);
 				Test->TestFalse(TEXT("Visible at full alpha"), A->IsHidden());
 				return true;
 			}
@@ -1238,9 +1239,10 @@ bool FLBApparitionStateReplacedTest::RunTest(const FString& Parameters)
 		{
 			ULBWorldStateSubsystem::Get(C.W)->AddState(S->Trigger);
 		}
-		if (A->GetAlpha() >= 0.999f)
+		// Wait for the phase, then check the alpha: the SmoothStep fade passes 0.999 a frame before the phase flips to Hold.
+		if (A->GetPhase() == ELBApparitionPhase::Hold)
 		{
-			Test->TestTrue(TEXT("In Hold"), A->GetPhase() == ELBApparitionPhase::Hold);
+			Test->TestTrue(TEXT("Full alpha in Hold"), A->GetAlpha() >= 0.999f);
 			Test->TestFalse(TEXT("Visible"), A->IsHidden());
 			return true;
 		}
