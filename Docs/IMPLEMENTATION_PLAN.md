@@ -325,7 +325,15 @@ Owner playtest: "all good". Wrap-up:
 - **Leftovers:** `ABP_P13_Spike` deleted.
 - **Docs:** updated.
 
-Real-project suite 112/112 before the wrap-up. QA and the final suite run are next, then "PHASE 13 READY FOR YOUR REVIEW".
+**QA (P13-9, `Docs/ArtTest/warden/p13_qa.md`): PASS WITH CAVEATS, no high-severity findings.**
+- **C1, a flaky apparition wait from Phase 12:** fixed in a69f97e. The test now waits for `Hold`, then checks the alpha.
+- **Doc flags:** fixed.
+
+**Final real-project suite: 112/112.** The apparition functional tests passed 3 more runs, 7/7 each.
+
+**Open items, for the owner's review:**
+- coverage gaps: no automated test for foot IK, turn montages, look-around or foot sliding (owner-verified in play);
+- three unused retargeted clips, which stay in the project unreferenced.
 
 ## Deferred to Phase 14–15 (Lighting, VFX: storm work)
 Items the owner asked to fold into the storm pass. Plan them in detail (Docs/plans/) when Phase 14–15 starts.
