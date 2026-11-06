@@ -344,8 +344,26 @@ Owner playtest: "all good". Wrap-up:
 
 **Approved and merged by the owner on 2026-11-07** ("approve and merge"). Next: Phase 14, which doesn't start until the owner approves its plan.
 
+## Phase 14 — Lighting and the storm's light: task breakdown
+
+Branch `claude/phase-14-lighting-storm`. Spec: `Docs/plans/P14_LIGHTING_STORM.md` (D-096, D-097, D-098). Owner approved the plan on 2026-11-07: lighting plus the storm's light and motion; the storm builds with the story; lightning for atmosphere, scripted beats and reveals; a small set of story-driven light changes. **Phase 15 = particles** (rain, splashes, drips, dust and mist, visible bolts, candle-flame effects, cloth).
+
+| Task | Scope | Owner | Depends on |
+|---|---|---|---|
+| P14-0 | Plan approval; D-096…D-098, R-59…R-63 | lead + owner | — |
+| F0 | Read-only survey (lights, PP, sky MIs, glass, shafts, pools, foliage MIs, ISMs, garth bounds, decal points) | lead [EDITOR read-only] | P14-0 |
+| P14-B | Baseline readings at the six BugItGo spots; "before" captures | owner + lead | P14-0 |
+| P14-1 | Storm C++ (subsystem, settings, zones, light groups, logic, console, apparition flag) and tests | gameplay-programmer (Unreal closed) | P14-0 |
+| P14-2 | Materials and assets (MPC, DA, storm sky, glass/shaft/pool flash, reveal decals, wind sway) | technical-artist [EDITOR] | P14-1, F0 |
+| P14-3 | Level work (tags, zones, PP restructure, light groups, decals, apparition flags, WPO distance) | lighting-vfx [EDITOR] | P14-2 |
+| P14-4 | Look session: flash preset, chapel EV, grade, wind, R-31 | lead + owner | P14-3 |
+| P14-5 | Apply choices, exposure targets, readability after story changes, R-09 | lighting-vfx; captures with the owner | P14-4 |
+| P14-6 | Viewpoint approval and storm run-through | owner | P14-5 |
+| P14-7 | Performance and report | owner + performance-engineer | P14-6 |
+| P14-8 | QA, docs, suite, playtest; PHASE 14 READY FOR YOUR REVIEW | qa-reviewer + lead + owner | all |
+
 ## Deferred to Phase 14–15 (Lighting, VFX: storm work)
-Items the owner asked to fold into the storm pass. Plan them in detail (Docs/plans/) when Phase 14–15 starts.
+Items the owner asked to fold into the storm pass. **Foliage wind is now in Phase 14** (P14 section 6, D-096: `MPC_LB_Storm` replaces the planned `MPC_LB_Wind`).
 
 | Item | Scope | Notes |
 |---|---|---|

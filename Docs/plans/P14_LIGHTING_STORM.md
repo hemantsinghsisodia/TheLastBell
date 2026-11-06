@@ -1,6 +1,6 @@
 # Phase 14: Lighting and the storm's light: plan
 
-**Status:** draft for the owner's approval (2026-11-07). Nothing starts before the owner's "go".
+**Status:** approved by the owner on 2026-11-07 ("go"). P14-0 done (D-096, D-097, D-098; R-59…R-63).
 
 **Branch:** `claude/phase-14-lighting-storm`, from `main` (f13721b).
 
