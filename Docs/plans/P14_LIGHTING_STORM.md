@@ -819,3 +819,24 @@ One editor agent at a time. Each agent commits on this branch only and never swi
 **Lantern glass in the light groups (section 8): decided 2026-11-07.** Of the three options offered, the owner chose **"glass follows the light"** (D-099). The other two were hiding the lantern for Off, or using Dim 0.3 instead of Off on lantern groups.
 - This adds task **P14-1b**: the `GlowActors` addition to `ALBStateLightGroup`.
 - It runs before P14-3, with Unreal closed for the build. The spec is in section 8.1.
+
+### P14-B result (owner's readings, 2026-11-07)
+**Method.** Section 11, on c626dd7 (no level change since Phase 13): PIE new window, High, render 1671x853 (87 %), `stat unit` + `stat gpu`, player candle in view.
+- The log confirms the Warden stayed dormant for all six readings; it switched to Patrol only at `lb.Warden.Enabled 1`.
+- The owner played through between readings (two `lb.NewGame`), so each spot was read in that spot's own story state.
+- Screenshots: `Docs/ArtTest/lighting/perf/p14b_perf_1..6_*.png`.
+
+| Spot | GPU (ms) | Graphics avg / max | Compute avg | Game (ms) | Frame (ms) | Draws | Prims | VRAM (GB) |
+|---|---|---|---|---|---|---|---|---|
+| Courtyard | **11.78** | 11.76 / 13.27 | 4.25 | 25.06 (see below) | 22.80 | 708 | 66.4K | 3.37 / 5.03 |
+| Chapel | **14.49** | 14.21 / 14.91 | 4.81 | 13.04 | 16.70 | 667 | 343.7K | 3.84 / 4.97 |
+| Crypt ossuary | **13.10** | 13.12 / 14.03 | 4.96 | 8.34 | 16.67 | 464 | 148.6K | 3.42 / 5.03 |
+| Cloister bells | **12.86** | 12.65 / 13.25 | 5.73 | 8.06 | 16.67 | 280 | 57.2K | 3.48 / 5.03 |
+| Tower mid-stair | **12.21** | 11.88 / 12.34 | 5.65 | 8.31 | 16.67 | 436 | 63.5K | 3.48 / 5.03 |
+| Belfry | **11.55** | 11.17 / 11.98 | 5.49 | 8.02 | 16.67 | 225 | 26.0K | 3.50 / 5.03 |
+
+- **Key passes, chapel:** RenderDeferredLighting 4.26, Lights 3.12, Postprocessing 2.74, TSR 2.07, Shadow Depths 1.27, Nanite BasePass 1.11, Shadow Projection 1.00; compute LumenScreenProbeGather 2.40.
+- **Key passes, courtyard:** RenderDeferredLighting 3.08, Postprocessing 2.32, Lights 1.94, TSR 1.72, Shadow Depths 1.22, Shadow Projection 1.14, Nanite BasePass 1.09, VolumetricFog 0.23; compute LumenScreenProbeGather 1.97.
+- **P14-7 GPU limits** (section 11: baseline + 0.6 ms, and never over 16.6): courtyard 12.38, chapel 15.09, crypt ossuary 13.70, cloister bells 13.46, tower mid-stair 12.81, belfry 12.15. The smallest headroom to 16.6 ms is the chapel's, 2.11 ms.
+- **Courtyard game thread: not usable as a baseline.** It read 25.06 ms (frame 22.80) on the first reading of the session; the other five read 8.0–13.0 ms, and earlier courtyard readings were about 9 ms (P7-FIX2). Repeat this one reading before P14-7: courtyard spot, Warden off, about 1 minute.
+- **Also on screen:** "PROFILING WITH AI LOGGING ON!", the editor's usual AI-logging note. It was on in the earlier readings too, so they stay comparable.
