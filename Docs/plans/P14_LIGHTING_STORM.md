@@ -401,7 +401,7 @@ P14-3 checks every placement in a PIE Simulate capture with `lb.Storm.Freeze 0.8
 5. **Reveal decals.** `M_LB_Decal_LightningReveal` as in section 5.6(d), with four MIs: `MI_Reveal_Sigil`, `_Tally`, `_Circle`, `_Drag`.
 6. **Wind sway.** `MF_LB_WindSway` (`/Game/LastBell/Materials/Functions/`), two modes chosen by a static bool input `bFlutter`.
    - **Bend** (grass, weeds, ferns, shrubs):
-     - h = saturate(PreSkinnedLocalPosition.z / `WindRefHeightCm`).
+     - h = saturate(`PreSkinnedPosition`.z × S / `WindRefHeightCm`), where S = length(Transform(Instance → World, vector (0, 0, 1))) is the instance's world Z scale. `WindRefHeightCm` is a **world** height in cm (after the actor or instance scale). P14-4 wind fix, D-100: `PreSkinnedPosition` is the unscaled mesh-local position, and the plants are placed scaled 1 to 4.8×.
      - Pivot = `TransformPosition(Instance&Particle → World, 0)`.
      - φ = `WindPhase` + dot(Pivot.xy, (0.0031, 0.0047)).
      - s = 0.6·sin φ + 0.4·sin(2φ + 1.3).
@@ -417,16 +417,18 @@ P14-3 checks every placement in a PIE Simulate capture with `lb.Storm.Freeze 0.8
    - Max WPO displacement: 40 cm (Foliage), 6 cm (Masked).
 8. **Foliage MIs:**
 
-| MI | `bWind` | `WindAmplitudeCm` | `WindRefHeightCm` |
+Values marked "P14-4 wind fix" replace the P14-2 plan values (shown as old → new); `WindRefHeightCm` is a world height in cm.
+
+| MI | `bWind` | `WindAmplitudeCm` | `WindRefHeightCm` (world cm) |
 |---|---|---|---|
-| `MI_Foliage_GrassMedium02` | on | 16 | 90 |
-| `MI_Foliage_NettlePlant` | on | 9 | 70 |
-| `MI_Foliage_WeedPlant02` | on | 6 | 30 |
-| `MI_Foliage_Fern02` | on | 10 | 60 |
-| `MI_Foliage_WildRooibos` | on | 7 | 80 |
-| `MI_Foliage_SearsiaLucida` | on | 5 | 200 |
+| `MI_Foliage_GrassMedium02` | on | 16 → **30** (P14-4 wind fix) | 90 → **60** (P14-4 wind fix) |
+| `MI_Foliage_NettlePlant` | on | 9 → **18** (P14-4 wind fix) | 70 → **45** (P14-4 wind fix) |
+| `MI_Foliage_WeedPlant02` | on | 6 → **12** (P14-4 wind fix) | 30 (unchanged) |
+| `MI_Foliage_Fern02` | on | 10 → **18** (P14-4 wind fix) | 60 → **45** (P14-4 wind fix) |
+| `MI_Foliage_WildRooibos` | on | 7 → **14** (P14-4 wind fix) | 80 → **60** (P14-4 wind fix) |
+| `MI_Foliage_SearsiaLucida` | on | 5 → **12** (P14-4 wind fix) | 200 → **150** (P14-4 wind fix) |
 | `MI_Foliage_Moss01` | off | — | — |
-| `MI_Ivy_Green`, `MI_Ivy_Dead` | on (Flutter) | 2.0 | — |
+| `MI_Ivy_Green`, `MI_Ivy_Dead` | on (Flutter) | 2.0 → **4** (P14-4 wind fix) | — |
 
    - Any other `M_LB_Foliage` MI that F0 finds (for example on the `CLA_Garth*` plants) gets amplitude 6 and height 60, listed in the report.
    - **F0 result:** there is none. The two masters have exactly the nine MIs above, and the `CLA_Garth*`, `PSA_Weed_*` and searsia actors use them through their meshes' default slots.
@@ -1097,3 +1099,27 @@ New volumes: not unbound, enabled, blend weight 1, brush collision profile `NoCo
 | `RV_Chapel_Circle` | On the floor, centred on the S2 pool as planned. Under the flash the pool and its shaft go almost white, so the chalk inside the pool loses contrast; only the arcs outside it read. | Move it off the pool, or lower the pool's flash response. Owner's call. |
 | `RV_Garth_Drag` | On the north-walk wall between the two doorways, seen through the bay. The roofed walk gets no flash light, so the wall stays black and the marks glow alone in the dark (the wall shows only when the image is brightened 6×). | Keep it as an eerie glowing smear, or move it to a wall the flash lights. Owner's call. |
 | `RV_Belfry_Tally` | On the flat south wall west of the lancets. Reads clearly. | None. **Correction to 5.6(d):** from the `tw_belfry` pose the bell hides it (it falls on the bell's silhouette); it shows once the player walks round the bell. |
+
+### P14-4 wind fix result (2026-11-07)
+Spec: `Docs/plans/P14_4_WIND_FIX.md` (owner "go", D-100). Script: `Tools/lighting/p14_4_wind_fix.py` (`pre`, `fn`, `savefn`, `mis`, `savemis`, `check`). No PIE, no captures, no `set_parent`; `L_Monastery`, `M_LB_Surface` and `DA_StormSettings` were not saved.
+
+**Change 1, `MF_LB_WindSway` (bend branch only).** h = saturate(`PreSkinnedPosition`.z × S / `WindRefHeightCm`), S = length(Transform(Instance → World, (0, 0, 1))).
+- Nodes 53 → 57. Added: `Constant3Vector_4` (0, 0, 1, 1), `Transform_0` (`transformSourceType` read back `TRANSFORMSOURCE_Instance`, `transformType` `TRANSFORM_World`; the node defaulted to Tangent → World), `Length_2` (input `Transform_0`), `Multiply_17` (A = `ComponentMask_1` = the B channel of `PreSkinnedPosition`, B = `Length_2`).
+- Rewire: `Divide_0` A was `ComponentMask_1`, now `Multiply_17`; B stays `FunctionInput_1` (`WindRefHeightCm`). The flutter branch is untouched. The `WindRefHeightCm` input description now reads "World height in cm (after the actor or instance scale) at which the bend is full".
+- `MaterialTools.recompile` returned with no error for `MF_LB_WindSway`, `M_LB_Foliage` and `M_LB_FoliageMasked`. No new Error or Warning lines about these assets in the log (the only matches are older ones: the "could not be read" property warning of the 14-2b session and the Git Bash path-mangling errors).
+
+**Change 2, MI values** (only `WindAmplitudeCm` and `WindRefHeightCm` changed; parent, every texture and vector override, `bUseARM` and `bWind` read identical before and after by script):
+
+| MI | `WindAmplitudeCm` | `WindRefHeightCm` |
+|---|---|---|
+| `MI_Foliage_GrassMedium02` | 16 → 30 | 90 → 60 |
+| `MI_Foliage_NettlePlant` | 9 → 18 | 70 → 45 |
+| `MI_Foliage_WeedPlant02` | 6 → 12 | 30 (unchanged, override rewritten with the same value) |
+| `MI_Foliage_Fern02` | 10 → 18 | 60 → 45 |
+| `MI_Foliage_WildRooibos` | 7 → 14 | 80 → 60 |
+| `MI_Foliage_SearsiaLucida` | 5 → 12 | 200 → 150 |
+| `MI_Ivy_Green`, `MI_Ivy_Dead` | 2 → 4 | no override (left) |
+
+**Saves** (one package per call, `is_dirty` false after each; PIE off and `L_Monastery` / `M_LB_Surface` clean before and after each): `MF_LB_WindSway`, `M_LB_Foliage`, `M_LB_FoliageMasked` (both masters were dirty after the recompile), then the 8 MIs. `p14_4_wind_fix.py check`: OVERALL PASS (graph wiring and the 8 MI values).
+
+**Not validated: the sway itself (lead's captures and the owner's live check).** Expected, not measured: the grass peak lean is about 30 cm plus 0.25 × 30 sag, under the 40 cm cap of `M_LB_Foliage`; ivy 4 cm is under the 6 cm cap of `M_LB_FoliageMasked`. No shader instruction count was taken (no tool gives one).
