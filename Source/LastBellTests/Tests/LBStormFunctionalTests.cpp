@@ -32,6 +32,8 @@ void ULBStormTestSink::HandleFlash(float Brightness, ELBFlashReason Reason)
 #include "Character/LBCharacter.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/LightComponent.h"
+#include "Components/MeshComponent.h"
+#include "Components/PointLightComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/DirectionalLight.h"
 #include "Engine/PointLight.h"
@@ -41,6 +43,8 @@ void ULBStormTestSink::HandleFlash(float Brightness, ELBFlashReason Reason)
 #include "Engine/World.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PlayerController.h"
+#include "Materials/MaterialInstanceDynamic.h"
+#include "Materials/MaterialInterface.h"
 #include "Materials/MaterialParameterCollection.h"
 #include "Misc/PackageName.h"
 #include "Storm/LBStateLightGroup.h"
@@ -52,10 +56,10 @@ void ULBStormTestSink::HandleFlash(float Brightness, ELBFlashReason Reason)
 #include "UObject/StrongObjectPtr.h"
 #include "LBLog.h"
 
-// P14-1 functional tests of the storm (LastBell.Functional.Storm.*). Tests 1 to 6 load /Game/LastBell/Maps/L_Test_Warden (one PIE session
+// P14-1 functional tests of the storm (LastBell.Functional.Storm.*). Tests 1 to 7 load /Game/LastBell/Maps/L_Test_Warden (one PIE session
 // each), spawn their own tagged lights and use a transient ULBStormSettings (the plan's tag tables, seed 1401, ambient flashes off unless
 // a test needs them) handed over through OverrideSettings + RefreshLinkedLights, so none of them needs the DA_StormSettings or MPC_LB_Storm
-// assets. lb.Warden.Enabled is 0 for the session (the map's Warden stays dormant and cannot touch the player). Test 7 checks the real
+// assets. lb.Warden.Enabled is 0 for the session (the map's Warden stays dormant and cannot touch the player). Test 8 checks the real
 // L_Monastery setup and is EXPECTED TO FAIL until P14-2 (assets) and P14-3 (level work) are done.
 
 #define FUNC_FLAGS (EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
@@ -94,6 +98,12 @@ namespace
 		TWeakObjectPtr<APointLight> LightB;
 		TWeakObjectPtr<AStaticMeshActor> Emissive;
 		TWeakObjectPtr<ALBStateLightGroup> GroupA;
+		TWeakObjectPtr<AStaticMeshActor> Lantern;
+		/** The lantern's glass colour before the group ran (test 8), and its sample range while flickering. */
+		FLinearColor GlassBase = FLinearColor::Black;
+		float SampleMin = 0.f;
+		float SampleMax = 0.f;
+		int32 SampleCount = 0;
 		double T0 = 0.0;
 		float F0 = 0.f;
 		int32 I0 = 0;
@@ -265,6 +275,43 @@ namespace
 	bool WithinPercent(float Actual, float Expected, float Percent)
 	{
 		return FMath::Abs(Actual - Expected) <= FMath::Abs(Expected) * Percent / 100.f + 1.0e-5f;
+	}
+
+	/** Every RGB channel of Actual is within Percent of the same channel of Expected. */
+	bool ColorWithinPercent(const FLinearColor& Actual, const FLinearColor& Expected, float Percent)
+	{
+		return WithinPercent(Actual.R, Expected.R, Percent) && WithinPercent(Actual.G, Expected.G, Percent) && WithinPercent(Actual.B, Expected.B, Percent);
+	}
+
+	const TCHAR* GGlowParameter = TEXT("Color");
+
+	/** The first mesh slot of the actor whose material has the vector parameter; INDEX_NONE when there is none. */
+	int32 FindGlowSlot(const AStaticMeshActor* Actor, FName Parameter)
+	{
+		const UMeshComponent* Mesh = Actor ? Actor->GetStaticMeshComponent() : nullptr;
+		for (int32 Index = 0; Mesh && Index < Mesh->GetNumMaterials(); ++Index)
+		{
+			FLinearColor Value;
+			const UMaterialInterface* Material = Mesh->GetMaterial(Index);
+			if (Material && Material->GetVectorParameterValue(FHashedMaterialParameterInfo(Parameter), Value))
+			{
+				return Index;
+			}
+		}
+		return INDEX_NONE;
+	}
+
+	/** The glass colour now: the dynamic instance on the lantern's glass slot. False (with an error) when there is none. */
+	bool ReadGlass(FAutomationTestBase* Test, const FStormState& S, FLinearColor& OutColor)
+	{
+		const AStaticMeshActor* Lantern = S.Lantern.Get();
+		const UMeshComponent* Mesh = Lantern ? Lantern->GetStaticMeshComponent() : nullptr;
+		const UMaterialInstanceDynamic* Dynamic = Mesh ? Cast<UMaterialInstanceDynamic>(Mesh->GetMaterial(S.I0)) : nullptr;
+		if (!Test->TestNotNull(TEXT("The glass slot holds a dynamic material instance made by the group"), Dynamic))
+		{
+			return false;
+		}
+		return Test->TestTrue(TEXT("The glass instance has the Color parameter"), Dynamic->GetVectorParameterValue(FHashedMaterialParameterInfo(GGlowParameter), OutColor));
 	}
 
 	/** A transient settings object with the plan's tag tables, seed 1401. Ambient flashes only when asked for. */
@@ -987,7 +1034,234 @@ bool FLBStormApparitionFlashTest::RunTest(const FString& Parameters)
 }
 
 // =====================================================================================================================
-// 7. The real L_Monastery setup. EXPECTED TO FAIL until P14-2 (assets) and P14-3 (level work) are done.
+// 7. A lantern's glass follows the light of its state light group (P14-1b, D-099)
+// =====================================================================================================================
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBStormGlowTest, "LastBell.Functional.Storm.StateLightGroupDrivesGlow", FUNC_FLAGS)
+bool FLBStormGlowTest::RunTest(const FString& Parameters)
+{
+	TSharedRef<FStormRunner> R = StartSession(this);
+	const TSharedRef<FStormState> S = R->S;
+	FAutomationTestBase* Test = this;
+
+	// The lantern mesh is loaded by path here only; game code never names an asset.
+	const TCHAR* LanternMeshPath = TEXT("/Game/LastBell/ArtTest/Props/Wooden_Lantern_01/SM_Wooden_Lantern_01.SM_Wooden_Lantern_01");
+	const FVector LightLocation(0.0, 0.0, GFloorTopZ + 400.0);
+
+	R->Add(TEXT("PIE ready, a light, a lantern and a group that turns the light Off on Ritual.2"), [S, Test, LanternMeshPath, LightLocation](FStormCtx& C)
+	{
+		if (!LBPie::WorldReady() || C.Frames < 5)
+		{
+			return false;
+		}
+		ULBWorldStateSubsystem* WorldState = ULBWorldStateSubsystem::Get(C.W);
+		WorldState->ResetState();
+		Test->TestFalse(TEXT("The world state does not contain State.Ritual.2 at the start"), WorldState->HasState(Tag(TEXT("State.Ritual.2"))));
+
+		UStaticMesh* LanternMesh = LoadObject<UStaticMesh>(nullptr, LanternMeshPath);
+		if (!Test->TestNotNull(*FString::Printf(TEXT("The lantern mesh loads (%s)"), LanternMeshPath), LanternMesh))
+		{
+			return true;
+		}
+
+		// 300 lm, Movable point light.
+		S->LightA = SpawnLight<APointLight>(C.W, LightLocation, 300.f, nullptr);
+		if (!Test->TestTrue(TEXT("Point light spawned"), S->LightA.IsValid()))
+		{
+			return true;
+		}
+		if (UPointLightComponent* PointLight = Cast<UPointLightComponent>(S->LightA->GetLightComponent()))
+		{
+			PointLight->SetIntensityUnits(ELightUnits::Lumens);
+			PointLight->SetIntensity(300.f);
+		}
+
+		// The lantern keeps a Static component, like the placed ones: the mesh is set while the component is unregistered (deferred
+		// spawn), because a registered Static component refuses SetStaticMesh in a game world.
+		AStaticMeshActor* Lantern = C.W->SpawnActorDeferred<AStaticMeshActor>(AStaticMeshActor::StaticClass(), FTransform(FRotator::ZeroRotator, LightLocation + FVector(0.0, 40.0, 0.0)), nullptr, nullptr, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+		if (!Test->TestNotNull(TEXT("Lantern actor spawned"), Lantern))
+		{
+			return true;
+		}
+		// SpawnActorDeferred has already registered the component, so it is unregistered for the SetStaticMesh and registered again.
+		UStaticMeshComponent* LanternMeshComponent = Lantern->GetStaticMeshComponent();
+		if (LanternMeshComponent->IsRegistered())
+		{
+			LanternMeshComponent->UnregisterComponent();
+		}
+		LanternMeshComponent->SetStaticMesh(LanternMesh);
+		if (!LanternMeshComponent->IsRegistered())
+		{
+			LanternMeshComponent->RegisterComponent();
+		}
+		Lantern->FinishSpawning(FTransform(FRotator::ZeroRotator, LightLocation + FVector(0.0, 40.0, 0.0)));
+		S->Lantern = Lantern;
+		Test->TestTrue(TEXT("The lantern component stays Static"), Lantern->GetStaticMeshComponent()->Mobility == EComponentMobility::Static);
+		Test->TestTrue(TEXT("The lantern mesh is set"), Lantern->GetStaticMeshComponent()->GetStaticMesh() == LanternMesh);
+
+		// Its glass: the slot whose mesh-default material has the Color parameter (MI_LB_LanternGlass_Lit).
+		S->I0 = FindGlowSlot(Lantern, GGlowParameter);
+		if (!Test->TestTrue(TEXT("The lantern has a material slot with the vector parameter Color"), S->I0 != INDEX_NONE))
+		{
+			return true;
+		}
+		const UMaterialInterface* Glass = Lantern->GetStaticMeshComponent()->GetMaterial(S->I0);
+		Glass->GetVectorParameterValue(FHashedMaterialParameterInfo(GGlowParameter), S->GlassBase);
+		Note(FString::Printf(TEXT("glass slot %d, material %s, base Color (%.3f, %.3f, %.3f, %.3f)"), S->I0, *GetNameSafe(Glass), S->GlassBase.R, S->GlassBase.G, S->GlassBase.B, S->GlassBase.A));
+		Test->TestTrue(TEXT("The glass base colour is not black (otherwise this test proves nothing)"), FMath::Max3(S->GlassBase.R, S->GlassBase.G, S->GlassBase.B) > 0.01f);
+
+		ALBStateLightGroup* Group = C.W->SpawnActorDeferred<ALBStateLightGroup>(ALBStateLightGroup::StaticClass(), FTransform::Identity, nullptr, nullptr, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+		if (!Test->TestNotNull(TEXT("Light group spawned"), Group))
+		{
+			return true;
+		}
+		Group->Lights.Add(S->LightA.Get());
+		Group->GlowActors.Add(Lantern);
+		FLBLightStateRule& Rule = Group->Rules.AddDefaulted_GetRef();
+		Rule.RequiredTag = Tag(TEXT("State.Ritual.2"));
+		Rule.Mode = ELBLightStateMode::Off;
+		Group->FinishSpawning(FTransform::Identity);
+		S->GroupA = Group;
+
+		// 1. No tag: the glass is at its base.
+		FLinearColor Now;
+		if (ReadGlass(Test, *S, Now))
+		{
+			Test->TestTrue(FString::Printf(TEXT("No tag: the glass Color equals its base within 1 %% (%.3f, %.3f, %.3f)"), Now.R, Now.G, Now.B), ColorWithinPercent(Now, S->GlassBase, 1.f));
+		}
+		return true;
+	});
+
+	R->Add(TEXT("Ritual.2 added: after the fade (1.5 + 0.5 s) the glass is black"), [S, Test](FStormCtx& C)
+	{
+		if (!S->GroupA.IsValid() || !S->Lantern.IsValid())
+		{
+			Test->AddError(TEXT("Group or lantern is gone"));
+			return true;
+		}
+		if (C.bFirst)
+		{
+			ULBWorldStateSubsystem::Get(C.W)->AddState(Tag(TEXT("State.Ritual.2")));
+			Test->TestTrue(TEXT("The group is fading"), S->GroupA->IsFading());
+			return false;
+		}
+		if (C.Elapsed < 2.0)
+		{
+			return false;
+		}
+		FLinearColor Now;
+		if (ReadGlass(Test, *S, Now))
+		{
+			const FLinearColor& B = S->GlassBase;
+			Test->TestTrue(FString::Printf(TEXT("Ritual.2: every glass RGB channel is <= 1 %% of the base (%.4f, %.4f, %.4f)"), Now.R, Now.G, Now.B),
+				Now.R <= B.R * 0.01f + 1.0e-5f && Now.G <= B.G * 0.01f + 1.0e-5f && Now.B <= B.B * 0.01f + 1.0e-5f);
+		}
+		Test->TestTrue(TEXT("The light itself is off too"), IntensityOf(S->LightA.Get()) <= 0.5f);
+		return true;
+	});
+
+	R->Add(TEXT("ReplaceState without the tag: the glass is back at its base on the next frame"), [S, Test](FStormCtx& C)
+	{
+		if (!S->GroupA.IsValid() || !S->Lantern.IsValid())
+		{
+			Test->AddError(TEXT("Group or lantern is gone"));
+			return true;
+		}
+		if (C.bFirst)
+		{
+			ULBWorldStateSubsystem::Get(C.W)->ReplaceState(FGameplayTagContainer());
+			return false;
+		}
+		FLinearColor Now;
+		if (ReadGlass(Test, *S, Now))
+		{
+			Test->TestTrue(FString::Printf(TEXT("After ReplaceState without the tag the glass Color is back at its base within 1 %% (%.3f, %.3f, %.3f)"), Now.R, Now.G, Now.B),
+				ColorWithinPercent(Now, S->GlassBase, 1.f));
+		}
+		return true;
+	});
+
+	R->Add(TEXT("Flicker (0.8, 0.5, 8) applied instantly: every sample over 2 s is within [0.4, 0.8] of the base, and it moves"), [S, Test](FStormCtx& C)
+	{
+		ALBStateLightGroup* Group = S->GroupA.Get();
+		if (!Group || !S->Lantern.IsValid())
+		{
+			Test->AddError(TEXT("Group or lantern is gone"));
+			return true;
+		}
+		if (C.bFirst)
+		{
+			FLBLightStateRule& Rule = Group->Rules[0];
+			Rule.Mode = ELBLightStateMode::Flicker;
+			Rule.IntensityScale = 0.8f;
+			Rule.FlickerAmount = 0.5f;
+			Rule.FlickerSpeed = 8.f;
+			S->SampleCount = 0;
+			// The tag is present again, so the replace applies the Flicker rule at once: no fade.
+			FGameplayTagContainer WithTag;
+			WithTag.AddTag(Tag(TEXT("State.Ritual.2")));
+			ULBWorldStateSubsystem::Get(C.W)->ReplaceState(WithTag);
+			Test->TestEqual(TEXT("The group is in Flicker"), static_cast<int32>(Group->GetCurrentMode()), static_cast<int32>(ELBLightStateMode::Flicker));
+			Test->TestFalse(TEXT("Applied instantly: no fade"), Group->IsFading());
+		}
+
+		FLinearColor Now;
+		if (!ReadGlass(Test, *S, Now))
+		{
+			return true;
+		}
+		const FLinearColor& B = S->GlassBase;
+		const auto Inside = [](float Value, float Base) { return Value >= Base * 0.4f - Base * 0.01f - 1.0e-5f && Value <= Base * 0.8f + Base * 0.01f + 1.0e-5f; };
+		if (!Inside(Now.R, B.R) || !Inside(Now.G, B.G) || !Inside(Now.B, B.B))
+		{
+			Test->AddError(FString::Printf(TEXT("Flicker sample %d (%.4f, %.4f, %.4f) is outside [0.4, 0.8] of the base (%.4f, %.4f, %.4f)"), S->SampleCount, Now.R, Now.G, Now.B, B.R, B.G, B.B));
+			return true;
+		}
+		// The channel with the most light follows the flicker best.
+		const float Brightest = FMath::Max3(Now.R, Now.G, Now.B);
+		if (S->SampleCount == 0)
+		{
+			S->SampleMin = Brightest;
+			S->SampleMax = Brightest;
+		}
+		S->SampleMin = FMath::Min(S->SampleMin, Brightest);
+		S->SampleMax = FMath::Max(S->SampleMax, Brightest);
+		++S->SampleCount;
+
+		if (C.Elapsed < 2.0)
+		{
+			return false;
+		}
+		Note(FString::Printf(TEXT("flicker: %d samples, brightest channel %.4f .. %.4f (base %.4f)"), S->SampleCount, S->SampleMin, S->SampleMax, FMath::Max3(B.R, B.G, B.B)));
+		Test->TestTrue(TEXT("At least 30 samples were taken"), S->SampleCount >= 30);
+		Test->TestTrue(FString::Printf(TEXT("The samples are not all equal (%.4f .. %.4f)"), S->SampleMin, S->SampleMax), S->SampleMax - S->SampleMin > 1.0e-3f * FMath::Max3(B.R, B.G, B.B));
+		return true;
+	});
+
+	R->Add(TEXT("Clean up"), [S](FStormCtx& C)
+	{
+		if (ALBStateLightGroup* Group = S->GroupA.Get())
+		{
+			Group->Destroy();
+		}
+		if (AStaticMeshActor* Lantern = S->Lantern.Get())
+		{
+			Lantern->Destroy();
+		}
+		if (APointLight* Light = S->LightA.Get())
+		{
+			Light->Destroy();
+		}
+		ULBWorldStateSubsystem::Get(C.W)->ResetState();
+		return true;
+	});
+
+	Enqueue(R);
+	return true;
+}
+
+// =====================================================================================================================
+// 8. The real L_Monastery setup. EXPECTED TO FAIL until P14-2 (assets) and P14-3 (level work) are done.
 // =====================================================================================================================
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBStormMonasteryTest, "LastBell.Functional.Storm.Monastery.StormSetup", FUNC_FLAGS)
@@ -1036,11 +1310,36 @@ bool FLBStormMonasteryTest::RunTest(const FString& Parameters)
 		int32 Groups = 0;
 		bool bLightsValid = true;
 		TMap<const ALight*, int32> GroupsPerLight;
+		TMap<const AActor*, int32> GroupsPerGlowActor;
 		for (TActorIterator<ALBStateLightGroup> It(C.W); It; ++It)
 		{
 			++Groups;
 			const ALBStateLightGroup* Group = *It;
 			Test->TestTrue(FString::Printf(TEXT("Light group %s lists at least one light"), *Group->GetName()), Group->Lights.Num() > 0);
+
+			// Glow actors (P14-1b): each must have a mesh slot with the group's glow parameter, and be in one group only.
+			for (const AActor* GlowActor : Group->GlowActors)
+			{
+				if (!IsValid(GlowActor))
+				{
+					Test->AddError(FString::Printf(TEXT("Light group %s has an empty or invalid glow actor entry"), *Group->GetName()));
+					continue;
+				}
+				GroupsPerGlowActor.FindOrAdd(GlowActor) += 1;
+				int32 GlowSlots = 0;
+				TInlineComponentArray<UMeshComponent*> Meshes;
+				GlowActor->GetComponents(Meshes);
+				for (const UMeshComponent* Mesh : Meshes)
+				{
+					for (int32 Index = 0; Index < Mesh->GetNumMaterials(); ++Index)
+					{
+						FLinearColor Value;
+						const UMaterialInterface* Material = Mesh->GetMaterial(Index);
+						GlowSlots += (Material && Material->GetVectorParameterValue(FHashedMaterialParameterInfo(Group->GlowParameter), Value)) ? 1 : 0;
+					}
+				}
+				Test->TestTrue(FString::Printf(TEXT("Glow actor %s of group %s has a material slot with the vector parameter %s"), *GlowActor->GetName(), *Group->GetName(), *Group->GlowParameter.ToString()), GlowSlots > 0);
+			}
 			for (const ALight* Light : Group->Lights)
 			{
 				if (!IsValid(Light))
@@ -1059,6 +1358,13 @@ bool FLBStormMonasteryTest::RunTest(const FString& Parameters)
 			if (Pair.Value > 1)
 			{
 				Test->AddError(FString::Printf(TEXT("The light %s is listed in %d light groups; a light may be in one group only"), *Pair.Key->GetName(), Pair.Value));
+			}
+		}
+		for (const TPair<const AActor*, int32>& Pair : GroupsPerGlowActor)
+		{
+			if (Pair.Value > 1)
+			{
+				Test->AddError(FString::Printf(TEXT("The glow actor %s is listed in %d light groups; a glow actor may be in one group only"), *Pair.Key->GetName(), Pair.Value));
 			}
 		}
 

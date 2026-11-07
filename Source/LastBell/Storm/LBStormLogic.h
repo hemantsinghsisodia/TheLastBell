@@ -236,4 +236,14 @@ namespace LBStormLogic
 	 * gone at both ends (so the fade neither starts nor ends with a pop).
 	 */
 	LASTBELL_API float FadeScale(float From, float To, float Alpha, float TimeSeconds);
+
+	// ---------------------------------------------------------------------------------------------------------------------
+	// Glow actors (plan 8.1, D-099)
+	// ---------------------------------------------------------------------------------------------------------------------
+
+	/**
+	 * The glow colour for a light now at CurrentIntensity whose base is BaseIntensity: RGB of Base times s = clamp(Current / BaseIntensity,
+	 * 0, 1), with s = 0 when BaseIntensity is not above zero. Alpha is kept.
+	 */
+	LASTBELL_API FLinearColor ScaleGlow(const FLinearColor& Base, float CurrentIntensity, float BaseIntensity);
 }

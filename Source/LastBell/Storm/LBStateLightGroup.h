@@ -9,6 +9,7 @@
 
 class ALight;
 class ULightComponent;
+class UMaterialInstanceDynamic;
 
 /**
  * Dims, kills or flickers a set of placed lights from the story tags (P14 section 8). The Rules are in story order and the last
@@ -22,6 +23,10 @@ class ULightComponent;
  * Lights: placed light actors only. Never a Blueprint light, a puzzle candle's flame light, the Warden's tell light or the player's
  * candle (the player candle writes its own intensity every tick). A light listed in two groups is a setup error (a Warning is
  * logged at BeginPlay and the setup test catches it).
+ *
+ * GlowActors (P14-1b, D-099): actors whose material slots glow with a vector parameter (a lantern's glass). Each is paired with the
+ * nearest light in Lights, and its glow slots follow that light's intensity, so the glass dims, flickers and goes dark with the light.
+ * A glow actor listed in two groups is a setup error, like a duplicated light.
  */
 UCLASS()
 class LASTBELL_API ALBStateLightGroup : public AActor
@@ -37,6 +42,18 @@ public:
 	/** Hidden (SetActorHiddenInGame) while the mode is Off, shown in any other mode: flame or glow meshes. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Light Group")
 	TArray<TObjectPtr<AActor>> EmissiveActors;
+
+	/**
+	 * Actors whose glowing material slots follow the nearest light of this group (a lantern's glass). Every mesh component slot whose
+	 * material has the vector parameter GlowParameter is driven: the parameter is the base colour scaled by light / base light.
+	 * Independent of EmissiveActors.
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Light Group")
+	TArray<TObjectPtr<AActor>> GlowActors;
+
+	/** The vector material parameter scaled on the glow slots. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Light Group")
+	FName GlowParameter = TEXT("Color");
 
 	/** In story order; the last rule whose RequiredTag is present wins. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Light Group")
@@ -63,9 +80,18 @@ protected:
 	virtual void Tick(float DeltaSeconds) override;
 
 private:
+	/** One glow material slot: the dynamic instance made for it and the parameter's value before the group touched it. */
+	struct FGlowSlot
+	{
+		TWeakObjectPtr<UMaterialInstanceDynamic> Material;
+		FLinearColor Base = FLinearColor::Black;
+	};
+
 	struct FEntry
 	{
 		TWeakObjectPtr<ULightComponent> Component;
+		/** The glow slots of the glow actors paired with this light. */
+		TArray<FGlowSlot> Glow;
 		float Base = 0.f;
 		/** A per-light offset into the flicker noise (from the light's name), so lights do not flicker in step. */
 		float Seed = 0.f;
@@ -83,6 +109,9 @@ private:
 	void ApplyInstant();
 	void BeginFade(const LBStormLogic::FLightRule& NewRule);
 	void WriteScale(FEntry& Entry, float Scale);
+	void WriteGlow(const FEntry& Entry, float Scale) const;
+	/** EntryLights[i] is the light actor of Entries[i]. */
+	void BuildGlow(const TArray<const ALight*>& EntryLights);
 	void ShowEmissive(bool bShow);
 	void UpdateTickState();
 	void WarnAboutDuplicates() const;

@@ -863,3 +863,41 @@ One editor agent at a time. Each agent commits on this branch only and never swi
   - `tw_base` frames the tower-base wall at close range. It is kept for before/after comparability: the lantern's light on that wall still measures the group state.
 - Luma means range from 0.012 (`cr_tall_ossuary_15m`, 91 % of pixels below 0.02) to 0.214 (`cy_lantern_gate_3m`). They are the reference for P14-6/P14-7.
 - **Also on screen:** "PROFILING WITH AI LOGGING ON!", the editor's usual AI-logging note. It was on in the earlier readings too, so they stay comparable.
+
+### P14-1b result (glow actors, D-099, 2026-11-07)
+**Built (`Source/LastBell/Storm/`):**
+- `ALBStateLightGroup::GlowActors` and `GlowParameter` (default `Color`), as in section 8.1.
+- `LBStormLogic::ScaleGlow(Base, Current, BaseIntensity)`, the pure scaling maths.
+- At BeginPlay, after the base intensities are recorded:
+  - every `UMeshComponent` slot on a glow actor whose material reports the vector parameter gets its own dynamic instance (`CreateDynamicMaterialInstance`);
+  - the glow actor is paired with the nearest light of the group, by actor location, measured once.
+- `WriteScale` also writes the paired slots, so instant apply (BeginPlay, `OnStateReplaced`), fade and flicker all drive the glass.
+- Nothing else changed: the tick rule, `EmissiveActors` and the lights' behaviour are as before.
+
+**Warnings (`LogLB`):**
+- A glow actor with no matching slot, or in a group with no valid light, logs one warning naming the group and the actor, and is skipped.
+- A glow actor listed in two groups logs a warning at BeginPlay, like a duplicated light.
+- A null entry in `GlowActors` is skipped silently.
+
+**Tests, real-project suite via `Tools/build_and_test.ps1`: 127 passed, 1 failed, 0 invalid tags.**
+- The build is clean, with no warnings in the touched files.
+- The failure is `Functional.Storm.Monastery.StormSetup`. It is expected, and stays red until P14-2 and P14-3.
+- New tests:
+  - `LastBell.Storm.Logic.ScaleGlow`: On, Off, Dim 0.3, base 0, current above base, alpha kept.
+  - `LastBell.Functional.Storm.StateLightGroupDrivesGlow`, on `L_Test_Warden`, with the real `SM_Wooden_Lantern_01` (Static component) and its glass slot 1 (`MI_LB_LanternGlass_Lit`, base Color 1.7, 0.765, 0.17, 1.0):
+    - the glass equals its base without the tag;
+    - after Ritual.2 and the 2 s wait it is black;
+    - after `ReplaceState` without the tag it is back at base on the next frame;
+    - in an instant Flicker (0.8, 0.5, 8) it stayed within [0.4, 0.8] of the base over 121 samples, with the brightest channel ranging 0.683 to 1.290 of a 1.7 base.
+- `Monastery.StormSetup` now also checks that every group's `GlowActors` entries resolve at least one glow slot and that no glow actor is in two groups. It is a no-op while there are no groups.
+
+**Not validated:** nothing in the real `L_Monastery` is checked (no glow actors are assigned there yet). Whether the glass really goes dark beside a dead light is for P14-3 and P14-5, by eye.
+
+**Notes for P14-3:**
+- Assign `GlowActors` from the table in section 8.1 (`CLA_Lantern_Bells`, `_West`, `SHA_Lantern_Entry`, `TWA_Lantern_Land4/7/10`, `TWA_Lantern_Bell`).
+- Leave `GlowParameter` at `Color`.
+- Each glow actor must be nearer to its own group's light than to any other light of that group. Pairing is per group, so the lantern 42 cm from the group's light is right.
+- Every slot of a glow actor whose material has `Color` is driven, not only the first. The test only inspects slot 1 (the first such slot of `SM_Wooden_Lantern_01`); I did not check whether other lantern slots also have `Color`.
+- The group makes the dynamic instances at runtime only (PIE and game). Nothing is saved to the level.
+- A glow actor's component can stay Static: `CreateDynamicMaterialInstance` works on it at runtime.
+- In the test, `SpawnActorDeferred` has already registered a `StaticMeshActor`'s component. To set a mesh on a Static component, unregister it, call `SetStaticMesh`, then register it again.

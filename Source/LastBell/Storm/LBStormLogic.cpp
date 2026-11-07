@@ -313,4 +313,10 @@ namespace LBStormLogic
 		const float Weight = 4.f * A * (1.f - A);
 		return FMath::Lerp(From, To, A) * FMath::Lerp(1.f, GutterNoise(TimeSeconds), Weight);
 	}
+
+	FLinearColor ScaleGlow(const FLinearColor& Base, float CurrentIntensity, float BaseIntensity)
+	{
+		const float S = BaseIntensity > 0.f ? FMath::Clamp(CurrentIntensity / BaseIntensity, 0.f, 1.f) : 0.f;
+		return FLinearColor(Base.R * S, Base.G * S, Base.B * S, Base.A);
+	}
 }

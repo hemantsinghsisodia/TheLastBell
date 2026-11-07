@@ -505,4 +505,35 @@ bool FLBStormLightRulesTest::RunTest(const FString& Parameters)
 	return true;
 }
 
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBStormScaleGlowTest, "LastBell.Storm.Logic.ScaleGlow", LB_TEST_FLAGS)
+bool FLBStormScaleGlowTest::RunTest(const FString& Parameters)
+{
+	const FLinearColor Base(0.8f, 0.4f, 0.2f, 0.5f);
+
+	// On: current = base gives the base colour.
+	FLinearColor Value = LBStormLogic::ScaleGlow(Base, 300.f, 300.f);
+	TestTrue(TEXT("On: the base colour"), Value.Equals(Base, 1.0e-6f));
+
+	// Off: black, alpha kept.
+	Value = LBStormLogic::ScaleGlow(Base, 0.f, 300.f);
+	TestTrue(TEXT("Off: RGB 0"), Value.R == 0.f && Value.G == 0.f && Value.B == 0.f);
+	TestEqual(TEXT("Off: alpha kept"), Value.A, 0.5f);
+
+	// Dim 0.3: RGB scaled, alpha kept.
+	Value = LBStormLogic::ScaleGlow(Base, 90.f, 300.f);
+	TestTrue(TEXT("Dim 0.3: RGB * 0.3"), Value.Equals(FLinearColor(0.24f, 0.12f, 0.06f, 0.5f), 1.0e-5f));
+
+	// A base of 0 gives black (no division by zero), whatever the current value.
+	Value = LBStormLogic::ScaleGlow(Base, 50.f, 0.f);
+	TestTrue(TEXT("Base intensity 0: black"), Value.R == 0.f && Value.G == 0.f && Value.B == 0.f);
+	TestEqual(TEXT("Base intensity 0: alpha kept"), Value.A, 0.5f);
+
+	// Brighter than the base (a flash) clamps to the base colour; a negative current clamps to black.
+	Value = LBStormLogic::ScaleGlow(Base, 900.f, 300.f);
+	TestTrue(TEXT("Current above the base clamps to s = 1"), Value.Equals(Base, 1.0e-6f));
+	Value = LBStormLogic::ScaleGlow(Base, -5.f, 300.f);
+	TestTrue(TEXT("Negative current clamps to s = 0"), Value.R == 0.f && Value.G == 0.f && Value.B == 0.f);
+	return true;
+}
+
 #endif // WITH_DEV_AUTOMATION_TESTS

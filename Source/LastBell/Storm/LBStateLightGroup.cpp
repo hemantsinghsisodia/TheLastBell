@@ -1,8 +1,11 @@
 #include "Storm/LBStateLightGroup.h"
 #include "Systems/LBWorldStateSubsystem.h"
 #include "Components/LightComponent.h"
+#include "Components/MeshComponent.h"
 #include "Components/SceneComponent.h"
 #include "Engine/Light.h"
+#include "Materials/MaterialInstanceDynamic.h"
+#include "Materials/MaterialInterface.h"
 #include "Engine/World.h"
 #include "EngineUtils.h"
 #include "LBLog.h"
@@ -21,6 +24,7 @@ void ALBStateLightGroup::BeginPlay()
 	Super::BeginPlay();
 
 	Entries.Reset();
+	TArray<const ALight*> EntryLights;
 	for (ALight* Light : Lights)
 	{
 		ULightComponent* Component = Light ? Light->GetLightComponent() : nullptr;
@@ -32,7 +36,11 @@ void ALBStateLightGroup::BeginPlay()
 		Entry.Component = Component;
 		Entry.Base = Component->Intensity;
 		Entry.Seed = static_cast<float>(GetTypeHash(Light->GetFName()) % 1000u) * 0.137f;
+		EntryLights.Add(Light);
 	}
+
+	// The glow slots are found once the base intensities are known.
+	BuildGlow(EntryLights);
 
 	WarnAboutDuplicates();
 
@@ -56,6 +64,66 @@ void ALBStateLightGroup::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	Super::EndPlay(EndPlayReason);
 }
 
+void ALBStateLightGroup::BuildGlow(const TArray<const ALight*>& EntryLights)
+{
+	for (AActor* GlowActor : GlowActors)
+	{
+		if (!GlowActor)
+		{
+			continue;
+		}
+
+		// Every mesh slot whose material has the glow parameter gets its own dynamic instance.
+		TArray<FGlowSlot> Slots;
+		TInlineComponentArray<UMeshComponent*> Meshes(GlowActor);
+		for (UMeshComponent* Mesh : Meshes)
+		{
+			const int32 NumMaterials = Mesh->GetNumMaterials();
+			for (int32 Index = 0; Index < NumMaterials; ++Index)
+			{
+				UMaterialInterface* Material = Mesh->GetMaterial(Index);
+				FLinearColor Value;
+				if (!Material || !Material->GetVectorParameterValue(FHashedMaterialParameterInfo(GlowParameter), Value))
+				{
+					continue;
+				}
+				if (UMaterialInstanceDynamic* Dynamic = Mesh->CreateDynamicMaterialInstance(Index, Material))
+				{
+					FGlowSlot& Slot = Slots.AddDefaulted_GetRef();
+					Slot.Material = Dynamic;
+					Slot.Base = Value;
+				}
+			}
+		}
+		if (Slots.IsEmpty())
+		{
+			UE_LOG(LogLB, Warning, TEXT("State light group %s: glow actor %s has no material slot with the vector parameter %s; it is skipped"),
+				*GetName(), *GlowActor->GetName(), *GlowParameter.ToString());
+			continue;
+		}
+
+		// The nearest light of the group (actor to actor, measured once).
+		int32 Nearest = INDEX_NONE;
+		double NearestDistSq = TNumericLimits<double>::Max();
+		for (int32 Index = 0; Index < EntryLights.Num(); ++Index)
+		{
+			const double DistSq = FVector::DistSquared(EntryLights[Index]->GetActorLocation(), GlowActor->GetActorLocation());
+			if (DistSq < NearestDistSq)
+			{
+				NearestDistSq = DistSq;
+				Nearest = Index;
+			}
+		}
+		if (Nearest == INDEX_NONE)
+		{
+			UE_LOG(LogLB, Warning, TEXT("State light group %s: glow actor %s has no light in the group to follow; it is skipped"),
+				*GetName(), *GlowActor->GetName());
+			continue;
+		}
+		Entries[Nearest].Glow.Append(Slots);
+	}
+}
+
 void ALBStateLightGroup::WarnAboutDuplicates() const
 {
 	const UWorld* World = GetWorld();
@@ -77,6 +145,14 @@ void ALBStateLightGroup::WarnAboutDuplicates() const
 			{
 				UE_LOG(LogLB, Warning, TEXT("State light groups %s and %s both list the light %s; its base intensity and scale would fight"),
 					*GetName(), *Other->GetName(), *Light->GetName());
+			}
+		}
+		for (AActor* GlowActor : GlowActors)
+		{
+			if (GlowActor && Other->GlowActors.Contains(GlowActor))
+			{
+				UE_LOG(LogLB, Warning, TEXT("State light groups %s and %s both list the glow actor %s; its glow would be driven by two lights"),
+					*GetName(), *Other->GetName(), *GlowActor->GetName());
 			}
 		}
 	}
@@ -104,6 +180,18 @@ void ALBStateLightGroup::WriteScale(FEntry& Entry, float Scale)
 		Component->SetIntensity(Entry.Base * Scale);
 	}
 	Entry.AppliedScale = Scale;
+	WriteGlow(Entry, Scale);
+}
+
+void ALBStateLightGroup::WriteGlow(const FEntry& Entry, float Scale) const
+{
+	for (const FGlowSlot& Slot : Entry.Glow)
+	{
+		if (UMaterialInstanceDynamic* Material = Slot.Material.Get())
+		{
+			Material->SetVectorParameterValue(GlowParameter, LBStormLogic::ScaleGlow(Slot.Base, Entry.Base * Scale, Entry.Base));
+		}
+	}
 }
 
 void ALBStateLightGroup::ShowEmissive(bool bShow)
