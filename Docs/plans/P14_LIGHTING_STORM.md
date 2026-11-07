@@ -226,11 +226,11 @@ New folder `Source/LastBell/Storm/`. The design rules apply: composition, subsys
 | `SZN_Crypt` | 6300 … 12000 | −2950 … 520 | −1200 … −45 | 0.0 | 2 |
 | `SZN_Passage` | 6040 … 9460 | 900 … 2600 | −40 … 1200 | 0.3 | 1 |
 | `SZN_Cloister` | 9460 … 12040 | 500 … 3040 | −40 … 1500 | 0.6 | 1 |
-| `SZN_Garth` | from F0 (the garth's open bounds) | | −40 … 1500 | 1.0 | 2 |
+| `SZN_Garth` | 10245 … 11460 | 1345 … 2260 | −40 … 1500 | 1.0 | 2 |
 | `SZN_TowerShaft` | 11990 … 13010 | 1490 … 2510 | −40 … 2650 | 0.25 | 3 |
 | `SZN_Belfry` | 11990 … 13010 | 1490 … 2510 | 2650 … 4800 | 0.85 | 3 |
 
-`SZN_Garth`'s bounds are the min/max X and Y of the 175 `CLA_Garth*` actor locations, each extended by 100 cm (F0).
+`SZN_Garth`'s bounds are the min/max X and Y of the 175 `CLA_Garth*` plant locations, each extended by 100 cm (F0: plants X 10347–11362, Y 1444–2161). Not counted: the 6 garth structures with the same prefix (`CLA_GarthWall_N/S/E/W`, `CLA_GarthCross`, `CLA_GarthBed`); with them the box would be X 10200–11500, Y 1300–2300, which reaches under the walk roofs (eaves at Y 2180).
 
 ### 5.2 Story intensity
 **Target:** the `Intensity` of the last `StoryIntensity` entry whose tag is present. With none present it is `DefaultIntensity` 0.55.
@@ -352,13 +352,25 @@ Strikes use profile Double, with Triple for TowerTop's second strike.
 - They are atmosphere only. **No puzzle information may depend on them**: the accessibility rule.
 - They reuse the existing chalk textures.
 
-| Actor | Texture (MI) | Where (F0 fixes the exact surface point by trace) | Size (cm) |
+| Actor | Texture (MI) | Where (fixed by F0) | Size (cm) |
 |---|---|---|---|
 | `RV_Gate_Sigil` | `T_LB_Decal_ChalkSigil` (`MI_Reveal_Sigil`) | Gatehouse inner face, courtyard side, 500 cm from the arch centre toward +Y, centre Z 260 | 220 × 220 |
 | `RV_WellHouse_Tally` | `_ChalkTally` (`MI_Reveal_Tally`) | Well-house outer wall facing the key route, centre Z 140 | 120 × 80 |
 | `RV_Chapel_Circle` | `_ChalkCircle` (`MI_Reveal_Circle`) | Chapel floor, centred on the S2 lancet light pool decal | Ø 180 |
-| `RV_Garth_Drag` | `_DragMarks` (`MI_Reveal_Drag`) | The garth-facing arcade wall nearest the `cl_tall_north_15m` view centre, Z 240–300 | 220 × 60 |
-| `RV_Belfry_Tally` | `_ChalkTally` (`MI_Reveal_Tally`) | Belfry wall between the two south lancets, centre Z 2850 | 100 × 100 |
+| `RV_Garth_Drag` | `_DragMarks` (`MI_Reveal_Drag`) | The garth-facing wall nearest the `cl_tall_north_15m` view centre, Z 240–300 | 220 × 60 |
+| `RV_Belfry_Tally` | `_ChalkTally` (`MI_Reveal_Tally`) | Belfry south wall beside the two south lancets, centre Z 2850 | 100 × 100 |
+
+**Exact placements (F0).** These follow the wall-decal rule in `MCP_NOTES` (Materials item 6): rotation (0, yaw, 90), where forward (cos yaw, sin yaw) points into the wall. Floor decals use rotation (−90, yaw, 0). `DecalSize` is a half-extent (depth, vertical, horizontal).
+
+| Actor | Location | Rotation | `DecalSize` | How the surface was found |
+|---|---|---|---|---|
+| `RV_Gate_Sigil` | (300, 500, 260) | (0, 180, 90) | (10, 110, 110) | A trace sweep at Z 260 finds the inner wall face at X 300 and the arch recess at Y −175 … 175 (centre 0). Buttresses stand at Y ±650, and the decal ends at Y 610. `KP_Lantern_Gate` (350, 560, 40…113) sits below the decal's bottom at Z 150. |
+| `RV_WellHouse_Tally` | (1350, −1775, 140) | (0, −90, 90) | (10, 40, 60) | A sweep at Z 140 finds the north face at Y −1775: walls at X 1275–1425 and 1575–1725, door at X 1425–1575. The decal goes on the west pier, away from `KP_Lantern_Well` and the ivy. |
+| `RV_Chapel_Circle` | (8265, −255, 0.5) | (−90, 0, 0) | (10, 90, 90) | The centre of `Ch_Pool_S2`. The pools fall about 765 cm +X of their lancets, so the S2 pool is at X 8265. |
+| `RV_Garth_Drag` | (10750, 3000, 270) | (0, 90, 90) | (20, 30, 110) | The inner face of the north walk wall (`CLA_Wall_N_2/_3`, face Y 2994–3000). It faces the garth through the arcade bay between the piers at X 10600 and 10900. The art walls have no collision, so the face comes from the P10 layout tables, and the depth is 20 to cover the relief. |
+| `RV_Belfry_Tally` | (12200, 1540, 2850) | (0, −90, 90) | (15, 50, 50) | The inner face of `TWA_S3_S` (Y 1540, P10 layout). The south lancets are clear at X 12340–12470 and 12530–12660, sill Z 2700. **The pier between them is only 60 cm wide**, so the tally goes 140 cm west of them. It is in the `tw_belfry` view (yaw −116° from the pose, 10° below centre). |
+
+P14-3 checks every placement in a PIE Simulate capture with `lb.Storm.Freeze 0.8` typed by the owner. The art surfaces in the cloister and tower have no collision, so their planes come from the layout, not from a trace.
 
 ## 6. Materials (technical-artist, [EDITOR], P14-2)
 **Rules for every material in this task:**
@@ -381,6 +393,9 @@ Strikes use profile Double, with Triple for TowerTop's second strike.
 2. **Glass.**
    - In `M_LB_StainedGlass` and `_Translucent`, multiply the emissive by `MF_LB_StormFlash(GlassFlashGain, FlashResponse)`. `FlashResponse` is a new scalar, default 1.
    - Set it to 0 on `MI_Glass_Clue_Saints` (puzzle clue glass stays stable) and on any glass MI that F0 finds with no sky behind it.
+   - **F0 result:** `MI_Glass_Lancet_B` gets 0. Its only user, `Ch_Glass_Clue_Ext`, faces the passage building, and every outward trace hits at 8.6 m.
+   - These keep 1, because the sky is behind them (an outward trace is open, or runs more than 20 m to the backdrop): `MI_Glass_Lancet_A` (`Ch_Glass_N1`, `_N2`, `_S2`, `_S3`), `MI_Glass_Broken` (`Ch_Glass_S1`) and `MI_Glass_East` (`Ch_Glass_E`).
+   - `MI_Glass_Clue_Saints` is used only by `BP_StainedGlassClue_Saints`.
 3. **Shafts.** `M_LB_LightShaft`: Intensity × `MF_LB_StormFlash(ShaftFlashGain, FlashResponse)`, with `FlashResponse` 1 on all three MIs.
 4. **Light pools.** `M_LB_Decal_LightPool`: emissive × `MF_LB_StormFlash(PoolFlashGain, 1)`.
 5. **Reveal decals.** `M_LB_Decal_LightningReveal` as in section 5.6(d), with four MIs: `MI_Reveal_Sigil`, `_Tally`, `_Circle`, `_Drag`.
@@ -414,6 +429,7 @@ Strikes use profile Double, with Triple for TowerTop's second strike.
 | `MI_Ivy_Green`, `MI_Ivy_Dead` | on (Flutter) | 2.0 | — |
 
    - Any other `M_LB_Foliage` MI that F0 finds (for example on the `CLA_Garth*` plants) gets amplitude 6 and height 60, listed in the report.
+   - **F0 result:** there is none. The two masters have exactly the nine MIs above, and the `CLA_Garth*`, `PSA_Weed_*` and searsia actors use them through their meshes' default slots.
    - The dead tree and its snag stay static: their bark is on `M_LB_Surface` (D-060).
 9. **Assets.**
    - `MPC_LB_Storm`: the parameters from section 4, with defaults of 0 and the direction (0.87, 0.5, 0).
@@ -427,6 +443,7 @@ Strikes use profile Double, with Triple for TowerTop's second strike.
    - `LB_StormFill`: on `L_Tw_BellFill`.
    - `LB_StormSky`: on `SkyLight`.
    - `Moon_Fill` gets no tag.
+   - **F0:** each of these labels exists exactly once. All 62 placed lights are **Movable**, so no mobility change is needed. No actor carries a storm tag yet.
 2. **Zones:** the seven `ALBStormZone` actors from section 5.1.
 3. **Post-process restructure:**
 
@@ -438,6 +455,11 @@ Strikes use profile Double, with Triple for TowerTop's second strike.
 | `PP_Crypt`, `PP_Outdoor_Night`, `PostProcess_Exposure` | Unchanged |
 
    - The new volumes copy `PP_Cloister`'s metering mode and its satShadows 0.65.
+   - **F0:**
+     - `PP_Cloister` and `PP_Outdoor_Night` override only `AutoExposureMin/MaxBrightness` and `ColorSaturationShadows`. They don't override `AutoExposureMethod`, so the project default applies. The new volumes do the same: they set min = max EV100 and satShadows 0.65 (0.65, 0.65, 0.65, 1), and nothing else.
+     - `PP_Crypt` alone overrides the method (`AEM_Histogram`).
+     - No volume overrides `LumenFinalGatherQuality`.
+     - Priorities and blends today: unbound `PostProcess_Exposure` 0 / 100; `PP_Outdoor_Night`, `PP_Crypt` and `PP_Cloister` 1, with blend 500, 300 and 300.
    - The agent reads back every volume's bounds, priority and exposure fields.
    - The visual check comes at the start of P14-4, with the owner present: the 19 viewpoints against the F0 set. The mean absolute difference must be ≤ 2/255, except in the chapel south aisle and the sacristy (Y < −450), which today get EV 3. That difference is shown to the owner, not hidden.
 4. **State light groups:** the actors in section 8.
@@ -445,9 +467,14 @@ Strikes use profile Double, with Triple for TowerTop's second strike.
 6. **Apparitions:** `bLightningOnHold` = true on the station of `Apparition_Courtyard`, and on station 0 of `Apparition_Chapel`.
 7. **WPO distance:**
    - Set `WorldPositionOffsetDisableDistance` = 4000 on all 312 PCG ISM components and on the static-mesh components of the `CLA_Garth*`, `PSA_Weed_*`, searsia and ivy actors.
+   - **F0:** select by material, not by label. The target set is every `StaticMeshActor` whose effective material (override, or the mesh default) is one of the nine foliage MIs: **249 actors**.
+     - That is the 175 `CLA_Garth*` plants (including `CLA_GarthShrub_0/1`), the 32 `PSA_Weed_*`, the 4 `Garden_Searsia_*` and **32 ivy actors**.
+     - Only 26 of the ivy actors are labelled `Ivy_*`.
+     - Today every target has distance 0 (never disabled) and `bEvaluateWorldPositionOffset` true.
+     - 80 of the 312 ISM components cast shadows, and every ISM uses shadow-cache invalidation `Auto`.
    - Script it: `Tools/lighting/p14_wpo_distance.py`, with `--apply`, `--check`.
    - Regenerating the PCG volumes resets it; the script note goes into `MCP_NOTES.md`.
-8. **Final check:** census the actor count, which must be the F0 count + 23 (7 zones + 9 groups + 2 PP volumes + 5 decals). Then save `L_Monastery` once, and run `--check`.
+8. **Final check:** census the actor count, which must be the F0 count + 23 (7 zones + 9 groups + 2 PP volumes + 5 decals). **F0 count: 2992**, from `find_actors` with an empty name and tag. So the target is **3015**, counted the same way. Then save `L_Monastery` once, and run `--check`.
 
 ## 8. Story-driven light changes (`ALBStateLightGroup`)
 **Properties:**
@@ -472,13 +499,22 @@ Strikes use profile Double, with Triple for TowerTop's second strike.
 |---|---|---|---|
 | `SLG_Chapel_Altar` | `Light_Chapel_Altar_N`, `_S` | `State.Ritual.1` → Flicker, scale 0.25, amount 0.45, speed 7 | Live, at the altar |
 | `SLG_Chapel_Dais` | `Light_Chapel_Statue`, `Light_Chapel_DaisFill` | `State.Ritual.1` → Off | Live |
-| `SLG_Crypt_Torches` | the three torch lights D-072 calls T1–T3 | `State.Ritual.2` → Flicker, scale 0.6, amount 0.45, speed 9 | On the way out |
-| `SLG_Crypt_Niches` | the five niche candle lights (90 lm), plus their flame meshes (F0: the `SM_LB_Prop_CandleFlame_A` actors within 60 cm) | `State.Ritual.2` → Off | On the way out |
+| `SLG_Crypt_Torches` | `L_Crypt_Torch_T1`, `_T2`, `_T3` (F0) | `State.Ritual.2` → Flicker, scale 0.6, amount 0.45, speed 9 | On the way out |
+| `SLG_Crypt_Niches` | `L_Crypt_Candle_Niche_E_WC`, `_N_SC`, `_S_FP`, `_E_CC`, `_S_NC` (90 lm). Emissive actors: `CD_Candles_Niche_E_WC_Flame`, `_N_SC_Flame`, `_S_FP_Flame`, `_E_CC_Flame`, `_S_NC_Flame`, each 9 cm from its light (F0) | `State.Ritual.2` → Off | On the way out |
 | `SLG_Cloister_Bells` | `L_Cl_Bells` | `State.Event.CloisterEntered` → Flicker, scale 0.85, amount 0.3, speed 5 | During the hunt |
 | `SLG_Cloister_West` | `L_Cl_West` | `CloisterEntered` → Flicker (0.85, 0.3, 5); `State.Ritual.3` → Off | Hunt, then behind you |
 | `SLG_Cloister_Entry` | `L_Cl_Entry` | `State.Ritual.3` → Off | Behind you |
 | `SLG_Tower_Landings` | `L_Tw_Land4/7/10` | `State.Ritual.3` → Flicker, scale 0.9, amount 0.2, speed 4 | Climbing |
 | `SLG_Tower_Bell` | `L_Tw_Bell` | `State.Event.TowerTop` → Flicker, scale 0.8, amount 0.5, speed 8 | At the top |
+
+**F0 findings for the groups:**
+- Every listed light exists once and is Movable.
+- No flame mesh sits near the torches. Their fire is the Cascade emitters, which stay on in Flicker.
+- The altar candles (`Ch_AltarFlame_N1…S3_F`, 46–49 cm) stay visible in Flicker.
+- **Lantern glass (open, for the owner).** Seven groups are lantern lights: `L_Cl_Bells`, `_West`, `_Entry`, `L_Tw_Land4/7/10` and `L_Tw_Bell`. Each has its `SM_Wooden_Lantern_01` 42 cm away, and since P11-7 the lantern's glass glows through the mesh-default slot material `MI_LB_LanternGlass_Lit` (unlit emissive `Color`).
+  - Hiding a lantern for Off would remove the whole lantern.
+  - Leaving it would keep the glass glowing beside a dead light: `L_Cl_West` and `L_Cl_Entry` after Ritual 3. In Flicker the glass stays steady while the light flickers.
+  - The decision is recorded in the F0 result.
 
 **Readability fallback:** if a critical-path viewpoint fails its floor (section 9.3) after its change, change that group's Off to Dim at scale 0.3, or a Flicker scale to +0.2. Then record it in DECISIONS.
 
@@ -513,6 +549,8 @@ For B and C, the per-area satShadows overrides are cleared, because the grade li
 **4. Wind.** The owner watches the courtyard and the garth in PIE at intensity 0.6 and 1.0 (`lb.Storm.Intensity`). Too much, too little, or right; plus any pop at 40 m.
 
 **5. R-31.** A capture from `p14_cy_tower_reveal` [600, 0, 170, 14, 9.5]; F0 confirms the tower top is in the frame.
+- **F0:** vertical traces put the tower's top collision at Z 3540. The top centre is 0.0° right of the view centre and 1.5° above it, inside a 90° frame at both 16:9 and the portrait capture.
+- The line-of-sight trace first hits at 11 995 cm, at the tower's west face (X ≈ 11 990), so nothing stands in between.
 - R-31 closes if the tower's median luma ≤ the median luma of the surrounding sky.
 - Otherwise the cause is reported, with no fix in this phase without a decision.
 
@@ -560,6 +598,10 @@ Pose format: [x, y, z, pitch, yaw]. The file is `Tools/lighting/poses/p14_viewpo
 
 **Capture:** 19 images, about 12 minutes, with the owner present and Unreal in front.
 
+**Pose file:** `Tools/lighting/poses/p14_viewpoints.json`, 16 unique poses: the 14 from `p11_poses.json`, `tw_base` and `p14_cy_tower_reveal`.
+- The four storm moments reuse four of these poses with the flash frozen.
+- So the P14-B "before" set has 16 images: PIE Simulate, no candle proxy, the same method as the P11 captures. It is taken with `capture_session.py --prefix p14b_` into `Docs/ArtTest/lighting/before/`.
+
 **Then a PIE run-through of the storm beats (owner, about 15 minutes):**
 1. Arrival: look at the tower.
 2. `lb.State.Add State.Ritual.1` at the altar: the strike, the light changes, the apparition flash.
@@ -581,6 +623,9 @@ Each spot is reached in PIE with `BugItGo X Y Z Pitch Yaw Roll`.
 | Belfry | `BugItGo 12500 2150 2670 25 -135 0` |
 
 **Readings:** at each spot, `scalability 2`, `r.SetRes 1920x1080w`, `stat unit` and `stat gpu`, with a screenshot (`shot showui`) per reading.
+- Every reading, P14-B and P14-7 alike, starts with `lb.Warden.Enabled 0`, so the Warden can't end a reading.
+- The owner types `lb.Warden.Enabled 1` afterwards.
+- The editor already runs at High (F0: every `sg.*` is 2 and `sg.ResolutionQuality` is 87), so `scalability 2` changes nothing there.
 
 - **P14-B (baseline, before any change):** one reading per spot. About 10 minutes, in the F0 session.
 - **P14-7:**
@@ -692,3 +737,37 @@ One editor agent at a time. Each agent commits on this branch only and never swi
 - **Look gate:** a view-cone check only, with no trace, so the tower itself can't block it. Accepted.
 - **`WardenRevealFlash`:** runs with `lb.Warden.Enabled 0` and `SetDormantPresentation(false)`, on its own floor and wall. Accepted: it isolates the rule from the brain.
 - **Monastery tests:** once the storm is active in `L_Monastery` (after P14-3), the existing Monastery tests run with ambient flashes. That's harmless, but watch it.
+
+### F0 result (survey, 2026-11-07)
+**Method.** `Tools/lighting/p14_f0_survey.py` made 4506 read-only editor calls in 25 minutes (the editor was in the background, about 0.33 s per call). `L_Monastery` was clean before and after, with 0 call errors.
+- Raw data: `Docs/ArtTest/lighting/p14_f0_inventory.json`.
+- Tables: `p14_f0_tables.md`, from `Tools/lighting/p14_f0_tables.py`.
+- The values it fixed are written into sections 5.1, 5.6(d), 6, 7, 8, 9.1, 10 and 11 above, each marked "F0".
+
+**Facts:**
+- **Actors:** 2992, so the P14-3 target is 3015. No storm tags exist yet, and none of the new labels (`SZN_`, `SLG_`, `RV_`, `PP_Chapel`, `PP_Tower`) is taken.
+- **Lights:** 62 placed, all **Movable**. Every label the plan names exists exactly once. The only Blueprint lights are the 4 puzzle-candle `FlameLight`s and the Warden's `TellLight`, and none of them is grouped.
+- **Post-process:** as in section 3, with the details in section 7.3.
+- **Sky:** `SkySphere` → `MI_Env_NightSky` → `MI_NightStormSky` → `M_Sky_Panning_Clouds2`. Both MIs' overrides are listed in the tables, for the P14-2 read-back.
+- **Glass:** 7 actors on 4 MIs, plus `BP_StainedGlassClue_Saints`. `FlashResponse` is 0 on `MI_Glass_Clue_Saints` and `MI_Glass_Lancet_B` and 1 on the rest (section 6.2).
+- **Shafts:** 11 actors.
+  - The chapel has 3 `MI_LightShaft_Window` shafts and 1 `MI_LightShaft_Roof` shaft.
+  - The crypt and tower have 7 `Cylinder` cards on `MI_LightShaft_Crypt`, a child of `MI_LightShaft_Roof`.
+  - P14-2 sets `FlashResponse` 1 explicitly on all three MIs.
+- **Pools and chalk:** 4 pool decals on `MI_Decal_LightPool_Lancet` (`Ch_Pool_S1/S2/S3/Roof`), and 4 existing chalk decals.
+- **Foliage:**
+  - 9 MIs, and no others.
+  - 249 placed actors on them.
+  - The PCG has 312 ISM components with 2248 instances, 80 of them shadow-casting.
+  - WPO disable distance is 0 everywhere (section 7.7).
+- **Garth zone:** X 10245–11460, Y 1345–2260, from the 175 plants.
+- **Apparitions:** `Apparition_Courtyard` and `Apparition_Chapel` have one station each; `bLightningOnHold` is false on both.
+- **Tower reveal pose:** confirmed (section 9.1).
+- **Viewpoints:** all 14 named poses exist; the pose file is written (section 10).
+- **Editor scalability:** already High.
+
+**Open: lantern glass in the light groups (section 8).** The owner chooses one:
+1. **Glass follows the light (recommended).** A small addition to `ALBStateLightGroup`: `GlowActors`, whose `Color`-parameter material slots get a dynamic material instance scaled with the group's current value. Off then darkens the glass, and Flicker flickers it.
+   - Cost: one C++ task (gameplay-programmer, Unreal closed for the build) plus one test, before P14-3.
+2. **Hide the lantern for Off.** No code, but the lantern disappears.
+3. **No Off on lantern groups.** `SLG_Cloister_West` and `_Entry` use Dim 0.3 instead of Off after Ritual 3. The glass keeps glowing; no code.
