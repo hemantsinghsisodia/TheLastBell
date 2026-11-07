@@ -1010,3 +1010,78 @@ With `bWind` false the WPO input is a constant zero, so the default permutation 
 - Nanite: both masters have `bUsedWithNanite` true. Whether Nanite evaluates WPO for these meshes depends on the project setting and the per-component "evaluate WPO" flag; check it when applying 7.7, and read the sway in a capture before trusting it.
 - The plan's single-instance pivot: a non-instanced actor gets its actor origin as the pivot, so two actors of the same mesh at nearby positions sway out of step by their world position, which is the intent.
 - The dead tree and its snag stay static (bark on `M_LB_Surface`, D-060).
+
+### P14-3 result (level work, 2026-11-07)
+**Scripts:** `Tools/lighting/p14_3_level.py` (`--apply [--only tags,zones,pp,groups,decals,apparitions]`, `--check`) and `Tools/lighting/p14_wpo_distance.py` (`--apply [--dry]`, `--check`). Both are idempotent (exact-label find or create) and never save. `L_Monastery` was saved once, at the end, in one `save_assets` call with only the map package (it returned True; `is_dirty` false afterwards). `git status` shows `L_Monastery.umap` as the only changed content file; no other `.uasset` changed.
+
+**Census (`find_actors`, empty name and tag):** before 2992 (= F0), after 3015 = 2992 + 23 (7 zones + 9 groups + 2 PP volumes + 5 decals), and again 3015 after the save. The map was `is_dirty` false at the start, true after the edits, false after the save. The 13 never-save packages (`M_LB_Surface` and the 12 Blueprints on the list, including `BP_WardenApparition`) read not dirty before and after the save.
+
+**Final checks after the save:** `p14_3_level.py --check` 62 PASS, 0 FAIL; `p14_wpo_distance.py --check` 5 PASS, 0 FAIL.
+
+**1. Link tags** (all tags were empty before; each actor now has just its one tag): `LB_StormMoon` on `DirectionalLight` (object `DirectionalLight_1`); `LB_StormMoonSpot` on the 10 spots; `LB_StormFill` on `L_Tw_BellFill`; `LB_StormSky` on `SkyLight`. `find_actors` by tag returns 1 / 10 / 1 / 1; `Moon_Fill` has no storm tag. PIE log of `StormSetup`: "Storm: active with 13 linked lights" (1 + 10 + 1 + 1).
+
+**2. Zones.** Class `LBStormZone`, folder `Lighting/Storm`, location = box centre, rotation 0, scale 1, `Box` extent = half size. Read-back world box (location ± extent) matches the table to 0.0 cm, and `get_actor_bounds` returns the same box. Exposure and priority as in 5.1 (float32 rounding only: 0.35 reads 0.3499999940).
+
+| Zone | Location | Box extent | Exposure | Priority |
+|---|---|---|---|---|
+| `SZN_Chapel` | 7550, −345, 1180 | 1550, 1205, 1220 | 0.35 | 1 |
+| `SZN_Crypt` | 9150, −1215, −622.5 | 2850, 1735, 577.5 | 0 | 2 |
+| `SZN_Passage` | 7750, 1750, 580 | 1710, 850, 620 | 0.3 | 1 |
+| `SZN_Cloister` | 10750, 1770, 730 | 1290, 1270, 770 | 0.6 | 1 |
+| `SZN_Garth` | 10852.5, 1802.5, 730 | 607.5, 457.5, 770 | 1 | 2 |
+| `SZN_TowerShaft` | 12500, 2000, 1305 | 510, 510, 1345 | 0.25 | 3 |
+| `SZN_Belfry` | 12500, 2000, 3725 | 510, 510, 1075 | 0.85 | 3 |
+
+**3. Post-process.** `PP_Cloister` before: location (9550, 1375, 2080), scale (35.5, 18.25, 21.2), bounds X 6000…13100, Y −450…3200, Z −40…4200, priority 1, blend 300, overrides `AutoExposureMin/MaxBrightness` 0.65 and `ColorSaturationShadows` (0.65, 0.65, 0.65, 1), no method override. The brush is a 200 cm unit cube centred on the actor (bounds centre = location, bounds / scale = 200 on every axis), so the new transform follows from the target boxes. Only location and scale were changed; rotation, priority, blend and every value are unchanged.
+
+| Volume | Location | Scale | Bounds read back | Priority / blend | Overrides |
+|---|---|---|---|---|---|
+| `PP_Cloister` (shrunk) | 9040, 2050, 2080 | 30, 11.5, 21.2 | X 6040…12040, Y 900…3200, Z −40…4200 | 1 / 300 | the same three, values unchanged |
+| `PP_Chapel` (new) | 7550, −345, 1180 | 15.5, 12.05, 12.2 | X 6000…9100, Y −1550…860, Z −40…2400 | 2 / 200 | `AutoExposureMin/MaxBrightness` 0.65 and `ColorSaturationShadows` (0.65, 0.65, 0.65, 1), nothing else |
+| `PP_Tower` (new) | 12500, 2000, 2480 | 5.1, 5.1, 25.2 | X 11990…13010, Y 1490…2510, Z −40…5000 | 3 / 200 | the same three |
+
+New volumes: not unbound, enabled, blend weight 1, brush collision profile `NoCollision`, method not overridden (it reads `AEM_Histogram`, the struct default, like `PP_Cloister`). `PP_Crypt` (prio 1, blend 300, EV 0.2, bloom and method overridden, bounds as before), `PP_Outdoor_Night` (prio 1, blend 500, EV 1.15, satShadows 0.65, bounds as before) and `PostProcess_Exposure` (unbound, prio 0, blend 100, EV 3) read back identical to the values read before the first change.
+
+**4. State light groups** (folder `Lighting/Storm`, location = mean of the group's light locations, `FadeSeconds` 1.5, `GlowParameter` `Color`). Every light, emissive actor and glow actor was found exactly once by label. Rules read back in table order with the right tags; Off rules read the defaults (scale 1, amount 0.4, speed 6).
+
+| Group | Lights | Emissive / glow actors | Rules read back |
+|---|---|---|---|
+| `SLG_Chapel_Altar` | `Light_Chapel_Altar_N`, `_S` | none | Ritual.1: Flicker 0.25 / 0.45 / 7 |
+| `SLG_Chapel_Dais` | `Light_Chapel_Statue`, `Light_Chapel_DaisFill` | none | Ritual.1: Off |
+| `SLG_Crypt_Torches` | `L_Crypt_Torch_T1/T2/T3` | none | Ritual.2: Flicker 0.6 / 0.45 / 9 |
+| `SLG_Crypt_Niches` | the 5 `L_Crypt_Candle_Niche_*` | emissive: the 5 `CD_Candles_Niche_*_Flame` | Ritual.2: Off |
+| `SLG_Cloister_Bells` | `L_Cl_Bells` | glow `CLA_Lantern_Bells` | CloisterEntered: Flicker 0.85 / 0.3 / 5 |
+| `SLG_Cloister_West` | `L_Cl_West` | glow `CLA_Lantern_West` | CloisterEntered: Flicker 0.85 / 0.3 / 5; Ritual.3: Off |
+| `SLG_Cloister_Entry` | `L_Cl_Entry` | glow `SHA_Lantern_Entry` | Ritual.3: Off |
+| `SLG_Tower_Landings` | `L_Tw_Land4/7/10` | glow `TWA_Lantern_Land4/7/10` | Ritual.3: Flicker 0.9 / 0.2 / 4 |
+| `SLG_Tower_Bell` | `L_Tw_Bell` | glow `TWA_Lantern_Bell` | TowerTop: Flicker 0.8 / 0.5 / 8 |
+
+19 distinct lights and 7 distinct glow actors: no light and no glow actor is in two groups. Each lantern is 41.9 cm from its own group light (the other lights of `SLG_Tower_Landings` are over 1000 cm away), so the BeginPlay pairing picks the right light. `StormSetup` (below) also confirms that every glow actor resolves a `Color` slot.
+
+**5. Reveal decals** (`DecalActor`, folder `Lighting/Storm`, scale 1, the `MI_Reveal_*` from `/Game/LastBell/Materials/Instances/`). Transform, `DecalSize` and material read back exactly as the 5.6(d) table. Rotations were compared as quaternions (the editor reads yaw −90 with pitch `-0`).
+
+| Actor | Location | Rotation | `DecalSize` | MI |
+|---|---|---|---|---|
+| `RV_Gate_Sigil` | 300, 500, 260 | 0, 180, 90 | 10, 110, 110 | `MI_Reveal_Sigil` |
+| `RV_WellHouse_Tally` | 1350, −1775, 140 | 0, −90, 90 | 10, 40, 60 | `MI_Reveal_Tally` |
+| `RV_Chapel_Circle` | 8265, −255, 0.5 | −90, 0, 0 | 10, 90, 90 | `MI_Reveal_Circle` |
+| `RV_Garth_Drag` | 10750, 3000, 270 | 0, 90, 90 | 20, 30, 110 | `MI_Reveal_Drag` |
+| `RV_Belfry_Tally` | 12200, 1540, 2850 | 0, −90, 90 | 15, 50, 50 | `MI_Reveal_Tally` |
+
+**6. Apparitions.** Placed instances only (`Apparition_Courtyard` = `BP_WardenApparition_C_0`, `Apparition_Chapel` = `BP_WardenApparition_C_1`); the Blueprint was not touched or saved. `Stations` (1 station each) was read, written back whole with only `bLightningOnHold` set to true, and read back: a field-by-field diff against the saved "before" JSON shows that flag as the only difference. Courtyard: location (6020, 1300, 800), look cone 30, fade in 1.5, hold 4, fade out 2, no walk path, walk speed 110. Chapel: location (8380, −120, 0), look cone 30, min player distance 150, fade in 1, hold 2.5, fade out 1.5, walk path (8380, −380, 0), (8500, −650, 0), (8500, −1000, 0), (8250, −1100, 0), walk speed 110. All identical to before.
+
+**7. WPO distance 4000.** The scan (3653 read calls, about 20 minutes) printed the counts before any write: **249 static-mesh actors and 312 ISM components on 19 `PCGV_*` volumes, exactly the F0 numbers.** The 249 are the same actor set as F0's `foliage_actors` (0 only in F0, 0 only live). Effective-material slots by MI: GrassMedium02 90, WildRooibos 54, Fern02 41, WeedPlant02 32, NettlePlant 30, Ivy_Dead 22, SearsiaLucida 18, Ivy_Green 10 (no actor used `MI_Foliage_Moss01`). All 561 distances were 0 before, and no other `StaticMeshActor` had one set. After `--apply`, and again after the save, `--check` reads 4000 on all 249 and all 312. `--check` uses the target list that `--apply` wrote (`Saved/p14_wpo_targets.json`); `--rescan` scans the level again. `bEvaluateWorldPositionOffset` was not changed. `MCP_NOTES.md` (Storm materials, items 7 to 10) records that regenerating a `PCGV_*` volume resets the distance, so `--apply` must be rerun.
+
+**Tests (real project, headless `UnrealEditor-Cmd`, the editor stayed open and untouched meanwhile):** `Saved/Logs/LBTests_P14_3.log` has **128 `Result={Success}` and 0 `Result={Fail`**, exit code 0, "TEST COMPLETE". `LastBell.Functional.Storm.Monastery.StormSetup` passes. So do `RouteBot.Monastery`, `WalkPath.Monastery`, `Warden.Monastery.StagesRelocateTheWarden` and `Warden.MonasteryReachability`, which now run with the storm active. The only `Error:` line in the log is `HttpListener unable to bind to 127.0.0.1:8000`, because the open editor holds that port.
+
+**Deviations.**
+- **Three `ConnectionResetError`s** on the large empty-name `find_actors` reply (3000 refs) in about 12 runs, in the `pp`, `decals` and `apparitions` steps. The editor stayed alive and answered the next call each time (process responding, no new crash report), and no mutation was in flight. I did not treat these as a crash or a hang. I re-ran the idempotent step after each, then made `Ed.call` repeat a read-only call up to 3 times on a new session (never a mutation). The map was not saved until every check was clean.
+- New actors are in the folder `Lighting/Storm`; the plan did not name one. No existing actor was moved.
+- `p14_wpo_distance.py --check` reads the cached target list unless `--rescan` is given (a rescan takes about 20 minutes).
+
+**For the lead and the owner to check by eye (not validated here; no capture, PIE or synthetic input was used):**
+- **Decal placement** under a frozen flash (`lb.Storm.Freeze 0.8`, PIE Simulate). All five are invisible at F = 0.
+- **Exposure against F0:** the chapel south aisle and the sacristy (Y < −450) change from EV 3 (`PostProcess_Exposure`) to EV 0.65 now that `PP_Chapel` covers the whole nave. This is expected and is to be shown to the owner (P14-4). `PP_Cloister` no longer covers the nave; the tower is covered by `PP_Tower` (same 0.65), so only the chapel should change. The 200 cm blend radius on the new volumes softens the borders.
+- **Lanterns dark after `State.Ritual.3`** (`L_Cl_West`, `L_Cl_Entry`): the glass follows the light only at runtime, and so far only the functional test has shown it, never the real level.
+- **Wind:** the sway itself, any pop at 4000 cm, and the GPU cost (R-60) are for P14-4 and P14-7.
+- The PIE log line "Storm: active with 13 linked lights, 0 zones" is printed before the zones' own BeginPlay register them. `StormSetup` confirms the 7 zones exist, but nothing has yet tested `GetExposureAt` in `L_Monastery` itself.
