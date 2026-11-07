@@ -1123,3 +1123,30 @@ Spec: `Docs/plans/P14_4_WIND_FIX.md` (owner "go", D-100). Script: `Tools/lightin
 **Saves** (one package per call, `is_dirty` false after each; PIE off and `L_Monastery` / `M_LB_Surface` clean before and after each): `MF_LB_WindSway`, `M_LB_Foliage`, `M_LB_FoliageMasked` (both masters were dirty after the recompile), then the 8 MIs. `p14_4_wind_fix.py check`: OVERALL PASS (graph wiring and the 8 MI values).
 
 **Not validated: the sway itself (lead's captures and the owner's live check).** Expected, not measured: the grass peak lean is about 30 cm plus 0.25 × 30 sag, under the 40 cm cap of `M_LB_Foliage`; ivy 4 cm is under the 6 cm cap of `M_LB_FoliageMasked`. No shader instruction count was taken (no tool gives one).
+
+### P14-4 look session (lead + owner, 2026-11-07/08)
+**Rest check** (`lb.Storm.Enabled 0`, PIE Simulate, `Docs/ArtTest/lighting/p14_4/p14_4_rest_*.png` against the P14-B set, `Tools/lighting/compare_sets.py`, `p14_4_rest_compare.json`): 14/16 within 2/255. Sky unchanged (`cy_west_front_15m` 0.40, `p14_cy_tower_reveal` 0.37). `ch_sacristy_3m` 19.5: **brighter**, luma 0.080 → 0.166 (EV 3 → 0.65; a lower EV100 is a brighter image). `ch_tall_east_15m` 2.94: the whole frame about 5 % darker (luma 0.195 → 0.184), the new `PP_Chapel` replacing the old mix of volumes at that spot. `tw_mid_stair` 1.31 (the moon-slit beam shifted slightly between captures).
+
+**R-31** (`p14_cy_tower_reveal`, medians): tower 0.122, surrounding sky 0.099 (ratio 1.24), identical before and after. The tower reads as lit grey stone, not a silhouette; the lights R-31 names are gone, the likely cause (not tested) is moonlight on the west face plus fog in-scatter at 114 m. No fix without the owner's decision.
+
+**Chapel exposure and grade captures:** `p14_4_sheet_chapel_ev.png` (EV 0.65 / 1.6 / 3.0: `ch_tall_east_15m` mean 0.184 / 0.120 / 0.056, `ch_sacristy_3m` 0.166 / 0.110 / 0.054) and `p14_4_sheet_grade.png` (A / B / C at six views; B lowers mean luma about 10–15 %, C about 20–30 %; `cl_tall_north_15m` 0.044 / 0.036 / 0.029). PIE-world values only (`Tools/lighting/pie_pp.py`), nothing saved.
+
+**Flash presets:** the owner fired `lb.Storm.Flash` with A, B and C at `p14_cy_tower_reveal`, `cy_west_front_15m`, `ch_tall_east_15m` and `cl_tall_north_15m` (switched live in `DA_StormSettings`, in memory).
+
+**Wind.** The owner saw the plants nearly static. Root cause and fix: `Docs/plans/P14_4_WIND_FIX.md`, D-100, commit f9261e6. Wind probe (NE bed, intensity 1, flash frozen at 0, three Simulate captures): foliage pixels changing by more than 8/255 between captures went from 0.3–0.5 % to 6.7–8.2 %, and whole blades move. Then tuned live with the owner (Play, `lb.Storm.Intensity` 0.6 and 1) until "its fine now". **Chosen values, in memory only until P14-5 saves them:**
+
+| Asset | Field | Saved (f9261e6 / P14-2a) | Chosen |
+|---|---|---|---|
+| `MI_Foliage_GrassMedium02` | `WindAmplitudeCm` | 30 | **38** |
+| `MI_Foliage_NettlePlant` | `WindAmplitudeCm` | 18 | **24** |
+| `MI_Foliage_WeedPlant02` | `WindAmplitudeCm` | 12 | **16** |
+| `MI_Foliage_Fern02` | `WindAmplitudeCm` | 18 | **24** |
+| `MI_Foliage_WildRooibos` | `WindAmplitudeCm` | 14 | **18** |
+| `MI_Foliage_SearsiaLucida` | `WindAmplitudeCm` | 12 | **16** |
+| `MI_Ivy_Green`, `MI_Ivy_Dead` | `WindAmplitudeCm` | 4 | **5** |
+| `DA_StormSettings` | `PhaseSpeedHigh` | 2.4 | **6.5** |
+| `DA_StormSettings` | `WindBaseHigh` | 0.65 | **0.8** |
+| `DA_StormSettings` | `GustHigh` | 0.4 | **0.5** |
+| `DA_StormSettings` | `GustFrequency` | 0.12 | **0.2** |
+
+`WindRefHeightCm` stays as in f9261e6. Grass at 38 cm (+ 9.5 sag, |WPO| ≈ 39) is just under `M_LB_Foliage`'s 40 cm cap; ivy 5 under the masked master's 6. The GPU cost of the stronger wind is measured in P14-7.
