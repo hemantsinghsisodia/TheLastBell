@@ -901,3 +901,65 @@ One editor agent at a time. Each agent commits on this branch only and never swi
 - The group makes the dynamic instances at runtime only (PIE and game). Nothing is saved to the level.
 - A glow actor's component can stay Static: `CreateDynamicMaterialInstance` works on it at runtime.
 - In the test, `SpawnActorDeferred` has already registered a `StaticMeshActor`'s component. To set a mesh on a Static component, unregister it, call `SetStaticMesh`, then register it again.
+
+### P14-2a result (materials and assets, 2026-11-07)
+**Made (no level change; no captures, no PIE; `L_Monastery`, `M_LB_Surface` and every listed Blueprint stayed clean):**
+- `MPC_LB_Storm`: the 12 scalars (default 0) and `WindDirection` (0.87, 0.5, 0, 0), `FlashDirection` (0, 0, 1, 0), `FlashTint` (0.75, 0.82, 1, 1). Every name matches the `P...` constants in `LBStormSubsystem.cpp` exactly (checked one by one); there was no difference.
+- `MF_LB_StormFlash` (exposed to the library, category LastBell): `Mul` = 1 + `Gain` x MPC `LightningFlash` x `Response` (`Response` defaults to 1).
+- `DA_StormSettings` (class `ULBStormSettings`).
+- `M_LB_StormSky`: the engine sky material with the emissive formula of 6.1.
+- Glass: `FlashResponse` and the flash multiplier in both glass masters. Shafts: `FlashResponse` and the multiplier on `Intensity`. Pools: the multiplier on the emissive.
+- `M_LB_Decal_LightningReveal` and `MI_Reveal_Sigil`, `_Tally`, `_Circle`, `_Drag`.
+- `Config/DefaultGame.ini`: `StormSettings=/Game/LastBell/Data/DA_StormSettings.DA_StormSettings` under `[/Script/LastBell.LBGameSettings]` (CRLF kept, no BOM, no second header).
+
+**`DA_StormSettings`:**
+- All 63 numeric and bool fields were read back and compared with section 5 (preset B): **0 mismatches**. `RandomSeed` 0, `DebugFreezeFlash` and `DebugIntensityOverride` -1, `Collection` = `MPC_LB_Storm`, `FlashTint` and `WindDirection` as in 5.4 and 5.5.
+- **The arrays were set by hand, not by `FillPlanTagDefaults`:** MCP has no tool that calls a UFUNCTION. They mirror the function's code: 8 `StoryIntensity` steps (section 5.2); 6 `ScriptedStrikes` (5.6b), with spacing 0 for the single strikes. CourtyardEntered has the look gate (`LookTarget` (12500, 2000, 3800), cone 20, timeout 90). TowerTop has `ProfileOverrides` Double, Triple, Double. Read back before the save and again after the editor restart.
+- The `ULBGameSettings` default object: set in memory through MCP first (it works, read back); after the editor restart it read `StormSettings` from the ini. So P14-3 needs no restart.
+
+**Sky.**
+- Emissive = original x (1 + `DomeFlashGain` x F x Hot) + `FlashTint`.rgb x F x Hot x `DomeFlashAdd`, with Hot = 0.3 + 0.7 x saturate(dot(-CameraVector, `FlashDirection`.xyz))^6. The original emissive is `Multiply_1` (`Multiply_34` x 1.5); the new nodes wrap it.
+- **F = 0:** F x Hot = 0, so the first factor is exactly 1 (gain x 0 + 1) and the added term is exactly 0 (tint x 0 x `DomeFlashAdd`). The emissive equals the original bit for bit; Hot is finite for every input.
+- `MI_NightStormSky` and `MI_Env_NightSky`, before and after the reparent (identical):
+
+| MI | Parent before -> after | Overrides |
+|---|---|---|
+| `MI_NightStormSky` | `M_Sky_Panning_Clouds2` -> `M_LB_StormSky` | 8 scalars (Stars brightness 0, Cloud opacity 1, Cloud speed 0.02, NoisePower1 1.2, NoisePower2 5, Sun brightness 6, Sun Radius 0.004, Horizon Falloff 1.5), 6 vectors (Overall Color, Cloud color, Zenith Color, Horizon color, Sun color, Light direction): **same** |
+| `MI_Env_NightSky` | `MI_NightStormSky` (unchanged) | 4 scalars (Cloud opacity 1, NoisePower2 2, Sun brightness 2, Sun Radius 0.02), 4 vectors (Cloud color, Horizon color, Zenith Color, Overall Color 0.45): **same**; not dirty, not saved |
+
+**Deviation: the editor crashed on `set_parent`.**
+- `MaterialInstanceTools.set_parent` on `MI_NightStormSky` crashed the editor (render-thread assertion "UniformExpressionCache should be up to date, RenderProxy=MI_Env_NightSky Material=M_LB_StormSky"). `MI_Env_NightSky`, a child of that MI, draws the level's sky.
+- Only what had been saved survived (`MPC_LB_Storm`, `MF_LB_StormFlash`, `DA_StormSettings`, `M_LB_StormSky`, the ini). The lead did the reparent headless with the editor closed (`Tools/lighting/p14_2a_sky_reparent.py`) and read back every override before and after. The rule is in `MCP_NOTES` (Storm materials, item 1): never reparent an MI the level uses over MCP.
+- After the restart I re-verified every pre-crash asset (MPC defaults, the function graph, the DA fields, the sky graph and both sky MIs) before going on.
+
+**Glass.** In `M_LB_StainedGlass` (opaque) and `M_LB_StainedGlass_Translucent`, the final emissive node (`Multiply_3` and `Multiply_1`) is multiplied by `MF_LB_StormFlash(Gain = MPC GlassFlashGain, Response = scalar FlashResponse, default 1, group Storm)`.
+- **F = 0:** `Mul` = 1 + Gain x 0 x Response = 1 exactly, so the emissive is unchanged.
+
+| MI | `FlashResponse` after | Other overrides (EmissiveIntensity or GlassOpacity, Tint, GlassTex, parent) |
+|---|---|---|
+| `MI_Glass_Clue_Saints` | **0** (override) | unchanged: 5.5, (0.85, 0.9, 1, 1), T_LB_StainedGlass_Clue |
+| `MI_Glass_Lancet_B` | **0** (override) | unchanged: 5.5, same tint, T_LB_StainedGlass_Lancet_B |
+| `MI_Glass_Lancet_A` | 1 (inherited, no override) | unchanged: 5.5 |
+| `MI_Glass_Broken` | 1 (inherited) | unchanged: 2 |
+| `MI_Glass_East` | 1 (inherited) | unchanged: GlassOpacity 0.3 |
+
+**Shafts.** In `M_LB_LightShaft`, the `Intensity` parameter now goes through `Intensity` x `MF_LB_StormFlash(ShaftFlashGain, FlashResponse)` before it reaches the colour x intensity multiply (it feeds nothing else). **F = 0:** x 1. `FlashResponse` = 1 is an explicit override on `MI_LightShaft_Roof`, `_Window` and `_Crypt`; `Intensity` 0.04 / 0.04 / 0.02 and `EdgePower` 2.5 (`_Crypt` inherits it from `_Roof`, as before) are unchanged, and so are Color and the parents.
+
+**Pools.** In `M_LB_Decal_LightPool`, the final emissive (`Multiply_3`) x `MF_LB_StormFlash(PoolFlashGain, 1)`. The opacity is untouched. **F = 0:** x 1.
+
+**Reveal decals.** `M_LB_Decal_LightningReveal` is a duplicate of `M_LB_Decal_Chalk` (blend mode Translucent, domain DeferredDecal, kept).
+- Opacity = (ChalkTex alpha x `Opacity` 0.9) x saturate(F x `RevealGain`).
+- Emissive = chalk colour (0.82, 0.80, 0.75) x `FlashTint`.rgb x F x `RevealEmissive`. The original chalk has no emissive, so this is new.
+- **F = 0:** the opacity is exactly 0 (a decal at 0 opacity writes nothing) and the emissive is 0, so the decal is invisible.
+- The 4 MIs set `ChalkTex` to the table's textures. `MI_Reveal_Drag` also has `Opacity` 1, from the existing `MI_Decal_DragMarks`, which sits on `M_LB_Decal_Grime`; that master's `Roughness` 0.95 and `BaseColorTint` don't exist on the reveal master, so they were not copied. The other three use the default 0.9, like the chalk MIs.
+
+**Compile and checks.**
+- Every master and the function recompiled with no error; the output log has no new Error or Warning (only the harmless `GetObjectProperties ... could not be read` lines from my own probes).
+- **Shader instruction counts are not measured:** no MCP tool gives them. The additions are about 10 to 20 scalar ALU instructions in the sky pixel shader, and one multiply plus a few constants elsewhere.
+- **Memory:** no texture was added, so no VRAM impact. The new assets are 1 MPC, 1 function, 1 data asset, 1 sky master, 1 reveal master and 4 small MIs.
+- Thumbnails (`CaptureAssetImage`) of `MI_Glass_Lancet_A`, `MI_Env_NightSky` and `MI_Reveal_Sigil` look as expected (stained colours; dark night sky; invisible reveal). They are not a before/after proof: no capture was taken, and the F = 0 neutrality rests on the construction above. The lead's sky capture (mean difference <= 2/255) is still to do.
+
+**For P14-2b and P14-3.**
+- 2b: the MPC already holds `WindStrength`, `WindPhase` and `WindDirection`. `MF_LB_WindSway` reads them with `CollectionParameter`, like `MF_LB_StormFlash` reads `LightningFlash`. A `MaterialFunctionCall` gets its pins once its `materialFunction` is set (`MCP_NOTES`, Storm materials, item 3). `Tools/lighting/p14_lib.py` has the helpers (`add`, `conn`, `flash_node`, `dump_graph`).
+- 3: `DA_StormSettings` and the ini line exist, so the subsystem finds its data. The placed shafts and pools already use the new master versions; the reveal decal actors take `MI_Reveal_*` from `/Game/LastBell/Materials/Instances/`. Don't reparent any MI over MCP.
+- The MPC defaults are 0, including the gains. Until the subsystem is active, F = 0 and every flash term is 1, so the level looks as before. In P14-4 the subsystem writes the gains every frame; its warning "lacks one or more storm parameters" would show a wrong name.

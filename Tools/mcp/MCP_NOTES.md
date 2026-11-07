@@ -282,3 +282,21 @@ Scripts: `Tools/warden/p13_abp_graph.py` (steps `create props read save`; `P13_T
 A blend space whose `sampleData` is set through properties or Python reads back fine, but has **no runtime data** (0 segments): only `UBlendSpace::ResampleData()` builds it, and that isn't reachable from Python. The Blend Space editor calls it when it opens. In game such a blend space returns nothing, so the graph outputs the reference pose while montages still play (P13: the Warden glided frozen).
 - **Fix:** open the blend space in its editor and save. Then check with `LastBell.Functional.Warden.Anim.LocomotionMovesTheFeet`, or with `lb.Warden.AnimDebug 1`, which logs "runtime data: N segments".
 - **Side effect:** opening that editor rewrites `Config/DefaultEditor.ini`'s preview-scene profiles. Restore it with `git checkout -- Config/DefaultEditor.ini`.
+
+## Storm materials (Phase 14)
+1. **`MaterialInstanceTools.set_parent` on an MI that is on screen crashes the editor.** Reparenting `MI_NightStormSky` (its child `MI_Env_NightSky` was drawing the level's sky) hit a render-thread assertion, "UniformExpressionCache should be up to date" (2026-11-07, P14-2a). Never reparent an MI used by the open level or by a child MI the level uses. Do it with Unreal closed: `Tools/lighting/p14_2a_sky_reparent.py` (`-run=pythonscript`, `-nullrhi`) uses `MaterialEditingLibrary.set_material_instance_parent` + `update_material_instance`, reads every override back before and after, and saves only that one package.
+2. **Package dirty state in headless Python:** `unreal.Package` has no `is_dirty()`. Use `unreal.EditorLoadingAndSavingUtils.get_dirty_content_packages()` and compare package names.
+3. **Material graphs over MCP (P14-2a, `Tools/lighting/p14_lib.py`).**
+   - `MaterialTools.add_expression` takes `/Script/Engine.MaterialExpression<Class>`; set the fields afterwards with `ObjectTools.set_properties` (`parameterName`, `collection`, `constB`, `constExponent`, `r/g/b/a` of a mask, `inputName`/`inputType`/`previewValue`/`bUsePreviewValueAsDefault` of a function input, `bExposeToLibrary` of the function).
+   - A `MaterialFunctionCall`'s pins appear as soon as `set_properties {"materialFunction": {"refPath": ...}}` is applied: `input_names` then lists them, and `connect_expressions` can use the function's output name (`Mul`).
+   - Pins with an empty name (Saturate, OneMinus, ComponentMask, FunctionOutput) are connected with `to_input_name = ""`. An unconnected Multiply or Add input keeps its `constA` / `constB`, so a constant can be set instead of a node.
+   - `connect_to_output` replaces the old link, so an edit that wraps the final emissive is: add the new Multiply, wire the old last node into A, then `connect_to_output` the new one.
+   - `get_properties` on an MI returns a JSON **string** (`json.loads` it). Names: `parent`, `scalarParameterValues`, `vectorParameterValues`, `textureParameterValues` (not `staticParametersRuntime`). `AssetTools.find_assets` returns package-path strings.
+   - `MaterialInstanceTools.set_texture_parameter` takes the texture as `value`, like the scalar and vector setters. `set_scalar_parameter` creates an explicit override even when the value equals the parent's.
+   - `ObjectTools.get_properties` on a Material can't read `shadingModels`; on a decal master the decal blend mode isn't readable either.
+   - `MaterialTools.recompile` raises on a shader error and prints nothing otherwise; no tool gives instruction counts.
+4. **Data asset of a C++ class (P14-2a).**
+   - `DataAssetTools.create {folder_path, asset_name, asset_type: {refPath: "/Script/LastBell/..."}}`.
+   - MCP has no tool that calls a UFUNCTION, so a CallInEditor function such as `ULBStormSettings::FillPlanTagDefaults` can't be run. Fill the arrays with `set_properties` instead: `FGameplayTag` is `{"tagName": "State.Ritual.1"}`, and enum arrays take their names (`["Double","Triple"]`). Read them back.
+   - A config class default object is reachable as `/Script/LastBell.Default__LBGameSettings`: a `set_properties` of a soft pointer (`{"refPath": ...}`) works in memory.
+5. **`Config/DefaultGame.ini` has CRLF line endings.** Edit it as bytes (`open(p, "rb")`, replace, `"wb"`), never with a text-mode write.
