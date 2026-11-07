@@ -514,7 +514,56 @@ P14-3 checks every placement in a PIE Simulate capture with `lb.Storm.Freeze 0.8
 - **Lantern glass (open, for the owner).** Seven groups are lantern lights: `L_Cl_Bells`, `_West`, `_Entry`, `L_Tw_Land4/7/10` and `L_Tw_Bell`. Each has its `SM_Wooden_Lantern_01` 42 cm away, and since P11-7 the lantern's glass glows through the mesh-default slot material `MI_LB_LanternGlass_Lit` (unlit emissive `Color`).
   - Hiding a lantern for Off would remove the whole lantern.
   - Leaving it would keep the glass glowing beside a dead light: `L_Cl_West` and `L_Cl_Entry` after Ritual 3. In Flicker the glass stays steady while the light flickers.
-  - The decision is recorded in the F0 result.
+  - The decision is recorded in the F0 result: the glass follows the light (section 8.1).
+
+### 8.1 Glow actors (P14-1b, D-099)
+**Goal.** A lantern's glowing glass dims, flickers and goes dark together with the light it belongs to. Nothing else about the group changes.
+
+**Code (gameplay-programmer; `Source/LastBell/Storm/LBStateLightGroup.h/.cpp`):**
+1. **New properties,** in category "Light Group":
+   - `TArray<TObjectPtr<AActor>> GlowActors`;
+   - `FName GlowParameter = TEXT("Color")`, the vector parameter to scale.
+2. **BeginPlay, after the base intensities are recorded:**
+   - For each glow actor, go through every `UMeshComponent` on it and every material index.
+   - Keep the indices whose material reports the vector parameter: `UMaterialInterface::GetVectorParameterValue(FHashedMaterialParameterInfo(GlowParameter), Value)` returns true.
+   - For each kept slot, call `CreateDynamicMaterialInstance(Index, Material)` and record the MID with its base value.
+   - Pair the glow actor with the nearest light in `Lights` (distance between actor locations, measured once at BeginPlay).
+   - If a glow actor has no such slot, log one warning naming the actor and the parameter, and skip it.
+3. **Every time the group writes a light's intensity** (instant apply, fade, flicker), scale the paired glow slots:
+   - s = current intensity ÷ that light's base intensity, clamped to [0, 1]; s = 0 when the base is 0.
+   - Value = (base.R × s, base.G × s, base.B × s, base.A).
+   - So Off gives black glass, Dim gives the dim scale, Flicker flickers with its own light, and On gives the base value.
+4. **Instant apply** on BeginPlay and `OnStateReplaced` sets the glass too, so a checkpoint load is right on the first frame.
+5. **Validation:** a glow actor listed in two groups is an error, logged at BeginPlay like a duplicated light.
+6. **No other changes:**
+   - The tick rule (only while fading or flickering) is unchanged.
+   - `EmissiveActors` still hide on Off; the two lists are independent.
+   - There are no hard asset references in game code.
+
+**Tests:**
+- **New functional test `LastBell.Functional.Storm.StateLightGroupDrivesGlow`** (`L_Test_Warden`). Setup: spawn a point light (Movable, 300 lm) and a `StaticMeshActor` with `/Game/LastBell/ArtTest/Props/Wooden_Lantern_01/SM_Wooden_Lantern_01`, loaded by path in the test only, 40 cm away. Its glass slot defaults to `MI_LB_LanternGlass_Lit` (`M_LB_UnlitEmissive`, `Color`). Then spawn a group with `Lights` = [light], `GlowActors` = [lantern] and one rule `State.Ritual.2` → Off. The test checks:
+  1. without the tag, the glass MID `Color` equals the MI's base value (within 1 %);
+  2. after `ULBWorldStateSubsystem::AddState(State.Ritual.2)` and the fade (1.5 s + 0.5 s), `Color` RGB ≤ 1 % of base;
+  3. after `ReplaceState` without the tag, the value is back to base on the next frame;
+  4. with a Flicker rule (scale 0.8, amount 0.5, speed 8), every sample over 2 s lies within [base × 0.4, base × 0.8], and the samples are not all equal.
+- **Extend `Monastery.StormSetup`:** every group's `GlowActors` resolve at least one glow slot, and no glow actor is in two groups.
+
+**Level assignment (P14-3).** Each glow actor is the lantern 42 cm from its group's light (F0):
+
+| Group | `GlowActors` |
+|---|---|
+| `SLG_Cloister_Bells` | `CLA_Lantern_Bells` |
+| `SLG_Cloister_West` | `CLA_Lantern_West` |
+| `SLG_Cloister_Entry` | `SHA_Lantern_Entry` |
+| `SLG_Tower_Landings` | `TWA_Lantern_Land4`, `TWA_Lantern_Land7`, `TWA_Lantern_Land10` |
+| `SLG_Tower_Bell` | `TWA_Lantern_Bell` |
+
+The chapel and crypt groups get no glow actors: their flames are separate meshes in `EmissiveActors`, or Cascade fires.
+
+**Acceptance:**
+- the real-project build is clean;
+- the full suite passes, except the expected `Monastery.StormSetup` failure until P14-3;
+- in P14-5, the owner sees the west and entry lanterns dark after `State.Ritual.3`.
 
 **Readability fallback:** if a critical-path viewpoint fails its floor (section 9.3) after its change, change that group's Off to Dim at scale 0.3, or a Flicker scale to +0.2. Then record it in DECISIONS.
 
@@ -688,8 +737,9 @@ The performance-engineer reads the screenshots and logs, and writes the `PERFORM
 | F0 | Survey: dump every light, PP volume, sky MI chain and its parameters, glass, shaft and pool actors with their MIs, foliage MIs, the ISM count and WPO settings, `CLA_Garth*` bounds, flame meshes near the group lights, the five decal surface points (trace), the torch and niche light labels, and the tower-reveal pose check. Output `Docs/ArtTest/lighting/p14_f0_inventory.json` + `p14_f0_tables.md`; this plan's open values are filled from it | lead [EDITOR read-only] | Unreal open | P14-0 |
 | P14-B | Baseline readings at the six spots (section 11), plus the "before" capture set: the 19 section 10 viewpoints, run by the lead with the owner present | **owner**, about 25 min in all (readings 10, captures about 12) | Unreal in front | P14-0 (same session as F0) |
 | P14-1 | Section 4, 5 and 8 code, console commands, `ULBGameSettings` field, the apparition flag, section 12 tests | gameplay-programmer | **Unreal closed** for the real build | P14-0 |
+| P14-1b | Section 8.1 glow actors (D-099) and their tests | gameplay-programmer | **Unreal closed** for the real build | F0 |
 | P14-2 | Section 6 materials and assets | technical-artist [EDITOR] | Unreal open | P14-1 (needs the classes), F0 |
-| P14-3 | Section 7 level work | lighting-vfx [EDITOR] | Unreal open | P14-2 |
+| P14-3 | Section 7 level work, plus the section 8.1 glow actors | lighting-vfx [EDITOR] | Unreal open | P14-1b, P14-2 |
 | P14-4 | Look session (section 9.1) | lead + **owner**, about 30 min (captures about 12 min) | Unreal in front | P14-3 |
 | P14-5 | Apply the choices, exposure targets, story-change readability captures, R-09 fixes | lighting-vfx [EDITOR]; captures with the owner | | P14-4 |
 | P14-6 | Viewpoint approval and storm run-through (section 10) | **owner** (about 30 min) | | P14-5 |
@@ -766,8 +816,6 @@ One editor agent at a time. Each agent commits on this branch only and never swi
 - **Viewpoints:** all 14 named poses exist; the pose file is written (section 10).
 - **Editor scalability:** already High.
 
-**Open: lantern glass in the light groups (section 8).** The owner chooses one:
-1. **Glass follows the light (recommended).** A small addition to `ALBStateLightGroup`: `GlowActors`, whose `Color`-parameter material slots get a dynamic material instance scaled with the group's current value. Off then darkens the glass, and Flicker flickers it.
-   - Cost: one C++ task (gameplay-programmer, Unreal closed for the build) plus one test, before P14-3.
-2. **Hide the lantern for Off.** No code, but the lantern disappears.
-3. **No Off on lantern groups.** `SLG_Cloister_West` and `_Entry` use Dim 0.3 instead of Off after Ritual 3. The glass keeps glowing; no code.
+**Lantern glass in the light groups (section 8): decided 2026-11-07.** Of the three options offered, the owner chose **"glass follows the light"** (D-099). The other two were hiding the lantern for Off, or using Dim 0.3 instead of Off on lantern groups.
+- This adds task **P14-1b**: the `GlowActors` addition to `ALBStateLightGroup`.
+- It runs before P14-3, with Unreal closed for the build. The spec is in section 8.1.

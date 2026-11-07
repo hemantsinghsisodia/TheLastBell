@@ -354,8 +354,9 @@ Branch `claude/phase-14-lighting-storm`. Spec: `Docs/plans/P14_LIGHTING_STORM.md
 | F0 | Read-only survey (lights, PP, sky MIs, glass, shafts, pools, foliage MIs, ISMs, garth bounds, decal points) | lead [EDITOR read-only] | P14-0 |
 | P14-B | Baseline readings at the six BugItGo spots; "before" captures | owner + lead | P14-0 |
 | P14-1 | Storm C++ (subsystem, settings, zones, light groups, logic, console, apparition flag) and tests | gameplay-programmer (Unreal closed) | P14-0 |
+| P14-1b | Glow actors on `ALBStateLightGroup`: lantern glass follows its light (D-099, plan section 8.1) and tests | gameplay-programmer (Unreal closed) | F0 |
 | P14-2 | Materials and assets (MPC, DA, storm sky, glass/shaft/pool flash, reveal decals, wind sway) | technical-artist [EDITOR] | P14-1, F0 |
-| P14-3 | Level work (tags, zones, PP restructure, light groups, decals, apparition flags, WPO distance) | lighting-vfx [EDITOR] | P14-2 |
+| P14-3 | Level work (tags, zones, PP restructure, light groups with glow actors, decals, apparition flags, WPO distance) | lighting-vfx [EDITOR] | P14-1b, P14-2 |
 | P14-4 | Look session: flash preset, chapel EV, grade, wind, R-31 | lead + owner | P14-3 |
 | P14-5 | Apply choices, exposure targets, readability after story changes, R-09 | lighting-vfx; captures with the owner | P14-4 |
 | P14-6 | Viewpoint approval and storm run-through | owner | P14-5 |
