@@ -963,3 +963,50 @@ One editor agent at a time. Each agent commits on this branch only and never swi
 - 2b: the MPC already holds `WindStrength`, `WindPhase` and `WindDirection`. `MF_LB_WindSway` reads them with `CollectionParameter`, like `MF_LB_StormFlash` reads `LightningFlash`. A `MaterialFunctionCall` gets its pins once its `materialFunction` is set (`MCP_NOTES`, Storm materials, item 3). `Tools/lighting/p14_lib.py` has the helpers (`add`, `conn`, `flash_node`, `dump_graph`).
 - 3: `DA_StormSettings` and the ini line exist, so the subsystem finds its data. The placed shafts and pools already use the new master versions; the reveal decal actors take `MI_Reveal_*` from `/Game/LastBell/Materials/Instances/`. Don't reparent any MI over MCP.
 - The MPC defaults are 0, including the gains. Until the subsystem is active, F = 0 and every flash term is 1, so the level looks as before. In P14-4 the subsystem writes the gains every frame; its warning "lacks one or more storm parameters" would show a wrong name.
+
+### P14-2b result (wind sway materials, 2026-11-07)
+**Made (materials only; `L_Monastery` and `M_LB_Surface` stayed clean before every save and at the end; no captures, no PIE, no `set_parent`):**
+- `/Game/LastBell/Materials/Functions/MF_LB_WindSway` (exposed to the library, category LastBell). Inputs `WindAmplitudeCm`, `WindRefHeightCm` (default 60) and the static bool `bFlutter` (default false, feeds a Static Switch inside); output `WPO`. Built exactly as 6.6:
+  - **Bend:** `Saturate(PreSkinnedPosition.z / WindRefHeightCm)`, pivot `TransformPosition(Instance -> World, 0)` per instance, phase `WindPhase + dot(Pivot.xy, (0.0031, 0.0047))`, s = 0.6 sin(phi) + 0.4 sin(2 phi + 1.3), d = `WindDirection`.xyz x `WindStrength` x (0.55 + 0.45 s) x h^2 x amplitude, WPO = d + (0, 0, -0.25 |d| h).
+  - **Flutter:** `Saturate(PreSkinnedPosition.y / 20)`, phase 3 `WindPhase` + dot(absolute world position, (0.05, 0.07, 0.03)), WPO = `VertexNormalWS` x `WindStrength` x sin x a x amplitude.
+  - All `Sine` nodes have `period` 2 pi (the node's default period of 1 would be sin(2 pi x)).
+- `M_LB_Foliage` and `M_LB_FoliageMasked`: scalars `WindAmplitudeCm` (0) and `WindRefHeightCm` (60), group Wind; `StaticSwitchParameter bWind` (default false), True = `MF_LB_WindSway` with a `StaticBool` into `bFlutter` (**false** in `M_LB_Foliage`, **true** in `M_LB_FoliageMasked`), False = `Constant3Vector` (0, 0, 0); the switch feeds World Position Offset.
+- 8 MIs set (table below); `MI_Foliage_Moss01` untouched. F0's list is complete: `get_referencers` finds exactly 7 MIs on `M_LB_Foliage` and 2 on `M_LB_FoliageMasked`, so there is no extra MI for the amplitude-6 / height-60 rule.
+
+| Master | What fed WPO before | Max World Position Offset Displacement before -> after | Compile |
+|---|---|---|---|
+| `M_LB_Foliage` (opaque) | nothing (the pin was unconnected) | 0 -> **40** (read back 40) | `recompile` returned with no error; no new log Error or Warning |
+| `M_LB_FoliageMasked` | nothing | 0 -> **6** (read back 6) | same |
+
+With `bWind` false the WPO input is a constant zero, so the default permutation evaluates to the same output as before (zero offset). I did not confirm that the compiler drops a constant-zero WPO like an unconnected pin (it normally does), and no instruction counts are measured (no MCP tool gives them); P14-7 would show any cost on the non-wind foliage.
+
+**MI read-back, before and after** (every texture, vector and the parent were compared by script and are identical; the static switch `bUseARM` was read too and is unchanged: true on the 7 foliage MIs, false on the ivy):
+
+| MI | `bWind` | `WindAmplitudeCm` | `WindRefHeightCm` | Other overrides (unchanged) |
+|---|---|---|---|---|
+| `MI_Foliage_GrassMedium02` | false -> **true** | none -> **16** | none -> **90** | Desaturation 0.45, 3 textures |
+| `MI_Foliage_NettlePlant` | false -> true | none -> 9 | none -> 70 | 3 textures |
+| `MI_Foliage_WeedPlant02` | false -> true | none -> 6 | none -> 30 | 3 textures |
+| `MI_Foliage_Fern02` | false -> true | none -> 10 | none -> 60 | 3 textures |
+| `MI_Foliage_WildRooibos` | false -> true | none -> 7 | none -> 80 | Desaturation 0.45, 3 textures |
+| `MI_Foliage_SearsiaLucida` | false -> true | none -> 5 | none -> 200 | BrightnessMul 0.6, 3 textures |
+| `MI_Foliage_Moss01` | false (not touched) | none | none | 3 textures; read again at the end, identical |
+| `MI_Ivy_Green` | false -> true (flutter) | none -> 2.0 | no override | Desaturation 0.35, BaseColorTint (0.55, 0.62, 0.45, 1), 4 textures |
+| `MI_Ivy_Dead` | false -> true (flutter) | none -> 2.0 | no override | Desaturation 0.2, 4 textures |
+
+**Neutrality at `WindStrength` = 0 (the MPC default; the storm subsystem is inactive in the editor).**
+- Bend: the scalar `WindStrength` x gust x h^2 x amplitude is exactly 0, so d = `WindDirection` x 0 = (0, 0, 0); `length(0)` = 0, so the sag term is 0. WPO = (0, 0, 0). The gust factor (0.55 + 0.45 s) is bounded in [0.1, 1], and the pivot, phase and sin are all finite, so no NaN can enter.
+- Flutter: `VertexNormalWS` x 0 x sin x a x amplitude = (0, 0, 0).
+- On every MI that does not override `bWind` (Moss01) the switch is false and WPO is the constant zero. On the 8 MIs that do, the amplitude is a finite number, so the result above holds. Not verified by capture.
+
+**Checks.**
+- Thumbnails (`CaptureAssetImage`) of `MI_Foliage_GrassMedium02` and `MI_Ivy_Green` render (grass blades on the preview sphere, cut-out ivy leaves with the same tint), not placeholders, so both `bWind` permutations compiled. They are not a before/after proof.
+- Log after the work: no new Error or Warning. The only extra lines are two of my own probes (`GetObjectProperties ... could not be read`, and a path that Git Bash rewrote).
+- Memory: no texture added, so no VRAM impact. New: 1 function. Each of the 8 MIs now has one more static permutation (`bWind` true), so a few more compiled shaders per MI, no runtime memory beyond the shader code.
+- **Not validated:** no capture, no PIE; the look of the sway is judged in P14-4 and P14-5, the GPU cost is measured in P14-7.
+
+**Notes for P14-3.**
+- **WPO is now enabled on these materials, so P14-3 must set the WPO disable distance from section 7.7 on the 249 actors and the 312 ISM components.** Until then, once the storm is active, the wind would cost vertex-shader time at every distance (and Nanite WPO, if a component evaluates it).
+- Nanite: both masters have `bUsedWithNanite` true. Whether Nanite evaluates WPO for these meshes depends on the project setting and the per-component "evaluate WPO" flag; check it when applying 7.7, and read the sway in a capture before trusting it.
+- The plan's single-instance pivot: a non-instanced actor gets its actor origin as the pivot, so two actors of the same mesh at nearby positions sway out of step by their world position, which is the intent.
+- The dead tree and its snag stay static (bark on `M_LB_Surface`, D-060).
