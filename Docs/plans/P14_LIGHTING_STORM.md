@@ -1085,3 +1085,15 @@ New volumes: not unbound, enabled, blend weight 1, brush collision profile `NoCo
 - **Lanterns dark after `State.Ritual.3`** (`L_Cl_West`, `L_Cl_Entry`): the glass follows the light only at runtime, and so far only the functional test has shown it, never the real level.
 - **Wind:** the sway itself, any pop at 4000 cm, and the GPU cost (R-60) are for P14-4 and P14-7.
 - The PIE log line "Storm: active with 13 linked lights, 0 zones" is printed before the zones' own BeginPlay register them. `StormSetup` confirms the 7 zones exist, but nothing has yet tested `GetExposureAt` in `L_Monastery` itself.
+
+### P14-3 decal check (lead + owner, PIE Simulate, 2026-11-07)
+
+`DA_StormSettings.DebugFreezeFlash` set to 0.8 in memory through MCP (never saved; set back to −1 right after and read back), then `capture_session.py --mode simulate --fg-wait 180` on `Tools/lighting/poses/p14_3_decals.json`: 6/6 poses in about 4 minutes. Images in `Docs/ArtTest/lighting/decals/p14_3_*.png`. The placements are exactly as the 5.6(d) table; what they look like is for P14-4:
+
+| Decal | Result | For P14-4 |
+|---|---|---|
+| `RV_Gate_Sigil` | On the flat inner wall beside the arch, above `KP_Lantern_Gate`. Reads clearly. | Brightness only. |
+| `RV_WellHouse_Tally` | On the west pier, readable, but the top of the marks runs into the pier's broken top, and the leaning stone shard crosses the second group. | Lower it about 25 cm (centre Z 140 → 115). |
+| `RV_Chapel_Circle` | On the floor, centred on the S2 pool as planned. Under the flash the pool and its shaft go almost white, so the chalk inside the pool loses contrast; only the arcs outside it read. | Move it off the pool, or lower the pool's flash response. Owner's call. |
+| `RV_Garth_Drag` | On the north-walk wall between the two doorways, seen through the bay. The roofed walk gets no flash light, so the wall stays black and the marks glow alone in the dark (the wall shows only when the image is brightened 6×). | Keep it as an eerie glowing smear, or move it to a wall the flash lights. Owner's call. |
+| `RV_Belfry_Tally` | On the flat south wall west of the lancets. Reads clearly. | None. **Correction to 5.6(d):** from the `tw_belfry` pose the bell hides it (it falls on the bell's silhouette); it shows once the player walks round the bell. |
