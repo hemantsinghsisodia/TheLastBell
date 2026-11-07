@@ -1150,3 +1150,18 @@ Spec: `Docs/plans/P14_4_WIND_FIX.md` (owner "go", D-100). Script: `Tools/lightin
 | `DA_StormSettings` | `GustFrequency` | 0.12 | **0.2** |
 
 `WindRefHeightCm` stays as in f9261e6. Grass at 38 cm (+ 9.5 sag, |WPO| ≈ 39) is just under `M_LB_Foliage`'s 40 cm cap; ivy 5 under the masked master's 6. The GPU cost of the stronger wind is measured in P14-7.
+
+**Owner's choices (2026-11-08), applied and saved in P14-5:**
+
+| Item | Choice |
+|---|---|
+| Flash preset | **B, strong** (the saved defaults of section 5.4; nothing to change) |
+| Lumen smear after a flash (R-59) | none seen: R-59 closes, `SkyFlashGain` stays 0.6 |
+| Chapel exposure | **EV100 1.6** on `PP_Chapel` (min = max) |
+| Grade | **B, storm teal** on `PostProcess_Exposure` (section 9.1 step 3 values), and the per-area `ColorSaturationShadows` overrides cleared |
+| Tower on arrival (R-31) | **keep** as lit grey stone: R-31 closes as accepted |
+| Wind | the "Chosen" column of the table above |
+| `RV_WellHouse_Tally` | lower 25 cm: centre Z 140 → **115** |
+| `RV_Chapel_Circle` | **move beside** the S2 moonlight pool onto plain floor (exact spot set in the P14-5 brief) |
+| `RV_Garth_Drag` | **keep** as it is (glows on the unlit wall) |
+| Tower silhouette during a flash | not noticed |
