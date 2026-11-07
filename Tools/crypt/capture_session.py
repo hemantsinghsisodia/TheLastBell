@@ -24,6 +24,8 @@ Flags (defaults):
     --log-dir DIR   capture_poses.py logs, cap_<prefix><attempt>.log (default <project>\\Saved\\Logs\\captures).
     --luma JSON_OUT run luma_report.py --json JSON_OUT on every file written in this session and print the end of its output.
     --plaque POSE   run luma_report.py --plaque on that pose's file (if it exists).
+    --light-offset F R U  (P14-5) candle proxy: passes --light --light-offset F R U to capture_poses.py; simulate mode only, and
+                    TMP_CaptureLight must already exist in the PIE world (Tools/lighting/pie_proxy.py, PIE kept running by the caller).
     --dry-run       print the mode, the remaining poses, the attempt-0 capture_poses.py command line and the luma command lines;
                     exit 0 without importing ue or contacting the editor.
 
@@ -89,6 +91,9 @@ def capture_cmd(args, poses_json, only, attempt, log_dir):
     cmd += ["--only", ",".join(only), "--log", os.path.join(log_dir, "cap_%s%d.log" % (args.prefix, attempt))]
     if args.mode == "editor":
         cmd.append("--editor")
+    if getattr(args, "light_offset", None):
+        # P14-5: candle proxy (TMP_CaptureLight must already exist in the PIE world: Tools/lighting/pie_proxy.py)
+        cmd += ["--light", "--light-offset"] + [str(v) for v in args.light_offset]
     return cmd
 
 
@@ -119,7 +124,13 @@ def main():
     ap.add_argument("--luma", default="", metavar="JSON_OUT")
     ap.add_argument("--plaque", default="", metavar="POSE")
     ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--light-offset", nargs=3, type=float, default=None, metavar=("F", "R", "U"),
+                    help="P14-5: pass --light --light-offset F R U to capture_poses.py (simulate mode; the PIE world needs "
+                         "TMP_CaptureLight, see Tools/lighting/pie_proxy.py)")
     args = ap.parse_args()
+    if args.light_offset and args.mode != "simulate":
+        print("--light-offset needs --mode simulate")
+        sys.exit(4)
 
     # 1. pose list
     t_start = time.time()

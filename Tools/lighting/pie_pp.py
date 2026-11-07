@@ -4,6 +4,8 @@
     python -I Tools/lighting/pie_pp.py stop             stop PIE
     python -I Tools/lighting/pie_pp.py read             print the PIE-world volumes' exposure and grade fields
     python -I Tools/lighting/pie_pp.py ev <EV100>       PIE-world PP_Chapel: min = max EV100
+    python -I Tools/lighting/pie_pp.py ev <volume> <EV100>   the same on any area volume (PP_Outdoor_Night, PP_Crypt, PP_Cloister,
+                                                        PP_Chapel, PP_Tower) (P14-5)
     python -I Tools/lighting/pie_pp.py grade A|B|C      PIE-world PostProcess_Exposure grade (plan section 9.1 step 3);
                                                         B and C also clear the per-area satShadows overrides, A puts them back
 
@@ -117,13 +119,16 @@ def main():
     if cmd == "read":
         read()
     elif cmd == "ev":
-        v = float(sys.argv[2])
-        ref = pie_actor("PP_Chapel")
+        # ev <EV> (PP_Chapel) or ev <volume label> <EV> (P14-5: any area volume)
+        label, v = ("PP_Chapel", float(sys.argv[2])) if len(sys.argv) == 3 else (sys.argv[2], float(sys.argv[3]))
+        if label not in AREA:
+            raise SystemExit(f"STOP: {label} is not one of {AREA}")
+        ref = pie_actor(label)
         setp(ref, {"settings": {"bOverride_AutoExposureMinBrightness": True, "bOverride_AutoExposureMaxBrightness": True,
                                 "autoExposureMinBrightness": v, "autoExposureMaxBrightness": v}})
         st = settings(ref)
         ok = abs(st["autoExposureMinBrightness"] - v) < 1e-4 and abs(st["autoExposureMaxBrightness"] - v) < 1e-4
-        print(("PASS" if ok else "FAIL"), "PP_Chapel (PIE) EV", st["autoExposureMinBrightness"], st["autoExposureMaxBrightness"])
+        print(("PASS" if ok else "FAIL"), label, "(PIE) EV", st["autoExposureMinBrightness"], st["autoExposureMaxBrightness"])
     elif cmd == "grade":
         g = sys.argv[2].upper()
         glob = pie_actor("PostProcess_Exposure")

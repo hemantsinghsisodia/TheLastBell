@@ -95,7 +95,14 @@ Method (parent plan 9.3):
 | Cloister | `cl_tall_north_15m`, `cl_lantern_bells_3m`, `ps_lantern_joints` | `PP_Cloister` (0.65) | 0.04 – 0.07 | ≥ 0.025 |
 | Tower | `tw_mid_stair`, `tw_belfry`, `tw_base` | `PP_Tower` (0.65) | 0.035 – 0.06 | ≥ 0.025 |
 
-The area's mean target applies to the **mean over its viewpoints**. The floor applies to **each** viewpoint.
+**Owner's decision (2026-11-08):** the area's mean target applies to the mean over its **wide views only**:
+- Courtyard: `cy_west_front_15m`, `cy_tall_north_15m`, `p14_cy_tower_reveal`.
+- Chapel: `ch_tall_east_15m`.
+- Crypt: `cr_tall_ossuary_15m`.
+- Cloister: `cl_tall_north_15m`.
+- Tower: `tw_mid_stair`, `tw_belfry`.
+
+The lantern close-ups only need the floor; the floor applies to **every** viewpoint. Averaged over every view, the lantern close-ups put the courtyard, cloister and tower about 2× above target. Meeting that would mean about 1 stop darker overall, which would undo the look the owner already approved. The tool is `Tools/lighting/area_targets.py`.
 
 **B1. Baseline:** capture the 16 poses and compute the metrics.
 **B2. Exposure loop:**
