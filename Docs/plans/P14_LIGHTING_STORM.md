@@ -1165,3 +1165,35 @@ Spec: `Docs/plans/P14_4_WIND_FIX.md` (owner "go", D-100). Script: `Tools/lightin
 | `RV_Chapel_Circle` | **move beside** the S2 moonlight pool onto plain floor (exact spot set in the P14-5 brief) |
 | `RV_Garth_Drag` | **keep** as it is (glows on the unlit wall) |
 | Tower silhouette during a flash | not noticed |
+
+### P14-5a result (2026-11-08)
+Plan: `Docs/plans/P14_5_APPLY.md` Part A (owner "go"). Script: `Tools/lighting/p14_5_apply.py` (`--apply` never saves; `--check` PASS/FAIL, exit 1 on a FAIL). Editor open on `L_Monastery`, PIE never started, no capture, no input. The lead's live tuning was in memory before the run: `DA_StormSettings` and the 8 MIs already showed the chosen values (and were dirty), `L_Monastery` was clean. Every value was still written explicitly, read back and saved, one package per call, `is_dirty` false after each; `M_LB_Surface` and the 12 listed Blueprints were clean before and after every save.
+
+**A1, `DA_StormSettings`.** Memory before = chosen: `phaseSpeedHigh` 6.5, `windBaseHigh` 0.8, `gustHigh` 0.5, `gustFrequency` 0.2 (saved on disk before: 2.4 / 0.65 / 0.4 / 0.12). Preset B and the debug fields read back exactly, no correction needed: `flashLux` 8, `spotFlashGain` 3, `fillFlashGain` 1.5, `skyFlashGain` 0.6, `domeFlashGain` 6, `domeFlashAdd` 0.05, `glassFlashGain` 2.5, `shaftFlashGain` 3, `poolFlashGain` 2.5, `revealGain` 4, `revealEmissive` 3, `debugFreezeFlash` -1, `debugIntensityOverride` -1, `phaseSpeedLow` 1.2, `windBaseLow` 0.2, `gustLow` 0.15. Every other field (all 68 properties, the 8 `storyIntensity` and 6 `scriptedStrikes` entries included) read identical before and after the write.
+
+**A2, 8 MIs** (`WindAmplitudeCm` only, `set_scalar_parameter`; parent, textures, vectors, `bUseARM`, `bWind` and the other scalars identical before and after; no `set_parent`):
+
+| MI | Saved (f9261e6) | In memory before | Saved now |
+|---|---|---|---|
+| `MI_Foliage_GrassMedium02` | 30 | 38 | **38** |
+| `MI_Foliage_NettlePlant` | 18 | 24 | **24** |
+| `MI_Foliage_WeedPlant02` | 12 | 16 | **16** |
+| `MI_Foliage_Fern02` | 18 | 24 | **24** |
+| `MI_Foliage_WildRooibos` | 14 | 18 | **18** |
+| `MI_Foliage_SearsiaLucida` | 12 | 16 | **16** |
+| `MI_Ivy_Green`, `MI_Ivy_Dead` | 4 | 5 | **5** |
+
+`WindRefHeightCm` read back 60, 45, 30, 45, 60, 150 (ivy no override). `bWind` true on all eight.
+
+**A3, `L_Monastery`** (census 3015 before the edits, after them, and again before the save and after it; saved once, `is_dirty` false after):
+- `PP_Chapel`: EV min = max 1.6, both overrides true (was 0.65; priority 2, blend 200).
+- `PostProcess_Exposure` (unbound, priority 0, blend 100), grade B with the overrides true: `colorSaturation` (0.92, 0.95, 1.0, 0.85), `colorContrast` (1, 1, 1, 1.06), `colorGammaShadows` (0.97, 1.0, 1.06, 1), `colorGainHighlights` (1.04, 1.0, 0.94, 1), `filmGrainIntensity` 0.18, `vignetteIntensity` 0.45. EV stays 3/3. Override set now: the two EV overrides plus those six.
+- `bOverride_ColorSaturationShadows` false on `PP_Outdoor_Night`, `PP_Cloister`, `PP_Chapel`, `PP_Tower` (stored value 0.65 left); `PP_Crypt` and `PostProcess_Exposure` read false.
+- Every volume, EV / priority / blend / unbound / overrides: `PostProcess_Exposure` 3 / 0 / 100 / true / EV pair + 6 grade; `PP_Outdoor_Night` 1.15 / 1 / 500 / false / EV pair; `PP_Cloister` 0.65 / 1 / 300 / false / EV pair; `PP_Chapel` 1.6 / 2 / 200 / false / EV pair; `PP_Tower` 0.65 / 3 / 200 / false / EV pair; `PP_Crypt` 0.2 / 1 / 300 / false / EV pair + `AutoExposureMethod` + `BloomIntensity`.
+- `RV_WellHouse_Tally`: (1350, -1775, 140) to **(1350, -1775, 115)**, rotation (0, -90, 90) and `DecalSize` (10, 40, 60) unchanged. `RV_Chapel_Circle`: (8265, -255, 0.5) to **(8150, -91, 0.5)**, rotation (-90, 0, 0) and `DecalSize` (10, 90, 90) unchanged.
+
+**A4, scripts.** `p14_3_level.py` now has an EV per volume (`PP_Chapel` 1.6, `PP_Tower` stays 0.65), no `ColorSaturationShadows` override in the expected set, the two decal rows moved, and the grade B override set for `PostProcess_Exposure`; `--check` after the save: 62 PASS, 0 FAIL. `p14_4_wind_fix.py` expects the A2 amplitudes; `check`: OVERALL PASS. `p14_5_apply.py --check`: 81 PASS, 0 FAIL (before and after the map save).
+
+**A5, tests.** `Saved/Logs/LBTests_P14_5a.log`: 128 `Result={Success}`, 0 `Result={Fail`; the only `Error:` line is the HttpListener port bind.
+
+**Not validated visually:** the grade B look, the chapel at EV 1.6, the two moved decals and the stronger wind were set and read back by number only. Part B's captures and the owner's eye are the check.

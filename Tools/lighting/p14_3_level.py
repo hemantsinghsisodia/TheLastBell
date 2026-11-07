@@ -239,14 +239,20 @@ ZONE_CLASS = "/Script/LastBell.LBStormZone"
 GROUP_CLASS = "/Script/LastBell.LBStateLightGroup"
 
 # Post-process (section 7.3). Boxes in cm.
-PP_CLOISTER = {"label": "PP_Cloister", "box": ((6040, 12040), (900, 3200), (-40, 4200))}
+PP_CLOISTER = {"label": "PP_Cloister", "box": ((6040, 12040), (900, 3200), (-40, 4200)), "ev": 0.65}
+# P14-5 (owner's P14-4 choices): each volume has its own EV (PP_Chapel 1.6, PP_Tower stays 0.65); the shared PP_EV is gone.
 PP_NEW = [
-    {"label": "PP_Chapel", "box": ((6000, 9100), (-1550, 860), (-40, 2400)), "priority": 2.0, "blend": 200.0},
-    {"label": "PP_Tower", "box": ((11990, 13010), (1490, 2510), (-40, 5000)), "priority": 3.0, "blend": 200.0},
+    {"label": "PP_Chapel", "box": ((6000, 9100), (-1550, 860), (-40, 2400)), "priority": 2.0, "blend": 200.0, "ev": 1.6},
+    {"label": "PP_Tower", "box": ((11990, 13010), (1490, 2510), (-40, 5000)), "priority": 3.0, "blend": 200.0, "ev": 0.65},
 ]
-PP_OVERRIDES = {"AutoExposureMinBrightness", "AutoExposureMaxBrightness", "ColorSaturationShadows"}
+# P14-5 (owner's P14-4 choices): the shadow saturation (grade) is no longer a per-area override on PP_Cloister, PP_Outdoor_Night,
+# PP_Chapel and PP_Tower; the global grade B lives on PostProcess_Exposure (Tools/lighting/p14_5_apply.py). Two EV overrides only.
+PP_OVERRIDES = {"AutoExposureMinBrightness", "AutoExposureMaxBrightness"}
 PP_EV = 0.65
-PP_SAT = (0.65, 0.65, 0.65, 1.0)
+PP_SAT = (0.65, 0.65, 0.65, 1.0)   # the STORED colorSaturationShadows value, left in place (only bOverride_ColorSaturationShadows is false now)
+# P14-5: grade B on the unbound global volume PostProcess_Exposure (override set only; the values are checked by p14_5_apply.py --check)
+PP_EXPOSURE_OVERRIDES = PP_OVERRIDES | {"ColorSaturation", "ColorContrast", "ColorGammaShadows", "ColorGainHighlights",
+                                         "FilmGrainIntensity", "VignetteIntensity"}
 # read in this session before any change (F0 agrees)
 PP_BEFORE = {
     "PP_Cloister": {"priority": 1.0, "blend": 300.0, "unbound": False, "overrides": PP_OVERRIDES, "ev": PP_EV, "sat": PP_SAT},
@@ -256,7 +262,7 @@ PP_BEFORE = {
     "PP_Outdoor_Night": {"priority": 1.0, "blend": 500.0, "unbound": False, "overrides": PP_OVERRIDES, "ev": 1.15, "sat": PP_SAT,
                          "box": ((-3315, 5500), (-2700, 2700), (-100, 3900)), "xform": ((1092.5, 0, 1900), (44.075, 27, 20))},
     "PostProcess_Exposure": {"priority": 0.0, "blend": 100.0, "unbound": True,
-                             "overrides": {"AutoExposureMinBrightness", "AutoExposureMaxBrightness"}, "ev": 3.0, "sat": (1, 1, 1, 1),
+                             "overrides": PP_EXPOSURE_OVERRIDES, "ev": 3.0, "sat": (1, 1, 1, 1),  # P14-5: grade B overrides added
                              "box": ((5100, 5300), (-100, 100), (400, 600)), "xform": ((5200, 0, 500), (1, 1, 1))},
 }
 
@@ -290,8 +296,9 @@ INST = "/Game/LastBell/Materials/Instances/"
 # label: (location, rotation, DecalSize half-extent (depth, vertical, horizontal), MI) -- section 5.6(d)
 DECALS = [
     ("RV_Gate_Sigil", (300, 500, 260), (0, 180, 90), (10, 110, 110), "MI_Reveal_Sigil"),
-    ("RV_WellHouse_Tally", (1350, -1775, 140), (0, -90, 90), (10, 40, 60), "MI_Reveal_Tally"),
-    ("RV_Chapel_Circle", (8265, -255, 0.5), (-90, 0, 0), (10, 90, 90), "MI_Reveal_Circle"),
+    ("RV_WellHouse_Tally", (1350, -1775, 115), (0, -90, 90), (10, 40, 60), "MI_Reveal_Tally"),   # P14-5 (owner's P14-4 choices): Z 140 -> 115
+    # P14-5 (owner's P14-4 choices): (8265, -255) -> (8150, -91), 200 cm off the S2 pool stripe's centreline toward the aisle
+    ("RV_Chapel_Circle", (8150, -91, 0.5), (-90, 0, 0), (10, 90, 90), "MI_Reveal_Circle"),
     ("RV_Garth_Drag", (10750, 3000, 270), (0, 90, 90), (20, 30, 110), "MI_Reveal_Drag"),
     ("RV_Belfry_Tally", (12200, 1540, 2850), (0, -90, 90), (15, 50, 50), "MI_Reveal_Tally"),
 ]
@@ -428,10 +435,10 @@ def apply_pp(ed):
         r2, created = ed.get_or_create("/Script/Engine.PostProcessVolume", n["label"], c)
         ed.set_xform(r2, c, (0, 0, 0), sc)
         ed.setp(r2, {"bUnbound": False, "blendRadius": n["blend"], "priority": n["priority"], "blendWeight": 1.0, "bEnabled": True})
+        # P14-5 (owner's P14-4 choices): own EV per volume; no ColorSaturationShadows override (the global grade B replaces it)
         ed.setp(r2, {"settings": {"bOverride_AutoExposureMinBrightness": True, "bOverride_AutoExposureMaxBrightness": True,
-                                  "autoExposureMinBrightness": PP_EV, "autoExposureMaxBrightness": PP_EV,
-                                  "bOverride_ColorSaturationShadows": True,
-                                  "colorSaturationShadows": {"x": PP_SAT[0], "y": PP_SAT[1], "z": PP_SAT[2], "w": PP_SAT[3]}}})
+                                  "autoExposureMinBrightness": n["ev"], "autoExposureMaxBrightness": n["ev"],
+                                  "bOverride_ColorSaturationShadows": False}})
         info("%s %s at %s scale %s" % (n["label"], "created" if created else "updated", [round(v, 2) for v in c], [round(v, 4) for v in sc]))
     s1 = pp_state(ed, ref)
     info("PP_Cloister after: %s" % json.dumps(s1))
@@ -447,19 +454,20 @@ def check_pp(ed):
             s["props"].get("bEnabled"), s["overrides"], round(s["ev_min"], 4), round(s["ev_max"], 4), [round(v, 4) for v in s["sat"]], s["method"])
 
     # shrunk and new volumes
-    want_rows = [("PP_Cloister", PP_CLOISTER["box"], 1.0, 300.0)] + [(n["label"], n["box"], n["priority"], n["blend"]) for n in PP_NEW]
-    for label, box, prio, blend in want_rows:
+    # P14-5: each row carries its own EV (PP_Chapel 1.6)
+    want_rows = [("PP_Cloister", PP_CLOISTER["box"], 1.0, 300.0, PP_CLOISTER["ev"])] + [(n["label"], n["box"], n["priority"], n["blend"], n["ev"]) for n in PP_NEW]
+    for label, box, prio, blend, ev in want_rows:
         ref = ed.find_one(label)
         if not ref:
             rec(False, "%s exists" % label)
             continue
         s = pp_state(ed, ref)
         ok = (box_ok(s, box) and abs(s["props"]["priority"] - prio) < 1e-5 and abs(s["props"]["blendRadius"] - blend) < 1e-3 and s["props"]["bUnbound"] is False
-              and set(s["overrides"]) == PP_OVERRIDES and abs(s["ev_min"] - PP_EV) < 1e-5 and abs(s["ev_max"] - PP_EV) < 1e-5
-              and near(s["sat"], PP_SAT, 1e-5) and near(s["rot"], (0, 0, 0), 1e-4))
+              and set(s["overrides"]) == PP_OVERRIDES and abs(s["ev_min"] - ev) < 1e-5 and abs(s["ev_max"] - ev) < 1e-5
+              and near(s["sat"], PP_SAT, 1e-5) and near(s["rot"], (0, 0, 0), 1e-4))   # sat = the stored value, no longer an override (P14-5)
         rec(ok, "%s: %s" % (label, fmt(s)))
         if label != "PP_Cloister":
-            rec(s["props"]["bEnabled"] is True and "AutoExposureMethod" not in s["overrides"], "%s overrides only the Cloister's three (no method override)" % label)
+            rec(s["props"]["bEnabled"] is True and "AutoExposureMethod" not in s["overrides"], "%s overrides only the two EV overrides (no method override; P14-5)" % label)
             root = R(J(ed.call(A, "get_root_component", {"actor": {"refPath": ref}})))
             body = ed.props(root, ["bodyInstance"])["bodyInstance"]
             rec(body.get("collisionProfileName") == "NoCollision", "%s brush collision profile %s (helper volumes are NoCollision)" % (label, body.get("collisionProfileName")))

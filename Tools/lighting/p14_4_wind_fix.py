@@ -22,15 +22,17 @@ D = "/Game/LastBell/Environments/Courtyard/Materials/"
 APP = "EditorToolset.EditorAppToolset"
 
 # name: (amp, refHeight or None = untouched)
+# P14-5 (owner's P14-4 choices): the amplitudes are the owner's tuned storm-strength values (were 30/18/12/18/14/12/4/4 in f9261e6);
+# WindRefHeightCm is unchanged. `mis` / `check` use these values.
 MIS = {
-    "MI_Foliage_GrassMedium02": (30.0, 60.0),
-    "MI_Foliage_NettlePlant": (18.0, 45.0),
-    "MI_Foliage_WeedPlant02": (12.0, 30.0),
-    "MI_Foliage_Fern02": (18.0, 45.0),
-    "MI_Foliage_WildRooibos": (14.0, 60.0),
-    "MI_Foliage_SearsiaLucida": (12.0, 150.0),
-    "MI_Ivy_Green": (4.0, None),
-    "MI_Ivy_Dead": (4.0, None),
+    "MI_Foliage_GrassMedium02": (38.0, 60.0),   # P14-5: was 30
+    "MI_Foliage_NettlePlant": (24.0, 45.0),     # P14-5: was 18
+    "MI_Foliage_WeedPlant02": (16.0, 30.0),     # P14-5: was 12
+    "MI_Foliage_Fern02": (24.0, 45.0),          # P14-5: was 18
+    "MI_Foliage_WildRooibos": (18.0, 60.0),     # P14-5: was 14
+    "MI_Foliage_SearsiaLucida": (16.0, 150.0),  # P14-5: was 12
+    "MI_Ivy_Green": (5.0, None),                # P14-5: was 4
+    "MI_Ivy_Dead": (5.0, None),                 # P14-5: was 4
 }
 OLD = {  # for the diff report only
     "MI_Foliage_GrassMedium02": (16.0, 90.0), "MI_Foliage_NettlePlant": (9.0, 70.0), "MI_Foliage_WeedPlant02": (6.0, 30.0),
