@@ -853,4 +853,13 @@ One editor agent at a time. Each agent commits on this branch only and never swi
   The smallest headroom to 16.6 ms is the chapel's, 2.11 ms.
 - **The first courtyard reading is void.** It was the session's first reading: game thread 25.06 ms, frame 22.80, and only 66.4K prims against 336.9K a few minutes later. The scene hadn't settled. The owner re-read the spot (render 1664x846, the window a few pixels smaller), and that re-read is the courtyard baseline.
 - **Warden CVar after the re-read:** the owner's closing command was `lb.Warden.Enabled 0`, so the Warden stays disabled until `lb.Warden.Enabled 1` or an editor restart. The "before" capture set ran in that state.
+
+**"Before" capture set (2026-11-07):** `capture_session.py --prefix p14b_ --mode simulate --fg-wait 180`, no candle proxy.
+- Result: 16 of 16 saved, 0 missing, render 1331x808. Files are in `Docs/ArtTest/lighting/before/`, with luma in `p14b_luma.json`.
+- Timing: the tool waited 1248 s for the editor to come to the front, then captured all 16 in about 6 minutes. 18 attempts failed and were retried, the most (4) at `tw_belfry`.
+- Lead review:
+  - every view is framed as named;
+  - `p14_cy_tower_reveal` shows the tower roof and its window above the chapel gable, dark against the clouds (the R-31 target);
+  - `tw_base` frames the tower-base wall at close range. It is kept for before/after comparability: the lantern's light on that wall still measures the group state.
+- Luma means range from 0.012 (`cr_tall_ossuary_15m`, 91 % of pixels below 0.02) to 0.214 (`cy_lantern_gate_3m`). They are the reference for P14-6/P14-7.
 - **Also on screen:** "PROFILING WITH AI LOGGING ON!", the editor's usual AI-logging note. It was on in the earlier readings too, so they stay comparable.
