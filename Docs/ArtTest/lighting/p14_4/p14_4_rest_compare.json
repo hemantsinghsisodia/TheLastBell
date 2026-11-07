@@ -1,0 +1,274 @@
+[
+ {
+  "pose": "ch_candle_altar_3m",
+  "mad": 1.74,
+  "p99": 6.0,
+  "over8": 0.0005,
+  "luma_before": 0.1732,
+  "luma_after": 0.1655,
+  "size_before": [
+   1331,
+   808
+  ],
+  "size_after": [
+   1331,
+   808
+  ],
+  "pass": true
+ },
+ {
+  "pose": "ch_sacristy_3m",
+  "mad": 19.51,
+  "p99": 47.7,
+  "over8": 0.7936,
+  "luma_before": 0.0796,
+  "luma_after": 0.1657,
+  "size_before": [
+   1331,
+   808
+  ],
+  "size_after": [
+   1331,
+   808
+  ],
+  "pass": false
+ },
+ {
+  "pose": "ch_tall_east_15m",
+  "mad": 2.94,
+  "p99": 8.0,
+  "over8": 0.0087,
+  "luma_before": 0.1954,
+  "luma_after": 0.1843,
+  "size_before": [
+   1331,
+   808
+  ],
+  "size_after": [
+   1331,
+   808
+  ],
+  "pass": false
+ },
+ {
+  "pose": "cl_lantern_bells_3m",
+  "mad": 0.41,
+  "p99": 2.0,
+  "over8": 0.0001,
+  "luma_before": 0.1531,
+  "luma_after": 0.1536,
+  "size_before": [
+   1331,
+   808
+  ],
+  "size_after": [
+   1331,
+   808
+  ],
+  "pass": true
+ },
+ {
+  "pose": "cl_tall_north_15m",
+  "mad": 0.22,
+  "p99": 1.3,
+  "over8": 0.0,
+  "luma_before": 0.044,
+  "luma_after": 0.0441,
+  "size_before": [
+   1331,
+   808
+  ],
+  "size_after": [
+   1331,
+   808
+  ],
+  "pass": true
+ },
+ {
+  "pose": "cr_chain_chamber",
+  "mad": 0.22,
+  "p99": 1.7,
+  "over8": 0.0006,
+  "luma_before": 0.0294,
+  "luma_after": 0.0295,
+  "size_before": [
+   1331,
+   808
+  ],
+  "size_after": [
+   1331,
+   808
+  ],
+  "pass": true
+ },
+ {
+  "pose": "cr_tall_ossuary_15m",
+  "mad": 0.32,
+  "p99": 7.3,
+  "over8": 0.0088,
+  "luma_before": 0.0121,
+  "luma_after": 0.0122,
+  "size_before": [
+   1331,
+   808
+  ],
+  "size_after": [
+   1331,
+   808
+  ],
+  "pass": true
+ },
+ {
+  "pose": "cr_torch_t1_3m",
+  "mad": 0.43,
+  "p99": 2.7,
+  "over8": 0.0042,
+  "luma_before": 0.077,
+  "luma_after": 0.0776,
+  "size_before": [
+   1331,
+   808
+  ],
+  "size_after": [
+   1331,
+   808
+  ],
+  "pass": true
+ },
+ {
+  "pose": "cy_lantern_gate_3m",
+  "mad": 0.6,
+  "p99": 4.3,
+  "over8": 0.0033,
+  "luma_before": 0.2135,
+  "luma_after": 0.213,
+  "size_before": [
+   1331,
+   808
+  ],
+  "size_after": [
+   1331,
+   808
+  ],
+  "pass": true
+ },
+ {
+  "pose": "cy_tall_north_15m",
+  "mad": 0.35,
+  "p99": 2.0,
+  "over8": 0.0001,
+  "luma_before": 0.1029,
+  "luma_after": 0.1027,
+  "size_before": [
+   1331,
+   808
+  ],
+  "size_after": [
+   1331,
+   808
+  ],
+  "pass": true
+ },
+ {
+  "pose": "cy_west_front_15m",
+  "mad": 0.4,
+  "p99": 2.3,
+  "over8": 0.0011,
+  "luma_before": 0.0969,
+  "luma_after": 0.0963,
+  "size_before": [
+   1331,
+   808
+  ],
+  "size_after": [
+   1331,
+   808
+  ],
+  "pass": true
+ },
+ {
+  "pose": "p14_cy_tower_reveal",
+  "mad": 0.37,
+  "p99": 2.0,
+  "over8": 0.0002,
+  "luma_before": 0.0911,
+  "luma_after": 0.0909,
+  "size_before": [
+   1331,
+   808
+  ],
+  "size_after": [
+   1331,
+   808
+  ],
+  "pass": true
+ },
+ {
+  "pose": "ps_lantern_joints",
+  "mad": 0.51,
+  "p99": 2.0,
+  "over8": 0.0001,
+  "luma_before": 0.1785,
+  "luma_after": 0.1798,
+  "size_before": [
+   1331,
+   808
+  ],
+  "size_after": [
+   1331,
+   808
+  ],
+  "pass": true
+ },
+ {
+  "pose": "tw_base",
+  "mad": 0.97,
+  "p99": 2.3,
+  "over8": 0.0,
+  "luma_before": 0.2063,
+  "luma_after": 0.2102,
+  "size_before": [
+   1331,
+   808
+  ],
+  "size_after": [
+   1331,
+   808
+  ],
+  "pass": true
+ },
+ {
+  "pose": "tw_belfry",
+  "mad": 0.23,
+  "p99": 1.3,
+  "over8": 0.0,
+  "luma_before": 0.0564,
+  "luma_after": 0.0562,
+  "size_before": [
+   1331,
+   808
+  ],
+  "size_after": [
+   1331,
+   808
+  ],
+  "pass": true
+ },
+ {
+  "pose": "tw_mid_stair",
+  "mad": 1.31,
+  "p99": 23.7,
+  "over8": 0.0284,
+  "luma_before": 0.0851,
+  "luma_after": 0.0848,
+  "size_before": [
+   1331,
+   808
+  ],
+  "size_after": [
+   1331,
+   808
+  ],
+  "pass": true
+ }
+]
