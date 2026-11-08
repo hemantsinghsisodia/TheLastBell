@@ -1,0 +1,106 @@
+{
+ "SM_LB_Prop_ClothStrip_A": {
+  "bounds_min": [
+   -17.5,
+   -2.85,
+   -220.0
+  ],
+  "bounds_max": [
+   17.5,
+   2.68,
+   0.0
+  ],
+  "tris": 654,
+  "verts": 377,
+  "slot": "MAT_Cloth",
+  "notes": []
+ },
+ "SM_LB_Prop_ClothStrip_B": {
+  "bounds_min": [
+   -12.5,
+   -2.77,
+   -160.0
+  ],
+  "bounds_max": [
+   12.5,
+   2.74,
+   0.0
+  ],
+  "tris": 347,
+  "verts": 217,
+  "slot": "MAT_Cloth",
+  "notes": [
+   "hole: 9 faces removed at (-3.0, -83.2), rim verts roughened 14"
+  ]
+ },
+ "SM_LB_Prop_ClothBanner_A": {
+  "bounds_min": [
+   -55.0,
+   -2.71,
+   -240.0
+  ],
+  "bounds_max": [
+   55.0,
+   2.81,
+   0.0
+  ],
+  "tris": 1888,
+  "verts": 1022,
+  "slot": "MAT_Cloth",
+  "notes": [
+   "side tear: 14 vertices opened along row 25 (z -125.0), 35 cm inward, gap up to 6.5 cm"
+  ]
+ },
+ "SM_LB_Prop_ClothSheet_A": {
+  "bounds_min": [
+   -85.0,
+   -2.89,
+   -140.0
+  ],
+  "bounds_max": [
+   85.0,
+   2.89,
+   0.0
+  ],
+  "tris": 1731,
+  "verts": 922,
+  "slot": "MAT_Cloth",
+  "notes": []
+ },
+ "SM_LB_FX_BoltCard": {
+  "bounds_min": [
+   -50.0,
+   0.0,
+   -100.0
+  ],
+  "bounds_max": [
+   50.0,
+   0.0,
+   0.0
+  ],
+  "tris": 2,
+  "verts": 4,
+  "slot": "MAT_Bolt",
+  "notes": [
+   "100 x 100 cm quad, pivot top centre, normal +Y"
+  ]
+ },
+ "SM_LB_FX_CurtainCard": {
+  "bounds_min": [
+   -50.0,
+   0.0,
+   0.0
+  ],
+  "bounds_max": [
+   50.0,
+   0.0,
+   100.0
+  ],
+  "tris": 2,
+  "verts": 4,
+  "slot": "MAT_Curtain",
+  "notes": [
+   "100 x 100 cm quad, pivot bottom centre, normal +Y"
+  ]
+ }
+}
