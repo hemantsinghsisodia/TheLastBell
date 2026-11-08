@@ -5,7 +5,8 @@ Python: C:\\Users\\heman\\AppData\\Local\\Python\\pythoncore-3.14-64\\python.exe
 
     build                       2.1-2.3: material M_LB_Spike_Unlit, system NS_LB_Rain_Spike (emitters Rain and Splash), Q3 distance-field mode
     place                       2.4: the 5 S1_Spike_* actors (folder FX/Spike), transforms and user variables
-    check                       read everything back, print PASS/FAIL/WARN/INFO lines, exit 1 on any FAIL
+    pin                         round 2 (8.1 step 1): pin the Splash particles at first contact (LandPos/LandAge, rebuilds the update tail), then compile report
+    check                       read everything back (incl. the pin chain, the tower mesh flag as PASS or SKIP, actor values), print PASS/FAIL/WARN/INFO lines, exit 1 on any FAIL
     set --world pie|editor [--rain-scale K] [--splash-scale K] [--splash-fall F] [--radius CM] [--off]
                                 set the user variables on the five spike components of that world and read them back
     blockers --apply|--remove [--dry-run]   6.2 hidden blocker boxes under the plank rows (--apply is for the lead only)
@@ -77,6 +78,24 @@ EMITTERS = {
                    radius=("fixed", 6.0), align="Unaligned"),
 }
 COLOR = (2.5, 2.8, 3.2, 1.0)
+
+# round 2 (section 8.1): the splash pin chain. Rows run in this order, one SetParameters module each, after SolveForcesAndVelocity.
+# Each entry: (parameter, type, literal default as (struct, value), HLSL expression). Order matters: LandPos is captured BEFORE Landed is updated.
+POS = "/Script/Niagara.NiagaraPosition"
+LAND_LIFE = 0.45
+UPDATE_CHAIN = [
+    [("Particles.LandPos", POS, (V3, {"x": 0, "y": 0, "z": 0}), "Particles.Landed ? Particles.LandPos : Particles.Position")],
+    [("Particles.Landed", BOOL, (BOOL, {"value": 0}), "Particles.Landed || Particles.HasCollided")],
+    [("Particles.Position", POS, (V3, {"x": 0, "y": 0, "z": 0}), "Particles.Landed ? Particles.LandPos : Particles.Position"),
+     ("Particles.Velocity", V3, (V3, {"x": 0, "y": 0, "z": 0}), "Particles.Landed ? float3(0, 0, 0) : Particles.Velocity")],
+    [("Particles.LandAge", FLOAT, (FLOAT, {"value": 0}), "Particles.Landed ? Particles.LandAge + Engine.DeltaTime : 0.0")],
+    [("Particles.Color", LCOL, (LCOL, {"r": 0, "g": 0, "b": 0, "a": 0}), "Particles.Landed ? float4(5.0, 1.4, 0.2, 1.0) : float4(0.0, 0.0, 0.0, 0.0)")],
+    [("DataInstance.Alive", BOOL, (BOOL, {"value": -1}), "Particles.LandAge <= %g" % LAND_LIFE)],
+]
+# round 2 (section 8.1 step 3): per-actor values; the system's own user-variable defaults stay 20000 and 10
+ACTOR_SPLASH_FALL = 1250.0
+ACTOR_RADIUS = 20.0
+TOWER_MESH_NAME = "SM_LB_Tw_Roof_BrokenSW"
 
 # section 2.4 placement: label -> (location, BoxSize, SpawnOffset, RainRate, SplashRate)
 ROWS = [
@@ -405,18 +424,50 @@ def configure_emitter(em, spec):
         {"Material": ref(MAT_OBJ), "Alignment": spec["align"], "FacingMode": "FaceCamera"})}}))
 
 
+def chain_tail(em):
+    """Update-script modules after SolveForcesAndVelocity, as [(moduleName, sorted input names)]; non-SetParameters modules get None."""
+    mods = modules(em, PU)
+    names = [m["moduleName"] for m in mods]
+    return [(m["moduleName"], sorted(i["name"] for i in m["inputs"]) if m.get("bIsSetParametersModule") else None) for m in mods[names.index("SolveForcesAndVelocity") + 1:]]
+
+
+def build_pin_chain(em):
+    """Section 8.1 step 1: the pin chain, one SetParameters module per UPDATE_CHAIN row, in order, after SolveForcesAndVelocity.
+    AddSetParametersModule only appends and there is no MoveModule, so a wrong or partial tail is removed and rebuilt whole."""
+    want = [sorted(e[0] for e in row) for row in UPDATE_CHAIN]
+    tail = chain_tail(em)
+    if [t[1] for t in tail] != want:
+        for mn, sig in tail:
+            if sig is not None:
+                step(em + ": RemoveModule " + mn, lambda mn=mn: E().call(NS, "RemoveModule", {"moduleToRemove": R(em, PU, mn)}))
+        for row in UPDATE_CHAIN:
+            ents = [(n, t, lit(*d)) for n, t, d, _ in row]
+            mn = E().call(NS, "AddSetParametersModule", {"moduleLocationRef": R(em, PU), "parameters": [{"variable": {"name": n, "type": T(t)}, "defaultValue": d} for n, t, d in ents]})["moduleName"]
+            print("  OK   added", mn, [n for n, _, _ in ents])
+    for row, sig in zip(UPDATE_CHAIN, want):
+        mn = next((m for m, s in chain_tail(em) if s == sig), None)
+        for n, _, _, expr in row:
+            step("pin update: %s = %s" % (n, expr), lambda mn=mn, n=n, expr=expr: setin(R(em, PU, mn, -1, [n]), hlsl(expr)))
+
+
+def build_pin(em="Splash"):
+    """Round 2, section 8.1 step 1 (touches only the Splash emitter): pin state in Particle Spawn, then the pin chain in Particle Update."""
+    print("[8.1] pin the splashes,", em)
+    mp = ensure_setparams(em, PS, [("Particles.LandPos", POS, v3(0, 0, 0)), ("Particles.LandAge", FLOAT, fl(0.0))])
+    step("pin spawn: Particles.LandPos = Particles.Position", lambda: setin(R(em, PS, mp, -1, ["Particles.LandPos"]), hlsl("Particles.Position")))
+    step("pin spawn: Particles.LandAge = 0", lambda: setin(R(em, PS, mp, -1, ["Particles.LandAge"]), fl(0.0)))
+    build_pin_chain(em)
+    print("  INFO spawn order:", module_names(em, PS))
+    print("  INFO update order:", module_names(em, PU))
+
+
 def build_latch():
     em = "Splash"
     print("[2.2] Splash latch and renderer 1")
     c = lambda n, t, d: (n, t, d)  # noqa: E731
     mn = ensure_setparams(em, PS, [c("Particles.Landed", BOOL, bl(False)), c("Particles.RingSize", V2, v2(30, 30)), c("Particles.SpriteFacing", V3, v3(0, 0, 1))])
     print("  OK   spawn SetParameters module:", mn)
-    ml = ensure_setparams(em, PU, [c("Particles.Landed", BOOL, bl(False))])
-    step("latch: Particles.Landed = Landed || HasCollided", lambda: setin(R(em, PU, ml, -1, ["Particles.Landed"]), hlsl("Particles.Landed || Particles.HasCollided")))
-    mc = ensure_setparams(em, PU, [c("Particles.Color", LCOL, col(0, 0, 0, 0))])
-    step("latch: Particles.Color = Landed ? orange : 0", lambda: setin(R(em, PU, mc, -1, ["Particles.Color"]), hlsl(
-        "Particles.Landed ? float4(5.0, 1.4, 0.2, 1.0) : float4(0.0, 0.0, 0.0, 0.0)")))
-    print("  INFO update order:", module_names(em, PU))
+    build_pin(em)
 
     # renderer 1: a second sprite renderer, custom facing, size bound to Particles.RingSize
     r1 = R(em, "", "", 1)
@@ -462,6 +513,20 @@ def report_compile():
             l = i["location"]
             print("   %s %s %s %s: %s | %s" % (i["severity"], l["emitterName"], l["scriptName"].split("::")[-1], l["moduleName"], i["shortDescription"], i["longDescription"][:200]))
     return cs, iss
+
+
+def cmd_pin(_a):
+    """Round 2 step 1 only: pin chain on the Splash emitter, then compile state and stack issues."""
+    E()
+    build_pin("Splash")
+    cs, iss = report_compile()
+    if iss["numErrors"] or cs["bHasErrors"] or cs["aggregateStatus"] != "UpToDate":
+        FAILS.append("compile or stack errors")
+    if FAILS:
+        print("PIN FAILED:", FAILS)
+        return 1
+    print("PIN OK (nothing saved; the system is dirty in memory)")
+    return 0
 
 
 def cmd_build(_a):
@@ -528,7 +593,7 @@ def close(a, b):
 def row_values(row):
     label, loc, box, off, rain, splash = row
     return {"User.RainRate": ("f", float(rain)), "User.SplashRate": ("f", float(splash)), "User.BoxSize": ("v", tuple(map(float, box))),
-            "User.SpawnOffset": ("v", tuple(map(float, off))), "User.RainFall": ("f", 1250.0), "User.SplashFall": ("f", 20000.0), "User.RainRadius": ("f", 10.0)}
+            "User.SpawnOffset": ("v", tuple(map(float, off))), "User.RainFall": ("f", 1250.0), "User.SplashFall": ("f", ACTOR_SPLASH_FALL), "User.RainRadius": ("f", ACTOR_RADIUS)}
 
 
 def pie_running():
@@ -664,6 +729,52 @@ def check_emitter(em, spec):
     chk(em + " renderer 0", r0["Alignment"] == spec["align"] and r0["FacingMode"] == "FaceCamera" and r0["Material"]["refPath"] == MAT_OBJ, "%s %s" % (r0["Alignment"], r0["FacingMode"]))
 
 
+def check_pin(em):
+    """Round 2 step 1: pin state in Particle Spawn; the pin chain after SolveForcesAndVelocity, in exactly the UPDATE_CHAIN order."""
+    mp = setparams_module(em, PS, ["Particles.LandPos", "Particles.LandAge"])
+    chk("pin spawn module present (LandPos, LandAge)", mp is not None, str(mp))
+    if mp:
+        chk("pin spawn LandPos = Particles.Position", lv(R(em, PS, mp, -1, ["Particles.LandPos"])).get("hlslExpression") == "Particles.Position")
+        la = lv(R(em, PS, mp, -1, ["Particles.LandAge"]))
+        chk("pin spawn LandAge = 0", isinstance(la, dict) and la.get("value") == 0, str(la))
+    pu = module_names(em, PU)
+    tail = chain_tail(em)
+    chk("Collision < SolveForcesAndVelocity", pu.index("Collision") < pu.index("SolveForcesAndVelocity"), str(pu))
+    want = [sorted(e[0] for e in row) for row in UPDATE_CHAIN]
+    chk("pin chain: %d SetParameters modules after Solve, exact order" % len(want), [t[1] for t in tail] == want, "tail inputs " + str([t[1] for t in tail]))
+    names = {}
+    for row, sig in zip(UPDATE_CHAIN, want):
+        mn = next((m for m, sg in tail if sg == sig), None)
+        names[sig[0]] = mn
+        for n, _, _, expr in row:
+            ok = mn is not None and lv(R(em, PU, mn, -1, [n])).get("hlslExpression") == expr
+            chk("pin update %s = %s" % (n, expr), ok)
+    lp, ld = names.get("Particles.LandPos"), names.get("Particles.Landed")
+    chk("order: LandPos captured BEFORE Landed is updated", bool(lp and ld) and pu.index(lp) < pu.index(ld), "%s < %s" % (lp, ld))
+    chk("order: all pin modules after Collision and Solve", all(m in pu and pu.index(m) > pu.index("SolveForcesAndVelocity") for m in names.values() if m), str(pu))
+    chk("order: Alive is the last module", bool(names.get("DataInstance.Alive")) and pu[-1] == names["DataInstance.Alive"], str(pu[-1:]))
+    pp, pa = names.get("Particles.Position"), names.get("Particles.LandAge")
+    chk("order: Position/Velocity pin after Landed, before LandAge", bool(ld and pp and pa) and pu.index(ld) < pu.index(pp) < pu.index(pa), "%s %s %s" % (ld, pp, pa))
+
+
+def check_tower_mesh():
+    """Round 2 step 2: bGenerateDistanceFieldAsIfTwoSided on LOD 0 of SM_LB_Tw_Roof_BrokenSW. No MCP route was found, so a SKIP line unless the flag is readable."""
+    found = E().call(AS, "find_assets", {"folder_path": "/Game", "name": TOWER_MESH_NAME}, read=True)
+    mesh = found[0] if len(found) == 1 else None
+    chk("tower mesh asset found", mesh is not None, str(found))
+    if not mesh:
+        return
+    try:
+        sm = js(E().call(OB, "get_properties", {"instance": ref(mesh + "." + TOWER_MESH_NAME), "properties": ["sourceModels"]}, read=True))
+    except RuntimeError as e:
+        print("SKIP tower mesh bGenerateDistanceFieldAsIfTwoSided: no MCP route (StaticMesh.sourceModels is not reachable through ObjectTools):", str(e)[-70:])
+        print("INFO tower mesh is_dirty", mesh, E().call(AS, "is_dirty", {"asset_path": mesh}, read=True))
+        return
+    bs = sm["sourceModels"][0]["buildSettings"]
+    chk("tower mesh LOD0 bGenerateDistanceFieldAsIfTwoSided", bs.get("bGenerateDistanceFieldAsIfTwoSided") is True, str(bs.get("bGenerateDistanceFieldAsIfTwoSided")))
+    print("INFO tower mesh is_dirty", mesh, E().call(AS, "is_dirty", {"asset_path": mesh}, read=True), "(rebuild state not readable)")
+
+
 def check_latch():
     em = "Splash"
     print("-- Splash latch and renderer 1")
@@ -673,14 +784,7 @@ def check_latch():
         vals = {i["name"]: i["value"]["value"] for i in E().call(NS, "GetModuleInputValues", {"moduleRef": R(em, PS, ms)}, read=True)["inputs"]}
         chk("latch spawn Landed false, RingSize (30,30), SpriteFacing (0,0,1)", vals["Particles.Landed"]["value"] == 0 and (vals["Particles.RingSize"]["x"], vals["Particles.RingSize"]["y"]) == (30, 30)
             and (vals["Particles.SpriteFacing"]["x"], vals["Particles.SpriteFacing"]["y"], vals["Particles.SpriteFacing"]["z"]) == (0, 0, 1), str(vals))
-    pu = module_names(em, PU)
-    ml, mc = setparams_module(em, PU, ["Particles.Landed"]), setparams_module(em, PU, ["Particles.Color"])
-    chk("latch update modules present", bool(ml and mc), "%s %s" % (ml, mc))
-    if ml and mc:
-        chk("latch order: Collision < Landed < Color", pu.index("Collision") < pu.index(ml) < pu.index(mc), str(pu))
-        chk("latch Landed expression", lv(R(em, PU, ml, -1, ["Particles.Landed"])).get("hlslExpression") == "Particles.Landed || Particles.HasCollided")
-        chk("latch Color expression", lv(R(em, PU, mc, -1, ["Particles.Color"])).get("hlslExpression") == "Particles.Landed ? float4(5.0, 1.4, 0.2, 1.0) : float4(0.0, 0.0, 0.0, 0.0)")
-        chk("no other module after Color latch", pu[-1] == mc, str(pu))
+    check_pin(em)
     pv = json.loads(E().call(NS, "GetRendererData", {"rendererRef": R(em, "", "", 1)}, read=True)["propertyValues"])
     chk("renderer 1 custom facing", pv["FacingMode"] == "CustomFacingVector" and pv["Material"]["refPath"] == MAT_OBJ, pv["FacingMode"])
     chk("renderer 1 facing binding Particles.SpriteFacing", pv["SpriteFacingBinding"]["paramMapVariable"]["name"] == "Particles.SpriteFacing" and pv["SpriteFacingBinding"]["bBindingExistsOnSource"], pv["SpriteFacingBinding"]["bindingSourceMode"])
@@ -744,6 +848,7 @@ def cmd_check(_a):
     print("== s1_spike check ==")
     check_material()
     check_system()
+    check_tower_mesh()
     check_actors()
     print("-- dirty state (INFO; dirty is expected, nothing may be saved)")
     for p in ["/Game/LastBell/Maps/L_Monastery", MAT_PKG, SYS_PKG]:
@@ -899,6 +1004,7 @@ def main():
     sub = ap.add_subparsers(dest="cmd", required=True)
     sub.add_parser("build").set_defaults(fn=cmd_build)
     sub.add_parser("place").set_defaults(fn=cmd_place)
+    sub.add_parser("pin").set_defaults(fn=cmd_pin)
     sub.add_parser("check").set_defaults(fn=cmd_check)
     s = sub.add_parser("set")
     s.add_argument("--world", choices=["pie", "editor"], required=True)

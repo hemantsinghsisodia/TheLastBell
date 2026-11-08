@@ -226,3 +226,54 @@ INFO is_dirty /Game/LastBell/FX/Spike/M_LB_Spike_Unlit True
 INFO is_dirty /Game/LastBell/FX/Spike/NS_LB_Rain_Spike True
 RESULT: all PASS
 ```
+
+## 8. Round 2 build (2026-11-08; spec `Docs/plans/P15_S1_RAIN_SPIKE.md` section 8.1; editor open, PIE off, nothing captured, nothing saved)
+
+Round 1 showed that splashes latch orange at first contact and then keep moving (slide off sloped roofs, tunnel through the 20 cm slab at 20000 cm/s), and that no rain reaches the belfry. Round 2 pins each splash and tries to make the tower roof's distance field two-sided. Script: `s1_spike.py pin` (Splash emitter only), `set`, `check`.
+
+### 8.1 Pin chain (Splash emitter only; Rain, the material and the system defaults are untouched)
+
+New Particle Spawn module (appended after the round 1 spawn module `SetVariables_21E3...`): `Particles.LandPos` (type `/Script/Niagara.NiagaraPosition`) = `Particles.Position`, `Particles.LandAge` (float) = 0.
+
+Particle Update, read back with `GetScriptStackTopology` (execution order). One SetParameters module per row, because a module that reads a value another entry of the same module writes would see last frame's value:
+
+| # | Module (this session's GUID, abbreviated) | Entries (HLSL) |
+|---|---|---|
+| 1 | `ParticleState` | built in |
+| 2 | `Collision` | GPU Distance Fields, kill off, radius 6, restitution 0, friction 1, rest state on |
+| 3 | `SolveForcesAndVelocity` | built in |
+| 4 | `SetVariables_79FF...` | `Particles.LandPos` = `Particles.Landed ? Particles.LandPos : Particles.Position` (runs BEFORE the Landed update, so it captures the first post-collision position) |
+| 5 | `SetVariables_464E...` | `Particles.Landed` = `Particles.Landed \|\| Particles.HasCollided` |
+| 6 | `SetVariables_90B6...` | `Particles.Position` = `Particles.Landed ? Particles.LandPos : Particles.Position`; `Particles.Velocity` = `Particles.Landed ? float3(0, 0, 0) : Particles.Velocity` |
+| 7 | `SetVariables_D61F...` | `Particles.LandAge` = `Particles.Landed ? Particles.LandAge + Engine.DeltaTime : 0.0` |
+| 8 | `SetVariables_0851...` | `Particles.Color` = `Particles.Landed ? float4(5.0, 1.4, 0.2, 1.0) : float4(0.0, 0.0, 0.0, 0.0)` |
+| 9 | `SetVariables_C2D4...` | `DataInstance.Alive` = `Particles.LandAge <= 0.45` |
+
+Why this holds a splash still: the pin modules run after `Solve Forces and Velocity` (every SetParameters module appends at the end of the stack), so `Position` is re-pinned to `LandPos` after the integration, and `Velocity` is zeroed after it, so the next frame's Collision and Solve start from zero velocity. The first contact frame itself integrates normally (Landed is still false when Solve runs), so `LandPos` should be the post-Solve position of that frame (expected from the order, to be confirmed in the captures).
+
+Compile after the build: `GetSystemCompileState` aggregate `UpToDate`, no errors, no warnings, not stale; all 8 scripts `UpToDate`, including `ParticleGPUComputeScript` of both emitters. `GetStackIssues`: 0 errors, 0 warnings, 4 infos (the same version-upgrade notes as round 1).
+
+New recipe facts (add to section 3):
+- **No MoveModule tool.** `AddSetParametersModule` only appends, so putting a module before an existing one means removing the tail and re-adding it in order. `s1_spike.py pin` does that: it compares the modules after `SolveForcesAndVelocity` with `UPDATE_CHAIN` (by their input names), removes every SetParameters module of the tail if they differ, re-adds the six in order, then sets each expression. Run twice, the second run changes nothing structural (the modules match, only the expressions are re-set). The round 1 `Landed` and `Color` modules were removed and re-created: the GUIDs of section 5 no longer exist.
+- **Position type.** `/Script/Niagara.NiagaraPosition` for `Particles.LandPos` and `Particles.Position`, with a `Vector3f` literal default, was accepted by `AddSetParametersModule`. `Particles.Velocity` is `Vector3f`. `DataInstance.Alive` (bool) is accepted as a SetParameters entry and compiles on CPU and GPU.
+- Engine attribute names compile in the HLSL expressions: `Engine.DeltaTime`, `Particles.HasCollided`, `Particles.LandPos`.
+
+### 8.2 Tower roof distance field: NO MCP ROUTE (step skipped)
+
+Goal: set `bGenerateDistanceFieldAsIfTwoSided` true in LOD 0 build settings of `/Game/LastBell/Environments/BellTower/Meshes/SM_LB_Tw_Roof_BrokenSW`. Tried, in this order:
+1. **StaticMeshTools** (`editor_toolset.toolsets.static_mesh.StaticMeshTools`): 17 tools (Nanite, collision, LODs, thresholds, materials, bounds, counts, import). None touches build settings or distance fields.
+2. **ObjectTools** on the mesh: `list_properties` lists 32 properties of `StaticMesh`; `sourceModels` is not among them (the build settings live in `StaticMesh.SourceModels[0].BuildSettings`). `get_properties` for `sourceModels`, `SourceModels`, `sourceModels[0]`, `sourceModels[0].buildSettings`, `sourceModels.0`, `buildSettings`, `bGenerateDistanceFieldAsIfTwoSided`, `distanceFieldReplacementMesh`: all raise `GetObjectProperties on '...SM_LB_Tw_Roof_BrokenSW' (StaticMesh): the following properties could not be read: <name>`. `set_properties` with `{"sourceModels": [{"buildSettings": {"bGenerateDistanceFieldAsIfTwoSided": true}}]}` (and `SourceModels`) raises `SetObjectProperties on '...' (StaticMesh): the following properties could not be set: sourceModels`. The structs `/Script/Engine.StaticMeshSourceModel` and `/Script/Engine.MeshBuildSettings` do list the field (`list_properties` on the struct paths), but there is no object to address them through.
+3. **Editor subsystems:** `EditorAppToolset` has no console-command or Python tool (only `SearchCVars` to look cvars up); `ProgrammaticToolset.execute_tool_script` runs a sandbox (modules `re, math, json, time, copy, datetime`) that can only call the same registered tools; `AssetTools` has `read_file` and `write_file` for text files only. No route.
+4. `bGenerateMeshDistanceField` (exposed) reads false on this mesh; it is ignored when the project setting "Generate Mesh Distance Fields" is on, and says nothing about two-sided.
+
+Result: the flag was NOT set and the mesh was NOT touched (`AssetTools.is_dirty` False before and after the attempts). `s1_spike.py check` prints a SKIP line for it. Consequence for the plan: set the flag by hand in the Static Mesh Editor (LOD 0 > Build Settings > "Two-Sided Distance Field Generation", then save the mesh), or use the P15-6 fallback, a small local rain emitter under the collapse inside the belfry.
+
+### 8.3 Actors
+
+`s1_spike.py set --world editor --splash-fall 1250 --radius 20`: all five actors read back `SplashFall=1250`, `RainRadius=20` (rain rates, splash rates, box sizes and offsets unchanged). The system's own user-variable defaults stay 20000 and 10: the actor values are the round 2 setting, and `check` now expects 1250 and 20 on the actors (`ACTOR_SPLASH_FALL`, `ACTOR_RADIUS`).
+
+### 8.4 `check` (round 2)
+
+137 PASS, 0 FAIL, 1 SKIP, exit 0. New lines: `pin spawn module present`, `pin spawn LandPos = Particles.Position`, `pin spawn LandAge = 0`, `pin chain: 6 SetParameters modules after Solve, exact order`, seven `pin update <name> = <expression>` lines, `order: LandPos captured BEFORE Landed is updated`, `order: all pin modules after Collision and Solve`, `order: Alive is the last module`, `order: Position/Velocity pin after Landed, before LandAge`, and the actor lines `SplashFall 1250`, `RainRadius 20`. The SKIP line: `SKIP tower mesh bGenerateDistanceFieldAsIfTwoSided: no MCP route`.
+
+Save state after round 2: `AssetTools.is_dirty` is True for `/Game/LastBell/Maps/L_Monastery`, `/Game/LastBell/FX/Spike/NS_LB_Rain_Spike` and `/Game/LastBell/FX/Spike/M_LB_Spike_Unlit`, False for `SM_LB_Tw_Roof_BrokenSW`. Nothing was saved.
