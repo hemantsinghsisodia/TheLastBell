@@ -1,0 +1,134 @@
+{
+ "Courtyard": {
+  "volume": "PP_Outdoor_Night",
+  "mean": 0.08264013628164928,
+  "band": [
+   0.04,
+   0.07
+  ],
+  "mean_ok": false,
+  "poses": {
+   "cy_west_front_15m": {
+    "mean": 0.08354789763689041,
+    "central40": 0.13005298376083374,
+    "floor_ok": true
+   },
+   "cy_tall_north_15m": {
+    "mean": 0.08827424049377441,
+    "central40": 0.10248921811580658,
+    "floor_ok": true
+   },
+   "cy_lantern_gate_3m": {
+    "mean": 0.29785391688346863,
+    "central40": 0.4841437339782715,
+    "floor_ok": true
+   },
+   "p14_cy_tower_reveal": {
+    "mean": 0.07609827071428299,
+    "central40": 0.09146986901760101,
+    "floor_ok": true
+   }
+  }
+ },
+ "Chapel": {
+  "volume": "PP_Chapel",
+  "mean": 0.10781299322843552,
+  "band": null,
+  "mean_ok": null,
+  "poses": {
+   "ch_tall_east_15m": {
+    "mean": 0.10781299322843552,
+    "central40": 0.17918814718723297,
+    "floor_ok": true
+   },
+   "ch_candle_altar_3m": {
+    "mean": 0.13661161065101624,
+    "central40": 0.07259172201156616,
+    "floor_ok": true
+   },
+   "ch_sacristy_3m": {
+    "mean": 0.12299679219722748,
+    "central40": 0.2200474739074707,
+    "floor_ok": true
+   }
+  }
+ },
+ "Crypt": {
+  "volume": "PP_Crypt",
+  "mean": 0.012304418720304966,
+  "band": [
+   0.025,
+   0.05
+  ],
+  "mean_ok": false,
+  "poses": {
+   "cr_tall_ossuary_15m": {
+    "mean": 0.012304418720304966,
+    "central40": 0.04488006606698036,
+    "floor_ok": true
+   },
+   "cr_chain_chamber": {
+    "mean": 0.02923298068344593,
+    "central40": 0.04776424542069435,
+    "floor_ok": true
+   },
+   "cr_torch_t1_3m": {
+    "mean": 0.10712515562772751,
+    "central40": 0.3039261996746063,
+    "floor_ok": true
+   }
+  }
+ },
+ "Cloister": {
+  "volume": "PP_Cloister",
+  "mean": 0.060086142271757126,
+  "band": [
+   0.04,
+   0.07
+  ],
+  "mean_ok": true,
+  "poses": {
+   "cl_tall_north_15m": {
+    "mean": 0.060086142271757126,
+    "central40": 0.08081786334514618,
+    "floor_ok": true
+   },
+   "cl_lantern_bells_3m": {
+    "mean": 0.24874082207679749,
+    "central40": 0.4009639322757721,
+    "floor_ok": true
+   },
+   "ps_lantern_joints": {
+    "mean": 0.1922551989555359,
+    "central40": 0.406760573387146,
+    "floor_ok": true
+   }
+  }
+ },
+ "Tower": {
+  "volume": "PP_Tower",
+  "mean": 0.22447332739830017,
+  "band": [
+   0.035,
+   0.06
+  ],
+  "mean_ok": false,
+  "poses": {
+   "tw_mid_stair": {
+    "mean": 0.15835270285606384,
+    "central40": 0.17699532210826874,
+    "floor_ok": true
+   },
+   "tw_belfry": {
+    "mean": 0.2905939519405365,
+    "central40": 0.3601667582988739,
+    "floor_ok": true
+   },
+   "tw_base": {
+    "mean": 0.6301432251930237,
+    "central40": 0.8404553532600403,
+    "floor_ok": true
+   }
+  }
+ }
+}

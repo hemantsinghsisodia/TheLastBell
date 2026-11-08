@@ -133,3 +133,15 @@ Output: `Docs/ArtTest/lighting/p14_5/` (PNGs plus `luma_*.json`) and a results t
 - Save `L_Monastery` once and run the suite (128).
 - Commit, and add "### P14-5c result" to the parent plan.
 The exact values come from B and are written into a short Part C table in this file before the agent starts.
+
+## Part C values (from Part B, 2026-11-08)
+| Actor | Field | Now | Set to |
+|---|---|---|---|
+| `PP_Outdoor_Night` | `settings.autoExposureMinBrightness` and `autoExposureMaxBrightness` (overrides stay true) | 1.15 | **1.40** |
+
+- No section 8 fallback is needed: every floor holds after the story changes.
+- No R-09 fix: nothing blocks approval.
+- `PP_Chapel` 1.6, `PP_Cloister` 0.65, `PP_Tower` 0.65 and `PP_Crypt` 0.2 stay as they are. The owner chose to keep the tower and the crypt.
+- Update `PP_Outdoor_Night`'s expected EV in `Tools/lighting/p14_5_apply.py` and `Tools/lighting/p14_3_level.py` (comment "P14-5c"), then run both `--check`s.
+- Save `L_Monastery` once (census 3015) and run the suite (128).
+- Record "### P14-5c result" in the parent plan, then commit.

@@ -1197,3 +1197,25 @@ Plan: `Docs/plans/P14_5_APPLY.md` Part A (owner "go"). Script: `Tools/lighting/p
 **A5, tests.** `Saved/Logs/LBTests_P14_5a.log`: 128 `Result={Success}`, 0 `Result={Fail`; the only `Error:` line is the HttpListener port bind.
 
 **Not validated visually:** the grade B look, the chapel at EV 1.6, the two moved decals and the stronger wind were set and read back by number only. Part B's captures and the owner's eye are the check.
+
+### P14-5b result (lead + owner, PIE Simulate, 2026-11-08)
+Method: `Docs/plans/P14_5_APPLY.md` Part B. `DebugFreezeFlash` 0 in memory (restored to −1 afterwards, not saved). The candle proxy was `TMP_CaptureLight`, from `DA_PlayerTuning`: 10 cd, radius 600, 1900 K, offset 36 14 −10, made by `Tools/lighting/pie_proxy.py`. Images and `*_targets.json` are in `Docs/ArtTest/lighting/p14_5/`; the tool is `Tools/lighting/area_targets.py`.
+
+**Owner's decisions in this part:**
+- **Mean targets on the wide views only.** The lantern close-ups only need the floor.
+- **Tower: kept.** The candle, a metre from the walls and the bell, dominates the tower views (wide mean 0.22). Meeting 0.035–0.06 would take about 2 stops darker on the whole tower, so `PP_Tower` stays at EV 0.65 and the owner judges it by eye in P14-6.
+- **Crypt: kept.** The `cr_tall_ossuary_15m` mean is 0.012 against 0.025–0.05 even with the candle, but its floor passes. The Phase 9 look stays: `PP_Crypt` EV 0.2, histogram.
+
+| Area | B1 wide-view mean (start EV) | Change | Final wide-view mean | Floors |
+|---|---|---|---|---|
+| Courtyard | 0.0826 (`PP_Outdoor_Night` 1.15), HIGH | **EV 1.15 → 1.40** (one 0.25 step, PIE world) | **0.0699**, PASS (0.04–0.07) | all ≥ 0.025 (lowest `p14_cy_tower_reveal` central 0.081) |
+| Chapel | 0.1078 at EV 1.6, which sets the target 0.086–0.129 | none | 0.0998 after `Ritual.1`, PASS | all ≥ 0.030; lowest `ch_candle_altar_3m` central **0.034** after `Ritual.1` (altar lights at flicker 0.25) |
+| Crypt | 0.0123, LOW (kept, owner) | none | 0.0114 after `Ritual.2` | all ≥ 0.020 (lowest `cr_tall_ossuary_15m` 0.041) |
+| Cloister | 0.0601, PASS | none | 0.0591 after `CloisterEntered` + `Ritual.3` | all ≥ 0.025 (lowest `cl_tall_north_15m` 0.080) |
+| Tower | 0.2245, HIGH (kept, owner) | none | 0.2201 after `Ritual.3` + `TowerTop` | all ≥ 0.025 |
+
+**Story changes (B3).** The owner typed `State.Ritual.1`, `.Ritual.2`, `.Event.CloisterEntered`, `.Ritual.3` and `.Event.TowerTop` in Simulate; `lb.State.Dump` confirmed them, and the 12 affected poses were re-captured (`p14_5_sheet_story.png`). Every floor holds, so **no section 8 fallback is needed**. After `Ritual.3`, the PIE-world `L_Cl_West` and `L_Cl_Entry` read intensity 0. `CLA_Lantern_West` is the hanging lantern in `ps_lantern_joints`, and its glass is visibly dark after `Ritual.3`: the D-099 acceptance is met by eye. `SHA_Lantern_Entry` is in no capture; its light reads 0 and it shares the same glow logic. `L_Cl_Bells` keeps flickering (144 cd at the sample).
+
+**R-09** (noise and leaks): nothing in the 32 Part B captures blocks approval, so there is no fix.
+
+**For Part C:** write `PP_Outdoor_Night` EV100 min = max **1.40** to the editor world. Nothing else changes.

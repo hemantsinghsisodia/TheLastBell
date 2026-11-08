@@ -1,0 +1,106 @@
+{
+ "Chapel": {
+  "volume": "PP_Chapel",
+  "mean": 0.09981013089418411,
+  "band": [
+   0.08624000000000001,
+   0.12936
+  ],
+  "mean_ok": true,
+  "poses": {
+   "ch_tall_east_15m": {
+    "mean": 0.09981013089418411,
+    "central40": 0.16985303163528442,
+    "floor_ok": true
+   },
+   "ch_candle_altar_3m": {
+    "mean": 0.07292728871107101,
+    "central40": 0.03355807438492775,
+    "floor_ok": true
+   },
+   "ch_sacristy_3m": {
+    "mean": 0.12643960118293762,
+    "central40": 0.2261381596326828,
+    "floor_ok": true
+   }
+  }
+ },
+ "Crypt": {
+  "volume": "PP_Crypt",
+  "mean": 0.011390660889446735,
+  "band": [
+   0.025,
+   0.05
+  ],
+  "mean_ok": false,
+  "poses": {
+   "cr_tall_ossuary_15m": {
+    "mean": 0.011390660889446735,
+    "central40": 0.04072069749236107,
+    "floor_ok": true
+   },
+   "cr_chain_chamber": {
+    "mean": 0.02851499803364277,
+    "central40": 0.041197966784238815,
+    "floor_ok": true
+   },
+   "cr_torch_t1_3m": {
+    "mean": 0.08375774323940277,
+    "central40": 0.23782792687416077,
+    "floor_ok": true
+   }
+  }
+ },
+ "Cloister": {
+  "volume": "PP_Cloister",
+  "mean": 0.05912960693240166,
+  "band": [
+   0.04,
+   0.07
+  ],
+  "mean_ok": true,
+  "poses": {
+   "cl_tall_north_15m": {
+    "mean": 0.05912960693240166,
+    "central40": 0.08033942431211472,
+    "floor_ok": true
+   },
+   "cl_lantern_bells_3m": {
+    "mean": 0.2321626991033554,
+    "central40": 0.37542006373405457,
+    "floor_ok": true
+   },
+   "ps_lantern_joints": {
+    "mean": 0.1634611189365387,
+    "central40": 0.37327468395233154,
+    "floor_ok": true
+   }
+  }
+ },
+ "Tower": {
+  "volume": "PP_Tower",
+  "mean": 0.2200566977262497,
+  "band": [
+   0.035,
+   0.06
+  ],
+  "mean_ok": false,
+  "poses": {
+   "tw_mid_stair": {
+    "mean": 0.15673503279685974,
+    "central40": 0.1701621115207672,
+    "floor_ok": true
+   },
+   "tw_belfry": {
+    "mean": 0.28337836265563965,
+    "central40": 0.35273975133895874,
+    "floor_ok": true
+   },
+   "tw_base": {
+    "mean": 0.6298933029174805,
+    "central40": 0.8403868079185486,
+    "floor_ok": true
+   }
+  }
+ }
+}
