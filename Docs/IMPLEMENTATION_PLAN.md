@@ -358,10 +358,27 @@ Branch `claude/phase-14-lighting-storm`. Spec: `Docs/plans/P14_LIGHTING_STORM.md
 | P14-2 | Materials and assets (MPC, DA, storm sky, glass/shaft/pool flash, reveal decals, wind sway) | technical-artist [EDITOR] | P14-1, F0 |
 | P14-3 | Level work (tags, zones, PP restructure, light groups with glow actors, decals, apparition flags, WPO distance) | lighting-vfx [EDITOR] | P14-1b, P14-2 |
 | P14-4 | Look session: flash preset, chapel EV, grade, wind, R-31 | lead + owner | P14-3 |
+| P14-4 wind fix | Scale-aware sway height in `MF_LB_WindSway` and storm-strength amplitudes on 8 MIs (D-100, `Docs/plans/P14_4_WIND_FIX.md`); the owner then tuned the wind live | technical-artist [EDITOR] | P14-4 live check |
 | P14-5 | Apply choices, exposure targets, readability after story changes, R-09 | lighting-vfx; captures with the owner | P14-4 |
+| P14-5a | Apply and save the owner's P14-4 choices: wind values in `DA_StormSettings` and 8 MIs, `PP_Chapel` EV 1.6, grade B, two reveal decals moved (`Docs/plans/P14_5_APPLY.md` Part A) | lighting-vfx [EDITOR] | P14-4 |
+| P14-5b | Part B: area exposure against the targets on the wide views, readability after the five story changes, R-09 (32 Simulate captures with the candle proxy); D-102 | lead + owner | P14-5a |
+| P14-5c | Part C: `PP_Outdoor_Night` EV100 1.15 → 1.40 written to the editor world and saved | lighting-vfx [EDITOR] | P14-5b |
 | P14-6 | Viewpoint approval and storm run-through | owner | P14-5 |
 | P14-7 | Performance and report | owner + performance-engineer | P14-6 |
 | P14-8 | QA, docs, suite, playtest; PHASE 14 READY FOR YOUR REVIEW | qa-reviewer + lead + owner | all |
+
+**Status 2026-11-08:** P14-0 to P14-7 are done; P14-8 is in progress (docs and QA in parallel, then the full suite and the phase report). Key commits (`git log --oneline main..HEAD`):
+- **P14-0 and F0:** plan approved (d4cbf48); read-only survey (0c711b8).
+- **P14-B:** baseline readings (1584042, ea182be) and the "before" capture set (a38e0b6).
+- **P14-1 and P14-1b:** storm code (da7d195); glow actors, D-099 (spec c626dd7, code b42c69c).
+- **P14-2:** storm MPC, flash function, `DA_StormSettings`, flash-driven materials (2572b3a); wind sway materials (ac57277, ac7cbad).
+- **P14-3:** level work (5595f7e); decal check under a frozen flash (821563c).
+- **P14-4:** wind fix, D-100 (f9261e6); look-session captures and results (45ae203, 91c385e); the owner's choices, D-101 (6154914).
+- **P14-5:** plan (79ba774); apply and save (4e2a3e8); Part B tools and captures (3b1503e, 9a164d2); courtyard EV 1.40, D-102 (59fc468).
+- **P14-6:** approval captures (a58b9d9); owner approved the viewpoints and the storm run-through (105d146).
+- **P14-7:** readings (b6621bc); game-thread re-read (313c5cc); closed as passed on Phase 14's own cost (03826ed).
+- **Outcome:** GPU passes at all six spots; the storm's game-thread cost is +0.16 ms and the rise against P14-B is story state, so the new R-64 goes to the Phase 18 optimisation pass. R-09, R-31 and R-59…R-63 are closed; D-101 and D-102 are logged.
+- **Suite:** 128 at P14-5c (128 `Result={Success}`, 0 failures); suite: pending final run.
 
 ## Deferred to Phase 14–15 (Lighting, VFX: storm work)
 Items the owner asked to fold into the storm pass. **Foliage wind is now in Phase 14** (P14 section 6, D-096: `MPC_LB_Storm` replaces the planned `MPC_LB_Wind`).

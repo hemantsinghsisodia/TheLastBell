@@ -28,6 +28,7 @@ Source/LastBell/
   Objectives/   ULBObjectiveChainData, ULBObjectiveSubsystem                     (P1)
   Save/         ULBSaveGame, FLBActorSaveRecord, FLBSaveIdRegistry, ULBSaveSubsystem, ULBSaveStateComponent, ALBCheckpoint (P1)
   AI/           ALBWarden, ALBWardenController, ULBWardenBrainComponent, ULBWardenTuningData, LBWardenLogic (pure), markers (P5)
+  Storm/        ULBStormSubsystem, ULBStormSettings (DA_StormSettings), ALBStormZone, ALBStateLightGroup, LBStormLogic (pure), LBStormTypes (P14, section 14)
   Systems/      ULBUserSettings (MouseSensitivity, bInvertY, bHeadBob; config=GameUserSettings) (P3)
 Source/LastBellTests/   (Editor target only) unit tests, MicroSlice, RouteBot.*, WalkPath.*, PlayerFeel.*, test helpers
 ```
@@ -230,3 +231,184 @@ Lumen GI and reflections, Virtual Shadow Maps, Nanite for static geometry, TSR (
   - Interaction gating
 - **Regression maps and functional tests:** `L_Test_MicroSlice` (`LastBell.Functional.MicroSlice`, `RouteBot.MicroSlice`). `L_Monastery` is covered by `RouteBot.Monastery`, which plays the whole objective chain through the real interactor, death and restore at CP_TowerBase, then the ending's travel to the menu. **Rerun RouteBot after any gameplay or content change.**
 - **Console commands** (development builds only): `lb.State.Add <Tag>`, `lb.State.Dump`, `lb.NewGame`, `lb.Checkpoint.Load`, `lb.Kill` (death path), `lb.Menu`, `lb.CompleteGame`, and later `lb.Warden.Debug`.
+
+## 14. Storm and light (Phase 14, D-096…D-102)
+Placed after section 13; section 2 gains its `Storm/` line. Spec and results: `Docs/plans/P14_LIGHTING_STORM.md` (every "result" subsection), `P14_4_WIND_FIX.md` and `P14_5_APPLY.md`. Code: `Source/LastBell/Storm/`. The maths is in `LBStormLogic` (pure functions, unit tested); the subsystem and the actors gather the facts and apply the results. Types (`LBStormTypes.h`): `ELBFlashProfile` {Sheet, Double, Triple, Auto}, `ELBFlashReason` {Ambient, Scripted, WardenReveal, Apparition, Debug}, `ELBLightStateMode` {On, Dim, Off, Flicker}, `FLBStormStoryStep`, `FLBStormStrike`, `FLBLightStateRule`. No hard asset references: assets come through `DA_StormSettings` and its soft pointer to the MPC. Not in this phase: rain and other particles (Phase 15), thunder and audio (Phase 16).
+
+**`ULBStormSubsystem` (D-096)**
+- A `UTickableWorldSubsystem` for **Game and PIE worlds only** (`DoesSupportWorldType`). It ticks only while active (`IsTickable()`).
+- **Settings:** `ULBStormSettings` (`UPrimaryDataAsset`) is `/Game/LastBell/Data/DA_StormSettings`, found through `ULBGameSettings::StormSettings` (a soft pointer; `Config/DefaultGame.ini`, `[/Script/LastBell.LBGameSettings]`, `StormSettings=/Game/LastBell/Data/DA_StormSettings.DA_StormSettings`). It holds every number and is read through its pointer **every frame**, so an edit in the Details panel or over MCP during PIE shows at once.
+- **Activation:** `OnWorldBeginPlay` calls `RefreshLinkedLights()` (BlueprintCallable; a test that spawns a tagged moon later calls it again). The storm is active only when the level has an `ADirectionalLight` with the actor tag `LB_StormMoon` (several: one Warning, the first is used) **and** the settings load. A level without a tagged moon never loads the settings and never ticks or writes, so `L_MainMenu` and the test maps are unaffected. A moon without settings logs one Warning and stays inactive.
+- **Each tick (every frame):** story intensity moves toward its target; wind strength and phase advance; due flashes start, running ones are evaluated (F is the maximum over the running flashes); the ambient timer runs; the lights are written (only while a flash runs, plus once when it ends); the MPC is written. The Warden reveal rule runs at `RevealCheckHz` (5 Hz) and the player's exposure is sampled every `ExposureSampleSeconds` (0.25 s) at the camera.
+- **Intensity:** the target is the story intensity (below); the live value moves at `IntensityRatePerSecond` 0.02 (0.5 to 1.0 takes 25 s). BeginPlay, `OnStateReplaced` (a checkpoint load) and the debug overrides **snap** to the target.
+- **Ambient schedule:** interval to the next flash uniform in [lerp(`MinIntervalLow` 30, `MinIntervalHigh` 6, I), lerp(`MaxIntervalLow` 60, `MaxIntervalHigh` 14, I)] s, where I is the live intensity; the first after BeginPlay waits × `FirstFlashScale` 0.5. Profile weights Sheet 0.5, Double 0.35, Triple 0.15. Brightness lerp(`BrightnessMin` 0.55, 1, random) × lerp(`BrightnessFloorLow` 0.7, 1, I). Direction: random azimuth 0–360°, elevation uniform `ElevationMin` 15 – `ElevationMax` 35°. `FRandomStream` seeded by `RandomSeed` (0 = from the time; tests use 1401). `bAmbientFlashes` turns the random flashes off.
+- **Gap rule:** a flash of any source starts at least `MinGapSeconds` 2.5 after the previous one ends; a request inside the gap waits. The strikes of one scripted sequence follow their own `Spacing`, start to start: the gap applies only before the first. Ambient flashes are not scheduled while any flash is running, pending or waiting for a look.
+- **`RequestFlash(Brightness, DelaySeconds, Reason, Profile = Auto)`** (BlueprintCallable) and `RequestFlashDirected(..., Direction)` queue a flash. Queries (BlueprintPure): `IsActive`, `GetStormIntensity`, `GetTargetIntensity`, `GetExposureAt(FVector)`, `GetPlayerExposure`, `GetLightningFlash`, `GetWindStrength`, `IsFlashBusy`.
+- **`OnLightningFlash(float Brightness, ELBFlashReason Reason)`:** a dynamic multicast delegate broadcast when a flash starts (its first pulse). It is **the Phase 16 audio hook** (thunder can treat the reasons differently).
+- **`lb.Storm.Enabled 0`:** no flashes (pending, running and look waits are dropped), wind 0, F 0. The MPC is still written.
+
+**Flash shapes and the preset**
+- Each pulse has start s, peak p, attack A, hold H and decay τ. For u = t − s: v = 0 before the start, u/A in the attack, 1 in the hold, then exp(−(u − A − H)/τ). **F(t) = min(1, Brightness × max over pulses of p × v).** The flash ends at the last pulse's start + A + H + 5.3 τ (v < 0.005).
+
+| Profile | Pulses (start, peak) | A / H / τ (s) |
+|---|---|---|
+| Sheet | (0, 1.0) | 0.08 / 0.10 / 0.25 |
+| Double | (0, 0.55), (g, 1.0) | 0.03 / 0.04 / 0.12 |
+| Triple | (0, 0.5), (g1, 1.0), (g1 + g2, 0.7) | 0.03 / 0.04 / 0.12 |
+
+- The gaps g, g1, g2 are uniform in [`GapMin` 0.07, `GapMax` 0.16] s.
+- **Flash output, preset B (strong) is the saved asset and the default in code (D-101).** A and C were shown in the P14-4 look session and are kept here for reference only; they are not in any asset:
+
+| Field | A, subtle | **B, in use** | C, blinding |
+|---|---|---|---|
+| `FlashLux` (moon + lux) | 4 | **8** | 16 |
+| `SpotFlashGain` / `FillFlashGain` / `SkyFlashGain` | 1.5 / 0.75 / 0.3 | **3 / 1.5 / 0.6** | 6 / 3 / 1.0 |
+| `DomeFlashGain` / `DomeFlashAdd` | 3 / 0.03 | **6 / 0.05** | 10 / 0.08 |
+| `GlassFlashGain` / `ShaftFlashGain` / `PoolFlashGain` | 1.2 / 1.5 / 1.2 | **2.5 / 3 / 2.5** | 4 / 5 / 4 |
+| `RevealGain` / `RevealEmissive` | 4 / 2 | **4 / 3** | 4 / 4 |
+
+- `FlashTint` (0.75, 0.82, 1, 1). R-59 fallback (not needed: no smear seen): `SkyFlashGain` 0.
+
+**Linked lights.** Found by actor tag at BeginPlay, base intensity recorded, weak pointers (a light that disappears is skipped). Written only while a flash runs and once when it ends; `RefreshLinkedLights` restores the bases first. The sky light is handled as a `USkyLightComponent`. All 62 placed lights are Movable (`SetIntensity` does nothing on a Static light).
+
+| Tag | Level actors | Intensity while F > 0 |
+|---|---|---|
+| `LB_StormMoon` | `DirectionalLight` (`DirectionalLight_1`) | base + `FlashLux` × F |
+| `LB_StormMoonSpot` | `Light_Chapel_Moon_S1/S2/S3/_Roof`, `L_Crypt_Moon_G1/G2/G3`, `L_Tw_MoonSlit_F03/F07/F08` (10) | base × (1 + `SpotFlashGain` × F) |
+| `LB_StormFill` | `L_Tw_BellFill` | base × (1 + `FillFlashGain` × F) |
+| `LB_StormSky` | `SkyLight` | base × (1 + `SkyFlashGain` × F) |
+
+`Moon_Fill` has no tag (it would light the interiors). The player candle is never touched (`ULBCandleComponent` rewrites its light every tick).
+
+**Story intensity and scripted strikes.** The target is the `Intensity` of the **last** `StoryIntensity` step whose tag is present (exact match); with none, `DefaultIntensity` 0.55.
+
+| Tag | Intensity | Scripted strike (delay s, count, spacing s) |
+|---|---|---|
+| `State.Event.CourtyardEntered` | 0.60 | 0.4 after the look, 2, 1.6, **look gate** |
+| `State.Ritual.1` | 0.55 | 1.2, 1, – |
+| `State.Event.CryptEntered` | 0.50 | – |
+| `State.Ritual.2` | 0.65 | 1.2, 1, – |
+| `State.Event.CloisterEntered` | 0.80 | – |
+| `State.Ritual.3` | 0.90 | 1.2, 1, – |
+| `State.Event.TowerTop` | 1.00 | 2.0, 3, 2.5 (profiles Double, Triple, Double) |
+| `State.Event.Finale` | 1.00 | 0.3, 2, 0.8 |
+
+- Strikes have brightness 1.0 and profile Double unless overridden. They fire **only when the tag is added** (`OnStateChanged`), never at BeginPlay or after `OnStateReplaced` (which clears the look waits), so a reload does not repeat them.
+- **Look gate (arrival):** `LookTarget` (12500, 2000, 3800) (the tower top), `LookConeDegrees` 20, `LookTimeout` 90 s. A view-cone check only, with no trace. When the camera forward is within the cone, the strike starts after its delay, with the flash direction toward the target; if the player never looks within the timeout, nothing fires.
+- The two arrays in `DA_StormSettings` were filled by hand over MCP (no tool calls a UFUNCTION); `FillPlanTagDefaults()` (CallInEditor) holds the same tables. Eight steps, six strikes.
+
+**`MPC_LB_Storm`** (`/Game/LastBell/Materials/`; replaces the planned `MPC_LB_Wind`). The subsystem writes every parameter every frame; the asset defaults are 0 (`WindDirection` (0.87, 0.5, 0, 0), `FlashDirection` (0, 0, 1, 0), `FlashTint` (0.75, 0.82, 1, 1)). A missing name logs one Warning ("lacks one or more storm parameters"). While the subsystem is inactive, F is 0 and every flash term in the materials is exactly 1.
+
+| Parameter | Value | Read by |
+|---|---|---|
+| `StormIntensity` | live intensity, 0–1 | no Phase 14 material (reserved) |
+| `LightningFlash` | F, 0–1 | `MF_LB_StormFlash` (glass, shafts, pools), `M_LB_StormSky`, `M_LB_Decal_LightningReveal` |
+| `WindStrength`, `WindPhase`, `WindDirection` | see Wind | `MF_LB_WindSway` |
+| `PlayerExposure` | 0–1 at the camera | no material yet (Phase 15) |
+| `DomeFlashGain`, `DomeFlashAdd` | copied from the settings | `M_LB_StormSky` |
+| `GlassFlashGain` | copied | `M_LB_StainedGlass`, `_Translucent` |
+| `ShaftFlashGain` | copied | `M_LB_LightShaft` |
+| `PoolFlashGain` | copied | `M_LB_Decal_LightPool` |
+| `RevealGain`, `RevealEmissive` | copied | `M_LB_Decal_LightningReveal` |
+| `FlashDirection` | unit vector toward the bright patch in the clouds | `M_LB_StormSky` |
+| `FlashTint` | colour of lightning | `M_LB_StormSky`, `M_LB_Decal_LightningReveal` |
+
+**Wind (D-096, D-100, D-101).** I is the live intensity, t the game time.
+- Base = lerp(`WindBaseLow` 0.2, `WindBaseHigh`, I). Gust = lerp(`GustLow` 0.15, `GustHigh`, I) × max(0, 2 × `FMath::PerlinNoise1D`(t × `GustFrequency`)). **`WindStrength` = clamp(Base + Gust, 0, 1).**
+- `WindPhase` += dt × lerp(`PhaseSpeedLow` 1.2, `PhaseSpeedHigh`, `WindStrength`), wrapped at 100 × 2π (the material only uses whole multiples). `WindDirection` = the normalised `WindDirection` field, default (0.87, 0.5, 0) (the plan calls it wind from the west-south-west).
+- **Owner-tuned values in the saved asset (P14-4, saved in P14-5a):** `PhaseSpeedHigh` **6.5**, `WindBaseHigh` **0.8**, `GustHigh` **0.5**, `GustFrequency` **0.2**. The code defaults are the plan's (2.4, 0.65, 0.4, 0.12); the asset overrides them.
+- **`MF_LB_WindSway`** (`/Game/LastBell/Materials/Functions/`), a static bool `bFlutter` picks the mode. **Bend** (grass, weeds, ferns, shrubs): h = saturate(`PreSkinnedPosition`.z × S / `WindRefHeightCm`), where S is the instance's world Z scale, `Length(Transform(Instance → World, (0, 0, 1)))`, so `WindRefHeightCm` is a **world** height (D-100: `PreSkinnedPosition` is unscaled and the plants are placed 1 to 4.8× scaled). Pivot = the instance origin in world space; φ = `WindPhase` + dot(Pivot.xy, (0.0031, 0.0047)); s = 0.6 sin φ + 0.4 sin(2φ + 1.3); d = `WindDirection` × `WindStrength` × (0.55 + 0.45 s) × h² × `WindAmplitudeCm`; WPO = d + (0, 0, −0.25 |d| h). **Flutter** (ivy): a = saturate(`PreSkinnedPosition`.y / 20) (the wall side is at local Y 0); φ = 3 × `WindPhase` + dot(world position, (0.05, 0.07, 0.03)); WPO = `VertexNormalWS` × `WindStrength` × sin φ × a × `WindAmplitudeCm`.
+- **Foliage masters:** `M_LB_Foliage` and `M_LB_FoliageMasked` have a static switch `bWind` (default false) feeding the function into WPO (`bFlutter` false in `M_LB_Foliage`, true in the masked master), scalars `WindAmplitudeCm` and `WindRefHeightCm` (group Wind), and a max WPO displacement of 40 cm and 6 cm.
+- **MIs (`bWind` on, owner-tuned amplitudes, `WindRefHeightCm` in world cm):** `MI_Foliage_GrassMedium02` 38 / 60, `_NettlePlant` 24 / 45, `_WeedPlant02` 16 / 30, `_Fern02` 24 / 45, `_WildRooibos` 18 / 60, `_SearsiaLucida` 16 / 150; `MI_Ivy_Green` and `MI_Ivy_Dead` (flutter) 5. `MI_Foliage_Moss01` stays off. The dead tree stays static (its bark is on `M_LB_Surface`, D-060). Grass at 38 (+9.5 sag) sits just under the 40 cm cap, ivy 5 under 6.
+- **WPO disable distance 4000** (`WorldPositionOffsetDisableDistance`) is set on the 249 foliage `StaticMeshActor`s (effective material is one of the nine foliage MIs: the `CLA_Garth*` plants, `PSA_Weed_*`, `Garden_Searsia_*` and 32 ivy cards) and the 312 PCG ISM components. **Regenerating a `PCGV_*` volume resets it: rerun `Tools/lighting/p14_wpo_distance.py --apply` after any PCG regeneration.**
+
+**`ALBStormZone` and `GetExposureAt`.** An actor with a `UBoxComponent` (no collision, hidden in game, half extents in cm), `Exposure` 0–1 and `Priority`. It registers with the subsystem at BeginPlay. **Exposure at a point** is that of the highest-`Priority` zone containing it (`ContainsPoint` honours rotation and scale); on a tie the lowest `Exposure` wins; with no zone, `DefaultExposure` 1.0 (open sky). The player's `PlayerExposure` and the Warden reveal rule use it.
+
+| Zone | Bounds X / Y / Z (cm) | Exposure | Priority |
+|---|---|---|---|
+| `SZN_Chapel` | 6000…9100 / −1550…860 / −40…2400 | 0.35 | 1 |
+| `SZN_Crypt` | 6300…12000 / −2950…520 / −1200…−45 | 0 | 2 |
+| `SZN_Passage` | 6040…9460 / 900…2600 / −40…1200 | 0.3 | 1 |
+| `SZN_Cloister` | 9460…12040 / 500…3040 / −40…1500 | 0.6 | 1 |
+| `SZN_Garth` | 10245…11460 / 1345…2260 / −40…1500 | 1.0 | 2 |
+| `SZN_TowerShaft` | 11990…13010 / 1490…2510 / −40…2650 | 0.25 | 3 |
+| `SZN_Belfry` | 11990…13010 / 1490…2510 / 2650…4800 | 0.85 | 3 |
+
+**The Warden reveal rule (R-62).** Checked at 5 Hz by `LBStormLogic::ShouldReveal`. All of these must hold, and the visibility trace (`ECC_Visibility`, camera to head point, ignoring the pawn and the Warden) runs only when the cheap ones do:
+- `bRevealEnabled` (the switch, default true) and intensity ≥ `RevealMinIntensity` 0.4;
+- an `ALBWarden` exists and is not `IsDormantPresentation()`;
+- the head point (Warden location + `WardenHeadOffsetZ` 140 on Z) is between `RevealMinDistance` 800 and `RevealMaxDistance` 4000 cm from the camera and within `RevealConeDegrees` 30 of the camera forward, with a clear trace;
+- `GetExposureAt(Warden location)` ≥ `RevealMinExposure` 0.5 (only the cloister walk 0.6 and the garth 1.0 pass);
+- `RevealCooldownSeconds` 30 since the last reveal, and no flash running, pending or waiting for a look.
+
+The result is a `WardenReveal` flash, brightness `RevealBrightness` 1, profile Double, after a delay uniform in [`RevealDelayMin` 0.3, `RevealDelayMax` 0.9] s, its `FlashDirection` the camera-to-Warden direction flattened and raised `RevealRaiseDegrees` 20°. `lb.Storm.Debug` shows the first failing condition (Disabled, LowIntensity, NoWarden, Dormant, TooClose, TooFar, OutOfCone, Blocked, LowExposure, Cooldown, Busy).
+
+**Apparitions: `bLightningOnHold`.** `FLBApparitionStation::bLightningOnHold` (default false). When a station enters Hold, `ALBWardenApparition` calls `RequestFlash(1.0, 0.15, Apparition, Double)` on the storm if it is active. Set in the level (placed instances only; `BP_WardenApparition` itself is never saved) on the one station of each of `Apparition_Courtyard` and `Apparition_Chapel`.
+
+**`ALBStateLightGroup` (D-097, D-099).** Dims, kills or flickers a set of placed lights from the story tags.
+- **Rules:** `Rules` in story order, **the last rule whose `RequiredTag` is present wins**; with none present: On at scale 1. Modes: On (1), Off (0), Dim (`IntensityScale`), Flicker (`IntensityScale` × (1 − `FlickerAmount` × (0.5 + 0.5 × Perlin(t × `FlickerSpeed` + seed))), seed from the light's name hash, so the lights do not flicker in step).
+- **Apply:** base intensities are recorded at BeginPlay. BeginPlay and `OnStateReplaced` apply the rule **instantly** (a checkpoint load is right on the first frame). A live change through `OnStateChanged` fades over `FadeSeconds` 1.5: the straight blend times a gutter (`GutterNoise` = 0.6 + 0.4 × Perlin(t × 9)) weighted 4α(1 − α), so it neither starts nor ends with a pop. The actor ticks **only while fading or in Flicker**.
+- **Lights:** placed `ALight` actors only. Never a Blueprint light, a puzzle candle's `FlameLight`, the Warden's `TellLight` or the player's candle. A light or glow actor listed in two groups logs a Warning at BeginPlay and fails the setup test.
+- **`EmissiveActors`:** flame or glow meshes, hidden when the mode is Off (after the fade) and shown at once in any other mode.
+- **`GlowActors` and `GlowParameter` ("Color"), D-099:** at BeginPlay every `UMeshComponent` slot of a glow actor whose material has that vector parameter gets a dynamic instance, and the actor is paired with the nearest light of the group (measured once). The slot value is base × clamp(current intensity ÷ base intensity, 0, 1), written whenever the group writes the light (instant, fade, flicker). So a lantern's glass dims, flickers and goes dark with its light. A glow actor with no slot or no light logs a Warning and is skipped.
+
+| Group | Lights (glow / emissive actors) | Rule (tag → mode) |
+|---|---|---|
+| `SLG_Chapel_Altar` | `Light_Chapel_Altar_N`, `_S` | `State.Ritual.1` → Flicker 0.25 / 0.45 / 7 |
+| `SLG_Chapel_Dais` | `Light_Chapel_Statue`, `Light_Chapel_DaisFill` | `State.Ritual.1` → Off |
+| `SLG_Crypt_Torches` | `L_Crypt_Torch_T1/T2/T3` | `State.Ritual.2` → Flicker 0.6 / 0.45 / 9 |
+| `SLG_Crypt_Niches` | the 5 `L_Crypt_Candle_Niche_*` (emissive: the 5 `CD_Candles_Niche_*_Flame`) | `State.Ritual.2` → Off |
+| `SLG_Cloister_Bells` | `L_Cl_Bells` (glow `CLA_Lantern_Bells`) | `State.Event.CloisterEntered` → Flicker 0.85 / 0.3 / 5 |
+| `SLG_Cloister_West` | `L_Cl_West` (glow `CLA_Lantern_West`) | `CloisterEntered` → Flicker 0.85 / 0.3 / 5; `State.Ritual.3` → Off |
+| `SLG_Cloister_Entry` | `L_Cl_Entry` (glow `SHA_Lantern_Entry`) | `State.Ritual.3` → Off |
+| `SLG_Tower_Landings` | `L_Tw_Land4/7/10` (glow `TWA_Lantern_Land4/7/10`) | `State.Ritual.3` → Flicker 0.9 / 0.2 / 4 |
+| `SLG_Tower_Bell` | `L_Tw_Bell` (glow `TWA_Lantern_Bell`) | `State.Event.TowerTop` → Flicker 0.8 / 0.5 / 8 |
+
+Flicker is (scale / amount / speed). Every critical-path viewpoint kept its readability floor after all five story changes (P14-5b), so the Dim 0.3 fallback was not used (R-61).
+
+**Materials consuming the storm.** `MF_LB_StormFlash` (`/Game/LastBell/Materials/Functions/`): `Mul` = 1 + `Gain` × `LightningFlash` × `Response`. At F = 0 each edit below is neutral by construction (the sky was also compared by capture in P14-4).
+- **Sky `M_LB_StormSky`** (`/Game/LastBell/Environments/Sky/`, a copy of the engine's `M_Sky_Panning_Clouds2`): emissive = original × (1 + `DomeFlashGain` × F × Hot) + `FlashTint` × F × Hot × `DomeFlashAdd`, with Hot = 0.3 + 0.7 × saturate(dot(−CameraVector, `FlashDirection`))⁶, so the bright patch moves from flash to flash. `MI_NightStormSky` is parented to it (done headless with the editor closed: never `set_parent` an MI that is on screen).
+- **Glass:** `M_LB_StainedGlass` and `_Translucent` multiply the emissive by `MF_LB_StormFlash(GlassFlashGain, FlashResponse)`. `FlashResponse` is 0 on `MI_Glass_Clue_Saints` (the puzzle clue stays stable) and `MI_Glass_Lancet_B` (it faces the passage building); 1 on `MI_Glass_Lancet_A`, `_Broken` and `_East`.
+- **Shafts and pools:** `M_LB_LightShaft` `Intensity` × `MF_LB_StormFlash(ShaftFlashGain, FlashResponse)` (`FlashResponse` 1 on `MI_LightShaft_Window/_Roof/_Crypt`); `M_LB_Decal_LightPool` emissive × `MF_LB_StormFlash(PoolFlashGain, 1)`.
+- **Lightning-only chalk, `M_LB_Decal_LightningReveal`** (a copy of `M_LB_Decal_Chalk`): opacity = chalk alpha × `Opacity` 0.9 × saturate(F × `RevealGain`); emissive = chalk colour (0.82, 0.80, 0.75) × `FlashTint` × F × `RevealEmissive`; invisible at F = 0. Four MIs (`MI_Reveal_Sigil/_Tally/_Circle/_Drag`, existing chalk textures). **Atmosphere only: no puzzle information may depend on them.** Final placements (`DecalSize` is a half-extent: depth, vertical, horizontal):
+
+| Actor | Location | Rotation | `DecalSize` | MI |
+|---|---|---|---|---|
+| `RV_Gate_Sigil` | (300, 500, 260) | (0, 180, 90) | (10, 110, 110) | Sigil |
+| `RV_WellHouse_Tally` | (1350, −1775, **115**) | (0, −90, 90) | (10, 40, 60) | Tally |
+| `RV_Chapel_Circle` | (**8150, −91**, 0.5) | (−90, 0, 0) | (10, 90, 90) | Circle |
+| `RV_Garth_Drag` | (10750, 3000, 270) | (0, 90, 90) | (20, 30, 110) | Drag |
+| `RV_Belfry_Tally` | (12200, 1540, 2850) | (0, −90, 90) | (15, 50, 50) | Tally |
+
+Bold values are the owner's P14-4 changes (D-101). `RV_Garth_Drag` stays on the unlit walk wall and glows alone. From the `tw_belfry` pose the bell hides `RV_Belfry_Tally`; it shows once the player walks round the bell.
+
+**Post-process structure (D-098, D-101, D-102).** Every volume uses a fixed exposure (min = max EV100). The area volumes override only that pair; the grade lives on the global volume only, so there is **no per-area shadow-saturation override** (`bOverride_ColorSaturationShadows` is false on all six; the stored 0.65 is left).
+
+| Volume | EV100 | Priority | Blend (cm) | Bounds / notes |
+|---|---|---|---|---|
+| `PostProcess_Exposure` | 3, plus grade B | 0 | 100 | unbound |
+| `PP_Outdoor_Night` | **1.40** (D-102; was 1.15) | 1 | 500 | to X 5500 |
+| `PP_Crypt` | 0.2, histogram method, bloom override | 1 | 300 | as in Phase 9 |
+| `PP_Cloister` | 0.65 | 1 | 300 | X 6040…12040, Y 900…3200, Z −40…4200 (shrunk: it used to cover the nave) |
+| `PP_Chapel` (new) | **1.6** | 2 | 200 | X 6000…9100, Y −1550…860, Z −40…2400 |
+| `PP_Tower` (new) | 0.65 | 3 | 200 | X 11990…13010, Y 1490…2510, Z −40…5000 |
+
+Grade B (storm teal) on `PostProcess_Exposure`: `colorSaturation` (0.92, 0.95, 1.0, 0.85), `colorContrast` (1, 1, 1, 1.06), `colorGammaShadows` (0.97, 1.0, 1.06, 1), `colorGainHighlights` (1.04, 1.0, 0.94, 1), film grain 0.18, vignette 0.45. Exposure is judged on the wide views (mean luma) with a central-40 % floor on every view (`Tools/lighting/area_targets.py`); the tower (0.22) and the crypt (0.011) stay outside their mean targets by decision (D-102).
+
+**Console and CVars** (non-shipping; commands in `Systems/LBConsoleCommands.cpp`, CVars in the subsystem). The commands warn and do nothing when the storm is not active in the world.
+- `lb.Storm.Flash [brightness=1] [profile=-1]`: a flash now, reason Debug; profile −1 random, 0 sheet, 1 double, 2 triple.
+- `lb.Storm.Intensity <0..1 | -1>`: overrides the story intensity (and snaps); −1 clears.
+- `lb.Storm.Freeze <0..1 | -1>`: holds F at the value and pauses the ambient schedule and the reveal rule; −1 clears.
+- `lb.Storm.Enabled` (default 1): 0 stops the storm as above. `lb.Storm.Debug` (default 0): 1 puts the intensity, target, seconds to the next ambient flash, wind, player exposure, pending and running flashes and the last reveal decision on screen.
+- `lb.Warden.Enabled` is a global CVar; every performance reading starts with it at 0.
+
+**The never-save rule.** `DA_StormSettings.DebugFreezeFlash` and `DebugIntensityOverride` do what the two commands do and are used for captures over MCP. **Never save the asset with either one other than −1** (`Monastery.StormSetup` fails on it). `M_LB_Surface` is never opened for writing or saved by storm work.
+
+**Tests.** Unit (`Source/LastBellTests/Tests/LBStormTests.cpp`): `LastBell.Storm.Logic.StoryIntensity`, `.FlashEnvelope`, `.Schedule`, `.Wind`, `.Exposure`, `.RevealRule`, `.LightRules`, `.ScaleGlow`. Functional (`LBStormFunctionalTests.cpp`, PIE): `LastBell.Functional.Storm.FlashDrivesLightsAndMPC`, `.IntensityFollowsStory`, `.ScriptedStrikeOnTagOnly`, `.WardenRevealFlash`, `.StateLightGroupFollowsTags`, `.ApparitionHoldRequestsFlash`, `.StateLightGroupDrivesGlow`, `.Monastery.StormSetup` (one moon, 10 spots, 1 fill, 1 sky, 7 zones, 9 groups with valid lights and glow slots, settings with the debug fields at −1, 8 steps and 6 strikes, 2 apparitions with `bLightningOnHold`, the subsystem active with 7 zones).
+
+**Tools** (`Tools/lighting/`, Windows `python -I`; MCP, editor open unless noted):
+- `p14_lib.py`: shared helpers for the material tasks. `p14_f0_survey.py` and `p14_f0_tables.py`: the read-only F0 survey and its tables (`Docs/ArtTest/lighting/`).
+- `p14_2a_before.py` records MI overrides; `p14_2a_sky_reparent.py` reparents `MI_NightStormSky` headless (editor closed); `p14_2b_wind.py` builds `MF_LB_WindSway` and the master inputs.
+- `p14_3_level.py`: the storm's level work (`--apply [--only ...]`, `--check`; idempotent, never saves). `p14_5_apply.py`: the owner's P14-4 choices (`--apply [--only da,mis,map]`, `--check`; never saves). `p14_4_wind_fix.py`: the D-100 fix (`pre`, `fn`, `savefn`, `mis`, `savemis`, `check`).
+- `p14_wpo_distance.py`: WPO disable distance 4000 (`--apply`, `--check [--rescan]`).
+- `pie_pp.py`, `pie_proxy.py`, `area_targets.py`, `compare_sets.py`: look-session and exposure tools (see `Tools/mcp/MCP_NOTES.md`, "Lighting sessions"). `poses/p14_viewpoints.json` (16 poses) and `poses/p14_3_decals.json`.
