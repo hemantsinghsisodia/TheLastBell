@@ -217,3 +217,31 @@ The lead first draws the roofed and open pixel rects for each pose from `_onF` a
 - After the verdict, `s1_spike.py remove` deletes everything the spike created in Unreal.
 - The map stays dirty and unsaved until P15-6 saves it deliberately. If Unreal is closed before then, choose **Don't Save**.
 - The captures, the diffs, `s1_mad.md` and the verdict are committed, under `Docs/ArtTest/fx/s1/`.
+
+## 8. Round 2 (after the round 1 results in `P15_PARTICLES.md` Results, "S1 round 1"; needs the owner's "go")
+### 8.1 Build (lighting-vfx, Sonnet with high effort; the section 2 rules apply; Unreal open, PIE off)
+1. **Pin the splashes** (`Splash` emitter of `NS_LB_Rain_Spike`).
+   - **Particle Spawn:** add `Particles.LandPos` (Position) = `Particles.Position` and `Particles.LandAge` (float) = 0.
+   - **Particle Update:** after `Collision`, use separate SetParameters modules, in this order:
+     1. `Particles.LandPos` = `Particles.Landed ? Particles.LandPos : Particles.Position`. This must run before the Landed update, so it captures the first post-collision position.
+     2. The existing `Particles.Landed` = `Particles.Landed || Particles.HasCollided`.
+     3. `Particles.Position` = `Particles.Landed ? Particles.LandPos : Particles.Position`, and `Particles.Velocity` = `Particles.Landed ? float3(0, 0, 0) : Particles.Velocity`.
+     4. `Particles.LandAge` = `Particles.Landed ? Particles.LandAge + Engine.DeltaTime : 0.0`.
+     5. The existing Color module.
+     6. `DataInstance.Alive` = `Particles.LandAge <= 0.45`.
+   - **Order:** all of these run after `Collision`. Velocity is zeroed before `Solve Forces and Velocity` runs, or Position is re-pinned after it, so a landed particle does not move. Read the stack order back and record it.
+   - Compile with 0 errors, and check that `GetStackIssues` shows no errors.
+2. **Tower roof distance field.** Set `bGenerateDistanceFieldAsIfTwoSided` true in the LOD 0 build settings of `/Game/LastBell/...SM_LB_Tw_Roof_BrokenSW` (find its path with AssetTools).
+   - Use whatever MCP route works: StaticMeshTools, ObjectTools on the source model build settings, or an editor subsystem tool.
+   - Record the route. Wait for the distance field rebuild, if the tool reports one. **Do not save the mesh.**
+   - If no MCP route exists, record that and skip this step. P15-6 then uses a local emitter.
+3. **Actors:** `s1_spike.py set --world editor --splash-fall 1250 --radius 20`. Read it back.
+4. **Update the script:** extend `s1_spike.py check` for the pin modules and the mesh flag, and commit `s1_spike.py` and `s1_build.md` (with a new "Round 2" section).
+
+### 8.2 Captures (lead + owner, about 6 minutes)
+- **Poses:** `s1_ch_hole_up`, `s1_ch_floor`, `s1_cl_s_walk`, `s1_cl_n_hole`, `s1_cy_n_floor`, `s1_tw_belfry`, `s1_tw_mid_stair`.
+- **States:** `_r2on` (editor values, as set in 8.1 step 3), then `_r2off` (`set --world pie --off`).
+- **Pass:**
+  - `s1_leak.py` on `_r2on` against `_r2off` gives orange ≤ 20 pixels in every roofed rectangle, and white ≤ 20;
+  - splashes show on the open ground and under the openings;
+  - with the two-sided field, rain shows in the belfry's south-west corner.

@@ -574,3 +574,29 @@ Every point is at least 111 cm from a WalkPath segment and 146 cm from an AI poi
 - 3015 actors at the start of P15-6.
 - New actors: the target 1, dust 11, water mist 2, drips 10, eave drips 7, cloth 10, curtains 8, and fires +6 − 5.
 - So the P15-6 check expects **3065**.
+
+### S1 round 1: rain occlusion spike (2026-11-08)
+- **Build:** commit e289330 (lighting-vfx, Sonnet high). The recipe is in `Docs/ArtTest/fx/s1/s1_build.md`, and `s1_spike.py check` gives 125 PASS. Nothing was saved.
+- **Captures:** 9 poses × 4 states (`_onF` fall 20000, `_off1`, `_onS` fall 3000, `_off2`), taken with the owner present. The sheet is `Docs/ArtTest/fx/s1/s1_sheet.png`. `Tools/fx/s1_leak.py` counts white rain-streak pixels and orange splash pixels inside the roofed rectangles, against `_off1`.
+- **Q1 rain (kill on collision): A works.**
+  - Rain pixels under the roof: 0 in the chapel (both views) and 0 in the cloister south walk.
+  - The courtyard planks look clean by eye in the up-views.
+  - Rain falls only through the chapel hole and the cloister north hole.
+  - The tower stair shows at most one stray streak per frame. Simulate runs at a low frame rate, so a drop can step past a thin surface; `RainRadius` goes from 10 to 20.
+- **Q2:** the global distance field holds data at run time.
+- **Q3:** yes. The mode is the static switch `GPU Collision Type` = "GPU Distance Fields" on the placed module.
+- **Q4: the splash rest does not hold.** The latch turns a splash orange where it first touches, but the particle then moves on.
+  - Cloister walk floor: 2287 orange pixels at fall 20000 and 3198 at fall 3000. The splashes slide off the sloped lean-to roofs, then drop through.
+  - Chapel up-view: 328 at fall 20000 against 0 at 3000. The fast fall tunnels through the 20 cm slab.
+  - **Fix (round 2):** pin each splash where it first touches (`LandPos`, zero velocity, die 0.45 s after landing), and make it fall at rain speed.
+- **Q5:** yes. The second renderer draws the flat ring (seen edge-on as the horizontal flare), bound to `Particles.RingSize` and `Particles.SpriteFacing`.
+- **Q6:** the global distance field costs almost nothing in a static view. `ProfileGPU` with all 5 spike systems running (16.0 ms frame, editor):
+  - `GlobalDistanceFieldUpdate` 0.001 ms and `DistanceFields` 0.045 ms;
+  - the Niagara GPU simulation 0.066 ms;
+  - translucency 0.244 ms.
+
+  The update cost of a moving camera is measured in P15-10.
+- **Tower: no rain gets through the south-west collapse into the belfry.**
+  - The hidden collision cube `Tw_Roof` is not the cause: its component has `bVisible` false, so it is not in the scene.
+  - The likely cause is that the hollow pyramid `SM_LB_Tw_Roof_BrokenSW` builds a solid mesh distance field, which seals the hole.
+  - **Fix (round 2):** build that mesh's distance field as two-sided. If MCP can't set it, a small local rain emitter under the collapse inside the belfry does the job in P15-6.
