@@ -406,7 +406,7 @@ Branch `claude/phase-15-particles`. Spec and plan: `Docs/plans/P15_PARTICLES.md`
 | P15-10 | Performance (FX on/off at a matched story state) | owner + performance-engineer | P15-9 |
 | P15-11 | QA, docs, full suite; PHASE 15 READY FOR YOUR REVIEW | qa-reviewer, docs agent, lead | all |
 
-**Status 2026-11-08:** P15-0, F0 (e92b465) and S1 done. S1 verdict: rain occlusion approach A passes (D-106; splashes pinned at first contact; tower roof two-sided distance field). Next: P15-1 (code), P15-2 (textures), P15-3 (meshes), on the owner's "go".
+**Status 2026-11-08:** P15-0, F0, S1 (approach A, D-106), P15-1 (suite 140/141; the expected failure is `StormFX.Monastery.FXSetup` until P15-6), P15-2, P15-3 and the imports are done. Next: P15-4 (materials) and P15-5 (Niagara), Unreal open, on the owner's "go".
 ## Deferred to Phase 14–15 (Lighting, VFX: storm work)
 Items the owner asked to fold into the storm pass. **Foliage wind is now in Phase 14** (P14 section 6, D-096: `MPC_LB_Storm` replaces the planned `MPC_LB_Wind`).
 

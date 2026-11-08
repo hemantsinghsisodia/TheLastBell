@@ -638,3 +638,28 @@ Every point is at least 111 cm from a WalkPath segment and 146 cm from an AI poi
 - **Clean-up:**
   - `s1_spike.py remove --yes` deleted the 5 spike actors, the 2 spike assets and the `/Game/LastBell/FX/Spike` folder. `FX_FirePit_Smoke` is untouched.
   - The map stays dirty and unsaved: its contents match the saved file again.
+
+### P15-1, P15-2, P15-3 and the imports (2026-11-08)
+- **P15-1 code** (f13b09f, 53a6b67):
+  - section 2 is implemented;
+  - 13 new tests;
+  - the editor build succeeds; the suite has **140 passed and 1 failed**, the failure being `LastBell.Functional.StormFX.Monastery.FXSetup`, expected until P15-6 creates `DA_StormFX`, the link, the strike target and the level actors;
+  - no invalid tags.
+- **Code fix found by the suite:** `UNiagaraFunctionLibrary::SpawnSystemAtLocation` returns null under `-nullrhi` (engine `CreateNiagaraSystem`: `FApp::CanEverRender()`). So the rain component is now created directly, mirroring the engine function without that guard. The sparks keep `SpawnSystemAtLocation`. The activation check in the tests runs only when rendering is possible.
+- **Additions to the spec** (reviewed by the lead):
+  - `ULBStormSubsystem::RequestFlashAtTarget`, for `lb.StormFX.Bolt 1`;
+  - `IsFlashRunning()` for the bolt-hide rule;
+  - `ULBStormFXSubsystem::OverrideSettings` and `Rearm()`, for the tests;
+  - the `lb.StormFX.Enabled` CVar lives in the subsystem file.
+- **A Game-target compile error predating Phase 15:** `AI/LBWardenAnimInstance.cpp` calls the editor-only `UBlendSpace::GetBlendSpaceData` unguarded (P13). It was flagged to the owner as a separate task, outside Phase 15.
+- **P15-2 textures** (9c41155):
+  - `Tools/textures/fx/make_fx_textures.py` is deterministic and writes 7 textures to `SourceArt/FX/`;
+  - the contact sheet is `Docs/ArtTest/fx/p15_textures_sheet.png`;
+  - the cloth fabric is Poly Haven `hessian_230` (CC0), registered.
+- **P15-3 meshes** (3a7b300): `Tools/blender/fx/` builds, verifies (6/6 PASS) and renders 4 cloth meshes and 2 cards. The renders are `Docs/ArtTest/fx/p15_cloth_*.png`.
+- **Imports** (2be75aa):
+  - 17 assets under `/Game/LastBell/FX/`, saved one package at a time;
+  - the textures' compression, sRGB and alpha are read back;
+  - the meshes have Nanite off and no collision, and the cloth bounds extension is ±60;
+  - the cloth faces +Y after Unreal's Y mirror.
+- **Still to check:** the cloth's UV V orientation and its front face, with `M_LB_Cloth`, in P15-4.
