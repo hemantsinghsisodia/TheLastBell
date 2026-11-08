@@ -406,7 +406,7 @@ Branch `claude/phase-15-particles`. Spec and plan: `Docs/plans/P15_PARTICLES.md`
 | P15-10 | Performance (FX on/off at a matched story state) | owner + performance-engineer | P15-9 |
 | P15-11 | QA, docs, full suite; PHASE 15 READY FOR YOUR REVIEW | qa-reviewer, docs agent, lead | all |
 
-**Status 2026-11-08:** P15-0 done. F0 is next (Unreal open).
+**Status 2026-11-08:** P15-0 done. F0 done (survey e92b465, values in the plan's Results). S1 (rain occlusion spike, `Docs/plans/P15_S1_RAIN_SPIKE.md`) is next and needs the owner's "go".
 ## Deferred to Phase 14–15 (Lighting, VFX: storm work)
 Items the owner asked to fold into the storm pass. **Foliage wind is now in Phase 14** (P14 section 6, D-096: `MPC_LB_Storm` replaces the planned `MPC_LB_Wind`).
 

@@ -34,7 +34,7 @@ Not in this phase: audio and thunder (Phase 16); the finale beat (Phase 17); sca
    - the tower interior;
    - the crypt.
 
-   Rain is visible through every roof opening the F0 survey lists.
+   Rain is visible through every roof opening the F0 survey lists (Results, F0.3): the chapel roof hole, the cloister north roof-and-vault hole, the tower's south-west roof collapse into the belfry, and the uncovered parts of the two courtyard walks. "Under the plank roofs" means directly under a plank. The planks cover 40 % of the north walk and 28 % of the south walk, so rain falls through the rest by design.
 3. **Performance** (section 11, at a matched story state):
    - GPU ≤ 16.6 ms at the six spots;
    - GPU added by Phase 15 within each spot's budget;
@@ -83,7 +83,7 @@ Every value has the default listed here. Each value has its own `Category`, `Cla
 | `SplashRadius` | 1200 cm | `User.SplashRadius` |
 | `MistMinExposure` | 0.6 | `User.Mist` = smoothstep(min − 0.1, min + 0.1, `GetPlayerExposure()`), eased at 1 /s |
 | `SkyBoltChance` | Ambient 0.6, Scripted 1.0, WardenReveal 0.5, Apparition 0.5, Debug 1.0 | `TMap<ELBFlashReason, float>`. A targeted strike always draws its bolt. |
-| `SkyBoltDistance` | **F0** (inside the sky dome; default 60000 cm) | horizontal distance from the camera |
+| `SkyBoltDistance` | 60000 cm (F0.5: the sky dome radius is 1,638,400 cm, so the 60000 cap applies) | horizontal distance from the camera |
 | `SkyBoltTopHeight` | 22000 cm above the camera | top of the bolt |
 | `SkyBoltLength` | (16000, 26000) cm | random per bolt |
 | `BoltAspect` | 0.35 | width ÷ length |
@@ -103,7 +103,7 @@ Every value has the default listed here. Each value has its own `Category`, `Cla
   - It deactivates when the storm deactivates or the CVar goes to 0: the rain component is destroyed and the bolts are hidden. `IsTickable()` is true while it is active or still waiting for the storm's first active tick. Once the world has begun play and the storm is still inactive after one tick, the FX subsystem stops ticking for good, as on `L_MainMenu` and the test maps.
 - **Rain.**
   - One `UNiagaraComponent` from `RainSystem` (`UNiagaraFunctionLibrary::SpawnSystemAtLocation`, `bAutoDestroy` false, pooling none).
-  - Every tick it moves to the camera location (`PlayerCameraManager`) and gets these user parameters: `User.RainRate`, `User.BoxHalf`, `User.SpawnHeight`, `User.FallMin`, `User.FallMax`, `User.Wind` (FVector), `User.SplashRate`, `User.SplashRadius` and `User.Mist`.
+  - Every tick it moves to the camera location (`PlayerCameraManager`). In a world with no player camera manager (PIE Simulate, which the capture tool uses), it follows `GetWorld()->ViewLocationsRenderedLastFrame[0]` when that array isn't empty, and otherwise stays put. This is a public `UWorld` member, so the runtime module needs no editor dependency, and the P15-9 captures get rain. It also gets these user parameters: `User.RainRate`, `User.BoxHalf`, `User.SpawnHeight`, `User.FallMin`, `User.FallMax`, `User.Wind` (FVector), `User.SplashRate`, `User.SplashRadius` and `User.Mist`.
   - `bRain` false means zero rates.
 - **Bolts.**
   - `ALBLightningBolt` (`LBLightningBolt.h/.cpp`): an actor whose root is a `UStaticMeshComponent`, with no collision, no shadows, and `bRenderCustomDepth` false. `SetBolt(FTransform, int32 AtlasIndex)` makes a dynamic material instance from `BoltMaterial` once and sets the scalar `AtlasIndex`.
@@ -138,7 +138,7 @@ Every value has the default listed here. Each value has its own `Category`, `Cla
 - `DA_StormFX` with the section 2.2 defaults; its asset fields point to the section 5–7 assets.
 - `DA_StormSettings.FXSettings` → `DA_StormFX`.
 - `DA_StormSettings.ScriptedStrikes`: `StrikeTargetTag = LB_StrikeTarget_Tower` on the `State.Event.CourtyardEntered` and `State.Event.TowerTop` entries. Nothing else changes; read back the whole array.
-- **Strike target:** a `TargetPoint` labelled `FX_StrikeTarget_Tower`, actor tag `LB_StrikeTarget_Tower`, at the tower's highest point (**F0**: vertical traces put the top collision at Z 3540 near (12500, 2000); place it 20 cm above the traced top of the finial or roof apex).
+- **Strike target:** a `TargetPoint` labelled `FX_StrikeTarget_Tower`, actor tag `LB_StrikeTarget_Tower`, at the tower's highest point: **(12530.8, 2000, 4844.8)** (F0.4). That is 20 cm above the finial tip of `TWA_Roof` (bounds max Z 4824.8). The roof has no collision, so traces only reach the 3540 wall top. The tip X comes from the finial's 20° bend; P15-6 checks it by eye and moves the point within ±15 cm.
 
 ## 4. Textures (technical-artist; procedural; no licensed art)
 A script `Tools/textures/fx/make_fx_textures.py` (numpy + PIL, seeded, deterministic) writes PNGs to `SourceArt/FX/` (LFS). They are imported into `/Game/LastBell/FX/Textures/` with the listed settings.
@@ -198,7 +198,7 @@ How to build them over MCP: MCP_NOTES "FX and fog" (`NiagaraToolset_System.Creat
   - **After landing:** the particle lives 0.45 s.
   - **Renderer 1:** a camera-facing crown sprite, `MI_LB_Splash`, SubUV over the post-collision age, size 6–10 cm.
   - **Renderer 2:** a flat ring with custom facing (0, 0, 1), `MI_LB_Ripple`, size 4 → 22 cm over the age, alpha 0.6 → 0.
-  - **Fallback if the collided attribute can't be read over MCP:** a scratch-pad module that marches the global distance field down from the spawn point (24 steps, 0.5 × distance) and places the splash at the surface, also killing it if the march upward hits a surface first. This is the C approach in miniature.
+  - **Fallback if the collided attribute can't be read over MCP:** a scratch-pad module that marches the global distance field down from the spawn point (24 steps, 0.5 × distance) and places the splash at the surface, also killing it if the march upward hits a surface first. This is the C approach in miniature. **F0.12:** MCP can't create scratch-pad or custom HLSL modules (only single-line input expressions), so this fallback needs a headless Unreal Python script or a simpler effect. S1 decides.
 - **Emitter `GroundMist`.**
   - **Spawn:** rate 5 × `User.Mist` /s, in a ring of radius 600–2200 cm around the camera, at Z = system Z − 120 ± 40.
   - **Motion and size:** lifetime 6 s, velocity `User.Wind` × 0.15, size 250–450 cm, rotation random.
@@ -217,7 +217,7 @@ How to build them over MCP: MCP_NOTES "FX and fog" (`NiagaraToolset_System.Creat
 | `Embers` | 6 /s | 1–2 s | 0.8–1.5 cm | up 80 cm/s + curl noise 60 + `User.Wind` × 0.2 | `MI_Flame_Torch`, colour (1, 0.45, 0.1) × 4 |
 | `Smoke` | 3 /s | 3–4 s | 30 → 120 cm | up 40 cm/s | `MI_LB_Mist`, colour (0.08, 0.08, 0.08), alpha 0.1 |
 
-It replaces the Cascade `PS_Fire_00` and `PS_Fire_01` components on the fire actors listed by F0 (crypt torches T1–T3, `L_Crypt_Brazier`, the courtyard fire pit and the courtyard work-area torch). The point lights and their light functions stay.
+It replaces the five Cascade `Emitter` actors listed in F0.2: `FX_Torch_Fire`, `FX_Crypt_Torch_T1/T2/T3` and `FX_Crypt_Brazier`. The courtyard fire pit has no Cascade fire (only `FX_FirePit_Smoke`, a Niagara smoke wisp), so it gets a new one. The point lights, their light functions and the smoke wisp stay. Placement is in F0.2.
 
 ### 6.4 `NS_LB_ShaftDust` (GPU; one per moonlight shaft)
 - **User parameters:** `User.BoxExtent` (FVector) and `User.Count` (default 120).
@@ -234,7 +234,7 @@ It replaces the Cascade `PS_Fire_00` and `PS_Fire_01` components on the fire act
 
 ### 6.6 `NS_LB_Drip` and `NS_LB_EaveDrips` (CPU)
 - **`NS_LB_Drip`** (one drip point):
-  - **Inputs:** `User.FallHeight` cm (F0), `User.Interval` (1.5, 4) s, `User.bWater`.
+  - **Inputs:** `User.FallHeight` cm (F0.8), `User.Interval` (1.5, 4) s, `User.bWater`.
   - **The drop:** spawned at the system origin, falls under gravity.
   - **The splash:** when its Z ≤ origin − `FallHeight`, an event spawns a 6-droplet splash burst (`MI_LB_Splash`, 0.3 s), plus a ripple ring (`MI_LB_Ripple`, 2 → 18 cm) when `User.bWater`.
 - **`NS_LB_EaveDrips`:** the same, spawned along a line of `User.LineLength` cm (local X) at 6 /s, with the drops falling `User.FallHeight`. This is the edge of a covered walk roof.
@@ -266,15 +266,15 @@ A script `Tools/fx/p15_level.py --apply/--check` (idempotent; finds actors by ex
 
 | What | Actors | Values |
 |---|---|---|
-| Strike target | `FX_StrikeTarget_Tower` | section 3, **F0** Z |
-| Shaft dust | `FX_Dust_<shaft>` for `Ch_Shaft_S1/S2/S3/_Roof`, the crypt shafts and the tower slit shafts (**F0** list) | the transform and `User.BoxExtent` match each shaft card's beam (**F0**); `User.Count` 120 (chapel), 80 (crypt and tower) |
-| Water mist | `FX_WaterMist_W/E` | over `MI_Crypt_Water_Flood_W/E` planes (**F0** bounds) |
-| Drips | `FX_Drip_*`: crypt 8 points (5 over water), belfry 2 | **F0** points and fall heights |
-| Eave drips | `FX_EaveDrips_N` at the courtyard north walk eave (X 2000…3000, Y 1300, Z 420), `FX_EaveDrips_S` at the south walk (X 4000…5000, Y −1350, Z 420), plus the cloister walk eaves (**F0**) | `User.LineLength` per eave, `User.FallHeight` = eave Z − ground Z |
-| Torches | replace the Cascade component on each **F0** fire actor with `NS_LB_TorchFire` (same transform, `User.Scale` per section 6.3) | if a fire is inside a never-save Blueprint, leave it and list it |
-| Candle flames | swap the material on the **F0** flame meshes (`SM_LB_Prop_CandleFlame_A` users, `CD_Candles_*_Flame`, puzzle-candle flames) to `MI_Flame_Candle` | through the placed actor's material override only; never a never-save Blueprint |
-| Cloth | 10 pieces: belfry openings 4, tower stair windows 2, cloister arcade 3, gatehouse arch 1 | **F0** transforms (top edge flush under the hanging point, ±2 cm); WPO disable distance 4000 |
-| Rain curtains | 8 `FX_RainCurtain_*` | **F0**: outside the courtyard walls and the garth, facing in, 3000 × 2500 cm, bottom at ground Z − 200 |
+| Strike target | `FX_StrikeTarget_Tower` | section 3: (12530.8, 2000, 4844.8) |
+| Shaft dust | `FX_Dust_<shaft>`, 11 actors (F0.6) | the F0.6 box: actor location = centre, rotation = box rotation, `User.BoxExtent` = half-extent; `User.Count` 120 (chapel), 80 (crypt and tower) |
+| Water mist | `FX_WaterMist_W/E` | F0.7 |
+| Drips | `FX_Drip_<tag>`: crypt 8 points (5 over water), belfry 2 | F0.8 points, `User.FallHeight` and `User.bWater` |
+| Eave drips | `FX_EaveDrips_<id>`, 6 lines | F0.9 (start point, yaw, `User.LineLength`, `User.FallHeight`) |
+| Torches | `NS_LB_TorchFire` actors in place of the five Cascade actors, plus one new at the fire pit | F0.2 |
+| Candle flames | slot-0 material override `MI_Flame_Candle` on the 22 flame actors; the Blueprint flames per F0.1 | F0.1; never a never-save Blueprint |
+| Cloth | 10 pieces: belfry openings 4, tower stair windows 2, cloister arcade 3, gatehouse arch 1 | F0.10 transforms (pivot = top centre); WPO disable distance 4000; P15-6 checks the arcade top edges by eye (±15 cm) |
+| Rain curtains | 8 `FX_RainCurtain_<id>` | F0.11 |
 
 Then:
 - the census (start + the number of new actors);
@@ -301,14 +301,15 @@ The values chosen are saved in P15-8.
   - `p14_cy_tower_reveal` with a tower strike;
   - `cy_west_front_15m` with a sky bolt;
   - `cl_tall_north_15m` with a sky bolt.
-- **Plus the occlusion poses** (new file `Tools/fx/poses/p15_rain.json`, **F0** coordinates):
-  - under the courtyard north walk roof looking out;
-  - the chapel nave looking up at the roof;
-  - the cloister walk looking into the garth;
-  - every cloister and chapel roof opening;
-  - the tower stair at a window;
-  - the belfry looking out;
-  - the crypt ossuary.
+- **Plus the occlusion poses** in `Tools/fx/poses/p15_rain.json`, the 9 poses written for S1 (`Docs/plans/P15_S1_RAIN_SPIKE.md` section 4):
+  - under the courtyard walk planks, looking up (north and south) and along the north walk floor;
+  - the chapel nave, at the roof hole and its floor;
+  - the cloister south walk looking into the garth;
+  - the cloister north walk at its roof hole;
+  - the belfry at the south-west collapse;
+  - the mid stair.
+
+  P15-9 adds `cr_tall_ossuary_15m` from `p14_viewpoints.json` to show the crypt has no rain.
 
 The rain checks are by eye and by a difference test: at a roofed spot, a capture with rain against one with `bRain` off. The mean absolute difference must be ≤ 1/255 inside the roofed part of the frame.
 
@@ -378,7 +379,7 @@ One editor agent at a time. Each agent commits on this branch only, stages by pa
 | R-65 | MCP can't build the Niagara emitters this needs (collision mode, attribute reads, a second renderer, scratch pads) | S1 tests it first; a headless Python Niagara script; otherwise simplify the effect and record it |
 | R-66 | Thin roofs (4 cm planks) are missing from the global distance field, so rain leaks under them | S1; hidden rain-blocker boxes in the distance field; fallback C (baked roof map) |
 | R-67 | Rain overdraw costs GPU; the chapel and the cloister have the least headroom | Thin sprites, a distance fade, the section 11 ladder; rain is outdoors only |
-| R-68 | A candle flame or a fire lives inside a never-save Blueprint | F0 finds it; change only the placed instance's material override or the MI; otherwise leave it and list it |
+| R-68 | A candle flame or a fire lives inside a never-save Blueprint | F0 finds it; change only the placed instance's material override or the MI; otherwise leave it and list it. **F0: none is** (F0.1, F0.2) |
 | R-69 | The global distance field update for Niagara collision costs GPU with hardware-ray-traced Lumen | Measured in S1 and P15-10; fallback C needs no distance field |
 
 ## 15. Not in this phase
@@ -391,3 +392,185 @@ One editor agent at a time. Each agent commits on this branch only, stages by pa
 - Any change to gameplay, AI or audio.
 
 ## Results
+
+### F0: read-only survey (2026-11-08, commit e92b465)
+`Tools/fx/p15_f0_survey.py` (lighting-vfx, Sonnet high) made about 1900 editor calls. The map was not dirty before or after, PIE never ran, and nothing was set or saved. Full tables: `Docs/ArtTest/fx/p15_f0_tables.md`, raw data in `p15_f0.json`, Niagara tools in `p15_f0_niagara_tools.md`. The lead checked: the commit has the 4 files only, `L_Monastery` is not dirty, and PIE is off. Values below are final unless a line says "check by eye".
+
+**F0.1 Flames (section 8 "Candle flames").**
+- **22 level `StaticMeshActor`s** use `SM_LB_Prop_CandleFlame_A`:
+  - 13 chapel: `Ch_AltarFlame_N1_F`, `N2_F`, `N3_F`, `S1_F`, `S2_F`, `S3_F`, `Ch_RitualFlame_1_F`, `2_F`, `4_F`, `Ch_SillFlame_S2_1_F`, `Ch_StatueHolder_Flame_1`, `_2`, `Sa_Flame_2_F`;
+  - 9 crypt: `CD_Candles_Niche_E_CC_Flame`, `_E_WC_`, `_N_SC_`, `_S_FP_`, `_S_NC_`, `CD_Candles_Puzzle_E_Flame`, `_W_`, `CD_Candles_Sarc_0_Flame`, `_1_`.
+- All draw `MI_LB_CandleFlame` from the mesh's default slot 0 (`MAT_Flame`), with no actor overrides. That MI's parent is the engine `EmissiveMeshMaterial`, with one vector `Color` (12, 5, 0.8). Never reparent it.
+- **P15-6:** set a slot-0 material override to `MI_Flame_Candle` on each of the 22 actors. The mesh asset stays unchanged.
+- The 5 `CD_Candles_Niche_*_Flame` actors are `EmissiveActors` of `SLG_Crypt_Niches` (hidden when it goes Off at `State.Ritual.2`). Hiding works with any material.
+- No light group lists a flame as a glow actor: the glow actors are the 6 lanterns of `SLG_Cloister_*` and `SLG_Tower_*` (read 2026-11-08).
+- **Blueprint flames.** All are engine `Sphere` meshes with `MI_LB_CandleFlame`, and none has a never-save Blueprint in its chain:
+  - the 4 `BP_PuzzleCandle_C` (`Candle_P1…P4`, component `Flame`, relative Z 50.5, scale (0.04, 0.04, 0.065));
+  - the player's candle, `BP_LBCharacter.CandleFlame` (relative Z 59, scale (0.5, 0.5, 0.167));
+  - the 4 `Saint1…4Flame` cones of `BP_StainedGlassClue_Saints`.
+- **P15-6 rule for the Blueprint flames:**
+  - The saints' cones stay as they are; they are part of the window art.
+  - For the puzzle candles and the player's candle, the agent first reads `BP_PuzzleCandle` and `BP_LBCharacter`, read-only: does any graph set that component's mesh or material at run time?
+  - **If not:**
+    - the puzzle candles get per-instance overrides: mesh `SM_LB_Prop_CandleFlame_A`, slot 0 `MI_Flame_Candle`, and a scale that gives the chapel flames' world size;
+    - the player's candle gets the same on the `BP_LBCharacter` component template, then compile and save `BP_LBCharacter` only.
+  - **If a graph does:** leave it and list it.
+  - The player's flame is judged by eye in P15-7.
+
+**F0.2 Fires (sections 6.3 and 8 "Torches").**
+- The five Cascade `Emitter` actors are plain level actors with rotation (0, 0, 0). No light group or Blueprint references them; `SLG_Crypt_Torches` lists only the three lights, and its only rule is Flicker at `State.Ritual.2`.
+- **P15-6:** for each row below:
+  1. place a `NiagaraActor` with `add_to_scene_from_asset(NS_LB_TorchFire)`, at the location shown, rotation (0, 0, 0), scale 1;
+  2. set `User.Scale`;
+  3. read it back;
+  4. only then delete the Cascade actor.
+- The point lights and light functions stay unchanged.
+
+| New actor | Replaces | Location | `User.Scale` |
+|---|---|---|---|
+| `FX_Torch_Fire_NS` | `FX_Torch_Fire` (PS_Fire_00, scale 0.7) | (327, 1600, 250) | 1.0 |
+| `FX_Crypt_Torch_T1_NS` | `FX_Crypt_Torch_T1` (PS_Fire_00, 0.7) | (6321, −1100, −380) | 1.0 |
+| `FX_Crypt_Torch_T2_NS` | `FX_Crypt_Torch_T2` | (8979, −2700, −380) | 1.0 |
+| `FX_Crypt_Torch_T3_NS` | `FX_Crypt_Torch_T3` | (11150, −721, −380) | 1.0 |
+| `FX_Crypt_Brazier_NS` | `FX_Crypt_Brazier` (PS_Fire_01, 0.5) | (11000, −2299.1, −459.4) | 1.8 |
+| `FX_FirePit_Fire` | nothing (new) | (1150, 1650, 25) | 1.4 |
+
+The fire pit is embers with a 400 lm light (`Light_FirePit_Ember`) and the smoke wisp `FX_FirePit_Smoke` (`NS_LB_SmokeWisp`). Both stay. Its fire starts low at 1.4, and P15-7 item 6 sets the final size; 2.2 (section 6.3) is the upper bound.
+
+**F0.3 Roofs and openings (section 1, S1).**
+- **Thickness:**
+  - courtyard planks: 4 cm, 8 per walk;
+  - chapel roof slabs: 20 cm;
+  - cloister lean-to panels: 24.3 cm, including the rafters;
+  - crypt and cloister vault shells: about 25 cm;
+  - the stair-house roof and the tower pyramid are hollow shells.
+- Every roof mesh is Nanite, and its distance field comes from the project switch (`r.GenerateMeshDistanceFields` 1, voxel density 0.2, so 5 cm). Only the planks are thinner than a voxel (R-66).
+- Every roof piece is NoCollision except the courtyard planks. Those read `collisionEnabled` QueryAndPhysics although the profile string says NoCollision. They are above head height, so there is no gameplay effect; it is noted here only because the plan used to say "NoCollision".
+- **Openings where rain must show:**
+  - **chapel:** `Ch_Roof_S1` hole, X 6250…6750, Y −643…−193 (roof plane Z 1399…1935);
+  - **cloister north:** `CLA_Roof_N_2` hole, X 10850…11270, Y 2180…2775 (Z 640…1046), over the `CLA_Vault_N_E` hole X 10900…11450. The open sky column is X 10900…11270, Y 2260…2775.
+  - **tower:** the south-west collapse of `TWA_Roof`, X 11975…12400, Y 1475…1900 (Z 3530…4400), into the belfry;
+  - **courtyard walks:** the uncovered parts (planks cover 40 % of the north walk and 28 % of the south walk; rectangles in the tables, T§3).
+    - North planks: row 0 (Y 984…1064, Z 647…714) is complete over X 2200…3000. The rest are single planks: `1_2`, `3_2` (Y 1138…1218), `1_3` (Y 1215…1295, the only one at the eave), and `4_1` (X 2800…3000, Y 1061…1141).
+    - South planks: rows at Y −1065…−1149 (X 4400…4800), Y −1146…−1230 (X 4200…4400, 4600…5000) and Y −1228…−1312 (X 4200…4600, 4800…5000).
+- **Open by design:** the courtyard, the garth (X 10247…11462, Y 1344…2261), the shortcut passage (X 6040…9460, Y 1700…2300) and the approach.
+- **Crypt:** ground slabs cover the grates (traces from above stop at Z 0), so no rain reaches the crypt.
+
+**F0.4 Strike target:** (12530.8, 2000, 4844.8), check by eye ±15 cm (section 3). From the tower-reveal pose (600, 0, 170) the line of sight is clear, at pitch 21.1° and yaw 9.5°.
+
+**F0.5 Sky:**
+- The `SkySphere` radius is 1,638,400 cm, so `SkyBoltDistance` = 60000.
+- Height fog: density 0.035, falloff 0.35, max opacity 0.95, cutoff 1,000,000.
+- About 49 % of a bolt's light reaches a ground camera at 60000 cm, but `M_LB_Bolt` has fogging off, so the bolt is not fogged.
+
+**F0.6 Shaft dust boxes (section 8 "Shaft dust").** Actor = `FX_Dust_<shaft>`, location = centre, rotation = box rotation (P, Y, R), `User.BoxExtent` = half-extent.
+
+| Shaft | Centre | Rotation | Half-extent | `User.Count` |
+|---|---|---|---|---|
+| `Ch_Shaft_Roof` | (7271, 122.1, 944) | (−38, 35, 0) | (600, 120, 120) | 120 |
+| `Ch_Shaft_S1` | (6882.7, −521, 365) | (−38, 35, 0) | (474.3, 30, 180) | 120 |
+| `Ch_Shaft_S2` | (7882.7, −521, 365) | (−38, 35, 0) | (474.3, 30, 180) | 120 |
+| `Ch_Shaft_S3` | (8882.7, −521, 365) | (−38, 35, 0) | (474.3, 30, 180) | 120 |
+| `SA_Crypt_G1` | (8297.9, −2214, −325) | (−12, −145, 180) | (19.2, 19.2, 224) | 80 |
+| `SA_Crypt_G2` | (9797.9, −2246.5, −325) | (−12, −145, 180) | (19.2, 19.2, 224) | 80 |
+| `SA_Crypt_G3` | (10982.7, −1562.5, −265.5) | (−22.7, −42.9, 180) | (55, 55, 192) | 80 |
+| `SA_Tower_F03` | (12638.2, 1636.7, 586.3) | (−52, −145, 180) | (11, 11, 172) | 80 |
+| `SA_Tower_F07` | (12638.2, 1636.8, 1495.5) | (−52, −145, 180) | (11, 11, 172) | 80 |
+| `SA_Tower_F08` | (12092.8, 2037, 1803.6) | (−52, −145, 180) | (11, 11, 64) | 80 |
+| `SA_Tower_Roof` | (12443.3, 1866.8, 3783.5) | (−52, −145, 180) | (55, 55, 316) | 80 |
+
+The tower slit shafts are F03, F07 and F08, plus the roof shaft. The thin crypt and tower boxes may read dense at 80; P15-7 item 8 can lower the count.
+
+**F0.7 Water mist.**
+- `FX_WaterMist_W` at (9047.5, −2280, −593), `User.Extent` (495, 390), over `CA_Water_W`.
+- `FX_WaterMist_E` at (10002.5, −2280, −593), `User.Extent` (395, 390), over `CA_Water_E`.
+- `CA_Water_Ledge` (Z −593) and the black still pit `CA_Water_Pit` (Z −650) get no mist.
+
+**F0.8 Drips (`FX_Drip_<tag>`).** The crypt points are on corridor centre lines at Z −105, 5 cm under the visible vault crown (Z −100, P9). The visible vault has no collision; the hidden collision slab is at Z −40. Check by eye that each point sits just under the mesh. The belfry points are under the pyramid slate.
+
+| Tag | Location | `User.FallHeight` | `User.bWater` |
+|---|---|---|---|
+| `W_9050` | (9050, −2280, −105) | 488 | true |
+| `W_9200` | (9200, −2280, −105) | 488 | true |
+| `Pit_9400` | (9400, −2280, −105) | 545 | true |
+| `E_9900` | (9900, −2280, −105) | 488 | true |
+| `E_10000` | (10000, −2280, −105) | 488 | true |
+| `WC_a` | (6450, −1900, −105) | 495 | false |
+| `SC_b` | (7250, −2350, −105) | 495 | false |
+| `NC_a` | (10250, −900, −105) | 495 | false |
+| `Belfry_N_wall` | (12600, 2440, 3700.9) | 1200.9 | false |
+| `Belfry_NW_corner` | (12100, 2400, 3793.1) | 1293.1 | false |
+
+Every point is at least 111 cm from a WalkPath segment and 146 cm from an AI point.
+
+**F0.9 Eave drips (`FX_EaveDrips_<id>`).**
+- **Placement:** the actor sits at the start point. Its yaw points local X along the line, `User.LineLength` is the line length, and `User.FallHeight` is the drop to the ground.
+- **Courtyard walks:** water runs off the lower edge of a plank, so the courtyard lines are only where a plank reaches the eave row. Elsewhere the eave is bare rafters.
+- **Cloister:** the lean-to panels are continuous, and each line is 3 cm on the garth side of the panel edge. The north line's second panel is left out, because the roof hole leaves only two 90 cm stubs.
+
+| Id | Start | Yaw | `User.LineLength` | `User.FallHeight` |
+|---|---|---|---|---|
+| `CyN` | (2200, 1296, 454) | 0 | 200 | 453 |
+| `CyS_A` | (4200, −1313, 476) | 0 | 400 | 475 |
+| `CyS_B` | (4800, −1313, 476) | 0 | 200 | 475 |
+| `ClS` | (11380, 1423, 637) | 180 | 1100 | 537 |
+| `ClN1` | (10320, 2177, 637) | 0 | 400 | 537 |
+| `ClW` | (10323, 1420, 637) | 90 | 800 | 537 |
+| `ClE` | (11377, 2180, 637) | −90 | 800 | 537 |
+
+**F0.10 Cloth (`FX_Cloth_<id>`).**
+- The pivot is the top centre; yaw turns the cloth's local Y to the wall normal pointing into the room.
+- `MI_Cloth_Linen_Red` goes on the two banners and `MI_Cloth_Linen_Dark` on the rest.
+- The arcade top edges come from an estimated intrados (about Z 585); check by eye ±15 cm.
+- Every piece clears the 60 cm lane and 150 cm AI-point rules, and the belfry pieces are 209 cm or more from the bell frame.
+
+| Id | Mesh | Location (top centre) | Rotation | MI |
+|---|---|---|---|---|
+| `Belfry_W1` | `SM_LB_Prop_ClothStrip_A` | (12046, 1905, 3180) | (0, −90, 0) | Dark |
+| `Belfry_N2` | `SM_LB_Prop_ClothBanner_A` | (12595, 2454, 3180) | (0, 180, 0) | Red |
+| `Belfry_E1` | `SM_LB_Prop_ClothStrip_B` | (12954, 2095, 3180) | (0, 90, 0) | Dark |
+| `Belfry_S2` | `SM_LB_Prop_ClothStrip_A` | (12405, 1546, 3180) | (0, 0, 0) | Dark |
+| `Slit_F03` | `SM_LB_Prop_ClothStrip_B` | (12500, 1546, 778.1) | (0, 0, 0) | Dark |
+| `Slit_F07` | `SM_LB_Prop_ClothStrip_B` | (12500, 1546, 1687.3) | (0, 0, 0) | Dark |
+| `Cloister_N_1` | `SM_LB_Prop_ClothBanner_A` | (10750, 2256, 555) | (0, 0, 0) | Red |
+| `Cloister_W_1` | `SM_LB_Prop_ClothSheet_A` | (10244, 1850, 520) | (0, 90, 0) | Dark |
+| `Cloister_S_2` | `SM_LB_Prop_ClothStrip_A` | (11050, 1344, 555) | (0, 180, 0) | Dark |
+| `Gate_Inner` | `SM_LB_Prop_ClothStrip_A` | (306, 400, 600) | (0, −90, 0) | Dark |
+
+**F0.11 Rain curtains (`FX_RainCurtain_<id>`).**
+- `SM_LB_FX_CurtainCard` at scale (30, 1, 25), so 3000 × 2500 cm, with its bottom centre at the location.
+- They stand outside the world's backdrop box (`Perim_*` walls, X −3040…13440, Y ±3640, 800 tall).
+- Only 4 of the 16 viewpoints see a card; the rest look along walls or are indoors. P15-7 can drop or move cards.
+
+| Id | Location | Rotation |
+|---|---|---|
+| `N_600` | (600, 4800, −200) | (0, 180, 0) |
+| `N_2400` | (2400, 4800, −200) | (0, 180, 0) |
+| `N_4200` | (4200, 4800, −200) | (0, 180, 0) |
+| `N_6000` | (6000, 4800, −200) | (0, 180, 0) |
+| `N_8000` | (8000, 4800, −200) | (0, 180, 0) |
+| `N_11500` | (11500, 4800, −200) | (0, 180, 0) |
+| `N_14500` | (14500, 4800, −200) | (0, 180, 0) |
+| `S_11500` | (11500, −4800, −200) | (0, 0, 0) |
+
+**F0.12 Niagara over MCP (from the tool schemas; nothing was created).**
+- **Yes:**
+  - add or remove emitters, modules and renderers;
+  - set module inputs as literals, enums, linked attributes, dynamic inputs or a single-line HLSL expression;
+  - `Kill On Collision`, restitution, friction and rest state;
+  - read `Particles.HasCollided` by name;
+  - sprite alignment, facing and material;
+  - user parameters on the system, and `SetVariable` per component.
+- **No:** scratch-pad or custom HLSL modules.
+- **Unknown until S1:** the `Collision` module's distance-field mode. The schema lists no mode input, and the library also has a separate zero-input `NiagaraDistanceFieldCollisions` module.
+
+**F0.13 Global distance field:**
+- the settings are on: mesh distance fields are generated, `r.AOGlobalDistanceField` is 1, and there are 4 clipmaps;
+- Lumen uses hardware ray tracing with `r.Lumen.TraceMeshSDFs` 0, so Lumen does not need the global distance field;
+- MCP_NOTES records `DistanceToNearestSurface` reading about 0 in a material;
+- nothing yet proves the field holds data at run time. S1 tests it.
+
+**F0.14 Census:**
+- 3015 actors at the start of P15-6.
+- New actors: the target 1, dust 11, water mist 2, drips 10, eave drips 7, cloth 10, curtains 8, and fires +6 − 5.
+- So the P15-6 check expects **3065**.
