@@ -1349,3 +1349,9 @@ Storm moments (no flash → flash 0.8):
 - **Visual Logger ruled out.** "PROFILING WITH AI LOGGING ON!" shows on the P14-B screenshots too, so it isn't the difference.
 - **No code cause.** The Phase 14 runtime code does nothing heavy per frame. The subsystem runs 5 Hz reveal checks and 4 Hz exposure samples. The light groups tick only while they fade or flicker. The zones never tick.
 - **Not determined:** which start-state actors cost the extra game time. That is outside Phase 14, and it is noted for the Phase 18 optimisation pass.
+
+**P14-7 closed (owner, 2026-11-08): passed on Phase 14's own cost.**
+- GPU passes at all six spots.
+- The storm's game-thread cost is within noise (mean +0.16 ms over four on/off pairs).
+- **R-60 closes.** The courtyard GPU is 13.25 against a limit of 13.72 with the stronger wind.
+- The ~3 ms story-state game-thread difference at the game start goes to the Phase 18 optimisation pass as a new risk (added to `RISKS.md` in P14-8).
