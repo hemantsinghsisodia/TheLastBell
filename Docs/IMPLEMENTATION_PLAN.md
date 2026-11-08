@@ -406,7 +406,7 @@ Branch `claude/phase-15-particles`. Spec and plan: `Docs/plans/P15_PARTICLES.md`
 | P15-10 | Performance (FX on/off at a matched story state) | owner + performance-engineer | P15-9 |
 | P15-11 | QA, docs, full suite; PHASE 15 READY FOR YOUR REVIEW | qa-reviewer, docs agent, lead | all |
 
-**Status 2026-11-08:** P15-0, F0, S1 (approach A, D-106), P15-1 (suite 140/141; the expected failure is `StormFX.Monastery.FXSetup` until P15-6), P15-2, P15-3, the imports, P15-4 (materials) and P15-5 (Niagara) are done. Next: P15-6 (data and level work), on the owner's "go".
+**Status 2026-11-08:** P15-0, F0, S1 (approach A, D-106), P15-1, P15-2, P15-3, the imports, P15-4 (materials), P15-5 (Niagara) and P15-6 (data and level work; suite 141/141) are done. Next: the persistence check after the editor reopens, then P15-7 (look session with the owner).
 ## Deferred to Phase 14–15 (Lighting, VFX: storm work)
 Items the owner asked to fold into the storm pass. **Foliage wind is now in Phase 14** (P14 section 6, D-096: `MPC_LB_Storm` replaces the planned `MPC_LB_Wind`).
 

@@ -694,3 +694,28 @@ Every point is at least 111 cm from a WalkPath segment and 146 cm from an AI poi
     - the upright torch flames;
     - the sparks light and how the system completes;
     - the GPU rain count.
+
+### P15-6: data and level work (2026-11-08)
+- **Build:** commit f3fe33b (lighting-vfx, Sonnet high). `Tools/fx/p15_level.py --apply/--check/--save`; the record is `Docs/ArtTest/fx/p15_6_level.md`.
+- **Data:**
+  - `DA_StormFX` is created with the section 2.2 defaults and the four asset refs, and `DebugBolt` is −1.
+  - `DA_StormSettings.FXSettings` points to it.
+  - In `ScriptedStrikes`, only `[0]` (CourtyardEntered) and `[4]` (TowerTop) changed, to `StrikeTargetTag = LB_StrikeTarget_Tower`. The debug fields are −1.
+- **Level:**
+  - the strike target, 11 dust, 2 mist, 10 drips and 7 eave drips;
+  - 6 `NS_LB_TorchFire` actors; the 5 Cascade emitters were deleted after the read-back;
+  - 22 candle-flame overrides, 4 puzzle-candle flames, 10 cloth and 8 curtains.
+- **Census:** 3015 → 3065. `--check` gives 118 PASS / 0 FAIL.
+- **Saved,** one package each with `is_dirty` false: `DA_StormFX`, `DA_StormSettings`, `BP_LBCharacter`, `L_Monastery`.
+- **Blueprint flames:**
+  - no graph sets the mesh or material of `Flame` (`BP_PuzzleCandle`) or `CandleFlame` (`BP_LBCharacter`);
+  - the puzzle flames are 6.5 cm tall, sitting on the old base (Z 77.25).
+  - **Lead accepted:** the player's flame uses a uniform *world* scale of 1, not a uniform relative scale. Its parent `CandleWax` is scaled (0.03, 0.03, 0.12), so a uniform relative scale would have made a needle. The flame grows from 2.0 to 6.5 cm tall next to the camera; P15-7 judges it.
+- **Suite** (Unreal closed, lead): build succeeded, **141 passed / 0 failed**, 0 invalid tags, 0 `Error:` lines, no StormFX or Niagara warnings. `StormFX.Monastery.FXSetup` now passes.
+- **Still to check:**
+  - **Persistence:** `p15_level.py --check` after the editor reopens. This proves the Niagara user-parameter and Blueprint-instance overrides survived the restart.
+  - **By eye in P15-7:**
+    - the cloister cloth tops are 30–65 cm under the estimated intrados (Z 585), which is outside ±15;
+    - the crypt drip points against the vault;
+    - the strike-target tip;
+    - the player's flame size.
