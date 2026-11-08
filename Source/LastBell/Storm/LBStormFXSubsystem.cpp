@@ -50,6 +50,34 @@ namespace
 	/** The actor the debug tower strike (DebugBolt 1, lb.StormFX.Bolt 1) hits. */
 	const FName DebugTargetTag(TEXT("LB_StrikeTarget_Tower"));
 
+	/**
+	 * The rain component, made as UNiagaraFunctionLibrary::SpawnSystemAtLocation makes a non-pooled one (CreateNiagaraSystem and
+	 * SpawnSystemAtLocationWithParams) but without its FApp::CanEverRender() guard. That guard returns null under -nullrhi, where the
+	 * rain component must still exist (the automation suite checks it); the strike sparks stay on SpawnSystemAtLocation (fire and forget).
+	 */
+	UNiagaraComponent* CreateRainComponent(UWorld* World, UNiagaraSystem* System, const FVector& Location)
+	{
+		if (!World || !System || World->IsNetMode(NM_DedicatedServer))
+		{
+			return nullptr;
+		}
+		UNiagaraComponent* Component = NewObject<UNiagaraComponent>(World->GetWorldSettings(), NAME_None, RF_Transient);
+		Component->SetAsset(System);
+		Component->bAutoActivate = false;
+		Component->SetAutoDestroy(false);
+		Component->bAllowAnyoneToDestroyMe = true;
+		Component->SetVisibleInRayTracing(false);
+#if WITH_EDITORONLY_DATA
+		Component->bWaitForCompilationOnActivate = GIsAutomationTesting;
+#endif
+		Component->RegisterComponentWithWorld(World);
+		Component->SetAbsolute(true, true, true);
+		Component->SetWorldLocationAndRotation(Location, FRotator::ZeroRotator);
+		Component->SetRelativeScale3D(FVector::OneVector);
+		Component->Activate(true);
+		return Component;
+	}
+
 	/** How fast the mist amount eases toward its goal, per second. */
 	constexpr float MistEaseRate = 1.f;
 	constexpr int32 MaxBoltPool = 16;
@@ -196,8 +224,7 @@ bool ULBStormFXSubsystem::TryActivate(ULBStormSubsystem& Storm)
 	{
 		FVector Camera = FVector::ZeroVector;
 		GetViewLocation(Camera);
-		RainComponent = UNiagaraFunctionLibrary::SpawnSystemAtLocation(World, RainSystem, Camera, FRotator::ZeroRotator, FVector::OneVector,
-			/*bAutoDestroy*/ false, /*bAutoActivate*/ true, ENCPoolMethod::None, /*bPreCullCheck*/ false);
+		RainComponent = CreateRainComponent(World, RainSystem, Camera);
 	}
 	if (!RainComponent && !bWarnedNoRain)
 	{

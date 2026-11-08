@@ -45,6 +45,7 @@ void ULBStormFXTestSink::HandleStrike(const FLBLightningStrikeInfo& Info)
 #include "Engine/World.h"
 #include "GameFramework/PlayerController.h"
 #include "HAL/IConsoleManager.h"
+#include "Misc/App.h"
 #include "Misc/PackageName.h"
 #include "NiagaraComponent.h"
 #include "NiagaraSystem.h"
@@ -397,7 +398,11 @@ bool FLBStormFXActivatesTest::RunTest(const FString& Parameters)
 		Test->TestTrue(TEXT("The FX are active"), FX && FX->IsActive());
 		if (const UNiagaraComponent* Rain = FX ? FX->GetRainComponent() : nullptr)
 		{
-			Test->TestTrue(TEXT("The rain component is active"), Rain->IsActive());
+			// Niagara never activates a component when the app cannot render (-nullrhi, the automation run): UNiagaraComponent::ActivateInternal returns early.
+			if (FApp::CanEverRender())
+			{
+				Test->TestTrue(TEXT("The rain component is active"), Rain->IsActive());
+			}
 		}
 		else
 		{
