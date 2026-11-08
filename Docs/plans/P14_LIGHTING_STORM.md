@@ -1331,3 +1331,21 @@ Storm moments (no flash → flash 0.8):
   - The courtyard storm-on reading is the one to doubt: 138.6K prims against 336.9K at P14-B, after 18 s of settle.
 - **R-60 (wind WPO cost).** The courtyard passes both its limits (GPU 13.25 ≤ 13.72, game 11.94 ≤ 13.60), so R-60 closes and the section 11 ladder isn't needed for the courtyard. The courtyard prims caveat above applies.
 - **Open for the lead and the owner.** The game-thread FAIL at the four interior spots. Nothing was changed in the project. The section 11 ladder is written for the courtyard only.
+
+**P14-7 re-read (owner, 2026-11-08, about 35 s of settle each):** on/off pairs in one PIE session, start story state. Screenshots: `Docs/ArtTest/lighting/perf/p14_7_reread_*.png`.
+
+| Spot | Storm | GPU (ms) | Game (ms) | Draws | Prims |
+|---|---|---|---|---|---|
+| Ossuary | on | 13.74 | 11.41 | 591 | 181.6K |
+| Ossuary | off | 14.05 | 11.56 | 598 | 191.4K |
+| Belfry | off (taken first) | 12.27 | 11.25 | 396 | 28.0K |
+| Belfry | on | 12.45 | 11.79 | 403 | 28.3K |
+
+**Findings (lead):**
+- **The storm's own game-thread cost is within noise.** On minus off: ossuary −0.15 ms, belfry +0.54 ms, and in the first set courtyard +0.58 ms and chapel −0.33 ms. The mean of the four pairs is **+0.16 ms**.
+- **It adds no draws.** Ossuary on/off: 591 against 598.
+- **The ~3 ms rise over P14-B is not Phase 14.** It is there with the storm off (ossuary 11.56 ms).
+- **The cause is story state.** Every P14-7 screenshot shows the start objective "Follow the sound of the bell". The P14-B readings were taken while playing through, with late objectives at the indoor spots: winch, "Strike the bells in the inscribed order", "Climb the bell tower", "Ring the bell". At the start state the game thread is about 11 ms everywhere. P14-B had 13 ms at the mid-game courtyard and chapel and 8 ms at the late indoor states.
+- **Visual Logger ruled out.** "PROFILING WITH AI LOGGING ON!" shows on the P14-B screenshots too, so it isn't the difference.
+- **No code cause.** The Phase 14 runtime code does nothing heavy per frame. The subsystem runs 5 Hz reveal checks and 4 Hz exposure samples. The light groups tick only while they fade or flicker. The zones never tick.
+- **Not determined:** which start-state actors cost the extra game time. That is outside Phase 14, and it is noted for the Phase 18 optimisation pass.
