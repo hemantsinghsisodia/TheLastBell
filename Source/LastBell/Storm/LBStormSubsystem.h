@@ -16,6 +16,9 @@ class UMaterialParameterCollection;
 /** Fired at the first pulse of every flash. Phase 16 hangs thunder on it. */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FLBLightningFlashSignature, float, Brightness, ELBFlashReason, Reason);
 
+/** Fired right after OnLightningFlash, for the same flash, with its direction, resolved profile and strike target (P15 bolts). */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FLBLightningStrikeSignature, const FLBLightningStrikeInfo&, Info);
+
 /**
  * The storm controller (P14, Docs/plans/P14_LIGHTING_STORM.md section 4 and 5). It owns:
  *   - the storm intensity, which follows the story tags;
@@ -58,6 +61,12 @@ public:
 
 	/** As RequestFlash, with the direction of the bright patch in the clouds (a unit vector toward it). */
 	void RequestFlashDirected(float Brightness, float DelaySeconds, ELBFlashReason Reason, ELBFlashProfile Profile, const FVector& Direction);
+
+	/**
+	 * As RequestFlashDirected, for a flash that strikes Target: its direction points at the target, and OnLightningStrike carries the
+	 * target's location (ULBStormFXSubsystem draws the bolt to it). A null Target is a plain random-direction flash.
+	 */
+	void RequestFlashAtTarget(float Brightness, float DelaySeconds, ELBFlashReason Reason, ELBFlashProfile Profile, AActor* Target);
 
 	/**
 	 * Rescans the linked lights (by actor tag) and runs the activation again: no tagged moon makes the subsystem inactive, a moon
@@ -106,6 +115,9 @@ public:
 	UFUNCTION(BlueprintPure, Category = "LastBell|Storm")
 	float GetWindStrength() const { return CurrentWind; }
 
+	/** A flash is running right now (a started flash that has not ended); pending flashes do not count. */
+	bool IsFlashRunning() const { return Active.Num() > 0; }
+
 	/** A flash is running or pending (including strikes waiting for the player's look). */
 	UFUNCTION(BlueprintPure, Category = "LastBell|Storm")
 	bool IsFlashBusy() const { return Pending.Num() > 0 || Active.Num() > 0 || LookWaits.Num() > 0; }
@@ -123,6 +135,10 @@ public:
 	/** Fired at the first pulse of every flash. */
 	UPROPERTY(BlueprintAssignable, Category = "LastBell|Storm")
 	FLBLightningFlashSignature OnLightningFlash;
+
+	/** Fired right after OnLightningFlash for the same flash (P15 bolts). */
+	UPROPERTY(BlueprintAssignable, Category = "LastBell|Storm")
+	FLBLightningStrikeSignature OnLightningStrike;
 
 protected:
 	/** Game and PIE worlds only. */
@@ -147,6 +163,10 @@ private:
 		float Brightness = 1.f;
 		ELBFlashReason Reason = ELBFlashReason::Ambient;
 		FVector Direction = FVector::UpVector;
+		/** The resolved profile (never Auto). */
+		ELBFlashProfile Profile = ELBFlashProfile::Sheet;
+		/** The strike target of a scripted beat with a StrikeTargetTag, or none. */
+		TWeakObjectPtr<AActor> Target;
 	};
 
 	/** A look-gated strike waiting for the player to look at its target. */
@@ -175,10 +195,14 @@ private:
 	void UpdateExposure(double Now);
 
 	/** Queues a flash starting at Start (absolute world time) and extends BusyUntil. Resolves Auto and draws the gaps. */
-	void QueueFlash(float Brightness, double Start, ELBFlashReason Reason, ELBFlashProfile Profile, const FVector& Direction);
+	void QueueFlash(float Brightness, double Start, ELBFlashReason Reason, ELBFlashProfile Profile, const FVector& Direction, AActor* Target = nullptr);
 	/** The start time of a flash asked for Delay from now: not before the previous flash ended plus the minimum gap. */
 	double ScheduledStart(double Now, float Delay) const;
 	FVector RandomFlashDirection();
+	/** The first actor carrying the strike's StrikeTargetTag, found once per strike index and cached. Null when none is set or found. */
+	AActor* ResolveStrikeTarget(int32 StrikeIndex, const FLBStormStrike& Strike);
+	/** The flash direction toward Target: from the camera, or straight up from the ground below it when there is no camera. */
+	FVector DirectionToTarget(const AActor* Target) const;
 	void FireStrike(int32 StrikeIndex, const FVector& TowardDirection, bool bHasDirection);
 	void UpdateLookWaits(double Now);
 	void StartDueFlashes(double Now);
@@ -201,6 +225,10 @@ private:
 	TArray<FFlashInstance> Pending;
 	TArray<FFlashInstance> Active;
 	TArray<FLookWait> LookWaits;
+
+	/** Strike index to its resolved target (P15). A target that has gone is looked up again; a missing one warns once per index. */
+	TMap<int32, TWeakObjectPtr<AActor>> StrikeTargets;
+	TSet<int32> WarnedStrikeTargets;
 
 	FRandomStream Stream;
 

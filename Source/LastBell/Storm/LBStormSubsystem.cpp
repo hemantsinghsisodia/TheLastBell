@@ -283,6 +283,8 @@ void ULBStormSubsystem::ResetRuntime()
 	Pending.Reset();
 	Active.Reset();
 	LookWaits.Reset();
+	StrikeTargets.Reset();
+	WarnedStrikeTargets.Reset();
 	CurrentFlash = 0.f;
 	LastAppliedFlash = 0.f;
 	WindPhase = 0.f;
@@ -453,7 +455,58 @@ FVector ULBStormSubsystem::RandomFlashDirection()
 	return LBStormLogic::DirectionFromAngles(Azimuth, Elevation);
 }
 
-void ULBStormSubsystem::QueueFlash(float Brightness, double Start, ELBFlashReason Reason, ELBFlashProfile Profile, const FVector& Direction)
+AActor* ULBStormSubsystem::ResolveStrikeTarget(int32 StrikeIndex, const FLBStormStrike& Strike)
+{
+	if (Strike.StrikeTargetTag.IsNone())
+	{
+		return nullptr;
+	}
+	if (const TWeakObjectPtr<AActor>* Cached = StrikeTargets.Find(StrikeIndex))
+	{
+		if (AActor* Target = Cached->Get())
+		{
+			return Target;
+		}
+	}
+	// Once per strike index (a strike is a rare event, never a per-frame query).
+	AActor* Found = nullptr;
+	if (const UWorld* World = GetWorld())
+	{
+		for (TActorIterator<AActor> It(World); It; ++It)
+		{
+			if (It->ActorHasTag(Strike.StrikeTargetTag))
+			{
+				Found = *It;
+				break;
+			}
+		}
+	}
+	if (Found)
+	{
+		StrikeTargets.Add(StrikeIndex, Found);
+	}
+	else if (!WarnedStrikeTargets.Contains(StrikeIndex))
+	{
+		WarnedStrikeTargets.Add(StrikeIndex);
+		UE_LOG(LogLB, Warning, TEXT("Storm: scripted strike %d (%s) has StrikeTargetTag '%s' but no actor carries it; the strike flashes without a bolt target"),
+			StrikeIndex, *Strike.TriggerTag.ToString(), *Strike.StrikeTargetTag.ToString());
+	}
+	return Found;
+}
+
+FVector ULBStormSubsystem::DirectionToTarget(const AActor* Target) const
+{
+	const FVector Location = Target->GetActorLocation();
+	FVector CameraLocation;
+	FRotator CameraRotation;
+	if (GetCamera(CameraLocation, CameraRotation))
+	{
+		return (Location - CameraLocation).GetSafeNormal();
+	}
+	return (Location - FVector(Location.X, Location.Y, 0.0)).GetSafeNormal();
+}
+
+void ULBStormSubsystem::QueueFlash(float Brightness, double Start, ELBFlashReason Reason, ELBFlashProfile Profile, const FVector& Direction, AActor* Target)
 {
 	// The random draws are the same whatever the profile, so a seeded storm replays the same sequence.
 	const float ProfileRoll = Stream.FRand();
@@ -470,6 +523,8 @@ void ULBStormSubsystem::QueueFlash(float Brightness, double Start, ELBFlashReaso
 	Flash.Duration = LBStormLogic::FlashDuration(Flash.Shape);
 	Flash.Brightness = Brightness;
 	Flash.Reason = Reason;
+	Flash.Profile = Profile;
+	Flash.Target = Target;
 	Flash.Direction = Direction.GetSafeNormal();
 	if (Flash.Direction.IsNearlyZero())
 	{
@@ -498,6 +553,19 @@ void ULBStormSubsystem::RequestFlashDirected(float Brightness, float DelaySecond
 	QueueFlash(Brightness, ScheduledStart(Now, DelaySeconds), Reason, Profile, Direction);
 }
 
+void ULBStormSubsystem::RequestFlashAtTarget(float Brightness, float DelaySeconds, ELBFlashReason Reason, ELBFlashProfile Profile, AActor* Target)
+{
+	const UWorld* World = GetWorld();
+	if (!bActive || !Settings || !World || !IsStormEnabled())
+	{
+		return;
+	}
+	// The random direction is always drawn, so a seeded storm replays the same sequence with or without a target.
+	const FVector Random = RandomFlashDirection();
+	const FVector Direction = Target ? DirectionToTarget(Target) : Random;
+	QueueFlash(Brightness, ScheduledStart(World->GetTimeSeconds(), DelaySeconds), Reason, Profile, Direction, Target);
+}
+
 void ULBStormSubsystem::FireStrike(int32 StrikeIndex, const FVector& TowardDirection, bool bHasDirection)
 {
 	const UWorld* World = GetWorld();
@@ -506,6 +574,7 @@ void ULBStormSubsystem::FireStrike(int32 StrikeIndex, const FVector& TowardDirec
 		return;
 	}
 	const FLBStormStrike& Strike = Settings->ScriptedStrikes[StrikeIndex];
+	AActor* Target = ResolveStrikeTarget(StrikeIndex, Strike);
 	const double Now = World->GetTimeSeconds();
 	// The gap applies before the first strike; the strikes of one sequence then follow their own spacing, start to start.
 	const double FirstStart = ScheduledStart(Now, Strike.Delay);
@@ -513,8 +582,13 @@ void ULBStormSubsystem::FireStrike(int32 StrikeIndex, const FVector& TowardDirec
 	for (int32 Index = 0; Index < Count; ++Index)
 	{
 		const ELBFlashProfile Profile = Strike.ProfileOverrides.IsValidIndex(Index) ? Strike.ProfileOverrides[Index] : Strike.Profile;
-		const FVector Direction = bHasDirection ? TowardDirection : RandomFlashDirection();
-		QueueFlash(Strike.Brightness, FirstStart + Index * static_cast<double>(Strike.Spacing), ELBFlashReason::Scripted, Profile, Direction);
+		FVector Direction = bHasDirection ? TowardDirection : RandomFlashDirection();
+		if (Target)
+		{
+			// A targeted strike's patch of light sits on its target.
+			Direction = DirectionToTarget(Target);
+		}
+		QueueFlash(Strike.Brightness, FirstStart + Index * static_cast<double>(Strike.Spacing), ELBFlashReason::Scripted, Profile, Direction, Target);
 	}
 	UE_LOG(LogLB, Verbose, TEXT("Storm: scripted strike for %s: %d flash(es) from %.2f s"), *Strike.TriggerTag.ToString(), Count, FirstStart - Now);
 }
@@ -588,6 +662,18 @@ void ULBStormSubsystem::StartDueFlashes(double Now)
 		Active.Add(Flash);
 		FlashDirection = Flash.Direction;
 		OnLightningFlash.Broadcast(Flash.Brightness, Flash.Reason);
+
+		FLBLightningStrikeInfo Info;
+		Info.Brightness = Flash.Brightness;
+		Info.Reason = Flash.Reason;
+		Info.Profile = Flash.Profile;
+		Info.Direction = Flash.Direction;
+		if (const AActor* Target = Flash.Target.Get())
+		{
+			Info.bHasTarget = true;
+			Info.TargetLocation = Target->GetActorLocation();
+		}
+		OnLightningStrike.Broadcast(Info);
 	}
 }
 

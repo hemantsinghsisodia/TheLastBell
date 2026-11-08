@@ -25,6 +25,36 @@ enum class ELBFlashReason : uint8
 	Debug
 };
 
+/**
+ * What OnLightningStrike carries for one flash (P15). Fired right after OnLightningFlash for the same flash. Direction is the unit
+ * vector toward the bright patch; with a target (a scripted strike with a StrikeTargetTag that resolved) it points at the target.
+ */
+USTRUCT(BlueprintType)
+struct LASTBELL_API FLBLightningStrikeInfo
+{
+	GENERATED_BODY()
+
+	UPROPERTY(BlueprintReadOnly, Category = "Storm|Bolt")
+	float Brightness = 0.f;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Storm|Bolt")
+	ELBFlashReason Reason = ELBFlashReason::Ambient;
+
+	/** The resolved profile of the flash (never Auto). */
+	UPROPERTY(BlueprintReadOnly, Category = "Storm|Bolt")
+	ELBFlashProfile Profile = ELBFlashProfile::Sheet;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Storm|Bolt")
+	FVector Direction = FVector::UpVector;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Storm|Bolt")
+	bool bHasTarget = false;
+
+	/** The target actor's location when bHasTarget. */
+	UPROPERTY(BlueprintReadOnly, Category = "Storm|Bolt")
+	FVector TargetLocation = FVector::ZeroVector;
+};
+
 /** What a story light group does to its lights while a rule's tag is present. */
 UENUM(BlueprintType)
 enum class ELBLightStateMode : uint8
@@ -95,6 +125,10 @@ struct LASTBELL_API FLBStormStrike
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Storm|LookGate", meta = (ClampMin = "0", Units = "s"))
 	float LookTimeout = 90.f;
+
+	/** When set, every strike of this beat draws a bolt to the first actor carrying this actor tag; its flash direction points at it. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Storm|Bolt")
+	FName StrikeTargetTag;
 };
 
 /** One rule of an ALBStateLightGroup. In the list, the last rule whose RequiredTag is present wins. */

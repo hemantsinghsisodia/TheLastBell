@@ -12,6 +12,7 @@
 #include "GameFramework/PlayerController.h"
 #include "Systems/LBUserSettings.h"
 #include "Storm/LBStormSubsystem.h"
+#include "Storm/LBStormFXSubsystem.h"
 #include "Misc/DefaultValueHelper.h"
 #include "LBLog.h"
 
@@ -243,6 +244,26 @@ namespace LBConsole
 		FConsoleCommandWithWorldAndArgsDelegate::CreateStatic(&Menu));
 	static FAutoConsoleCommandWithWorldAndArgs CmdCompleteGame(TEXT("lb.CompleteGame"), TEXT("Delete save, reset progress, return to the main menu"),
 		FConsoleCommandWithWorldAndArgsDelegate::CreateStatic(&CompleteGame));
+	/** lb.StormFX.Bolt [0|1]: a debug flash with a bolt. 0 a sky bolt, 1 a tower strike (at the actor tagged LB_StrikeTarget_Tower). */
+	static void StormFXBolt(const TArray<FString>& Args, UWorld* World)
+	{
+		ULBStormFXSubsystem* FX = World ? World->GetSubsystem<ULBStormFXSubsystem>() : nullptr;
+		if (!FX)
+		{
+			UE_LOG(LogLB, Warning, TEXT("lb.StormFX.Bolt: there is no storm FX subsystem in this world"));
+			return;
+		}
+		int32 Kind = 0;
+		if (Args.Num() > 0 && (!FDefaultValueHelper::ParseInt(Args[0], Kind) || (Kind != 0 && Kind != 1)))
+		{
+			UE_LOG(LogLB, Error, TEXT("lb.StormFX.Bolt: expected [0|1] (0 a sky bolt, 1 a tower strike)"));
+			return;
+		}
+		FX->RequestDebugBolt(Kind);
+	}
+
+	static FAutoConsoleCommandWithWorldAndArgs CmdStormFXBolt(TEXT("lb.StormFX.Bolt"), TEXT("lb.StormFX.Bolt [0|1]: a debug flash with a bolt (0 a sky bolt, 1 a tower strike). lb.StormFX.Enabled 0|1 turns the storm FX off or on"),
+		FConsoleCommandWithWorldAndArgsDelegate::CreateStatic(&StormFXBolt));
 	static FAutoConsoleCommandWithWorldAndArgs CmdStormFlash(TEXT("lb.Storm.Flash"), TEXT("lb.Storm.Flash [brightness=1] [profile=-1]: a lightning flash now (profile -1 random, 0 sheet, 1 double, 2 triple)"),
 		FConsoleCommandWithWorldAndArgsDelegate::CreateStatic(&StormFlash));
 	static FAutoConsoleCommandWithWorldAndArgs CmdStormIntensity(TEXT("lb.Storm.Intensity"), TEXT("lb.Storm.Intensity <0..1 | -1>: override the storm intensity, -1 clears"),

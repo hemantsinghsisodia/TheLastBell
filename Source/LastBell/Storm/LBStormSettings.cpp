@@ -47,7 +47,8 @@ void ULBStormSettings::FillPlanTagDefaults()
 		}
 	}
 
-	// Plan 5.6b: the scripted strikes. Profile Double throughout, Triple for the second TowerTop strike.
+	// Plan 5.6b: the scripted strikes. Profile Double throughout, Triple for the second TowerTop strike. P15: the arrival and TowerTop
+	// strikes hit the actor tagged LB_StrikeTarget_Tower (the top of the bell tower).
 	auto AddStrike = [this](const TCHAR* TagName, float Delay, int32 Count, float Spacing) -> FLBStormStrike*
 	{
 		const FGameplayTag Tag = FindTag(TagName);
@@ -71,6 +72,7 @@ void ULBStormSettings::FillPlanTagDefaults()
 		Arrival->LookTarget = FVector(12500.0, 2000.0, 3800.0);
 		Arrival->LookConeDegrees = 20.f;
 		Arrival->LookTimeout = 90.f;
+		Arrival->StrikeTargetTag = TEXT("LB_StrikeTarget_Tower");
 	}
 	AddStrike(TEXT("State.Ritual.1"), 1.2f, 1, 0.f);
 	AddStrike(TEXT("State.Ritual.2"), 1.2f, 1, 0.f);
@@ -78,6 +80,7 @@ void ULBStormSettings::FillPlanTagDefaults()
 	if (FLBStormStrike* TowerTop = AddStrike(TEXT("State.Event.TowerTop"), 2.0f, 3, 2.5f))
 	{
 		TowerTop->ProfileOverrides = { ELBFlashProfile::Double, ELBFlashProfile::Triple, ELBFlashProfile::Double };
+		TowerTop->StrikeTargetTag = TEXT("LB_StrikeTarget_Tower");
 	}
 	AddStrike(TEXT("State.Event.Finale"), 0.3f, 2, 0.8f);
 }

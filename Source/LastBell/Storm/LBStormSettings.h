@@ -7,6 +7,7 @@
 #include "LBStormSettings.generated.h"
 
 class UMaterialParameterCollection;
+class ULBStormFXSettings;
 
 /**
  * Every number of the storm (plan P14 section 5), as one data asset: DA_StormSettings in /Game/LastBell/Data. The defaults here are
@@ -28,6 +29,10 @@ public:
 	/** MPC_LB_Storm. Unset: the subsystem skips the material parameter writes. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Assets")
 	TSoftObjectPtr<UMaterialParameterCollection> Collection;
+
+	/** DA_StormFX: the rain, bolts and sparks of Phase 15 (ULBStormFXSubsystem). Unset: no storm FX. */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "FX")
+	TSoftObjectPtr<ULBStormFXSettings> FXSettings;
 
 	// ---- Story intensity (5.2) ------------------------------------------------------------------------------------------------
 
