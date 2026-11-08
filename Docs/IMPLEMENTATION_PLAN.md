@@ -367,7 +367,7 @@ Branch `claude/phase-14-lighting-storm`. Spec: `Docs/plans/P14_LIGHTING_STORM.md
 | P14-7 | Performance and report | owner + performance-engineer | P14-6 |
 | P14-8 | QA, docs, suite, playtest; PHASE 14 READY FOR YOUR REVIEW | qa-reviewer + lead + owner | all |
 
-**Status 2026-11-08:** P14-0 to P14-7 are done; P14-8 is in progress (docs and QA in parallel, then the full suite and the phase report). Key commits (`git log --oneline main..HEAD`):
+**Status 2026-11-08:** P14-0 to P14-8 are done; PHASE 14 READY FOR YOUR REVIEW (QA: no blocking defects, `Docs/ArtTest/lighting/p14_8_qa.md`). Key commits (`git log --oneline main..HEAD`):
 - **P14-0 and F0:** plan approved (d4cbf48); read-only survey (0c711b8).
 - **P14-B:** baseline readings (1584042, ea182be) and the "before" capture set (a38e0b6).
 - **P14-1 and P14-1b:** storm code (da7d195); glow actors, D-099 (spec c626dd7, code b42c69c).
@@ -378,7 +378,7 @@ Branch `claude/phase-14-lighting-storm`. Spec: `Docs/plans/P14_LIGHTING_STORM.md
 - **P14-6:** approval captures (a58b9d9); owner approved the viewpoints and the storm run-through (105d146).
 - **P14-7:** readings (b6621bc); game-thread re-read (313c5cc); closed as passed on Phase 14's own cost (03826ed).
 - **Outcome:** GPU passes at all six spots; the storm's game-thread cost is +0.16 ms and the rise against P14-B is story state, so the new R-64 goes to the Phase 18 optimisation pass. R-09, R-31 and R-59…R-63 are closed; D-101 and D-102 are logged.
-- **Suite:** 128 at P14-5c (128 `Result={Success}`, 0 failures); suite: pending final run.
+- **Suite:** final run with the editor closed (`Tools/build_and_test.ps1`, 2026-11-08): build succeeded, **128 passed, 0 failed**, 0 errors, 0 invalid tags.
 
 ## Deferred to Phase 14–15 (Lighting, VFX: storm work)
 Items the owner asked to fold into the storm pass. **Foliage wind is now in Phase 14** (P14 section 6, D-096: `MPC_LB_Storm` replaces the planned `MPC_LB_Wind`).
