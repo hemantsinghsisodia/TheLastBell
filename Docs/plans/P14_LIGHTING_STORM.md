@@ -1248,3 +1248,37 @@ Grade B on `PostProcess_Exposure` is unchanged (saturation (0.92, 0.95, 1.0, 0.8
 - Headless suite, editor open (`Saved/Logs/LBTests_P14_5c.log`): **128** `Result={Success}`, 0 `Result={Fail`, exit code 0; the only `Error:` line is the HttpListener port bind.
 
 **Not validated visually:** the courtyard at EV 1.40 in the editor world was set and read back by number only. Part B measured it in the PIE world (wide-view mean 0.0699); the owner's eye in P14-6 is the check.
+
+### P14-6 result (owner, 2026-11-08)
+**Captures** (PIE Simulate, no candle proxy, the P14-B method), in `Docs/ArtTest/lighting/after/`:
+- the 16 poses of `p14_viewpoints.json` with `DebugFreezeFlash` 0 (`p14_6_*.png`);
+- the 4 storm moments with `DebugFreezeFlash` 0.8 (`p14_6_*_flash.png`);
+- the before/after sheets `p14_6_sheet_1.png` and `p14_6_sheet_2.png`, and `p14_6_sheet_storm.png`.
+
+`DebugFreezeFlash` was set back to −1 and not saved.
+
+Mean luma, before → after (`cy_lantern_gate_3m` and the other close-ups changed by under 0.03):
+
+| View | Before | After |
+|---|---|---|
+| `cy_west_front_15m` | 0.097 | 0.070 |
+| `cy_tall_north_15m` | 0.103 | 0.074 |
+| `p14_cy_tower_reveal` | 0.091 | 0.063 |
+| `ch_tall_east_15m` | 0.195 | 0.107 |
+| `ch_candle_altar_3m` | 0.173 | 0.111 |
+| `ch_sacristy_3m` | 0.080 | 0.101 |
+| `cr_tall_ossuary_15m` | 0.012 | 0.011 |
+| `cl_tall_north_15m` | 0.044 | 0.036 |
+| `tw_mid_stair` | 0.085 | 0.073 |
+| `tw_belfry` | 0.056 | 0.046 |
+
+Storm moments (no flash → flash 0.8):
+
+| View | No flash | Flash 0.8 | Seen in the flash |
+|---|---|---|---|
+| tower reveal | 0.063 | 0.243 | |
+| chapel nave | 0.107 | 0.165 | the moved `RV_Chapel_Circle` reads on the floor |
+| garth | 0.036 | 0.166 | `RV_Garth_Drag` visible |
+| belfry | 0.046 | 0.083 | |
+
+**Owner: "approved, storm feels good"** after reviewing the sheets and running the section 10 storm beats in PIE: arrival, `Ritual.1` at the altar, `Ritual.2` in the crypt, `CloisterEntered` and the garth Warden reveal, `Ritual.3`, and `TowerTop`. R-09 closes (no noise or leak blocks approval).
