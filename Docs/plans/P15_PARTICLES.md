@@ -189,16 +189,25 @@ How to build them over MCP: MCP_NOTES "FX and fog" (`NiagaraToolset_System.Creat
 - **Emitter `Rain`.**
   - **Spawn:** rate `User.RainRate`, in a box with XY ±`User.BoxHalf` at Z = system Z + `User.SpawnHeight`, jittered ±200.
   - **Velocity and lifetime:** (0, 0, −rand(`User.FallMin`, `User.FallMax`)) + `User.Wind`; lifetime 3.5 s; drag 0.
-  - **Collision:** module mode **Distance Field** (GPU), **kill on collision**. The particle dies where the distance field has a surface, so a roof stops it.
+  - **Collision:** the placed module's static switch `GPU Collision Type` = "GPU Distance Fields" (S1), **kill on collision**, `Radius Calculation Type` Custom with `Particle Radius` 20 cm (S1 round 2). The particle dies where the distance field has a surface, so a roof stops it. The build recipe (tool calls and payloads) is `Docs/ArtTest/fx/s1/s1_build.md`.
   - **Below the camera:** kill when Z < system Z − 800.
   - **Sprite:** velocity-aligned, material `MI_LB_Rain`, size (0.7, rand 28–42) cm, colour alpha 0.7.
 - **Emitter `Splash`.**
-  - **Spawn and fall:** rate `User.SplashRate` in a disc of radius `User.SplashRadius` around the system XY, at Z = system Z + `User.SpawnHeight`. Velocity (0, 0, −20000) cm/s, so the drop falls almost at once; Distance Field collision with restitution 0 and friction 1, so it **rests on the first surface**.
-  - **Visibility:** alpha = 0 until `Collision.HasCollided` (the module's collided attribute), then 1.
-  - **After landing:** the particle lives 0.45 s.
-  - **Renderer 1:** a camera-facing crown sprite, `MI_LB_Splash`, SubUV over the post-collision age, size 6–10 cm.
-  - **Renderer 2:** a flat ring with custom facing (0, 0, 1), `MI_LB_Ripple`, size 4 → 22 cm over the age, alpha 0.6 → 0.
-  - **Fallback if the collided attribute can't be read over MCP:** a scratch-pad module that marches the global distance field down from the spawn point (24 steps, 0.5 × distance) and places the splash at the surface, also killing it if the march upward hits a surface first. This is the C approach in miniature. **F0.12:** MCP can't create scratch-pad or custom HLSL modules (only single-line input expressions), so this fallback needs a headless Unreal Python script or a simpler effect. S1 decides.
+  - **Spawn and fall (S1 round 2):**
+    - rate `User.SplashRate`, spawned in a disc of radius `User.SplashRadius` around the system XY, at Z = system Z + `User.SpawnHeight`;
+    - it falls at the rain speed, rand(`User.FallMin`, `User.FallMax`). The planned 20000 cm/s tunnelled through the 20 cm chapel slab in S1;
+    - collision as for `Rain`, with kill on collision **off**.
+  - **Pin at first contact.** These modules run after `Collision` and `Solve Forces and Velocity`, in this order, each its own SetParameters module:
+    1. `LandPos` = `Landed ? LandPos : Position`;
+    2. `Landed` = `Landed || HasCollided`;
+    3. `Position` = `Landed ? LandPos : Position`, and `Velocity` = `Landed ? 0 : Velocity`;
+    4. `LandAge` = `Landed ? LandAge + Engine.DeltaTime : 0`;
+    5. the colour and alpha (0 until `Landed`);
+    6. `DataInstance.Alive` = `LandAge <= 0.45`.
+
+    In S1 round 1, splashes left to rest slid off the sloped roofs and fell through. The pin fixed this (0 splash pixels under any roof).
+  - **Renderer 1:** a camera-facing crown sprite, `MI_LB_Splash`, SubUV driven by `LandAge` ÷ 0.45, size 6–10 cm.
+  - **Renderer 2:** a flat ring with custom facing (0, 0, 1), `MI_LB_Ripple`, size 4 → 22 cm and alpha 0.6 → 0 over `LandAge`. Bind `spriteSizeBinding` and `spriteFacingBinding` to particle attributes (S1 Q5: works).
 - **Emitter `GroundMist`.**
   - **Spawn:** rate 5 × `User.Mist` /s, in a ring of radius 600–2200 cm around the camera, at Z = system Z − 120 ± 40.
   - **Motion and size:** lifetime 6 s, velocity `User.Wind` × 0.15, size 250–450 cm, rotation random.
@@ -600,3 +609,32 @@ Every point is at least 111 cm from a WalkPath segment and 146 cm from an AI poi
   - The hidden collision cube `Tw_Roof` is not the cause: its component has `bVisible` false, so it is not in the scene.
   - The likely cause is that the hollow pyramid `SM_LB_Tw_Roof_BrokenSW` builds a solid mesh distance field, which seals the hole.
   - **Fix (round 2):** build that mesh's distance field as two-sided. If MCP can't set it, a small local rain emitter under the collapse inside the belfry does the job in P15-6.
+
+### S1 round 2 and verdict (2026-11-08)
+- **Build:** commit 6db0702, by the agent.
+  - The splash pin chain is in section 6.1. Fall is 1250 cm/s and `RainRadius` 20.
+  - MCP could not reach `bGenerateDistanceFieldAsIfTwoSided` (`StaticMesh.sourceModels` is not exposed). The owner ticked "Two-Sided Distance Field Generation" on `SM_LB_Tw_Roof_BrokenSW`, LOD 0 build settings, by hand, and applied it without saving.
+- **Captures:** 7 poses, `_r2on` and `_r2off`, plus `s1_tw_belfry_sw` (12750, 1700, 2700, 12, 180). That extra pose was added because the round 1 belfry pose looks into the bell, which hides the south-west corner.
+- **`s1_leak.py`, inside the roofed rects (round 2 on against off):**
+
+  | Area | Rain pixels | Splash pixels |
+  |---|---|---|
+  | Chapel, both views | 0 | 0 |
+  | Cloister south walk | 0 | 0 |
+  | Tower mid stair | 0 | 0 |
+
+  In round 1 the cloister walk had 2287 / 3198 splash pixels and the chapel 328.
+- **What shows where it should:**
+  - splashes appear only on open ground, under the openings, and on roof tops seen through openings;
+  - the cloister north hole shows its rain column and floor splashes;
+  - the belfry's south-west corner gets rain and floor splashes through the collapse (479 rain and 231 splash pixels in the new pose).
+- **Verdict: approach A passes.** Fallbacks B and C are not needed.
+- **The final `NS_LB_Rain`** uses:
+  - distance-field kill with a 20 cm radius;
+  - splashes pinned at first contact, falling at rain speed;
+  - the second renderer for the ring.
+- **Cost:** the global distance field update is about 0 ms in a static view (round 1, Q6). The moving-camera cost is measured in P15-10.
+- **Carry-over to P15-6:** `SM_LB_Tw_Roof_BrokenSW` must keep "Two-Sided Distance Field Generation" on. MCP can't set it, so either the owner's in-memory change is saved deliberately (that one package only), or it is set again by hand, or by headless Unreal Python with the editor closed (`StaticMeshEditorSubsystem` LOD build settings).
+- **Clean-up:**
+  - `s1_spike.py remove --yes` deleted the 5 spike actors, the 2 spike assets and the `/Game/LastBell/FX/Spike` folder. `FX_FirePit_Smoke` is untouched.
+  - The map stays dirty and unsaved: its contents match the saved file again.
