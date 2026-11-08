@@ -1282,3 +1282,52 @@ Storm moments (no flash → flash 0.8):
 | belfry | 0.046 | 0.083 | |
 
 **Owner: "approved, storm feels good"** after reviewing the sheets and running the section 10 storm beats in PIE: arrival, `Ritual.1` at the altar, `Ritual.2` in the crypt, `CloisterEntered` and the garth Warden reveal, `Ritual.3`, and `TowerTop`. R-09 closes (no noise or leak blocks approval).
+
+### P14-7 result (owner's readings, 2026-11-08)
+**Method.** Section 11 on the branch after P14-6 (105d146): PIE new window, `scalability 2`, `r.SetRes 1920x1080w` (render 1664x846, 87 %), `stat unit` + `stat gpu`, `lb.Warden.Enabled 0`, `lb.Storm.Intensity 1` (flashes allowed, wind on with the P14-5 values), player candle in view. At each spot: `BugItGo`, a short settle, `shot showui`.
+- Screenshots: `Docs/ArtTest/lighting/perf/p14_7_perf_1_courtyard`, `_1b_courtyard_stormoff`, `_2_chapel`, `_2b_chapel_stormoff`, `_3_ossuary`, `_4_cloister`, `_5_midstair`, `_6_belfry` (`.png`).
+- Every number below is read from those screenshots. The "GPU" and "Game" columns are the `stat unit` GPU Time and Game lines.
+- The objective on screen was "Follow the sound of the bell" at all eight readings. P14-B was read at a different objective at each spot (the table above), so story state is not matched with P14-B.
+
+| Spot | GPU (ms) | Game (ms) | P14-B GPU / Game | Limit GPU / Game | Result |
+|---|---|---|---|---|---|
+| Courtyard | 13.25 | 11.94 | 13.12 / 13.30 | 13.72 / 13.60 | **PASS** (GPU +0.13, game -1.36) |
+| Chapel | 13.55 | 11.14 | 14.49 / 13.04 | 15.09 / 13.34 | **PASS** (GPU -0.94, game -1.90) |
+| Crypt ossuary | 13.07 | 11.44 | 13.10 / 8.34 | 13.70 / 8.64 | **FAIL**: game +3.10 over P14-B, 2.80 over the limit; GPU passes |
+| Cloister bells | 11.30 | 10.87 | 12.86 / 8.06 | 13.46 / 8.36 | **FAIL**: game +2.81 over P14-B, 2.51 over the limit; GPU passes |
+| Tower mid-stair | 12.19 | 11.01 | 12.21 / 8.31 | 12.81 / 8.61 | **FAIL**: game +2.70 over P14-B, 2.40 over the limit; GPU passes |
+| Belfry | 11.30 | 10.82 | 11.55 / 8.02 | 12.15 / 8.32 | **FAIL**: game +2.80 over P14-B, 2.50 over the limit; GPU passes |
+
+- **Rule parts.** GPU ≤ 16.6 ms and GPU ≤ P14-B + 0.6 ms pass at all six spots (headroom to 16.6: chapel 3.05, courtyard 3.35, ossuary 3.53, tower 4.41, cloister and belfry 5.30). The game-thread part fails at four spots, all interior or tower.
+- **Storm-off readings (`lb.Storm.Enabled 0`).** Courtyard GPU 11.89, game 11.36, prims 66.9K; chapel GPU 14.10, game 11.47, frame 19.89.
+
+  | Spot | GPU on / off | GPU cost | Game on / off | Game cost |
+  |---|---|---|---|---|
+  | Courtyard | 13.25 / 11.89 | +1.36 | 11.94 / 11.36 | +0.58 |
+  | Chapel | 13.55 / 14.10 | -0.55 | 11.14 / 11.47 | -0.33 |
+
+  - **These are not clean storm costs.** The courtyard off-reading shows 66.9K prims against 138.6K storm-on, so the two views didn't hold the same content (the void P14-B first courtyard reading also showed 66.4K).
+  - The chapel off-reading was taken in a hitch: Frame 19.89 ms, graphics queue avg 22.00 / max 66.66 ms, compute max 22.41 ms. Its negative cost is a sampling artifact, not a saving.
+  - Neither pair supports a number for the storm's cost. If one is needed, re-read both at the same prims count, settled for 30 s or more.
+- **VRAM, draws, prims.**
+
+  | Spot | VRAM (GB) | Draws | Prims | P14-B draws / prims |
+  |---|---|---|---|---|
+  | Courtyard | 3.81 / 5.03 | 745 | 138.6K | 745 / 336.9K |
+  | Courtyard, storm off | 3.79 / 5.03 | 746 | 66.9K | |
+  | Chapel | 3.81 / 5.03 | 699 | 343.2K | 667 / 343.7K |
+  | Chapel, storm off | 3.37 / 5.03 | 704 | 343.3K | |
+  | Ossuary | 3.37 / 5.03 | 652 | 157.9K | 464 / 148.6K |
+  | Cloister bells | 3.37 / 5.03 | 440 | 59.9K | 280 / 57.2K |
+  | Tower mid-stair | 3.37 / 5.03 | 610 | 63.3K | 436 / 63.5K |
+  | Belfry | 3.37 / 5.03 | 402 | 28.1K | 225 / 26.0K |
+
+  - VRAM peak 3.81 / 5.03 GB (P14-B 4.03 / 4.97).
+  - **Draws are +160 to +190 against P14-B at the ossuary, cloister, tower and belfry, with prims within 9.3K of P14-B.** Those are the same four spots whose game thread fails, by 2.4 to 2.8 ms over the limit. The courtyard (draws unchanged) and chapel (+32) pass the game-thread limit and read lower than P14-B. The cause isn't determined.
+- **Passes (graphics avg), top five.** Courtyard: RenderDeferredLighting 3.18, Postprocessing 2.72, TSR 1.98, Lights 1.90, Shadow Depths 1.50. Chapel: RenderDeferredLighting 3.87, Lights 2.76, Postprocessing 2.71, TSR 1.99, Shadow Depths 1.35. Ossuary: RenderDeferredLighting 3.17, Postprocessing 2.40, Lights 1.89, TSR 1.74, Shadow Depths 1.42. Cloister: RenderDeferredLighting 4.39, Postprocessing 3.11, Lights 2.95, TSR 2.29, Nanite BasePass 1.71. Tower: RenderDeferredLighting 2.74, Postprocessing 2.34, TSR 1.69, Lights 1.57, Nanite BasePass 1.09. Belfry: RenderDeferredLighting 3.04, Postprocessing 2.86, TSR 2.11, Lights 1.86, Nanite BasePass 1.13. The storm-off pair is in the PERFORMANCE_BUDGET row only by its GPU Time.
+- **Settle time.** The log has the time from `BugItGo` to the shot: courtyard 18 s, chapel 11 s, ossuary 6.8 s, cloister 4.7 s, tower 5.6 s, belfry 5.1 s. After `lb.Storm.Enabled 0`: courtyard 5.5 s, chapel 6.2 s. The void P14-B courtyard reading (66.4K prims, game 25.06 ms) showed that an unsettled scene reads wrong, so the short settles are a caveat on all of the 4.7 to 6.8 s readings.
+  - Cloister (Frame 18.04, graphics max 40.69 ms) and belfry (Frame 17.00, max 39.65 ms) show sampling hitches, so their graphics-queue averages (15.28 and 14.01) are inflated; the GPU Time line used here is not.
+  - The ossuary (6.8 s) and tower (5.6 s) samples are clean (Frame 16.67 and 16.68, no graphics max above 14.83 ms), and their game thread (11.44 and 11.01) is over the limit by the same margin as the cloister and belfry. That points away from a settle artifact, but a longer settle would confirm it.
+  - The courtyard storm-on reading is the one to doubt: 138.6K prims against 336.9K at P14-B, after 18 s of settle.
+- **R-60 (wind WPO cost).** The courtyard passes both its limits (GPU 13.25 ≤ 13.72, game 11.94 ≤ 13.60), so R-60 closes and the section 11 ladder isn't needed for the courtyard. The courtyard prims caveat above applies.
+- **Open for the lead and the owner.** The game-thread FAIL at the four interior spots. Nothing was changed in the project. The section 11 ladder is written for the courtyard only.
