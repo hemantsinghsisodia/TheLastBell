@@ -185,9 +185,15 @@ void ULBWardenAnimInstance::LogAnimDebug(float DeltaSeconds)
 		if (BlendSpace)
 		{
 			const FBlendParameter& Parameter = BlendSpace->GetBlendParameter(0);
+#if WITH_EDITOR
+			// GetBlendSpaceData() is editor-only in UE 5.8; non-editor builds print the axis and sample count without it.
 			const FBlendSpaceData& RuntimeData = BlendSpace->GetBlendSpaceData();
 			Axis = FString::Printf(TEXT("axis '%s' %.0f..%.0f, %d samples, runtime data: %d segments %d triangles%s"), *Parameter.DisplayName, Parameter.Min, Parameter.Max,
 				BlendSpace->GetBlendSamples().Num(), RuntimeData.Segments.Num(), RuntimeData.Triangles.Num(), RuntimeData.IsEmpty() ? TEXT(" (EMPTY: the blend space returns no clip)") : TEXT(""));
+#else
+			Axis = FString::Printf(TEXT("axis '%s' %.0f..%.0f, %d samples, runtime data: n/a (non-editor build)"), *Parameter.DisplayName, Parameter.Min, Parameter.Max,
+				BlendSpace->GetBlendSamples().Num());
+#endif
 			for (const FBlendSample& Sample : BlendSpace->GetBlendSamples())
 			{
 				Axis += FString::Printf(TEXT(" {%s at %.0f rate %.3f}"), *GetNameSafe(Sample.Animation), Sample.SampleValue.X, Sample.RateScale);
