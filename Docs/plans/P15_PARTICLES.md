@@ -663,3 +663,21 @@ Every point is at least 111 cm from a WalkPath segment and 146 cm from an AI poi
   - the meshes have Nanite off and no collision, and the cloth bounds extension is ±60;
   - the cloth faces +Y after Unreal's Y mirror.
 - **Still to check:** the cloth's UV V orientation and its front face, with `M_LB_Cloth`, in P15-4.
+
+### P15-4 and P15-5 (2026-11-08)
+- **P15-4 materials** (56d9ce0, 9c89dd7):
+  - 9 masters, `MF_LB_ClothWave` and 13 MIs; all compile with 0 errors and the MIs read back. Rebuild with `Tools/fx/p15_4_materials.py`. Thumbnails are in `Docs/ArtTest/fx/p15_4/`.
+  - **Lead decision:** `M_LB_Rain`, `M_LB_Splash`, `M_LB_Ripple` and `M_LB_RainCurtain` are **Additive**, with every mask in Emissive. With translucent blending, the low bases (0.035 and similar) would have darkened lit backgrounds. Opacity still scales additive output, so it is left unconnected.
+  - **Accepted additions:** flame sway scales with the object's size; a sprite teardrop for the torch flame; per-MI `ClothLengthCm` and `ClothWidthCm`; the Dark tint (0.20, 0.18, 0.16) (a P15-7 item); `MI_LB_WaterMist` the same as `MI_LB_Mist`.
+  - The mesh slot defaults are set on the 6 FX meshes.
+- **P15-5 Niagara** (5d58555): 7 systems, each UpToDate with 0 errors. `Tools/fx/p15_5_niagara.py check` gives 467 PASS (re-run by the lead). The record is `Docs/ArtTest/fx/p15_5_build.md`.
+  - **`NS_LB_Rain`:** the nine user parameters match the C++. Rain velocity uses `RandomRangeVector`.
+  - **Splash:** the collision radius is **6**, as in S1 round 2 (lead: accepted; 20 would hold splashes 20 cm above the floor).
+  - **Drips:** MCP has no event-handler tool, so `NS_LB_Drip` and `NS_LB_EaveDrips` use the fallback. Each drop is one particle pinned at −`FallHeight`, and a visibility tag switches it from the drop renderer to the crown and the ring. The ring shows only with `bWater`.
+  - **Sparks:** the light renderer is enabled per particle on every 20th particle.
+  - **Not seen running:** Niagara thumbnails aren't supported, so the first look is in P15-6/P15-7. Things to look at:
+    - the drip timing;
+    - the ground-mist plane;
+    - the upright torch flames;
+    - the sparks light and how the system completes;
+    - the GPU rain count.
