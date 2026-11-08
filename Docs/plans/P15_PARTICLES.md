@@ -164,11 +164,11 @@ All the FX masters read `MPC_LB_Storm` where they say so. **Never `set_parent` a
 | `M_LB_Splash` | Translucent, Unlit | SubUV 4 × 4 crown, colour as rain, × (0.08 + 1.2 F) | `MI_LB_Splash` |
 | `M_LB_Ripple` | Translucent, Unlit | `T_LB_FX_Ripple` × alpha over life, × (0.05 + 1.0 F); depth fade 4 cm | `MI_LB_Ripple` |
 | `M_LB_Bolt` | Translucent, Unlit, additive, `Apply Fogging` off, two-sided, `Disable Depth Test` off | atlas cell from scalar `AtlasIndex` (4 × 2), colour `FlashTint` × `BoltGain` 40 × F (MPC `LightningFlash`, so the bolt flickers with the pulses and is 0 at rest) | `MI_LB_Bolt` |
-| `M_LB_Flame` | Translucent, Unlit, additive | colour ramp over UV.y (core (1, 0.95, 0.8) → (1, 0.55, 0.15) → (0.6, 0.12, 0.02)), shape mask from UV, UV distortion by `T_LB_FX_Noise` panning up at `NoiseSpeed`; flicker: emissive × (0.85 + 0.3 × noise(time × `FlickerSpeed` + per-instance random)); static switch `bSprite` (radial mask for particles instead of the mesh UV); WPO sway for meshes: object-space height × 0.15 cm × sin | `MI_Flame_Candle` (calm: `NoiseSpeed` 0.6, `FlickerSpeed` 7, `EmissiveStrength` 8, `bSprite` false), `MI_Flame_Torch` (turbulent: 1.4, 11, 12, `bSprite` true) |
+| `M_LB_Flame` | Translucent, Unlit, additive | colour ramp over UV.y (core (1, 0.95, 0.8) → (1, 0.55, 0.15) → (0.6, 0.12, 0.02)), shape mask from UV, UV distortion by `T_LB_FX_Noise` panning up at `NoiseSpeed`; flicker: emissive × (0.85 + 0.3 × noise(time × `FlickerSpeed` + per-instance random)); static switch `bSprite` (radial mask for particles instead of the mesh UV); WPO sway for meshes: object-space height × 0.15 cm × sin. **Mesh mode (P15-4 note):** `SM_LB_Prop_CandleFlame_A` is a lathed 3 × 3 × 6.5 cm teardrop (`build_props.py` `build_candle_flame`), so the shape is the geometry: the ramp uses the normalised local height h = (LocalPosition.z − ObjectLocalBounds.min.z) ÷ bounds size z, not UV; the edges are softened by emissive × (1 − Fresnel(exponent 2) × 0.7); the noise distortion offsets h | `MI_Flame_Candle` (calm: `NoiseSpeed` 0.6, `FlickerSpeed` 7, `EmissiveStrength` 8, `bSprite` false), `MI_Flame_Torch` (turbulent: 1.4, 11, 12, `bSprite` true) |
 | `M_LB_DustMote` | Translucent, Unlit, additive | `T_LB_FX_SoftDot` × (0.55, 0.62, 0.80) × `DustBrightness` 0.6 × (1 + 2 F) × camera fade | `MI_LB_DustMote` |
 | `M_LB_Mist` | Translucent, Unlit, depth fade 60 cm | `T_LB_FX_MistPuff` × (0.5, 0.55, 0.62) × (0.06 + 0.5 F) × opacity 0.08 | `MI_LB_Mist`, `MI_LB_WaterMist` |
 | `M_LB_RainCurtain` | Translucent, Unlit, two-sided | `T_LB_FX_RainStreak` tiled 6 × 1, panning down 1.2 /s plus wind skew, × (0.02 + 1.6 F); fades out under 3000 cm from the camera | `MI_LB_RainCurtain` |
-| `M_LB_Cloth` | Surface, Opaque, Default Lit, two-sided, `Max WPO Displacement` 60 | fabric textures × `Tint`; WPO = `MF_LB_ClothWave` | `MI_Cloth_Linen_Dark`, `MI_Cloth_Linen_Red` (an old faded red, (0.35, 0.08, 0.06)) |
+| `M_LB_Cloth` | Surface, Opaque, Default Lit, two-sided, `Max WPO Displacement` 60 | fabric textures × `Tint`; WPO = `MF_LB_ClothWave` | `MI_Cloth_Linen_Dark` (strips, `AmplitudeCm` 30), `MI_Cloth_Linen_Dark_Sheet` (the sheet, 20), `MI_Cloth_Linen_Red` (the banners, 25; an old faded red, (0.35, 0.08, 0.06)) |
 
 **`MF_LB_ClothWave`** (`/Game/LastBell/Materials/Functions/`):
 - **Inputs:** `AmplitudeCm` (35), `WavelengthCm` (120), `PhaseScale` (2.5), `WhipAmount` (0.25).
@@ -542,7 +542,7 @@ Every point is at least 111 cm from a WalkPath segment and 146 cm from an AI poi
 | `Slit_F03` | `SM_LB_Prop_ClothStrip_B` | (12500, 1546, 778.1) | (0, 0, 0) | Dark |
 | `Slit_F07` | `SM_LB_Prop_ClothStrip_B` | (12500, 1546, 1687.3) | (0, 0, 0) | Dark |
 | `Cloister_N_1` | `SM_LB_Prop_ClothBanner_A` | (10750, 2256, 555) | (0, 0, 0) | Red |
-| `Cloister_W_1` | `SM_LB_Prop_ClothSheet_A` | (10244, 1850, 520) | (0, 90, 0) | Dark |
+| `Cloister_W_1` | `SM_LB_Prop_ClothSheet_A` | (10244, 1850, 520) | (0, 90, 0) | Dark_Sheet |
 | `Cloister_S_2` | `SM_LB_Prop_ClothStrip_A` | (11050, 1344, 555) | (0, 180, 0) | Dark |
 | `Gate_Inner` | `SM_LB_Prop_ClothStrip_A` | (306, 400, 600) | (0, −90, 0) | Dark |
 
