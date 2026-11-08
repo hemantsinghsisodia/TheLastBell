@@ -380,6 +380,33 @@ Branch `claude/phase-14-lighting-storm`. Spec: `Docs/plans/P14_LIGHTING_STORM.md
 - **Outcome:** GPU passes at all six spots; the storm's game-thread cost is +0.16 ms and the rise against P14-B is story state, so the new R-64 goes to the Phase 18 optimisation pass. R-09, R-31 and R-59…R-63 are closed; D-101 and D-102 are logged.
 - **Suite:** final run with the editor closed (`Tools/build_and_test.ps1`, 2026-11-08): build succeeded, **128 passed, 0 failed**, 0 errors, 0 invalid tags.
 
+## Phase 15 — Particles: task breakdown
+
+Branch `claude/phase-15-particles`. Spec and plan: `Docs/plans/P15_PARTICLES.md` (D-103, D-104, D-105). The owner approved the plan on 2026-11-08:
+- constant heavy rain outdoors;
+- sky bolts plus scripted tower strikes;
+- animated candle flames, and Niagara torches;
+- wind-driven cloth (material);
+- rain occlusion by distance-field collision, with a spike first (fallbacks: baked roof map, then hand-placed rain boxes).
+
+| Task | Scope | Owner | Depends on |
+|---|---|---|---|
+| P15-0 | Plan approval; D-103…D-105, R-65…R-69 | lead + owner | — |
+| F0 | Read-only survey: flames and their owners, fire actors, roofs and openings, tower top, shafts, crypt water, ceilings, eaves, cloth points, curtain spots, sky radius, Niagara toolset, global distance field | lead [EDITOR read-only] | P15-0 |
+| S1 | Rain occlusion spike (distance-field collision, thin roofs, MCP Niagara capability); verdict before P15-5 | lighting-vfx [EDITOR]; captures lead + owner | F0 |
+| P15-1 | `ULBStormFXSubsystem`, `ULBStormFXSettings`, `ALBLightningBolt`, `LBStormFXLogic`, strike targets and `OnLightningStrike`, console, tests | gameplay-programmer (Unreal closed for the build) | P15-0 |
+| P15-2 | Procedural FX textures; CC0 fabric | technical-artist + asset-curator | P15-0 |
+| P15-3 | Cloth and FX card meshes (Blender) | technical-artist | P15-0 |
+| P15-4 | FX materials and `MF_LB_ClothWave` | technical-artist [EDITOR] | P15-2 |
+| P15-5 | Niagara systems | lighting-vfx [EDITOR] | S1, P15-4 |
+| P15-6 | Data assets and level work | lighting-vfx [EDITOR] | P15-1, P15-3, P15-5 |
+| P15-7 | Look session | lead + owner | P15-6 |
+| P15-8 | Apply the choices | lighting-vfx [EDITOR] | P15-7 |
+| P15-9 | Viewpoints, occlusion checks, storm run-through | lead + owner | P15-8 |
+| P15-10 | Performance (FX on/off at a matched story state) | owner + performance-engineer | P15-9 |
+| P15-11 | QA, docs, full suite; PHASE 15 READY FOR YOUR REVIEW | qa-reviewer, docs agent, lead | all |
+
+**Status 2026-11-08:** P15-0 done. F0 is next (Unreal open).
 ## Deferred to Phase 14–15 (Lighting, VFX: storm work)
 Items the owner asked to fold into the storm pass. **Foliage wind is now in Phase 14** (P14 section 6, D-096: `MPC_LB_Storm` replaces the planned `MPC_LB_Wind`).
 
