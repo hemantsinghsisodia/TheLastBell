@@ -1355,3 +1355,45 @@ Storm moments (no flash → flash 0.8):
 - The storm's game-thread cost is within noise (mean +0.16 ms over four on/off pairs).
 - **R-60 closes.** The courtyard GPU is 13.25 against a limit of 13.72 with the stronger wind.
 - The ~3 ms story-state game-thread difference at the game start goes to the Phase 18 optimisation pass as a new risk (added to `RISKS.md` in P14-8).
+
+### P14-8 result (2026-11-08)
+**Docs** (8cbb902, 01369a7):
+- `TECHNICAL_DESIGN.md` section 14, "Storm and light", plus a `Storm/` line in section 2;
+- D-101 (the owner's look choices) and D-102 (exposure method, P14-7 closure);
+- RISKS: R-09, R-31 and R-59 to R-63 closed, and the new R-64 (start-state game thread, Phase 18);
+- IMPLEMENTATION_PLAN rows and status;
+- MCP_NOTES "Lighting sessions (Phase 14)";
+- a PERFORMANCE_BUDGET row for the re-read.
+
+**QA** (`Docs/ArtTest/lighting/p14_8_qa.md`): **no blocking defects** (no P0 or P1).
+- Checks: `p14_5_apply.py` 81/0, `p14_3_level.py` 62/0, `p14_4_wind_fix.py` 34 PASS, `p14_wpo_distance.py` 5/0.
+- Git hygiene for 31 commits: binaries in LFS, no licensed assets, no never-save package changed, every commit with a trailer.
+- No new Phase 14 log errors or warnings.
+
+**Q1 (P2), section 2 item 2, "a sealed room does not light up": measured and PASSES.** `cr_torch_t1_3m`, PIE Simulate, no candle, alternating F = 0 and F = 0.8 twice (`Docs/ArtTest/lighting/after/p14_8_cr_torch_t1_3m_f0a/f8a/f0b/f8b.png`):
+- F = 0: 0.0714 and 0.0733;
+- F = 0.8: 0.0724 and 0.0719;
+- mean change **−0.3 %** (rule: < 10 %), within the torch's own flicker.
+
+**Deferred to Phase 18 (P3, no change now):**
+- **C1:** the C++ defaults of the four wind fields are still the plan's (2.4 / 0.65 / 0.4 / 0.12). The tuned values live only in `DA_StormSettings`. TECHNICAL_DESIGN 14 says so, and `p14_5_apply.py --check` guards the asset.
+- **C2:** `DebugFreezeFlash` and `DebugIntensityOverride` are not compiled out in Shipping. `Monastery.StormSetup` and the check script assert −1.
+- **C3 to C7, C9:**
+  - the MPC is written every frame;
+  - a 5 Hz actor iteration runs when no Warden exists;
+  - a pending look gate holds back ambient flashes and reveals for up to 90 s;
+  - the activation log reads "0 zones";
+  - a group is silent on a Static light;
+  - grass 38 cm is 2 cm under the 40 cm WPO cap.
+- **C8:** test gaps:
+  - the look-gated strike;
+  - multi-strike sequences;
+  - `TowerTop` and `Finale`;
+  - freeze and `lb.Storm.Enabled 0`;
+  - rotated-zone containment;
+  - `GetExposureAt` in the real level;
+  - MPC wind and exposure asserts.
+
+**Still open, seen by number only:**
+- `SHA_Lantern_Entry` glass after `Ritual.3`: its light reads 0, and it uses the same code as `CLA_Lantern_West`, which was seen dark.
+- The `State.Event.Finale` strike: a Phase 17 tag.
