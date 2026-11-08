@@ -719,3 +719,48 @@ Every point is at least 111 cm from a WalkPath segment and 146 cm from an AI poi
     - the crypt drip points against the vault;
     - the strike-target tip;
     - the player's flame size.
+
+### P15-7: look session (2026-11-09, owner in Play, lead live over MCP)
+Live tuning used `Tools/fx/p15_7_live.py` (state / fx / mi / user / pawn / tp; never saves). Every value below was applied in memory and judged by the owner, unless marked otherwise.
+
+**Findings:**
+- **Rain at rest was invisible.** The planned base brightness (0.035) only showed in a flash, which is why the owner saw rain only during lightning.
+- **Bolts draw.** Sky bolts at 60000 cm with the top 22000 cm up sat 1–20° above the horizon, behind the courtyard walls and the chapel. A held test bolt became visible once it was moved closer and higher. The tower strike (`lb.StormFX.Bolt 1`, seen from (600, 0)) works.
+- **Distant rain curtains fail.** A tiled streak card reads as glowing pillars or corrugated sheets at every tiling (6×1, 48×4, 200×8), with a hard top edge.
+- **Rain through the roof openings** (chapel hole, belfry collapse) is there but unreadable. The 0.7 cm streaks are sub-pixel from 5–10 m, and seen from below they show only as dots.
+- **The player's flame vibrates when the player moves.** `M_LB_Flame`'s per-instance random for meshes hashes `ObjectPositionWS`, so a moving flame gets a new flicker, noise and sway phase every frame. Static candles are unaffected, and sprites use `ParticleRandom`.
+- **Drips are too faint.** The eave lines drop 6/s spread over up to 11 m, as 0.5 × 5 cm drops. The crypt drips are too faint as well.
+
+**Owner choices (the P15-8 spec):**
+
+| Item | Value |
+|---|---|
+| `DA_StormFX.RainSpawnRate` | **50000** |
+| `DA_StormFX.SplashRate` | **1600** |
+| `DA_StormFX.SkyBoltDistance` / `SkyBoltTopHeight` | **30000 / 30000** (bolt spans about 17–45° elevation; size and brightness approved) |
+| `DA_StormFX.SkyBoltChance` | Ambient **0.9**; the rest unchanged |
+| `MI_LB_Rain.RainBase` | **0.25** |
+| `MI_LB_Splash.SplashBase` | **0.18** |
+| `MI_LB_Ripple.RippleBase` | **0.2** (not judged on its own) |
+| `MI_LB_WaterMist` `MistBase` / `MistOpacity` | **0.28 / 0.26** |
+| `MI_Flame_Torch.EmissiveStrength` | **7** |
+| Torch fires `User.Scale` | `FX_Torch_Fire_NS` and `FX_Crypt_Torch_T1/T2/T3_NS` **0.7**; `FX_Crypt_Brazier_NS` **1.3**; `FX_FirePit_Fire` stays 1.4 (not judged; P15-9) |
+| `MI_Cloth_Linen_Dark.AmplitudeCm` | **18** |
+| Cloth | **4 strips stay:** `Slit_F03`, `Slit_F07`, `Cloister_S_2`, `Gate_Inner`. **Delete 6:** `Belfry_N2`, `Cloister_N_1`, `Cloister_W_1`, `Belfry_W1`, `Belfry_E1`, `Belfry_S2` |
+| Rain curtains | **delete all 8** `FX_RainCurtain_*`. `MI_LB_RainCurtain` is not saved (its in-memory tiling and base changes are discarded). |
+| Candle flames (chapel, crypt) | good as they are |
+| Shaft dust (chapel) | good as it is |
+| Player flame | world scale **0.7** (relative scale (23.333, 23.333, 5.8333), 4.55 cm tall), plus the vibration fix |
+
+**New work agreed in the session:**
+- **Rain columns.** A denser local rain column under each of the 3 roof openings (chapel `Ch_Roof_S1` hole, cloister north walk hole, belfry south-west collapse), about 4–5 times the open-rain density.
+- **Drips.** Denser and bigger: eave lines about 4 drops per metre per second, larger drops and crowns; crypt drips the same drop and crown size.
+- **Player flame fix.** A fixed per-instance seed for the moving flame, via a new MI used only by `BP_LBCharacter.CandleFlame`.
+
+**Not judged, left to P15-9:** the outdoor ground mist, the strike sparks close up, the fire-pit fire size, the crypt drip positions.
+
+**State after the session:**
+- These are live, unsaved and dirty in memory: `DA_StormFX`, the MIs above and `MI_LB_RainCurtain`.
+- The map is dirty only from `bHidden` on the 6 cloth pieces and the 8 curtains (P15-8 deletes them).
+- `DA_StormSettings` debug fields are back to −1 (it was set to 0.8 and back during the test, so it may read dirty).
+- P15-8 sets every value explicitly and saves deliberately. If the editor is closed first, choose Don't Save; P15-8 re-applies everything from this table.
