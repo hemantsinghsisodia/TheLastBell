@@ -1219,3 +1219,32 @@ Method: `Docs/plans/P14_5_APPLY.md` Part B. `DebugFreezeFlash` 0 in memory (rest
 **R-09** (noise and leaks): nothing in the 32 Part B captures blocks approval, so there is no fix.
 
 **For Part C:** write `PP_Outdoor_Night` EV100 min = max **1.40** to the editor world. Nothing else changes.
+
+### P14-5c result (2026-11-08)
+Part C of `Docs/plans/P14_5_APPLY.md`: write the final exposure value from Part B to the editor world. Editor open on `L_Monastery`, PIE off, nothing captured.
+
+**Change (one actor, one field pair).** `PP_Outdoor_Night` `settings.autoExposureMinBrightness` and `autoExposureMaxBrightness`: **1.15 to 1.40** (read back 1.399999976 / 1.399999976 as floats), `bOverride_AutoExposureMinBrightness` and `bOverride_AutoExposureMaxBrightness` both still true. Diff of the whole `settings` struct before and after: only those two keys changed. No section 8 fallback and no R-09 fix were needed (P14-5b).
+
+**Read-back of every area volume (EV min = max / priority / blend / unbound / overrides):**
+
+| Volume | EV | Priority | Blend | Unbound | Overrides |
+|---|---|---|---|---|---|
+| `PostProcess_Exposure` | 3 | 0 | 100 | true | EV pair + the 6 grade B overrides |
+| `PP_Outdoor_Night` | **1.40** | 1 | 500 | false | EV pair |
+| `PP_Cloister` | 0.65 | 1 | 300 | false | EV pair |
+| `PP_Chapel` | 1.6 | 2 | 200 | false | EV pair |
+| `PP_Tower` | 0.65 | 3 | 200 | false | EV pair |
+| `PP_Crypt` | 0.2 | 1 | 300 | false | EV pair + `AutoExposureMethod` + `BloomIntensity` |
+
+Grade B on `PostProcess_Exposure` is unchanged (saturation (0.92, 0.95, 1.0, 0.85), contrast (1, 1, 1, 1.06), gamma shadows (0.97, 1.0, 1.06, 1), gain highlights (1.04, 1.0, 0.94, 1), film grain 0.18, vignette 0.45); `bOverride_ColorSaturationShadows` is false on all six volumes.
+
+**Scripts.** `Tools/lighting/p14_5_apply.py` (`AREA_VOLUMES`) and `Tools/lighting/p14_3_level.py` (`PP_BEFORE["PP_Outdoor_Night"]["ev"]`) now expect 1.40 (comment "P14-5c"); nothing else in them changed.
+
+**Checks.**
+- Before the save: `p14_5_apply.py --check` 81 PASS, 0 FAIL; `p14_3_level.py --check --map-dirty true` 62 PASS, 0 FAIL.
+- Census 3015 before the edit, 3015 before the save and 3015 after it.
+- Save: `L_Monastery` once (one `save_assets` call, `IsPIERunning` false); `is_dirty` false after. No other package was saved; `M_LB_Surface` and the 12 listed Blueprints stayed clean.
+- After the save: `p14_5_apply.py --check` 81 PASS, 0 FAIL; `p14_3_level.py --check --map-dirty false` 62 PASS, 0 FAIL.
+- Headless suite, editor open (`Saved/Logs/LBTests_P14_5c.log`): **128** `Result={Success}`, 0 `Result={Fail`, exit code 0; the only `Error:` line is the HttpListener port bind.
+
+**Not validated visually:** the courtyard at EV 1.40 in the editor world was set and read back by number only. Part B measured it in the PIE world (wide-view mean 0.0699); the owner's eye in P14-6 is the check.

@@ -259,7 +259,7 @@ PP_BEFORE = {
     "PP_Crypt": {"priority": 1.0, "blend": 300.0, "unbound": False,
                  "overrides": {"BloomIntensity", "AutoExposureMethod", "AutoExposureMinBrightness", "AutoExposureMaxBrightness"},
                  "ev": 0.2, "sat": (1, 1, 1, 1), "box": ((6150, 11900), (-3300, 800), (-1150, -40)), "xform": ((9025, -1250, -595), (28.75, 20.5, 5.55))},
-    "PP_Outdoor_Night": {"priority": 1.0, "blend": 500.0, "unbound": False, "overrides": PP_OVERRIDES, "ev": 1.15, "sat": PP_SAT,
+    "PP_Outdoor_Night": {"priority": 1.0, "blend": 500.0, "unbound": False, "overrides": PP_OVERRIDES, "ev": 1.40, "sat": PP_SAT,  # P14-5c: EV 1.15 -> 1.40 (Part B)
                          "box": ((-3315, 5500), (-2700, 2700), (-100, 3900)), "xform": ((1092.5, 0, 1900), (44.075, 27, 20))},
     "PostProcess_Exposure": {"priority": 0.0, "blend": 100.0, "unbound": True,
                              "overrides": PP_EXPOSURE_OVERRIDES, "ev": 3.0, "sat": (1, 1, 1, 1),  # P14-5: grade B overrides added

@@ -61,7 +61,8 @@ GRADE_B = {                            # PostProcess_Exposure: Property -> value
 }
 SHADOW_SAT_OFF = ["PP_Outdoor_Night", "PP_Cloister", "PP_Chapel", "PP_Tower"]
 SHADOW_SAT_ALREADY_FALSE = ["PP_Crypt", "PostProcess_Exposure"]
-AREA_VOLUMES = {"PP_Outdoor_Night": 1.15, "PP_Cloister": 0.65, "PP_Chapel": CHAPEL_EV, "PP_Tower": 0.65, "PP_Crypt": 0.2}
+AREA_VOLUMES = {"PP_Outdoor_Night": 1.40,  # P14-5c: 1.15 -> 1.40
+                  "PP_Cloister": 0.65, "PP_Chapel": CHAPEL_EV, "PP_Tower": 0.65, "PP_Crypt": 0.2}
 ALL_VOLUMES = ["PostProcess_Exposure", "PP_Outdoor_Night", "PP_Cloister", "PP_Chapel", "PP_Tower", "PP_Crypt"]
 DECAL_LABELS = ["RV_WellHouse_Tally", "RV_Chapel_Circle"]   # the new locations are the DECALS rows of p14_3_level.py
 CENSUS = 3015
