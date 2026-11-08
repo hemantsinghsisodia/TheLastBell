@@ -634,7 +634,7 @@ Every point is at least 111 cm from a WalkPath segment and 146 cm from an AI poi
   - splashes pinned at first contact, falling at rain speed;
   - the second renderer for the ring.
 - **Cost:** the global distance field update is about 0 ms in a static view (round 1, Q6). The moving-camera cost is measured in P15-10.
-- **Carry-over to P15-6:** `SM_LB_Tw_Roof_BrokenSW` must keep "Two-Sided Distance Field Generation" on. MCP can't set it, so either the owner's in-memory change is saved deliberately (that one package only), or it is set again by hand, or by headless Unreal Python with the editor closed (`StaticMeshEditorSubsystem` LOD build settings).
+- **Carry-over to P15-6: done.** On the owner's "save mesh", the lead saved `SM_LB_Tw_Roof_BrokenSW` (one package) with "Two-Sided Distance Field Generation" on. The saved file carries the flag.
 - **Clean-up:**
   - `s1_spike.py remove --yes` deleted the 5 spike actors, the 2 spike assets and the `/Game/LastBell/FX/Spike` folder. `FX_FirePit_Smoke` is untouched.
   - The map stays dirty and unsaved: its contents match the saved file again.
