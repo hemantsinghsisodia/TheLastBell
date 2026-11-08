@@ -291,6 +291,19 @@ Then:
 - one save;
 - the suite.
 
+**P15-6 brief (lead, 2026-11-08). These rules settle what the table leaves open:**
+- **Rotation order.** Every rotation in the F0 tables is (Pitch, Yaw, Roll). Pass it to the tool by field name, never by position, and read it back.
+- **Eave drips.** There are **7** lines (F0.9), not the 6 the table above says. The census already counts 7.
+- **"Check by eye" items** (the strike-target tip, the cloth top edges on the arcade, the drip points just under the crypt vault). The agent can't take captures. It places each one at the F0 value, then reports the gap from the bounds of the nearest overhead or behind mesh. The lead and the owner judge it in P15-7.
+- **Puzzle candles** (`Candle_P1…P4`, component `Flame`), only if no graph sets that component's mesh or material:
+  - **Mesh, material:** per-instance overrides on the placed actor: mesh `SM_LB_Prop_CandleFlame_A`, and slot 0 `MI_Flame_Candle`.
+  - **Size:** a uniform relative scale that gives a world bounds height equal to the median world bounds height of the 13 chapel flame actors, within ±5 %.
+  - **Position:** a relative Z that puts the new world bounds min Z on the old sphere's world bounds min Z, within ±0.5 cm, so it sits on the wick. Relative X and Y are unchanged.
+- **The player's candle** (`BP_LBCharacter.CandleFlame`): the same rule, applied on the component template. Then compile with no new errors or warnings, and save `BP_LBCharacter` only. If the template can't be edited over MCP within two attempts, it is left as it is and listed.
+- **Graph check.** Read the graphs with `find_nodes` / `get_node_infos` only, never `read_graph_dsl`. Any node that sets that component's static mesh or material counts as a setter: `SetStaticMesh`, `SetMaterial`, `CreateDynamicMaterialInstance`, or a parameter setter on its material, whether reached directly or through a variable. If there is one, that flame is left as it is and listed.
+- **Torch delete order.** A Cascade actor is deleted only after its Niagara replacement reads back the right location and `User.Scale`.
+- **No suite run.** P15-6 does not run the suite, because the suite needs Unreal closed. The lead runs it with the owner afterwards.
+
 ## 9. Look session (owner + lead, P15-7, about 30 minutes)
 Live in Play, with the lead changing `DA_StormFX` and MI parameters in memory over MCP:
 1. Rain density and lean: `RainSpawnRate` 25k, 35k or 50k; `RainWindLean`.
