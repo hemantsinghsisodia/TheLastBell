@@ -85,3 +85,9 @@ Cube (`/Engine/BasicShapes/Cube`) StaticMeshActors, mobility static, 2 cm thick,
 - **Live responses of the pads.** `set_properties` writes the raw struct, so the live editor component does not rebuild its response container (`trace_world` still hit a probe cube after its Visibility response was set to Ignore). The saved array is what `FBodyInstance::FixupData` turns into the container at load (engine source `BodyInstance.cpp`, profile `Custom`). After the save, `--reload-check` called `load_level` and the full check passed again, but I could not prove from the log that the editor really reloaded from disk. The suite (loads from disk) and the first PIE will show it: the player must walk through the pads, and a footstep in the pools must be Water. If a pad blocks the player, delete the pads and re-run `--apply --only water` after a fresh editor start.
 - **By ear (P16-4):** the three tower creaks (inside the core, heard across the shaft), the two belfry creaks (high beams), the three distant chains, and the Passage reverb/muffling (plan: the lane is open above, 0.35 / 2500 Hz may be too dull).
 - All ambient values are the plan defaults; no sound was played.
+
+## P16-5 owner choices applied
+From the P16-4 listening session (the owner's choices), written to the editor level and expected by `Tools/audio/p16_level.py` (`--apply` sets them, `--check` checks them):
+- `AUD_Zone_Chapel.RoomToneVolume` = 0.4 (the script's table said 0.6; the editor level held 1.0).
+- `AUD_Emit_Chain_C1/C2/C3` `IntervalMin` 8, `IntervalMax` 18 (were 20, 45).
+- Each float is written in its own `set_properties` call and read back. The map was saved with `--save` (only `/Game/LastBell/Maps/L_Monastery`).

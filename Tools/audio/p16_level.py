@@ -71,7 +71,7 @@ PM = {n: "/Game/LastBell/Physics/PM_LB_%s.PM_LB_%s" % (n, n) for n in ("Stone", 
 # ---------------------------------------------------------------------------------------------- 1/2. the F0 table (zones and AudioVolumes share the boxes)
 # name, centre, half extent, priority, RoofRain, InteriorWind, Howl, Darkness, room tone (Room_<x>), tone volume, reverb (RVB_LB_<x>), (exterior volume, exterior LPF Hz)
 AREAS = [
-    ("Chapel",     (7550.0, -345.0, 1180.0),   (1550.0, 1205.0, 1220.0), 1, 0.90, 0.25, 0.00, 0.3, "Chapel",   0.6, "Chapel",   (0.35, 2500.0)),
+    ("Chapel",     (7550.0, -345.0, 1180.0),   (1550.0, 1205.0, 1220.0), 1, 0.90, 0.25, 0.00, 0.3, "Chapel",   0.4, "Chapel",  (0.35, 2500.0)),
     ("Crypt",      (9150.0, -1215.0, -610.0),  (2850.0, 1735.0, 590.0),  2, 0.05, 0.05, 0.00, 1.0, "Crypt",    0.8, "Crypt",    (0.35, 2500.0)),
     ("Cloister",   (10750.0, 1770.0, 730.0),   (1290.0, 1270.0, 770.0),  1, 0.70, 0.50, 0.00, 0.2, "Cloister", 0.5, "Cloister", (0.70, 6000.0)),
     ("Garth",      (10852.5, 1802.5, 730.0),   (607.5, 457.5, 770.0),    2, 0.00, 1.00, 0.00, 0.1, None,       0.0, None,       (1.00, 20000.0)),
@@ -120,7 +120,7 @@ CHAINS = [
 DRIP_WATER = dict(var=variants("SFX_LB_Drip_Water", 5), imin=1.5, imax=4.0)
 DRIP_STONE = dict(var=variants("SFX_LB_Drip_Stone", 5), imin=2.0, imax=6.0)
 CREAK = dict(var=variants("SFX_LB_Creak_Wood", 5), imin=8.0, imax=20.0)
-CHAIN = dict(var=variants("SFX_LB_Chain_Distant", 4), imin=20.0, imax=45.0)
+CHAIN = dict(var=variants("SFX_LB_Chain_Distant", 4), imin=8.0, imax=18.0)   # P16-5: owner's choice (was 20..45)
 DEFAULT_RADIUS = 3000.0
 CHAIN_RADIUS = 4000.0
 DEF_VOL, DEF_PITCH = (0.7, 1.0), (0.95, 1.05)
@@ -223,10 +223,11 @@ def apply_zones(ed):
         ref, created = ed.get_or_create(ZONE_CLASS, label, a["centre"])
         ed.set_xform(ref, a["centre"], (0, 0, 0), (1, 1, 1))
         vals = {"priority": a["prio"], "roofRain": a["roof"], "interiorWind": a["wind"], "howl": a["howl"], "darkness": a["dark"],
-                "roomToneVolume": a["tonevol"], "zoneName": a["name"]}
+                "zoneName": a["name"]}
         if a["tone"]:
             vals["roomTone"] = {"refPath": snd("Room", "SFX_LB_Room_" + a["tone"])}
         ed.setp(ref, vals)
+        ed.setp(ref, {"roomToneVolume": a["tonevol"]})      # P16-5: a float in its own call, read back by --check
         ok = ed.set_vec(ref + ".Box", "boxExtent", a["half"])
         info("%s %s at %s half extent %s%s" % (label, "created" if created else "updated", a["centre"], a["half"], "" if ok else "  (EXTENT READ-BACK MISMATCH)"))
 
@@ -308,10 +309,11 @@ def apply_emitters(ed):
         ref, created = ed.get_or_create(EMIT_CLASS, label, loc)
         ed.set_xform(ref, loc, (0, 0, 0), (1, 1, 1))
         cur = [R(x) for x in ed.props(ref, ["variants"])["variants"]]
-        vals = {"intervalMin": spec["imin"], "intervalMax": spec["imax"], "activeRadius": radius}
         if cur != spec["var"]:
             ed.setp(ref, {"variants": [{"refPath": v} for v in spec["var"]]})
-        ed.setp(ref, vals)
+        ed.setp(ref, {"activeRadius": radius})
+        ed.setp(ref, {"intervalMin": spec["imin"]})         # P16-5: each float in its own call (read back by --check)
+        ed.setp(ref, {"intervalMax": spec["imax"]})
         info("%s %s at %s (%d variants, interval %s..%s s, radius %g)" % (label, "created" if created else "updated", rnd(loc, 1), len(spec["var"]), spec["imin"], spec["imax"], radius))
 
 
