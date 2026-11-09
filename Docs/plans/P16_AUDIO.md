@@ -16,12 +16,13 @@ Every task follows the standing rules:
 | Sourcing | **Generated + Kenney + Freesound.** Rain, wind, thunder, the bells, drones, music and room tones are rendered offline by our own scripts. Footsteps and impacts come from Kenney.nl CC0 packs, downloaded by an agent. The Warden's voice and breath, chains, creaks, doors, mechanisms and water steps are Freesound **CC0** recordings: the lead's agent prepares an exact list and the owner downloads it. |
 | Music | **Drones + tension + chase.** Low drones only at story beats. A tension layer rises when the Warden is near or searching; a pulsing chase layer plays only during a chase. Silence otherwise. |
 | Bell | **Deep, cracked, distant.** A huge old bell with a beating, cracked tone, heard far off. It comes closer and more distorted with each ritual, and is clean and overwhelming only at the finale. |
+| Additions at approval | **Occasional distant tolls** between the story beats. **Breathing also reacts to darkness and to the candle going out.** |
 | 3D audio | **Built-in.** Unreal's standard panning and distance attenuation, reverb per area, and outdoor sound muffled indoors. HRTF is tried in Phase 20. |
 
 ## 1. Outcome and acceptance
 1. Rain and wind are heard everywhere outdoors. Indoors the rain becomes a muffled roof sound where there is a roof above, and almost nothing in the crypt. Wind follows the storm's gusts.
 2. Every lightning flash is followed by thunder after a delay that shrinks as the flash gets brighter. The two scripted tower strikes crack at once, from the tower.
-3. The great bell tolls at the story beats (section 5.3). Each stage is closer and more cracked than the last.
+3. The great bell tolls at the story beats (section 5.3). Each stage is closer and more cracked than the last. Between the beats, an occasional distant toll sounds every 4–7 minutes, never during a chase.
 4. Music is silent by default:
    - story-beat drones;
    - tension that rises with the Warden's threat;
@@ -30,7 +31,10 @@ Every task follows the standing rules:
    - spotted, about 0.6 s before a chase;
    - chase start, attack wind-up and caught;
    - its breath, steps, chains and robe are audible before it is seen at close range.
-6. **Player sounds:** footsteps per surface (stone, wood, earth, grass, water, metal) with no repeated variant twice in a row, stressed breathing near the Warden and in chases, and the candle.
+6. **Player sounds:**
+   - footsteps per surface (stone, wood, earth, grass, water, metal) with no repeated variant twice in a row;
+   - breathing that grows with stress from the Warden, chases, sprinting, darkness (stronger with the candle out) and the candle going out (a sharp gasp);
+   - the candle.
 7. **Interaction sounds:** every interactable class in `L_Monastery` either has a sound or is listed as silent on purpose (`Monastery.AudioSetup` checks this). The four small bells are tuned by size. A failed bell sequence sounds wrong.
 8. **Areas:** each area has its own reverb and room tone: chapel, crypt, cloister walk, shortcut passage, tower stair, belfry, plus outdoors with no reverb.
 9. **Volumes:** five user volume groups (effects, ambience, music, Warden/voice, interface) under a master, with a C++ API ready for the Phase 18 settings menu.
@@ -62,14 +66,14 @@ Folder `Source/LastBell/Audio/`, prefix `LB`. Composition and subsystems; no har
 
 | Group | Fields (default) |
 |---|---|
-| Sounds | soft `USoundBase` refs for every cue in section 3 that the subsystem plays, grouped in structs: `FLBAudioWeather` (RainOut, RainIn, Wind, WindHowl), `FLBAudioThunder` (Near[4], Mid[4], Far[4], StrikeCrack[3]), `FLBAudioBell` (Stage[5]), `FLBAudioMusic` (Drones[3], Tension, Chase, StingSpotted, StingCaught, StingApparition), `FLBAudioPlayer` (BreathCalm[4], BreathHeavy[4], BreathPanic[4], CandleLight[3], CandleOut[3], CandleRelight), `FLBAudioWarden` (section 2.5, including `ApparitionWhisper[3]`). Footsteps stay in `DT_Footsteps`; emitters hold their own sounds |
+| Sounds | soft `USoundBase` refs for every cue in section 3 that the subsystem plays, grouped in structs: `FLBAudioWeather` (RainOut, RainIn, Wind, WindHowl), `FLBAudioThunder` (Near[4], Mid[4], Far[4], StrikeCrack[3]), `FLBAudioBell` (Stage[5]), `FLBAudioMusic` (Drones[3], Tension, Chase, StingSpotted, StingCaught, StingApparition), `FLBAudioPlayer` (BreathCalm[4], BreathHeavy[4], BreathPanic[4], BreathGasp[3], CandleLight[3], CandleOut[3], CandleRelight), `FLBAudioWarden` (section 2.5, including `ApparitionWhisper[3]`). Footsteps stay in `DT_Footsteps`; emitters hold their own sounds |
 | Interaction map | `TArray<FLBInteractionCue>`. `FLBInteractionCue`: `TSoftClassPtr<AActor> ActorClass`, `bool bIncludeSubclasses` (true), `TArray<TSoftObjectPtr<USoundBase>> Interact`, `TArray<TSoftObjectPtr<USoundBase>> Denied`, `TArray<TSoftObjectPtr<USoundBase>> DialNotch`, `float Volume` (1), `FVector2D Pitch` (0.97, 1.03), `FName Note`. The most specific class match wins. `TArray<TSoftClassPtr<AActor>> SilentClasses` lists the classes that are silent on purpose. |
 | Small bells | `TMap<FGameplayTag, float> SmallBellPitch` (step tag to pitch multiplier, filled from F0), `TSoftObjectPtr<USoundBase> SmallBellStrike`, `SmallBellFail`, `SmallBellSolved` |
 | Mix | `RainOutGain` 0.8, `RainInGain` 0.55, `RainExposurePower` 0.7, `WindOutGain` 0.6, `WindMin` 0.3, `WindPitch` (0.92, 1.08), `MixFadeSeconds` 0.75 |
 | Thunder | `ThunderDelay` (0.6, 4.5) s from brightness 1 to 0, `ThunderJitter` 0.4 s, `ThunderNearAt` 0.75, `ThunderFarBelow` 0.4, `ThunderDistance` 6000 cm (the emitter sits along the flash direction), `StrikeCrackDelay` 0.12 s |
-| Bell | `TArray<FLBBellBeat> BellBeats` (`FGameplayTag Trigger`, `int32 Stage` 1–5, `int32 Strikes`, `float FirstDelay`, `float Spacing`; section 5.3), `bool bNewGameToll` (true), `float NewGameTollDelay` 6 s, `FVector BellLocation` (the tower bell, from F0), `float BellNearDistance` 2500 cm |
+| Bell | `TArray<FLBBellBeat> BellBeats` (`FGameplayTag Trigger`, `int32 Stage` 1–5, `int32 Strikes`, `float FirstDelay`, `float Spacing`; section 5.3), `bool bNewGameToll` (true), `float NewGameTollDelay` 6 s, `FVector BellLocation` (the tower bell, from F0), `float BellNearDistance` 2500 cm. **Ambient tolls:** `bAmbientTolls` (true), `AmbientTollInterval` (240, 420) s, `AmbientTollStrikes` (1, 2), `AmbientTollVolume` 0.5, `AmbientTollGapAfterBeat` 90 s, `AmbientTollMaxTension` 0.5 |
 | Music | `DroneSeconds` 45, `DroneFade` (6, 8) s in/out, `TensionNearDistance` 2500 cm, `TensionLevels` (Patrol 0.25, Suspicious 0.5, Investigate 0.6, Search 0.8, Chase 0.4, Return 0.15), `ChaseLevel` 1.0, `ChaseFade` (0.8, 4.0) s, `TensionFade` (3, 10) s, `MusicMinStage` 3 (tension only from Warden stage 3) |
-| Stress | `StressChase` 1.0, `StressNearSearch` 0.6, `StressSprintBonus` 0.3 for 3 s, `StressDecay` 0.25 /s, `BreathInterval` (2.4, 4.0) s, `BreathThresholds` (calm ≥ 0.3, heavy ≥ 0.55, panic ≥ 0.85) |
+| Stress | `StressChase` 1.0, `StressNearSearch` 0.6, `StressSprintBonus` 0.3 for 3 s, `StressDecay` 0.25 /s, `DarknessLit` 0.15, `DarknessUnlit` 0.55, `CandleOutStress` 0.35, `BreathInterval` (2.4, 4.0) s, `BreathThresholds` (calm ≥ 0.3, heavy ≥ 0.55, panic ≥ 0.85) |
 | Debug | `DebugForceMusicState` −1 |
 
 ### 2.3 `ULBAudioSubsystem` (`UTickableWorldSubsystem`, Game and PIE only)
@@ -93,6 +97,10 @@ Folder `Source/LastBell/Audio/`, prefix `LB`. Composition and subsystems; no har
 - **Bell:** on a tag *added* that matches a `BellBeat`, the subsystem schedules that stage's sound `Strikes` times, `FirstDelay` then `Spacing` apart, at `BellLocation` with `ATT_LB_Bell`.
   - **Not on load:** `OnStateReplaced`, the checkpoint load, plays nothing.
   - **New game toll:** if `bNewGameToll` is set and no beat tag is present at activation, stage 1 plays 3 times after `NewGameTollDelay`.
+  - **Ambient tolls:** between beats, the next toll is scheduled rand(`AmbientTollInterval`) s after the last toll of any kind.
+    - It plays the current stage (the highest beat reached: none 1, Ritual 1 gives 2, Ritual 2 gives 3, Ritual 3 or TowerTop gives 4), rand(`AmbientTollStrikes`) strikes, at `AmbientTollVolume`.
+    - It is skipped and rescheduled (rand 30–60 s) during a chase, while tension is above `AmbientTollMaxTension`, or within `AmbientTollGapAfterBeat` of a beat toll.
+    - None after `State.Event.Finale`.
   - **Public API:** `PlayBell(int32 Stage, int32 Strikes)` for Phase 17.
 - **Music:** three 2D loops (Drone, Tension, Chase) and one-shot stings.
   - **Drone:** a beat tag (5.3) starts its drone (fade in 6 s), holds it `DroneSeconds`, then fades it out over 8 s.
@@ -102,6 +110,8 @@ Folder `Source/LastBell/Audio/`, prefix `LB`. Composition and subsystems; no har
   - **Stings:** `StingSpotted` on `OnPlayerSpotted`, `StingCaught` on `OnPlayerCaught`, and `StingApparition` when an `ALBWardenApparition` appears (an event added in 2.5).
   - **Debug:** `DebugForceMusicState` ≥ 0 forces a Warden state for tuning.
 - **Player stress:** S rises to `StressChase` in a chase, and to `StressNearSearch` while the Warden is within 1500 cm and Investigating, Searching or Suspicious. A sprint adds `StressSprintBonus` for 3 s. S decays at `StressDecay` per second.
+  - **Darkness:** the target S is at least Z.`Darkness` × (`DarknessLit` with the candle lit, `DarknessUnlit` with it out), using the current zone's `Darkness` (section 2.4).
+  - **Candle out:** `OnCandleStateChanged(false)` adds `CandleOutStress` at once, decaying at `StressDecay`, and plays a `BreathGasp` one-shot straight away.
   - At S ≥ 0.3, a breath one-shot (Calm, Heavy or Panic by `BreathThresholds`) plays every rand(`BreathInterval`) s, 2D, in `SCL_LB_SFX`.
 - **Candle:** `OnCandleStateChanged(true)` plays CandleLight, `false` plays CandleOut, and `OnRelightStarted` plays CandleRelight, attached to the player.
 - **User volumes:** `ApplyUserVolumes()` reads `ULBUserSettings` (new floats `MasterVolume`, `SFXVolume`, `AmbienceVolume`, `MusicVolume`, `VoiceVolume`, `UIVolume`, default 1.0, saved per user) and pushes `SMX_LB_User` with a class override per `SCL_LB_*`. It runs at activation and from `lb.Audio.Volume <Class> <0..1>`.
@@ -120,6 +130,7 @@ Folder `Source/LastBell/Audio/`, prefix `LB`. Composition and subsystems; no har
   - `RoofRain` (0–1);
   - `InteriorWind` (0–1);
   - `Howl` (0–1);
+  - `Darkness` (0–1), how frightening the place is to stand in without light (F0 proposes per area: crypt 1.0, passage and tower stair 0.6, chapel and belfry 0.3, cloister 0.2, outdoors 0.1 by default);
   - `TSoftObjectPtr<USoundBase> RoomTone`, `RoomToneVolume`;
   - `FName ZoneName`.
 - **Which zone applies:** the subsystem checks the player position against the zones 4 times a second; the highest priority wins, and outdoors is the default.
@@ -157,7 +168,8 @@ Folder `Source/LastBell/Audio/`, prefix `LB`. Composition and subsystems; no har
 - `WindMix(E, W, InteriorWind, Howl, OutGain, Min)` returns (wind, howl).
 - `PlanThunder(B, Reason, Rand)` returns (Set, Delay, Volume).
 - `MusicTargets(State, Stage, Distance, Settings)` returns (tension, chase).
-- `Stress(Prev, Inputs, Dt, Settings)` returns the new stress level.
+- `Stress(Prev, Inputs, Dt, Settings)` returns the new stress level. Inputs: Warden state and distance, sprinting, zone darkness, candle lit, a candle-out impulse.
+- `AmbientTollPlan(Now, LastToll, LastBeat, Chase, Tension, Stage, Rand, Settings)` returns play now or not, the stage, strikes and the next time.
 - `BellPlan(Tag, Beats)` returns (stage, strikes, delays).
 - `PickVariant(Count, Last, Rand)` returns an index that is not `Last` when Count > 1.
 - `Ease(Current, Target, InSec, OutSec, Dt)`.
@@ -209,6 +221,7 @@ Each sound gets a name `SFX_LB_<Group>_<Name>_<NN>` or `MUS_LB_<Name>` and a cla
 | | `SFX_LB_Step_Water_01..06` | F | 6 | | | SFX | `ATT_LB_Step` | puddle splashes |
 | | `SFX_LB_Step_Metal_01..06` | K/F | 6 | | | SFX | `ATT_LB_Step` | grates and plates |
 | | `SFX_LB_Breath_Calm/Heavy/Panic_01..04` | F | 12 | 1–3 s | | SFX | 2D | one gender-neutral voice set |
+| | `SFX_LB_Breath_Gasp_01..03` | F | 3 | < 1.5 s | | SFX | 2D | the candle going out |
 | | `SFX_LB_Candle_Light_01..03`, `_Out_01..03`, `_Relight` | F | 7 | | | SFX | 2D | match or flame whoosh, blow-out |
 | Interact | `SFX_LB_Door_Wood_Open_01..03`, `_Stone_Open_01..03`, `_Locked_01..03` | F | 9 | 1.5–3 s | | SFX | `ATT_LB_Medium` | |
 | | `SFX_LB_Lever_Notch_01..04` | F | 4 | | | SFX | `ATT_LB_Small` | dial levers |
@@ -348,6 +361,7 @@ Tells use `ATT_LB_WardenTell`, which carries farther than the breath, so the pla
 | `State.Ritual.3` | stage 4 × 3 (2 s, 4.0 s) | Drone B |
 | `State.Event.TowerTop` | stage 4 × 4 (1 s, 3.5 s) | Drone C |
 | `State.Event.Finale` | stage 5 × 5 (0 s, 5.0 s); Phase 17 may replace this | none |
+| Between beats (ambient) | the current stage × 1–2 at volume 0.5, every 240–420 s (section 2.3 rules) | none |
 
 ### 5.4 Processing (A3; `Tools/audio/prep/prep_recorded.py`)
 - **Per item:**
@@ -418,7 +432,7 @@ The script is `Tools/audio/p16_f0_survey.py`. It writes `Docs/ArtTest/audio/p16_
    - grouped by class with counts;
    - the proposed cue row per class, or "silent" with a reason.
 2. **Small bells:** the 4 cloister bells (`BP_SmallBell_Cloister`): their step tags, sizes and locations, giving the `SmallBellPitch` map.
-3. **Areas:** the bounds of the PP volumes (`PP_Chapel`, `PP_Crypt`, `PP_Cloister`, `PP_Tower`, `PP_Outdoor_Night`) and the storm zones, to propose `ALBAudioZone` and `AudioVolume` boxes for chapel, crypt, cloister walk, passage, tower stair, belfry, and the gatehouse and well house, with `RoofRain`, `InteriorWind` and `Howl` proposed per area.
+3. **Areas:** the bounds of the PP volumes (`PP_Chapel`, `PP_Crypt`, `PP_Cloister`, `PP_Tower`, `PP_Outdoor_Night`) and the storm zones, to propose `ALBAudioZone` and `AudioVolume` boxes for chapel, crypt, cloister walk, passage, tower stair, belfry, and the gatehouse and well house, with `RoofRain`, `InteriorWind`, `Howl` and `Darkness` proposed per area.
 4. **Floors:**
    - **Samples:** at least 120 floor points, about 15 per area plus the stair landings; each traces down from 100 cm above the floor on the footstep trace channel (`ULBFootstepComponent`'s query: same channel, `bReturnPhysicalMaterial`).
    - **Recorded per hit:** actor label and class, component, material and physical material.
@@ -448,7 +462,8 @@ The script is `Tools/audio/p16_f0_survey.py`. It writes `Docs/ArtTest/audio/p16_
 3. **The bell, stages 1–5:** `lb.Audio.Bell n`. Loudness, crack amount, and whether stage 1 is distant enough.
 4. **Music:** forced states with `lb.Audio.Music`: tension levels, the chase level, fades; the stings.
 5. **The Warden:** in the crypt or cloister with the Warden active: breath distance, steps and chains, the tells' readability, occlusion through walls.
-6. **Footsteps on every surface** and the gait volumes; breathing under stress.
+6. **Footsteps on every surface** and the gait volumes. Breathing under stress: Warden, sprint, darkness with the candle lit and out, and the candle-out gasp.
+6a. **Ambient tolls:** frequency and loudness (`AmbientTollInterval` shortened to 30–40 s for the session only, then put back).
 7. **Interactions:** doors, levers, the winch, the small bells (pitches, the fail cluster), notes, the key, the candle.
 8. **Rooms:** reverb per area and the room tones.
 9. **Overall class balance:** SFX, ambience, music and voice.
@@ -477,7 +492,8 @@ The values chosen are applied in P16-5.
   - `WindMix`;
   - `ThunderPlan`: the variant boundaries, delay monotonic in brightness, the jitter bounds;
   - `MusicTargets`: every Warden state, stage below the minimum gives 0, distance beyond `TensionNearDistance` gives 0, Chase;
-  - `Stress`: rise, decay, the sprint bonus;
+  - `Stress`: rise, decay, the sprint bonus, darkness lit against unlit, the candle-out impulse;
+  - `AmbientTollPlan`: interval bounds, skipped in a chase, above the tension limit and inside the gap after a beat, none after the finale, stage from the beats reached;
   - `BellPlan`: each beat tag, and an unknown tag gives nothing;
   - `PickVariant`: no repeat over 1000 draws when Count ≥ 2, and Count 1 returns 0;
   - `Ease`.
@@ -488,6 +504,8 @@ The values chosen are applied in P16-5.
   - `BellOnRitualTag`: `State.Ritual.1` added gives 3 stage-2 requests;
   - `NoBellOnStateReplaced`;
   - `NewGameToll`;
+  - `AmbientToll`: with a 2–3 s interval override, a toll request at the current stage, and none while a chase is forced;
+  - `CandleOutGasp`: a candle going out gives a gasp request and a stress rise;
   - `MusicFollowsWarden`: a forced Chase gives a chase target of 1 and tension of 0.4;
   - `InteractionCue`: a spawned test actor whose class is mapped gives a request at its location;
   - `DeniedCue`;
@@ -513,7 +531,7 @@ The values chosen are applied in P16-5.
 | A2 | Section 4: generated sounds, spectrogram sheets | audio-designer (no editor) | — | P16-0 |
 | A3 | Section 5.4: prepare the recorded sounds | audio-designer (no editor) | — | A1 |
 | A4 | **Owner audition** of the WAVs on headphones (about 20 min; a playlist page in `Docs/ArtTest/audio/audition.md`): keep, redo or replace per cue | lead + **owner** | — | A2, A3 |
-| P16-1 | Section 2 code, config, console, tests | gameplay-programmer | **Unreal closed** | P16-0, F0 |
+| P16-1 | Section 2 code, config, console, tests | gameplay-programmer | **Unreal closed** | P16-0 (the F0 values go into data in P16-2) |
 | P16-2 | Imports (per the S1 method), the section 6 mix assets, `PM_`, `DA_Audio` creation and fill, `DT_Footsteps` rows | audio-designer [EDITOR] | | S1, A4, P16-1 |
 | P16-3 | Level work: `ALBAudioZone`s, `AudioVolume`s, `ALBAmbientEmitter`s, floor surfaces (F0 rule); `Tools/audio/p16_level.py --apply/--check/--save`; census; one map save | audio-designer [EDITOR] | | P16-2 |
 | P16-4 | Listening session (section 9) | lead + **owner** | Unreal in front, headphones | P16-3 |

@@ -21,7 +21,7 @@ First-person atmospheric survival horror, UE 5.8.3, C++ + Blueprint hybrid. 20â€
 - Compile after C++ changes, compile the affected Blueprints, validate materials, and check the logs. Don't pile up unvalidated work.
 - Composition over inheritance; subsystems over manager actors; Gameplay Tags for state; no hard asset refs in C++.
 - Architecture drift: if the implementation differs from TECHNICAL_DESIGN, either fix the code or update TECHNICAL_DESIGN, DECISIONS and IMPLEMENTATION_PLAN.
-- Naming: BP_, BPC_, BPI_, WBP_, SM_, SK_, M_, MI_, MF_, T_, NS_, NE_, DA_, DT_, ABP_, SFX_, MUS_, LS_, ST_, L_ (maps).
+- Naming: BP_, BPC_, BPI_, WBP_, SM_, SK_, M_, MI_, MF_, T_, NS_, NE_, DA_, DT_, ABP_, SFX_, MUS_, SCL_ (sound class), SMX_ (sound mix), ATT_ (attenuation), CON_ (concurrency), RVB_ (reverb), PM_ (physical material), LS_, ST_, L_ (maps).
 - Git with LFS. Commit at meaningful checkpoints.
 
 ## Git branch rule (owner's instruction, non-negotiable)
