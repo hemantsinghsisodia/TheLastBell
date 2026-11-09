@@ -776,3 +776,31 @@ One editor agent at a time. A1, A2 and A3 run without the editor, in parallel wi
    - re-import headless (Unreal closed); registry rows.
 4. **Candle flame:** `ULBCandleComponent` hides the flame visual on snuff and shows it on relight. It finds the flame by a component tag `CandleFlame`, with a fallback to a component named `CandleFlame`; no Blueprint graph change. Add a functional test.
 5. **Close-out:** the suite (Unreal closed), then the record.
+
+### P16-5 results (2026-11-10; main part: candle flame, recorded cracks, owner choices in the asset script; the level edits were commit 90f0dda)
+- **Candle flame (7851031).** `ULBCandleComponent` now finds the flame visuals on its owner at BeginPlay (components tagged `FlameComponentTag`, default `CandleFlame`, else a component named `CandleFlame`; weak refs) and shows them only while the light is on: hidden at once on a snuff, shown again when `LitAlpha` becomes > 0 on the relight. No Blueprint graph touched (BP_LBCharacter's `CandleFlame` static mesh under `CandleWax` is found by name). New test `LastBell.Functional.Candle.FlameHidesWhenSnuffed` (lit: visible; snuff: hidden at once and stays hidden; relighting: still hidden; relit after the delay: visible) passes.
+- **Recorded cracks (6d4ade3).** Five Freesound CC0 recordings (registry rows added). `Tools/audio/prep/prep_cracks.py` + `crack_recipes.json` find each onset (first 2 ms frame above the window peak minus 24 dB, 18-20 dB for two files, then back to where the rise began), cut from onset - 10 ms to a natural decay (the end moved to the quietest 10 ms frame near the target length), fade in 3 ms, fade out 90-100 ms (Strike 0.9 s); `thunder.py` (`CRACKS = "recorded"`) writes the finals. Deterministic (`--verify` identical; `build_all --group thunder --verify` identical).
+
+  | Final file | Source | Cut in the source (s) | Onset (s) |
+  |---|---|---|---|
+  | `Thunder_Strike_01` (2.94 s) | 840628 (the owner's pick) | 0.618 .. 3.560 | 0.628 |
+  | `Thunder_Strike_02` (2.57 s) | 760214 | 0.664 .. 3.230 | 0.674 |
+  | `Thunder_Strike_03` (2.60 s) | 567945 | 1.800 .. 4.400 | 1.810 |
+  | `Thunder_Near_01` = rumble 1001 + `CrackLayer_01` (0.79 s) | 840628 | 0.618 .. 1.410 | 0.628 |
+  | `Thunder_Near_02` = rumble 1002 + `CrackLayer_02` (0.66 s) | 721072 | 0.812 .. 1.470 | 0.822 |
+  | `Thunder_Near_03` = rumble 1003 + `CrackLayer_03` (0.66 s) | 760214 | 0.664 .. 1.320 | 0.674 |
+  | `Thunder_Near_04` = rumble 1004 + `CrackLayer_04` (0.56 s) | 347853 | 0.980 .. 1.540 | 0.990 |
+
+  - The Near rumble is the old one (same seeds; the file lengths 8.23 / 7.76 / 7.38 / 7.00 s are unchanged) without the synthetic crack and without its tearing; the recorded layer sits at t = 0 at peak 1.0 against the rumble's 0.85 (+1.4 dB), then -3 dBFS peak, mono. The composition is recorded in the manifest (`composition`: rumble seed, crack layer, source, onset, cut). Mid, Far and every other sound are byte-identical.
+  - Intermediates `SFX_LB_Thunder_CrackLayer_01..04` are in `SourceArt/Audio/Cracks/` (not imported). 760214 and 840628 feed both a Strike and a crack layer (five sources for seven files).
+  - Checks: `checks.py` 145 PASS (Near and Strike criteria rewritten for recorded cracks: recorded crack over the tail by 30-50 dB, quiet pre-roll, no boundary click, fade out); no clipping, DC under 1e-5, first/last samples under 0.003. Spectrogram row `gen_thunder.png`; `audition.md` Near/Strike rows edited in place, a "Thunder crack layers" section added, `audition.html` rebuilt (179 sounds). This is objective only; the ear test is the owner's.
+- **Owner choices in the asset script (b850aac).** `Tools/audio/p16_2_assets.py` has an `OWNER_CHOICES` table that overrides the cue-sheet gains: wave volumes by regex (`Bell_Stage1..4` 1.0, `Thunder_Far_*` 1.0, `Step_*` 0.6 (36 sounds), `Warden_Roar_*` 2.0), `class_volume` (`SCL_LB_Master` 0.7), and the `DA_Audio` gains (RainOut 0.22, RainIn 0.03, RainExposurePower 1.5, WindOut 0.08, WindMin 0.2; only those fields are written). `LB_REIMPORT` accepts a regex; the verify pass also checks every SoundWave `duration` against its WAV.
+  - Headless apply (Unreal closed, `LB_REIMPORT=^SFX_LB_Thunder_(Near|Strike)_`): 7 re-imported (the replace reset class, attenuation and concurrency, which the same run restored), `SCL_LB_Master` volume 0.7 written and saved (the first save of it), 8 packages saved, 1777 checks 0 failures.
+  - Fresh-process `LB_MODE=verify`: **1565 checks, 0 failures** (`Docs/ArtTest/audio/p16_2_report.json`): Bell stages 1-5 at 1.0, Far 1.0, 36 steps 0.6, 3 roars 2.0, master 0.7, the five DA gains, 175 durations equal to their WAVs. `L_Monastery` and the never-save list were not touched.
+- **Suite** (Unreal closed, after the asset commit): **172 / 172** pass, 0 `Error:` lines, `Monastery.AudioSetup` and the new candle test pass; the log reads "Audio: active (111 sounds loaded, 7 zones, 29 bound actors)". An earlier full run (while Python audio jobs ran in parallel) had one timing failure, `Audio.NewGameToll` ("strikes about 0.4 s apart"), that passed alone and in the clean run.
+- **For the P16-6 run-through, listen for:**
+  1. Lightning: Near strikes (cracks from 840628, 721072, 760214, 347853 over our rumble): is the crack real, big and cut cleanly, with a smooth hand-off into the rumble (the crack ends within about 0.6-0.8 s)? Any ticks at the start or a "double" feel where the crack ends?
+  2. The tower strike (`Thunder_Strike_01..03`, 840628, 760214, 567945): loud and sharp, tail fading by about 2.6-2.9 s, no hiss from the fade. 347853 and 760214 had a noisy lead-in: tell me if any crack sounds noisy or too long.
+  3. Level: the cracks are normalised to the same -3 dBFS peak as before, so a long recorded crack may feel louder than the synthetic one; also repeats (same crack in a Near and a Strike).
+  4. The candle: blow it out (the flame mesh disappears with the light) and relight it (reappears with the light, not before).
+  5. The owner choices now come from the script: bells, far thunder, steps 0.6, roar 2.0, master 0.7, rain/wind gains, chapel room tone 0.4 and the crypt chains 8-18 s.
