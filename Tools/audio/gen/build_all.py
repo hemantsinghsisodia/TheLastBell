@@ -46,6 +46,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--group", default="all", help="|".join(GROUPS) + "|all")
     ap.add_argument("--no-sheets", action="store_true")
+    ap.add_argument("--no-audition", action="store_true", help="do not rewrite audition.md (edit the changed rows by hand)")
     ap.add_argument("--verify", action="store_true", help="build twice into scratch folders and compare hashes")
     a = ap.parse_args()
     groups = GROUPS if a.group == "all" else [a.group]
@@ -80,7 +81,8 @@ def main():
             cols, nfft = SHEET_LAYOUT[g]
             sheets.build_sheets(g, entries, cols, nfft)
     sheets.save_manifest(man)
-    sheets.write_audition(man)
+    if not a.no_audition:
+        sheets.write_audition(man)
     print("manifest: %d files" % len(man))
 
 

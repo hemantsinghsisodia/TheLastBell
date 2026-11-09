@@ -229,7 +229,8 @@ def check_bells():
           "sub %+.0f dB re body (8-25 s), length %.1f s" % (sub, len(x) / SR))
     sm = load("SFX_LB_SmallBell_Strike")
     pk = peak_freq(sm, 480, 570, 0.05, 2.0)
-    check("small bell strike: prime ~523 Hz", abs(pk - 523) < 4 and len(sm) == 4 * SR, "peak %.1f Hz" % pk)
+    hum_vs_prime = band_rms_db(sm, 255, 268, 0.05, 1.0) - band_rms_db(sm, 515, 531, 0.05, 1.0)
+    check("small bell strike: prime ~523 Hz, hum (261 Hz) not dominant", abs(pk - 523) < 4 and len(sm) == 4 * SR and hum_vs_prime < 0, "peak %.1f Hz, hum %+.1f dB re prime" % (pk, hum_vs_prime))
     fl = load("SFX_LB_SmallBell_Fail")
     check("small bell fail: 3 s", len(fl) == 3 * SR, "")
     so = load("SFX_LB_SmallBell_Solved")
@@ -305,8 +306,11 @@ def check_music():
     sp = load("MUS_LB_Sting_Spotted")
     env = envelope(sp, 30, 120, 60.0)
     on = np.argmax(env > 0.3 * env.max()) / SR
-    sw = win_rms_db(sp, 1.5, 1.95) - win_rms_db(sp, 0.5, 1.0)
-    check("sting spotted: swell then hit at 2.0 s", abs(on - 2.0) < 0.03 and sw > 6, "hit at %.3f s, swell +%.1f dB" % (on, sw))
+    tail = win_rms_db(sp, 0.3, 0.6) - win_rms_db(sp, 1.1, 1.3)
+    amp = np.abs(mono(sp))
+    att = np.argmax(amp > 0.7 * amp.max()) / SR
+    check("sting spotted: immediate hit, <=1.5 s dissonant tail", len(sp) / SR <= 1.5 and on < 0.03 and att < 0.03 and tail > 6,
+          "length %.2f s, envelope onset %.3f s, 70%% of peak by %.3f s, tail decays %+.1f dB" % (len(sp) / SR, on, att, tail))
     ca = load("MUS_LB_Sting_Caught")
     env = envelope(ca, 30, 120, 60.0)
     on = np.argmax(env > 0.3 * env.max()) / SR

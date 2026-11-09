@@ -124,13 +124,15 @@ def great_bell(stage, seed=None):
 
 
 SMALL_PRIME_HZ = 523.0
+SMALL_HUM_AMP = 0.2             # small bells only: the hum partial is 0.2 (great bell keeps 0.6) so they ring brighter
+SMALL_PARTIALS = [(n, r, t, SMALL_HUM_AMP if n == "hum" else a) for n, r, t, a in GREAT_PARTIALS]
 SMALL_T60_SCALE = 0.25          # T60 / 4
 SMALL_C = 0.15
 SMALL_SIZES = (1.30, 1.15, 1.00, 0.85)  # D-081; the play-time pitch multiplier is 1 / size
 
 
 def small_bell_dry(rng, n, prime_hz, c=SMALL_C, level=1.0):
-    tonal, beat = bell_tonal(rng, n, prime_hz, c, t60_scale=SMALL_T60_SCALE)
+    tonal, beat = bell_tonal(rng, n, prime_hz, c, t60_scale=SMALL_T60_SCALE, partials=SMALL_PARTIALS)
     ref = np.max(np.abs(tonal))
     dry = tonal + 0.35 * ref * strike_burst(rng, n, scale=0.6)
     dry = dry + rattle(rng, n, c, beat, A.rms(tonal[:A.nsamp(0.8)]), 1.2)

@@ -309,39 +309,33 @@ def chase(seed=5201):
 # stings
 # --------------------------------------------------------------------------------------------------------------------
 
-STING_SPOTTED_S = 2.6
+STING_SPOTTED_S = 1.4
 STING_CAUGHT_S = 3.0
 STING_APPARITION_S = 3.0
 
 
 def sting_spotted(seed=5301):
-    """2 s dissonant swell into a hit at t = 2.0 s (then a short tail)."""
+    """An immediate hit (attack under 30 ms) with a dissonant ~1.2 s tail; the whole sting is 1.4 s."""
     rng = A.rng_for(seed)
     n = A.nsamp(STING_SPOTTED_S)
-    hit = A.nsamp(2.0)
     t = A.tvec(n)
-    u = np.clip(t / 2.0, 0, 1)
-    fc = 300.0 * (3600.0 / 300.0) ** (u * u)
+    out = np.zeros(n)
+    # low thump and a noise burst at t = 0
+    A.add_at(out, thump(rng, n_s=STING_SPOTTED_S, f_start=90.0, f_end=42.0, t60=0.5, click=0.6), 0, 3.0)
+    nz = A.bandpass(rng.standard_normal(n), 1200.0, 7000.0, 2, pad=A.SR // 4)
+    out += 0.9 * (nz / A.rms(nz)) * A.exp_decay(n, 0.25) * A.rise(n, 0.002)
+    # the dissonant tail: the same clashing saws (A, Bb, Eb, E, A), a filter closing from bright to dark, ringing about 1.2 s
+    fc = 3000.0 * (350.0 / 3000.0) ** np.clip(t / 1.2, 0, 1)
     y = np.zeros(n)
-    for f in (220.0, 233.08, 311.13, 329.63, 440.0):   # A, Bb, Eb, E, A: tritone + semitone clashes
+    for f in (220.0, 233.08, 311.13, 329.63, 440.0):
         for d in (-0.5, 0.6):
             y += saw48_t(t, f + d, fc, rng)
-    y *= (u ** 2.2) * (t < 2.0)
-    nz = A.bandpass(rng.standard_normal(n), 1200.0, 7000.0, 2, pad=A.SR // 4)
-    y2 = np.zeros(n)
-    y2 += 3.0 * y / np.max(np.abs(y)) + 0.9 * (nz / A.rms(nz)) * (u ** 3) * (t < 2.0) * 0.5
-    out = y2 * 1.0
-    # the hit: low thump, noise burst and a dissonant chord stab that rings out
-    m = n - hit
-    th = thump(rng, n_s=m / A.SR, f_start=90.0, f_end=42.0, t60=0.8, click=0.5)
-    A.add_at(out, th, hit, 3.6)
-    tm = A.tvec(m)
-    stab = np.zeros(m)
-    for f in (110.0, 116.54, 155.56, 220.0, 233.08):
-        stab += saw48_t(tm, f, 1800.0, rng)
-    stab *= A.exp_decay(m, 0.7) * A.rise(m, 0.003)
-    A.add_at(out, stab / np.max(np.abs(stab)), hit, 2.2)
-    return A.finish_oneshot(out, A.ONESHOT_DB, 0.01, 0.3)
+    y *= A.exp_decay(n, 1.1) * A.rise(n, 0.004)
+    out += 2.4 * y / np.max(np.abs(y))
+    # a low dissonant stab underneath, as before
+    for f in (110.0, 116.54, 155.56):
+        out += 0.5 * saw48_t(t, f, 1800.0, rng) / 3.0 * A.exp_decay(n, 0.7) * A.rise(n, 0.003)
+    return A.finish_oneshot(out, A.ONESHOT_DB, 0.002, 0.25)
 
 
 def saw48_t(t, f, fc_t, rng, hmax=4500.0):
@@ -424,8 +418,8 @@ def build(entries, out_dir=None):
            listen="120 BPM, 8.000 s: double heartbeat thump on beat 1 and the 'and' after it, a low growling saw ostinato in eighths, "
                   "and a quiet rising noise swell over 4 bars that drops out on the next downbeat. Loop it: the join must stay on the beat. (The listed seam step is the downbeat thump arriving after the swell peak, by design, not a fault.)")
     A.emit(entries, "MUS_LB_Sting_Spotted", GROUP, stereo_oneshot(sting_spotted()), loop=False, seed=5301, out_dir=out_dir,
-           listen="2 s of rising dissonant saws and noise, then a hard hit at 2.0 s. (The hit lands ~1.4 s after the chase starts: "
-                  "say if it should be shorter.)")
+           listen="A tell that lands at once: a hard low hit with a noise burst at 0 s, then a dissonant clash (tritone and semitones) that darkens "
+                  "and dies over about 1.2 s. Total 1.4 s.")
     A.emit(entries, "MUS_LB_Sting_Caught", GROUP, stereo_oneshot(sting_caught()), loop=False, seed=5302, out_dir=out_dir,
            listen="Immediate heavy low hit and boom, with a reversed cracked bell swelling underneath that cuts off at ~2.5 s.")
     A.emit(entries, "MUS_LB_Sting_Apparition", GROUP, sting_apparition(), loop=False, seed=5303, out_dir=out_dir,

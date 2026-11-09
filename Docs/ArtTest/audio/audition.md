@@ -58,9 +58,9 @@ Note: dBFS here is digital level, not loudness; turn the volume down before the 
 | [SFX_LB_Bell_Stage3](../../../SourceArt/Audio/Generated/SFX_LB_Bell_Stage3.wav) | 26.00 s | 1 | -23.9 | -3.0 | one-shot | -10 dB | Closer again (2.5 kHz), harsh distortion, and the pitch sags 20 cents over the tail. -10 dB. | |
 | [SFX_LB_Bell_Stage4](../../../SourceArt/Audio/Generated/SFX_LB_Bell_Stage4.wav) | 28.00 s | 1 | -24.9 | -3.0 | one-shot | -6 dB | Close and brutal: full bandwidth, hardest crack, with a 1.2 s reversed swell before the strike. -6 dB. | |
 | [SFX_LB_Bell_Stage5](../../../SourceArt/Audio/Generated/SFX_LB_Bell_Stage5.wav) | 30.00 s | 1 | -23.5 | -3.0 | one-shot | 0 dB | FINALE: clean, pure, no beating, huge 8 s reverb and a 27.5 Hz sub hum for 30 s. Full level (0 dB). | |
-| [SFX_LB_SmallBell_Fail](../../../SourceArt/Audio/Generated/SFX_LB_SmallBell_Fail.wav) | 3.00 s | 1 | -20.0 | -3.0 | one-shot | 0 dB | All four bells at once, each out of tune, harsh and clashing: unmistakably WRONG. | |
-| [SFX_LB_SmallBell_Solved](../../../SourceArt/Audio/Generated/SFX_LB_SmallBell_Solved.wav) | 5.00 s | 1 | -16.1 | -3.0 | one-shot | 0 dB | Four bells rising in order, then a low C resonance swelling under and fading: a reward, not a fanfare. | |
-| [SFX_LB_SmallBell_Strike](../../../SourceArt/Audio/Generated/SFX_LB_SmallBell_Strike.wav) | 4.00 s | 1 | -23.0 | -3.0 | one-shot | 0 dB | One bright small bell (C5, 523 Hz), 4 s ring, slight beat. In game it is pitched per bell (x1/size). | |
+| [SFX_LB_SmallBell_Fail](../../../SourceArt/Audio/Generated/SFX_LB_SmallBell_Fail.wav) | 3.00 s | 1 | -21.7 | -3.0 | one-shot | 0 dB | All four bells at once, each out of tune, harsh and clashing: unmistakably WRONG. | |
+| [SFX_LB_SmallBell_Solved](../../../SourceArt/Audio/Generated/SFX_LB_SmallBell_Solved.wav) | 5.00 s | 1 | -15.9 | -3.0 | one-shot | 0 dB | Four bells rising in order, then a low C resonance swelling under and fading: a reward, not a fanfare. | |
+| [SFX_LB_SmallBell_Strike](../../../SourceArt/Audio/Generated/SFX_LB_SmallBell_Strike.wav) | 4.00 s | 1 | -23.8 | -3.0 | one-shot | 0 dB | One bright small bell (C5, 523 Hz), 4 s ring, slight beat. In game it is pitched per bell (x1/size). | |
 
 ## Music
 
@@ -74,7 +74,7 @@ Note: dBFS here is digital level, not loudness; turn the volume down before the 
 | [MUS_LB_Drone_C](../../../SourceArt/Audio/Generated/MUS_LB_Drone_C.wav) | 60.00 s | 2 | -22.0 | -4.7 | -0.00 dB, click 1.2 | 0 dB | A breathy low 'oo' choir: formant-filtered noise with slow swells and a faint low minor chord underneath. Listen for anything that sounds like a synth pad rather than breath. | |
 | [MUS_LB_Sting_Apparition](../../../SourceArt/Audio/Generated/MUS_LB_Sting_Apparition.wav) | 3.00 s | 2 | -25.7 | -3.0 | one-shot | 0 dB | 3 s of whispering breath with syllable-like bursts swelling and fading, drifting between the ears. Should sound like a voice almost making words. | |
 | [MUS_LB_Sting_Caught](../../../SourceArt/Audio/Generated/MUS_LB_Sting_Caught.wav) | 3.00 s | 2 | -20.9 | -3.0 | one-shot | 0 dB | Immediate heavy low hit and boom, with a reversed cracked bell swelling underneath that cuts off at ~2.5 s. | |
-| [MUS_LB_Sting_Spotted](../../../SourceArt/Audio/Generated/MUS_LB_Sting_Spotted.wav) | 2.60 s | 2 | -22.3 | -3.0 | one-shot | 0 dB | 2 s of rising dissonant saws and noise, then a hard hit at 2.0 s. (The hit lands ~1.4 s after the chase starts: say if it should be shorter.) | |
+| [MUS_LB_Sting_Spotted](../../../SourceArt/Audio/Generated/MUS_LB_Sting_Spotted.wav) | 1.40 s | 2 | -25.7 | -3.0 | one-shot | 0 dB | A tell that lands at once: a hard low hit with a noise burst at 0 s, then a dissonant clash (tritone and semitones) that darkens and dies over about 1.2 s. Total 1.4 s. | |
 | [MUS_LB_Tension](../../../SourceArt/Audio/Generated/MUS_LB_Tension.wav) | 32.00 s | 2 | -22.0 | -7.4 | +0.22 dB, click 0.6 | 0 dB | No pulse. Thick, clashing string-like saws with a fast 5 Hz flutter and a faint glassy shimmer on top. Uneasy, steady, loops every 32 s. | |
 
 ## Room tones and drips
