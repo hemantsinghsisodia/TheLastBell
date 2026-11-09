@@ -1,0 +1,20 @@
+{
+ "_doc": "Recipes for prep_cracks.py (P16-5). rel_db: onset threshold relative to the loudest 2 ms frame of the search window; back_db/back_max: walk back to where the rise began; pre: room tone kept before the onset (s); len: length after the onset (s); valley: the end is moved to the quietest 10 ms frame within +-valley s; fade_out in s.",
+ "layers": [
+  {"name": "SFX_LB_Thunder_CrackLayer_01", "src": "fs:840628", "rel_db": -24, "len": 0.70, "fade_out": 0.10},
+  {"name": "SFX_LB_Thunder_CrackLayer_02", "src": "fs:721072", "rel_db": -24, "len": 0.55, "fade_out": 0.09},
+  {"name": "SFX_LB_Thunder_CrackLayer_03", "src": "fs:760214", "rel_db": -18, "back_db": 10, "len": 0.60, "fade_out": 0.09},
+  {"name": "SFX_LB_Thunder_CrackLayer_04", "src": "fs:347853", "rel_db": -24, "len": 0.60, "fade_out": 0.09}
+ ],
+ "strikes": [
+  {"name": "SFX_LB_Thunder_Strike_01", "src": "fs:840628", "rel_db": -24, "len": 2.8, "fade_out": 0.9, "valley": 0.15},
+  {"name": "SFX_LB_Thunder_Strike_02", "src": "fs:760214", "rel_db": -18, "back_db": 10, "len": 2.6, "fade_out": 0.9, "valley": 0.15},
+  {"name": "SFX_LB_Thunder_Strike_03", "src": "fs:567945", "rel_db": -20, "back_db": 10, "len": 2.7, "fade_out": 0.9, "valley": 0.15}
+ ],
+ "near": [
+  {"name": "SFX_LB_Thunder_Near_01", "seed": 1001, "layer": "SFX_LB_Thunder_CrackLayer_01"},
+  {"name": "SFX_LB_Thunder_Near_02", "seed": 1002, "layer": "SFX_LB_Thunder_CrackLayer_02"},
+  {"name": "SFX_LB_Thunder_Near_03", "seed": 1003, "layer": "SFX_LB_Thunder_CrackLayer_03"},
+  {"name": "SFX_LB_Thunder_Near_04", "seed": 1004, "layer": "SFX_LB_Thunder_CrackLayer_04"}
+ ]
+}

@@ -124,21 +124,30 @@ def check_rain_wind():
     check("howl: glides ~380..520 Hz", min(pk) < 410 and max(pk) > 490, "peak track %.0f..%.0f Hz" % (min(pk), max(pk)))
 
 
+def edge_ok(x):
+    return abs(float(x[0])) < 0.003 and abs(float(x[-1])) < 0.003
+
+
 def check_thunder():
+    # P16-5: Near = generated rumble + a recorded crack layer at t = 0 (no synthetic crack); Strike = a recorded strike.
     for i in range(1, 5):
         n = "SFX_LB_Thunder_Near_%02d" % i
         x = mono(load(n))
         dur = len(x) / SR
-        crack = band_rms_db(x, 2000, 8000, 0.0, 0.04) - band_rms_db(x, 2000, 8000, 1.0, 2.0)
+        crack = band_rms_db(x, 600, 8000, 0.0, 0.6) - band_rms_db(x, 600, 8000, 2.0, dur - 0.5)
         hf_late = band_rms_db(x, 600, 8000, 1.5, dur - 0.5) - band_rms_db(x, 20, 300, 1.5, dur - 0.5)
-        env = envelope(x, 20, 300, 6.0)
-        e = 20 * np.log10(env[::480] + 1e-9)  # 10 ms hops
-        onsets = 0
-        for k in range(30, len(e) - 30):  # a surge: +3 dB over the min of the previous 0.4 s
-            if e[k] - e[k - 30:k].min() > 3.0 and e[k] >= e[k - 1] and e[k] > e[k + 1]:
-                onsets += 1
-        check(n, 7.0 <= dur <= 9.0 and crack > 25 and hf_late < -25,
-              "len %.2f s, crack(2-8k, first 40 ms) %+.0f dB over the tail, >600Hz vs <300Hz late %+.0f dB" % (dur, crack, hf_late))
+        pre = win_rms_db(x, 0.0, 0.008) - A.db(np.max(np.abs(x[: int(0.3 * SR)])))  # the recorded pre-roll is quiet, not a click at sample 0
+        check(n, 7.0 <= dur <= 9.0 and crack > 15 and hf_late < -25 and pre < -15 and edge_ok(x),
+              "len %.2f s, recorded crack (0.6-8k, first 0.6 s) %+.0f dB over the tail, >600Hz vs <300Hz late %+.0f dB, first 8 ms %+.0f dB under the crack" % (dur, crack, hf_late, -pre))
+    for i in range(1, 4):
+        n = "SFX_LB_Thunder_Strike_%02d" % i
+        x = mono(load(n))
+        dur = len(x) / SR
+        crack = band_rms_db(x, 1000, 8000, 0.0, 0.4) - band_rms_db(x, 1000, 8000, dur - 0.7, dur - 0.1)
+        pre = win_rms_db(x, 0.0, 0.008) - A.db(np.max(np.abs(x[: int(0.5 * SR)])))
+        tail = win_rms_db(x, dur - 0.1, dur) - win_rms_db(x, 0.0, 0.5)
+        check(n, 2.4 <= dur <= 3.0 and crack > 8 and pre < -15 and tail < -20 and edge_ok(x),
+              "len %.2f s, crack (1-8k, first 0.4 s) %+.0f dB over the end, first 8 ms %+.0f dB under the crack, last 0.1 s %+.0f dB under the start" % (dur, crack, -pre, -tail))
     for i in range(1, 5):
         n = "SFX_LB_Thunder_Mid_%02d" % i
         x = mono(load(n))
@@ -159,24 +168,6 @@ def check_thunder():
         a50 = np.argmax(env > 0.5 * env.max()) / SR
         check(n, 5.0 <= dur <= 6.0 and hf < -25 and a50 > 0.6,
               "len %.2f s, >400 Hz %+.0f dB, 50%% of peak at %.2f s, peak at %.2f s" % (dur, hf, a50, tpk))
-    for i in range(1, 4):
-        n = "SFX_LB_Thunder_Strike_%02d" % i
-        x = mono(load(n))
-        env = envelope(x, 3000, 10000, 300.0)
-        hop = SR // 1000  # 1 ms
-        e = env[: int(0.12 * SR)][::hop]
-        valley_i = 35 + int(np.argmin(e[35:58]))
-        valley = e[valley_i]
-        peak2_i = 55 + int(np.argmax(e[55:80]))
-        rise_db = 20 * np.log10(e[peak2_i] / max(valley, 1e-9))
-        on1 = int(np.argmax(e > 0.3 * e.max()))
-        on2 = valley_i + int(np.argmax(e[valley_i:] > 0.5 * e[peak2_i]))  # half the second crack's height
-        gap = (on2 - on1) / 1000.0
-        merged = [0, 1] if rise_db > 6 else [0]
-        sub = band_rms_db(x, 35, 65, 0.0, 0.15) - band_rms_db(x, 100, 400, 0.0, 0.15)
-        tear = win_rms_db(mono(load(n)), 0.1, 0.4) - win_rms_db(mono(load(n)), 1.5, 2.0)
-        check(n, len(x) == 3 * SR and len(merged) >= 2 and abs(gap - 0.060) < 0.012 and tear > 10,
-              "second crack +%.0f dB over the valley, gap %.0f ms, sub thump %+.0f dB re 100-400 Hz, tear 0.1-0.4 s vs tail %+.0f dB" % (rise_db, gap * 1000, sub, tear))
 
 
 def bell_roughness(x, t0, t1, lo=100, hi=125):

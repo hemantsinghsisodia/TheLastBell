@@ -700,114 +700,182 @@
  "SFX_LB_Thunder_Near_01": {
   "channels": 1,
   "clipped": false,
-  "dc": 3.5016640432830467e-07,
+  "composition": {
+   "crack_cut_s": [
+    0.618,
+    1.41
+   ],
+   "crack_onset_s": 0.628,
+   "crack_peak_re_rumble_db": 1.41,
+   "crack_source": "fs:840628",
+   "generated_rumble_seed": 1001,
+   "recorded_crack_layer": "SFX_LB_Thunder_CrackLayer_01"
+  },
+  "dc": 6.486194919898154e-07,
   "file": "SFX_LB_Thunder_Near_01.wav",
   "group": "thunder",
-  "listen": "Sharp crack in the first 40 ms, then a deep rolling rumble with 3-6 surges over 7-9 s. Close and big.",
+  "listen": "A recorded close lightning crack (Freesound 840628) at t = 0 over a deep generated rolling rumble with 3-6 surges over 7-9 s. Close and big.",
   "loop": false,
   "mix_gain_db": 0.0,
   "name": "SFX_LB_Thunder_Near_01",
-  "note": "",
-  "peak_db": -3.000097173025577,
-  "rms_db": -20.442825173239427,
+  "note": "generated rumble (seed 1001, no synthetic crack) + recorded crack layer SFX_LB_Thunder_CrackLayer_01",
+  "peak_db": -2.999722740882484,
+  "rms_db": -21.855849499505343,
   "seconds": 8.2251875,
   "seed": 1001
  },
  "SFX_LB_Thunder_Near_02": {
   "channels": 1,
   "clipped": false,
-  "dc": 5.489185122323861e-07,
+  "composition": {
+   "crack_cut_s": [
+    0.812,
+    1.47
+   ],
+   "crack_onset_s": 0.822,
+   "crack_peak_re_rumble_db": 1.41,
+   "crack_source": "fs:721072",
+   "generated_rumble_seed": 1002,
+   "recorded_crack_layer": "SFX_LB_Thunder_CrackLayer_02"
+  },
+  "dc": 9.354796910418789e-08,
   "file": "SFX_LB_Thunder_Near_02.wav",
   "group": "thunder",
-  "listen": "Sharp crack in the first 40 ms, then a deep rolling rumble with 3-6 surges over 7-9 s. Close and big.",
+  "listen": "A recorded close lightning crack (Freesound 721072) at t = 0 over a deep generated rolling rumble with 3-6 surges over 7-9 s. Close and big.",
   "loop": false,
   "mix_gain_db": 0.0,
   "name": "SFX_LB_Thunder_Near_02",
-  "note": "",
+  "note": "generated rumble (seed 1002, no synthetic crack) + recorded crack layer SFX_LB_Thunder_CrackLayer_02",
   "peak_db": -3.000097173025577,
-  "rms_db": -18.96743071636678,
+  "rms_db": -18.75498516228273,
   "seconds": 7.761645833333334,
   "seed": 1002
  },
  "SFX_LB_Thunder_Near_03": {
   "channels": 1,
   "clipped": false,
-  "dc": 1.0585899198223084e-07,
+  "composition": {
+   "crack_cut_s": [
+    0.664,
+    1.32
+   ],
+   "crack_onset_s": 0.674,
+   "crack_peak_re_rumble_db": 1.41,
+   "crack_source": "fs:760214",
+   "generated_rumble_seed": 1003,
+   "recorded_crack_layer": "SFX_LB_Thunder_CrackLayer_03"
+  },
+  "dc": 6.482570193027037e-08,
   "file": "SFX_LB_Thunder_Near_03.wav",
   "group": "thunder",
-  "listen": "Sharp crack in the first 40 ms, then a deep rolling rumble with 3-6 surges over 7-9 s. Close and big.",
+  "listen": "A recorded close lightning crack (Freesound 760214) at t = 0 over a deep generated rolling rumble with 3-6 surges over 7-9 s. Close and big.",
   "loop": false,
   "mix_gain_db": 0.0,
   "name": "SFX_LB_Thunder_Near_03",
-  "note": "",
+  "note": "generated rumble (seed 1003, no synthetic crack) + recorded crack layer SFX_LB_Thunder_CrackLayer_03",
   "peak_db": -3.000097173025577,
-  "rms_db": -20.510769093416855,
+  "rms_db": -22.864540287723862,
   "seconds": 7.375520833333334,
   "seed": 1003
  },
  "SFX_LB_Thunder_Near_04": {
   "channels": 1,
   "clipped": false,
-  "dc": 1.446538393420507e-06,
+  "composition": {
+   "crack_cut_s": [
+    0.98,
+    1.54
+   ],
+   "crack_onset_s": 0.99,
+   "crack_peak_re_rumble_db": 1.41,
+   "crack_source": "fs:347853",
+   "generated_rumble_seed": 1004,
+   "recorded_crack_layer": "SFX_LB_Thunder_CrackLayer_04"
+  },
+  "dc": 9.035189588527412e-08,
   "file": "SFX_LB_Thunder_Near_04.wav",
   "group": "thunder",
-  "listen": "Sharp crack in the first 40 ms, then a deep rolling rumble with 3-6 surges over 7-9 s. Close and big.",
+  "listen": "A recorded close lightning crack (Freesound 347853) at t = 0 over a deep generated rolling rumble with 3-6 surges over 7-9 s. Close and big.",
   "loop": false,
   "mix_gain_db": 0.0,
   "name": "SFX_LB_Thunder_Near_04",
-  "note": "",
+  "note": "generated rumble (seed 1004, no synthetic crack) + recorded crack layer SFX_LB_Thunder_CrackLayer_04",
   "peak_db": -3.000097173025577,
-  "rms_db": -21.422265500965814,
+  "rms_db": -22.430454780084702,
   "seconds": 7.0017708333333335,
   "seed": 1004
  },
  "SFX_LB_Thunder_Strike_01": {
   "channels": 1,
   "clipped": false,
-  "dc": 0.00010315192622658977,
+  "composition": {
+   "crack_cut_s": [
+    0.618,
+    3.56
+   ],
+   "crack_onset_s": 0.628,
+   "crack_source": "fs:840628"
+  },
+  "dc": 1.7021001914297825e-06,
   "file": "SFX_LB_Thunder_Strike_01.wav",
   "group": "thunder",
-  "listen": "Double crack 60 ms apart, 400 ms of tearing, low thump, then a short rumble. LOUD and sharp: the tower strike.",
+  "listen": "A recorded close lightning strike (Freesound 840628): sharp tearing crack, then its own short boom, fading out by about 2.6-2.9 s. LOUD: the tower strike.",
   "loop": false,
   "mix_gain_db": 0.0,
   "name": "SFX_LB_Thunder_Strike_01",
-  "note": "",
-  "peak_db": -2.999722740882484,
-  "rms_db": -30.82295637978287,
-  "seconds": 3.0,
-  "seed": 1301
+  "note": "recorded close lightning strike, Freesound fs:840628, cut 0.618..3.560 s of the source (crack onset 0.628 s)",
+  "peak_db": -3.000097173025577,
+  "rms_db": -21.30985663637199,
+  "seconds": 2.942,
+  "seed": null
  },
  "SFX_LB_Thunder_Strike_02": {
   "channels": 1,
   "clipped": false,
-  "dc": 0.00010437690528750137,
+  "composition": {
+   "crack_cut_s": [
+    0.664,
+    3.23
+   ],
+   "crack_onset_s": 0.674,
+   "crack_source": "fs:760214"
+  },
+  "dc": 2.781077474332551e-06,
   "file": "SFX_LB_Thunder_Strike_02.wav",
   "group": "thunder",
-  "listen": "Double crack 60 ms apart, 400 ms of tearing, low thump, then a short rumble. LOUD and sharp: the tower strike.",
+  "listen": "A recorded close lightning strike (Freesound 760214): sharp tearing crack, then its own short boom, fading out by about 2.6-2.9 s. LOUD: the tower strike.",
   "loop": false,
   "mix_gain_db": 0.0,
   "name": "SFX_LB_Thunder_Strike_02",
-  "note": "",
+  "note": "recorded close lightning strike, Freesound fs:760214, cut 0.664..3.230 s of the source (crack onset 0.674 s)",
   "peak_db": -3.000097173025577,
-  "rms_db": -31.266057804070883,
-  "seconds": 3.0,
-  "seed": 1302
+  "rms_db": -17.12207485722475,
+  "seconds": 2.566,
+  "seed": null
  },
  "SFX_LB_Thunder_Strike_03": {
   "channels": 1,
   "clipped": false,
-  "dc": 0.00011074933961336443,
+  "composition": {
+   "crack_cut_s": [
+    1.8,
+    4.4
+   ],
+   "crack_onset_s": 1.81,
+   "crack_source": "fs:567945"
+  },
+  "dc": 8.05879390850581e-06,
   "file": "SFX_LB_Thunder_Strike_03.wav",
   "group": "thunder",
-  "listen": "Double crack 60 ms apart, 400 ms of tearing, low thump, then a short rumble. LOUD and sharp: the tower strike.",
+  "listen": "A recorded close lightning strike (Freesound 567945): sharp tearing crack, then its own short boom, fading out by about 2.6-2.9 s. LOUD: the tower strike.",
   "loop": false,
   "mix_gain_db": 0.0,
   "name": "SFX_LB_Thunder_Strike_03",
-  "note": "",
+  "note": "recorded close lightning strike, Freesound fs:567945, cut 1.800..4.400 s of the source (crack onset 1.810 s)",
   "peak_db": -2.999722740882484,
-  "rms_db": -30.677075185584,
-  "seconds": 3.0,
-  "seed": 1303
+  "rms_db": -21.438379908746764,
+  "seconds": 2.6,
+  "seed": null
  },
  "SFX_LB_Wind": {
   "channels": 2,

@@ -1,15 +1,27 @@
 """Thunder one-shots, mono: Near x4, Mid x4, Far x4, Strike x3 (plan section 4.3). Seeds 1001-1004, 1101-1104, 1201-1204,
-1301-1303."""
+1301-1303.
+
+P16-5: the owner rejected the synthetic cracks. With CRACKS = "recorded" (the default):
+  * Near = the generated rumble (same seeds 1001-1004, NO synthetic crack and NO synthetic tearing) with a recorded Freesound CC0
+    crack layer laid at t = 0 (crack peak 1.0, rumble peak RUMBLE_PEAK = 0.85 on the same scale, as before), then -3 dBFS peak;
+  * Strike = a recorded crack with its own early boom (about 2.6-2.9 s), -3 dBFS peak.
+Both come from Tools/audio/prep/prep_cracks.py (recipes in Tools/audio/prep/crack_recipes.json; needs ffmpeg and the raw downloads
+in ExternalAssets/Incoming/freesound). CRACKS = "synthetic" restores the old all-generated Near and Strike.
+Mid and Far are untouched.
+"""
 import os
 import sys
 
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
+sys.path.insert(0, os.path.join(HERE, "..", "prep"))
 
 import numpy as np  # noqa: E402
 
 import audio_lib as A  # noqa: E402
 
 GROUP = "thunder"
+CRACKS = "recorded"            # "recorded" (P16-5) or "synthetic" (the rejected P16-A2 version)
 
 # Values section 4.3 leaves open:
 NEAR_SECONDS = (7.0, 9.0)      # file length range, drawn per seed (cue sheet: 7-9 s)
@@ -50,7 +62,9 @@ def squash(y, k=2.0):
     return np.tanh(k * y) / np.tanh(k)
 
 
-def render_near(seed):
+def near_rumble(seed):
+    """The generated Near rumble WITHOUT any crack: (signal at peak RUMBLE_PEAK, rng after the rumble). The draws before the
+    synthetic crack are the same as ever, so seeds 1001-1004 give the rumble the owner kept."""
     rng = A.rng_for(seed)
     dur = rng.uniform(*NEAR_SECONDS)
     n = A.nsamp(dur)
@@ -66,13 +80,29 @@ def render_near(seed):
         A.add_at(rum, y, A.nsamp(t0), amp)
     # the main swell underneath so the tail never drops out between bursts
     rum += 0.6 * rumble(rng, n, rng.uniform(120.0, 220.0)) * burst_env(n, 0.2, 6.5)
-    out = RUMBLE_PEAK * squash(rum)
-    # 40 ms crack, then ragged mid-band tearing for 0.6 s
-    A.add_at(out, crack(rng, n), 0, CRACK_PEAK)
-    tear = A.bandpass(rng.standard_normal(n), 150.0, 1400.0, 2, pad=n // 4) * A.exp_decay(n, 0.6) * A.rise(n, 0.006)
-    out += 0.25 * tear / (np.max(np.abs(tear)) + 1e-12)
+    return RUMBLE_PEAK * squash(rum), rng
+
+
+def render_near(seed, crack_layer=True):
+    """Near thunder. crack_layer: True = the synthetic crack (rejected by the owner), False/None = the rumble only, or a float
+    array = a recorded crack (peak 1.0) laid at t = 0 over the rumble. Returns the finished one-shot (-3 dBFS peak)."""
+    out, rng = near_rumble(seed)
+    n = len(out)
+    if crack_layer is True:
+        A.add_at(out, crack(rng, n), 0, CRACK_PEAK)  # 40 ms crack, then ragged mid-band tearing for 0.6 s
+        tear = A.bandpass(rng.standard_normal(n), 150.0, 1400.0, 2, pad=n // 4) * A.exp_decay(n, 0.6) * A.rise(n, 0.006)
+        out += 0.25 * tear / (np.max(np.abs(tear)) + 1e-12)
+    elif crack_layer is not False and crack_layer is not None:
+        A.add_at(out, np.asarray(crack_layer, dtype=np.float64), 0, CRACK_PEAK)
     out = A.highpass(out, RUMBLE_HP, 2, pad=n // 4)
     return A.finish_oneshot(out, A.ONESHOT_DB, 0.0005, 0.8)
+
+
+def render_strike_recorded(name):
+    """A recorded crack with its own early boom, already cut and faded (prep_cracks); only the level is set here."""
+    import prep_cracks
+    sig, info = prep_cracks.strike(name)
+    return A.finish_oneshot(sig, A.ONESHOT_DB, 0.0, 0.0), info
 
 
 def render_mid(seed):
@@ -129,11 +159,29 @@ def render_strike(seed):
     return A.finish_oneshot(out, A.ONESHOT_DB, 0.0003, 0.4)
 
 
+def _source_note(info):
+    return "cut %.3f..%.3f s of the source (crack onset %.3f s)" % (info["cut_t0"], info["cut_t1"], info["onset"])
+
+
 def build(entries, out_dir=None):
     print("[thunder]")
+    recorded = CRACKS == "recorded"
+    if recorded:
+        import prep_cracks
     for i, seed in enumerate(range(1001, 1005), 1):
-        A.emit(entries, "SFX_LB_Thunder_Near_%02d" % i, GROUP, render_near(seed), loop=False, seed=seed, out_dir=out_dir,
-               listen="Sharp crack in the first 40 ms, then a deep rolling rumble with 3-6 surges over 7-9 s. Close and big.")
+        name = "SFX_LB_Thunder_Near_%02d" % i
+        if recorded:
+            layer_sig, layer, rseed, info = prep_cracks.near_crack(name)
+            assert rseed == seed, (name, rseed, seed)
+            e = A.emit(entries, name, GROUP, render_near(seed, layer_sig), loop=False, seed=seed, out_dir=out_dir,
+                       note="generated rumble (seed %d, no synthetic crack) + recorded crack layer %s" % (seed, layer),
+                       listen="A recorded close lightning crack (Freesound %s) at t = 0 over a deep generated rolling rumble with 3-6 surges over 7-9 s. Close and big." % info["src"][3:])
+            e["composition"] = {"generated_rumble_seed": seed, "recorded_crack_layer": layer, "crack_source": info["src"],
+                                "crack_onset_s": round(info["onset"], 3), "crack_cut_s": [round(info["cut_t0"], 3), round(info["cut_t1"], 3)],
+                                "crack_peak_re_rumble_db": round(20 * np.log10(CRACK_PEAK / RUMBLE_PEAK), 2)}
+        else:
+            A.emit(entries, name, GROUP, render_near(seed), loop=False, seed=seed, out_dir=out_dir,
+                   listen="Sharp crack in the first 40 ms, then a deep rolling rumble with 3-6 surges over 7-9 s. Close and big.")
     for i, seed in enumerate(range(1101, 1105), 1):
         A.emit(entries, "SFX_LB_Thunder_Mid_%02d" % i, GROUP, render_mid(seed), loop=False, seed=seed, out_dir=out_dir,
                listen="No crack: a 1.5 s rise into a ~6 s rolling rumble. Medium distance.")
@@ -142,8 +190,16 @@ def build(entries, out_dir=None):
                mix_gain_db=FAR_MIX_GAIN_DB,
                listen="Slow swell, dull low grumble (nothing above ~200 Hz), ~5 s. Far away; meant to sit 8 dB under the others.")
     for i, seed in enumerate(range(1301, 1304), 1):
-        A.emit(entries, "SFX_LB_Thunder_Strike_%02d" % i, GROUP, render_strike(seed), loop=False, seed=seed, out_dir=out_dir,
-               listen="Double crack 60 ms apart, 400 ms of tearing, low thump, then a short rumble. LOUD and sharp: the tower strike.")
+        name = "SFX_LB_Thunder_Strike_%02d" % i
+        if recorded:
+            x, info = render_strike_recorded(name)
+            e = A.emit(entries, name, GROUP, x, loop=False, seed=None, out_dir=out_dir,
+                       note="recorded close lightning strike, Freesound %s, %s" % (info["src"], _source_note(info)),
+                       listen="A recorded close lightning strike (Freesound %s): sharp tearing crack, then its own short boom, fading out by about 2.6-2.9 s. LOUD: the tower strike." % info["src"][3:])
+            e["composition"] = {"crack_source": info["src"], "crack_onset_s": round(info["onset"], 3), "crack_cut_s": [round(info["cut_t0"], 3), round(info["cut_t1"], 3)]}
+        else:
+            A.emit(entries, name, GROUP, render_strike(seed), loop=False, seed=seed, out_dir=out_dir,
+                   listen="Double crack 60 ms apart, 400 ms of tearing, low thump, then a short rumble. LOUD and sharp: the tower strike.")
     return entries
 
 

@@ -28,6 +28,14 @@ python -I Tools/audio/prep/prep_recorded.py --tune <loop name>  # scan the loop 
 | `survey.py` | Authoring helper: per source prints duration, peak, noise floor and energy segments, and writes a spectrogram PNG: `python -I Tools/audio/prep/survey.py <out_dir> <file...> [--rel dB --gap s --band lo hi --pr dB]`. |
 | `report_recorded.py` | Objective checks, contact sheets and the audition page (`Docs/ArtTest/audio/audition_recorded.md`). |
 
+## Thunder cracks (P16-5: `prep_cracks.py`, `crack_recipes.json`)
+The owner rejected the synthetic cracks of `SFX_LB_Thunder_Near_*` and `SFX_LB_Thunder_Strike_*`. `prep_cracks.py` finds the crack onset of five Freesound CC0 recordings
+(first 2 ms frame above `peak + rel_db`, then back to where the rise began), cuts `onset - 10 ms` .. `onset + len` (the end moved to the quietest 10 ms frame nearby, fade-out 90-100 ms) and
+produces: `SFX_LB_Thunder_CrackLayer_01..04` (intermediates in `SourceArt/Audio/Cracks/`, **not imported**), and the cut Strike signals. The final `Thunder_Near_*` (recorded crack layer at t = 0
+over the generated rumble of the same seed, rumble peak 0.85 against the crack's 1.0, -3 dBFS peak) and `Thunder_Strike_*` are written by `Tools/audio/gen/thunder.py` (`CRACKS = "recorded"`), so
+`python -I Tools/audio/gen/build_all.py --group thunder --no-audition` reproduces them (manifest entries carry a `composition` record). `--audition` edits the Near/Strike rows of
+`Docs/ArtTest/audio/audition.md` and adds the crack-layer section; then `python -I Tools/audio/make_audition_page.py`. `--diag` prints the envelope around each onset; `--verify` proves determinism.
+
 ## Source aliases in `recipes.json`
 `fs:<id>` = `ExternalAssets/Incoming/freesound/<id>__*` · `ki:<name>` = `ExternalAssets/Incoming/kenney-impact-sounds/extracted/Audio/<name>.ogg` ·
 `kr:<name>` = `ExternalAssets/Incoming/kenney-rpg-audio/extracted/Audio/<name>.ogg`.

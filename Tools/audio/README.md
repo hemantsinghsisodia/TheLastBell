@@ -47,3 +47,7 @@ python -I Tools/audio/gen/checks.py                         # objective checks o
 ## Changing a sound
 Every tunable value sits in a named constant at the top of its script with a comment (values the plan leaves open are marked
 "chosen"). Edit, rebuild that group, run `checks.py`, listen. Rebuilding changes only that group's WAVs.
+
+## Thunder cracks are recorded (P16-5)
+`thunder.py` has `CRACKS = "recorded"`: `SFX_LB_Thunder_Near_01..04` = the generated rumble (seeds 1001-1004, no synthetic crack) with a recorded Freesound CC0 crack layer at t = 0, and
+`SFX_LB_Thunder_Strike_01..03` = recorded strikes. They come from `Tools/audio/prep/prep_cracks.py` (needs ffmpeg and the raw downloads; see `Tools/audio/prep/README.md`). Set `CRACKS = "synthetic"` for the old version. Mid and Far are unchanged.

@@ -39,13 +39,24 @@ Note: dBFS here is digital level, not loudness; turn the volume down before the 
 | [SFX_LB_Thunder_Mid_02](../../../SourceArt/Audio/Generated/SFX_LB_Thunder_Mid_02.wav) | 6.54 s | 1 | -20.2 | -3.0 | one-shot | 0 dB | No crack: a 1.5 s rise into a ~6 s rolling rumble. Medium distance. | |
 | [SFX_LB_Thunder_Mid_03](../../../SourceArt/Audio/Generated/SFX_LB_Thunder_Mid_03.wav) | 6.23 s | 1 | -20.0 | -3.0 | one-shot | 0 dB | No crack: a 1.5 s rise into a ~6 s rolling rumble. Medium distance. | |
 | [SFX_LB_Thunder_Mid_04](../../../SourceArt/Audio/Generated/SFX_LB_Thunder_Mid_04.wav) | 6.07 s | 1 | -20.0 | -3.0 | one-shot | 0 dB | No crack: a 1.5 s rise into a ~6 s rolling rumble. Medium distance. | |
-| [SFX_LB_Thunder_Near_01](../../../SourceArt/Audio/Generated/SFX_LB_Thunder_Near_01.wav) | 8.23 s | 1 | -20.4 | -3.0 | one-shot | 0 dB | Sharp crack in the first 40 ms, then a deep rolling rumble with 3-6 surges over 7-9 s. Close and big. | |
-| [SFX_LB_Thunder_Near_02](../../../SourceArt/Audio/Generated/SFX_LB_Thunder_Near_02.wav) | 7.76 s | 1 | -19.0 | -3.0 | one-shot | 0 dB | Sharp crack in the first 40 ms, then a deep rolling rumble with 3-6 surges over 7-9 s. Close and big. | |
-| [SFX_LB_Thunder_Near_03](../../../SourceArt/Audio/Generated/SFX_LB_Thunder_Near_03.wav) | 7.38 s | 1 | -20.5 | -3.0 | one-shot | 0 dB | Sharp crack in the first 40 ms, then a deep rolling rumble with 3-6 surges over 7-9 s. Close and big. | |
-| [SFX_LB_Thunder_Near_04](../../../SourceArt/Audio/Generated/SFX_LB_Thunder_Near_04.wav) | 7.00 s | 1 | -21.4 | -3.0 | one-shot | 0 dB | Sharp crack in the first 40 ms, then a deep rolling rumble with 3-6 surges over 7-9 s. Close and big. | |
-| [SFX_LB_Thunder_Strike_01](../../../SourceArt/Audio/Generated/SFX_LB_Thunder_Strike_01.wav) | 3.00 s | 1 | -30.8 | -3.0 | one-shot | 0 dB | Double crack 60 ms apart, 400 ms of tearing, low thump, then a short rumble. LOUD and sharp: the tower strike. | |
-| [SFX_LB_Thunder_Strike_02](../../../SourceArt/Audio/Generated/SFX_LB_Thunder_Strike_02.wav) | 3.00 s | 1 | -31.3 | -3.0 | one-shot | 0 dB | Double crack 60 ms apart, 400 ms of tearing, low thump, then a short rumble. LOUD and sharp: the tower strike. | |
-| [SFX_LB_Thunder_Strike_03](../../../SourceArt/Audio/Generated/SFX_LB_Thunder_Strike_03.wav) | 3.00 s | 1 | -30.7 | -3.0 | one-shot | 0 dB | Double crack 60 ms apart, 400 ms of tearing, low thump, then a short rumble. LOUD and sharp: the tower strike. | |
+| [SFX_LB_Thunder_Near_01](../../../SourceArt/Audio/Generated/SFX_LB_Thunder_Near_01.wav) | 8.23 s | 1 | -21.9 | -3.0 | one-shot | 0 dB | A recorded close lightning crack (Freesound 840628) at t = 0 over a deep generated rolling rumble with 3-6 surges over 7-9 s. Close and big. | |
+| [SFX_LB_Thunder_Near_02](../../../SourceArt/Audio/Generated/SFX_LB_Thunder_Near_02.wav) | 7.76 s | 1 | -18.8 | -3.0 | one-shot | 0 dB | A recorded close lightning crack (Freesound 721072) at t = 0 over a deep generated rolling rumble with 3-6 surges over 7-9 s. Close and big. | |
+| [SFX_LB_Thunder_Near_03](../../../SourceArt/Audio/Generated/SFX_LB_Thunder_Near_03.wav) | 7.38 s | 1 | -22.9 | -3.0 | one-shot | 0 dB | A recorded close lightning crack (Freesound 760214) at t = 0 over a deep generated rolling rumble with 3-6 surges over 7-9 s. Close and big. | |
+| [SFX_LB_Thunder_Near_04](../../../SourceArt/Audio/Generated/SFX_LB_Thunder_Near_04.wav) | 7.00 s | 1 | -22.4 | -3.0 | one-shot | 0 dB | A recorded close lightning crack (Freesound 347853) at t = 0 over a deep generated rolling rumble with 3-6 surges over 7-9 s. Close and big. | |
+| [SFX_LB_Thunder_Strike_01](../../../SourceArt/Audio/Generated/SFX_LB_Thunder_Strike_01.wav) | 2.94 s | 1 | -21.3 | -3.0 | one-shot | 0 dB | A recorded close lightning strike (Freesound 840628): sharp tearing crack, then its own short boom, fading out by about 2.6-2.9 s. LOUD: the tower strike. | |
+| [SFX_LB_Thunder_Strike_02](../../../SourceArt/Audio/Generated/SFX_LB_Thunder_Strike_02.wav) | 2.57 s | 1 | -17.1 | -3.0 | one-shot | 0 dB | A recorded close lightning strike (Freesound 760214): sharp tearing crack, then its own short boom, fading out by about 2.6-2.9 s. LOUD: the tower strike. | |
+| [SFX_LB_Thunder_Strike_03](../../../SourceArt/Audio/Generated/SFX_LB_Thunder_Strike_03.wav) | 2.60 s | 1 | -21.4 | -3.0 | one-shot | 0 dB | A recorded close lightning strike (Freesound 567945): sharp tearing crack, then its own short boom, fading out by about 2.6-2.9 s. LOUD: the tower strike. | |
+
+## Thunder crack layers (P16-5)
+
+Intermediates (Freesound CC0 cracks cut by `Tools/audio/prep/prep_cracks.py`): the layer laid at t = 0 over the generated rumble of `SFX_LB_Thunder_Near_01..04`. They are **not imported** into Unreal; listen to them to judge the crack itself.
+
+| File | Length | Ch | RMS dBFS | Peak dBFS | Loop seam | Mix gain | What to listen for | Keep / redo / replace |
+|---|---|---|---|---|---|---|---|---|
+| [SFX_LB_Thunder_CrackLayer_01](../../../SourceArt/Audio/Cracks/SFX_LB_Thunder_CrackLayer_01.wav) | 0.79 s | 1 | -15.9 | -3.0 | one-shot | 0 dB | Freesound 840628, cut 0.618..1.410 s of the source (onset 0.628 s): the tearing crack and a short decay, peak -3 dBFS before mixing. | |
+| [SFX_LB_Thunder_CrackLayer_02](../../../SourceArt/Audio/Cracks/SFX_LB_Thunder_CrackLayer_02.wav) | 0.66 s | 1 | -20.0 | -3.0 | one-shot | 0 dB | Freesound 721072, cut 0.812..1.470 s of the source (onset 0.822 s): the tearing crack and a short decay, peak -3 dBFS before mixing. | |
+| [SFX_LB_Thunder_CrackLayer_03](../../../SourceArt/Audio/Cracks/SFX_LB_Thunder_CrackLayer_03.wav) | 0.66 s | 1 | -14.8 | -3.0 | one-shot | 0 dB | Freesound 760214, cut 0.664..1.320 s of the source (onset 0.674 s): the tearing crack and a short decay, peak -3 dBFS before mixing. | |
+| [SFX_LB_Thunder_CrackLayer_04](../../../SourceArt/Audio/Cracks/SFX_LB_Thunder_CrackLayer_04.wav) | 0.56 s | 1 | -12.5 | -3.0 | one-shot | 0 dB | Freesound 347853, cut 0.980..1.540 s of the source (onset 0.990 s): the tearing crack and a short decay, peak -3 dBFS before mixing. | |
 
 ## Bells
 
