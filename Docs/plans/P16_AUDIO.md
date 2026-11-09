@@ -740,3 +740,39 @@ One editor agent at a time. A1, A2 and A3 run without the editor, in parallel wi
 - **P16-5 must:**
   1. **Keep the owner's choices in the asset scripts:** update `Tools/audio/p16_2_assets.py` (or the A2 `manifest.json` mix gains) so a re-run doesn't put back the old bell and far-thunder volumes.
   2. **Replace the cracks:** a Freesound CC0 list of close lightning cracks and strikes (owner downloads); prepare `Thunder_Strike_01..03` and a recorded crack layer for `Thunder_Near_01..04` (generated rumble kept); re-import headless.
+
+### P16-4: listening session, part 2 (2026-11-09; resumed after the shutdown)
+| Item | Owner's choice | Saved |
+|---|---|---|
+| Chapel roof rain `RainInGain` | 0.15 → 0.07 → **0.03** ("rain is fine") | yes |
+| Outdoor rain leaking indoors `RainExposurePower` | 0.7 → **1.5**: partial exposure fades faster; fully outdoors unchanged | yes |
+| Overall loudness `SCL_LB_Master` | 1.0 → **0.7** | yes |
+| Chapel room tone | `AUD_Zone_Chapel.RoomToneVolume` 1.0 → **0.4** | **no:** set only on the PIE copy; the level edit goes into P16-5 |
+| Player footsteps | the 36 `SFX_LB_Step_*` `Volume` 1.0 → **0.6** | yes |
+| Crypt ambience, darkness breathing, the candle-out gasp, water steps | fine | — |
+| Distant crypt chains | `AUD_Emit_Chain_*` interval (20, 45) → **(8, 18)** s | **no:** PIE copies only; P16-5 |
+| Warden roar | inaudible under the chase music → the 3 `SFX_LB_Warden_Roar_*` `Volume` **2.0**; now audible. The other Warden sounds are fine | yes |
+| Small bells (strike, fail, solved) | fine | — |
+| Tower stairs (wood), creaks, belfry | fine | — |
+| Occasional distant toll | fine. Tested at 25–35 s for the session; restored to (240, 420) before saving | yes (restored) |
+| Interactions (doors, levers, winch, notes, key) | judged in the P16-6 run-through | — |
+
+- **Bug found: the blown-out candle still shows its flame.** `ULBCandleComponent` switches off only the light; nothing hides the `CandleFlame` mesh. This is pre-existing (Phase 3) and made obvious by the bright Phase 15 flame.
+
+**P16-5 to-do (the owner's choices plus fixes):**
+1. **Level edits** (`Tools/audio/p16_level.py`):
+   - `AUD_Zone_Chapel.RoomToneVolume` 0.4;
+   - the three `AUD_Emit_Chain_*` interval (8, 18);
+   - update the script's expected values; then one map save.
+2. **Keep the owner's choices in the build scripts** (`Tools/audio/p16_2_assets.py` and/or the manifests), so a re-run reproduces them:
+   - bell stages 1–4 at 1.0 and far thunder at 1.0;
+   - steps at 0.6 and roars at 2.0;
+   - `SCL_LB_Master` at 0.7;
+   - the `DA_Audio` gains: RainOut 0.22, RainIn 0.03, RainExposurePower 1.5, WindOut 0.08, WindMin 0.2.
+3. **Cracks:**
+   - a Freesound CC0 list of close lightning cracks and strikes (the owner downloads, about 5 minutes);
+   - `Thunder_Strike_01..03` from recordings;
+   - `Thunder_Near_01..04` = a recorded crack layer plus the generated rumble, with the synthetic crack removed;
+   - re-import headless (Unreal closed); registry rows.
+4. **Candle flame:** `ULBCandleComponent` hides the flame visual on snuff and shows it on relight. It finds the flame by a component tag `CandleFlame`, with a fallback to a component named `CandleFlame`; no Blueprint graph change. Add a functional test.
+5. **Close-out:** the suite (Unreal closed), then the record.
