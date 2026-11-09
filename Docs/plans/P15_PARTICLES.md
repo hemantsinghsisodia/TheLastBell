@@ -764,3 +764,22 @@ Live tuning used `Tools/fx/p15_7_live.py` (state / fx / mi / user / pawn / tp; n
 - The map is dirty only from `bHidden` on the 6 cloth pieces and the 8 curtains (P15-8 deletes them).
 - `DA_StormSettings` debug fields are back to −1 (it was set to 0.8 and back during the test, so it may read dirty).
 - P15-8 sets every value explicitly and saves deliberately. If the editor is closed first, choose Don't Save; P15-8 re-applies everything from this table.
+
+### P15-8: apply, player flame, drips, rain columns (2026-11-09, commit bbd7a04)
+- **Spec and record:** spec `Docs/plans/P15_8_APPLY.md`; record `Docs/ArtTest/fx/p15_8_apply.md`.
+- **What changed:**
+  - every P15-7 value is saved;
+  - `M_LB_Flame` takes `UseFixedSeed`/`FixedSeed`, and `MI_Flame_Candle_Player` is on `BP_LBCharacter.CandleFlame` at 4.55 cm;
+  - the drips are edited in place, and the placed overrides survived;
+  - `NS_LB_RainColumn` is new, with 3 columns placed;
+  - 8 curtains and 6 cloth pieces are deleted.
+- **Checks:**
+  - census 3054;
+  - `p15_level.py --check` 157 PASS within `--save`, and 126 PASS after an editor restart (the restart proof);
+  - 14 packages saved one by one, nothing else dirty.
+- **Suite** (Unreal closed): build succeeded, **141/141**, 0 invalid tags, 0 `Error:` lines, no Niagara or StormFX warnings; StormFX activates with the rain on.
+- **Open: `NS_LB_Rain` compile state.** `GetSystemCompileState` on `NS_LB_Rain` times out at 120 s, every time, including after two editor restarts and after loading the system first and letting the editor tick 20 s. The log shows no compile line for it. `NS_LB_RainColumn` answers UpToDate in 0.4 s.
+  - `NS_LB_Rain` is unchanged since P15-5 (git), not dirty, and its 129 content checks pass.
+  - It is loaded only on demand (a soft reference in `DA_StormFX`); the placed column systems load with the level.
+  - In P15-7 the camera rain ran in Play, and the suite creates the rain component.
+  - **P15-9 confirms the rain renders** (captures and Play). If it doesn't, the owner opens `NS_LB_Rain` in the Niagara editor and reads its compile status.
