@@ -746,7 +746,7 @@ One editor agent at a time. A1, A2 and A3 run without the editor, in parallel wi
 |---|---|---|
 | Chapel roof rain `RainInGain` | 0.15 → 0.07 → **0.03** ("rain is fine") | yes |
 | Outdoor rain leaking indoors `RainExposurePower` | 0.7 → **1.5**: partial exposure fades faster; fully outdoors unchanged | yes |
-| Overall loudness `SCL_LB_Master` | 1.0 → **0.7** | yes |
+| Overall loudness `SCL_LB_Master` | 1.0 → **0.7** | **no:** an MCP write to a SoundClass's `Properties` doesn't mark the package dirty, so the save skipped it (the file still holds 1.0). The P16-5 headless run sets it |
 | Chapel room tone | `AUD_Zone_Chapel.RoomToneVolume` 1.0 → **0.4** | **no:** set only on the PIE copy; the level edit goes into P16-5 |
 | Player footsteps | the 36 `SFX_LB_Step_*` `Volume` 1.0 → **0.6** | yes |
 | Crypt ambience, darkness breathing, the candle-out gasp, water steps | fine | — |
