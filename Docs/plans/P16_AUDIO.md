@@ -687,3 +687,21 @@ One editor agent at a time. A1, A2 and A3 run without the editor, in parallel wi
 6. **Census:** before 3054; after 3054 + 7 zones + 7 AudioVolumes + 18 emitters + 3 water boxes = **3089**.
 7. **Close-out:** `--check` all PASS, then one map save; never save anything on the never-save list.
 8. **Suite** with Unreal closed: all tests pass, including `Monastery.AudioSetup`.
+
+### P16-2: bell-puzzle gating and headless assets (2026-11-09; ceb5fae, fcf6041, 2b782d7)
+- **Part A (code):**
+  - Small-bell sounds play only for the bell puzzle. The candle puzzle is silent per step, plays one CandleOut on a failure, and is silent when solved.
+  - New test `CandlePuzzleNotBells` passes.
+  - A unity-build name clash was fixed (`FindTag` renamed `FindAudioTag`).
+- **Part B (headless, `Tools/audio/p16_2_assets.py`, idempotent):**
+  - 175 SoundWaves imported into `/Game/LastBell/Audio/*`:
+    - 19 looping;
+    - 130 with attenuation;
+    - 77 with concurrency;
+    - mix gains applied as `Volume` (bell stages 1–4: 0.126, 0.200, 0.316, 0.501; far thunder 0.398).
+  - 25 mix assets and 6 `PM_LB_*`.
+  - `DA_Audio`: 9 cue rows and 3 silent classes, the small-bell pitches, `BellLocation` and the 6 beats.
+  - `DT_Footsteps`: 7 rows with 6 variants each.
+  - A fresh-process verification passed 1390 checks with 0 failures. The report is `Docs/ArtTest/audio/p16_2_report.json`.
+- **Suite:** 170 passed, 1 failed. `Monastery.AudioSetup` fails only on the zone and AudioVolume counts (P16-3).
+- **Lead note:** `Key_Pickup`, `Paper` and `Candle_Light` have no attenuation, so they play unattenuated where they happen. That's acceptable for sounds triggered right in front of the player; P16-4 will check it.
