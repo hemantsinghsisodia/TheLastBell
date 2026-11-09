@@ -6,7 +6,7 @@
 namespace
 {
 	/** Resolves a tag by name without an error when the project does not know it. An invalid tag is skipped by the caller. */
-	FGameplayTag FindTag(const TCHAR* Name)
+	FGameplayTag FindAudioTag(const TCHAR* Name)
 	{
 		const FGameplayTag Tag = FGameplayTag::RequestGameplayTag(FName(Name), /*ErrorIfNotFound*/ false);
 		if (!Tag.IsValid())
@@ -58,7 +58,7 @@ void ULBAudioSettings::FillPlanDefaults()
 	};
 	for (const FBeatRow& Row : Rows)
 	{
-		const FGameplayTag Tag = FindTag(Row.Tag);
+		const FGameplayTag Tag = FindAudioTag(Row.Tag);
 		if (!Tag.IsValid())
 		{
 			continue;
