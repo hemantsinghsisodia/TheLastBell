@@ -1,0 +1,1023 @@
+{
+ "SFX_LB_Apparition_Whisper_01": {
+  "channels": 1,
+  "group": "voice",
+  "src": [
+   "fs:316797"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Apparition_Whisper_02": {
+  "channels": 1,
+  "group": "voice",
+  "src": [
+   "fs:339827"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Apparition_Whisper_03": {
+  "channels": 1,
+  "group": "voice",
+  "src": [
+   "fs:316797"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Breath_Calm_01": {
+  "channels": 1,
+  "group": "player",
+  "src": [
+   "fs:336532"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Breath_Calm_02": {
+  "channels": 1,
+  "group": "player",
+  "src": [
+   "fs:336532"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Breath_Calm_03": {
+  "channels": 1,
+  "group": "player",
+  "src": [
+   "fs:336532"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Breath_Calm_04": {
+  "channels": 1,
+  "group": "player",
+  "src": [
+   "fs:336532"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Breath_Gasp_01": {
+  "channels": 1,
+  "group": "player",
+  "src": [
+   "fs:271245"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Breath_Gasp_02": {
+  "channels": 1,
+  "group": "player",
+  "src": [
+   "fs:271245"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Breath_Gasp_03": {
+  "channels": 1,
+  "group": "player",
+  "src": [
+   "fs:271245"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Breath_Heavy_01": {
+  "channels": 1,
+  "group": "player",
+  "src": [
+   "fs:386573"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Breath_Heavy_02": {
+  "channels": 1,
+  "group": "player",
+  "src": [
+   "fs:386573"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Breath_Heavy_03": {
+  "channels": 1,
+  "group": "player",
+  "src": [
+   "fs:386573"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Breath_Heavy_04": {
+  "channels": 1,
+  "group": "player",
+  "src": [
+   "fs:386573"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Breath_Panic_01": {
+  "channels": 1,
+  "group": "player",
+  "src": [
+   "fs:831389"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Breath_Panic_02": {
+  "channels": 1,
+  "group": "player",
+  "src": [
+   "fs:831389"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Breath_Panic_03": {
+  "channels": 1,
+  "group": "player",
+  "src": [
+   "fs:831389"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Breath_Panic_04": {
+  "channels": 1,
+  "group": "player",
+  "src": [
+   "fs:831389"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Candle_Light_01": {
+  "channels": 1,
+  "group": "player",
+  "src": [
+   "fs:423811"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Candle_Light_02": {
+  "channels": 1,
+  "group": "player",
+  "src": [
+   "fs:237390",
+   "fs:386385"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Candle_Light_03": {
+  "channels": 1,
+  "group": "player",
+  "src": [
+   "fs:398448"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Candle_Out_01": {
+  "channels": 1,
+  "group": "player",
+  "src": [
+   "fs:242867"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Candle_Out_02": {
+  "channels": 1,
+  "group": "player",
+  "src": [
+   "fs:406648"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Candle_Out_03": {
+  "channels": 1,
+  "group": "player",
+  "src": [
+   "fs:656818"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Candle_Relight": {
+  "channels": 1,
+  "group": "player",
+  "src": [
+   "fs:386385"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Chain_Distant_01": {
+  "channels": 1,
+  "group": "room",
+  "src": [
+   "fs:167912"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Chain_Distant_02": {
+  "channels": 1,
+  "group": "room",
+  "src": [
+   "fs:167914"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Chain_Distant_03": {
+  "channels": 1,
+  "group": "room",
+  "src": [
+   "fs:455078"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Chain_Distant_04": {
+  "channels": 1,
+  "group": "room",
+  "src": [
+   "fs:199282"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Creak_Wood_01": {
+  "channels": 1,
+  "group": "room",
+  "src": [
+   "fs:506665"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Creak_Wood_02": {
+  "channels": 1,
+  "group": "room",
+  "src": [
+   "fs:802595"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Creak_Wood_03": {
+  "channels": 1,
+  "group": "room",
+  "src": [
+   "kr:creak2"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Creak_Wood_04": {
+  "channels": 1,
+  "group": "room",
+  "src": [
+   "fs:590171"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Creak_Wood_05": {
+  "channels": 1,
+  "group": "room",
+  "src": [
+   "fs:402464"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Door_Locked_01": {
+  "channels": 1,
+  "group": "interact",
+  "src": [
+   "fs:341303"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Door_Locked_02": {
+  "channels": 1,
+  "group": "interact",
+  "src": [
+   "fs:235473"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Door_Locked_03": {
+  "channels": 1,
+  "group": "interact",
+  "src": [
+   "fs:235473"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Door_Stone_Open_01": {
+  "channels": 1,
+  "group": "interact",
+  "src": [
+   "fs:578491"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Door_Stone_Open_02": {
+  "channels": 1,
+  "group": "interact",
+  "src": [
+   "fs:578491"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Door_Stone_Open_03": {
+  "channels": 1,
+  "group": "interact",
+  "src": [
+   "fs:833925"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Door_Wood_Open_01": {
+  "channels": 1,
+  "group": "interact",
+  "src": [
+   "fs:402464"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Door_Wood_Open_02": {
+  "channels": 1,
+  "group": "interact",
+  "src": [
+   "fs:273466"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Door_Wood_Open_03": {
+  "channels": 1,
+  "group": "interact",
+  "src": [
+   "fs:273466"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Generic_Use_01": {
+  "channels": 1,
+  "group": "interact",
+  "src": [
+   "kr:handleSmallLeather"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Generic_Use_02": {
+  "channels": 1,
+  "group": "interact",
+  "src": [
+   "kr:handleSmallLeather2"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Generic_Use_03": {
+  "channels": 1,
+  "group": "interact",
+  "src": [
+   "kr:beltHandle1"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Key_Pickup_01": {
+  "channels": 1,
+  "group": "player",
+  "src": [
+   "fs:788310"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Key_Pickup_02": {
+  "channels": 1,
+  "group": "player",
+  "src": [
+   "fs:248037"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Lever_Notch_01": {
+  "channels": 1,
+  "group": "interact",
+  "src": [
+   "fs:696746"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Lever_Notch_02": {
+  "channels": 1,
+  "group": "interact",
+  "src": [
+   "fs:835550"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Lever_Notch_03": {
+  "channels": 1,
+  "group": "interact",
+  "src": [
+   "kr:metalClick"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Lever_Notch_04": {
+  "channels": 1,
+  "group": "interact",
+  "src": [
+   "fs:696746",
+   "kr:metalLatch"
+  ],
+  "src_clipped_samples": 15
+ },
+ "SFX_LB_Paper_01": {
+  "channels": 2,
+  "group": "player",
+  "src": [
+   "fs:353125"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Paper_02": {
+  "channels": 2,
+  "group": "player",
+  "src": [
+   "fs:181774"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Paper_03": {
+  "channels": 2,
+  "group": "player",
+  "src": [
+   "fs:449127"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Step_Earth_01": {
+  "channels": 1,
+  "group": "steps",
+  "src": [
+   "kr:footstep09"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Step_Earth_02": {
+  "channels": 1,
+  "group": "steps",
+  "src": [
+   "kr:footstep04"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Step_Earth_03": {
+  "channels": 1,
+  "group": "steps",
+  "src": [
+   "kr:footstep02"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Step_Earth_04": {
+  "channels": 1,
+  "group": "steps",
+  "src": [
+   "kr:footstep00"
+  ],
+  "src_clipped_samples": 5
+ },
+ "SFX_LB_Step_Earth_05": {
+  "channels": 1,
+  "group": "steps",
+  "src": [
+   "kr:footstep01"
+  ],
+  "src_clipped_samples": 17
+ },
+ "SFX_LB_Step_Earth_06": {
+  "channels": 1,
+  "group": "steps",
+  "src": [
+   "kr:footstep06"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Step_Grass_01": {
+  "channels": 1,
+  "group": "steps",
+  "src": [
+   "ki:footstep_grass_000"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Step_Grass_02": {
+  "channels": 1,
+  "group": "steps",
+  "src": [
+   "ki:footstep_grass_001"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Step_Grass_03": {
+  "channels": 1,
+  "group": "steps",
+  "src": [
+   "ki:footstep_grass_002"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Step_Grass_04": {
+  "channels": 1,
+  "group": "steps",
+  "src": [
+   "ki:footstep_grass_003"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Step_Grass_05": {
+  "channels": 1,
+  "group": "steps",
+  "src": [
+   "ki:footstep_grass_004"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Step_Grass_06": {
+  "channels": 1,
+  "group": "steps",
+  "src": [
+   "ki:footstep_grass_002"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Step_Metal_01": {
+  "channels": 1,
+  "group": "steps",
+  "src": [
+   "fs:698697"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Step_Metal_02": {
+  "channels": 1,
+  "group": "steps",
+  "src": [
+   "fs:698697"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Step_Metal_03": {
+  "channels": 1,
+  "group": "steps",
+  "src": [
+   "fs:698697"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Step_Metal_04": {
+  "channels": 1,
+  "group": "steps",
+  "src": [
+   "fs:698697"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Step_Metal_05": {
+  "channels": 1,
+  "group": "steps",
+  "src": [
+   "fs:698697"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Step_Metal_06": {
+  "channels": 1,
+  "group": "steps",
+  "src": [
+   "fs:698697"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Step_Stone_01": {
+  "channels": 1,
+  "group": "steps",
+  "src": [
+   "ki:footstep_concrete_000"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Step_Stone_02": {
+  "channels": 1,
+  "group": "steps",
+  "src": [
+   "ki:footstep_concrete_001"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Step_Stone_03": {
+  "channels": 1,
+  "group": "steps",
+  "src": [
+   "ki:footstep_concrete_002"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Step_Stone_04": {
+  "channels": 1,
+  "group": "steps",
+  "src": [
+   "ki:footstep_concrete_003"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Step_Stone_05": {
+  "channels": 1,
+  "group": "steps",
+  "src": [
+   "ki:footstep_concrete_004"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Step_Stone_06": {
+  "channels": 1,
+  "group": "steps",
+  "src": [
+   "ki:footstep_concrete_002"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Step_Water_01": {
+  "channels": 1,
+  "group": "steps",
+  "src": [
+   "fs:531566"
+  ],
+  "src_clipped_samples": 3
+ },
+ "SFX_LB_Step_Water_02": {
+  "channels": 1,
+  "group": "steps",
+  "src": [
+   "fs:531566"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Step_Water_03": {
+  "channels": 1,
+  "group": "steps",
+  "src": [
+   "fs:531566"
+  ],
+  "src_clipped_samples": 3
+ },
+ "SFX_LB_Step_Water_04": {
+  "channels": 1,
+  "group": "steps",
+  "src": [
+   "fs:531566"
+  ],
+  "src_clipped_samples": 4
+ },
+ "SFX_LB_Step_Water_05": {
+  "channels": 1,
+  "group": "steps",
+  "src": [
+   "fs:531566"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Step_Water_06": {
+  "channels": 1,
+  "group": "steps",
+  "src": [
+   "fs:849638"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Step_Wood_01": {
+  "channels": 1,
+  "group": "steps",
+  "src": [
+   "ki:footstep_wood_000"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Step_Wood_02": {
+  "channels": 1,
+  "group": "steps",
+  "src": [
+   "ki:footstep_wood_001"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Step_Wood_03": {
+  "channels": 1,
+  "group": "steps",
+  "src": [
+   "ki:footstep_wood_002"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Step_Wood_04": {
+  "channels": 1,
+  "group": "steps",
+  "src": [
+   "ki:footstep_wood_003"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Step_Wood_05": {
+  "channels": 1,
+  "group": "steps",
+  "src": [
+   "ki:footstep_wood_004"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Step_Wood_06": {
+  "channels": 1,
+  "group": "steps",
+  "src": [
+   "ki:footstep_wood_001"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Stone_Grind_01": {
+  "channels": 1,
+  "group": "interact",
+  "src": [
+   "fs:844329"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Stone_Grind_02": {
+  "channels": 1,
+  "group": "interact",
+  "src": [
+   "fs:844329"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Stone_Grind_03": {
+  "channels": 1,
+  "group": "interact",
+  "src": [
+   "fs:844329"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Warden_Breath_Fast": {
+  "channels": 1,
+  "group": "warden",
+  "src": [
+   "fs:689240"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Warden_Breath_Heavy": {
+  "channels": 1,
+  "group": "warden",
+  "src": [
+   "fs:470900",
+   "fs:689240"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Warden_Breath_Slow": {
+  "channels": 1,
+  "group": "warden",
+  "src": [
+   "fs:574208"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Warden_Caught_01": {
+  "channels": 1,
+  "group": "voice",
+  "src": [
+   "fs:170454",
+   "fs:763026"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Warden_Caught_02": {
+  "channels": 1,
+  "group": "voice",
+  "src": [
+   "fs:170454",
+   "fs:497056"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Warden_Chain_01": {
+  "channels": 1,
+  "group": "warden",
+  "src": [
+   "fs:455078"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Warden_Chain_02": {
+  "channels": 1,
+  "group": "warden",
+  "src": [
+   "fs:455078"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Warden_Chain_03": {
+  "channels": 1,
+  "group": "warden",
+  "src": [
+   "fs:199282"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Warden_Chain_04": {
+  "channels": 1,
+  "group": "warden",
+  "src": [
+   "fs:199282"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Warden_Exhale_01": {
+  "channels": 1,
+  "group": "voice",
+  "src": [
+   "fs:345730"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Warden_Exhale_02": {
+  "channels": 1,
+  "group": "voice",
+  "src": [
+   "fs:615047"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Warden_Exhale_03": {
+  "channels": 1,
+  "group": "voice",
+  "src": [
+   "fs:345730",
+   "fs:615047"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Warden_Roar_01": {
+  "channels": 1,
+  "group": "voice",
+  "src": [
+   "fs:204912",
+   "fs:497056"
+  ],
+  "src_clipped_samples": 942
+ },
+ "SFX_LB_Warden_Roar_02": {
+  "channels": 1,
+  "group": "voice",
+  "src": [
+   "fs:204912",
+   "fs:487513"
+  ],
+  "src_clipped_samples": 957
+ },
+ "SFX_LB_Warden_Roar_03": {
+  "channels": 1,
+  "group": "voice",
+  "src": [
+   "fs:170454",
+   "fs:497056"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Warden_Robe": {
+  "channels": 1,
+  "group": "warden",
+  "src": [
+   "fs:19291",
+   "kr:cloth1",
+   "kr:cloth2",
+   "kr:cloth3",
+   "kr:cloth4",
+   "synth"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Warden_Spotted_01": {
+  "channels": 1,
+  "group": "voice",
+  "src": [
+   "fs:132874",
+   "fs:487513"
+  ],
+  "src_clipped_samples": 6
+ },
+ "SFX_LB_Warden_Spotted_02": {
+  "channels": 1,
+  "group": "voice",
+  "src": [
+   "fs:204912",
+   "fs:487513"
+  ],
+  "src_clipped_samples": 639
+ },
+ "SFX_LB_Warden_Spotted_03": {
+  "channels": 1,
+  "group": "voice",
+  "src": [
+   "fs:132874",
+   "fs:497056"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Warden_Step_01": {
+  "channels": 1,
+  "group": "warden",
+  "src": [
+   "fs:741627",
+   "ki:impactSoft_heavy_000"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Warden_Step_02": {
+  "channels": 1,
+  "group": "warden",
+  "src": [
+   "fs:741627",
+   "ki:impactPunch_heavy_001"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Warden_Step_03": {
+  "channels": 1,
+  "group": "warden",
+  "src": [
+   "fs:531725",
+   "fs:741627",
+   "ki:impactWood_heavy_003"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Warden_Step_04": {
+  "channels": 1,
+  "group": "warden",
+  "src": [
+   "fs:339439",
+   "fs:741627",
+   "ki:impactPunch_heavy_003"
+  ],
+  "src_clipped_samples": 260
+ },
+ "SFX_LB_Warden_Step_05": {
+  "channels": 1,
+  "group": "warden",
+  "src": [
+   "fs:339439",
+   "fs:741627",
+   "ki:impactSoft_heavy_002"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Warden_Windup_01": {
+  "channels": 1,
+  "group": "voice",
+  "src": [
+   "fs:444445",
+   "synth"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Warden_Windup_02": {
+  "channels": 1,
+  "group": "voice",
+  "src": [
+   "fs:389653",
+   "fs:444445"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Warden_Windup_03": {
+  "channels": 1,
+  "group": "voice",
+  "src": [
+   "fs:389653",
+   "fs:763026",
+   "synth"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Winch_01": {
+  "channels": 1,
+  "group": "interact",
+  "src": [
+   "fs:454148"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Winch_02": {
+  "channels": 1,
+  "group": "interact",
+  "src": [
+   "fs:491705"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Winch_03": {
+  "channels": 1,
+  "group": "interact",
+  "src": [
+   "fs:491705"
+  ],
+  "src_clipped_samples": 0
+ }
+}

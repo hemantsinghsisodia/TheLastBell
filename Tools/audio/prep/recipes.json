@@ -1,0 +1,3532 @@
+{
+ "version": 1,
+ "items": [
+  {
+   "name": "SFX_LB_Step_Stone_01",
+   "group": "steps",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "ki:footstep_concrete_000",
+     "t0": 0.0,
+     "t1": null,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0,
+     "hp": 60.0
+    }
+   ],
+   "note": "Kenney ki:footstep_concrete_000",
+   "max_len": null,
+   "fade_out": 0.03
+  },
+  {
+   "name": "SFX_LB_Step_Stone_02",
+   "group": "steps",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "ki:footstep_concrete_001",
+     "t0": 0.0,
+     "t1": null,
+     "gain_db": 0.0,
+     "pitch": 0.97,
+     "delay": 0.0,
+     "hp": 60.0
+    }
+   ],
+   "note": "Kenney ki:footstep_concrete_001, pitch -3.0 %",
+   "max_len": null,
+   "fade_out": 0.03
+  },
+  {
+   "name": "SFX_LB_Step_Stone_03",
+   "group": "steps",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "ki:footstep_concrete_002",
+     "t0": 0.0,
+     "t1": null,
+     "gain_db": 0.0,
+     "pitch": 1.03,
+     "delay": 0.0,
+     "hp": 60.0
+    }
+   ],
+   "note": "Kenney ki:footstep_concrete_002, pitch +3.0 %",
+   "max_len": null,
+   "fade_out": 0.03
+  },
+  {
+   "name": "SFX_LB_Step_Stone_04",
+   "group": "steps",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "ki:footstep_concrete_003",
+     "t0": 0.0,
+     "t1": null,
+     "gain_db": 0.0,
+     "pitch": 0.985,
+     "delay": 0.0,
+     "hp": 60.0
+    }
+   ],
+   "note": "Kenney ki:footstep_concrete_003, pitch -1.5 %",
+   "max_len": null,
+   "fade_out": 0.03
+  },
+  {
+   "name": "SFX_LB_Step_Stone_05",
+   "group": "steps",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "ki:footstep_concrete_004",
+     "t0": 0.0,
+     "t1": null,
+     "gain_db": 0.0,
+     "pitch": 1.015,
+     "delay": 0.0,
+     "hp": 60.0
+    }
+   ],
+   "note": "Kenney ki:footstep_concrete_004, pitch +1.5 %",
+   "max_len": null,
+   "fade_out": 0.03
+  },
+  {
+   "name": "SFX_LB_Step_Stone_06",
+   "group": "steps",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "ki:footstep_concrete_002",
+     "t0": 0.0,
+     "t1": null,
+     "gain_db": 0.0,
+     "pitch": 0.95,
+     "delay": 0.0,
+     "hp": 60.0
+    }
+   ],
+   "note": "6th variant: ki:footstep_concrete_002 pitch-shifted -5 % (Kenney has only 5)",
+   "max_len": null,
+   "fade_out": 0.03
+  },
+  {
+   "name": "SFX_LB_Step_Wood_01",
+   "group": "steps",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "ki:footstep_wood_000",
+     "t0": 0.0,
+     "t1": null,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0,
+     "hp": 60.0
+    }
+   ],
+   "note": "Kenney ki:footstep_wood_000",
+   "max_len": null,
+   "fade_out": 0.03
+  },
+  {
+   "name": "SFX_LB_Step_Wood_02",
+   "group": "steps",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "ki:footstep_wood_001",
+     "t0": 0.0,
+     "t1": null,
+     "gain_db": 0.0,
+     "pitch": 0.97,
+     "delay": 0.0,
+     "hp": 60.0
+    }
+   ],
+   "note": "Kenney ki:footstep_wood_001, pitch -3.0 %",
+   "max_len": null,
+   "fade_out": 0.03
+  },
+  {
+   "name": "SFX_LB_Step_Wood_03",
+   "group": "steps",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "ki:footstep_wood_002",
+     "t0": 0.0,
+     "t1": null,
+     "gain_db": 0.0,
+     "pitch": 1.03,
+     "delay": 0.0,
+     "hp": 60.0
+    }
+   ],
+   "note": "Kenney ki:footstep_wood_002, pitch +3.0 %",
+   "max_len": null,
+   "fade_out": 0.03
+  },
+  {
+   "name": "SFX_LB_Step_Wood_04",
+   "group": "steps",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "ki:footstep_wood_003",
+     "t0": 0.0,
+     "t1": null,
+     "gain_db": 0.0,
+     "pitch": 0.985,
+     "delay": 0.0,
+     "hp": 60.0
+    }
+   ],
+   "note": "Kenney ki:footstep_wood_003, pitch -1.5 %",
+   "max_len": null,
+   "fade_out": 0.03
+  },
+  {
+   "name": "SFX_LB_Step_Wood_05",
+   "group": "steps",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "ki:footstep_wood_004",
+     "t0": 0.0,
+     "t1": null,
+     "gain_db": 0.0,
+     "pitch": 1.015,
+     "delay": 0.0,
+     "hp": 60.0
+    }
+   ],
+   "note": "Kenney ki:footstep_wood_004, pitch +1.5 %",
+   "max_len": null,
+   "fade_out": 0.03
+  },
+  {
+   "name": "SFX_LB_Step_Wood_06",
+   "group": "steps",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "ki:footstep_wood_001",
+     "t0": 0.0,
+     "t1": null,
+     "gain_db": 0.0,
+     "pitch": 0.95,
+     "delay": 0.0,
+     "hp": 60.0
+    }
+   ],
+   "note": "6th variant: ki:footstep_wood_001 pitch-shifted -5 % (Kenney has only 5)",
+   "max_len": null,
+   "fade_out": 0.03
+  },
+  {
+   "name": "SFX_LB_Step_Grass_01",
+   "group": "steps",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "ki:footstep_grass_000",
+     "t0": 0.0,
+     "t1": null,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0,
+     "hp": 60.0
+    }
+   ],
+   "note": "Kenney ki:footstep_grass_000",
+   "max_len": 0.6,
+   "fade_out": 0.08
+  },
+  {
+   "name": "SFX_LB_Step_Grass_02",
+   "group": "steps",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "ki:footstep_grass_001",
+     "t0": 0.0,
+     "t1": null,
+     "gain_db": 0.0,
+     "pitch": 0.97,
+     "delay": 0.0,
+     "hp": 60.0
+    }
+   ],
+   "note": "Kenney ki:footstep_grass_001, pitch -3.0 %",
+   "max_len": 0.6,
+   "fade_out": 0.08
+  },
+  {
+   "name": "SFX_LB_Step_Grass_03",
+   "group": "steps",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "ki:footstep_grass_002",
+     "t0": 0.0,
+     "t1": null,
+     "gain_db": 0.0,
+     "pitch": 1.03,
+     "delay": 0.0,
+     "hp": 60.0
+    }
+   ],
+   "note": "Kenney ki:footstep_grass_002, pitch +3.0 %",
+   "max_len": 0.6,
+   "fade_out": 0.08
+  },
+  {
+   "name": "SFX_LB_Step_Grass_04",
+   "group": "steps",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "ki:footstep_grass_003",
+     "t0": 0.0,
+     "t1": null,
+     "gain_db": 0.0,
+     "pitch": 0.985,
+     "delay": 0.0,
+     "hp": 60.0
+    }
+   ],
+   "note": "Kenney ki:footstep_grass_003, pitch -1.5 %",
+   "max_len": 0.6,
+   "fade_out": 0.08
+  },
+  {
+   "name": "SFX_LB_Step_Grass_05",
+   "group": "steps",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "ki:footstep_grass_004",
+     "t0": 0.0,
+     "t1": null,
+     "gain_db": 0.0,
+     "pitch": 1.015,
+     "delay": 0.0,
+     "hp": 60.0
+    }
+   ],
+   "note": "Kenney ki:footstep_grass_004, pitch +1.5 %",
+   "max_len": 0.6,
+   "fade_out": 0.08
+  },
+  {
+   "name": "SFX_LB_Step_Grass_06",
+   "group": "steps",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "ki:footstep_grass_002",
+     "t0": 0.0,
+     "t1": null,
+     "gain_db": 0.0,
+     "pitch": 0.95,
+     "delay": 0.0,
+     "hp": 60.0
+    }
+   ],
+   "note": "6th variant: ki:footstep_grass_002 pitch-shifted -5 % (Kenney has only 5)",
+   "max_len": 0.6,
+   "fade_out": 0.08
+  },
+  {
+   "name": "SFX_LB_Step_Earth_01",
+   "group": "steps",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "kr:footstep09",
+     "t0": 0.0,
+     "t1": null,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0,
+     "hp": 60.0
+    }
+   ],
+   "note": "Kenney RPG kr:footstep09: chosen as the dullest (most earth-like) 6 of footstep00..09; confirm by ear"
+  },
+  {
+   "name": "SFX_LB_Step_Earth_02",
+   "group": "steps",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "kr:footstep04",
+     "t0": 0.0,
+     "t1": null,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0,
+     "hp": 60.0
+    }
+   ],
+   "note": "Kenney RPG kr:footstep04: chosen as the dullest (most earth-like) 6 of footstep00..09; confirm by ear"
+  },
+  {
+   "name": "SFX_LB_Step_Earth_03",
+   "group": "steps",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "kr:footstep02",
+     "t0": 0.0,
+     "t1": null,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0,
+     "hp": 60.0
+    }
+   ],
+   "note": "Kenney RPG kr:footstep02: chosen as the dullest (most earth-like) 6 of footstep00..09; confirm by ear"
+  },
+  {
+   "name": "SFX_LB_Step_Earth_04",
+   "group": "steps",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "kr:footstep00",
+     "t0": 0.0,
+     "t1": null,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0,
+     "hp": 60.0
+    }
+   ],
+   "note": "Kenney RPG kr:footstep00: chosen as the dullest (most earth-like) 6 of footstep00..09; confirm by ear"
+  },
+  {
+   "name": "SFX_LB_Step_Earth_05",
+   "group": "steps",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "kr:footstep01",
+     "t0": 0.0,
+     "t1": null,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0,
+     "hp": 60.0
+    }
+   ],
+   "note": "Kenney RPG kr:footstep01: chosen as the dullest (most earth-like) 6 of footstep00..09; confirm by ear"
+  },
+  {
+   "name": "SFX_LB_Step_Earth_06",
+   "group": "steps",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "kr:footstep06",
+     "t0": 0.0,
+     "t1": null,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0,
+     "hp": 60.0
+    }
+   ],
+   "note": "Kenney RPG kr:footstep06: chosen as the dullest (most earth-like) 6 of footstep00..09; confirm by ear"
+  },
+  {
+   "name": "SFX_LB_Step_Water_01",
+   "group": "steps",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:531566",
+     "t0": 2.665,
+     "t1": 3.165,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0,
+     "hp": 80.0
+    }
+   ],
+   "note": "531566 puddle step @ 2.665s",
+   "max_len": 0.5
+  },
+  {
+   "name": "SFX_LB_Step_Water_02",
+   "group": "steps",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:531566",
+     "t0": 5.435,
+     "t1": 5.935,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0,
+     "hp": 80.0
+    }
+   ],
+   "note": "531566 puddle step @ 5.435s",
+   "max_len": 0.5
+  },
+  {
+   "name": "SFX_LB_Step_Water_03",
+   "group": "steps",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:531566",
+     "t0": 6.23,
+     "t1": 6.73,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0,
+     "hp": 80.0
+    }
+   ],
+   "note": "531566 puddle step @ 6.23s",
+   "max_len": 0.5
+  },
+  {
+   "name": "SFX_LB_Step_Water_04",
+   "group": "steps",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:531566",
+     "t0": 8.015,
+     "t1": 8.515,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0,
+     "hp": 80.0
+    }
+   ],
+   "note": "531566 puddle step @ 8.015s",
+   "max_len": 0.5
+  },
+  {
+   "name": "SFX_LB_Step_Water_05",
+   "group": "steps",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:531566",
+     "t0": 9.295,
+     "t1": 9.795,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0,
+     "hp": 80.0
+    }
+   ],
+   "note": "531566 puddle step @ 9.295s",
+   "max_len": 0.5
+  },
+  {
+   "name": "SFX_LB_Step_Water_06",
+   "group": "steps",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:849638",
+     "t0": 0.07,
+     "t1": 0.36,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0,
+     "hp": 80.0
+    }
+   ],
+   "note": "849638 step_water (single step, 0.3 s)"
+  },
+  {
+   "name": "SFX_LB_Step_Metal_01",
+   "group": "steps",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:698697",
+     "t0": 1.4749999999999999,
+     "t1": 2.005,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0,
+     "hp": 80.0
+    }
+   ],
+   "note": "698697 metal step @ 1.505s",
+   "max_len": 0.5,
+   "fade_out": 0.06
+  },
+  {
+   "name": "SFX_LB_Step_Metal_02",
+   "group": "steps",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:698697",
+     "t0": 2.98,
+     "t1": 3.51,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0,
+     "hp": 80.0
+    }
+   ],
+   "note": "698697 metal step @ 3.01s",
+   "max_len": 0.5,
+   "fade_out": 0.06
+  },
+  {
+   "name": "SFX_LB_Step_Metal_03",
+   "group": "steps",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:698697",
+     "t0": 4.5,
+     "t1": 5.03,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0,
+     "hp": 80.0
+    }
+   ],
+   "note": "698697 metal step @ 4.53s",
+   "max_len": 0.5,
+   "fade_out": 0.06
+  },
+  {
+   "name": "SFX_LB_Step_Metal_04",
+   "group": "steps",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:698697",
+     "t0": 5.995,
+     "t1": 6.525,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0,
+     "hp": 80.0
+    }
+   ],
+   "note": "698697 metal step @ 6.025s",
+   "max_len": 0.5,
+   "fade_out": 0.06
+  },
+  {
+   "name": "SFX_LB_Step_Metal_05",
+   "group": "steps",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:698697",
+     "t0": 7.455,
+     "t1": 7.985,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0,
+     "hp": 80.0
+    }
+   ],
+   "note": "698697 metal step @ 7.485s",
+   "max_len": 0.5,
+   "fade_out": 0.06
+  },
+  {
+   "name": "SFX_LB_Step_Metal_06",
+   "group": "steps",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:698697",
+     "t0": 8.98,
+     "t1": 9.51,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0,
+     "hp": 80.0
+    }
+   ],
+   "note": "698697 metal step @ 9.01s",
+   "max_len": 0.5,
+   "fade_out": 0.06
+  },
+  {
+   "name": "SFX_LB_Breath_Calm_01",
+   "group": "player",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:336532",
+     "t0": 2.25,
+     "t1": 4.5,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0,
+     "hp": 90.0
+    }
+   ],
+   "note": "336532 calm breath @ 2.25-4.5s, mono-centred (2D)",
+   "fade_in": 0.08,
+   "fade_out": 0.15
+  },
+  {
+   "name": "SFX_LB_Breath_Calm_02",
+   "group": "player",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:336532",
+     "t0": 6.2,
+     "t1": 8.0,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0,
+     "hp": 90.0
+    }
+   ],
+   "note": "336532 calm breath @ 6.2-8.0s, mono-centred (2D)",
+   "fade_in": 0.08,
+   "fade_out": 0.15
+  },
+  {
+   "name": "SFX_LB_Breath_Calm_03",
+   "group": "player",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:336532",
+     "t0": 11.25,
+     "t1": 12.8,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0,
+     "hp": 90.0
+    }
+   ],
+   "note": "336532 calm breath @ 11.25-12.8s, mono-centred (2D)",
+   "fade_in": 0.08,
+   "fade_out": 0.15
+  },
+  {
+   "name": "SFX_LB_Breath_Calm_04",
+   "group": "player",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:336532",
+     "t0": 20.5,
+     "t1": 22.1,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0,
+     "hp": 90.0
+    }
+   ],
+   "note": "336532 calm breath @ 20.5-22.1s, mono-centred (2D)",
+   "fade_in": 0.08,
+   "fade_out": 0.15
+  },
+  {
+   "name": "SFX_LB_Breath_Heavy_01",
+   "group": "player",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:386573",
+     "t0": 0.33,
+     "t1": 1.95,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0,
+     "hp": 90.0
+    }
+   ],
+   "note": "386573 panting, 4 pulses @ 0.33-1.95s",
+   "fade_in": 0.03,
+   "fade_out": 0.1
+  },
+  {
+   "name": "SFX_LB_Breath_Heavy_02",
+   "group": "player",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:386573",
+     "t0": 1.95,
+     "t1": 3.55,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0,
+     "hp": 90.0
+    }
+   ],
+   "note": "386573 panting, 4 pulses @ 1.95-3.55s",
+   "fade_in": 0.03,
+   "fade_out": 0.1
+  },
+  {
+   "name": "SFX_LB_Breath_Heavy_03",
+   "group": "player",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:386573",
+     "t0": 3.55,
+     "t1": 5.15,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0,
+     "hp": 90.0
+    }
+   ],
+   "note": "386573 panting, 4 pulses @ 3.55-5.15s",
+   "fade_in": 0.03,
+   "fade_out": 0.1
+  },
+  {
+   "name": "SFX_LB_Breath_Heavy_04",
+   "group": "player",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:386573",
+     "t0": 5.15,
+     "t1": 6.7,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0,
+     "hp": 90.0
+    }
+   ],
+   "note": "386573 panting, 4 pulses @ 5.15-6.7s",
+   "fade_in": 0.03,
+   "fade_out": 0.1
+  },
+  {
+   "name": "SFX_LB_Breath_Panic_01",
+   "group": "player",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:831389",
+     "t0": 0.5,
+     "t1": 2.2,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0,
+     "hp": 90.0
+    }
+   ],
+   "note": "831389 exhausted/panicked breathing @ 0.5-2.2s",
+   "fade_in": 0.03,
+   "fade_out": 0.1
+  },
+  {
+   "name": "SFX_LB_Breath_Panic_02",
+   "group": "player",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:831389",
+     "t0": 2.6,
+     "t1": 4.4,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0,
+     "hp": 90.0
+    }
+   ],
+   "note": "831389 exhausted/panicked breathing @ 2.6-4.4s",
+   "fade_in": 0.03,
+   "fade_out": 0.1
+  },
+  {
+   "name": "SFX_LB_Breath_Panic_03",
+   "group": "player",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:831389",
+     "t0": 13.5,
+     "t1": 15.3,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0,
+     "hp": 90.0
+    }
+   ],
+   "note": "831389 exhausted/panicked breathing @ 13.5-15.3s",
+   "fade_in": 0.03,
+   "fade_out": 0.1
+  },
+  {
+   "name": "SFX_LB_Breath_Panic_04",
+   "group": "player",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:831389",
+     "t0": 15.5,
+     "t1": 17.4,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0,
+     "hp": 90.0
+    }
+   ],
+   "note": "831389 exhausted/panicked breathing @ 15.5-17.4s",
+   "fade_in": 0.03,
+   "fade_out": 0.1
+  },
+  {
+   "name": "SFX_LB_Breath_Gasp_01",
+   "group": "player",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:271245",
+     "t0": 0.0,
+     "t1": 0.58,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0,
+     "hp": 90.0
+    }
+   ],
+   "note": "271245 gasp (single source)"
+  },
+  {
+   "name": "SFX_LB_Breath_Gasp_02",
+   "group": "player",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:271245",
+     "t0": 0.0,
+     "t1": 0.58,
+     "gain_db": 0.0,
+     "pitch": 0.93,
+     "delay": 0.0,
+     "hp": 90.0
+    }
+   ],
+   "note": "271245 pitch -7 % (only one gasp source)"
+  },
+  {
+   "name": "SFX_LB_Breath_Gasp_03",
+   "group": "player",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:271245",
+     "t0": 0.0,
+     "t1": 0.58,
+     "gain_db": 0.0,
+     "pitch": 1.07,
+     "delay": 0.0,
+     "hp": 90.0
+    }
+   ],
+   "note": "271245 pitch +7 % (only one gasp source)"
+  },
+  {
+   "name": "SFX_LB_Candle_Light_01",
+   "group": "player",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:423811",
+     "t0": 0.0,
+     "t1": 1.0,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0
+    }
+   ],
+   "note": "423811 match strike 03"
+  },
+  {
+   "name": "SFX_LB_Candle_Light_02",
+   "group": "player",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:237390",
+     "t0": 0.0,
+     "t1": 0.3,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0
+    },
+    {
+     "src": "fs:386385",
+     "t0": 0.1,
+     "t1": 0.5,
+     "gain_db": -8.0,
+     "pitch": 1.0,
+     "delay": 0.12
+    }
+   ],
+   "note": "237390 match strike (dry, only 0.3 s of sound) + 386385 flame whoosh at -8 dB so it is not a bare click"
+  },
+  {
+   "name": "SFX_LB_Candle_Light_03",
+   "group": "player",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:398448",
+     "t0": 0.0,
+     "t1": 0.75,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0
+    }
+   ],
+   "note": "398448 match ignite"
+  },
+  {
+   "name": "SFX_LB_Candle_Out_01",
+   "group": "player",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:242867",
+     "t0": 0.1,
+     "t1": 0.8,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0
+    }
+   ],
+   "note": "242867 blow out"
+  },
+  {
+   "name": "SFX_LB_Candle_Out_02",
+   "group": "player",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:406648",
+     "t0": 2.15,
+     "t1": 2.9,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0
+    }
+   ],
+   "note": "406648 airy blow out (very quiet source, clean)"
+  },
+  {
+   "name": "SFX_LB_Candle_Out_03",
+   "group": "player",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:656818",
+     "t0": 1.2,
+     "t1": 2.3,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0
+    }
+   ],
+   "note": "656818 candle blow"
+  },
+  {
+   "name": "SFX_LB_Candle_Relight",
+   "group": "player",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:386385",
+     "t0": 0.0,
+     "t1": 0.6,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0
+    }
+   ],
+   "note": "386385 soft torch ignite whoosh"
+  },
+  {
+   "name": "SFX_LB_Key_Pickup_01",
+   "group": "player",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:788310",
+     "t0": 0.2,
+     "t1": 0.85,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0
+    }
+   ],
+   "note": "788310 key pickup"
+  },
+  {
+   "name": "SFX_LB_Key_Pickup_02",
+   "group": "player",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:248037",
+     "t0": 0.38,
+     "t1": 1.05,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0
+    }
+   ],
+   "note": "248037 keys pickup"
+  },
+  {
+   "name": "SFX_LB_Paper_01",
+   "group": "player",
+   "channels": 2,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:353125",
+     "t0": 0.18,
+     "t1": 1.1,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0
+    }
+   ],
+   "note": "353125 paper rustle (stereo)"
+  },
+  {
+   "name": "SFX_LB_Paper_02",
+   "group": "player",
+   "channels": 2,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:181774",
+     "t0": 0.35,
+     "t1": 1.9,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0
+    }
+   ],
+   "note": "181774 rustling paper (stereo)",
+   "fade_out": 0.08
+  },
+  {
+   "name": "SFX_LB_Paper_03",
+   "group": "player",
+   "channels": 2,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:449127",
+     "t0": 5.6,
+     "t1": 6.4,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0
+    }
+   ],
+   "note": "449127 rustling paper (stereo)",
+   "fade_out": 0.08
+  },
+  {
+   "name": "SFX_LB_Door_Wood_Open_01",
+   "group": "interact",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:402464",
+     "t0": 0.15,
+     "t1": 2.95,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0
+    }
+   ],
+   "note": "402464 wooden door opening",
+   "fade_out": 0.12
+  },
+  {
+   "name": "SFX_LB_Door_Wood_Open_02",
+   "group": "interact",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:273466",
+     "t0": 0.0,
+     "t1": 3.0,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0
+    }
+   ],
+   "note": "273466 big door creak",
+   "fade_out": 0.12
+  },
+  {
+   "name": "SFX_LB_Door_Wood_Open_03",
+   "group": "interact",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:273466",
+     "t0": 1.4,
+     "t1": 4.45,
+     "gain_db": 0.0,
+     "pitch": 1.05,
+     "delay": 0.0
+    }
+   ],
+   "note": "273466 later part, pitch +5 % (two sources give only 2 distinct openings)",
+   "fade_out": 0.12
+  },
+  {
+   "name": "SFX_LB_Door_Stone_Open_01",
+   "group": "interact",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:578491",
+     "t0": 0.7,
+     "t1": 3.7,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0,
+     "hp": 40.0
+    }
+   ],
+   "note": "578491 stone door",
+   "fade_in": 0.02,
+   "fade_out": 0.2
+  },
+  {
+   "name": "SFX_LB_Door_Stone_Open_02",
+   "group": "interact",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:578491",
+     "t0": 7.55,
+     "t1": 10.5,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0,
+     "hp": 40.0
+    }
+   ],
+   "note": "578491 stone door",
+   "fade_in": 0.02,
+   "fade_out": 0.2
+  },
+  {
+   "name": "SFX_LB_Door_Stone_Open_03",
+   "group": "interact",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:833925",
+     "t0": 0.2,
+     "t1": 3.2,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0,
+     "hp": 40.0
+    }
+   ],
+   "note": "833925 stone door (noisy source)",
+   "fade_in": 0.02,
+   "fade_out": 0.2
+  },
+  {
+   "name": "SFX_LB_Door_Locked_01",
+   "group": "interact",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:341303",
+     "t0": 0.05,
+     "t1": 1.15,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0
+    }
+   ],
+   "note": "341303 door locked"
+  },
+  {
+   "name": "SFX_LB_Door_Locked_02",
+   "group": "interact",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:235473",
+     "t0": 2.3,
+     "t1": 3.35,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0
+    }
+   ],
+   "note": "235473 handle rattle #2",
+   "fade_out": 0.08
+  },
+  {
+   "name": "SFX_LB_Door_Locked_03",
+   "group": "interact",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:235473",
+     "t0": 3.75,
+     "t1": 4.95,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0
+    }
+   ],
+   "note": "235473 handle rattle #3",
+   "fade_out": 0.08
+  },
+  {
+   "name": "SFX_LB_Lever_Notch_01",
+   "group": "interact",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:696746",
+     "t0": 0.0,
+     "t1": 0.58,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0
+    }
+   ],
+   "note": "696746 lever"
+  },
+  {
+   "name": "SFX_LB_Lever_Notch_02",
+   "group": "interact",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:835550",
+     "t0": 0.04,
+     "t1": 0.95,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0
+    }
+   ],
+   "note": "835550 industrial lever"
+  },
+  {
+   "name": "SFX_LB_Lever_Notch_03",
+   "group": "interact",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "kr:metalClick",
+     "t0": 0.0,
+     "t1": null,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0
+    }
+   ],
+   "note": "Kenney RPG metalClick"
+  },
+  {
+   "name": "SFX_LB_Lever_Notch_04",
+   "group": "interact",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "kr:metalLatch",
+     "t0": 0.0,
+     "t1": null,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0
+    },
+    {
+     "src": "fs:696746",
+     "t0": 0.0,
+     "t1": 0.5,
+     "gain_db": -8.0,
+     "pitch": 1.06,
+     "delay": 0.0
+    }
+   ],
+   "note": "Kenney RPG metalLatch + 696746 pitch +6 % at -8 dB"
+  },
+  {
+   "name": "SFX_LB_Winch_01",
+   "group": "interact",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:454148",
+     "t0": 0.12,
+     "t1": 1.0,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0
+    },
+    {
+     "src": "fs:454148",
+     "t0": 1.95,
+     "t1": 3.4,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.86
+    }
+   ],
+   "note": "454148 two ratchet pulls joined (silent gap removed)",
+   "fade_out": 0.12
+  },
+  {
+   "name": "SFX_LB_Winch_02",
+   "group": "interact",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:491705",
+     "t0": 2.0,
+     "t1": 5.2,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0,
+     "hp": 40.0
+    }
+   ],
+   "note": "491705 rope crank take 1",
+   "fade_out": 0.12
+  },
+  {
+   "name": "SFX_LB_Winch_03",
+   "group": "interact",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:491705",
+     "t0": 39.0,
+     "t1": 42.2,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0,
+     "hp": 40.0
+    }
+   ],
+   "note": "491705 rope crank take 4",
+   "fade_out": 0.12
+  },
+  {
+   "name": "SFX_LB_Stone_Grind_01",
+   "group": "interact",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:844329",
+     "t0": 0.1,
+     "t1": 3.3,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0,
+     "hp": 40.0
+    }
+   ],
+   "note": "844329 slab grind",
+   "fade_in": 0.03,
+   "fade_out": 0.2
+  },
+  {
+   "name": "SFX_LB_Stone_Grind_02",
+   "group": "interact",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:844329",
+     "t0": 5.05,
+     "t1": 8.4,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0,
+     "hp": 40.0
+    }
+   ],
+   "note": "844329 slab grind",
+   "fade_in": 0.03,
+   "fade_out": 0.2
+  },
+  {
+   "name": "SFX_LB_Stone_Grind_03",
+   "group": "interact",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:844329",
+     "t0": 9.8,
+     "t1": 13.0,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0,
+     "hp": 40.0
+    }
+   ],
+   "note": "844329 slab grind",
+   "fade_in": 0.03,
+   "fade_out": 0.2
+  },
+  {
+   "name": "SFX_LB_Generic_Use_01",
+   "group": "interact",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "kr:handleSmallLeather",
+     "t0": 0.0,
+     "t1": null,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0
+    }
+   ],
+   "note": "Kenney RPG kr:handleSmallLeather"
+  },
+  {
+   "name": "SFX_LB_Generic_Use_02",
+   "group": "interact",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "kr:handleSmallLeather2",
+     "t0": 0.0,
+     "t1": null,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0
+    }
+   ],
+   "note": "Kenney RPG kr:handleSmallLeather2"
+  },
+  {
+   "name": "SFX_LB_Generic_Use_03",
+   "group": "interact",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "kr:beltHandle1",
+     "t0": 0.0,
+     "t1": null,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0
+    }
+   ],
+   "note": "Kenney RPG kr:beltHandle1"
+  },
+  {
+   "name": "SFX_LB_Creak_Wood_01",
+   "group": "room",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:506665",
+     "t0": 0.0,
+     "t1": 1.19,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0,
+     "hp": 60.0
+    }
+   ],
+   "note": "506665 single wood creak",
+   "fade_out": 0.08
+  },
+  {
+   "name": "SFX_LB_Creak_Wood_02",
+   "group": "room",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:802595",
+     "t0": 0.05,
+     "t1": 2.5,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0,
+     "hp": 60.0
+    }
+   ],
+   "note": "802595 long slow floorboards",
+   "fade_out": 0.12
+  },
+  {
+   "name": "SFX_LB_Creak_Wood_03",
+   "group": "room",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "kr:creak2",
+     "t0": 0.0,
+     "t1": null,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0,
+     "hp": 60.0
+    }
+   ],
+   "note": "Kenney RPG creak2 (802595 has only one usable long creak)",
+   "fade_out": 0.08
+  },
+  {
+   "name": "SFX_LB_Creak_Wood_04",
+   "group": "room",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:590171",
+     "t0": 0.0,
+     "t1": 1.95,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0,
+     "hp": 60.0
+    }
+   ],
+   "note": "590171 creaking in room",
+   "fade_out": 0.12
+  },
+  {
+   "name": "SFX_LB_Creak_Wood_05",
+   "group": "room",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:402464",
+     "t0": 1.05,
+     "t1": 2.45,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0,
+     "hp": 60.0
+    }
+   ],
+   "note": "402464 creak part of the wooden door (second source)",
+   "fade_out": 0.1
+  },
+  {
+   "name": "SFX_LB_Chain_Distant_01",
+   "group": "room",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:167912",
+     "t0": 0.0,
+     "t1": 1.5,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0
+    }
+   ],
+   "note": "167912 chain dragged, hard reverb",
+   "fade_out": 0.12
+  },
+  {
+   "name": "SFX_LB_Chain_Distant_02",
+   "group": "room",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:167914",
+     "t0": 0.0,
+     "t1": 1.4,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0
+    }
+   ],
+   "note": "167914 chain dragged, shower reverb",
+   "fade_out": 0.12
+  },
+  {
+   "name": "SFX_LB_Chain_Distant_03",
+   "group": "room",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:455078",
+     "t0": 4.5,
+     "t1": 5.45,
+     "gain_db": 0.0,
+     "pitch": 0.9,
+     "delay": 0.0,
+     "lp": 2800.0,
+     "hp": 120.0
+    }
+   ],
+   "note": "455078 chain drag (Warden-chain source) darkened + long tail to read as distant",
+   "post": {
+    "tail": {
+     "rt60": 1.4,
+     "wet_db": -9.0,
+     "predelay": 0.03,
+     "lp": 2500.0,
+     "tail_s": 1.0
+    }
+   },
+   "fade_out": 0.12,
+   "max_len": 3.0
+  },
+  {
+   "name": "SFX_LB_Chain_Distant_04",
+   "group": "room",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:199282",
+     "t0": 9.0,
+     "t1": 10.4,
+     "gain_db": 0.0,
+     "pitch": 0.9,
+     "delay": 0.0,
+     "lp": 2800.0,
+     "hp": 120.0
+    }
+   ],
+   "note": "199282 chain jangle darkened + long tail to read as distant",
+   "post": {
+    "tail": {
+     "rt60": 1.4,
+     "wet_db": -9.0,
+     "predelay": 0.03,
+     "lp": 2500.0,
+     "tail_s": 1.0,
+     "seed": 9
+    }
+   },
+   "fade_out": 0.12,
+   "max_len": 3.0
+  },
+  {
+   "name": "SFX_LB_Warden_Step_01",
+   "group": "warden",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:741627",
+     "t0": 2.1100000000000003,
+     "t1": 2.64,
+     "gain_db": 0.0,
+     "pitch": 0.7,
+     "delay": 0.0,
+     "hp": 50.0
+    },
+    {
+     "src": "ki:impactSoft_heavy_000",
+     "t0": 0.0,
+     "t1": null,
+     "gain_db": -3.0,
+     "pitch": 0.72,
+     "delay": 0.04285714285714286,
+     "hp": 30.0
+    }
+   ],
+   "note": "741627 boot step -30 % + Kenney heavy thump + 50 Hz sub",
+   "post": {
+    "sub": {
+     "freq": 50.0,
+     "gain_db": -12.0
+    },
+    "lp": 7000.0
+   },
+   "max_len": 0.9,
+   "fade_out": 0.08
+  },
+  {
+   "name": "SFX_LB_Warden_Step_02",
+   "group": "warden",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:741627",
+     "t0": 2.6550000000000002,
+     "t1": 3.185,
+     "gain_db": 0.0,
+     "pitch": 0.7,
+     "delay": 0.0,
+     "hp": 50.0
+    },
+    {
+     "src": "ki:impactPunch_heavy_001",
+     "t0": 0.0,
+     "t1": null,
+     "gain_db": -3.0,
+     "pitch": 0.72,
+     "delay": 0.04285714285714286,
+     "hp": 30.0
+    }
+   ],
+   "note": "741627 boot step -30 % + Kenney heavy thump + 50 Hz sub",
+   "post": {
+    "sub": {
+     "freq": 50.0,
+     "gain_db": -12.0
+    },
+    "lp": 7000.0
+   },
+   "max_len": 0.9,
+   "fade_out": 0.08
+  },
+  {
+   "name": "SFX_LB_Warden_Step_03",
+   "group": "warden",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:741627",
+     "t0": 1.4949999999999999,
+     "t1": 2.025,
+     "gain_db": 0.0,
+     "pitch": 0.7,
+     "delay": 0.0,
+     "hp": 50.0
+    },
+    {
+     "src": "ki:impactWood_heavy_003",
+     "t0": 0.0,
+     "t1": null,
+     "gain_db": -3.0,
+     "pitch": 0.72,
+     "delay": 0.04285714285714286,
+     "hp": 30.0
+    },
+    {
+     "src": "fs:531725",
+     "t0": 0.5,
+     "t1": 1.0,
+     "gain_db": -4.0,
+     "pitch": 0.8,
+     "delay": 0.0,
+     "hp": 25.0,
+     "lp": 250.0
+    }
+   ],
+   "note": "741627 boot step -30 % + Kenney heavy thump + fs:531725 sub body (lowpassed) + 50 Hz sub",
+   "post": {
+    "sub": {
+     "freq": 50.0,
+     "gain_db": -12.0
+    },
+    "lp": 7000.0
+   },
+   "max_len": 0.9,
+   "fade_out": 0.08
+  },
+  {
+   "name": "SFX_LB_Warden_Step_04",
+   "group": "warden",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:741627",
+     "t0": 6.85,
+     "t1": 7.38,
+     "gain_db": 0.0,
+     "pitch": 0.7,
+     "delay": 0.0,
+     "hp": 50.0
+    },
+    {
+     "src": "ki:impactPunch_heavy_003",
+     "t0": 0.0,
+     "t1": null,
+     "gain_db": -3.0,
+     "pitch": 0.72,
+     "delay": 0.04285714285714286,
+     "hp": 30.0
+    },
+    {
+     "src": "fs:339439",
+     "t0": 0.55,
+     "t1": 1.1,
+     "gain_db": -4.0,
+     "pitch": 0.8,
+     "delay": 0.0,
+     "hp": 25.0,
+     "lp": 300.0
+    }
+   ],
+   "note": "741627 boot step -30 % + Kenney heavy thump + fs:339439 sub body (lowpassed) + 50 Hz sub",
+   "post": {
+    "sub": {
+     "freq": 50.0,
+     "gain_db": -12.0
+    },
+    "lp": 7000.0
+   },
+   "max_len": 0.9,
+   "fade_out": 0.08
+  },
+  {
+   "name": "SFX_LB_Warden_Step_05",
+   "group": "warden",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:741627",
+     "t0": 8.465,
+     "t1": 8.995,
+     "gain_db": 0.0,
+     "pitch": 0.7,
+     "delay": 0.0,
+     "hp": 50.0
+    },
+    {
+     "src": "ki:impactSoft_heavy_002",
+     "t0": 0.0,
+     "t1": null,
+     "gain_db": -3.0,
+     "pitch": 0.72,
+     "delay": 0.04285714285714286,
+     "hp": 30.0
+    },
+    {
+     "src": "fs:339439",
+     "t0": 1.9,
+     "t1": 2.5,
+     "gain_db": -4.0,
+     "pitch": 0.8,
+     "delay": 0.0,
+     "hp": 25.0,
+     "lp": 300.0
+    }
+   ],
+   "note": "741627 boot step -30 % + Kenney heavy thump + fs:339439 sub body (lowpassed) + 50 Hz sub",
+   "post": {
+    "sub": {
+     "freq": 50.0,
+     "gain_db": -12.0
+    },
+    "lp": 7000.0
+   },
+   "max_len": 0.9,
+   "fade_out": 0.08
+  },
+  {
+   "name": "SFX_LB_Warden_Chain_01",
+   "group": "warden",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:455078",
+     "t0": 6.25,
+     "t1": 7.55,
+     "gain_db": 0.0,
+     "pitch": 0.92,
+     "delay": 0.0,
+     "hp": 80.0
+    }
+   ],
+   "note": "fs:455078 @ 6.25-7.55s, pitch 0.92",
+   "fade_out": 0.1
+  },
+  {
+   "name": "SFX_LB_Warden_Chain_02",
+   "group": "warden",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:455078",
+     "t0": 9.98,
+     "t1": 11.4,
+     "gain_db": 0.0,
+     "pitch": 0.92,
+     "delay": 0.0,
+     "hp": 80.0
+    }
+   ],
+   "note": "fs:455078 @ 9.98-11.4s, pitch 0.92",
+   "fade_out": 0.1
+  },
+  {
+   "name": "SFX_LB_Warden_Chain_03",
+   "group": "warden",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:199282",
+     "t0": 20.0,
+     "t1": 21.3,
+     "gain_db": 0.0,
+     "pitch": 0.92,
+     "delay": 0.0,
+     "hp": 80.0
+    }
+   ],
+   "note": "fs:199282 @ 20.0-21.3s, pitch 0.92",
+   "fade_out": 0.1
+  },
+  {
+   "name": "SFX_LB_Warden_Chain_04",
+   "group": "warden",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:199282",
+     "t0": 48.75,
+     "t1": 50.1,
+     "gain_db": 0.0,
+     "pitch": 0.88,
+     "delay": 0.0,
+     "hp": 80.0
+    }
+   ],
+   "note": "fs:199282 @ 48.75-50.1s, pitch 0.88",
+   "fade_out": 0.1
+  },
+  {
+   "name": "SFX_LB_Warden_Robe",
+   "group": "warden",
+   "channels": 1,
+   "target": {
+    "mode": "rms",
+    "db": -24.0
+   },
+   "layers": [
+    {
+     "src": "fs:19291",
+     "t0": 0.45,
+     "t1": 1.95,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0,
+     "lp": 3500.0,
+     "fade_in": 0.3,
+     "fade_out": 0.3
+    },
+    {
+     "src": "kr:cloth2",
+     "t0": 0.0,
+     "t1": null,
+     "gain_db": -2.0,
+     "pitch": 0.85,
+     "delay": 1.4,
+     "lp": 3500.0,
+     "fade_in": 0.3,
+     "fade_out": 0.3
+    },
+    {
+     "src": "fs:19291",
+     "t0": 0.45,
+     "t1": 1.95,
+     "gain_db": -1.0,
+     "pitch": 0.9,
+     "delay": 2.2,
+     "lp": 3500.0,
+     "reverse": true,
+     "fade_in": 0.3,
+     "fade_out": 0.3
+    },
+    {
+     "src": "kr:cloth4",
+     "t0": 0.0,
+     "t1": null,
+     "gain_db": -2.0,
+     "pitch": 0.8,
+     "delay": 3.9,
+     "lp": 3500.0,
+     "fade_in": 0.3,
+     "fade_out": 0.3
+    },
+    {
+     "src": "fs:19291",
+     "t0": 0.45,
+     "t1": 1.95,
+     "gain_db": -2.0,
+     "pitch": 1.08,
+     "delay": 4.6,
+     "lp": 3500.0,
+     "fade_in": 0.3,
+     "fade_out": 0.3
+    },
+    {
+     "src": "kr:cloth1",
+     "t0": 0.0,
+     "t1": null,
+     "gain_db": -2.0,
+     "pitch": 0.85,
+     "delay": 6.2,
+     "lp": 3500.0,
+     "fade_in": 0.3,
+     "fade_out": 0.3
+    },
+    {
+     "src": "fs:19291",
+     "t0": 0.45,
+     "t1": 1.95,
+     "gain_db": -1.0,
+     "pitch": 0.95,
+     "delay": 6.9,
+     "lp": 3500.0,
+     "reverse": true,
+     "fade_in": 0.3,
+     "fade_out": 0.3
+    },
+    {
+     "src": "kr:cloth3",
+     "t0": 0.0,
+     "t1": null,
+     "gain_db": -2.0,
+     "pitch": 0.8,
+     "delay": 8.5,
+     "lp": 3500.0,
+     "fade_in": 0.3,
+     "fade_out": 0.3
+    },
+    {
+     "src": "fs:19291",
+     "t0": 0.45,
+     "t1": 1.95,
+     "gain_db": -2.0,
+     "pitch": 1.02,
+     "delay": 9.4,
+     "lp": 3500.0,
+     "fade_in": 0.3,
+     "fade_out": 0.3
+    },
+    {
+     "src": "kr:cloth2",
+     "t0": 0.0,
+     "t1": null,
+     "gain_db": -3.0,
+     "pitch": 0.9,
+     "delay": 10.9,
+     "lp": 3500.0,
+     "fade_in": 0.3,
+     "fade_out": 0.3
+    },
+    {
+     "synth": "noise",
+     "dur": 12.0,
+     "lo": 150.0,
+     "hi": 1200.0,
+     "gain_db": -46.0,
+     "seed": 3,
+     "delay": 0.0
+    }
+   ],
+   "note": "19291 cloth rustle (forward, reversed, pitched) + Kenney cloth1..4 + a dull noise drag bed; 10 s loop",
+   "post": {
+    "level": {
+     "win": 0.3,
+     "alpha": 0.9
+    }
+   },
+   "loop": {
+    "length": 10.0,
+    "xf": 1.0
+   }
+  },
+  {
+   "name": "SFX_LB_Warden_Breath_Slow",
+   "group": "warden",
+   "channels": 1,
+   "target": {
+    "mode": "rms",
+    "db": -24.0
+   },
+   "layers": [
+    {
+     "src": "fs:574208",
+     "t0": 25.0,
+     "t1": 33.3,
+     "gain_db": 0.0,
+     "pitch": 0.75,
+     "delay": 0.0,
+     "hp": 40.0,
+     "fade_in": 0.0,
+     "fade_out": 0.0
+    }
+   ],
+   "note": "574208 monster breath, pitch -25 %, 10 s loop",
+   "loop": {
+    "length": 10.0,
+    "xf": 1.0
+   },
+   "tune": {
+    "t0_min": 0.3,
+    "t0_max": 34.0,
+    "src_len": 8.3,
+    "step": 0.1
+   }
+  },
+  {
+   "name": "SFX_LB_Warden_Breath_Fast",
+   "group": "warden",
+   "channels": 1,
+   "target": {
+    "mode": "rms",
+    "db": -24.0
+   },
+   "layers": [
+    {
+     "src": "fs:689240",
+     "t0": 1.6,
+     "t1": 8.85,
+     "gain_db": 0.0,
+     "pitch": 0.8,
+     "delay": 0.0,
+     "hp": 40.0,
+     "fade_in": 0.0,
+     "fade_out": 0.0
+    }
+   ],
+   "note": "689240 loud snorting breath (early, slower part), pitch -20 %, 8 s loop",
+   "loop": {
+    "length": 8.0,
+    "xf": 1.0
+   },
+   "tune": {
+    "t0_min": 0.9,
+    "t0_max": 2.8,
+    "src_len": 7.25,
+    "step": 0.05
+   }
+  },
+  {
+   "name": "SFX_LB_Warden_Breath_Heavy",
+   "group": "warden",
+   "channels": 1,
+   "target": {
+    "mode": "rms",
+    "db": -24.0
+   },
+   "layers": [
+    {
+     "src": "fs:689240",
+     "t0": 3.0,
+     "t1": 12.4,
+     "gain_db": 0.0,
+     "pitch": 0.8,
+     "delay": 0.0,
+     "hp": 40.0,
+     "fade_in": 0.0,
+     "fade_out": 0.0
+    },
+    {
+     "src": "fs:470900",
+     "t0": 2.3,
+     "t1": 11.4,
+     "gain_db": -6.0,
+     "pitch": 0.78,
+     "delay": 0.0,
+     "hp": 40.0,
+     "fade_in": 0.0,
+     "fade_out": 0.0,
+     "norm": -24.0
+    }
+   ],
+   "note": "689240 loud fast snorting (late, accelerating part, pitch -20 %) over 470900 growling breath (pitch -22 %, -6 dB), 10 s loop",
+   "loop": {
+    "length": 10.0,
+    "xf": 1.5
+   },
+   "tune": {
+    "layer": 1,
+    "t0_min": 0.0,
+    "t0_max": 9.0,
+    "src_len": 9.1,
+    "step": 0.1
+   }
+  },
+  {
+   "name": "SFX_LB_Warden_Spotted_01",
+   "group": "voice",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:132874",
+     "t0": 0.25,
+     "t1": 1.1,
+     "gain_db": 0.0,
+     "pitch": 0.72,
+     "delay": 0.0,
+     "norm": -18.0,
+     "fade_out": 0.1,
+     "hp": 50.0
+    },
+    {
+     "src": "fs:487513",
+     "t0": 0.06,
+     "t1": 0.9,
+     "gain_db": -4.0,
+     "pitch": 0.75,
+     "delay": 0.0,
+     "norm": -18.0,
+     "fade_out": 0.1,
+     "hp": 50.0
+    }
+   ],
+   "note": "132874 + 487513 roars, -28 %, sub, short room tail",
+   "post": {
+    "sub": {
+     "freq": 50.0,
+     "gain_db": -12.0
+    },
+    "tail": {
+     "rt60": 0.5,
+     "wet_db": -16.0,
+     "tail_s": 0.25,
+     "predelay": 0.015,
+     "lp": 3200.0
+    }
+   },
+   "max_len": 1.45,
+   "fade_out": 0.08
+  },
+  {
+   "name": "SFX_LB_Warden_Spotted_02",
+   "group": "voice",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:487513",
+     "t0": 0.06,
+     "t1": 1.0,
+     "gain_db": 0.0,
+     "pitch": 0.72,
+     "delay": 0.0,
+     "norm": -18.0,
+     "fade_out": 0.1,
+     "hp": 50.0
+    },
+    {
+     "src": "fs:204912",
+     "t0": 0.13,
+     "t1": 0.9,
+     "gain_db": -3.0,
+     "pitch": 0.78,
+     "delay": 0.0,
+     "norm": -18.0,
+     "fade_out": 0.1,
+     "hp": 50.0
+    }
+   ],
+   "note": "487513 + 204912, -26 %, sub, tail",
+   "post": {
+    "sub": {
+     "freq": 50.0,
+     "gain_db": -12.0
+    },
+    "tail": {
+     "rt60": 0.5,
+     "wet_db": -16.0,
+     "tail_s": 0.25,
+     "predelay": 0.015,
+     "lp": 3200.0
+    }
+   },
+   "max_len": 1.45,
+   "fade_out": 0.08
+  },
+  {
+   "name": "SFX_LB_Warden_Spotted_03",
+   "group": "voice",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:132874",
+     "t0": 0.25,
+     "t1": 1.1,
+     "gain_db": 0.0,
+     "pitch": 0.66,
+     "delay": 0.0,
+     "norm": -18.0,
+     "fade_out": 0.1,
+     "hp": 50.0
+    },
+    {
+     "src": "fs:497056",
+     "t0": 0.2,
+     "t1": 0.95,
+     "gain_db": -3.0,
+     "pitch": 0.75,
+     "delay": 0.0,
+     "norm": -18.0,
+     "fade_out": 0.1,
+     "hp": 50.0
+    }
+   ],
+   "note": "132874 -34 % + 497056 -25 %, sub, tail",
+   "post": {
+    "sub": {
+     "freq": 50.0,
+     "gain_db": -12.0
+    },
+    "tail": {
+     "rt60": 0.5,
+     "wet_db": -16.0,
+     "tail_s": 0.25,
+     "predelay": 0.015,
+     "lp": 3200.0
+    }
+   },
+   "max_len": 1.45,
+   "fade_out": 0.08
+  },
+  {
+   "name": "SFX_LB_Warden_Roar_01",
+   "group": "voice",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:497056",
+     "t0": 0.2,
+     "t1": 2.1,
+     "gain_db": 0.0,
+     "pitch": 0.75,
+     "delay": 0.0,
+     "norm": -18.0,
+     "fade_out": 0.3,
+     "hp": 50.0
+    },
+    {
+     "src": "fs:204912",
+     "t0": 0.13,
+     "t1": 1.9,
+     "gain_db": -4.0,
+     "pitch": 0.72,
+     "delay": 0.05,
+     "norm": -18.0,
+     "fade_out": 0.3,
+     "hp": 50.0
+    }
+   ],
+   "note": "497056 + 204912, -25 %, sub, tail",
+   "post": {
+    "sub": {
+     "freq": 50.0,
+     "gain_db": -12.0
+    },
+    "tail": {
+     "rt60": 0.9,
+     "wet_db": -15.0,
+     "tail_s": 0.4,
+     "predelay": 0.015,
+     "lp": 3200.0
+    }
+   },
+   "max_len": 3.0,
+   "fade_out": 0.15
+  },
+  {
+   "name": "SFX_LB_Warden_Roar_02",
+   "group": "voice",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:204912",
+     "t0": 0.13,
+     "t1": 2.0,
+     "gain_db": 0.0,
+     "pitch": 0.72,
+     "delay": 0.0,
+     "norm": -18.0,
+     "fade_out": 0.3,
+     "hp": 50.0
+    },
+    {
+     "src": "fs:487513",
+     "t0": 0.07,
+     "t1": 1.9,
+     "gain_db": -3.0,
+     "pitch": 0.7,
+     "delay": 0.08,
+     "norm": -18.0,
+     "fade_out": 0.3,
+     "hp": 50.0
+    }
+   ],
+   "note": "204912 + 487513, -28 %, sub, tail",
+   "post": {
+    "sub": {
+     "freq": 50.0,
+     "gain_db": -12.0
+    },
+    "tail": {
+     "rt60": 0.9,
+     "wet_db": -15.0,
+     "tail_s": 0.4,
+     "predelay": 0.015,
+     "lp": 3200.0
+    }
+   },
+   "max_len": 3.0,
+   "fade_out": 0.15
+  },
+  {
+   "name": "SFX_LB_Warden_Roar_03",
+   "group": "voice",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:170454",
+     "t0": 0.85,
+     "t1": 2.1,
+     "gain_db": 0.0,
+     "pitch": 0.78,
+     "delay": 0.0,
+     "norm": -18.0,
+     "fade_out": 0.3,
+     "hp": 50.0
+    },
+    {
+     "src": "fs:497056",
+     "t0": 0.9,
+     "t1": 2.9,
+     "gain_db": -3.0,
+     "pitch": 0.8,
+     "delay": 0.15,
+     "norm": -18.0,
+     "fade_out": 0.3,
+     "hp": 50.0
+    }
+   ],
+   "note": "170454 angry beast + 497056, -20 %, sub, tail",
+   "post": {
+    "sub": {
+     "freq": 50.0,
+     "gain_db": -12.0
+    },
+    "tail": {
+     "rt60": 0.9,
+     "wet_db": -15.0,
+     "tail_s": 0.4,
+     "predelay": 0.015,
+     "lp": 3200.0
+    }
+   },
+   "max_len": 3.0,
+   "fade_out": 0.15
+  },
+  {
+   "name": "SFX_LB_Warden_Windup_01",
+   "group": "voice",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:444445",
+     "t0": 0.3,
+     "t1": 1.15,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0,
+     "gain_env": [
+      [
+       0.0,
+       -26.0
+      ],
+      [
+       0.95,
+       0.0
+      ]
+     ],
+     "glide": [
+      0.62,
+      0.85
+     ],
+     "norm": -24.0,
+     "fade_out": 0.02,
+     "hp": 50.0
+    },
+    {
+     "synth": "noise",
+     "dur": 1.2,
+     "lo": 1500.0,
+     "hi": 7000.0,
+     "gain_db": -38.0,
+     "gain_env": [
+      [
+       0.0,
+       -24.0
+      ],
+      [
+       1.0,
+       0.0
+      ]
+     ],
+     "delay": 0.0,
+     "seed": 11
+    }
+   ],
+   "note": "444445 demon growl, pitch glide 0.62 -> 0.85 (rising), amplitude rise, noise hiss (-14 dB re growl), tail",
+   "post": {
+    "sub": {
+     "freq": 50.0,
+     "gain_db": -14.0
+    },
+    "tail": {
+     "rt60": 0.5,
+     "wet_db": -17.0,
+     "tail_s": 0.25,
+     "predelay": 0.015,
+     "lp": 3200.0
+    }
+   },
+   "max_len": 1.5,
+   "fade_out": 0.05
+  },
+  {
+   "name": "SFX_LB_Warden_Windup_02",
+   "group": "voice",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:389653",
+     "t0": 0.14,
+     "t1": 0.96,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0,
+     "gain_env": [
+      [
+       0.0,
+       -26.0
+      ],
+      [
+       0.95,
+       0.0
+      ]
+     ],
+     "glide": [
+      0.68,
+      0.9
+     ],
+     "norm": -24.0,
+     "fade_out": 0.02,
+     "hp": 50.0
+    },
+    {
+     "src": "fs:444445",
+     "t0": 0.3,
+     "t1": 0.9,
+     "gain_db": -4.0,
+     "pitch": 1.0,
+     "delay": 0.0,
+     "gain_env": [
+      [
+       0.0,
+       -26.0
+      ],
+      [
+       0.95,
+       0.0
+      ]
+     ],
+     "glide": [
+      0.6,
+      0.8
+     ],
+     "norm": -24.0,
+     "fade_out": 0.02,
+     "hp": 50.0
+    }
+   ],
+   "note": "389653 growl + 444445 growl, rising glide and amplitude, tail",
+   "post": {
+    "sub": {
+     "freq": 50.0,
+     "gain_db": -14.0
+    },
+    "tail": {
+     "rt60": 0.5,
+     "wet_db": -17.0,
+     "tail_s": 0.25,
+     "predelay": 0.015,
+     "lp": 3200.0
+    }
+   },
+   "max_len": 1.5,
+   "fade_out": 0.05
+  },
+  {
+   "name": "SFX_LB_Warden_Windup_03",
+   "group": "voice",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:763026",
+     "t0": 1.8,
+     "t1": 2.9,
+     "gain_db": 0.0,
+     "pitch": 1.0,
+     "delay": 0.0,
+     "gain_env": [
+      [
+       0.0,
+       -26.0
+      ],
+      [
+       0.95,
+       0.0
+      ]
+     ],
+     "glide": [
+      0.7,
+      0.9
+     ],
+     "norm": -24.0,
+     "fade_out": 0.02,
+     "hp": 50.0
+    },
+    {
+     "src": "fs:389653",
+     "t0": 0.14,
+     "t1": 0.96,
+     "gain_db": -3.0,
+     "pitch": 1.0,
+     "delay": 0.0,
+     "gain_env": [
+      [
+       0.0,
+       -26.0
+      ],
+      [
+       0.95,
+       0.0
+      ]
+     ],
+     "glide": [
+      0.65,
+      0.85
+     ],
+     "norm": -24.0,
+     "fade_out": 0.02,
+     "hp": 50.0
+    },
+    {
+     "synth": "noise",
+     "dur": 1.2,
+     "lo": 1500.0,
+     "hi": 7000.0,
+     "gain_db": -40.0,
+     "gain_env": [
+      [
+       0.0,
+       -24.0
+      ],
+      [
+       1.0,
+       0.0
+      ]
+     ],
+     "delay": 0.0,
+     "seed": 12
+    }
+   ],
+   "note": "763026 bear growl + 389653, rising glide and amplitude, hiss, tail",
+   "post": {
+    "sub": {
+     "freq": 50.0,
+     "gain_db": -14.0
+    },
+    "tail": {
+     "rt60": 0.5,
+     "wet_db": -17.0,
+     "tail_s": 0.25,
+     "predelay": 0.015,
+     "lp": 3200.0
+    }
+   },
+   "max_len": 1.5,
+   "fade_out": 0.05
+  },
+  {
+   "name": "SFX_LB_Warden_Exhale_01",
+   "group": "voice",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:345730",
+     "t0": 0.05,
+     "t1": 0.9,
+     "gain_db": 0.0,
+     "pitch": 0.8,
+     "delay": 0.0,
+     "norm": -26.0,
+     "fade_out": 0.15,
+     "lp": 5500.0,
+     "hp": 40.0
+    }
+   ],
+   "note": "345730 deep exhale -20 %, tail",
+   "post": {
+    "tail": {
+     "rt60": 0.8,
+     "wet_db": -15.0,
+     "tail_s": 0.5,
+     "predelay": 0.015,
+     "lp": 3200.0
+    }
+   },
+   "max_len": 2.0,
+   "fade_in": 0.02,
+   "fade_out": 0.15
+  },
+  {
+   "name": "SFX_LB_Warden_Exhale_02",
+   "group": "voice",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:615047",
+     "t0": 1.35,
+     "t1": 2.85,
+     "gain_db": 0.0,
+     "pitch": 0.8,
+     "delay": 0.0,
+     "norm": -26.0,
+     "fade_out": 0.2,
+     "lp": 5500.0,
+     "hp": 40.0
+    }
+   ],
+   "note": "615047 exhale -20 %, tail",
+   "post": {
+    "tail": {
+     "rt60": 0.8,
+     "wet_db": -15.0,
+     "tail_s": 0.5,
+     "predelay": 0.015,
+     "lp": 3200.0
+    }
+   },
+   "max_len": 2.4,
+   "fade_in": 0.02,
+   "fade_out": 0.15
+  },
+  {
+   "name": "SFX_LB_Warden_Exhale_03",
+   "group": "voice",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:615047",
+     "t0": 0.3,
+     "t1": 1.15,
+     "gain_db": 0.0,
+     "pitch": 0.78,
+     "delay": 0.0,
+     "norm": -26.0,
+     "fade_out": 0.15,
+     "lp": 5500.0,
+     "hp": 40.0
+    },
+    {
+     "src": "fs:345730",
+     "t0": 0.05,
+     "t1": 0.9,
+     "gain_db": -4.0,
+     "pitch": 0.7,
+     "delay": 0.1,
+     "norm": -26.0,
+     "fade_out": 0.15,
+     "lp": 5500.0,
+     "hp": 40.0
+    }
+   ],
+   "note": "615047 inhale-exhale -22 % + 345730 -30 %, tail",
+   "post": {
+    "tail": {
+     "rt60": 0.8,
+     "wet_db": -15.0,
+     "tail_s": 0.5,
+     "predelay": 0.015,
+     "lp": 3200.0
+    }
+   },
+   "max_len": 2.2,
+   "fade_in": 0.02,
+   "fade_out": 0.15
+  },
+  {
+   "name": "SFX_LB_Warden_Caught_01",
+   "group": "voice",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:763026",
+     "t0": 1.75,
+     "t1": 3.55,
+     "gain_db": 0.0,
+     "pitch": 0.8,
+     "delay": 0.0,
+     "norm": -22.0,
+     "fade_out": 0.3,
+     "hp": 50.0
+    },
+    {
+     "src": "fs:170454",
+     "t0": 8.4,
+     "t1": 9.8,
+     "gain_db": -2.0,
+     "pitch": 0.8,
+     "delay": 0.15,
+     "norm": -22.0,
+     "fade_out": 0.3,
+     "hp": 50.0
+    }
+   ],
+   "note": "763026 bear growl + 170454 beast, -20 %, sub, tail",
+   "post": {
+    "sub": {
+     "freq": 50.0,
+     "gain_db": -12.0
+    },
+    "tail": {
+     "rt60": 0.9,
+     "wet_db": -14.0,
+     "tail_s": 0.5,
+     "predelay": 0.015,
+     "lp": 3200.0
+    }
+   },
+   "max_len": 3.0,
+   "fade_out": 0.2
+  },
+  {
+   "name": "SFX_LB_Warden_Caught_02",
+   "group": "voice",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:170454",
+     "t0": 10.2,
+     "t1": 11.65,
+     "gain_db": 0.0,
+     "pitch": 0.78,
+     "delay": 0.0,
+     "norm": -22.0,
+     "fade_out": 0.3,
+     "hp": 50.0
+    },
+    {
+     "src": "fs:497056",
+     "t0": 0.9,
+     "t1": 2.4,
+     "gain_db": -3.0,
+     "pitch": 0.8,
+     "delay": 0.05,
+     "norm": -22.0,
+     "fade_out": 0.3,
+     "hp": 50.0
+    }
+   ],
+   "note": "170454 beast + 497056 roar, -20 %, sub, tail",
+   "post": {
+    "sub": {
+     "freq": 50.0,
+     "gain_db": -12.0
+    },
+    "tail": {
+     "rt60": 0.9,
+     "wet_db": -14.0,
+     "tail_s": 0.5,
+     "predelay": 0.015,
+     "lp": 3200.0
+    }
+   },
+   "max_len": 3.0,
+   "fade_out": 0.2
+  },
+  {
+   "name": "SFX_LB_Apparition_Whisper_01",
+   "group": "voice",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:316797",
+     "t0": 2.0,
+     "t1": 5.0,
+     "gain_db": 0.0,
+     "pitch": 0.93,
+     "delay": 0.0,
+     "hp": 120.0,
+     "lp": 7500.0
+    }
+   ],
+   "note": "316797 ghostly whispers -7 %, tail",
+   "post": {
+    "tail": {
+     "rt60": 1.2,
+     "wet_db": -12.0,
+     "tail_s": 0.8,
+     "predelay": 0.02,
+     "lp": 3200.0
+    }
+   },
+   "max_len": 4.0,
+   "fade_in": 0.05,
+   "fade_out": 0.3
+  },
+  {
+   "name": "SFX_LB_Apparition_Whisper_02",
+   "group": "voice",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:339827",
+     "t0": 1.0,
+     "t1": 3.6,
+     "gain_db": 0.0,
+     "pitch": 0.95,
+     "delay": 0.0,
+     "hp": 120.0,
+     "lp": 7500.0
+    }
+   ],
+   "note": "339827 eerie whispers -5 %, tail",
+   "post": {
+    "tail": {
+     "rt60": 1.2,
+     "wet_db": -12.0,
+     "tail_s": 0.8,
+     "predelay": 0.02,
+     "lp": 3200.0
+    }
+   },
+   "max_len": 4.0,
+   "fade_in": 0.05,
+   "fade_out": 0.3
+  },
+  {
+   "name": "SFX_LB_Apparition_Whisper_03",
+   "group": "voice",
+   "channels": 1,
+   "target": {
+    "mode": "peak",
+    "db": -3.0
+   },
+   "layers": [
+    {
+     "src": "fs:316797",
+     "t0": 9.5,
+     "t1": 12.0,
+     "gain_db": 0.0,
+     "pitch": 0.92,
+     "delay": 0.0,
+     "hp": 120.0,
+     "lp": 7500.0
+    }
+   ],
+   "note": "316797 ghostly whispers -8 %, tail",
+   "post": {
+    "tail": {
+     "rt60": 1.2,
+     "wet_db": -12.0,
+     "tail_s": 0.8,
+     "predelay": 0.02,
+     "lp": 3200.0
+    }
+   },
+   "max_len": 4.0,
+   "fade_in": 0.05,
+   "fade_out": 0.3
+  }
+ ]
+}
