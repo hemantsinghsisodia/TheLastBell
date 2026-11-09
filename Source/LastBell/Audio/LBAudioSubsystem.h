@@ -334,6 +334,10 @@ private:
 	void PlayThunder(int32 Set, float Volume, const FVector& Direction);
 	void PlaySting(FName Cue, const TSoftObjectPtr<USoundBase>& Ref);
 	AActor* FindStepActor(const FGameplayTag& Step) const;
+	/** True when Step is a key of DA_Audio.SmallBellPitch: only the cloister bell puzzle's steps use the small-bell sounds. */
+	bool IsBellStep(const FGameplayTag& Step) const;
+	/** True when a sequence puzzle component on Actor has a step that IsBellStep. */
+	bool IsBellPuzzle(const AActor* Actor) const;
 	const FLBInteractionCue* FindInteractionCue(const AActor* Actor, int32& OutIndex, bool& bOutSilent);
 	bool GetPlayerFacts(FVector& OutLocation, bool& bOutSprinting, bool& bOutCandleLit) const;
 	ALBCharacter* GetPlayer() const;

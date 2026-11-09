@@ -1712,6 +1712,165 @@ bool FLBAudioSequenceSmallBellPitchTest::RunTest(const FString& Parameters)
 }
 
 // =====================================================================================================================
+// 10b. The chapel candle puzzle is not the bell puzzle: no small-bell sounds, a candle-out on failure
+// =====================================================================================================================
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBAudioCandlePuzzleNotBellsTest, "LastBell.Functional.Audio.CandlePuzzleNotBells", LB_AUDIOFUNC_FLAGS)
+bool FLBAudioCandlePuzzleNotBellsTest::RunTest(const FString& Parameters)
+{
+	TSharedRef<FAudioRunner> R = AudioStartSession(this);
+	const TSharedRef<FAudioState> S = R->S;
+	FAutomationTestBase* Test = this;
+
+	static const TCHAR* CandleTags[4] = { TEXT("State.Chapel.Candle.1"), TEXT("State.Chapel.Candle.2"), TEXT("State.Chapel.Candle.3"), TEXT("State.Chapel.Candle.4") };
+	static const TCHAR* BellTags[4] = { TEXT("State.Tower.Bell.1"), TEXT("State.Tower.Bell.2"), TEXT("State.Tower.Bell.3"), TEXT("State.Tower.Bell.4") };
+
+	R->Add(TEXT("PIE ready; SmallBellPitch holds the bell tags only; four candles and a sequence puzzle over the candle tags"), [S, Test](FAudioCtx& C)
+	{
+		if (!LBPie::WorldReady() || C.Frames < 5)
+		{
+			return false;
+		}
+		ULBAudioSubsystem* Audio = ActivateAudio(C, *S, Test, [](ULBAudioSettings& A)
+		{
+			for (int32 Index = 0; Index < 4; ++Index)
+			{
+				A.SmallBellPitch.Add(LBPie::Tag(BellTags[Index]), 1.f);
+			}
+		});
+		if (!Audio)
+		{
+			return true;
+		}
+		const ALBCharacter* Pawn = LBPie::Pawn();
+		const FVector Base = (Pawn ? Pawn->GetActorLocation() : FVector::ZeroVector) + FVector(500.0, 0.0, 100.0);
+		for (int32 Index = 0; Index < 4; ++Index)
+		{
+			ULBInteractableComponent* Interactable = nullptr;
+			AStaticMeshActor* Candle = SpawnInteractable<AStaticMeshActor>(C.W, Base + FVector(0.0, 250.0 * Index, 0.0), Interactable);
+			if (!Test->TestTrue(TEXT("A candle spawned"), Candle && Interactable))
+			{
+				return true;
+			}
+			Interactable->GrantedStateTags.AddTag(LBPie::Tag(CandleTags[Index]));
+			S->Actors.Add(Candle);
+		}
+		AStaticMeshActor* Controller = C.W->SpawnActor<AStaticMeshActor>(Base + FVector(0.0, -800.0, 0.0), FRotator::ZeroRotator);
+		if (!Test->TestNotNull(TEXT("The puzzle actor spawned"), Controller))
+		{
+			return true;
+		}
+		ULBSequencePuzzleComponent* Puzzle = NewObject<ULBSequencePuzzleComponent>(Controller);
+		for (const TCHAR* Name : CandleTags)
+		{
+			Puzzle->Steps.Add(LBPie::Tag(Name));
+		}
+		Puzzle->SolvedTags.AddTag(LBPie::Tag(TEXT("State.Chapel.CandlesSolved")));
+		Controller->AddInstanceComponent(Puzzle);
+		Puzzle->RegisterComponent();
+		S->Actors.Add(Controller);
+		S->Anchor = Controller->GetActorLocation();
+		return true;
+	});
+
+	R->Add(TEXT("Candle steps are silent, a wrong candle plays one candle-out at the puzzle, solving is silent"), [S, Test](FAudioCtx& C)
+	{
+		ULBAudioSubsystem* Audio = S->Audio(C.W);
+		if (!Audio || S->Actors.Num() != 5)
+		{
+			Test->AddError(TEXT("Audio subsystem or the test actors are gone"));
+			return true;
+		}
+		ULBWorldStateSubsystem* State = ULBWorldStateSubsystem::Get(C.W);
+		if (C.Elapsed > 14.0)
+		{
+			Test->AddError(FString::Printf(TEXT("Timed out in phase %d"), S->Phase));
+			return true;
+		}
+		auto NoBellSounds = [&](const TCHAR* When)
+		{
+			Test->TestEqual(FString::Printf(TEXT("%s: no small-bell strike"), When), Requests(Audio, LBAudioCue::SmallBellStrike).Num(), 0);
+			Test->TestEqual(FString::Printf(TEXT("%s: no small-bell fail"), When), Requests(Audio, LBAudioCue::SmallBellFail).Num(), 0);
+			Test->TestEqual(FString::Printf(TEXT("%s: no small-bell solved"), When), Requests(Audio, LBAudioCue::SmallBellSolved).Num(), 0);
+		};
+		switch (S->Phase)
+		{
+		case 0:
+			if (!Audio->IsActive())
+			{
+				return false;
+			}
+			Audio->RefreshBindings();
+			Test->TestTrue(TEXT("The four candles and the puzzle actor are bound"), Audio->GetBoundActorCount() >= 5);
+			Audio->ClearRequests();
+			// Candle 1 then candle 2, in order.
+			State->AddState(LBPie::Tag(CandleTags[0]));
+			State->AddState(LBPie::Tag(CandleTags[1]));
+			S->Phase = 1;
+			S->Counter = C.Frames;
+			return false;
+		case 1:
+			if (C.Frames - S->Counter < 3)
+			{
+				return false;
+			}
+			NoBellSounds(TEXT("Two accepted candle steps"));
+			Test->TestEqual(TEXT("Two accepted candle steps: no candle-out either"), Requests(Audio, LBAudioCue::CandleOut).Num(), 0);
+			// Candle 4 out of turn (candle 3 is next): the puzzle fails on the next tick.
+			State->AddState(LBPie::Tag(CandleTags[3]));
+			S->Phase = 2;
+			return false;
+		case 2:
+		{
+			const TArray<FLBAudioRequest> Out = Requests(Audio, LBAudioCue::CandleOut);
+			if (Out.IsEmpty())
+			{
+				return false;
+			}
+			if (Test->TestEqual(TEXT("A failed candle puzzle plays exactly one candle-out"), Out.Num(), 1))
+			{
+				Test->TestTrue(TEXT("It is positional, at the puzzle's actor"), Out[0].bPositional && Out[0].Location.Equals(S->Anchor, 1.0));
+				Test->TestTrue(TEXT("A candle-out variant of the three was picked"), Out[0].Variant >= 0 && Out[0].Variant < 3);
+			}
+			NoBellSounds(TEXT("A failed candle puzzle"));
+			Audio->ClearRequests();
+			S->Phase = 3;
+			S->Counter = C.Frames;
+			return false;
+		}
+		case 3:
+			// The puzzle removed the step tags; let it settle, then play the right order.
+			if (C.Frames - S->Counter < 4)
+			{
+				return false;
+			}
+			for (const TCHAR* Name : CandleTags)
+			{
+				State->AddState(LBPie::Tag(Name));
+			}
+			S->Phase = 4;
+			S->Counter = C.Frames;
+			return false;
+		default:
+		{
+			const AActor* Controller = S->Actors[4].Get();
+			const ULBSequencePuzzleComponent* Puzzle = Controller ? Controller->FindComponentByClass<ULBSequencePuzzleComponent>() : nullptr;
+			if (!Puzzle || !Puzzle->IsSolved() || C.Frames - S->Counter < 3)
+			{
+				return false;
+			}
+			NoBellSounds(TEXT("The solved candle puzzle"));
+			Test->TestEqual(TEXT("The solved candle puzzle: no candle-out"), Requests(Audio, LBAudioCue::CandleOut).Num(), 0);
+			return true;
+		}
+		}
+	}, 60.f);
+
+	AudioEnqueue(R);
+	return true;
+}
+
+// =====================================================================================================================
 // 11. Footsteps: no repeated variant, gait volumes, the surface rows
 // =====================================================================================================================
 

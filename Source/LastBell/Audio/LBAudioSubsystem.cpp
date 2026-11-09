@@ -1664,9 +1664,37 @@ AActor* ULBAudioSubsystem::FindStepActor(const FGameplayTag& Step) const
 	return nullptr;
 }
 
+bool ULBAudioSubsystem::IsBellStep(const FGameplayTag& Step) const
+{
+	return Settings && Step.IsValid() && Settings->SmallBellPitch.Contains(Step);
+}
+
+bool ULBAudioSubsystem::IsBellPuzzle(const AActor* Actor) const
+{
+	if (!Actor)
+	{
+		return false;
+	}
+	TArray<ULBSequencePuzzleComponent*> Puzzles;
+	Actor->GetComponents(Puzzles);
+	for (const ULBSequencePuzzleComponent* Puzzle : Puzzles)
+	{
+		for (const FGameplayTag& Step : Puzzle->Steps)
+		{
+			if (IsBellStep(Step))
+			{
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
 void ULBAudioSubsystem::NotifyStepAccepted(AActor* Actor, int32 Index, FGameplayTag Step)
 {
-	if (!bActive || !Settings)
+	// The small-bell strike is only for the cloister bell puzzle (a step that has an entry in SmallBellPitch). Any other sequence puzzle,
+	// the chapel candles, is silent per step: the candle's own interact cue already plays.
+	if (!bActive || !Settings || !IsBellStep(Step))
 	{
 		return;
 	}
@@ -1683,14 +1711,24 @@ void ULBAudioSubsystem::NotifyPuzzleFailed(AActor* Actor, FGameplayTag WrongStep
 	{
 		return;
 	}
-	const AActor* BellActor = FindStepActor(WrongStep);
-	const AActor* Where = BellActor ? BellActor : Actor;
-	PlayAt(LBAudioCue::SmallBellFail, Settings->SmallBellFail, Where ? Where->GetActorLocation() : LastListener);
+	if (IsBellStep(WrongStep) || IsBellPuzzle(Actor))
+	{
+		const AActor* BellActor = FindStepActor(WrongStep);
+		const AActor* Where = BellActor ? BellActor : Actor;
+		PlayAt(LBAudioCue::SmallBellFail, Settings->SmallBellFail, Where ? Where->GetActorLocation() : LastListener);
+		return;
+	}
+	// Any other sequence puzzle (the chapel candles): one candle-out variant at the puzzle actor, as the flames are snuffed.
+	const TArray<TSoftObjectPtr<USoundBase>>& Set = Settings->Player.CandleOut;
+	const int32 Variant = PickVariantFor(FName(TEXT("Candle.Out")), Set.Num());
+	PlayAt(LBAudioCue::CandleOut, Variant >= 0 ? Set[Variant] : TSoftObjectPtr<USoundBase>(), Actor ? Actor->GetActorLocation() : LastListener, 1.f,
+		RandomRange(0.97f, 1.03f), Variant);
 }
 
 void ULBAudioSubsystem::NotifyPuzzleSolved(AActor* Actor)
 {
-	if (!bActive || !Settings)
+	// Silent for a puzzle that is not the bells: its ritual mechanism and the story beat cover the result.
+	if (!bActive || !Settings || !IsBellPuzzle(Actor))
 	{
 		return;
 	}
