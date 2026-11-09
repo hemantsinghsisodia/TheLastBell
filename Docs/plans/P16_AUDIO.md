@@ -563,3 +563,16 @@ One editor agent at a time. A1, A2 and A3 run without the editor, in parallel wi
 
 ## Results
 (Filled in as tasks complete.)
+
+### A1–A4: sourcing, generated and recorded sounds, owner audition (2026-11-09)
+- **A1** (c371daf, caaeeff):
+  - Kenney "Impact Sounds" and "RPG Audio" downloaded; the `License.txt` in each zip says CC0.
+  - A Freesound CC0 list of 127 candidates, every page checked, plus a minimum set of 58 that the owner downloaded in full.
+- **A2** (90dc110, 7be3279):
+  - 51 generated WAVs; 145 objective checks pass; rebuilds are byte-identical.
+  - **Pre-audition fixes:** `Sting_Spotted` became an immediate hit with a 1.2 s tail, and the small bells' hum dropped from 0.6 to 0.2.
+  - **Mix gains:** the per-cue `mix_gain_db` values in `manifest.json` (bell stages, far thunder) go into `DA_Audio` in P16-2, not into the files.
+- **A3** (e4820fc):
+  - 124 recorded WAVs from 56 Freesound and 36 Kenney sources; objective checks pass; deterministic; registry rows added.
+  - **Substitutions for thin sources:** pitch copies for the 6th Kenney steps and for the gasp; Kenney clicks for two lever notches.
+- **A4** (af9431a): the owner listened through `Docs/ArtTest/audio/audition.html` (175 sounds) on headphones and judged **everything keep**.
