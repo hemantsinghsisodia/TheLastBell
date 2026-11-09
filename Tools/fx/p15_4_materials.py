@@ -200,6 +200,8 @@ def m_flame():
     dotp = g.op("DotProduct", objp, g.c3(12.9898, 78.233, 45.164))
     rnd_m = g.frac(g.mul(g.sine(dotp), 43758.5453))
     rnd = sw(rnd_s, rnd_m)
+    # P15-8: a moving flame (the player's candle) hashes a new ObjectPositionWS every frame and vibrates; UseFixedSeed 1 replaces the random by FixedSeed
+    rnd = g.lerp(rnd, g.sp("FixedSeed", 0.37, "Flicker"), g.sp("UseFixedSeed", 0.0, "Flicker"))
 
     # noise distortion, panning up at NoiseSpeed
     ntile = g.sp("NoiseTiling", 1.0, "Noise")
@@ -340,18 +342,19 @@ if __name__ == "__main__":
 RC = (0.55, 0.60, 0.70, 1.0)
 CAM = {"CamFadeNearCm": 40, "CamFadeFarCm": 120}
 MIS = {
-    "MI_LB_Rain": ("M_LB_Rain", dict(RainBase=0.035, RainFlash=1.4, DepthFadeCm=30, **CAM), dict(RainColor=RC), {}),
-    "MI_LB_Splash": ("M_LB_Splash", dict(SplashBase=0.08, SplashFlash=1.2), dict(SplashColor=RC), {}),
-    "MI_LB_Ripple": ("M_LB_Ripple", dict(RippleBase=0.05, RippleFlash=1.0, DepthFadeCm=4), dict(RippleColor=RC), {}),
+    "MI_LB_Rain": ("M_LB_Rain", dict(RainBase=0.25, RainFlash=1.4, DepthFadeCm=30, **CAM), dict(RainColor=RC), {}),
+    "MI_LB_Splash": ("M_LB_Splash", dict(SplashBase=0.18, SplashFlash=1.2), dict(SplashColor=RC), {}),
+    "MI_LB_Ripple": ("M_LB_Ripple", dict(RippleBase=0.2, RippleFlash=1.0, DepthFadeCm=4), dict(RippleColor=RC), {}),
     "MI_LB_Bolt": ("M_LB_Bolt", dict(BoltGain=40, AtlasIndex=0), {}, {}),
     "MI_Flame_Candle": ("M_LB_Flame", dict(NoiseSpeed=0.6, FlickerSpeed=7, EmissiveStrength=8), {}, dict(bSprite=False)),
-    "MI_Flame_Torch": ("M_LB_Flame", dict(NoiseSpeed=1.4, FlickerSpeed=11, EmissiveStrength=12), {}, dict(bSprite=True)),
+    "MI_Flame_Torch": ("M_LB_Flame", dict(NoiseSpeed=1.4, FlickerSpeed=11, EmissiveStrength=7), {}, dict(bSprite=True)),
+    "MI_Flame_Candle_Player": ("M_LB_Flame", dict(NoiseSpeed=0.6, FlickerSpeed=7, EmissiveStrength=8, UseFixedSeed=1, FixedSeed=0.37), {}, dict(bSprite=False)),
     "MI_LB_DustMote": ("M_LB_DustMote", dict(DustBrightness=0.6, DustFlash=2.0, **CAM), dict(DustColor=(0.55, 0.62, 0.80, 1.0)), {}),
     "MI_LB_Mist": ("M_LB_Mist", dict(MistBase=0.06, MistFlash=0.5, MistOpacity=0.08, DepthFadeCm=60), dict(MistTint=(0.5, 0.55, 0.62, 1.0)), {}),
-    "MI_LB_WaterMist": ("M_LB_Mist", dict(MistBase=0.06, MistFlash=0.5, MistOpacity=0.08, DepthFadeCm=60), dict(MistTint=(0.5, 0.55, 0.62, 1.0)), {}),
+    "MI_LB_WaterMist": ("M_LB_Mist", dict(MistBase=0.28, MistFlash=0.5, MistOpacity=0.26, DepthFadeCm=60), dict(MistTint=(0.5, 0.55, 0.62, 1.0)), {}),
     "MI_LB_RainCurtain": ("M_LB_RainCurtain", dict(CurtainBase=0.02, CurtainFlash=1.6, TilingU=6, TilingV=1, PanSpeed=1.2, WindSkew=1.0,
                                                   FadeNearCm=0, FadeFarCm=3000), dict(CurtainColor=RC), {}),
-    "MI_Cloth_Linen_Dark": ("M_LB_Cloth", dict(AmplitudeCm=30, WavelengthCm=120, PhaseScale=2.5, WhipAmount=0.25, ClothWidthCm=35, ClothLengthCm=220),
+    "MI_Cloth_Linen_Dark": ("M_LB_Cloth", dict(AmplitudeCm=18, WavelengthCm=120, PhaseScale=2.5, WhipAmount=0.25, ClothWidthCm=35, ClothLengthCm=220),
                             dict(Tint=(0.20, 0.18, 0.16, 1.0)), {}),
     "MI_Cloth_Linen_Dark_Sheet": ("M_LB_Cloth", dict(AmplitudeCm=20, WavelengthCm=120, PhaseScale=2.5, WhipAmount=0.25, ClothWidthCm=170, ClothLengthCm=140),
                                   dict(Tint=(0.20, 0.18, 0.16, 1.0)), {}),

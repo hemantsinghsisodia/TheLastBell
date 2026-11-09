@@ -7,10 +7,12 @@ Python: C:\\Users\\heman\\AppData\\Local\\Python\\pythoncore-3.14-64\\python.exe
 
     build [--only NAME,...]    build or REBUILD each system from scratch (removes all emitters and user variables first), then print the compile report
     check [--only NAME,...]    read everything back, print PASS/FAIL/WARN/INFO lines, exit 1 on any FAIL
-    save  [--only NAME,...]    save each new system (one package per call, is_dirty checked after); refuses anything outside the 7 packages
+    save  [--only NAME,...]    save each new system (one package per call, is_dirty checked after); refuses anything outside the 8 packages
     list                       the systems this script owns
+    drips8                     P15-8: edit NS_LB_EaveDrips and NS_LB_Drip IN PLACE (sizes, colour alpha, crown, ring, eave rate, drip interval)
+                               (build refuses NS_LB_Rain / NS_LB_Drip / NS_LB_EaveDrips when they exist; NS_LB_RainColumn is new and may be built)
 
-Systems: NS_LB_Rain, NS_LB_StrikeSparks, NS_LB_TorchFire, NS_LB_ShaftDust, NS_LB_WaterMist, NS_LB_Drip, NS_LB_EaveDrips
+Systems: NS_LB_Rain, NS_LB_RainColumn (P15-8), NS_LB_StrikeSparks, NS_LB_TorchFire, NS_LB_ShaftDust, NS_LB_WaterMist, NS_LB_Drip, NS_LB_EaveDrips
 """
 import argparse
 import copy
@@ -463,16 +465,25 @@ SPLASH_CHAIN = [
 ]
 
 
-def build_rain():
-    S = Sys("NS_LB_Rain")
-    make_system(S, RAIN_UVARS)
+RAIN_SPRITE = ((0.7, 28.0), (0.7, 42.0))
+# P15-8: NS_LB_RainColumn, a rain system for one roof opening: same GPU emitters Rain and Splash, same distance-field collision and fixed bounds as NS_LB_Rain,
+# no GroundMist emitter, a larger streak, and column-sized defaults (the placed actors override RainRate, BoxHalf, SpawnHeight, SplashRate, SplashRadius)
+COLUMN_UVARS = [("User.RainRate", "f", 6000), ("User.BoxHalf", "f", 300), ("User.SpawnHeight", "f", 2000), ("User.FallMin", "f", 1100),
+                ("User.FallMax", "f", 1400), ("User.Wind", "v3", (0, 0, 0)), ("User.SplashRate", "f", 400), ("User.SplashRadius", "f", 270),
+                ("User.Mist", "f", 0)]
+COLUMN_SPRITE = ((1.4, 36.0), (1.4, 54.0))
+
+
+def build_rain(name="NS_LB_Rain", uvars=None, sprite=RAIN_SPRITE, ground_mist=True):
+    S = Sys(name)
+    make_system(S, uvars or RAIN_UVARS)
 
     # --- Rain: GPU, fixed bounds
     em = "Rain"
     print("[emitter] Rain")
     add_emitter(S, em, "GPUComputeSim", RAIN_BOUNDS)
     spawn_rate(S, em, "User.RainRate")
-    init_particle(S, em, 3.5, (1, 1, 1, 0.7), ("rnu", (0.7, 28.0), (0.7, 42.0)))
+    init_particle(S, em, 3.5, (1, 1, 1, 0.7), ("rnu", sprite[0], sprite[1]))
     shape_box(S, em, "float3(User.BoxHalf * 2.0, User.BoxHalf * 2.0, 400.0)", "float3(0.0, 0.0, User.SpawnHeight)")
     S.enum(em, PS, "AddVelocity", "Velocity Mode", "Linear")
     velocity_random_vec(S, em, "float3(User.Wind.x, User.Wind.y, User.Wind.z - User.FallMax)", "float3(User.Wind.x, User.Wind.y, User.Wind.z - User.FallMin)")
@@ -510,6 +521,9 @@ def build_rain():
                              "SpriteSizeBinding": S.binding(em, idx, "SpriteSizeBinding", "RingSize"),
                              "ColorBinding": S.binding(em, idx, "ColorBinding", "RingColor")}, "ring MI_LB_Ripple (RingSize, RingColor, SpriteFacing)")
 
+    if not ground_mist:
+        return S
+
     # --- GroundMist: CPU
     em = "GroundMist"
     print("[emitter] GroundMist")
@@ -528,6 +542,10 @@ def build_rain():
     S.set_params(em, PU, [("Particles.Color", LCOL, col(1, 1, 1, 0), "float4(1.0, 1.0, 1.0, sin(3.14159265 * saturate(Particles.NormalizedAge)))")], label="(alpha 0 -> 1 -> 0)")
     S.renderer_set(em, 0, {"Material": ref(MI_DIR + "MI_LB_Mist.MI_LB_Mist"), "Alignment": "Unaligned", "FacingMode": "FaceCamera"}, "MI_LB_Mist")
     return S
+
+
+def build_rain_column():
+    return build_rain("NS_LB_RainColumn", COLUMN_UVARS, COLUMN_SPRITE, ground_mist=False)
 
 
 # ---- shared helpers for the smaller systems --------------------------------------------------------
@@ -755,9 +773,13 @@ def build_watermist():
 # ---- NS_LB_Drip / NS_LB_EaveDrips (fallback route: no event handlers over MCP) ---------------------
 DRIP_CROWN_LIFE = 0.3
 DRIP_RING_LIFE = 0.6
-DRIP_RING_FROM, DRIP_RING_TO = 2.0, 18.0
+DRIP_RING_FROM, DRIP_RING_TO = 3.0, 26.0     # P15-8 (was 2 -> 18)
 DRIP_RING_ALPHA = 0.6
-DRIP_CROWN_SIZE = 6.0
+DRIP_CROWN_SIZE = 10.0                     # P15-8 (was 6)
+DRIP_DROP_SIZE = (1.0, 14.0)               # P15-8 (was (0.5, 5)): falling drop, InitializeParticle Sprite Size literal
+DRIP_DROP_ALPHA = 1.0                      # P15-8 (was 0.5): InitializeParticle Color alpha and the update chain's Particles.Color expression
+EAVE_RATE = "User.LineLength * 0.04"        # P15-8 (was 6.0): 4 drops per metre per second
+DRIP_INTERVAL = (0.8, 2.5)                 # P15-8 (was (1.5, 4.0)): NS_LB_Drip user default User.Interval
 DRIP_GRAVITY = -980.0
 
 
@@ -775,7 +797,7 @@ DRIP_CHAIN = [
      ("Particles.Velocity", V3, v3(0, 0, 0), "Particles.Landed ? float3(0.0, 0.0, 0.0) : Particles.Velocity")],
     [("Particles.LandAge", FLOAT, fl(0), "Particles.Landed ? Particles.LandAge + Engine.DeltaTime : 0.0")],
     [("Particles.VisibilityTag", INT, it(0), "Particles.Landed ? 1 : 0"),
-     ("Particles.Color", LCOL, col(1, 1, 1, 0), "Particles.Landed ? float4(0.0, 0.0, 0.0, 0.0) : float4(1.0, 1.0, 1.0, 0.5)"),
+     ("Particles.Color", LCOL, col(1, 1, 1, 0), "Particles.Landed ? float4(0.0, 0.0, 0.0, 0.0) : float4(1.0, 1.0, 1.0, %g)" % DRIP_DROP_ALPHA),
      ("Particles.CrownColor", LCOL, col(0, 0, 0, 0),
       "(Particles.Landed && Particles.LandAge <= %g) ? float4(1.0, 1.0, 1.0, 1.0) : float4(0.0, 0.0, 0.0, 0.0)" % DRIP_CROWN_LIFE),
      ("Particles.SubImageIndex", FLOAT, fl(0), "min(15.0, floor(Particles.LandAge / %g * 16.0))" % DRIP_CROWN_LIFE),
@@ -812,7 +834,7 @@ def drip_common(S, em):
 
 def build_drip():
     S = Sys("NS_LB_Drip")
-    make_system(S, [("User.FallHeight", "f", 500), ("User.Interval", "v2", (1.5, 4.0)), ("User.bWater", "b", False)])
+    make_system(S, [("User.FallHeight", "f", 500), ("User.Interval", "v2", DRIP_INTERVAL), ("User.bWater", "b", False)])
     em = "Drop"
     print("[emitter] Drop")
     add_emitter(S, em, "CPUSim", local=True)
@@ -822,7 +844,7 @@ def build_drip():
     S.inp(em, EU, mb, "Spawn Count", it(1))
     S.inp(em, EU, mb, "Spawn Time", fl(0.0))
     emitter_state(S, em, behavior="Infinite", duration=("User.Interval.x", "User.Interval.y"), recalc=True, delay=(0.0, "User.Interval.y"))
-    init_particle(S, em, 5.0, (1, 1, 1, 0.5), ("nu", (0.5, 5.0)))
+    init_particle(S, em, 5.0, (1, 1, 1, DRIP_DROP_ALPHA), ("nu", DRIP_DROP_SIZE))
     S.remove_module(em, PS, "ShapeLocation")
     S.remove_module(em, PS, "AddVelocity")
     drip_common(S, em)
@@ -835,8 +857,8 @@ def build_eave():
     em = "Drops"
     print("[emitter] Drops")
     add_emitter(S, em, "CPUSim", local=True)
-    spawn_rate(S, em, "6.0")
-    init_particle(S, em, 5.0, (1, 1, 1, 0.5), ("nu", (0.5, 5.0)))
+    spawn_rate(S, em, EAVE_RATE)
+    init_particle(S, em, 5.0, (1, 1, 1, DRIP_DROP_ALPHA), ("nu", DRIP_DROP_SIZE))
     shape_box(S, em, "float3(User.LineLength, 0.1, 0.1)", "float3(User.LineLength * 0.5, 0.0, 0.0)")
     S.remove_module(em, PS, "AddVelocity")
     drip_common(S, em)
@@ -844,7 +866,7 @@ def build_eave():
 
 
 # ---- commands -------------------------------------------------------------------------------------
-BUILDERS = {"NS_LB_Rain": build_rain, "NS_LB_StrikeSparks": build_sparks, "NS_LB_TorchFire": build_torch, "NS_LB_ShaftDust": build_dust,
+BUILDERS = {"NS_LB_Rain": build_rain, "NS_LB_RainColumn": build_rain_column, "NS_LB_StrikeSparks": build_sparks, "NS_LB_TorchFire": build_torch, "NS_LB_ShaftDust": build_dust,
             "NS_LB_WaterMist": build_watermist, "NS_LB_Drip": build_drip, "NS_LB_EaveDrips": build_eave}
 
 
@@ -1099,18 +1121,19 @@ def chk_sys(S):
     chk(S.name + " in " + FOLDER, S.pkg.startswith(FOLDER + "/"))
 
 
-def check_rain():
-    S = Sys("NS_LB_Rain")
+def check_rain(name="NS_LB_Rain", uvars=None, sprite=RAIN_SPRITE, ground_mist=True):
+    S = Sys(name)
     chk_sys(S)
-    chk_user_vars(S, RAIN_UVARS)
-    chk(S.name + " emitters Rain, Splash, GroundMist", S.emitters() == ["Rain", "Splash", "GroundMist"], str(S.emitters()))
-    chk_compile(S, gpu_emitters=("Rain", "Splash"), emitters=("Rain", "Splash", "GroundMist"))
+    chk_user_vars(S, uvars or RAIN_UVARS)
+    ems = ["Rain", "Splash"] + (["GroundMist"] if ground_mist else [])
+    chk(S.name + " emitters " + ", ".join(ems), S.emitters() == ems, str(S.emitters()))
+    chk_compile(S, gpu_emitters=("Rain", "Splash"), emitters=tuple(ems))
     # --- Rain
     em = "Rain"
     print("-- emitter Rain")
     chk_emitter(S, em, "GPUComputeSim", bounds=RAIN_BOUNDS)
     chk_rate(S, em, "User.RainRate")
-    chk_init(S, em, 3.5, (1, 1, 1, 0.7), ("rnu", (0.7, 28.0), (0.7, 42.0)), "Rain")
+    chk_init(S, em, 3.5, (1, 1, 1, 0.7), ("rnu", sprite[0], sprite[1]), "Rain")
     ci(S, em, PS, "ShapeLocation", "Shape Primitive", "enum", "Box")
     ci(S, em, PS, "ShapeLocation", "Box Size", "hlsl", "float3(User.BoxHalf * 2.0, User.BoxHalf * 2.0, 400.0)", "Rain box XY +-User.BoxHalf, Z 400 (+-200 jitter)")
     ci(S, em, PS, "ShapeLocation", "Offset", "hlsl", "float3(0.0, 0.0, User.SpawnHeight)", "Rain spawn offset Z = User.SpawnHeight")
@@ -1159,6 +1182,8 @@ def check_rain():
         dict(kind="sprite", material="MI_LB_Splash", props={"Alignment": "Unaligned", "FacingMode": "FaceCamera", "SubImageSize": {"x": 4, "y": 4}}, bind={"SubImageIndexBinding": "SubImageIndex"}),
         dict(kind="sprite", material="MI_LB_Ripple", props={"Alignment": "Unaligned", "FacingMode": "CustomFacingVector"},
              bind={"SpriteFacingBinding": "SpriteFacing", "SpriteSizeBinding": "RingSize", "ColorBinding": "RingColor"})])
+    if not ground_mist:
+        return
     # --- GroundMist
     em = "GroundMist"
     print("-- emitter GroundMist")
@@ -1175,6 +1200,10 @@ def check_rain():
     ci(S, em, PS, "AddVelocity", "Velocity", "hlsl", "User.Wind * 0.15", "GroundMist velocity = User.Wind * 0.15")
     cp(S, em, PU, [("Particles.Color", LCOL, None, "float4(1.0, 1.0, 1.0, sin(3.14159265 * saturate(Particles.NormalizedAge)))")])
     chk_renderers(S, em, [dict(kind="sprite", material="MI_LB_Mist", props={"Alignment": "Unaligned", "FacingMode": "FaceCamera"})])
+
+
+def check_rain_column():
+    check_rain("NS_LB_RainColumn", COLUMN_UVARS, COLUMN_SPRITE, ground_mist=False)
 
 
 def check_sparks():
@@ -1292,7 +1321,8 @@ def check_watermist():
 
 def check_drip_common(S, em):
     chk_emitter(S, em, "CPUSim", local=True)
-    ci(S, em, PS, "InitializeParticle", "Sprite Size", "v2", (0.5, 5.0), "%s falling drop size (0.5, 5) cm" % S.name)
+    ci(S, em, PS, "InitializeParticle", "Sprite Size", "v2", DRIP_DROP_SIZE, "%s falling drop size %s cm (P15-8)" % (S.name, DRIP_DROP_SIZE))
+    ci(S, em, PS, "InitializeParticle", "Color", "col", (1, 1, 1, DRIP_DROP_ALPHA), "%s falling drop colour alpha %g (P15-8)" % (S.name, DRIP_DROP_ALPHA))
     cp(S, em, PS, DRIP_SPAWN)
     ci(S, em, PU, "GravityForce", "Gravity", "v3", (0, 0, DRIP_GRAVITY), "%s gravity -980" % S.name)
     mods = S.module_names(em, PU)
@@ -1311,7 +1341,7 @@ def check_drip_common(S, em):
 def check_drip():
     S = Sys("NS_LB_Drip")
     chk_sys(S)
-    chk_user_vars(S, [("User.FallHeight", "f", 500), ("User.Interval", "v2", (1.5, 4.0)), ("User.bWater", "b", False)])
+    chk_user_vars(S, [("User.FallHeight", "f", 500), ("User.Interval", "v2", DRIP_INTERVAL), ("User.bWater", "b", False)])
     chk(S.name + " emitters Drop", S.emitters() == ["Drop"], str(S.emitters()))
     chk_compile(S, emitters=("Drop",))
     em = "Drop"
@@ -1339,12 +1369,12 @@ def check_eave():
     chk_compile(S, emitters=("Drops",))
     em = "Drops"
     check_drip_common(S, em)
-    chk_rate(S, em, "6.0")
+    chk_rate(S, em, EAVE_RATE)
     ci(S, em, PS, "ShapeLocation", "Box Size", "hlsl", "float3(User.LineLength, 0.1, 0.1)", "Eave drops along local X, length User.LineLength")
     ci(S, em, PS, "ShapeLocation", "Offset", "hlsl", "float3(User.LineLength * 0.5, 0.0, 0.0)", "Eave line starts at the actor (offset = half length)")
 
 
-CHECKERS = {"NS_LB_Rain": check_rain, "NS_LB_StrikeSparks": check_sparks, "NS_LB_TorchFire": check_torch, "NS_LB_ShaftDust": check_dust,
+CHECKERS = {"NS_LB_Rain": check_rain, "NS_LB_RainColumn": check_rain_column, "NS_LB_StrikeSparks": check_sparks, "NS_LB_TorchFire": check_torch, "NS_LB_ShaftDust": check_dust,
             "NS_LB_WaterMist": check_watermist, "NS_LB_Drip": check_drip, "NS_LB_EaveDrips": check_eave}
 
 
@@ -1384,12 +1414,52 @@ def cmd_list(_a):
     return 0
 
 
+# systems the level references: a rebuild removes and re-adds their user variables and can drop the placed actors' overrides (P15-8 rule: in-place edits only)
+PROTECTED = ("NS_LB_Rain", "NS_LB_Drip", "NS_LB_EaveDrips")
+
+
+def cmd_drips8(_a):
+    """P15-8 section 4: edit NS_LB_EaveDrips and NS_LB_Drip IN PLACE (module inputs, never make_system / build_*)."""
+    E()
+    if E().call(EA, "IsPIERunning", {}, read=True):
+        print("REFUSED: PIE is running")
+        return 2
+    del FAILS[:]
+    for name, em in (("NS_LB_EaveDrips", "Drops"), ("NS_LB_Drip", "Drop")):
+        S = Sys(name)
+        print("=" * 10, name, em)
+        S.inp(em, PS, "InitializeParticle", "Sprite Size", v2(*DRIP_DROP_SIZE))
+        S.inp(em, PS, "InitializeParticle", "Color", col(1, 1, 1, DRIP_DROP_ALPHA))
+        mn = sp_module(S, em, PS, [r[0] for r in DRIP_SPAWN])
+        assert mn, "spawn latch-state module not found"
+        S.inp(em, PS, mn, "Particles.CrownSize", v2(DRIP_CROWN_SIZE, DRIP_CROWN_SIZE))
+        S.inp(em, PS, mn, "Particles.RingSize", v2(DRIP_RING_FROM, DRIP_RING_FROM))
+        row = DRIP_CHAIN[3]
+        mn = sp_module(S, em, PU, [r[0] for r in row])
+        assert mn, "update chain row 4 not found"
+        for n, _, _, expr in row:
+            if n in ("Particles.Color", "Particles.RingSize"):
+                S.inp(em, PU, mn, n, hlsl(expr))
+        if name == "NS_LB_EaveDrips":
+            S.inp(em, EU, "SpawnRate", "SpawnRate", hlsl(EAVE_RATE))
+        else:
+            step("AddUserVariables User.Interval = %s (replaces the default in place)" % (DRIP_INTERVAL,),
+                 lambda: S.call("AddUserVariables", {"system": S.sys, "variablesToAdd": [user_var("User.Interval", "v2", DRIP_INTERVAL)]}))
+        report_compile(S)
+    print("EDIT FAILURES:", FAILS or "none")
+    return 1 if FAILS else 0
+
+
 def cmd_build(a):
     E()
     if E().call(EA, "IsPIERunning", {}, read=True):
         print("REFUSED: PIE is running")
         return 2
     bad = 0
+    for n in pick(a.only):
+        if n in PROTECTED and E().call(AS, "exists", {"path": FOLDER + "/" + n}, read=True):
+            print("REFUSED: %s exists and is referenced by the level (P15-8: in-place edits only; Rain is never rebuilt)" % n)
+            return 2
     for n in pick(a.only):
         del FAILS[:]
         print("=" * 20, n)
@@ -1405,10 +1475,10 @@ def cmd_build(a):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("cmd", choices=["build", "check", "save", "list"])
+    ap.add_argument("cmd", choices=["build", "check", "save", "list", "drips8"])
     ap.add_argument("--only", default="")
     a = ap.parse_args()
-    return {"build": cmd_build, "check": cmd_check, "save": cmd_save, "list": cmd_list}[a.cmd](a)
+    return {"build": cmd_build, "check": cmd_check, "save": cmd_save, "list": cmd_list, "drips8": cmd_drips8}[a.cmd](a)
 
 
 if __name__ == "__main__":

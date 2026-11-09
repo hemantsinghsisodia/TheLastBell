@@ -1,16 +1,20 @@
 """P15-6: the Phase 15 data assets and level work in L_Monastery (Docs/plans/P15_PARTICLES.md section 3, section 8, F0.1 to F0.14).
 
 Run with the editor open on L_Monastery, PIE off (Windows Python, from PowerShell or Git Bash with MSYS_NO_PATHCONV=1):
-    python -I Tools/fx/p15_level.py --apply [--resume] [--only data,target,dust,mist,drips,eaves,fires,flames,bpflames,cloth,curtains]
+    python -I Tools/fx/p15_level.py --apply [--resume] [--only data,target,dust,mist,drips,eaves,fires,flames,bpflames,cloth,curtains,columns,mis,assets]
     python -I Tools/fx/p15_level.py --check [--only ...] [--start 3015]
-    python -I Tools/fx/p15_level.py --save            (only when the full --check is all PASS and the census is 3065)
+    python -I Tools/fx/p15_level.py --save            (only when the full --check is all PASS and the census is 3054)
+
+P15-8 (final state of the level): the 8 rain curtains and 6 of the 10 cloth actors are deleted, the fire scales are 0.7 / 1.3 / 1.4, 3 rain columns
+(NS_LB_RainColumn) are placed, DA_StormFX carries the look-session values, the section 2 MIs and the player flame are checked ("mis", "assets" are check
+steps; their --apply only sets the MI scalars). Census 3054 = 3015 + 39. "curtains" and "cloth" --apply delete what the plan removes.
 
 --apply is idempotent: every actor is found by its EXACT label (find_actors matches substrings, so the result is filtered) and updated,
 or created when missing. --apply never saves. The census at the start must be 3015 (counted like p14_3_level.py --check --start);
 --resume skips that guard so a partial run can be continued (a rerun finds what exists and finishes the rest).
 --check only reads and prints PASS / FAIL per item (exit code 1 when any FAIL). EYE lines are numbers for the P15-7 look session.
---save saves, one package per save_assets call, each followed by is_dirty: DA_StormFX, DA_StormSettings, BP_LBCharacter (only when
-it was changed), then the map. Never save-all. Never saves anything else.
+--save saves, one package per save_assets call, each followed by is_dirty (P15-8 section 7 list, see do_save), then the map. Never save-all.
+Never saves anything else.
 
 If the editor crashes or a call hangs for more than 180 s the script stops ("STOP", exit code 3). Do not save and do not retry blindly.
 """
@@ -35,7 +39,8 @@ DAT = "editor_toolset.toolsets.data_asset.DataAssetTools"
 MAP_PKG = L.MAP_PKG
 FOLDER = "FX/Storm"
 CENSUS_START = 3015
-NEW_ACTORS = 1 + 11 + 2 + 10 + 7 + 10 + 8 + (6 - 5)      # 50: target, dust, mist, drips, eaves, cloth, curtains, fires (+6 -5)
+# P15-8 final state: target 1, dust 11, mist 2, drips 10, eaves 7, cloth 4 (6 of the 10 deleted), curtains 0 (all 8 deleted), fires +1 (6 - 5), columns 3
+NEW_ACTORS = 1 + 11 + 2 + 10 + 7 + 4 + 0 + (6 - 5) + 3      # 39 -> census 3054 (3065 before P15-8)
 SCRATCH = os.path.join(ROOT, "Saved", "p15_6_scratch")
 
 # ---------------------------------------------------------------------------------------------- asset paths
@@ -48,10 +53,12 @@ def obj(pkg):
     return pkg + "." + pkg.rsplit("/", 1)[-1]
 
 
-NS = {n: obj(FXN + n) for n in ("NS_LB_Rain", "NS_LB_StrikeSparks", "NS_LB_TorchFire", "NS_LB_ShaftDust", "NS_LB_WaterMist", "NS_LB_Drip", "NS_LB_EaveDrips")}
+NS = {n: obj(FXN + n) for n in ("NS_LB_Rain", "NS_LB_StrikeSparks", "NS_LB_TorchFire", "NS_LB_ShaftDust", "NS_LB_WaterMist", "NS_LB_Drip", "NS_LB_EaveDrips",
+                                      "NS_LB_RainColumn")}
 SM = {n: obj(FXM + n) for n in ("SM_LB_FX_BoltCard", "SM_LB_FX_CurtainCard", "SM_LB_Prop_ClothStrip_A", "SM_LB_Prop_ClothStrip_B",
                                 "SM_LB_Prop_ClothBanner_A", "SM_LB_Prop_ClothSheet_A")}
-MI = {n: obj(FXI + n) for n in ("MI_LB_Bolt", "MI_Flame_Candle", "MI_Cloth_Linen_Dark", "MI_Cloth_Linen_Dark_Sheet", "MI_Cloth_Linen_Red", "MI_LB_RainCurtain")}
+MI = {n: obj(FXI + n) for n in ("MI_LB_Bolt", "MI_Flame_Candle", "MI_Flame_Candle_Player", "MI_Cloth_Linen_Dark", "MI_Cloth_Linen_Dark_Sheet", "MI_Cloth_Linen_Red",
+                                "MI_LB_RainCurtain")}
 FLAME_MESH = "/Game/LastBell/Environments/Props/Procedural/Chapel/SM_LB_Prop_CandleFlame_A.SM_LB_Prop_CandleFlame_A"
 DA_FX_PKG = "/Game/LastBell/Data/DA_StormFX"
 DA_FX = obj(DA_FX_PKG)
@@ -123,13 +130,13 @@ EAVES = [
     ("ClS", (11380, 1423, 637), 180, 1100, 537), ("ClN1", (10320, 2177, 637), 0, 400, 537), ("ClW", (10323, 1420, 637), 90, 800, 537),
     ("ClE", (11377, 2180, 637), -90, 800, 537),
 ]
-# F0.2: new label, replaces (None = nothing), location, User.Scale
+# F0.2 (P15-8 scales: torches 0.7, brazier 1.3, fire pit 1.4): new label, replaces (None = nothing), location, User.Scale
 FIRES = [
-    ("FX_Torch_Fire_NS", "FX_Torch_Fire", (327, 1600, 250), 1.0),
-    ("FX_Crypt_Torch_T1_NS", "FX_Crypt_Torch_T1", (6321, -1100, -380), 1.0),
-    ("FX_Crypt_Torch_T2_NS", "FX_Crypt_Torch_T2", (8979, -2700, -380), 1.0),
-    ("FX_Crypt_Torch_T3_NS", "FX_Crypt_Torch_T3", (11150, -721, -380), 1.0),
-    ("FX_Crypt_Brazier_NS", "FX_Crypt_Brazier", (11000, -2299.1, -459.4), 1.8),
+    ("FX_Torch_Fire_NS", "FX_Torch_Fire", (327, 1600, 250), 0.7),
+    ("FX_Crypt_Torch_T1_NS", "FX_Crypt_Torch_T1", (6321, -1100, -380), 0.7),
+    ("FX_Crypt_Torch_T2_NS", "FX_Crypt_Torch_T2", (8979, -2700, -380), 0.7),
+    ("FX_Crypt_Torch_T3_NS", "FX_Crypt_Torch_T3", (11150, -721, -380), 0.7),
+    ("FX_Crypt_Brazier_NS", "FX_Crypt_Brazier", (11000, -2299.1, -459.4), 1.3),
     ("FX_FirePit_Fire", None, (1150, 1650, 25), 1.4),
 ]
 FIRES_STAY = ["FX_FirePit_Smoke", "Light_FirePit_Ember", "L_Crypt_Torch_T1", "L_Crypt_Torch_T2", "L_Crypt_Torch_T3"]
@@ -142,35 +149,40 @@ FLAMES_CRYPT = ["CD_Candles_Niche_E_CC_Flame", "CD_Candles_Niche_E_WC_Flame", "C
 FLAMES = FLAMES_CHAPEL + FLAMES_CRYPT
 PUZZLE_CANDLES = ["Candle_P1", "Candle_P2", "Candle_P3", "Candle_P4"]
 # F0.10: id, mesh, top-centre location, rotation (P, Y, R), MI
-CLOTH = [
-    ("Belfry_W1", "SM_LB_Prop_ClothStrip_A", (12046, 1905, 3180), (0, -90, 0), "MI_Cloth_Linen_Dark"),
-    ("Belfry_N2", "SM_LB_Prop_ClothBanner_A", (12595, 2454, 3180), (0, 180, 0), "MI_Cloth_Linen_Red"),
-    ("Belfry_E1", "SM_LB_Prop_ClothStrip_B", (12954, 2095, 3180), (0, 90, 0), "MI_Cloth_Linen_Dark"),
-    ("Belfry_S2", "SM_LB_Prop_ClothStrip_A", (12405, 1546, 3180), (0, 0, 0), "MI_Cloth_Linen_Dark"),
+CLOTH = [      # the 4 that stay after P15-8 (unchanged values, bHidden false)
     ("Slit_F03", "SM_LB_Prop_ClothStrip_B", (12500, 1546, 778.1), (0, 0, 0), "MI_Cloth_Linen_Dark"),
     ("Slit_F07", "SM_LB_Prop_ClothStrip_B", (12500, 1546, 1687.3), (0, 0, 0), "MI_Cloth_Linen_Dark"),
-    ("Cloister_N_1", "SM_LB_Prop_ClothBanner_A", (10750, 2256, 555), (0, 0, 0), "MI_Cloth_Linen_Red"),
-    ("Cloister_W_1", "SM_LB_Prop_ClothSheet_A", (10244, 1850, 520), (0, 90, 0), "MI_Cloth_Linen_Dark_Sheet"),
     ("Cloister_S_2", "SM_LB_Prop_ClothStrip_A", (11050, 1344, 555), (0, 180, 0), "MI_Cloth_Linen_Dark"),
     ("Gate_Inner", "SM_LB_Prop_ClothStrip_A", (306, 400, 600), (0, -90, 0), "MI_Cloth_Linen_Dark"),
 ]
+CLOTH_DELETE = ["FX_Cloth_Belfry_N2", "FX_Cloth_Cloister_N_1", "FX_Cloth_Cloister_W_1", "FX_Cloth_Belfry_W1", "FX_Cloth_Belfry_E1", "FX_Cloth_Belfry_S2"]
 CLOTH_WPO = 4000.0
-CLOISTER_ARCHES = {"Cloister_N_1": "CLA_Arch_N_1", "Cloister_W_1": "CLA_Arch_W_1", "Cloister_S_2": "CLA_Arch_S_2"}
-# F0.11
-CURTAINS = [
-    ("N_600", (600, 4800, -200), (0, 180, 0)), ("N_2400", (2400, 4800, -200), (0, 180, 0)), ("N_4200", (4200, 4800, -200), (0, 180, 0)),
-    ("N_6000", (6000, 4800, -200), (0, 180, 0)), ("N_8000", (8000, 4800, -200), (0, 180, 0)), ("N_11500", (11500, 4800, -200), (0, 180, 0)),
-    ("N_14500", (14500, 4800, -200), (0, 180, 0)), ("S_11500", (11500, -4800, -200), (0, 0, 0)),
-]
-CURTAIN_SCALE = (30, 1, 25)
+CLOISTER_ARCHES = {"Cloister_S_2": "CLA_Arch_S_2"}
+# F0.11 (P15-8: all 8 curtain actors are deleted; the assets SM_LB_FX_CurtainCard, M_LB_RainCurtain and MI_LB_RainCurtain stay in the project, unused, unsaved)
+CURTAIN_DELETE = ["FX_RainCurtain_" + t for t in ("N_600", "N_2400", "N_4200", "N_6000", "N_8000", "N_11500", "N_14500", "S_11500")]
 TARGET = ("FX_StrikeTarget_Tower", (12530.8, 2000.0, 4844.8))
-# section 2.2 defaults (the C++ constructor values; DebugBolt -1)
-FX_DEFAULTS = {"bRain": True, "RainSpawnRate": 35000.0, "RainBoxHalfXY": 1800.0, "RainSpawnHeight": 2500.0, "RainWindLean": 500.0, "SplashRate": 2500.0,
-               "SplashRadius": 1200.0, "MistMinExposure": 0.6, "SkyBoltDistance": 60000.0, "SkyBoltTopHeight": 22000.0, "BoltAspect": 0.35,
+# P15-8 section 5: rain columns under the three openings. label suffix, location (opening centre XY at the floor Z), RainRate, BoxHalf, SpawnHeight, SplashRate, SplashRadius
+COLUMNS = [
+    ("Chapel", (6500, -418, 0), 7000, 300, 2050, 400, 270),
+    ("Cloister", (11085, 2517.5, 0), 7400, 310, 1150, 420, 280),
+    ("Belfry", (12187.5, 1687.5, 2500), 5200, 260, 2000, 300, 235),
+]
+# P15-8 section 2: material instance scalars (set_scalar_parameter only)
+MI_SCALARS = {"MI_LB_Rain": {"RainBase": 0.25}, "MI_LB_Splash": {"SplashBase": 0.18}, "MI_LB_Ripple": {"RippleBase": 0.2},
+              "MI_LB_WaterMist": {"MistBase": 0.28, "MistOpacity": 0.26}, "MI_Flame_Torch": {"EmissiveStrength": 7.0}, "MI_Cloth_Linen_Dark": {"AmplitudeCm": 18.0}}
+MI_PLAYER = ("MI_Flame_Candle_Player", {"NoiseSpeed": 0.6, "FlickerSpeed": 7.0, "EmissiveStrength": 8.0, "UseFixedSeed": 1.0, "FixedSeed": 0.37})
+PLAYER_FLAME_SCALE = (23.3333, 23.3333, 5.83333)    # world scale 0.7 under CandleWax (0.03, 0.03, 0.12); relative location stays (0, 0, 50.6667)
+PLAYER_FLAME_LOC = (0.0, 0.0, 50.6667)
+# P15-8 section 4 values (read back from the two drip systems)
+DRIP_NEW = dict(eave_rate="User.LineLength * 0.04", size=(1.0, 14.0), alpha=1.0, crown=10.0, ring=(3.0, 26.0), interval=(0.8, 2.5))
+# section 2.2 defaults (the C++ constructor values; DebugBolt -1), with the five P15-8 section 1 changes: RainSpawnRate 50000, SplashRate 1600,
+# SkyBoltDistance 30000, SkyBoltTopHeight 30000 and SkyBoltChance ambient 0.9 (FX_DEFAULT_CHANCE)
+FX_DEFAULTS = {"bRain": True, "RainSpawnRate": 50000.0, "RainBoxHalfXY": 1800.0, "RainSpawnHeight": 2500.0, "RainWindLean": 500.0, "SplashRate": 1600.0,
+               "SplashRadius": 1200.0, "MistMinExposure": 0.6, "SkyBoltDistance": 30000.0, "SkyBoltTopHeight": 30000.0, "BoltAspect": 0.35,
                "StrikeSkyHeight": 12000.0, "StrikeSkyOffset": 2500.0, "StrikeWidth": 1400.0, "BoltAtlasCount": 8, "BoltMaxSeconds": 2.5, "BoltPool": 4,
                "DebugBolt": -1}
 FX_DEFAULT_VEC2 = {"RainFallSpeed": (1100.0, 1400.0), "SkyBoltLength": (16000.0, 26000.0)}
-FX_DEFAULT_CHANCE = {"ambient": 0.6, "scripted": 1.0, "wardenReveal": 0.5, "apparition": 0.5, "debug": 1.0}
+FX_DEFAULT_CHANCE = {"ambient": 0.9,"scripted": 1.0, "wardenReveal": 0.5, "apparition": 0.5, "debug": 1.0}
 STRIKE_TRIGGERS = ("State.Event.CourtyardEntered", "State.Event.TowerTop")
 NEVER_SAVE = list(L.NEVER_SAVE) + ["/Game/LastBell/Blueprints/Puzzles/BP_PuzzleCandle"]
 
@@ -341,6 +353,14 @@ def apply_data(ed):
     st = fx_state(ed)
     info("DA_StormFX after the 4 soft refs: RainSystem %s, StrikeSparksSystem %s, BoltMesh %s, BoltMaterial %s" % (
         st["RainSystem"], st["StrikeSparksSystem"], st["BoltMesh"], st["BoltMaterial"]))
+    # P15-8 section 1: the look-session values (everything else in the asset is left as it is)
+    info("DA_StormFX BEFORE section 1: RainSpawnRate %s SplashRate %s SkyBoltDistance %s SkyBoltTopHeight %s SkyBoltChance %s DebugBolt %s" % (
+        st["RainSpawnRate"], st["SplashRate"], st["SkyBoltDistance"], st["SkyBoltTopHeight"], st["SkyBoltChance"], st["DebugBolt"]))
+    ed.setp(DA_FX, {"RainSpawnRate": FX_DEFAULTS["RainSpawnRate"], "SplashRate": FX_DEFAULTS["SplashRate"], "SkyBoltDistance": FX_DEFAULTS["SkyBoltDistance"],
+                    "SkyBoltTopHeight": FX_DEFAULTS["SkyBoltTopHeight"], "SkyBoltChance": dict(FX_DEFAULT_CHANCE)})
+    st = fx_state(ed)
+    info("DA_StormFX AFTER section 1: RainSpawnRate %s SplashRate %s SkyBoltDistance %s SkyBoltTopHeight %s SkyBoltChance %s DebugBolt %s" % (
+        st["RainSpawnRate"], st["SplashRate"], st["SkyBoltDistance"], st["SkyBoltTopHeight"], st["SkyBoltChance"], st["DebugBolt"]))
     # DA_StormSettings
     os.makedirs(SCRATCH, exist_ok=True)
     p = ed.props(DA_ST, ["FXSettings", "DebugFreezeFlash", "DebugIntensityOverride", "ScriptedStrikes"])
@@ -652,6 +672,9 @@ def apply_bpflames(ed):
         info("%s before: mesh %s mats %s relLoc %s relScale %s -> world box %s..%s (height %.3f)" % (
             lab, b0["mesh"].rsplit(".", 1)[-1], [m.rsplit(".", 1)[-1] for m in b0["mats"]], rnd(b0["relLoc"], 3), rnd(b0["relScale"], 4), rnd(old_lo, 3), rnd(old_hi, 3),
             old_hi[2] - old_lo[2]))
+        if bpflame_ok(ed, comp, rel_scale, rel_z, b0["relLoc"]):
+            info("%s already carries the P15-6 values: not rewritten (P15-8)" % lab)
+            continue
         attempts = 0
         while attempts < 2:
             attempts += 1
@@ -686,27 +709,22 @@ def player_frame(ed):
     return par, v3(pp["relativeLocation"]), v3(pp["relativeScale3D"])
 
 
+def player_flame_ok(ed):
+    p = ed.props(BP_CHAR_FLAME, ["staticMesh", "overrideMaterials", "relativeLocation", "relativeScale3D"])
+    return (R(p["staticMesh"]) == FLAME_MESH and p["overrideMaterials"] and R(p["overrideMaterials"][0]) == MI["MI_Flame_Candle_Player"]
+            and near(v3(p["relativeScale3D"]), PLAYER_FLAME_SCALE, 1e-3) and near(v3(p["relativeLocation"]), PLAYER_FLAME_LOC, 5e-3))
+
+
 def apply_player_flame(ed, med, new_rng):
+    """P15-8 section 3.3: slot-0 material MI_Flame_Candle_Player, relative scale (23.3333, 23.3333, 5.83333) = world scale 0.7 under CandleWax; location and mesh unchanged."""
     path, store = before_store()
     key = "BP_LBCharacter.CandleFlame"
     p = ed.props(BP_CHAR_FLAME, ["staticMesh", "overrideMaterials", "relativeLocation", "relativeScale3D"])
-    par, ft, fs = player_frame(ed)
-    if key not in store:
-        store[key] = {"mesh": R(p["staticMesh"]), "mats": [R(m) for m in p["overrideMaterials"]], "relLoc": v3(p["relativeLocation"]),
-                      "relScale": v3(p["relativeScale3D"]), "frameT": ft, "frameS": fs}
-        with open(path, "w", encoding="utf-8", newline="\n") as f:
-            json.dump(store, f, indent=1)
-    b0 = store[key]
-    old_lo, old_hi, rel_scale, rel_z, s_world = bpflame_plan(ed, b0["mesh"], b0["relLoc"], b0["relScale"], b0["frameT"], b0["frameS"], new_rng, med)
-    info("%s before: mesh %s mats %s relLoc %s relScale %s; parent %s translation %s scale %s -> Candle-space box %s..%s (height %.3f)" % (
-        key, b0["mesh"].rsplit(".", 1)[-1], [m.rsplit(".", 1)[-1] for m in b0["mats"]], rnd(b0["relLoc"], 3), rnd(b0["relScale"], 4), par.rsplit(":", 1)[-1],
-        rnd(b0["frameT"], 3), rnd(b0["frameS"], 3), rnd(old_lo, 3), rnd(old_hi, 3), old_hi[2] - old_lo[2]))
-    info("%s plan: world scale %.4f -> relative scale %s (non-uniform because the parent scale is non-uniform; a uniform relative scale would stretch the flame), relative Z %.4f" % (
-        key, s_world, rnd(rel_scale, 4), rel_z))
-    if bpflame_ok(ed, BP_CHAR_FLAME, rel_scale, rel_z, b0["relLoc"]):
-        info("%s template already carries the new values" % key)
+    info("%s before (P15-8): mesh %s mats %s relLoc %s relScale %s" % (key, rname(p["staticMesh"]), [rname(m) for m in p["overrideMaterials"]],
+                                                                    rnd(v3(p["relativeLocation"]), 4), rnd(v3(p["relativeScale3D"]), 4)))
+    if player_flame_ok(ed):
+        info("%s template already carries the P15-8 values" % key)
         return
-    # baseline compile (clean?) before the edit
     try:
         ed.call(BPT, "compile_blueprint", {"blueprint": {"refPath": BP_CHAR}, "warnings_as_errors": True})
         base = "clean"
@@ -715,18 +733,15 @@ def apply_player_flame(ed, med, new_rng):
     info("BP_LBCharacter baseline compile (warnings as errors): %s" % base)
     done = False
     for attempt in (1, 2):
-        ed.setp(BP_CHAR_FLAME, {"staticMesh": {"refPath": FLAME_MESH}})
-        ed.setp(BP_CHAR_FLAME, {"overrideMaterials": [{"refPath": MI["MI_Flame_Candle"]}]})
-        ed.set_axes(BP_CHAR_FLAME, "relativeScale3D", rel_scale, 1e-4)
-        ed.set_axes(BP_CHAR_FLAME, "relativeLocation", [b0["relLoc"][0], b0["relLoc"][1], rel_z], 1e-3)
-        if bpflame_ok(ed, BP_CHAR_FLAME, rel_scale, rel_z, b0["relLoc"]):
+        ed.setp(BP_CHAR_FLAME, {"overrideMaterials": [{"refPath": MI["MI_Flame_Candle_Player"]}]})
+        ed.set_axes(BP_CHAR_FLAME, "relativeScale3D", PLAYER_FLAME_SCALE, 1e-4)
+        ed.set_axes(BP_CHAR_FLAME, "relativeLocation", PLAYER_FLAME_LOC, 1e-3)
+        if player_flame_ok(ed):
             done = True
             break
         info("BP_LBCharacter template edit attempt %d did not read back" % attempt)
     if not done:
-        info("BP_LBCharacter.CandleFlame could not be edited over MCP in 2 attempts: LEFT AS IT IS and listed (restoring the old values)")
-        ed.setp(BP_CHAR_FLAME, {"staticMesh": {"refPath": b0["mesh"]}})
-        ed.setp(BP_CHAR_FLAME, {"overrideMaterials": [{"refPath": m} for m in b0["mats"]]})
+        info("BP_LBCharacter.CandleFlame could not be edited over MCP in 2 attempts: LEFT AS IT IS and listed")
         return
     try:
         ed.call(BPT, "compile_blueprint", {"blueprint": {"refPath": BP_CHAR}, "warnings_as_errors": True})
@@ -770,17 +785,12 @@ def check_bpflames(ed):
     par, ft, fs = player_frame(ed)
     rl, rs = v3(p["relativeLocation"]), v3(p["relativeScale3D"])
     lo, hi = comp_world_box(new_rng[0], new_rng[1], rl, rs, ft, fs)
-    b0 = store.get(key)
-    ok_mesh = R(p["staticMesh"]) == FLAME_MESH and p["overrideMaterials"] and R(p["overrideMaterials"][0]) == MI["MI_Flame_Candle"]
-    ok_h = abs((hi[2] - lo[2]) - med) <= 0.05 * med
-    ok_z = True
-    old_s = ""
-    if b0:
-        olo, ohi = comp_world_box(*mesh_zrange(ed, b0["mesh"]), b0["relLoc"], b0["relScale"], b0["frameT"], b0["frameS"])
-        ok_z = abs(lo[2] - olo[2]) <= 0.5
-        old_s = "before Candle-space box %s..%s (h %.3f); " % (rnd(olo, 3), rnd(ohi, 3), ohi[2] - olo[2])
-    rec(ok_mesh and ok_h and ok_z, "%s template: mesh %s mat %s relScale %s relLoc %s; %safter Candle-space box %s..%s (h %.3f, median %.3f)" % (
-        key, rname(p["staticMesh"]), mat_name(p), rnd(rs, 4), rnd(rl, 3), old_s, rnd(lo, 3), rnd(hi, 3), hi[2] - lo[2], med))
+    h = hi[2] - lo[2]
+    ws = [fs[i] * rs[i] for i in range(3)]
+    ok = (R(p["staticMesh"]) == FLAME_MESH and p["overrideMaterials"] and R(p["overrideMaterials"][0]) == MI["MI_Flame_Candle_Player"]
+          and near(rs, PLAYER_FLAME_SCALE, 1e-3) and near(rl, PLAYER_FLAME_LOC, 5e-3) and all(abs(w - 0.7) < 1e-3 for w in ws))
+    rec(ok, "%s template (P15-8): mesh %s mat %s relScale %s relLoc %s; world scale %s; Candle-space box %s..%s (h %.3f cm, 0.7 x 6.5 = 4.55)" % (
+        key, rname(p["staticMesh"]), mat_name(p), rnd(rs, 5), rnd(rl, 4), rnd(ws, 4), rnd(lo, 3), rnd(hi, 3), h))
     info("Saint1..4Flame cones of BP_StainedGlassClue_Saints were not touched")
 
 
@@ -796,7 +806,20 @@ def place_sm(ed, mesh, label, loc, rot, sc, mat, extra):
     return ref, created
 
 
+def delete_labels(ed, labels):
+    """Delete the actors with these exact labels (P15-8); nothing else is touched."""
+    for lab in labels:
+        hits = ed.find(lab)
+        if not hits:
+            info("%s: already gone" % lab)
+            continue
+        if len(hits) > 1:
+            raise RuntimeError("label %r exists %d times" % (lab, len(hits)))
+        info("deleted %s (%s): %s" % (lab, hits[0].rsplit(":", 1)[-1], ed.remove(hits[0])))
+
+
 def apply_cloth(ed):
+    delete_labels(ed, CLOTH_DELETE)
     for cid, mesh, loc, rot, mat in CLOTH:
         ref, created = place_sm(ed, mesh, "FX_Cloth_" + cid, loc, rot, (1, 1, 1), mat, {"worldPositionOffsetDisableDistance": CLOTH_WPO})
         info("%s %s mesh %s mat %s at %s rot %s" % ("FX_Cloth_" + cid, "created" if created else "updated", mesh, mat, loc, rot))
@@ -822,6 +845,8 @@ def sm_state(ed, ref):
 
 def check_cloth(ed):
     fs = ed.folder_actors()
+    for lab in CLOTH_DELETE:
+        rec(not ed.find(lab), "%s is deleted" % lab)
     for cid, mesh, loc, rot, mat in CLOTH:
         lab = "FX_Cloth_" + cid
         ref = ed.find_one(lab)
@@ -833,7 +858,7 @@ def check_cloth(ed):
         bi = p["bodyInstance"]
         ok = (near(l, loc, 0.01) and same_rot(r, rot) and near(s, (1, 1, 1), 1e-6) and R(p["staticMesh"]) == SM[mesh] and mat_name(p) == mat
               and bi["collisionProfileName"] == "NoCollision" and bi["collisionEnabled"] == "NoCollision" and p["bUseDefaultCollision"] is False
-              and abs(p["worldPositionOffsetDisableDistance"] - CLOTH_WPO) < 1e-3 and ref in fs)
+              and abs(p["worldPositionOffsetDisableDistance"] - CLOTH_WPO) < 1e-3 and ref in fs and ed.props(ref, ["bHidden"])["bHidden"] is False)
         rec(ok, "%s loc %s rot %s scale %s mesh %s mat %s collision %s/%s WPO-disable %s castShadow %s mobility %s folder %s" % (
             lab, rnd(l, 2), rnd(r, 2), rnd(s, 3), rname(p["staticMesh"]), mat_name(p), bi["collisionProfileName"], bi["collisionEnabled"],
             p["worldPositionOffsetDisableDistance"], p["castShadow"], p["mobility"], FOLDER if ref in fs else "NOT-IN-FOLDER"))
@@ -842,32 +867,133 @@ def check_cloth(ed):
 
 # ---------------------------------------------------------------------------------------------- 11. rain curtains
 def apply_curtains(ed):
-    slots = ed.call(SMT, "get_material_slots", {"mesh": {"refPath": SM["SM_LB_FX_CurtainCard"]}})
-    info("SM_LB_FX_CurtainCard material slots: %s, slot 0 default %s" % (json.dumps(slots), R(ed.call(SMT, "get_material", {"mesh": {"refPath": SM["SM_LB_FX_CurtainCard"]}, "slot_name": slots[0]}))))
-    for cid, loc, rot in CURTAINS:
-        ref, created = place_sm(ed, "SM_LB_FX_CurtainCard", "FX_RainCurtain_" + cid, loc, rot, CURTAIN_SCALE, None, {"castShadow": False})
-        info("%s %s at %s rot %s scale %s" % ("FX_RainCurtain_" + cid, "created" if created else "updated", loc, rot, CURTAIN_SCALE))
+    delete_labels(ed, CURTAIN_DELETE)
 
 
 def check_curtains(ed):
-    fs = ed.folder_actors()
-    slots = ed.call(SMT, "get_material_slots", {"mesh": {"refPath": SM["SM_LB_FX_CurtainCard"]}})
-    default = R(ed.call(SMT, "get_material", {"mesh": {"refPath": SM["SM_LB_FX_CurtainCard"]}, "slot_name": slots[0]}))
-    rec(len(slots) == 1 and default == MI["MI_LB_RainCurtain"], "SM_LB_FX_CurtainCard slots %s, slot 0 default material %s (want MI_LB_RainCurtain)" % (slots, default))
-    for cid, loc, rot in CURTAINS:
-        lab = "FX_RainCurtain_" + cid
-        ref = ed.find_one(lab)
-        if not ref:
-            rec(False, "%s exists" % lab)
+    for lab in CURTAIN_DELETE:
+        rec(not ed.find(lab), "%s is deleted" % lab)
+    for pkg in (FXM + "SM_LB_FX_CurtainCard", "/Game/LastBell/Materials/FX/M_LB_RainCurtain", FXI + "MI_LB_RainCurtain"):
+        rec(bool(ed.call(AS, "exists", {"path": pkg})), "%s stays in the project (unused, not saved)" % pkg.rsplit("/", 1)[-1])
+
+
+# ---------------------------------------------------------------------------------------------- 12. rain columns (P15-8 section 5)
+def column_vars(row):
+    return [("User.RainRate", "f", row[2]), ("User.BoxHalf", "f", row[3]), ("User.SpawnHeight", "f", row[4]), ("User.SplashRate", "f", row[5]), ("User.SplashRadius", "f", row[6])]
+
+
+FLOOR_KEYS = ("Floor", "Ground", "Walk", "Plank", "Deck")
+_floor_cache = {}
+
+
+def floor_candidates(ed):
+    if not _floor_cache:
+        for key in FLOOR_KEYS:
+            for r in ed.find_all(name=key):
+                if r not in _floor_cache:
+                    _floor_cache[r] = (ed.label(r), ed.bounds(r))
+    return _floor_cache
+
+
+def report_columns(ed):
+    """EYE lines for the lead (P15-9): per column the floor mesh actors whose XY bounds contain the location, their max Z, and the gap to the column's Z."""
+    cands = floor_candidates(ed)
+    for row in COLUMNS:
+        tag, loc = row[0], row[1]
+        below = [(lab, b) for lab, b in cands.values()
+                 if b[0][0] - 1 <= loc[0] <= b[1][0] + 1 and b[0][1] - 1 <= loc[1] <= b[1][1] + 1 and b[1][2] <= loc[2] + 400.0]
+        if not below:
+            eye("column %s at %s: no floor mesh actor (keys %s, %d candidates) contains its XY" % (tag, rnd(loc, 1), FLOOR_KEYS, len(cands)))
             continue
-        l, r, s = ed.xform(ref)
-        p = sm_state(ed, ref)
-        bi = p["bodyInstance"]
-        ok = (near(l, loc, 0.01) and same_rot(r, rot) and near(s, CURTAIN_SCALE, 1e-5) and R(p["staticMesh"]) == SM["SM_LB_FX_CurtainCard"] and not p["overrideMaterials"]
-              and bi["collisionProfileName"] == "NoCollision" and bi["collisionEnabled"] == "NoCollision" and p["castShadow"] is False and ref in fs)
-        rec(ok, "%s loc %s rot %s scale %s mesh %s override %s collision %s/%s castShadow %s folder %s" % (
-            lab, rnd(l, 2), rnd(r, 2), rnd(s, 3), rname(p["staticMesh"]), mat_name(p), bi["collisionProfileName"], bi["collisionEnabled"], p["castShadow"],
-            FOLDER if ref in fs else "NOT-IN-FOLDER"))
+        below.sort(key=lambda t: t[1][1][2])
+        top = below[-1]
+        for lab, b in below:
+            eye("column %s at %s: floor candidate %s bounds Z %.1f..%.1f (XY %s..%s); max Z - column Z = %+.1f cm%s" % (
+                tag, rnd(loc, 1), lab, b[0][2], b[1][2], rnd(b[0][:2], 0), rnd(b[1][:2], 0), b[1][2] - loc[2], "   <- highest" if lab == top[0] else ""))
+
+
+def apply_columns(ed):
+    for row in COLUMNS:
+        place_ns(ed, "NS_LB_RainColumn", "FX_RainColumn_" + row[0], row[1], (0, 0, 0), column_vars(row))
+    report_columns(ed)
+
+
+def check_columns(ed):
+    fs = ed.folder_actors()
+    for row in COLUMNS:
+        check_ns(ed, "FX_RainColumn_" + row[0], "NS_LB_RainColumn", row[1], (0, 0, 0), column_vars(row), fs)
+    report_columns(ed)
+
+
+# ---------------------------------------------------------------------------------------------- 13. material instances (P15-8 sections 2 and 3)
+MIT = "editor_toolset.toolsets.material_instance.MaterialInstanceTools"
+
+
+def mi_state(ed, name):
+    r = ed.props(obj(FXI + name), ["parent", "scalarParameterValues"])
+    return rname(r.get("parent")), {e["parameterInfo"]["name"]: float(e["parameterValue"]) for e in r.get("scalarParameterValues", [])}
+
+
+def apply_mis(ed):
+    for name, vals in MI_SCALARS.items():
+        for k, v in vals.items():
+            ed.call(MIT, "set_scalar_parameter", {"instance": {"refPath": obj(FXI + name)}, "name": k, "value": float(v)})
+            info("%s.%s set to %g" % (name, k, v))
+
+
+def check_mis(ed):
+    for name, vals in MI_SCALARS.items():
+        parent, sc = mi_state(ed, name)
+        bad = {k: (sc.get(k), v) for k, v in vals.items() if abs(sc.get(k, 1e9) - v) > 1e-5}
+        rec(not bad, "%s parent %s, scalars %s (want %s; mismatches %s)" % (name, parent, {k: round(sc.get(k, float("nan")), 5) for k in vals}, vals, bad))
+    name, vals = MI_PLAYER
+    rec(bool(ed.call(AS, "exists", {"path": FXI + name})), "%s exists" % name)
+    parent, sc = mi_state(ed, name)
+    bad = {k: (sc.get(k), v) for k, v in vals.items() if abs(sc.get(k, 1e9) - v) > 1e-5}
+    sw = ed.call(MIT, "get_static_switch_parameter", {"instance": {"refPath": obj(FXI + name)}, "name": "bSprite"})
+    rec(parent == "M_LB_Flame" and not bad and sw is False, "%s parent %s scalars %s bSprite %s (mismatches %s)" % (name, parent, {k: round(v, 5) for k, v in sc.items()}, sw, bad))
+    # the two other flame MIs are unchanged apart from the Torch emissive
+    for mname, want, wsw in (("MI_Flame_Candle", {"NoiseSpeed": 0.6, "FlickerSpeed": 7.0, "EmissiveStrength": 8.0}, False),
+                             ("MI_Flame_Torch", {"NoiseSpeed": 1.4, "FlickerSpeed": 11.0, "EmissiveStrength": 7.0}, True)):
+        parent, sc = mi_state(ed, mname)
+        sw = ed.call(MIT, "get_static_switch_parameter", {"instance": {"refPath": obj(FXI + mname)}, "name": "bSprite"})
+        bad = {k: (sc.get(k), v) for k, v in want.items() if abs(sc.get(k, 1e9) - v) > 1e-5}
+        rec(parent == "M_LB_Flame" and not bad and sw is wsw and set(sc) == set(want), "%s parent %s scalars %s bSprite %s (want %s)" % (
+            mname, parent, {k: round(v, 5) for k, v in sc.items()}, sw, want))
+        for k, want_v in (("UseFixedSeed", 0.0), ("FixedSeed", 0.37)):
+            got = float(ed.call(MIT, "get_scalar_parameter", {"instance": {"refPath": obj(FXI + mname)}, "name": k}))
+            rec(abs(got - want_v) < 1e-5, "%s inherits M_LB_Flame default %s = %.4f (want %g)" % (mname, k, got, want_v))
+
+
+# ---------------------------------------------------------------------------------------------- 14. assets (P15-8 sections 3, 4 and 5 read-backs)
+def check_assets(ed):
+    import contextlib
+    import io
+    sys.path.insert(0, os.path.join(ROOT, "Tools", "fx"))
+    import p15_5_niagara as N
+    rec(bool(ed.call(AS, "exists", {"path": "/Game/LastBell/FX/Niagara/NS_LB_RainColumn"})), "NS_LB_RainColumn exists")
+    rec(bool(ed.call(AS, "exists", {"path": "/Game/LastBell/Materials/FX/M_LB_Flame"})), "M_LB_Flame exists")
+    # M_LB_Flame: the two new parameters exist with their defaults (an MI read of a parameter that the master lacks raises)
+    for k, want_v in (("UseFixedSeed", 0.0), ("FixedSeed", 0.37)):
+        try:
+            got = float(ed.call(MIT, "get_scalar_parameter", {"instance": {"refPath": obj(FXI + "MI_Flame_Candle")}, "name": k}))
+        except RuntimeError as e:
+            rec(False, "M_LB_Flame parameter %s: %s" % (k, str(e)[:100]))
+            continue
+        rec(abs(got - want_v) < 1e-5, "M_LB_Flame parameter %s default %.4f (want %g)" % (k, got, want_v))
+    # the Niagara systems: the p15_5_niagara.py checkers, run quietly, one PASS/FAIL line each
+    for name in ("NS_LB_Drip", "NS_LB_EaveDrips", "NS_LB_RainColumn"):
+        before = (N._pass, N._fail)
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            try:
+                N.CHECKERS[name]()
+            except Exception as e:  # noqa: BLE001
+                N.chk(name + " check ran to the end", False, str(e)[:200])
+        fails = [l for l in buf.getvalue().splitlines() if l.startswith("FAIL")]
+        rec(not fails and N._fail == before[1], "%s p15_5_niagara check: %d PASS, %d FAIL %s" % (name, N._pass - before[0], N._fail - before[1], fails[:3]))
+    eye("drips: sizes set as literals (Sprite Size (1, 14), Color alpha 1, spawn CrownSize (10, 10), spawn RingSize (3, 3)); expressions: update-chain Particles.Color "
+        "'... float4(1.0, 1.0, 1.0, 1)' and RingSize 'lerp(3, 26, ...)', eave SpawnRate 'User.LineLength * 0.04'")
 
 
 # ---------------------------------------------------------------------------------------------- census, dirty state, save
@@ -891,6 +1017,12 @@ def check_dirty(ed):
         rec(not ed.is_dirty(pkg), "%s is not dirty (never-save list)" % pkg.rsplit("/", 1)[-1])
 
 
+SAVE_LIST = ["/Game/LastBell/FX/Niagara/NS_LB_RainColumn", "/Game/LastBell/FX/Niagara/NS_LB_EaveDrips", "/Game/LastBell/FX/Niagara/NS_LB_Drip",
+             "/Game/LastBell/Materials/FX/M_LB_Flame", FXI + "MI_Flame_Candle_Player", FXI + "MI_LB_Rain", FXI + "MI_LB_Splash", FXI + "MI_LB_Ripple",
+             FXI + "MI_LB_WaterMist", FXI + "MI_Flame_Torch", FXI + "MI_Cloth_Linen_Dark", BP_CHAR_PKG, DA_FX_PKG]
+NEVER_SAVE_P158 = list(NEVER_SAVE) + ["/Game/LastBell/FX/Niagara/NS_LB_Rain", FXI + "MI_LB_RainCurtain", FXI + "MI_LB_Mist"]
+
+
 def do_save(ed, start):
     print("=== save: full check first", flush=True)
     for s in STEPS:
@@ -902,26 +1034,27 @@ def do_save(ed, start):
         print("REFUSED: the check is not all PASS or the census is wrong; nothing saved")
         return False
     # the debug fields were verified at -1 by check_data
-    order = [DA_FX_PKG, DA_ST_PKG]
-    if ed.is_dirty(BP_CHAR_PKG):
-        order.append(BP_CHAR_PKG)
+    order = list(SAVE_LIST)
+    if ed.is_dirty(DA_ST_PKG):
+        order.append(DA_ST_PKG)
     else:
-        info("BP_LBCharacter is not dirty: not saved")
+        info("DA_StormSettings is not dirty: not saved")
     order.append(MAP_PKG)
     for pkg in order:
         r = ed.call(AS, "save_assets", {"asset_paths": [pkg]})
         d = ed.is_dirty(pkg)
         rec(d is False, "saved %s (save_assets -> %s); is_dirty after = %s" % (pkg, r, d))
-    for pkg in NEVER_SAVE:
+    for pkg in NEVER_SAVE_P158:
         rec(not ed.is_dirty(pkg), "%s still not dirty" % pkg.rsplit("/", 1)[-1])
     return True
 
 
-STEPS = ["data", "target", "dust", "mist", "drips", "eaves", "fires", "flames", "bpflames", "cloth", "curtains"]
+STEPS = ["data", "target", "dust", "mist", "drips", "eaves", "fires", "flames", "bpflames", "cloth", "curtains", "columns", "mis", "assets"]
 APPLY = {"data": apply_data, "target": apply_target, "dust": apply_dust, "mist": apply_mist, "drips": apply_drips, "eaves": apply_eaves, "fires": apply_fires,
-         "flames": apply_flames, "bpflames": apply_bpflames, "cloth": apply_cloth, "curtains": apply_curtains}
+         "flames": apply_flames, "bpflames": apply_bpflames, "cloth": apply_cloth, "curtains": apply_curtains, "columns": apply_columns, "mis": apply_mis,
+         "assets": lambda ed: info("assets: edited by Tools/fx/p15_4_materials.py (flame, make_mis) and p15_5_niagara.py (drips8, build --only NS_LB_RainColumn); nothing to apply here")}
 CHECK = {"data": check_data, "target": check_target, "dust": check_dust, "mist": check_mist, "drips": check_drips, "eaves": check_eaves, "fires": check_fires,
-         "flames": check_flames, "bpflames": check_bpflames, "cloth": check_cloth, "curtains": check_curtains}
+         "flames": check_flames, "bpflames": check_bpflames, "cloth": check_cloth, "curtains": check_curtains, "columns": check_columns, "mis": check_mis, "assets": check_assets}
 
 
 def main():
@@ -931,7 +1064,7 @@ def main():
     g.add_argument("--check", action="store_true")
     g.add_argument("--save", action="store_true")
     ap.add_argument("--only", default="", help="comma list of: " + ",".join(STEPS))
-    ap.add_argument("--start", type=int, default=CENSUS_START, help="actor count before P15-6 (F0.14: 3015)")
+    ap.add_argument("--start", type=int, default=CENSUS_START, help="actor count before P15-6 (F0.14: 3015); the P15-8 final state is start + 39 = 3054")
     ap.add_argument("--resume", action="store_true", help="--apply: skip the census-is-3015 guard (continue a partial run)")
     a = ap.parse_args()
     steps = [s for s in STEPS if not a.only or s in a.only.split(",")]
