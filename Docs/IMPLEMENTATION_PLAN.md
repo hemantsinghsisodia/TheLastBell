@@ -448,7 +448,7 @@ Branch `claude/phase-16-audio`. Spec and plan: `Docs/plans/P16_AUDIO.md` (D-108�
 | P16-6 | Run-through and performance | owner + performance-engineer | P16-5 |
 | P16-7 | QA, docs, full suite, Game build; PHASE 16 READY FOR YOUR REVIEW | qa-reviewer, docs agent, lead | all |
 
-**Status 2026-11-09:** P16-0 is done (plan approved). Next: P16-1, A1 and A2 (no editor needed), then F0 and S1 with Unreal open.
+**Status 2026-11-10:** P16-0, F0, A1–A4, P16-1, P16-2, P16-3, P16-4 (listening session) and P16-5 (owner choices, recorded thunder cracks, candle-flame fix) are done; the suite passes 172/172. Next: P16-6 (play-through and performance with the owner), then P16-7 (QA, docs, suite).
 
 ## Deferred to Phase 14–15 (Lighting, VFX: storm work)
 Items the owner asked to fold into the storm pass. **Foliage wind is now in Phase 14** (P14 section 6, D-096: `MPC_LB_Storm` replaces the planned `MPC_LB_Wind`).
