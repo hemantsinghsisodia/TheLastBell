@@ -717,3 +717,26 @@ One editor agent at a time. A1, A2 and A3 run without the editor, in parallel wi
   - 3 water pads under the crypt pools (query only, blocking Visibility only, `PM_LB_Water`).
 - **Checks:** census 3054 → 3089; `--check` 97 PASS; one map save.
 - **Suite** (Unreal closed): **171/171**, 0 `Error:` lines; `Monastery.AudioSetup` passes; the WalkPath and RouteBot tests pass, so the pads don't block the routes. The log reads "Audio: active (111 sounds loaded, 7 zones, 29 bound actors)".
+
+### P16-4: listening session, part 1 (2026-11-09; owner on headphones in Play; live over MCP with `Tools/audio/p16_4_live.py`)
+| Item | Owner's choice | Saved |
+|---|---|---|
+| Outdoor rain `RainOutGain` | 0.8 → **0.22**. The "deafening wind" was the rain bed: muting it removed the roar; 0.3 was too loud and 0.15 too quiet | yes (`DA_Audio`) |
+| Wind `WindOutGain` / `WindMin` | 0.6 / 0.3 → **0.08 / 0.2** ("fine") | yes |
+| Roof rain `RainInGain` | 0.55 → **0.15**, scaled with the outdoor cut; **not yet judged by ear** | yes |
+| Great bell, stages 1–5 | SoundWave `Volume` 0.126 / 0.200 / 0.316 / 0.501 / 1.0 → **all 1.0**. Stage 1 was inaudible at 0.32; the files' own filtering and reverb carry the distance. "All stages fine" | yes (`SFX_LB_Bell_Stage1..4`) |
+| Far thunder | `Volume` 0.398 → **1.0** ("fine now") | yes (`SFX_LB_Thunder_Far_01..04`) |
+| Near thunder, tower strike | **Replace only the cracks with recordings.** The synthetic crack at the start of `Thunder_Near_*` and the `Thunder_Strike_*` sounds are rejected; the generated rumbles stay | — (P16-5) |
+| Music (patrol, search, chase) | **fine for now** | — |
+
+- **Paused at stop 2 (the chapel)** on the owner's request to shut down. Still to judge:
+  - the chapel: roof rain, reverb, room tone;
+  - the candle puzzle cues;
+  - the crypt: darkness breathing, water steps, drips, chains, the Warden;
+  - the cloister and tower: small bells, creaks, belfry wind, wooden stairs, the passage;
+  - interactions and doors;
+  - the occasional tolls;
+  - the overall class balance.
+- **P16-5 must:**
+  1. **Keep the owner's choices in the asset scripts:** update `Tools/audio/p16_2_assets.py` (or the A2 `manifest.json` mix gains) so a re-run doesn't put back the old bell and far-thunder volumes.
+  2. **Replace the cracks:** a Freesound CC0 list of close lightning cracks and strikes (owner downloads); prepare `Thunder_Strike_01..03` and a recorded crack layer for `Thunder_Near_01..04` (generated rumble kept); re-import headless.
