@@ -705,3 +705,15 @@ One editor agent at a time. A1, A2 and A3 run without the editor, in parallel wi
   - A fresh-process verification passed 1390 checks with 0 failures. The report is `Docs/ArtTest/audio/p16_2_report.json`.
 - **Suite:** 170 passed, 1 failed. `Monastery.AudioSetup` fails only on the zone and AudioVolume counts (P16-3).
 - **Lead note:** `Key_Pickup`, `Paper` and `Candle_Light` have no attenuation, so they play unattenuated where they happen. That's acceptable for sounds triggered right in front of the player; P16-4 will check it.
+
+### P16-3: level work (2026-11-09, 6b39939)
+- **Placed** (`Tools/audio/p16_level.py`; record `Docs/ArtTest/audio/p16_3_level.md`):
+  - 7 `ALBAudioZone`s and 7 AudioVolumes, with reverb and interior settings (the Garth has no reverb);
+  - 18 `ALBAmbientEmitter`s:
+    - 10 drips;
+    - 5 creaks: 3 inside the tower core and 2 at belfry beam height;
+    - 3 distant chains in the crypt corners;
+  - floor overrides on 207 actors: Wood on 166 (154 tower steps, 10 landings, 2 belfry slabs), Grass on the Garth, Earth on 40 garden patches;
+  - 3 water pads under the crypt pools (query only, blocking Visibility only, `PM_LB_Water`).
+- **Checks:** census 3054 → 3089; `--check` 97 PASS; one map save.
+- **Suite** (Unreal closed): **171/171**, 0 `Error:` lines; `Monastery.AudioSetup` passes; the WalkPath and RouteBot tests pass, so the pads don't block the routes. The log reads "Audio: active (111 sounds loaded, 7 zones, 29 bound actors)".
