@@ -420,7 +420,7 @@ Branch `claude/phase-15-particles`. Spec and plan: `Docs/plans/P15_PARTICLES.md`
 - **P15-10 (performance):** GPU passes at all six spots (13.81–15.67 ms, added +0.09…+1.39 ms within budget). The game-thread rule could not be resolved with `stat unit` (repeats vary by up to 2 ms); **D-107:** accepted on the GPU result, with the storm FX game-thread trace added to R-64 for the Phase 18 Insights pass (8f2ce99, e1f96f5, 4537498). R-67 mitigated; R-69 (moving-camera distance field cost) stays open for Phase 20.
 - **Suite:** 141/141 with the editor closed (128 from Phase 14 plus 13 new), 0 invalid tags, 0 `Error:` lines.
 
-**Status 2026-11-09:** P15-0, F0, S1 (approach A, D-106), P15-1 to P15-9 and P15-10 (performance: GPU passes at all six spots; game-thread item to R-64, D-107) are done. Next: P15-11 (QA, docs, full suite, then "PHASE 15 READY FOR YOUR REVIEW"), on the owner's "go".
+**Status 2026-11-09:** Phase 15 is complete on `claude/phase-15-particles`: P15-0, F0, S1 and P15-1 to P15-11 are done (final suite 141/141, Game target builds, QA no P0/P1). PHASE 15 READY FOR YOUR REVIEW; merge to main only on the owner's "approve and merge".
 
 ## Deferred to Phase 14–15 (Lighting, VFX: storm work)
 Items the owner asked to fold into the storm pass. **Foliage wind is now in Phase 14** (P14 section 6, D-096: `MPC_LB_Storm` replaces the planned `MPC_LB_Wind`).

@@ -830,3 +830,20 @@ Live tuning used `Tools/fx/p15_7_live.py` (state / fx / mi / user / pawn / tp; n
   - Repeats vary by up to 2 ms, so `stat unit` can't resolve the rule.
   - **Owner decision D-107:** accept P15-10 on the GPU result, and trace the storm FX game thread with Unreal Insights in the Phase 18 optimisation pass (R-64). No ladder step was applied.
 - **Against P14-7:** GPU on is about +1.4 to +2.6 ms against the best Phase 14 references, but most of that is present with the FX off as well. It is not isolated: the placed systems, other Phase 15 changes or session differences. Phase 20 can split it with the particles show flag.
+
+### P15-11: QA, docs, suite (2026-11-09)
+- **QA** (qa-reviewer, Sonnet high, read-only): **no P0/P1**.
+  - Checks: `p15_level.py --check` 126 PASS, census 3054; `p15_5_niagara.py check` 582 PASS (the `NS_LB_Rain` compile-state timeout did not recur); nothing dirty; no Phase 15 errors or warnings in the logs.
+  - C++: no hard asset references, the shipping guards are correct, no bugs. Content and names are clean, and nothing is out of scope.
+  - **Follow-ups (eae7eaa):** Q1 (P2), the eight `NS_LB_*` systems have no Niagara Effect Type (no cull, no throttle), goes into R-64 for Phase 18; D-103 now names the strike actor and its tag; R-68 is closed (5bdec1d).
+  - **Notes left for the owner:**
+    - the `694bac1` Simulate branch has no automated test (`-nullrhi` has no rendered views);
+    - `GetViewDirection` still uses the parked camera in Simulate (debug only);
+    - unused assets that could be cleaned up: `SM_LB_FX_CurtainCard`, `M_LB_RainCurtain`, `MI_LB_RainCurtain`, `SM_LB_Prop_ClothSheet_A`, `SM_LB_Prop_ClothBanner_A`, `MI_Cloth_Linen_Red`, `MI_Cloth_Linen_Dark_Sheet`.
+- **Docs** (35742e8, general-purpose, Sonnet high):
+  - `TECHNICAL_DESIGN.md` §15 "Particles", as built;
+  - the Phase 15 outcome in `IMPLEMENTATION_PLAN.md`;
+  - MCP_NOTES Niagara items 12–15;
+  - `ASSET_REGISTRY` notes that the Cascade fires are no longer placed.
+- **`main` merged into the branch** (edc7731, with the Game-target fix 0b5ee15): clean, and only `LBWardenAnimInstance.cpp` changes.
+- **Final suite** (Unreal closed, lead): editor build succeeded; **141/141**; 0 invalid tags; 0 `Error:` lines; **Game target build succeeded**.
