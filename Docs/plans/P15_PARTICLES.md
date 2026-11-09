@@ -783,3 +783,28 @@ Live tuning used `Tools/fx/p15_7_live.py` (state / fx / mi / user / pawn / tp; n
   - It is loaded only on demand (a soft reference in `DA_StormFX`); the placed column systems load with the level.
   - In P15-7 the camera rain ran in Play, and the suite creates the rain component.
   - **P15-9 confirms the rain renders** (captures and Play). If it doesn't, the owner opens `NS_LB_Rain` in the Niagara editor and reads its compile status.
+
+### P15-9: viewpoints, occlusion and run-through (2026-11-09)
+- **Captures:** PIE Simulate, with the owner present, in `Docs/ArtTest/fx/p15_9/`. The report is `p15_9_leak.md` (`Tools/fx/p15_9_report.py`), and the sheets are `p15_9_sheet_rest.png`, `p15_9_sheet_rain.png`, `p15_9_sheet_storm.png` and `p15_9_highlights.png`.
+  - 16 P14 viewpoints at rest (`DebugFreezeFlash` 0);
+  - the 10 rain poses with camera rain on and with `bRain` off;
+  - 3 storm moments (flash 0.8, held `DebugBolt`).
+- **Bug found and fixed: in Simulate the camera rain stayed at the player start.** Simulate keeps a pawnless `PlayerController_0`, whose camera manager is parked there, and `GetViewLocation` preferred it. Fix 694bac1 (gameplay-programmer, Sonnet high): the rendered view is used when the controller has no pawn. Real Play is unchanged (it has a pawn).
+  - A first Live Coding attempt crashed the editor at PIE start. The patched file's static CVar was not registered (MCP_NOTES "PIE Simulate captures and Live Coding" item 2). Nothing was lost.
+  - Built with Unreal closed: **suite 141/141**, 0 `Error:` lines.
+- **Occlusion test (camera rain on against off; the rain columns run in both):** the mean absolute difference inside the roofed rects is within the plan's 1/255 in all four measured poses.
+
+  | Pose | MAD (/255) | Notes |
+  |---|---|---|
+  | chapel hole up | 0.23 | |
+  | chapel floor | 0.45 | |
+  | cloister south walk | 0.09 | |
+  | tower mid stair | 0.87 | its 317 "white" pixels are outside rain seen through the slit window and dust motes in the shaft beam, not under the roof |
+
+  The courtyard plank views, the cloister north hole and the belfry are judged by eye: rain only where the sky is open, and the columns under the openings.
+- **Storm moments:**
+  - **Poses changed:** in Simulate the held sky bolt follows the parked camera's yaw (+X), and the chapel hides the low sky from `cy_west_front_15m`. So the sky-bolt poses are `cy_gate_east_sky` (800, −1200, 170, 25, 0) and `cl_garth_east_sky` (10400, 1800, 200, 25, 0) (`Tools/fx/poses/p15_9_storm.json`).
+  - **Results:** the gate sky bolt and the tower strike from `p14_cy_tower_reveal` read well. In the cloister frame the bolt is behind the tower.
+- **`NS_LB_Rain` compile-state item: closed.** It compiles in 0.55 s at PIE start and renders in Play and in Simulate (MCP_NOTES item 3).
+- **Seen in 2–3 courtyard frames: a few small white flecks in the sky.** They are probably splashes pinned where the coarse far global distance field reports a surface. The owner did not report them in Play.
+- **Owner run-through in Play:** "all good" (camera rain, the three columns, drips, the player candle without vibration, ground mist, fire pit). **P15-9 approved.**
