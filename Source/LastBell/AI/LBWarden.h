@@ -4,6 +4,7 @@
 #include "GameFramework/Character.h"
 #include "LBWarden.generated.h"
 
+class ULBWardenAudioComponent;
 class ULBWardenBrainComponent;
 class ULBWardenTuningData;
 
@@ -37,9 +38,16 @@ public:
 	UFUNCTION(BlueprintPure, Category = "LastBell|Warden")
 	bool IsDormantPresentation() const { return bDormantPresentation; }
 
+	/** Its breath, steps, chains, robe and audible tells (P16). Created here so BP_Warden has it without being saved. */
+	UFUNCTION(BlueprintPure, Category = "LastBell|Warden")
+	ULBWardenAudioComponent* GetWardenAudio() const { return WardenAudio; }
+
 protected:
 	virtual void BeginPlay() override;
 
 private:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<ULBWardenAudioComponent> WardenAudio;
+
 	bool bDormantPresentation = false;
 };

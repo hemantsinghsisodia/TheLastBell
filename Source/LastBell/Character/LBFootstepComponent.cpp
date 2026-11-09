@@ -7,6 +7,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "Perception/AISense_Hearing.h"
 #include "AI/LBNoiseTags.h"
+#include "Audio/LBAudioLogic.h"
+#include "Audio/LBAudioSubsystem.h"
 #include "Sound/SoundBase.h"
 
 ULBFootstepComponent::ULBFootstepComponent()
@@ -109,34 +111,32 @@ void ULBFootstepComponent::EmitStep(float Loudness, FName NoiseTag)
 		Surface = UPhysicalMaterial::DetermineSurfaceType(Hit.PhysMaterial.Get());
 	}
 
-	if (FootstepTable)
+	if (const FLBFootstepRow* Chosen = FindRow(Surface))
 	{
-		TArray<FLBFootstepRow*> Rows;
-		FootstepTable->GetAllRows<FLBFootstepRow>(TEXT("LBFootstep"), Rows);
-		const FLBFootstepRow* Match = nullptr;
-		const FLBFootstepRow* Fallback = nullptr;
-		for (const FLBFootstepRow* Row : Rows)
+		int32 Variant = INDEX_NONE;
+		USoundBase* Sound = PickStepSound(*Chosen, Variant);
+		if (Sound)
 		{
-			if (!Row)
-			{
-				continue;
-			}
-			if (Row->SurfaceType == Surface)
-			{
-				Match = Row;
-				break;
-			}
-			if (Row->SurfaceType == SurfaceType_Default)
-			{
-				Fallback = Row;
-			}
-		}
-		const FLBFootstepRow* Chosen = Match ? Match : Fallback;
-		if (Chosen && Chosen->Sound)
-		{
-			const float Volume = FMath::FRandRange(Chosen->VolumeMin, FMath::Max(Chosen->VolumeMin, Chosen->VolumeMax));
+			// The gait scales the loudness of the sound (not of the noise the Warden hears: that is Loudness below).
+			const float GaitScale = NoiseTag == LBNoiseTags::Footstep ? GaitVolume(*Chosen, Owner->GetGait()) : 1.f;
+			const float Volume = FMath::FRandRange(Chosen->VolumeMin, FMath::Max(Chosen->VolumeMin, Chosen->VolumeMax)) * GaitScale;
 			const float Pitch = FMath::FRandRange(Chosen->PitchMin, FMath::Max(Chosen->PitchMin, Chosen->PitchMax));
-			UGameplayStatics::PlaySoundAtLocation(World, Chosen->Sound, FootLocation, Volume, Pitch);
+			UGameplayStatics::PlaySoundAtLocation(World, Sound, FootLocation, Volume, Pitch);
+#if !UE_BUILD_SHIPPING
+			if (ULBAudioSubsystem* Audio = World->GetSubsystem<ULBAudioSubsystem>())
+			{
+				FLBAudioRequest Request;
+				Request.Cue = LBAudioCue::Footstep;
+				Request.bPositional = true;
+				Request.Location = FootLocation;
+				Request.Volume = Volume;
+				Request.Pitch = Pitch;
+				Request.Variant = Variant;
+				Request.Aux = static_cast<int32>(Surface);
+				Request.bSoundResolved = true;
+				Audio->RecordRequest(Request);
+			}
+#endif
 		}
 	}
 
@@ -147,4 +147,63 @@ void ULBFootstepComponent::EmitStep(float Loudness, FName NoiseTag)
 	}
 
 	OnFootstep.Broadcast(Loudness, FootLocation, Surface);
+}
+
+const FLBFootstepRow* ULBFootstepComponent::FindRow(EPhysicalSurface Surface) const
+{
+	if (!FootstepTable)
+	{
+		return nullptr;
+	}
+	TArray<FLBFootstepRow*> Rows;
+	FootstepTable->GetAllRows<FLBFootstepRow>(TEXT("LBFootstep"), Rows);
+	const FLBFootstepRow* Fallback = nullptr;
+	for (const FLBFootstepRow* Row : Rows)
+	{
+		if (!Row)
+		{
+			continue;
+		}
+		if (Row->SurfaceType == Surface)
+		{
+			return Row;
+		}
+		if (Row->SurfaceType == SurfaceType_Default)
+		{
+			Fallback = Row;
+		}
+	}
+	return Fallback;
+}
+
+USoundBase* ULBFootstepComponent::PickStepSound(const FLBFootstepRow& Row, int32& OutVariant)
+{
+	OutVariant = INDEX_NONE;
+	TArray<int32, TInlineAllocator<8>> Valid;
+	for (int32 Index = 0; Index < Row.Variants.Num(); ++Index)
+	{
+		if (Row.Variants[Index])
+		{
+			Valid.Add(Index);
+		}
+	}
+	if (Valid.IsEmpty())
+	{
+		return Row.Sound;
+	}
+	int32& Last = LastVariant.FindOrAdd(Row.SurfaceType, INDEX_NONE);
+	const int32 Pick = LBAudioLogic::PickVariant(Valid.Num(), Last, FMath::FRand());
+	Last = Pick;
+	OutVariant = Valid[Pick];
+	return Row.Variants[OutVariant];
+}
+
+float ULBFootstepComponent::GaitVolume(const FLBFootstepRow& Row, ELBGait Gait)
+{
+	switch (Gait)
+	{
+	case ELBGait::Crouch: return Row.CrouchVolume;
+	case ELBGait::Sprint: return Row.SprintVolume;
+	default: return 1.f;
+	}
 }

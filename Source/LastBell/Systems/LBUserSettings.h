@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DeveloperSettings.h"
+#include "Audio/LBAudioTypes.h"
 #include "LBUserSettings.generated.h"
 
 /**
@@ -28,6 +29,41 @@ public:
 
 	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Camera")
 	bool bHeadBob = true;
+
+	// ---- Audio (P16): linear volumes 0..1 by group. Master is the parent of the other five SoundClasses. ----
+
+	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Audio", meta = (ClampMin = "0", ClampMax = "1"))
+	float MasterVolume = 1.0f;
+
+	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Audio", meta = (ClampMin = "0", ClampMax = "1"))
+	float SFXVolume = 1.0f;
+
+	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Audio", meta = (ClampMin = "0", ClampMax = "1"))
+	float AmbienceVolume = 1.0f;
+
+	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Audio", meta = (ClampMin = "0", ClampMax = "1"))
+	float MusicVolume = 1.0f;
+
+	/** The Warden's voice and breath. */
+	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Audio", meta = (ClampMin = "0", ClampMax = "1"))
+	float VoiceVolume = 1.0f;
+
+	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Audio", meta = (ClampMin = "0", ClampMax = "1"))
+	float UIVolume = 1.0f;
+
+	/** The volume of a group (clamped 0..1). */
+	UFUNCTION(BlueprintPure, Category = "LastBell|Settings")
+	float GetVolume(ELBAudioVolumeGroup Group) const;
+
+	/** Sets a group's volume (clamped 0..1), persists it to GameUserSettings.ini and tells the audio subsystem. This is the Phase 18 settings menu's entry point. */
+	UFUNCTION(BlueprintCallable, Category = "LastBell|Settings")
+	void SetVolume(ELBAudioVolumeGroup Group, float NewValue);
+
+	/** Sets a group's volume without saving it (the lb.Audio.Volume console command, tests) and tells the audio subsystem. */
+	void SetVolumeTransient(ELBAudioVolumeGroup Group, float NewValue);
+
+	/** Fires after any audio volume changed. ULBAudioSubsystem listens to it to push the SoundMix. */
+	static FSimpleMulticastDelegate& OnAudioVolumesChanged();
 
 	/** Setters clamp, then persist to GameUserSettings.ini. */
 	UFUNCTION(BlueprintCallable, Category = "LastBell|Settings")

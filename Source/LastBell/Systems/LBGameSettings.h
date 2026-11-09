@@ -5,6 +5,7 @@
 #include "Engine/World.h"
 #include "LBGameSettings.generated.h"
 
+class ULBAudioSettings;
 class ULBStormSettings;
 
 /** Project Settings > Game > The Last Bell. */
@@ -27,4 +28,8 @@ public:
 	/** DA_StormSettings: every number of the storm (P14). Unset: the storm subsystem stays inactive. */
 	UPROPERTY(Config, EditAnywhere, Category = "Storm")
 	TSoftObjectPtr<ULBStormSettings> StormSettings;
+
+	/** DA_Audio: every sound and number of the audio director (P16). Unset: the audio subsystem stays silent. */
+	UPROPERTY(Config, EditAnywhere, Category = "Audio")
+	TSoftObjectPtr<ULBAudioSettings> AudioSettings;
 };

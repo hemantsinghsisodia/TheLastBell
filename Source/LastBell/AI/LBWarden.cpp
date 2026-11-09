@@ -2,6 +2,7 @@
 #include "AI/LBWardenBrainComponent.h"
 #include "AI/LBWardenController.h"
 #include "AI/LBWardenTuningData.h"
+#include "Audio/LBWardenAudioComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
@@ -14,6 +15,9 @@ ALBWarden::ALBWarden()
 	GetCapsuleComponent()->InitCapsuleSize(Defaults->CapsuleRadius, Defaults->CapsuleHalfHeight);
 	// Eye height above the capsule centre.
 	BaseEyeHeight = Defaults->EyeHeight;
+
+	// P16: the Warden's own sounds. It plays only while the audio director is active and the Warden is not dormant.
+	WardenAudio = CreateDefaultSubobject<ULBWardenAudioComponent>(TEXT("WardenAudio"));
 
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 	AIControllerClass = ALBWardenController::StaticClass();

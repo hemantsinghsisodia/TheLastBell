@@ -320,6 +320,8 @@ void ALBWardenApparition::Tick(float DeltaSeconds)
 		const FVector ToPlayer = CameraLocation - Station->Location;
 		const float Yaw = static_cast<float>(FVector(ToPlayer.X, ToPlayer.Y, 0.0).Rotation().Yaw);
 		SetActorLocationAndRotation(Station->Location, FRotator(0.f, Yaw, 0.f), false, nullptr, ETeleportType::TeleportPhysics);
+		// P16: audio hangs its sting and whisper on this (no behaviour change here).
+		OnAppeared.Broadcast(this, Run.Station);
 	}
 
 	ApplyAlpha();

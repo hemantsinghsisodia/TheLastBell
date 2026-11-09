@@ -11,6 +11,10 @@ class UMeshComponent;
 class USceneComponent;
 class USkeletalMeshComponent;
 class UStaticMeshComponent;
+class ALBWardenApparition;
+
+/** Fired when the figure becomes visible at a station (it starts to fade in). P16 plays the sting and the whisper on it. */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FLBApparitionAppearedSignature, ALBWardenApparition*, Apparition, int32, StationIndex);
 
 /**
  * A scripted, one-shot appearance of the Warden (P12 fix set 1; replaces the old BP_WardenSilhouette). Not the AI: it never
@@ -72,6 +76,10 @@ public:
 	/** Index of the station the run is on. */
 	UFUNCTION(BlueprintPure, Category = "Apparition")
 	int32 GetStationIndex() const { return Run.Station; }
+
+	/** The figure appeared at a station: fired once per station, when it starts to fade in. */
+	UPROPERTY(BlueprintAssignable, Category = "Apparition")
+	FLBApparitionAppearedSignature OnAppeared;
 
 	UStaticMeshComponent* GetBody() const { return Body; }
 	USkeletalMeshComponent* GetFigure() const { return Figure; }

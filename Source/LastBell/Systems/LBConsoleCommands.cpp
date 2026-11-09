@@ -13,6 +13,8 @@
 #include "Systems/LBUserSettings.h"
 #include "Storm/LBStormSubsystem.h"
 #include "Storm/LBStormFXSubsystem.h"
+#include "Audio/LBAudioSubsystem.h"
+#include "Audio/LBAudioTypes.h"
 #include "Misc/DefaultValueHelper.h"
 #include "LBLog.h"
 
@@ -270,6 +272,109 @@ namespace LBConsole
 		FConsoleCommandWithWorldAndArgsDelegate::CreateStatic(&StormIntensity));
 	static FAutoConsoleCommandWithWorldAndArgs CmdStormFreeze(TEXT("lb.Storm.Freeze"), TEXT("lb.Storm.Freeze <0..1 | -1>: hold the flash value and pause the schedule, -1 clears"),
 		FConsoleCommandWithWorldAndArgsDelegate::CreateStatic(&StormFreeze));
+	static ULBAudioSubsystem* GetAudio(UWorld* World, const TCHAR* Cmd)
+	{
+		ULBAudioSubsystem* Audio = World ? World->GetSubsystem<ULBAudioSubsystem>() : nullptr;
+		if (!Audio || !Audio->IsActive())
+		{
+			UE_LOG(LogLB, Warning, TEXT("%s: the audio director is not active in this world (needs the storm, DA_Audio and lb.Audio.Enabled 1)"), Cmd);
+			return nullptr;
+		}
+		return Audio;
+	}
+
+	/** lb.Audio.Thunder <0|1|2>: one thunder now, from the front of the view (0 far, 1 mid, 2 near). */
+	static void AudioThunder(const TArray<FString>& Args, UWorld* World)
+	{
+		int32 Set = 2;
+		if (Args.Num() < 1 || !FDefaultValueHelper::ParseInt(Args[0], Set) || Set < 0 || Set > 2)
+		{
+			UE_LOG(LogLB, Error, TEXT("lb.Audio.Thunder: expected 0 (far), 1 (mid) or 2 (near)"));
+			return;
+		}
+		if (ULBAudioSubsystem* Audio = GetAudio(World, TEXT("lb.Audio.Thunder")))
+		{
+			Audio->PlayDebugThunder(Set);
+		}
+	}
+
+	/** lb.Audio.Bell <stage 1..5> [strikes=1]: tolls the great bell now. */
+	static void AudioBell(const TArray<FString>& Args, UWorld* World)
+	{
+		int32 Stage = 1;
+		int32 Strikes = 1;
+		if (Args.Num() < 1 || !FDefaultValueHelper::ParseInt(Args[0], Stage) || Stage < 1 || Stage > 5 || (Args.Num() > 1 && !FDefaultValueHelper::ParseInt(Args[1], Strikes)))
+		{
+			UE_LOG(LogLB, Error, TEXT("lb.Audio.Bell: expected <stage 1..5> [strikes]"));
+			return;
+		}
+		if (ULBAudioSubsystem* Audio = GetAudio(World, TEXT("lb.Audio.Bell")))
+		{
+			Audio->PlayBell(Stage, FMath::Clamp(Strikes, 1, 12));
+		}
+	}
+
+	/** lb.Audio.Music <state|-1>: forces the Warden state the music reads (0 Dormant, 1 Patrol, 2 Investigate, 3 Suspicious, 4 Search, 5 Chase, 6 Attack, 7 Return); -1 clears. */
+	static void AudioMusic(const TArray<FString>& Args, UWorld* World)
+	{
+		int32 State = -1;
+		if (Args.Num() < 1 || !FDefaultValueHelper::ParseInt(Args[0], State) || State < -1 || State > 7)
+		{
+			UE_LOG(LogLB, Error, TEXT("lb.Audio.Music: expected -1 (clear) or a Warden state 0..7 (0 Dormant, 1 Patrol, 2 Investigate, 3 Suspicious, 4 Search, 5 Chase, 6 Attack, 7 Return)"));
+			return;
+		}
+		if (ULBAudioSubsystem* Audio = GetAudio(World, TEXT("lb.Audio.Music")))
+		{
+			Audio->SetConsoleMusicState(State);
+			UE_LOG(LogLB, Display, TEXT("lb.Audio.Music = %d%s"), State, State < 0 ? TEXT(" (cleared)") : TEXT(""));
+		}
+	}
+
+	/** lb.Audio.Volume <Master|SFX|Ambience|Music|Voice|UI> <0..1>: sets a user volume group for this session (not saved). */
+	static void AudioVolume(const TArray<FString>& Args, UWorld* World)
+	{
+		float Value = 1.f;
+		if (Args.Num() < 2 || !FDefaultValueHelper::ParseFloat(Args[1], Value))
+		{
+			UE_LOG(LogLB, Error, TEXT("lb.Audio.Volume: expected <Master|SFX|Ambience|Music|Voice|UI> <0..1>"));
+			return;
+		}
+		const UEnum* GroupEnum = StaticEnum<ELBAudioVolumeGroup>();
+		const int64 Index = GroupEnum ? GroupEnum->GetValueByNameString(Args[0]) : INDEX_NONE;
+		if (Index == INDEX_NONE)
+		{
+			UE_LOG(LogLB, Error, TEXT("lb.Audio.Volume: unknown group '%s' (Master, SFX, Ambience, Music, Voice, UI)"), *Args[0]);
+			return;
+		}
+		ULBUserSettings::GetUserSettings()->SetVolumeTransient(static_cast<ELBAudioVolumeGroup>(Index), Value);
+		UE_LOG(LogLB, Display, TEXT("lb.Audio.Volume %s = %.2f"), *Args[0], ULBUserSettings::Get()->GetVolume(static_cast<ELBAudioVolumeGroup>(Index)));
+	}
+
+	/** lb.Audio.Debug 0|1: an on-screen readout of the audio director. */
+	static void AudioDebug(const TArray<FString>& Args, UWorld* World)
+	{
+		bool bOn = false;
+		if (!ParseBool(Args, TEXT("lb.Audio.Debug"), bOn))
+		{
+			return;
+		}
+		if (ULBAudioSubsystem* Audio = World ? World->GetSubsystem<ULBAudioSubsystem>() : nullptr)
+		{
+			Audio->SetDebugOverlay(bOn);
+		}
+	}
+
+	static FAutoConsoleCommandWithWorldAndArgs CmdAudioThunder(TEXT("lb.Audio.Thunder"), TEXT("lb.Audio.Thunder <0|1|2>: one thunder now (0 far, 1 mid, 2 near). lb.Audio.Enabled 0|1 turns the audio director off or on"),
+		FConsoleCommandWithWorldAndArgsDelegate::CreateStatic(&AudioThunder));
+	static FAutoConsoleCommandWithWorldAndArgs CmdAudioBell(TEXT("lb.Audio.Bell"), TEXT("lb.Audio.Bell <stage 1..5> [strikes=1]: toll the great bell now"),
+		FConsoleCommandWithWorldAndArgsDelegate::CreateStatic(&AudioBell));
+	static FAutoConsoleCommandWithWorldAndArgs CmdAudioMusic(TEXT("lb.Audio.Music"), TEXT("lb.Audio.Music <state|-1>: force the Warden state the music reads (5 = Chase), -1 clears"),
+		FConsoleCommandWithWorldAndArgsDelegate::CreateStatic(&AudioMusic));
+	static FAutoConsoleCommandWithWorldAndArgs CmdAudioVolume(TEXT("lb.Audio.Volume"), TEXT("lb.Audio.Volume <Master|SFX|Ambience|Music|Voice|UI> <0..1>: user volume group for this session"),
+		FConsoleCommandWithWorldAndArgsDelegate::CreateStatic(&AudioVolume));
+	static FAutoConsoleCommandWithWorldAndArgs CmdAudioDebug(TEXT("lb.Audio.Debug"), TEXT("lb.Audio.Debug 0|1: on-screen readout of the audio director"),
+		FConsoleCommandWithWorldAndArgsDelegate::CreateStatic(&AudioDebug));
+
 	static FAutoConsoleCommandWithWorldAndArgs CmdKill(TEXT("lb.Kill"), TEXT("Kill the local player (death path)"),
 		FConsoleCommandWithWorldAndArgsDelegate::CreateStatic(&Kill));
 }
