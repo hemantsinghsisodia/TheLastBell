@@ -808,3 +808,25 @@ Live tuning used `Tools/fx/p15_7_live.py` (state / fx / mi / user / pawn / tp; n
 - **`NS_LB_Rain` compile-state item: closed.** It compiles in 0.55 s at PIE start and renders in Play and in Simulate (MCP_NOTES item 3).
 - **Seen in 2–3 courtyard frames: a few small white flecks in the sky.** They are probably splashes pinned where the coarse far global distance field reports a surface. The owner did not report them in Play.
 - **Owner run-through in Play:** "all good" (camera rain, the three columns, drips, the player candle without vibration, ground mist, fire pit). **P15-9 approved.**
+
+### P15-10: performance (2026-11-09)
+- **Readings:** the owner took them in PIE new window, High, 1920x1080w, Warden off, at the six P14 spots: storm FX on against `lb.StormFX.Enabled 0`, 30-49 s of settle. Read by performance-engineer (Sonnet high). The shots are in `Docs/ArtTest/fx/p15_10/`; the rows are in `PERFORMANCE_BUDGET.md`, dated 2026-11-09.
+- **GPU passes at all six spots.**
+
+  | Spot | GPU on | Added | Budget |
+  |---|---|---|---|
+  | Courtyard | 15.30 | +1.39 | 1.8 |
+  | Chapel | 15.67 | +0.10 | 0.8 |
+  | Ossuary | 15.40 | +0.09 | 0.8 |
+  | Cloister | 15.52 | +0.80 | 1.5 |
+  | Mid-stair | 14.83 | +0.73 | 0.8 |
+  | Belfry | 13.81 | +0.65 | 1.5 |
+
+  - Niagara GPU simulation plus translucency adds +0.27 to +0.57 ms.
+  - The camera rain's GPU sim costs about 0.2 ms even indoors.
+  - Least headroom: the chapel, 0.93 ms under 16.6.
+- **Game thread:** the first session read +1.07 to +1.77 ms at the courtyard, chapel and cloister (rule ≤ +0.3).
+  - An off-first re-read with two alternations gave courtyard +0.22 then +2.15, and cloister +0.16 then +0.84.
+  - Repeats vary by up to 2 ms, so `stat unit` can't resolve the rule.
+  - **Owner decision D-107:** accept P15-10 on the GPU result, and trace the storm FX game thread with Unreal Insights in the Phase 18 optimisation pass (R-64). No ladder step was applied.
+- **Against P14-7:** GPU on is about +1.4 to +2.6 ms against the best Phase 14 references, but most of that is present with the FX off as well. It is not isolated: the placed systems, other Phase 15 changes or session differences. Phase 20 can split it with the particles show flag.
