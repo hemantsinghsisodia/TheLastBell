@@ -44,6 +44,49 @@ void ULBCandleComponent::BeginPlay()
 		Light->RegisterComponent();
 	}
 	ApplyLightSettings();
+
+	FindFlameComponents();
+	SetFlameVisible(StateMachine.IsLit());
+}
+
+void ULBCandleComponent::FindFlameComponents()
+{
+	FlameComponents.Reset();
+	const AActor* Owner = GetOwner();
+	if (!Owner || FlameComponentTag.IsNone())
+	{
+		return;
+	}
+	TInlineComponentArray<USceneComponent*> Scene(Owner);
+	for (USceneComponent* Comp : Scene)
+	{
+		if (Comp && Comp != this && Comp->ComponentHasTag(FlameComponentTag))
+		{
+			FlameComponents.Add(Comp);
+		}
+	}
+	if (FlameComponents.IsEmpty())
+	{
+		for (USceneComponent* Comp : Scene)
+		{
+			if (Comp && Comp != this && Comp->GetFName() == FlameComponentTag)
+			{
+				FlameComponents.Add(Comp);
+			}
+		}
+	}
+}
+
+void ULBCandleComponent::SetFlameVisible(bool bShow)
+{
+	bFlameShown = bShow;
+	for (const TWeakObjectPtr<USceneComponent>& Flame : FlameComponents)
+	{
+		if (USceneComponent* Comp = Flame.Get())
+		{
+			Comp->SetVisibility(bShow);
+		}
+	}
 }
 
 void ULBCandleComponent::SetHeldMesh(UStaticMeshComponent* InMesh)
@@ -78,6 +121,7 @@ bool ULBCandleComponent::ToggleCandle()
 		{
 			Light->SetVisibility(false);
 		}
+		SetFlameVisible(false);
 		OnCandleStateChanged.Broadcast(false);
 		return true;
 	case ELBCandleEvent::RelightStarted:
@@ -116,9 +160,14 @@ void ULBCandleComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 		LitAlpha = 0.f;
 	}
 
+	const bool bLightOn = LitAlpha > KINDA_SMALL_NUMBER;
+	if (bLightOn != bFlameShown)
+	{
+		SetFlameVisible(bLightOn);
+	}
+
 	if (Light)
 	{
-		const bool bLightOn = LitAlpha > KINDA_SMALL_NUMBER;
 		Light->SetVisibility(bLightOn);
 		if (bLightOn)
 		{

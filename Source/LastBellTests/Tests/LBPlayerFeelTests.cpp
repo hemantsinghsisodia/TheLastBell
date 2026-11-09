@@ -755,6 +755,110 @@ bool FLBFeelCandleTest::RunTest(const FString& Parameters)
 }
 
 // =====================================================================================================================
+// 3b. Candle flame visual follows the light (P16-5)
+// =====================================================================================================================
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBCandleFlameHidesTest, "LastBell.Functional.Candle.FlameHidesWhenSnuffed",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
+bool FLBCandleFlameHidesTest::RunTest(const FString& Parameters)
+{
+	TSharedPtr<FFeelRunner> R = StartSession(this);
+	const TSharedRef<FState> S = MakeShared<FState>();
+	FAutomationTestBase* Test = this;
+	AddSetupSteps(*R, S, Test);
+
+	// The flame visual is the Blueprint component CandleFlame (a static mesh under CandleWax).
+	auto FindFlames = [](const ALBCharacter* Pawn)
+	{
+		TArray<USceneComponent*> Flames;
+		TInlineComponentArray<USceneComponent*> All(Pawn);
+		for (USceneComponent* Comp : All)
+		{
+			if (Comp && (Comp->ComponentHasTag(TEXT("CandleFlame")) || Comp->GetFName() == TEXT("CandleFlame")))
+			{
+				Flames.Add(Comp);
+			}
+		}
+		return Flames;
+	};
+
+	R->Add(TEXT("Flame visible while lit"), [Test, FindFlames](FStepCtx& C)
+	{
+		const TArray<USceneComponent*> Flames = FindFlames(C.Pawn);
+		Test->TestTrue(TEXT("BP_LBCharacter has a CandleFlame component"), Flames.Num() >= 1);
+		Test->TestTrue(TEXT("Candle is lit at start"), C.Pawn->GetCandle() && C.Pawn->GetCandle()->IsLit());
+		for (const USceneComponent* Flame : Flames)
+		{
+			Test->TestTrue(TEXT("Flame visible while lit"), Flame->IsVisible());
+		}
+		return true;
+	});
+
+	R->Add(TEXT("Snuff hides the flame at once"), [Test, FindFlames](FStepCtx& C)
+	{
+		ULBCandleComponent* Candle = C.Pawn->GetCandle();
+		if (!Candle)
+		{
+			return true;
+		}
+		const TArray<USceneComponent*> Flames = FindFlames(C.Pawn);
+		if (C.bFirst)
+		{
+			Test->TestTrue(TEXT("ToggleCandle accepted (lit -> snuffed)"), Candle->ToggleCandle());
+			for (const USceneComponent* Flame : Flames)
+			{
+				Test->TestFalse(TEXT("Flame hidden right after the snuff"), Flame->IsVisible());
+			}
+			return false;
+		}
+		if (C.Elapsed < 0.3)
+		{
+			return false;
+		}
+		for (const USceneComponent* Flame : Flames)
+		{
+			Test->TestFalse(TEXT("Flame stays hidden while snuffed"), Flame->IsVisible());
+		}
+		return true;
+	});
+
+	R->Add(TEXT("Relight shows the flame again"), [Test, FindFlames](FStepCtx& C)
+	{
+		ULBCandleComponent* Candle = C.Pawn->GetCandle();
+		if (!Candle)
+		{
+			return true;
+		}
+		const TArray<USceneComponent*> Flames = FindFlames(C.Pawn);
+		const float Delay = C.Pawn->GetTuning().CandleRelightDelay;
+		if (C.bFirst)
+		{
+			Test->TestTrue(TEXT("ToggleCandle accepted (snuffed -> relighting)"), Candle->ToggleCandle());
+			return false;
+		}
+		if (C.Elapsed < Delay * 0.5)
+		{
+			for (const USceneComponent* Flame : Flames)
+			{
+				Test->TestFalse(TEXT("Flame still hidden while relighting"), Flame->IsVisible());
+			}
+		}
+		if (C.Elapsed < Delay + 0.3)
+		{
+			return false;
+		}
+		Test->TestTrue(TEXT("Candle is lit again"), Candle->IsLit());
+		for (const USceneComponent* Flame : Flames)
+		{
+			Test->TestTrue(TEXT("Flame visible after the relight"), Flame->IsVisible());
+		}
+		return true;
+	});
+
+	Enqueue(R);
+	return true;
+}
+
+// =====================================================================================================================
 // 4. Inspection
 // =====================================================================================================================
 namespace

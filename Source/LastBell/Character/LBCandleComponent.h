@@ -56,6 +56,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LastBell|Candle")
 	TObjectPtr<UStaticMeshComponent> HeldMesh;
 
+	/**
+	 * Tag of the owner's flame visual component(s). At BeginPlay the candle finds the components tagged with this
+	 * (else a component named like the tag) and shows them only while the light is on (hidden at once when snuffed).
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "LastBell|Candle")
+	FName FlameComponentTag = TEXT("CandleFlame");
+
 	UPROPERTY(BlueprintAssignable, Category = "LastBell|Candle")
 	FLBCandleStateChangedSignature OnCandleStateChanged;
 
@@ -69,9 +76,15 @@ protected:
 
 private:
 	void ApplyLightSettings();
+	void FindFlameComponents();
+	void SetFlameVisible(bool bShow);
 
 	UPROPERTY(Transient)
 	TObjectPtr<UPointLightComponent> Light;
+
+	/** The flame visuals on the owner (weak: the Blueprint owns them). */
+	TArray<TWeakObjectPtr<USceneComponent>> FlameComponents;
+	bool bFlameShown = true;
 
 	const ULBPlayerTuningData* Tuning = nullptr;
 	FLBCandleStateMachine StateMachine;
