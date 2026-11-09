@@ -421,6 +421,7 @@ Branch `claude/phase-15-particles`. Spec and plan: `Docs/plans/P15_PARTICLES.md`
 - **Suite:** 141/141 with the editor closed (128 from Phase 14 plus 13 new), 0 invalid tags, 0 `Error:` lines.
 
 **Status 2026-11-09:** P15-0, F0, S1 (approach A, D-106), P15-1 to P15-9 and P15-10 (performance: GPU passes at all six spots; game-thread item to R-64, D-107) are done. Next: P15-11 (QA, docs, full suite, then "PHASE 15 READY FOR YOUR REVIEW"), on the owner's "go".
+
 ## Deferred to Phase 14–15 (Lighting, VFX: storm work)
 Items the owner asked to fold into the storm pass. **Foliage wind is now in Phase 14** (P14 section 6, D-096: `MPC_LB_Storm` replaces the planned `MPC_LB_Wind`).
 
