@@ -152,12 +152,14 @@ bool ULBStormFXSubsystem::GetViewLocation(FVector& OutLocation) const
 		return false;
 	}
 	const APlayerController* PC = World->GetFirstPlayerController();
-	if (const APlayerCameraManager* Camera = PC ? PC->PlayerCameraManager.Get() : nullptr)
+	const APlayerCameraManager* Camera = PC ? PC->PlayerCameraManager.Get() : nullptr;
+	// The player camera, unless the controller has no pawn while a view was rendered: PIE Simulate keeps PlayerController_0 parked at
+	// the start with a camera that never updates, so the rain follows the view that was rendered last frame there (P15-9).
+	if (Camera && (PC->GetPawn() || World->ViewLocationsRenderedLastFrame.IsEmpty()))
 	{
 		OutLocation = Camera->GetCameraLocation();
 		return true;
 	}
-	// No player camera (PIE Simulate): follow the view that was rendered last frame.
 	if (!World->ViewLocationsRenderedLastFrame.IsEmpty())
 	{
 		OutLocation = World->ViewLocationsRenderedLastFrame[0];
