@@ -576,3 +576,114 @@ One editor agent at a time. A1, A2 and A3 run without the editor, in parallel wi
   - 124 recorded WAVs from 56 Freesound and 36 Kenney sources; objective checks pass; deterministic; registry rows added.
   - **Substitutions for thin sources:** pitch copies for the 6th Kenney steps and for the gasp; Kenney clicks for two lever notches.
 - **A4** (af9431a): the owner listened through `Docs/ArtTest/audio/audition.html` (175 sounds) on headphones and judged **everything keep**.
+
+### F0: read-only survey (2026-11-09, fb5b47e)
+- **Record:** `Tools/audio/p16_f0_survey.py`; data and tables in `Docs/ArtTest/audio/p16_f0.json` and `p16_f0_tables.md`. Nothing was set or saved, and the census is unchanged at 3054.
+- **Interactables:** 29 actors in exactly the 12 unmapped classes. The cue proposals in the tables are **accepted by the lead**, including:
+  - doors use wood cues, and Denied only on `Door_ChapelMain`;
+  - the crank pickup uses `Key_Pickup` (pitch 0.85–0.95);
+  - the capstan uses `Winch` (pitch 0.9–1.0);
+  - `BP_SequencePuzzle`, `BP_SmallBell_Cloister` and `BP_TagInteractable_GreatBell` are silent; the great bell is covered by the `State.Event.Finale` beat.
+- **`SmallBellPitch`:** `State.Tower.Bell.1` 0.7692, `.2` 0.8696, `.3` 1.0, `.4` 1.1765.
+- **`BellLocation`:** (12420.1, 2000.0, 2750.0).
+- **Zones:** the F0 table is accepted:
+  - Chapel, priority 1;
+  - Crypt, priority 2, z −1200…−20;
+  - Cloister walk, priority 1;
+  - Garth, priority 2: outdoor values, no room tone, no reverb;
+  - Passage, priority 1;
+  - TowerStair, priority 3;
+  - Belfry, priority 4, from z 2400.
+
+  Gatehouse and well house: none, they are open to the sky.
+- **Floors:**
+  - 168 floor hits; 81 % are on hidden or greybox collision, so the method is a **per-actor `PhysMaterialOverride`**.
+  - Stone is the default. Wood: tower landings, stair flights and the belfry. Grass: the garth. Earth: `Garden_Earth_*`.
+  - **Water:** the pool planes have no collision, so the footstep trace hits the crypt floor shell. P16-3 places a thin box under each pool (§8 brief).
+- **MCP:** there is no tool to import a WAV or to create SoundClass, SoundMix, SoundAttenuation, SoundConcurrency, ReverbEffect or PhysicalMaterial assets. **Verdict, which replaces the S1 spike:**
+  - all audio assets are created by **headless Unreal Python with Unreal closed** (the route in MCP_NOTES "Warden" item 1: `UnrealEditor-Cmd -run=pythonscript`);
+  - level placement (zones, AudioVolumes, emitters, overrides) goes over MCP with Unreal open;
+  - the owner's reverb check moves into the listening session (P16-4).
+- **Lead decisions on the F0 questions:**
+  1. **Small-bell sounds only for the bell puzzle.** The strike, fail and solved sounds play only when the step tag is a key of `SmallBellPitch`, or for Solved when the puzzle's steps are. The candle puzzle (`Puzzle_Candles`):
+     - a step is silent, because the candle's own interact cue already plays;
+     - a failure plays one `Player.CandleOut` variant at the puzzle actor;
+     - solving is silent, because the ritual mechanism and the beat cover it.
+  2. **The belfry box** from z 2400 with priority 4: accepted.
+  3. **Passage exposure 0.3** (from P14) stays. The rain level there is judged in P16-4.
+
+### P16-2 brief (audio-designer, Sonnet high; Unreal CLOSED)
+**Part A, code:**
+- the small-bell gating of the F0 decision 1, with a new functional test `LastBell.Functional.Audio.CandlePuzzleNotBells`;
+- build and test with `Tools/build_and_test.ps1`.
+
+**Part B, `Tools/audio/p16_2_assets.py`:** headless, idempotent; run with `UnrealEditor-Cmd <uproject> -run=pythonscript -script=<py> -unattended -nullrhi -nosplash -nosound -NoP4 -log -abslog=<log>`. It writes a JSON report.
+1. **Import** all 175 WAVs from `SourceArt/Audio/Generated/` and `SourceArt/Audio/Recorded/` (an `AssetImportTask` with automated, replace-existing and save on). Folders under `/Game/LastBell/Audio/`:
+
+   | Folder | Files |
+   |---|---|
+   | `Weather` | `SFX_LB_Rain_*`, `SFX_LB_Wind*` |
+   | `Thunder` | `SFX_LB_Thunder_*` |
+   | `Bell` | `SFX_LB_Bell_*`, `SFX_LB_SmallBell_*` |
+   | `Music` | `MUS_LB_*` |
+   | `Room` | `SFX_LB_Room_*`, `SFX_LB_Drip_*`, `SFX_LB_Creak_*`, `SFX_LB_Chain_Distant_*` |
+   | `Player` | `SFX_LB_Step_*`, `SFX_LB_Breath_*`, `SFX_LB_Candle_*`, `SFX_LB_Key_*`, `SFX_LB_Paper_*` |
+   | `Interact` | `SFX_LB_Door_*`, `SFX_LB_Lever_*`, `SFX_LB_Winch_*`, `SFX_LB_Stone_*`, `SFX_LB_Generic_*` |
+   | `Warden` | `SFX_LB_Warden_*`, `SFX_LB_Apparition_*` |
+
+2. **Per SoundWave** (from the cue sheet, §3):
+   - `bLooping` true for the loops: the 4 weather beds, 6 room tones, 3 drones, tension, chase, the 3 Warden breath loops and the robe;
+   - `SoundClassObject`;
+   - `AttenuationSettings`; none for the 2D sounds;
+   - `ConcurrencySet` (Steps, Thunder, Drips, Tells);
+   - `Volume` = 10^(`mix_gain_db` / 20) from `SourceArt/Audio/Generated/manifest.json` (bell stages, far thunder), otherwise 1.0.
+3. **Mix assets** (`/Game/LastBell/Audio/Mix/`):
+   - `SCL_LB_Master` with children `SCL_LB_SFX`, `_Ambience`, `_Music`, `_Voice`, `_UI` (parent and child links set both ways);
+   - `SMX_LB_User`, empty, since the C++ sets the overrides;
+   - the 8 `ATT_LB_*` of §6.2, the 4 `CON_LB_*` of §6.3 and the 6 `RVB_LB_*` of §6.4, every value as in the tables.
+4. **Physical materials** (`/Game/LastBell/Physics/`): `PM_LB_Stone`, `_Wood`, `_Earth`, `_Grass`, `_Water`, `_Metal` with `SurfaceType` 1–6.
+5. **`DA_Audio`** (`/Game/LastBell/Data/`, class `LBAudioSettings`):
+   - every sound group filled from the imports, with arrays in variant order;
+   - `InteractionCues` and `SilentClasses` per F0 as accepted above, using soft class paths of the `_C` Blueprint classes;
+   - `SmallBellPitch` and the `SmallBell*` sounds;
+   - `BellLocation`;
+   - `BellBeats` from `FillPlanDefaults()` (or the same rows written directly);
+   - `UserMix` = `SMX_LB_User`, `UserClasses` (Master, SFX, Ambience, Music, Voice, UI);
+   - every other field at the C++ default; `DebugForceMusicState` −1.
+6. **`DT_Footsteps`:**
+   - rows `Default` (Stone variants), `Stone`, `Wood`, `Earth`, `Grass`, `Water` and `Metal` with `SurfaceType` set and all 6 `Variants` each;
+   - `VolumeMin`/`Max` 0.8/1.0, `PitchMin`/`Max` 0.95/1.05, `CrouchVolume` 0.5, `SprintVolume` 1.25.
+7. **Save and verify:** save each package, then a verification pass loads every asset and prints the counts and every property it set.
+
+**Then:**
+- run the suite: `Monastery.AudioSetup` may still fail only on the zone and AudioVolume counts;
+- record the method in MCP_NOTES "Audio assets (headless)";
+- commit the scripts, the imported `.uasset`s, `DA_Audio`, `DT_Footsteps` and the report.
+
+### P16-3 brief (audio-designer, Sonnet high; Unreal OPEN; `Tools/audio/p16_level.py --apply/--check/--save`, folder `Audio`)
+1. **Seven `ALBAudioZone`s** per the F0 table (location, extent, priority, values, room tone).
+2. **AudioVolumes** for Chapel, Crypt, Cloister walk, Passage, TowerStair and Belfry:
+   - the same boxes, with brush scale = size ÷ 200;
+   - `settings`: the `RVB_LB_*` effect, volume 0.6, fade 1.0;
+   - `ambientZoneSettings` per §6.5;
+   - priority as for the zone;
+   - the Garth gets a no-reverb AudioVolume with priority 2, so the cloister reverb doesn't apply in the open garth.
+3. **`ALBAmbientEmitter`s:**
+
+   | Where | Emitters | Sounds |
+   |---|---|---|
+   | P15 F0.8 drip points (crypt and belfry) | 10 | crypt water points: `Drip_Water` variants, interval (1.5, 4) s; stone points: `Drip_Stone` variants, interval (2, 6) s |
+   | Tower stair (3) and belfry (2), placed at beam joints from F0 | 5 | `Creak_Wood`, interval (8, 20) s |
+   | Crypt, deep corners | 3 | `Chain_Distant`, interval (20, 45) s, `ActiveRadius` 4000 |
+
+4. **Floors:** `BodyInstance.PhysMaterialOverride` on the placed actors in the F0 surface table:
+   - Wood on the tower landings, stair flights and belfry floor;
+   - Grass on the garth floor actor;
+   - Earth on `Garden_Earth_*`.
+5. **Water boxes:** three thin hidden boxes, `/Engine/BasicShapes/Cube`, `bHiddenInGame`, top 0.5 cm above the crypt floor shell, covering `CA_Water_W`, `CA_Water_E` and `CA_Water_Ledge`.
+   - Collision: query only, Block Visibility, Ignore every other channel including Pawn and the interaction channel.
+   - `PhysMaterialOverride` = `PM_LB_Water`, `CanEverAffectNavigation` false, cast shadow off.
+   - Labels `AUD_Water_W`, `AUD_Water_E` and `AUD_Water_Ledge`.
+6. **Census:** before 3054; after 3054 + 7 zones + 7 AudioVolumes + 18 emitters + 3 water boxes = **3089**.
+7. **Close-out:** `--check` all PASS, then one map save; never save anything on the never-save list.
+8. **Suite** with Unreal closed: all tests pass, including `Monastery.AudioSetup`.
