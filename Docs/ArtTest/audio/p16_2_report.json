@@ -1,0 +1,1405 @@
+{
+ "mode": "verify",
+ "ok": true,
+ "checks": 1390,
+ "failures": [],
+ "counts": {
+  "Music": 8,
+  "Bell": 8,
+  "Room": 25,
+  "Weather": 4,
+  "Thunder": 15,
+  "Warden": 30,
+  "Player": 63,
+  "Interact": 22,
+  "Mix": 25,
+  "Physics": 6,
+  "sounds_total": 175
+ },
+ "saved": [],
+ "notes": [
+  "mode=verify reimport=False; 175 WAVs found"
+ ],
+ "set_log": [],
+ "properties": {
+  "MUS_LB_Chase": {
+   "cls": "SCL_LB_Music",
+   "att": null,
+   "con": null,
+   "loop": true,
+   "volume": 1.0
+  },
+  "MUS_LB_Drone_A": {
+   "cls": "SCL_LB_Music",
+   "att": null,
+   "con": null,
+   "loop": true,
+   "volume": 1.0
+  },
+  "MUS_LB_Drone_B": {
+   "cls": "SCL_LB_Music",
+   "att": null,
+   "con": null,
+   "loop": true,
+   "volume": 1.0
+  },
+  "MUS_LB_Drone_C": {
+   "cls": "SCL_LB_Music",
+   "att": null,
+   "con": null,
+   "loop": true,
+   "volume": 1.0
+  },
+  "MUS_LB_Sting_Apparition": {
+   "cls": "SCL_LB_Music",
+   "att": null,
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "MUS_LB_Sting_Caught": {
+   "cls": "SCL_LB_Music",
+   "att": null,
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "MUS_LB_Sting_Spotted": {
+   "cls": "SCL_LB_Music",
+   "att": null,
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "MUS_LB_Tension": {
+   "cls": "SCL_LB_Music",
+   "att": null,
+   "con": null,
+   "loop": true,
+   "volume": 1.0
+  },
+  "SFX_LB_Bell_Stage1": {
+   "cls": "SCL_LB_Ambience",
+   "att": "ATT_LB_Bell",
+   "con": null,
+   "loop": false,
+   "volume": 0.125893
+  },
+  "SFX_LB_Bell_Stage2": {
+   "cls": "SCL_LB_Ambience",
+   "att": "ATT_LB_Bell",
+   "con": null,
+   "loop": false,
+   "volume": 0.199526
+  },
+  "SFX_LB_Bell_Stage3": {
+   "cls": "SCL_LB_Ambience",
+   "att": "ATT_LB_Bell",
+   "con": null,
+   "loop": false,
+   "volume": 0.316228
+  },
+  "SFX_LB_Bell_Stage4": {
+   "cls": "SCL_LB_Ambience",
+   "att": "ATT_LB_Bell",
+   "con": null,
+   "loop": false,
+   "volume": 0.501187
+  },
+  "SFX_LB_Bell_Stage5": {
+   "cls": "SCL_LB_Ambience",
+   "att": "ATT_LB_Bell",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Drip_Stone_01": {
+   "cls": "SCL_LB_Ambience",
+   "att": "ATT_LB_Small",
+   "con": "CON_LB_Drips",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Drip_Stone_02": {
+   "cls": "SCL_LB_Ambience",
+   "att": "ATT_LB_Small",
+   "con": "CON_LB_Drips",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Drip_Stone_03": {
+   "cls": "SCL_LB_Ambience",
+   "att": "ATT_LB_Small",
+   "con": "CON_LB_Drips",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Drip_Stone_04": {
+   "cls": "SCL_LB_Ambience",
+   "att": "ATT_LB_Small",
+   "con": "CON_LB_Drips",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Drip_Stone_05": {
+   "cls": "SCL_LB_Ambience",
+   "att": "ATT_LB_Small",
+   "con": "CON_LB_Drips",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Drip_Water_01": {
+   "cls": "SCL_LB_Ambience",
+   "att": "ATT_LB_Small",
+   "con": "CON_LB_Drips",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Drip_Water_02": {
+   "cls": "SCL_LB_Ambience",
+   "att": "ATT_LB_Small",
+   "con": "CON_LB_Drips",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Drip_Water_03": {
+   "cls": "SCL_LB_Ambience",
+   "att": "ATT_LB_Small",
+   "con": "CON_LB_Drips",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Drip_Water_04": {
+   "cls": "SCL_LB_Ambience",
+   "att": "ATT_LB_Small",
+   "con": "CON_LB_Drips",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Drip_Water_05": {
+   "cls": "SCL_LB_Ambience",
+   "att": "ATT_LB_Small",
+   "con": "CON_LB_Drips",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Rain_In": {
+   "cls": "SCL_LB_Ambience",
+   "att": null,
+   "con": null,
+   "loop": true,
+   "volume": 1.0
+  },
+  "SFX_LB_Rain_Out": {
+   "cls": "SCL_LB_Ambience",
+   "att": null,
+   "con": null,
+   "loop": true,
+   "volume": 1.0
+  },
+  "SFX_LB_Room_Belfry": {
+   "cls": "SCL_LB_Ambience",
+   "att": null,
+   "con": null,
+   "loop": true,
+   "volume": 1.0
+  },
+  "SFX_LB_Room_Chapel": {
+   "cls": "SCL_LB_Ambience",
+   "att": null,
+   "con": null,
+   "loop": true,
+   "volume": 1.0
+  },
+  "SFX_LB_Room_Cloister": {
+   "cls": "SCL_LB_Ambience",
+   "att": null,
+   "con": null,
+   "loop": true,
+   "volume": 1.0
+  },
+  "SFX_LB_Room_Crypt": {
+   "cls": "SCL_LB_Ambience",
+   "att": null,
+   "con": null,
+   "loop": true,
+   "volume": 1.0
+  },
+  "SFX_LB_Room_Passage": {
+   "cls": "SCL_LB_Ambience",
+   "att": null,
+   "con": null,
+   "loop": true,
+   "volume": 1.0
+  },
+  "SFX_LB_Room_Tower": {
+   "cls": "SCL_LB_Ambience",
+   "att": null,
+   "con": null,
+   "loop": true,
+   "volume": 1.0
+  },
+  "SFX_LB_SmallBell_Fail": {
+   "cls": "SCL_LB_SFX",
+   "att": "ATT_LB_Small",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_SmallBell_Solved": {
+   "cls": "SCL_LB_SFX",
+   "att": "ATT_LB_Medium",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_SmallBell_Strike": {
+   "cls": "SCL_LB_SFX",
+   "att": "ATT_LB_Small",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Thunder_Far_01": {
+   "cls": "SCL_LB_Ambience",
+   "att": "ATT_LB_Thunder",
+   "con": "CON_LB_Thunder",
+   "loop": false,
+   "volume": 0.398107
+  },
+  "SFX_LB_Thunder_Far_02": {
+   "cls": "SCL_LB_Ambience",
+   "att": "ATT_LB_Thunder",
+   "con": "CON_LB_Thunder",
+   "loop": false,
+   "volume": 0.398107
+  },
+  "SFX_LB_Thunder_Far_03": {
+   "cls": "SCL_LB_Ambience",
+   "att": "ATT_LB_Thunder",
+   "con": "CON_LB_Thunder",
+   "loop": false,
+   "volume": 0.398107
+  },
+  "SFX_LB_Thunder_Far_04": {
+   "cls": "SCL_LB_Ambience",
+   "att": "ATT_LB_Thunder",
+   "con": "CON_LB_Thunder",
+   "loop": false,
+   "volume": 0.398107
+  },
+  "SFX_LB_Thunder_Mid_01": {
+   "cls": "SCL_LB_Ambience",
+   "att": "ATT_LB_Thunder",
+   "con": "CON_LB_Thunder",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Thunder_Mid_02": {
+   "cls": "SCL_LB_Ambience",
+   "att": "ATT_LB_Thunder",
+   "con": "CON_LB_Thunder",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Thunder_Mid_03": {
+   "cls": "SCL_LB_Ambience",
+   "att": "ATT_LB_Thunder",
+   "con": "CON_LB_Thunder",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Thunder_Mid_04": {
+   "cls": "SCL_LB_Ambience",
+   "att": "ATT_LB_Thunder",
+   "con": "CON_LB_Thunder",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Thunder_Near_01": {
+   "cls": "SCL_LB_Ambience",
+   "att": "ATT_LB_Thunder",
+   "con": "CON_LB_Thunder",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Thunder_Near_02": {
+   "cls": "SCL_LB_Ambience",
+   "att": "ATT_LB_Thunder",
+   "con": "CON_LB_Thunder",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Thunder_Near_03": {
+   "cls": "SCL_LB_Ambience",
+   "att": "ATT_LB_Thunder",
+   "con": "CON_LB_Thunder",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Thunder_Near_04": {
+   "cls": "SCL_LB_Ambience",
+   "att": "ATT_LB_Thunder",
+   "con": "CON_LB_Thunder",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Thunder_Strike_01": {
+   "cls": "SCL_LB_Ambience",
+   "att": "ATT_LB_Thunder",
+   "con": "CON_LB_Thunder",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Thunder_Strike_02": {
+   "cls": "SCL_LB_Ambience",
+   "att": "ATT_LB_Thunder",
+   "con": "CON_LB_Thunder",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Thunder_Strike_03": {
+   "cls": "SCL_LB_Ambience",
+   "att": "ATT_LB_Thunder",
+   "con": "CON_LB_Thunder",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Wind": {
+   "cls": "SCL_LB_Ambience",
+   "att": null,
+   "con": null,
+   "loop": true,
+   "volume": 1.0
+  },
+  "SFX_LB_Wind_Howl": {
+   "cls": "SCL_LB_Ambience",
+   "att": null,
+   "con": null,
+   "loop": true,
+   "volume": 1.0
+  },
+  "SFX_LB_Apparition_Whisper_01": {
+   "cls": "SCL_LB_Voice",
+   "att": "ATT_LB_Warden",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Apparition_Whisper_02": {
+   "cls": "SCL_LB_Voice",
+   "att": "ATT_LB_Warden",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Apparition_Whisper_03": {
+   "cls": "SCL_LB_Voice",
+   "att": "ATT_LB_Warden",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Breath_Calm_01": {
+   "cls": "SCL_LB_SFX",
+   "att": null,
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Breath_Calm_02": {
+   "cls": "SCL_LB_SFX",
+   "att": null,
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Breath_Calm_03": {
+   "cls": "SCL_LB_SFX",
+   "att": null,
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Breath_Calm_04": {
+   "cls": "SCL_LB_SFX",
+   "att": null,
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Breath_Gasp_01": {
+   "cls": "SCL_LB_SFX",
+   "att": null,
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Breath_Gasp_02": {
+   "cls": "SCL_LB_SFX",
+   "att": null,
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Breath_Gasp_03": {
+   "cls": "SCL_LB_SFX",
+   "att": null,
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Breath_Heavy_01": {
+   "cls": "SCL_LB_SFX",
+   "att": null,
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Breath_Heavy_02": {
+   "cls": "SCL_LB_SFX",
+   "att": null,
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Breath_Heavy_03": {
+   "cls": "SCL_LB_SFX",
+   "att": null,
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Breath_Heavy_04": {
+   "cls": "SCL_LB_SFX",
+   "att": null,
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Breath_Panic_01": {
+   "cls": "SCL_LB_SFX",
+   "att": null,
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Breath_Panic_02": {
+   "cls": "SCL_LB_SFX",
+   "att": null,
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Breath_Panic_03": {
+   "cls": "SCL_LB_SFX",
+   "att": null,
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Breath_Panic_04": {
+   "cls": "SCL_LB_SFX",
+   "att": null,
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Candle_Light_01": {
+   "cls": "SCL_LB_SFX",
+   "att": null,
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Candle_Light_02": {
+   "cls": "SCL_LB_SFX",
+   "att": null,
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Candle_Light_03": {
+   "cls": "SCL_LB_SFX",
+   "att": null,
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Candle_Out_01": {
+   "cls": "SCL_LB_SFX",
+   "att": null,
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Candle_Out_02": {
+   "cls": "SCL_LB_SFX",
+   "att": null,
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Candle_Out_03": {
+   "cls": "SCL_LB_SFX",
+   "att": null,
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Candle_Relight": {
+   "cls": "SCL_LB_SFX",
+   "att": null,
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Chain_Distant_01": {
+   "cls": "SCL_LB_Ambience",
+   "att": "ATT_LB_Large",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Chain_Distant_02": {
+   "cls": "SCL_LB_Ambience",
+   "att": "ATT_LB_Large",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Chain_Distant_03": {
+   "cls": "SCL_LB_Ambience",
+   "att": "ATT_LB_Large",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Chain_Distant_04": {
+   "cls": "SCL_LB_Ambience",
+   "att": "ATT_LB_Large",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Creak_Wood_01": {
+   "cls": "SCL_LB_Ambience",
+   "att": "ATT_LB_Medium",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Creak_Wood_02": {
+   "cls": "SCL_LB_Ambience",
+   "att": "ATT_LB_Medium",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Creak_Wood_03": {
+   "cls": "SCL_LB_Ambience",
+   "att": "ATT_LB_Medium",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Creak_Wood_04": {
+   "cls": "SCL_LB_Ambience",
+   "att": "ATT_LB_Medium",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Creak_Wood_05": {
+   "cls": "SCL_LB_Ambience",
+   "att": "ATT_LB_Medium",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Door_Locked_01": {
+   "cls": "SCL_LB_SFX",
+   "att": "ATT_LB_Medium",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Door_Locked_02": {
+   "cls": "SCL_LB_SFX",
+   "att": "ATT_LB_Medium",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Door_Locked_03": {
+   "cls": "SCL_LB_SFX",
+   "att": "ATT_LB_Medium",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Door_Stone_Open_01": {
+   "cls": "SCL_LB_SFX",
+   "att": "ATT_LB_Medium",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Door_Stone_Open_02": {
+   "cls": "SCL_LB_SFX",
+   "att": "ATT_LB_Medium",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Door_Stone_Open_03": {
+   "cls": "SCL_LB_SFX",
+   "att": "ATT_LB_Medium",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Door_Wood_Open_01": {
+   "cls": "SCL_LB_SFX",
+   "att": "ATT_LB_Medium",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Door_Wood_Open_02": {
+   "cls": "SCL_LB_SFX",
+   "att": "ATT_LB_Medium",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Door_Wood_Open_03": {
+   "cls": "SCL_LB_SFX",
+   "att": "ATT_LB_Medium",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Generic_Use_01": {
+   "cls": "SCL_LB_SFX",
+   "att": "ATT_LB_Small",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Generic_Use_02": {
+   "cls": "SCL_LB_SFX",
+   "att": "ATT_LB_Small",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Generic_Use_03": {
+   "cls": "SCL_LB_SFX",
+   "att": "ATT_LB_Small",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Key_Pickup_01": {
+   "cls": "SCL_LB_SFX",
+   "att": null,
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Key_Pickup_02": {
+   "cls": "SCL_LB_SFX",
+   "att": null,
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Lever_Notch_01": {
+   "cls": "SCL_LB_SFX",
+   "att": "ATT_LB_Small",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Lever_Notch_02": {
+   "cls": "SCL_LB_SFX",
+   "att": "ATT_LB_Small",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Lever_Notch_03": {
+   "cls": "SCL_LB_SFX",
+   "att": "ATT_LB_Small",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Lever_Notch_04": {
+   "cls": "SCL_LB_SFX",
+   "att": "ATT_LB_Small",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Paper_01": {
+   "cls": "SCL_LB_SFX",
+   "att": null,
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Paper_02": {
+   "cls": "SCL_LB_SFX",
+   "att": null,
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Paper_03": {
+   "cls": "SCL_LB_SFX",
+   "att": null,
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Step_Earth_01": {
+   "cls": "SCL_LB_SFX",
+   "att": "ATT_LB_Step",
+   "con": "CON_LB_Steps",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Step_Earth_02": {
+   "cls": "SCL_LB_SFX",
+   "att": "ATT_LB_Step",
+   "con": "CON_LB_Steps",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Step_Earth_03": {
+   "cls": "SCL_LB_SFX",
+   "att": "ATT_LB_Step",
+   "con": "CON_LB_Steps",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Step_Earth_04": {
+   "cls": "SCL_LB_SFX",
+   "att": "ATT_LB_Step",
+   "con": "CON_LB_Steps",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Step_Earth_05": {
+   "cls": "SCL_LB_SFX",
+   "att": "ATT_LB_Step",
+   "con": "CON_LB_Steps",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Step_Earth_06": {
+   "cls": "SCL_LB_SFX",
+   "att": "ATT_LB_Step",
+   "con": "CON_LB_Steps",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Step_Grass_01": {
+   "cls": "SCL_LB_SFX",
+   "att": "ATT_LB_Step",
+   "con": "CON_LB_Steps",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Step_Grass_02": {
+   "cls": "SCL_LB_SFX",
+   "att": "ATT_LB_Step",
+   "con": "CON_LB_Steps",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Step_Grass_03": {
+   "cls": "SCL_LB_SFX",
+   "att": "ATT_LB_Step",
+   "con": "CON_LB_Steps",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Step_Grass_04": {
+   "cls": "SCL_LB_SFX",
+   "att": "ATT_LB_Step",
+   "con": "CON_LB_Steps",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Step_Grass_05": {
+   "cls": "SCL_LB_SFX",
+   "att": "ATT_LB_Step",
+   "con": "CON_LB_Steps",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Step_Grass_06": {
+   "cls": "SCL_LB_SFX",
+   "att": "ATT_LB_Step",
+   "con": "CON_LB_Steps",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Step_Metal_01": {
+   "cls": "SCL_LB_SFX",
+   "att": "ATT_LB_Step",
+   "con": "CON_LB_Steps",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Step_Metal_02": {
+   "cls": "SCL_LB_SFX",
+   "att": "ATT_LB_Step",
+   "con": "CON_LB_Steps",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Step_Metal_03": {
+   "cls": "SCL_LB_SFX",
+   "att": "ATT_LB_Step",
+   "con": "CON_LB_Steps",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Step_Metal_04": {
+   "cls": "SCL_LB_SFX",
+   "att": "ATT_LB_Step",
+   "con": "CON_LB_Steps",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Step_Metal_05": {
+   "cls": "SCL_LB_SFX",
+   "att": "ATT_LB_Step",
+   "con": "CON_LB_Steps",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Step_Metal_06": {
+   "cls": "SCL_LB_SFX",
+   "att": "ATT_LB_Step",
+   "con": "CON_LB_Steps",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Step_Stone_01": {
+   "cls": "SCL_LB_SFX",
+   "att": "ATT_LB_Step",
+   "con": "CON_LB_Steps",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Step_Stone_02": {
+   "cls": "SCL_LB_SFX",
+   "att": "ATT_LB_Step",
+   "con": "CON_LB_Steps",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Step_Stone_03": {
+   "cls": "SCL_LB_SFX",
+   "att": "ATT_LB_Step",
+   "con": "CON_LB_Steps",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Step_Stone_04": {
+   "cls": "SCL_LB_SFX",
+   "att": "ATT_LB_Step",
+   "con": "CON_LB_Steps",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Step_Stone_05": {
+   "cls": "SCL_LB_SFX",
+   "att": "ATT_LB_Step",
+   "con": "CON_LB_Steps",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Step_Stone_06": {
+   "cls": "SCL_LB_SFX",
+   "att": "ATT_LB_Step",
+   "con": "CON_LB_Steps",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Step_Water_01": {
+   "cls": "SCL_LB_SFX",
+   "att": "ATT_LB_Step",
+   "con": "CON_LB_Steps",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Step_Water_02": {
+   "cls": "SCL_LB_SFX",
+   "att": "ATT_LB_Step",
+   "con": "CON_LB_Steps",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Step_Water_03": {
+   "cls": "SCL_LB_SFX",
+   "att": "ATT_LB_Step",
+   "con": "CON_LB_Steps",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Step_Water_04": {
+   "cls": "SCL_LB_SFX",
+   "att": "ATT_LB_Step",
+   "con": "CON_LB_Steps",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Step_Water_05": {
+   "cls": "SCL_LB_SFX",
+   "att": "ATT_LB_Step",
+   "con": "CON_LB_Steps",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Step_Water_06": {
+   "cls": "SCL_LB_SFX",
+   "att": "ATT_LB_Step",
+   "con": "CON_LB_Steps",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Step_Wood_01": {
+   "cls": "SCL_LB_SFX",
+   "att": "ATT_LB_Step",
+   "con": "CON_LB_Steps",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Step_Wood_02": {
+   "cls": "SCL_LB_SFX",
+   "att": "ATT_LB_Step",
+   "con": "CON_LB_Steps",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Step_Wood_03": {
+   "cls": "SCL_LB_SFX",
+   "att": "ATT_LB_Step",
+   "con": "CON_LB_Steps",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Step_Wood_04": {
+   "cls": "SCL_LB_SFX",
+   "att": "ATT_LB_Step",
+   "con": "CON_LB_Steps",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Step_Wood_05": {
+   "cls": "SCL_LB_SFX",
+   "att": "ATT_LB_Step",
+   "con": "CON_LB_Steps",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Step_Wood_06": {
+   "cls": "SCL_LB_SFX",
+   "att": "ATT_LB_Step",
+   "con": "CON_LB_Steps",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Stone_Grind_01": {
+   "cls": "SCL_LB_SFX",
+   "att": "ATT_LB_Medium",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Stone_Grind_02": {
+   "cls": "SCL_LB_SFX",
+   "att": "ATT_LB_Medium",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Stone_Grind_03": {
+   "cls": "SCL_LB_SFX",
+   "att": "ATT_LB_Medium",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Warden_Breath_Fast": {
+   "cls": "SCL_LB_Voice",
+   "att": "ATT_LB_Warden",
+   "con": null,
+   "loop": true,
+   "volume": 1.0
+  },
+  "SFX_LB_Warden_Breath_Heavy": {
+   "cls": "SCL_LB_Voice",
+   "att": "ATT_LB_Warden",
+   "con": null,
+   "loop": true,
+   "volume": 1.0
+  },
+  "SFX_LB_Warden_Breath_Slow": {
+   "cls": "SCL_LB_Voice",
+   "att": "ATT_LB_Warden",
+   "con": null,
+   "loop": true,
+   "volume": 1.0
+  },
+  "SFX_LB_Warden_Caught_01": {
+   "cls": "SCL_LB_Voice",
+   "att": "ATT_LB_WardenTell",
+   "con": "CON_LB_Tells",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Warden_Caught_02": {
+   "cls": "SCL_LB_Voice",
+   "att": "ATT_LB_WardenTell",
+   "con": "CON_LB_Tells",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Warden_Chain_01": {
+   "cls": "SCL_LB_Voice",
+   "att": "ATT_LB_Warden",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Warden_Chain_02": {
+   "cls": "SCL_LB_Voice",
+   "att": "ATT_LB_Warden",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Warden_Chain_03": {
+   "cls": "SCL_LB_Voice",
+   "att": "ATT_LB_Warden",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Warden_Chain_04": {
+   "cls": "SCL_LB_Voice",
+   "att": "ATT_LB_Warden",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Warden_Exhale_01": {
+   "cls": "SCL_LB_Voice",
+   "att": "ATT_LB_WardenTell",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Warden_Exhale_02": {
+   "cls": "SCL_LB_Voice",
+   "att": "ATT_LB_WardenTell",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Warden_Exhale_03": {
+   "cls": "SCL_LB_Voice",
+   "att": "ATT_LB_WardenTell",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Warden_Roar_01": {
+   "cls": "SCL_LB_Voice",
+   "att": "ATT_LB_WardenTell",
+   "con": "CON_LB_Tells",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Warden_Roar_02": {
+   "cls": "SCL_LB_Voice",
+   "att": "ATT_LB_WardenTell",
+   "con": "CON_LB_Tells",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Warden_Roar_03": {
+   "cls": "SCL_LB_Voice",
+   "att": "ATT_LB_WardenTell",
+   "con": "CON_LB_Tells",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Warden_Robe": {
+   "cls": "SCL_LB_Voice",
+   "att": "ATT_LB_Warden",
+   "con": null,
+   "loop": true,
+   "volume": 1.0
+  },
+  "SFX_LB_Warden_Spotted_01": {
+   "cls": "SCL_LB_Voice",
+   "att": "ATT_LB_WardenTell",
+   "con": "CON_LB_Tells",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Warden_Spotted_02": {
+   "cls": "SCL_LB_Voice",
+   "att": "ATT_LB_WardenTell",
+   "con": "CON_LB_Tells",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Warden_Spotted_03": {
+   "cls": "SCL_LB_Voice",
+   "att": "ATT_LB_WardenTell",
+   "con": "CON_LB_Tells",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Warden_Step_01": {
+   "cls": "SCL_LB_Voice",
+   "att": "ATT_LB_Warden",
+   "con": "CON_LB_Steps",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Warden_Step_02": {
+   "cls": "SCL_LB_Voice",
+   "att": "ATT_LB_Warden",
+   "con": "CON_LB_Steps",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Warden_Step_03": {
+   "cls": "SCL_LB_Voice",
+   "att": "ATT_LB_Warden",
+   "con": "CON_LB_Steps",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Warden_Step_04": {
+   "cls": "SCL_LB_Voice",
+   "att": "ATT_LB_Warden",
+   "con": "CON_LB_Steps",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Warden_Step_05": {
+   "cls": "SCL_LB_Voice",
+   "att": "ATT_LB_Warden",
+   "con": "CON_LB_Steps",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Warden_Windup_01": {
+   "cls": "SCL_LB_Voice",
+   "att": "ATT_LB_WardenTell",
+   "con": "CON_LB_Tells",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Warden_Windup_02": {
+   "cls": "SCL_LB_Voice",
+   "att": "ATT_LB_WardenTell",
+   "con": "CON_LB_Tells",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Warden_Windup_03": {
+   "cls": "SCL_LB_Voice",
+   "att": "ATT_LB_WardenTell",
+   "con": "CON_LB_Tells",
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Winch_01": {
+   "cls": "SCL_LB_SFX",
+   "att": "ATT_LB_Medium",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Winch_02": {
+   "cls": "SCL_LB_SFX",
+   "att": "ATT_LB_Medium",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Winch_03": {
+   "cls": "SCL_LB_SFX",
+   "att": "ATT_LB_Medium",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "ATT_LB_Step": {
+   "attenuate": "True",
+   "spatialize": "True",
+   "attenuation_shape": "SPHERE",
+   "falloff_distance": "1500",
+   "attenuation_shape_extents": "(200, 0, 0)"
+  },
+  "ATT_LB_Small": {
+   "attenuate": "True",
+   "spatialize": "True",
+   "attenuation_shape": "SPHERE",
+   "falloff_distance": "1500",
+   "attenuation_shape_extents": "(200, 0, 0)"
+  },
+  "ATT_LB_Medium": {
+   "attenuate": "True",
+   "spatialize": "True",
+   "attenuation_shape": "SPHERE",
+   "falloff_distance": "3000",
+   "attenuation_shape_extents": "(400, 0, 0)",
+   "attenuate_with_lpf": "True",
+   "lpf_radius_min": "1000",
+   "lpf_radius_max": "4000",
+   "lpf_frequency_at_max": "3000"
+  },
+  "ATT_LB_Large": {
+   "attenuate": "True",
+   "spatialize": "True",
+   "attenuation_shape": "SPHERE",
+   "falloff_distance": "6000",
+   "attenuation_shape_extents": "(800, 0, 0)"
+  },
+  "ATT_LB_Warden": {
+   "attenuate": "True",
+   "spatialize": "True",
+   "attenuation_shape": "SPHERE",
+   "falloff_distance": "3500",
+   "attenuation_shape_extents": "(300, 0, 0)",
+   "distance_algorithm": "NATURAL_SOUND",
+   "enable_occlusion": "True",
+   "occlusion_trace_channel": "ECC_VISIBILITY",
+   "occlusion_volume_attenuation": "0.4",
+   "occlusion_low_pass_filter_frequency": "1200",
+   "occlusion_interpolation_time": "0.3"
+  },
+  "ATT_LB_WardenTell": {
+   "attenuate": "True",
+   "spatialize": "True",
+   "attenuation_shape": "SPHERE",
+   "falloff_distance": "5000",
+   "attenuation_shape_extents": "(500, 0, 0)",
+   "enable_occlusion": "True",
+   "occlusion_trace_channel": "ECC_VISIBILITY",
+   "occlusion_volume_attenuation": "0.6"
+  },
+  "ATT_LB_Thunder": {
+   "attenuate": "True",
+   "spatialize": "True",
+   "attenuation_shape": "SPHERE",
+   "falloff_distance": "60000",
+   "attenuation_shape_extents": "(20000, 0, 0)",
+   "non_spatialized_radius_start": "3000"
+  },
+  "ATT_LB_Bell": {
+   "attenuate": "True",
+   "spatialize": "True",
+   "attenuation_shape": "SPHERE",
+   "falloff_distance": "120000",
+   "attenuation_shape_extents": "(10000, 0, 0)",
+   "non_spatialized_radius_start": "2000"
+  },
+  "CON_LB_Steps": {
+   "max_count": 4,
+   "rule": "STOP_OLDEST"
+  },
+  "CON_LB_Thunder": {
+   "max_count": 2,
+   "rule": "STOP_QUIETEST"
+  },
+  "CON_LB_Drips": {
+   "max_count": 6,
+   "rule": "STOP_FARTHEST_THEN_OLDEST"
+  },
+  "CON_LB_Tells": {
+   "max_count": 1,
+   "rule": "STOP_OLDEST"
+  },
+  "RVB_LB_Chapel": {
+   "decay": 3.2,
+   "density": 1.0,
+   "diffusion": 0.9,
+   "gain": 0.32,
+   "gain_hf": 0.6
+  },
+  "RVB_LB_Crypt": {
+   "decay": 2.4,
+   "density": 1.0,
+   "diffusion": 1.0,
+   "gain": 0.35,
+   "gain_hf": 0.4
+  },
+  "RVB_LB_Cloister": {
+   "decay": 1.6,
+   "density": 0.8,
+   "diffusion": 0.8,
+   "gain": 0.25,
+   "gain_hf": 0.7
+  },
+  "RVB_LB_Passage": {
+   "decay": 1.2,
+   "density": 0.9,
+   "diffusion": 0.9,
+   "gain": 0.28,
+   "gain_hf": 0.6
+  },
+  "RVB_LB_Tower": {
+   "decay": 2.8,
+   "density": 0.9,
+   "diffusion": 0.8,
+   "gain": 0.3,
+   "gain_hf": 0.5
+  },
+  "RVB_LB_Belfry": {
+   "decay": 1.5,
+   "density": 0.7,
+   "diffusion": 0.7,
+   "gain": 0.22,
+   "gain_hf": 0.7
+  },
+  "DA_Audio": {
+   "top_level_properties_written": [
+    "Bell",
+    "BellBeats",
+    "BellLocation",
+    "DebugForceMusicState",
+    "InteractionCues",
+    "Music",
+    "Player",
+    "SilentClasses",
+    "SmallBellFail",
+    "SmallBellPitch",
+    "SmallBellSolved",
+    "SmallBellStrike",
+    "Thunder",
+    "UserClasses",
+    "UserMix",
+    "Warden",
+    "Weather"
+   ],
+   "interaction_cues": 9,
+   "silent_classes": 3,
+   "bell_beats": 6
+  }
+ },
+ "failure_count": 0
+}
