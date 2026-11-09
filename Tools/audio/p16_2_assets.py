@@ -6,7 +6,9 @@ Environment variables:
     LB_OUT       path of the JSON report
     LB_MODE      "apply" (default): import, create, set, save, then verify in the same process
                  "verify": read-only, nothing is created, set or saved; run it in a FRESH process to prove what is on disk
-    LB_REIMPORT  "1" re-imports every WAV even when the SoundWave already exists (default: import only the missing ones)
+    LB_REIMPORT  "1" re-imports every WAV even when the SoundWave already exists (default: import only the missing ones);
+                 any other value except "0" is a REGEX on the sound name: re-import only the matching sounds
+                 (P16-5: LB_REIMPORT="^SFX_LB_Thunder_(Near|Strike)_" re-imports the recorded-crack thunder only)
 
 What it does (docs/plans/P16_AUDIO.md, "P16-2 brief"):
  1. imports the 175 WAVs of SourceArt/Audio/Generated and Recorded into /Game/LastBell/Audio/<Folder>/
@@ -15,7 +17,7 @@ What it does (docs/plans/P16_AUDIO.md, "P16-2 brief"):
  4. creates the 6 PM_LB_* physical materials (SurfaceType1..6)
  5. creates and fills /Game/LastBell/Data/DA_Audio (class LBAudioSettings)
  6. rebuilds the rows of /Game/LastBell/Data/DT_Footsteps
- 7. saves every changed package explicitly, then verifies everything
+ 7. applies the OWNER_CHOICES (below: the P16-4 listening-session values), saves every changed package explicitly, then verifies everything
 
 Idempotent: assets are found or created, a value is written only when it differs, and only changed packages are saved. It touches only
 /Game/LastBell/Audio/**, /Game/LastBell/Physics/**, /Game/LastBell/Data/DA_Audio and /Game/LastBell/Data/DT_Footsteps (the guard is
@@ -29,6 +31,7 @@ import math
 import os
 import re
 import traceback
+import wave as wave_module
 
 import unreal
 
@@ -37,7 +40,9 @@ GEN_DIR = os.path.join(ROOT, "SourceArt", "Audio", "Generated")
 REC_DIR = os.path.join(ROOT, "SourceArt", "Audio", "Recorded")
 OUT = os.environ.get("LB_OUT", "")
 MODE = os.environ.get("LB_MODE", "apply").lower()
-REIMPORT = os.environ.get("LB_REIMPORT", "0") == "1"
+_REIMPORT_ENV = os.environ.get("LB_REIMPORT", "0")
+REIMPORT = _REIMPORT_ENV == "1"
+REIMPORT_RE = re.compile(_REIMPORT_ENV) if _REIMPORT_ENV not in ("0", "1", "") else None
 APPLY = MODE == "apply"
 
 AUD = "/Game/LastBell/Audio"
@@ -183,6 +188,25 @@ REVERB_REFLECTIONS_DELAY = 0.01
 PHYS_MATS = {"PM_LB_Stone": 1, "PM_LB_Wood": 2, "PM_LB_Earth": 3, "PM_LB_Grass": 4, "PM_LB_Water": 5, "PM_LB_Metal": 6}
 
 # ---------------------------------------------------------------------------------------------------------------------------------
+# OWNER_CHOICES: the owner's values from the P16-4 listening sessions (plan "P16-4: listening session, part 1 / part 2"). They WIN over the
+# cue-sheet values (the manifest mix_gain_db), so a fresh run of this script reproduces what the owner approved by ear. Edit only after
+# another listening session, and record it in docs/plans/P16_AUDIO.md.
+# ---------------------------------------------------------------------------------------------------------------------------------
+OWNER_CHOICES = {
+    # SoundWave Volume by name regex (first match wins; sounds that match nothing keep the cue-sheet volume = 10^(mix_gain_db / 20))
+    "wave_volume": [
+        (r"^SFX_LB_Bell_Stage[1-4]$", 1.0),    # was 0.126 / 0.200 / 0.316 / 0.501: stage 1 was inaudible; the files' own filtering carries the distance
+        (r"^SFX_LB_Thunder_Far_", 1.0),        # was 0.398 (-8 dB): "fine now" at full volume
+        (r"^SFX_LB_Step_", 0.6),               # the 36 player footsteps were too loud at 1.0
+        (r"^SFX_LB_Warden_Roar_", 2.0),        # was inaudible under the chase music
+    ],
+    # SoundClass Properties.volume by class key (CLASS_NAMES): the overall loudness
+    "class_volume": {"Master": 0.7},
+    # DA_Audio (LBAudioSettings) editor properties; the script writes only these, the other fields are left as they are on disk
+    "da_audio": {"rain_out_gain": 0.22, "rain_in_gain": 0.03, "rain_exposure_power": 1.5, "wind_out_gain": 0.08, "wind_min": 0.2},
+}
+
+# ---------------------------------------------------------------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------------------------------------------------------------
 
@@ -288,10 +312,18 @@ def build_sound_classes():
             record("SCL_LB_Master", "child_classes", "+%d" % len(missing))
         else:
             check("SCL_LB_Master.child_classes", False, "missing %s" % [m.get_name() for m in missing])
-    # Defaults: volume 1, pitch 1 (the plan leaves balancing to P16-4)
+    # Volume 1 everywhere except the owner's choices (SCL_LB_Master 0.7). The write goes through the Properties struct and the package is marked
+    # changed by hand: an MCP write to a SoundClass's Properties does not dirty the package, but save_asset(only_if_dirty=False) saves it.
     for key, asset in assets.items():
+        wanted = OWNER_CHOICES["class_volume"].get(key, 1.0)
         props = asset.get_editor_property("properties")
-        check("%s volume 1.0" % asset.get_name(), feq(props.get_editor_property("volume"), 1.0), props.get_editor_property("volume"))
+        if not feq(props.get_editor_property("volume"), wanted) and APPLY:
+            props.set_editor_property("volume", wanted)
+            asset.set_editor_property("properties", props)
+            mark_changed(asset)
+            record(asset.get_name(), "properties.volume", wanted)
+            props = asset.get_editor_property("properties")
+        check("%s volume %g" % (asset.get_name(), wanted), feq(props.get_editor_property("volume"), wanted), props.get_editor_property("volume"))
     return assets
 
 
@@ -437,7 +469,7 @@ def import_sounds(items):
     tasks = []
     for name, info in items.items():
         package = sound_package(name)
-        if EAL.does_asset_exist(package) and not REIMPORT:
+        if EAL.does_asset_exist(package) and not REIMPORT and not (REIMPORT_RE and REIMPORT_RE.search(name)):
             continue
         task = unreal.AssetImportTask()
         task.filename = info["path"]
@@ -465,7 +497,16 @@ def sound_targets(name, info):
     cls_rule = rule_for(SOUND_RULES, name)
     con_rule = rule_for(CONCURRENCY_RULES, name)
     volume = 10.0 ** (info["gain_db"] / 20.0) if info["gain_db"] else 1.0
+    for pattern, owner_volume in OWNER_CHOICES["wave_volume"]:
+        if re.search(pattern, name):
+            volume = owner_volume
+            break
     return cls_rule[1], cls_rule[2], (con_rule[1] if con_rule else None), info["loop"], volume
+
+
+def wav_seconds(path):
+    with wave_module.open(path, "rb") as w:
+        return w.getnframes() / float(w.getframerate())
 
 
 def wave_concurrency(wave):
@@ -692,6 +733,8 @@ def build_da():
         subset_eq(expected, read_back(), "DA_Audio", errors)
     for e in errors:
         check("DA_Audio read-back", False, e)
+    for prop, value in OWNER_CHOICES["da_audio"].items():  # owner's tuning; only these fields are touched
+        set_prop(da, prop, value, "DA_Audio")
     return da, expected
 
 
@@ -714,13 +757,15 @@ def verify_da(da, expected):
     check("DA_Audio.small_bell_pitch count", len(da.get_editor_property("small_bell_pitch")) == 4)
     check("DA_Audio.user_classes count", len(da.get_editor_property("user_classes")) == 6)
     # C++ defaults of the groups the script does not write
-    defaults = {"rain_out_gain": 0.8, "rain_in_gain": 0.55, "rain_exposure_power": 0.7, "wind_out_gain": 0.6, "wind_min": 0.3, "mix_fade_seconds": 0.75,
+    defaults = {"mix_fade_seconds": 0.75,
                 "thunder_jitter": 0.4, "thunder_near_at": 0.75, "thunder_far_below": 0.4, "thunder_distance": 6000.0, "strike_crack_delay": 0.12,
                 "ambient_toll_gap_after_beat": 90.0, "ambient_toll_volume": 0.5, "ambient_toll_max_tension": 0.5, "drone_seconds": 45.0,
                 "tension_near_distance": 2500.0, "music_min_stage": 3, "stress_chase": 1.0, "stress_near_search": 0.6, "stress_decay": 0.25,
                 "darkness_lit": 0.15, "darkness_unlit": 0.55, "candle_out_stress": 0.35, "random_seed": 0}
     for prop, value in defaults.items():
         check("DA_Audio default %s" % prop, feq(da.get_editor_property(prop), value), da.get_editor_property(prop))
+    for prop, value in OWNER_CHOICES["da_audio"].items():
+        check("DA_Audio owner choice %s = %g" % (prop, value), feq(da.get_editor_property(prop), value), da.get_editor_property(prop))
 
 
 # ---------------------------------------------------------------------------------------------------------------------------------
@@ -857,6 +902,8 @@ def verify_all(items, classes, attenuation, concurrency, reverbs, mix, phys):
         ok &= check("%s volume" % name, feq(wave.get_editor_property("volume"), volume, 1e-4), wave.get_editor_property("volume"))
         have = wave_concurrency(wave)
         ok &= check("%s concurrency" % name, (have == [concurrency[con_name]]) if con_name else have == [], [h.get_name() for h in have])
+        ok &= check("%s duration matches its WAV" % name, abs(float(wave.get_editor_property("duration")) - wav_seconds(info["path"])) < 0.01,
+                    "asset %.3f s, WAV %.3f s" % (float(wave.get_editor_property("duration")), wav_seconds(info["path"])))
         if loop:
             loops.append(name)
         report["properties"][name] = dict(cls=CLASS_NAMES[cls_key], att=att_name, con=con_name, loop=loop, volume=round(volume, 6))

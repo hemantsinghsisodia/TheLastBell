@@ -1,7 +1,7 @@
 {
  "mode": "verify",
  "ok": true,
- "checks": 1390,
+ "checks": 1565,
  "failures": [],
  "counts": {
   "Music": 8,
@@ -83,28 +83,28 @@
    "att": "ATT_LB_Bell",
    "con": null,
    "loop": false,
-   "volume": 0.125893
+   "volume": 1.0
   },
   "SFX_LB_Bell_Stage2": {
    "cls": "SCL_LB_Ambience",
    "att": "ATT_LB_Bell",
    "con": null,
    "loop": false,
-   "volume": 0.199526
+   "volume": 1.0
   },
   "SFX_LB_Bell_Stage3": {
    "cls": "SCL_LB_Ambience",
    "att": "ATT_LB_Bell",
    "con": null,
    "loop": false,
-   "volume": 0.316228
+   "volume": 1.0
   },
   "SFX_LB_Bell_Stage4": {
    "cls": "SCL_LB_Ambience",
    "att": "ATT_LB_Bell",
    "con": null,
    "loop": false,
-   "volume": 0.501187
+   "volume": 1.0
   },
   "SFX_LB_Bell_Stage5": {
    "cls": "SCL_LB_Ambience",
@@ -265,28 +265,28 @@
    "att": "ATT_LB_Thunder",
    "con": "CON_LB_Thunder",
    "loop": false,
-   "volume": 0.398107
+   "volume": 1.0
   },
   "SFX_LB_Thunder_Far_02": {
    "cls": "SCL_LB_Ambience",
    "att": "ATT_LB_Thunder",
    "con": "CON_LB_Thunder",
    "loop": false,
-   "volume": 0.398107
+   "volume": 1.0
   },
   "SFX_LB_Thunder_Far_03": {
    "cls": "SCL_LB_Ambience",
    "att": "ATT_LB_Thunder",
    "con": "CON_LB_Thunder",
    "loop": false,
-   "volume": 0.398107
+   "volume": 1.0
   },
   "SFX_LB_Thunder_Far_04": {
    "cls": "SCL_LB_Ambience",
    "att": "ATT_LB_Thunder",
    "con": "CON_LB_Thunder",
    "loop": false,
-   "volume": 0.398107
+   "volume": 1.0
   },
   "SFX_LB_Thunder_Mid_01": {
    "cls": "SCL_LB_Ambience",
@@ -769,252 +769,252 @@
    "att": "ATT_LB_Step",
    "con": "CON_LB_Steps",
    "loop": false,
-   "volume": 1.0
+   "volume": 0.6
   },
   "SFX_LB_Step_Earth_02": {
    "cls": "SCL_LB_SFX",
    "att": "ATT_LB_Step",
    "con": "CON_LB_Steps",
    "loop": false,
-   "volume": 1.0
+   "volume": 0.6
   },
   "SFX_LB_Step_Earth_03": {
    "cls": "SCL_LB_SFX",
    "att": "ATT_LB_Step",
    "con": "CON_LB_Steps",
    "loop": false,
-   "volume": 1.0
+   "volume": 0.6
   },
   "SFX_LB_Step_Earth_04": {
    "cls": "SCL_LB_SFX",
    "att": "ATT_LB_Step",
    "con": "CON_LB_Steps",
    "loop": false,
-   "volume": 1.0
+   "volume": 0.6
   },
   "SFX_LB_Step_Earth_05": {
    "cls": "SCL_LB_SFX",
    "att": "ATT_LB_Step",
    "con": "CON_LB_Steps",
    "loop": false,
-   "volume": 1.0
+   "volume": 0.6
   },
   "SFX_LB_Step_Earth_06": {
    "cls": "SCL_LB_SFX",
    "att": "ATT_LB_Step",
    "con": "CON_LB_Steps",
    "loop": false,
-   "volume": 1.0
+   "volume": 0.6
   },
   "SFX_LB_Step_Grass_01": {
    "cls": "SCL_LB_SFX",
    "att": "ATT_LB_Step",
    "con": "CON_LB_Steps",
    "loop": false,
-   "volume": 1.0
+   "volume": 0.6
   },
   "SFX_LB_Step_Grass_02": {
    "cls": "SCL_LB_SFX",
    "att": "ATT_LB_Step",
    "con": "CON_LB_Steps",
    "loop": false,
-   "volume": 1.0
+   "volume": 0.6
   },
   "SFX_LB_Step_Grass_03": {
    "cls": "SCL_LB_SFX",
    "att": "ATT_LB_Step",
    "con": "CON_LB_Steps",
    "loop": false,
-   "volume": 1.0
+   "volume": 0.6
   },
   "SFX_LB_Step_Grass_04": {
    "cls": "SCL_LB_SFX",
    "att": "ATT_LB_Step",
    "con": "CON_LB_Steps",
    "loop": false,
-   "volume": 1.0
+   "volume": 0.6
   },
   "SFX_LB_Step_Grass_05": {
    "cls": "SCL_LB_SFX",
    "att": "ATT_LB_Step",
    "con": "CON_LB_Steps",
    "loop": false,
-   "volume": 1.0
+   "volume": 0.6
   },
   "SFX_LB_Step_Grass_06": {
    "cls": "SCL_LB_SFX",
    "att": "ATT_LB_Step",
    "con": "CON_LB_Steps",
    "loop": false,
-   "volume": 1.0
+   "volume": 0.6
   },
   "SFX_LB_Step_Metal_01": {
    "cls": "SCL_LB_SFX",
    "att": "ATT_LB_Step",
    "con": "CON_LB_Steps",
    "loop": false,
-   "volume": 1.0
+   "volume": 0.6
   },
   "SFX_LB_Step_Metal_02": {
    "cls": "SCL_LB_SFX",
    "att": "ATT_LB_Step",
    "con": "CON_LB_Steps",
    "loop": false,
-   "volume": 1.0
+   "volume": 0.6
   },
   "SFX_LB_Step_Metal_03": {
    "cls": "SCL_LB_SFX",
    "att": "ATT_LB_Step",
    "con": "CON_LB_Steps",
    "loop": false,
-   "volume": 1.0
+   "volume": 0.6
   },
   "SFX_LB_Step_Metal_04": {
    "cls": "SCL_LB_SFX",
    "att": "ATT_LB_Step",
    "con": "CON_LB_Steps",
    "loop": false,
-   "volume": 1.0
+   "volume": 0.6
   },
   "SFX_LB_Step_Metal_05": {
    "cls": "SCL_LB_SFX",
    "att": "ATT_LB_Step",
    "con": "CON_LB_Steps",
    "loop": false,
-   "volume": 1.0
+   "volume": 0.6
   },
   "SFX_LB_Step_Metal_06": {
    "cls": "SCL_LB_SFX",
    "att": "ATT_LB_Step",
    "con": "CON_LB_Steps",
    "loop": false,
-   "volume": 1.0
+   "volume": 0.6
   },
   "SFX_LB_Step_Stone_01": {
    "cls": "SCL_LB_SFX",
    "att": "ATT_LB_Step",
    "con": "CON_LB_Steps",
    "loop": false,
-   "volume": 1.0
+   "volume": 0.6
   },
   "SFX_LB_Step_Stone_02": {
    "cls": "SCL_LB_SFX",
    "att": "ATT_LB_Step",
    "con": "CON_LB_Steps",
    "loop": false,
-   "volume": 1.0
+   "volume": 0.6
   },
   "SFX_LB_Step_Stone_03": {
    "cls": "SCL_LB_SFX",
    "att": "ATT_LB_Step",
    "con": "CON_LB_Steps",
    "loop": false,
-   "volume": 1.0
+   "volume": 0.6
   },
   "SFX_LB_Step_Stone_04": {
    "cls": "SCL_LB_SFX",
    "att": "ATT_LB_Step",
    "con": "CON_LB_Steps",
    "loop": false,
-   "volume": 1.0
+   "volume": 0.6
   },
   "SFX_LB_Step_Stone_05": {
    "cls": "SCL_LB_SFX",
    "att": "ATT_LB_Step",
    "con": "CON_LB_Steps",
    "loop": false,
-   "volume": 1.0
+   "volume": 0.6
   },
   "SFX_LB_Step_Stone_06": {
    "cls": "SCL_LB_SFX",
    "att": "ATT_LB_Step",
    "con": "CON_LB_Steps",
    "loop": false,
-   "volume": 1.0
+   "volume": 0.6
   },
   "SFX_LB_Step_Water_01": {
    "cls": "SCL_LB_SFX",
    "att": "ATT_LB_Step",
    "con": "CON_LB_Steps",
    "loop": false,
-   "volume": 1.0
+   "volume": 0.6
   },
   "SFX_LB_Step_Water_02": {
    "cls": "SCL_LB_SFX",
    "att": "ATT_LB_Step",
    "con": "CON_LB_Steps",
    "loop": false,
-   "volume": 1.0
+   "volume": 0.6
   },
   "SFX_LB_Step_Water_03": {
    "cls": "SCL_LB_SFX",
    "att": "ATT_LB_Step",
    "con": "CON_LB_Steps",
    "loop": false,
-   "volume": 1.0
+   "volume": 0.6
   },
   "SFX_LB_Step_Water_04": {
    "cls": "SCL_LB_SFX",
    "att": "ATT_LB_Step",
    "con": "CON_LB_Steps",
    "loop": false,
-   "volume": 1.0
+   "volume": 0.6
   },
   "SFX_LB_Step_Water_05": {
    "cls": "SCL_LB_SFX",
    "att": "ATT_LB_Step",
    "con": "CON_LB_Steps",
    "loop": false,
-   "volume": 1.0
+   "volume": 0.6
   },
   "SFX_LB_Step_Water_06": {
    "cls": "SCL_LB_SFX",
    "att": "ATT_LB_Step",
    "con": "CON_LB_Steps",
    "loop": false,
-   "volume": 1.0
+   "volume": 0.6
   },
   "SFX_LB_Step_Wood_01": {
    "cls": "SCL_LB_SFX",
    "att": "ATT_LB_Step",
    "con": "CON_LB_Steps",
    "loop": false,
-   "volume": 1.0
+   "volume": 0.6
   },
   "SFX_LB_Step_Wood_02": {
    "cls": "SCL_LB_SFX",
    "att": "ATT_LB_Step",
    "con": "CON_LB_Steps",
    "loop": false,
-   "volume": 1.0
+   "volume": 0.6
   },
   "SFX_LB_Step_Wood_03": {
    "cls": "SCL_LB_SFX",
    "att": "ATT_LB_Step",
    "con": "CON_LB_Steps",
    "loop": false,
-   "volume": 1.0
+   "volume": 0.6
   },
   "SFX_LB_Step_Wood_04": {
    "cls": "SCL_LB_SFX",
    "att": "ATT_LB_Step",
    "con": "CON_LB_Steps",
    "loop": false,
-   "volume": 1.0
+   "volume": 0.6
   },
   "SFX_LB_Step_Wood_05": {
    "cls": "SCL_LB_SFX",
    "att": "ATT_LB_Step",
    "con": "CON_LB_Steps",
    "loop": false,
-   "volume": 1.0
+   "volume": 0.6
   },
   "SFX_LB_Step_Wood_06": {
    "cls": "SCL_LB_SFX",
    "att": "ATT_LB_Step",
    "con": "CON_LB_Steps",
    "loop": false,
-   "volume": 1.0
+   "volume": 0.6
   },
   "SFX_LB_Stone_Grind_01": {
    "cls": "SCL_LB_SFX",
@@ -1126,21 +1126,21 @@
    "att": "ATT_LB_WardenTell",
    "con": "CON_LB_Tells",
    "loop": false,
-   "volume": 1.0
+   "volume": 2.0
   },
   "SFX_LB_Warden_Roar_02": {
    "cls": "SCL_LB_Voice",
    "att": "ATT_LB_WardenTell",
    "con": "CON_LB_Tells",
    "loop": false,
-   "volume": 1.0
+   "volume": 2.0
   },
   "SFX_LB_Warden_Roar_03": {
    "cls": "SCL_LB_Voice",
    "att": "ATT_LB_WardenTell",
    "con": "CON_LB_Tells",
    "loop": false,
-   "volume": 1.0
+   "volume": 2.0
   },
   "SFX_LB_Warden_Robe": {
    "cls": "SCL_LB_Voice",
