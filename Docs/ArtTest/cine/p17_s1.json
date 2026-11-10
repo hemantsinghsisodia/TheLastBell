@@ -1,0 +1,1298 @@
+{
+ "generated": "2026-11-10 20:20:03",
+ "asset": "/Game/LastBell/ArtTest/P17/LS_P17_Spike",
+ "items": {
+  "setup": {
+   "status": "scripted OK",
+   "apis": [
+    "LevelSequence.set_display_rate(30/1)",
+    "LevelSequence.set_playback_start_seconds(0)",
+    "LevelSequence.set_playback_end_seconds(10)"
+   ],
+   "values_read_back": [
+    {
+     "check": "asset class",
+     "got": "'LevelSequence'",
+     "want": "'LevelSequence'",
+     "ok": true
+    },
+    {
+     "check": "display rate",
+     "got": "(30, 1)",
+     "want": "(30, 1)",
+     "ok": true
+    },
+    {
+     "check": "playback start s",
+     "got": "0.0",
+     "want": "0.0",
+     "ok": true
+    },
+    {
+     "check": "playback end s",
+     "got": "10.0",
+     "want": "10.0",
+     "ok": true
+    }
+   ],
+   "failed_checks": [],
+   "build_call_errors": [],
+   "mcp_tools_listed": [],
+   "parts": null
+  },
+  "a": {
+   "status": "needs manual editor step",
+   "apis": [
+    "LevelSequenceEditorSubsystem.add_spawnable_from_class(CineCameraActor)",
+    "LevelSequence.add_spawnable_from_class(CineCameraActor) [deprecated since 5.5]",
+    "MovieSceneBindingProxy.set_name('Cam_Spike')",
+    "MovieSceneBindingProxy.get_object_template()",
+    "CineCameraActor.get_cine_camera_component()",
+    "CineCameraActor.get_editor_property('camera_component')",
+    "CineCameraComponent.set_filmback_preset_by_name('16:9 DSLR')",
+    "CineCameraComponent.set_editor_property('current_focal_length', 30)",
+    "MovieSceneBindingProxy.add_track(MovieScene3DTransformTrack)",
+    "MovieSceneTrack.add_section()",
+    "MovieSceneSection.set_range_seconds(0,10)",
+    "MovieSceneSection.get_all_channels()",
+    "ScriptingChannel[0].add_key(frame 0, -2800.0)",
+    "ScriptingChannel[1].add_key(frame 0, 0.0)",
+    "ScriptingChannel[2].add_key(frame 0, 652.79)",
+    "ScriptingChannel[3].add_key(frame 0, 0.0)",
+    "ScriptingChannel[4].add_key(frame 0, 0.0)",
+    "ScriptingChannel[5].add_key(frame 0, 0.0)",
+    "ScriptingChannel[6].add_key(frame 0, 1.0)",
+    "ScriptingChannel[7].add_key(frame 0, 1.0)",
+    "ScriptingChannel[8].add_key(frame 0, 1.0)",
+    "ScriptingChannel[0].add_key(frame 300, -2800.0)",
+    "ScriptingChannel[1].add_key(frame 300, 0.0)",
+    "ScriptingChannel[2].add_key(frame 300, 152.79)",
+    "ScriptingChannel[3].add_key(frame 300, 0.0)",
+    "ScriptingChannel[4].add_key(frame 300, 0.0)",
+    "ScriptingChannel[5].add_key(frame 300, 0.0)",
+    "ScriptingChannel[6].add_key(frame 300, 1.0)",
+    "ScriptingChannel[7].add_key(frame 300, 1.0)",
+    "ScriptingChannel[8].add_key(frame 300, 1.0)",
+    "LevelSequence.add_track(MovieSceneCameraCutTrack)",
+    "MovieSceneTrack.add_section() [camera cut]",
+    "MovieSceneSection.set_range_seconds(0,10) [camera cut]",
+    "LevelSequence.get_binding_id(camera binding)",
+    "MovieSceneCameraCutSection.set_camera_binding_id(binding id)",
+    "MovieSceneSection.set_ease_in_duration(24000 ticks = 1.0 s)",
+    "MovieSceneSection.set_ease_out_duration(36000 ticks = 1.5 s)"
+   ],
+   "values_read_back": [
+    {
+     "check": "camera binding exists",
+     "got": "True",
+     "want": "True",
+     "ok": true
+    },
+    {
+     "check": "camera is spawnable",
+     "got": "True",
+     "want": "True",
+     "ok": true
+    },
+    {
+     "check": "camera template class",
+     "got": "'CineCameraActor'",
+     "want": "'CineCameraActor'",
+     "ok": true
+    },
+    {
+     "check": "filmback sensor width (16:9 DSLR preset = 36.0)",
+     "got": "36.0",
+     "want": "36.0",
+     "ok": true
+    },
+    {
+     "check": "filmback sensor height (16:9 DSLR preset = 20.25)",
+     "got": "20.25",
+     "want": "20.25",
+     "ok": true
+    },
+    {
+     "check": "focal length",
+     "got": "30.0",
+     "want": "30.0",
+     "ok": true
+    },
+    {
+     "check": "transform track count",
+     "got": "1",
+     "want": "1",
+     "ok": true
+    },
+    {
+     "check": "camera Location.X keys",
+     "got": "2",
+     "want": "2",
+     "ok": true
+    },
+    {
+     "check": "camera Location.Y keys",
+     "got": "2",
+     "want": "2",
+     "ok": true
+    },
+    {
+     "check": "camera Location.Z keys",
+     "got": "2",
+     "want": "2",
+     "ok": true
+    },
+    {
+     "check": "camera Z keys",
+     "got": "[(0.0, 652.79), (10.0, 152.79)]",
+     "want": "[(0.0, 652.79), (10.0, 152.79)]",
+     "ok": true
+    },
+    {
+     "check": "camera cut track count",
+     "got": "1",
+     "want": "1",
+     "ok": true
+    },
+    {
+     "check": "camera cut section count",
+     "got": "1",
+     "want": "1",
+     "ok": true
+    },
+    {
+     "check": "camera cut bound to the camera spawnable",
+     "got": "'4B67566C4ACDCFC35E1230B2FA2C6C52'",
+     "want": "'4B67566C4ACDCFC35E1230B2FA2C6C52'",
+     "ok": true
+    },
+    {
+     "check": "ease in (s)",
+     "got": "1.0",
+     "want": "1.0",
+     "ok": true
+    },
+    {
+     "check": "ease out (s)",
+     "got": "1.5",
+     "want": "1.5",
+     "ok": true
+    },
+    {
+     "check": "camera cut track bCanBlend",
+     "got": "None",
+     "want": "True",
+     "ok": false
+    }
+   ],
+   "failed_checks": [
+    "camera cut track bCanBlend"
+   ],
+   "build_call_errors": [],
+   "mcp_tools_listed": [],
+   "parts": {
+    "camera spawnable, filmback, focal length, transform track": "scripted OK",
+    "camera cut track, section bound to the camera, ease in 1.0 s, ease out 1.5 s": "scripted OK",
+    "camera cut track bCanBlend = true": "needs manual editor step"
+   }
+  },
+  "a.can_blend": {
+   "status": "needs manual editor step",
+   "apis": [
+    "UMovieSceneCameraCutTrack.set_editor_property('b_can_blend', True)",
+    "ToolsetLibrary.set_object_properties(track, {'bCanBlend': true})"
+   ],
+   "values_read_back": [
+    {
+     "check": "camera cut track bCanBlend",
+     "got": "None",
+     "want": "True",
+     "ok": false
+    }
+   ],
+   "failed_checks": [
+    "camera cut track bCanBlend"
+   ],
+   "build_call_errors": [
+    {
+     "api": "UMovieSceneCameraCutTrack.set_editor_property('b_can_blend', True)",
+     "error": "Exception: MovieSceneCameraCutTrack: Failed to find property 'b_can_blend' for attribute 'b_can_blend' on 'MovieSceneCameraCutTrack'"
+    }
+   ],
+   "mcp_tools_listed": [],
+   "parts": null
+  },
+  "b": {
+   "status": "scripted OK",
+   "apis": [
+    "LevelSequenceEditorSubsystem.add_spawnable_from_class(SkeletalMeshActor)",
+    "LevelSequence.add_spawnable_from_class(SkeletalMeshActor) [deprecated since 5.5]",
+    "MovieSceneBindingProxy.set_name('WardenFigure')",
+    "MovieSceneBindingProxy.get_object_template()",
+    "SkeletalMeshComponent.set_skeletal_mesh_asset(SK_Warden)",
+    "SkeletalMeshComponent.set_animation_mode(ANIMATION_BLUEPRINT)",
+    "SkeletalMeshComponent.set_anim_instance_class(ABP_Warden_C)",
+    "SkeletalMeshComponent.set_editor_property('visibility_based_anim_tick_option', ALWAYS_TICK_POSE)",
+    "Actor.set_editor_property('tags', ['LB_Cine_Warden'])"
+   ],
+   "values_read_back": [
+    {
+     "check": "warden binding exists",
+     "got": "True",
+     "want": "True",
+     "ok": true
+    },
+    {
+     "check": "warden is spawnable",
+     "got": "True",
+     "want": "True",
+     "ok": true
+    },
+    {
+     "check": "warden template class",
+     "got": "'SkeletalMeshActor'",
+     "want": "'SkeletalMeshActor'",
+     "ok": true
+    },
+    {
+     "check": "skeletal mesh asset",
+     "got": "'SK_Warden'",
+     "want": "'SK_Warden'",
+     "ok": true
+    },
+    {
+     "check": "anim class",
+     "got": "'ABP_Warden_C'",
+     "want": "'ABP_Warden_C'",
+     "ok": true
+    },
+    {
+     "check": "actor tag",
+     "got": "['LB_Cine_Warden']",
+     "want": "['LB_Cine_Warden']",
+     "ok": true
+    },
+    {
+     "check": "VisibilityBasedAnimTickOption",
+     "got": "'ALWAYS_TICK_POSE'",
+     "want": "'ALWAYS_TICK_POSE'",
+     "ok": true
+    }
+   ],
+   "failed_checks": [],
+   "build_call_errors": [],
+   "mcp_tools_listed": [],
+   "parts": null
+  },
+  "b1": {
+   "status": "scripted OK",
+   "apis": [
+    "MovieSceneBindingProxy.add_track(MovieScene3DTransformTrack)",
+    "MovieSceneTrack.add_section()",
+    "MovieSceneSection.set_range_seconds(0,10)",
+    "MovieSceneSection.get_all_channels()",
+    "ScriptingChannel[0].add_key(frame 0, 0)",
+    "ScriptingChannel[1].add_key(frame 0, 0)",
+    "ScriptingChannel[2].add_key(frame 0, 0)",
+    "ScriptingChannel[3].add_key(frame 0, 0.0)",
+    "ScriptingChannel[4].add_key(frame 0, 0.0)",
+    "ScriptingChannel[5].add_key(frame 0, 0.0)",
+    "ScriptingChannel[6].add_key(frame 0, 1.0)",
+    "ScriptingChannel[7].add_key(frame 0, 1.0)",
+    "ScriptingChannel[8].add_key(frame 0, 1.0)",
+    "ScriptingChannel[0].add_key(frame 150, 300)",
+    "ScriptingChannel[1].add_key(frame 150, 0)",
+    "ScriptingChannel[2].add_key(frame 150, 0)",
+    "ScriptingChannel[3].add_key(frame 150, 0.0)",
+    "ScriptingChannel[4].add_key(frame 150, 0.0)",
+    "ScriptingChannel[5].add_key(frame 150, 0.0)",
+    "ScriptingChannel[6].add_key(frame 150, 1.0)",
+    "ScriptingChannel[7].add_key(frame 150, 1.0)",
+    "ScriptingChannel[8].add_key(frame 150, 1.0)"
+   ],
+   "values_read_back": [
+    {
+     "check": "transform track count",
+     "got": "1",
+     "want": "1",
+     "ok": true
+    },
+    {
+     "check": "Location.X keys",
+     "got": "[(0.0, 0.0), (5.0, 300.0)]",
+     "want": "[(0.0, 0.0), (5.0, 300.0)]",
+     "ok": true
+    },
+    {
+     "check": "Location.Y keys",
+     "got": "[(0.0, 0.0), (5.0, 0.0)]",
+     "want": "[(0.0, 0.0), (5.0, 0.0)]",
+     "ok": true
+    },
+    {
+     "check": "Location.Z keys",
+     "got": "[(0.0, 0.0), (5.0, 0.0)]",
+     "want": "[(0.0, 0.0), (5.0, 0.0)]",
+     "ok": true
+    },
+    {
+     "check": "Rotation.Z (yaw) keys",
+     "got": "[(0.0, 0.0), (5.0, 0.0)]",
+     "want": "[(0.0, 0.0), (5.0, 0.0)]",
+     "ok": true
+    }
+   ],
+   "failed_checks": [],
+   "build_call_errors": [],
+   "mcp_tools_listed": [],
+   "parts": null
+  },
+  "b2": {
+   "status": "scripted OK",
+   "apis": [
+    "MovieSceneBindingProxy.add_track(MovieSceneVisibilityTrack)",
+    "MovieScenePropertyTrack.set_property_name_and_path('bHidden','bHidden')",
+    "MovieSceneTrack.add_section() [visibility]",
+    "MovieSceneSection.set_range_seconds(0,10) [visibility]",
+    "MovieSceneSection.get_all_channels() [visibility]",
+    "bool channel.add_key(frame 0, True)",
+    "bool channel.add_key(frame 240, False)"
+   ],
+   "values_read_back": [
+    {
+     "check": "visibility track count",
+     "got": "1",
+     "want": "1",
+     "ok": true
+    },
+    {
+     "check": "visibility property name",
+     "got": "'bHidden'",
+     "want": "'bHidden'",
+     "ok": true
+    },
+    {
+     "check": "visibility keys (visible 0-8 s, hidden 8-10 s)",
+     "got": "[(0.0, True), (8.0, False)]",
+     "want": "[(0.0, True), (8.0, False)]",
+     "ok": true
+    }
+   ],
+   "failed_checks": [],
+   "build_call_errors": [],
+   "mcp_tools_listed": [],
+   "parts": null
+  },
+  "b3": {
+   "status": "scripted OK",
+   "apis": [
+    "MovieSceneBindingProxy.add_track(MovieSceneSkeletalAnimationTrack)",
+    "MovieSceneTrack.add_section() [skeletal animation]",
+    "MovieSceneSkeletalAnimationSection.set_editor_property('params', animation + slot_name)",
+    "MovieSceneSection.set_range_seconds(0,4.467) [skeletal animation]"
+   ],
+   "values_read_back": [
+    {
+     "check": "skeletal animation track count",
+     "got": "1",
+     "want": "1",
+     "ok": true
+    },
+    {
+     "check": "skeletal animation section count",
+     "got": "1",
+     "want": "1",
+     "ok": true
+    },
+    {
+     "check": "animation asset",
+     "got": "'AN_Warden_LookAround'",
+     "want": "'AN_Warden_LookAround'",
+     "ok": true
+    },
+    {
+     "check": "slot name",
+     "got": "'DefaultSlot'",
+     "want": "'DefaultSlot'",
+     "ok": true
+    }
+   ],
+   "failed_checks": [],
+   "build_call_errors": [],
+   "mcp_tools_listed": [],
+   "parts": null
+  },
+  "b4": {
+   "status": "scripted OK",
+   "apis": [
+    "LevelSequence.add_possessable(<template SkeletalMeshComponent>)",
+    "EditorLevelLibrary.get_editor_world()",
+    "LevelSequencePlayer.create_level_sequence_player(world, seq, settings)",
+    "LevelSequencePlayer.set_playback_position(frame 0)",
+    "LevelSequence.get_binding_id(binding)",
+    "MovieSceneSequencePlayer.get_bound_objects(binding id)",
+    "LevelSequence.add_possessable(<live SkeletalMeshComponent of the spawned actor>)",
+    "LevelSequencePlayer.stop()",
+    "MovieSceneBindingProxy.add_track(MovieSceneComponentMaterialTrack)",
+    "MovieSceneComponentMaterialTrack.set_material_info(slot M_Warden_BellMetal idx 1)",
+    "MovieSceneTrack.add_section() [component material]",
+    "MovieSceneSection.set_range_seconds(0,10) [component material]",
+    "MovieSceneComponentMaterialParameterSection.add_scalar_parameter_key(Fade, tick 48000 = display frame 60, 1.0)",
+    "MovieSceneComponentMaterialParameterSection.add_scalar_parameter_key(Fade, tick 48800 = display frame 61, 0.0)"
+   ],
+   "values_read_back": [
+    {
+     "check": "component material track exists",
+     "got": "1",
+     "want": "1",
+     "ok": true
+    },
+    {
+     "check": "material slot name",
+     "got": "'M_Warden_BellMetal'",
+     "want": "'M_Warden_BellMetal'",
+     "ok": true
+    },
+    {
+     "check": "material slot index",
+     "got": "1",
+     "want": "1",
+     "ok": true
+    },
+    {
+     "check": "material type",
+     "got": "'INDEXED_MATERIAL'",
+     "want": "'INDEXED_MATERIAL'",
+     "ok": true
+    },
+    {
+     "check": "channel named 'Fade' exists",
+     "got": "True",
+     "want": "True",
+     "ok": true
+    },
+    {
+     "check": "section has exactly one channel",
+     "got": "1",
+     "want": "1",
+     "ok": true
+    },
+    {
+     "check": "negative control: channel 'NoSuchParameter' absent",
+     "got": "True",
+     "want": "True",
+     "ok": true
+    },
+    {
+     "check": "Fade keys (time s, value)",
+     "got": "[(2.0, 1.0), (2.0333, 0.0)]",
+     "want": "[(2.0, 1.0), (2.0333, 0.0)]",
+     "ok": true
+    }
+   ],
+   "failed_checks": [],
+   "build_call_errors": [],
+   "mcp_tools_listed": [
+    "SequencerTools.get_child_possessables",
+    "SequencerTools.add_track_to_binding",
+    "SequencerTools.rebind_component"
+   ],
+   "parts": null
+  },
+  "c": {
+   "status": "scripted OK",
+   "apis": [
+    "LevelSequenceEditorSubsystem.add_spawnable_from_class(StaticMeshActor)",
+    "LevelSequence.add_spawnable_from_class(StaticMeshActor) [deprecated since 5.5]",
+    "MovieSceneBindingProxy.set_name('Cube')",
+    "MovieSceneBindingProxy.get_object_template()",
+    "StaticMeshComponent.set_static_mesh(/Engine/BasicShapes/Cube)",
+    "StaticMeshComponent.set_relative_scale3d(0.2)",
+    "MovieSceneBindingProxy.add_track(MovieScene3DAttachTrack)",
+    "LevelSequence.get_binding_id(Warden binding)",
+    "MovieSceneTrack.add_section() [attach 1]",
+    "MovieSceneSection.set_range_seconds(0,4) [attach 1]",
+    "MovieScene3DConstraintSection.set_constraint_binding_id(Warden) [attach 1]",
+    "MovieScene3DAttachSection.set_editor_property('attach_socket_name', head)",
+    "MovieSceneTrack.add_section() [attach 2]",
+    "MovieSceneSection.set_range_seconds(4,10) [attach 2]",
+    "MovieScene3DConstraintSection.set_constraint_binding_id(Warden) [attach 2]",
+    "MovieScene3DAttachSection.set_editor_property('attach_socket_name', hand_r)",
+    "MovieScene3DAttachSection.set_editor_property('attachment_location_rule', KEEP_WORLD)",
+    "MovieScene3DAttachSection.set_editor_property('attachment_rotation_rule', KEEP_WORLD)",
+    "MovieScene3DAttachSection.set_editor_property('attachment_scale_rule', KEEP_WORLD)"
+   ],
+   "values_read_back": [
+    {
+     "check": "cube binding exists",
+     "got": "True",
+     "want": "True",
+     "ok": true
+    },
+    {
+     "check": "cube is spawnable",
+     "got": "True",
+     "want": "True",
+     "ok": true
+    },
+    {
+     "check": "cube template class",
+     "got": "'StaticMeshActor'",
+     "want": "'StaticMeshActor'",
+     "ok": true
+    },
+    {
+     "check": "static mesh",
+     "got": "'Cube'",
+     "want": "'Cube'",
+     "ok": true
+    },
+    {
+     "check": "scale",
+     "got": "(0.2, 0.2, 0.2)",
+     "want": "(0.2, 0.2, 0.2)",
+     "ok": true
+    },
+    {
+     "check": "attach track count",
+     "got": "1",
+     "want": "1",
+     "ok": true
+    },
+    {
+     "check": "attach section count",
+     "got": "2",
+     "want": "2",
+     "ok": true
+    },
+    {
+     "check": "range (s)",
+     "got": "(0.0, 4.0)",
+     "want": "(0.0, 4.0)",
+     "ok": true
+    },
+    {
+     "check": "attach socket/bone",
+     "got": "'head'",
+     "want": "'head'",
+     "ok": true
+    },
+    {
+     "check": "attached to the Warden binding",
+     "got": "'1F471FA34CCE2F42388D9D9C23034776'",
+     "want": "'1F471FA34CCE2F42388D9D9C23034776'",
+     "ok": true
+    },
+    {
+     "check": "range (s)",
+     "got": "(4.0, 10.0)",
+     "want": "(4.0, 10.0)",
+     "ok": true
+    },
+    {
+     "check": "attach socket/bone",
+     "got": "'hand_r'",
+     "want": "'hand_r'",
+     "ok": true
+    },
+    {
+     "check": "attached to the Warden binding",
+     "got": "'1F471FA34CCE2F42388D9D9C23034776'",
+     "want": "'1F471FA34CCE2F42388D9D9C23034776'",
+     "ok": true
+    },
+    {
+     "check": "attachment rules (loc/rot/scale)",
+     "got": "['KEEP_WORLD', 'KEEP_WORLD', 'KEEP_WORLD']",
+     "want": "['KEEP_WORLD', 'KEEP_WORLD', 'KEEP_WORLD']",
+     "ok": true
+    }
+   ],
+   "failed_checks": [],
+   "build_call_errors": [],
+   "mcp_tools_listed": [],
+   "parts": null
+  },
+  "c1": {
+   "status": "scripted OK",
+   "apis": [],
+   "values_read_back": [
+    {
+     "check": "range (s)",
+     "got": "(0.0, 4.0)",
+     "want": "(0.0, 4.0)",
+     "ok": true
+    },
+    {
+     "check": "attach socket/bone",
+     "got": "'head'",
+     "want": "'head'",
+     "ok": true
+    },
+    {
+     "check": "attached to the Warden binding",
+     "got": "'1F471FA34CCE2F42388D9D9C23034776'",
+     "want": "'1F471FA34CCE2F42388D9D9C23034776'",
+     "ok": true
+    }
+   ],
+   "failed_checks": [],
+   "build_call_errors": [],
+   "mcp_tools_listed": [],
+   "parts": null
+  },
+  "c2": {
+   "status": "scripted OK",
+   "apis": [],
+   "values_read_back": [
+    {
+     "check": "range (s)",
+     "got": "(4.0, 10.0)",
+     "want": "(4.0, 10.0)",
+     "ok": true
+    },
+    {
+     "check": "attach socket/bone",
+     "got": "'hand_r'",
+     "want": "'hand_r'",
+     "ok": true
+    },
+    {
+     "check": "attached to the Warden binding",
+     "got": "'1F471FA34CCE2F42388D9D9C23034776'",
+     "want": "'1F471FA34CCE2F42388D9D9C23034776'",
+     "ok": true
+    },
+    {
+     "check": "attachment rules (loc/rot/scale)",
+     "got": "['KEEP_WORLD', 'KEEP_WORLD', 'KEEP_WORLD']",
+     "want": "['KEEP_WORLD', 'KEEP_WORLD', 'KEEP_WORLD']",
+     "ok": true
+    }
+   ],
+   "failed_checks": [],
+   "build_call_errors": [],
+   "mcp_tools_listed": [],
+   "parts": null
+  },
+  "d": {
+   "status": "scripted OK",
+   "apis": [
+    "LevelSequenceEditorSubsystem.add_spawnable_from_class(PointLight)",
+    "LevelSequence.add_spawnable_from_class(PointLight) [deprecated since 5.5]",
+    "MovieSceneBindingProxy.set_name('Lantern')",
+    "MovieSceneBindingProxy.get_object_template()",
+    "LevelSequence.add_possessable(<template PointLightComponent>)",
+    "LevelSequencePlayer.create_level_sequence_player(world, seq, settings)",
+    "LevelSequencePlayer.set_playback_position(frame 0)",
+    "LevelSequence.get_binding_id(binding)",
+    "MovieSceneSequencePlayer.get_bound_objects(binding id)",
+    "LevelSequence.add_possessable(<live PointLightComponent of the spawned actor>)",
+    "LevelSequencePlayer.stop()",
+    "MovieSceneBindingProxy.add_track(MovieSceneFloatTrack)",
+    "MovieScenePropertyTrack.set_property_name_and_path('Intensity','Intensity')",
+    "MovieSceneTrack.add_section() [intensity]",
+    "MovieSceneSection.set_range_seconds(0,10) [intensity]",
+    "MovieSceneSection.get_all_channels() [intensity]",
+    "float channel.add_key(frame 0, 0.0)",
+    "float channel.add_key(frame 30, 600.0)"
+   ],
+   "values_read_back": [
+    {
+     "check": "light binding exists",
+     "got": "True",
+     "want": "True",
+     "ok": true
+    },
+    {
+     "check": "light is spawnable",
+     "got": "True",
+     "want": "True",
+     "ok": true
+    },
+    {
+     "check": "light template class",
+     "got": "'PointLight'",
+     "want": "'PointLight'",
+     "ok": true
+    },
+    {
+     "check": "float track count",
+     "got": "1",
+     "want": "1",
+     "ok": true
+    },
+    {
+     "check": "property name",
+     "got": "'Intensity'",
+     "want": "'Intensity'",
+     "ok": true
+    },
+    {
+     "check": "intensity keys",
+     "got": "[(0.0, 0.0), (1.0, 600.0)]",
+     "want": "[(0.0, 0.0), (1.0, 600.0)]",
+     "ok": true
+    }
+   ],
+   "failed_checks": [],
+   "build_call_errors": [],
+   "mcp_tools_listed": [
+    "SequencerTools.get_child_possessables",
+    "SequencerTools.add_track_to_binding",
+    "SequencerTools.rebind_component"
+   ],
+   "parts": null
+  },
+  "e": {
+   "status": "scripted OK",
+   "apis": [
+    "LevelSequence.add_track(MovieSceneAudioTrack) [master]",
+    "MovieSceneTrack.add_section() [audio]",
+    "MovieSceneAudioSection.set_sound(SFX_LB_Warden_Breath_Slow)",
+    "SoundBase.get_editor_property('duration')",
+    "MovieSceneSection.set_range_seconds(1.000,10.000) [audio]",
+    "MovieSceneBindingProxy.add_track(MovieSceneAudioTrack) [Warden]",
+    "MovieSceneAudioSection.set_sound(SFX_LB_Warden_Step_01)",
+    "MovieSceneSection.set_range_seconds(2.000,2.650) [audio]"
+   ],
+   "values_read_back": [
+    {
+     "check": "audio track count (master)",
+     "got": "1",
+     "want": "1",
+     "ok": true
+    },
+    {
+     "check": "audio section count",
+     "got": "1",
+     "want": "1",
+     "ok": true
+    },
+    {
+     "check": "sound",
+     "got": "'SFX_LB_Warden_Breath_Slow'",
+     "want": "'SFX_LB_Warden_Breath_Slow'",
+     "ok": true
+    },
+    {
+     "check": "start (s)",
+     "got": "1.0",
+     "want": "1.0",
+     "ok": true
+    },
+    {
+     "check": "audio track count (warden)",
+     "got": "1",
+     "want": "1",
+     "ok": true
+    },
+    {
+     "check": "audio section count",
+     "got": "1",
+     "want": "1",
+     "ok": true
+    },
+    {
+     "check": "sound",
+     "got": "'SFX_LB_Warden_Step_01'",
+     "want": "'SFX_LB_Warden_Step_01'",
+     "ok": true
+    },
+    {
+     "check": "start (s)",
+     "got": "2.0",
+     "want": "2.0",
+     "ok": true
+    }
+   ],
+   "failed_checks": [],
+   "build_call_errors": [],
+   "mcp_tools_listed": [],
+   "parts": null
+  },
+  "e1": {
+   "status": "scripted OK",
+   "apis": [
+    "LevelSequence.add_track(MovieSceneAudioTrack) [master]",
+    "MovieSceneTrack.add_section() [audio]",
+    "MovieSceneAudioSection.set_sound(SFX_LB_Warden_Breath_Slow)",
+    "SoundBase.get_editor_property('duration')",
+    "MovieSceneSection.set_range_seconds(1.000,10.000) [audio]"
+   ],
+   "values_read_back": [
+    {
+     "check": "audio track count (master)",
+     "got": "1",
+     "want": "1",
+     "ok": true
+    },
+    {
+     "check": "audio section count",
+     "got": "1",
+     "want": "1",
+     "ok": true
+    },
+    {
+     "check": "sound",
+     "got": "'SFX_LB_Warden_Breath_Slow'",
+     "want": "'SFX_LB_Warden_Breath_Slow'",
+     "ok": true
+    },
+    {
+     "check": "start (s)",
+     "got": "1.0",
+     "want": "1.0",
+     "ok": true
+    }
+   ],
+   "failed_checks": [],
+   "build_call_errors": [],
+   "mcp_tools_listed": [],
+   "parts": null
+  },
+  "e2": {
+   "status": "scripted OK",
+   "apis": [
+    "MovieSceneBindingProxy.add_track(MovieSceneAudioTrack) [Warden]",
+    "MovieSceneTrack.add_section() [audio]",
+    "MovieSceneAudioSection.set_sound(SFX_LB_Warden_Step_01)",
+    "SoundBase.get_editor_property('duration')",
+    "MovieSceneSection.set_range_seconds(2.000,2.650) [audio]"
+   ],
+   "values_read_back": [
+    {
+     "check": "audio track count (warden)",
+     "got": "1",
+     "want": "1",
+     "ok": true
+    },
+    {
+     "check": "audio section count",
+     "got": "1",
+     "want": "1",
+     "ok": true
+    },
+    {
+     "check": "sound",
+     "got": "'SFX_LB_Warden_Step_01'",
+     "want": "'SFX_LB_Warden_Step_01'",
+     "ok": true
+    },
+    {
+     "check": "start (s)",
+     "got": "2.0",
+     "want": "2.0",
+     "ok": true
+    }
+   ],
+   "failed_checks": [],
+   "build_call_errors": [],
+   "mcp_tools_listed": [],
+   "parts": null
+  },
+  "f": {
+   "status": "scripted OK",
+   "apis": [
+    "LevelSequence.add_track(MovieSceneFadeTrack)",
+    "MovieSceneTrack.add_section() [fade]",
+    "MovieSceneSection.set_range_seconds(0,10) [fade]",
+    "MovieSceneSection.get_all_channels() [fade]",
+    "fade channel.add_key(frame 0, 1.0)",
+    "fade channel.add_key(frame 30, 0.0)",
+    "fade channel.add_key(frame 285, 1.0)"
+   ],
+   "values_read_back": [
+    {
+     "check": "fade track count",
+     "got": "1",
+     "want": "1",
+     "ok": true
+    },
+    {
+     "check": "fade keys",
+     "got": "[(0.0, 1.0), (1.0, 0.0), (9.5, 1.0)]",
+     "want": "[(0.0, 1.0), (1.0, 0.0), (9.5, 1.0)]",
+     "ok": true
+    }
+   ],
+   "failed_checks": [],
+   "build_call_errors": [],
+   "mcp_tools_listed": [],
+   "parts": null
+  },
+  "g": {
+   "status": "scripted OK",
+   "apis": [
+    "LevelSequence.add_marked_frame_to_sequence('tag:State.Test.A', frame 30, DISPLAY_RATE)",
+    "LevelSequence.add_marked_frame_to_sequence('!lock:None', frame 60, DISPLAY_RATE)",
+    "LevelSequence.add_marked_frame_to_sequence('bell:1x1', frame 90, DISPLAY_RATE)"
+   ],
+   "values_read_back": [
+    {
+     "check": "marker 'tag:State.Test.A' present",
+     "got": "1",
+     "want": "1",
+     "ok": true
+    },
+    {
+     "check": "marker 'tag:State.Test.A' frame",
+     "got": "30",
+     "want": "30",
+     "ok": true
+    },
+    {
+     "check": "marker 'tag:State.Test.A' seconds",
+     "got": "1.0",
+     "want": "1.0",
+     "ok": true
+    },
+    {
+     "check": "marker '!lock:None' present",
+     "got": "1",
+     "want": "1",
+     "ok": true
+    },
+    {
+     "check": "marker '!lock:None' frame",
+     "got": "60",
+     "want": "60",
+     "ok": true
+    },
+    {
+     "check": "marker '!lock:None' seconds",
+     "got": "2.0",
+     "want": "2.0",
+     "ok": true
+    },
+    {
+     "check": "marker 'bell:1x1' present",
+     "got": "1",
+     "want": "1",
+     "ok": true
+    },
+    {
+     "check": "marker 'bell:1x1' frame",
+     "got": "90",
+     "want": "90",
+     "ok": true
+    },
+    {
+     "check": "marker 'bell:1x1' seconds",
+     "got": "3.0",
+     "want": "3.0",
+     "ok": true
+    },
+    {
+     "check": "marked frame count",
+     "got": "3",
+     "want": "3",
+     "ok": true
+    }
+   ],
+   "failed_checks": [],
+   "build_call_errors": [],
+   "mcp_tools_listed": [],
+   "parts": null
+  }
+ },
+ "warden_mesh": {
+  "slots": [
+   {
+    "index": 0,
+    "slot_name": "M_Warden_Wool",
+    "material": "/Game/LastBell/Characters/Warden/Materials/MI_Warden_Wool.MI_Warden_Wool",
+    "material_name": "MI_Warden_Wool"
+   },
+   {
+    "index": 1,
+    "slot_name": "M_Warden_BellMetal",
+    "material": "/Game/LastBell/Characters/Warden/Materials/MI_Warden_BellMetal.MI_Warden_BellMetal",
+    "material_name": "MI_Warden_BellMetal"
+   },
+   {
+    "index": 2,
+    "slot_name": "M_Warden_RustedIron",
+    "material": "/Game/LastBell/Characters/Warden/Materials/MI_Warden_RustedIron.MI_Warden_RustedIron",
+    "material_name": "MI_Warden_RustedIron"
+   },
+   {
+    "index": 3,
+    "slot_name": "M_Warden_Skin",
+    "material": "/Game/LastBell/Characters/Warden/Materials/MI_Warden_Skin.MI_Warden_Skin",
+    "material_name": "MI_Warden_Skin"
+   },
+   {
+    "index": 4,
+    "slot_name": "M_Warden_Leather",
+    "material": "/Game/LastBell/Characters/Warden/Materials/M_Warden_Leather.M_Warden_Leather",
+    "material_name": "M_Warden_Leather"
+   },
+   {
+    "index": 5,
+    "slot_name": "M_Warden_ChainIron",
+    "material": "/Game/LastBell/Characters/Warden/Materials/MI_Warden_ChainIron.MI_Warden_ChainIron",
+    "material_name": "MI_Warden_ChainIron"
+   }
+  ],
+  "bones": [
+   "root",
+   "pelvis",
+   "spine_01",
+   "spine_02",
+   "spine_03",
+   "neck_01",
+   "head",
+   "chain_neck_00",
+   "chain_neck_01",
+   "chain_neck_02",
+   "chain_neck_03",
+   "chain_neck_04",
+   "chain_neck_05",
+   "chain_neck_06",
+   "chain_neck_07",
+   "chain_neck_08",
+   "chain_neck_09",
+   "chain_neck_10",
+   "chain_neck_11",
+   "chain_neck_12",
+   "chain_neck_13",
+   "chain_neck_14",
+   "chain_neck_15",
+   "chain_neck_16",
+   "clavicle_l",
+   "upperarm_l",
+   "lowerarm_l",
+   "hand_l",
+   "thumb_01_l",
+   "thumb_02_l",
+   "thumb_03_l",
+   "index_01_l",
+   "index_02_l",
+   "index_03_l",
+   "middle_01_l",
+   "middle_02_l",
+   "middle_03_l",
+   "ring_01_l",
+   "ring_02_l",
+   "ring_03_l",
+   "pinky_01_l",
+   "pinky_02_l",
+   "pinky_03_l",
+   "chain_l_00",
+   "chain_l_01",
+   "chain_l_02",
+   "chain_l_03",
+   "chain_l_04",
+   "chain_l_05",
+   "chain_l_06",
+   "chain_l_07",
+   "chain_l_08",
+   "chain_l_09",
+   "chain_l_10",
+   "chain_l_11",
+   "clavicle_r",
+   "upperarm_r",
+   "lowerarm_r",
+   "hand_r",
+   "thumb_01_r",
+   "thumb_02_r",
+   "thumb_03_r",
+   "index_01_r",
+   "index_02_r",
+   "index_03_r",
+   "middle_01_r",
+   "middle_02_r",
+   "middle_03_r",
+   "ring_01_r",
+   "ring_02_r",
+   "ring_03_r",
+   "pinky_01_r",
+   "pinky_02_r",
+   "pinky_03_r",
+   "chain_r_00",
+   "chain_r_01",
+   "chain_r_02",
+   "chain_r_03",
+   "chain_r_04",
+   "chain_r_05",
+   "chain_r_06",
+   "chain_r_07",
+   "chain_r_08",
+   "chain_r_09",
+   "chain_r_10",
+   "chain_r_11",
+   "thigh_l",
+   "calf_l",
+   "foot_l",
+   "ball_l",
+   "thigh_r",
+   "calf_r",
+   "foot_r",
+   "ball_r",
+   "robe_00_01",
+   "robe_00_02",
+   "robe_01_01",
+   "robe_01_02",
+   "robe_02_01",
+   "robe_02_02",
+   "robe_03_01",
+   "robe_03_02",
+   "robe_04_01",
+   "robe_04_02",
+   "robe_05_01",
+   "robe_05_02",
+   "robe_06_01",
+   "robe_06_02",
+   "robe_07_01",
+   "robe_07_02"
+  ],
+  "slot_pick": {
+   "index": 1,
+   "slot_name": "M_Warden_BellMetal",
+   "material": "/Game/LastBell/Characters/Warden/Materials/MI_Warden_BellMetal.MI_Warden_BellMetal",
+   "material_name": "MI_Warden_BellMetal",
+   "why": "no 'Mask' slot; slot or material name contains 'Bell' or 'Metal'"
+  },
+  "head_bone": "head",
+  "right_hand_bone": "hand_r",
+  "errors": [],
+  "bone_count": 110
+ },
+ "b4_route_at_build": "component binding",
+ "b4_route_readback": "component binding 'SkeletalMeshComponent0'",
+ "d_route_at_build": "component binding",
+ "d_route_readback": "component binding 'LightComponent0'",
+ "light_unit": "<LightUnits.UNITLESS: 0>",
+ "light_unit_readback": "<LightUnits.UNITLESS: 0>",
+ "anim_used": "/Game/LastBell/Characters/Warden/Anims/AN_Warden_LookAround",
+ "anim_length_s": 4.4666666984558105,
+ "bindings": [
+  {
+   "name": "WardenFigure",
+   "id": "1F471FA34CCE2F42388D9D9C23034776",
+   "spawnable": true,
+   "possessable": false,
+   "class": "SkeletalMeshActor",
+   "tracks": [
+    "MovieSceneSpawnTrack",
+    "MovieScene3DTransformTrack",
+    "MovieSceneVisibilityTrack",
+    "MovieSceneSkeletalAnimationTrack",
+    "MovieSceneAudioTrack"
+   ],
+   "parent": null
+  },
+  {
+   "name": "SkeletalMeshComponent0",
+   "id": "2043595F4AC65010B9BC2AA9FA2D9640",
+   "spawnable": false,
+   "possessable": true,
+   "class": "SkeletalMeshComponent",
+   "tracks": [
+    "MovieSceneComponentMaterialTrack"
+   ],
+   "parent": "1F471FA34CCE2F42388D9D9C23034776"
+  },
+  {
+   "name": "Cam_Spike",
+   "id": "4B67566C4ACDCFC35E1230B2FA2C6C52",
+   "spawnable": true,
+   "possessable": false,
+   "class": "CineCameraActor",
+   "tracks": [
+    "MovieSceneSpawnTrack",
+    "MovieScene3DTransformTrack"
+   ],
+   "parent": null
+  },
+  {
+   "name": "Cube",
+   "id": "70D235A1429C0144C12588A3F948AF77",
+   "spawnable": true,
+   "possessable": false,
+   "class": "StaticMeshActor",
+   "tracks": [
+    "MovieSceneSpawnTrack",
+    "MovieScene3DAttachTrack"
+   ],
+   "parent": null
+  },
+  {
+   "name": "Lantern",
+   "id": "7687C6A8482C79859E49219B322C4C9C",
+   "spawnable": true,
+   "possessable": false,
+   "class": "PointLight",
+   "tracks": [
+    "MovieSceneSpawnTrack"
+   ],
+   "parent": null
+  },
+  {
+   "name": "LightComponent0",
+   "id": "E15A91B045032541440721885FB75D73",
+   "spawnable": false,
+   "possessable": true,
+   "class": "PointLightComponent",
+   "tracks": [
+    "MovieSceneFloatTrack"
+   ],
+   "parent": "7687C6A8482C79859E49219B322C4C9C"
+  }
+ ],
+ "master_tracks": [
+  "MovieSceneAudioTrack",
+  "MovieSceneFadeTrack",
+  "MovieSceneCameraCutTrack"
+ ],
+ "marked_frames": [
+  {
+   "label": "tag:State.Test.A",
+   "frame": 30,
+   "seconds": 1.0
+  },
+  {
+   "label": "!lock:None",
+   "frame": 60,
+   "seconds": 2.0
+  },
+  {
+   "label": "bell:1x1",
+   "frame": 90,
+   "seconds": 3.0
+  }
+ ],
+ "can_blend_after_build": {},
+ "can_blend_readback": {},
+ "build_errors": [
+  {
+   "item": "a.can_blend",
+   "api": "UMovieSceneCameraCutTrack.set_editor_property('b_can_blend', True)",
+   "error": "Exception: MovieSceneCameraCutTrack: Failed to find property 'b_can_blend' for attribute 'b_can_blend' on 'MovieSceneCameraCutTrack'"
+  }
+ ],
+ "build_notes": [
+  "LS_P17_Spike already exists: reset in place"
+ ],
+ "verify_notes": [],
+ "check_count": 88,
+ "failed_count": 1,
+ "findings": [
+  "Run: UnrealEditor-Cmd -run=pythonscript works with the editor closed; build 11 s, verify 9 s (log lines tagged P17S1). Mode by the environment variable P17_MODE=build|verify.",
+  "Tick resolution of a new LevelSequence is 24000, display rate set to 30 fps; 1 display frame = 800 ticks.",
+  "Time units differ per API: channel.add_key(FrameNumber) and key.get_time() are DISPLAY frames by default; MovieSceneSection.set_ease_in_duration / set_ease_out_duration take TICKS (1.0 s = 24000); MovieSceneComponentMaterialParameterSection.add_scalar_parameter_key takes a TICK FrameNumber (a display frame passed there landed at ~0 s in the first build); set_range_seconds / get_*_seconds take seconds.",
+  "LevelSequence.add_spawnable_from_class is deprecated since 5.5 ('use the Level Sequence Editor Subsystem'), but the subsystem's add_spawnable_from_class returns an invalid binding headless (sequence None). The deprecated function works and logs one DeprecationWarning per call.",
+  "The 'Add Marked Frame' / 'Get Marked Frames' tick-resolution variants are deprecated; add_marked_frame_to_sequence(frame, unreal.MovieSceneTimeUnit.DISPLAY_RATE) and get_marked_frames_from_sequence(unreal.MovieSceneTimeUnit.DISPLAY_RATE) work (there is no unreal.SequenceTimeUnit).",
+  "CineCameraComponent.set_filmback_preset_by_name('16:9 DSLR') gives sensor 36.0 x 20.25 mm (not 23.76 x 13.365). The camera component of the template is tpl.get_editor_property('camera_component'); tpl.get_cine_camera_component() returns None on a template. Focal length: set_editor_property('current_focal_length', v).",
+  "Component bindings (needed for the Component Material Parameter track and the light Intensity track) CAN be scripted headless: the template component gives an invalid binding from add_possessable, but spawning the spawnable through a LevelSequencePlayer in the commandlet's Untitled editor world (EditorLevelLibrary.get_editor_world, LevelSequencePlayer.create_level_sequence_player, set_playback_position(frame 0, JUMP), player.get_bound_objects(binding id)) and calling LevelSequence.add_possessable(<live component>) creates a child possessable (parent = the spawnable) named SkeletalMeshComponent0 / LightComponent0. Nothing from that world is saved.",
+  "Runtime resolution of those two component bindings (and of the attach, material fade, blend) is NOT proven by the read-back; it is what S1b (PIE) has to confirm.",
+  "bCanBlend of MovieSceneCameraCutTrack is a plain UPROPERTY(): set_editor_property fails ('Failed to find property'), and ToolsetLibrary.set_object_properties / get_object_properties refuse it ('could not be set / read'). The MCP ObjectTools use the same call, and no Sequencer tool in p17_f0_tables.md section 1 sets it, so it is a manual editor step (track context menu: Can Blend) or a hand-prepared seed asset.",
+  "Component material track: MovieSceneComponentMaterialTrack.set_material_info(ComponentMaterialInfo{material_slot_name, material_slot_index, material_type=INDEXED_MATERIAL}); parameter keys via section.add_scalar_parameter_key(MaterialParameterInfo(name='Fade'), tick FrameNumber, value, '', ''); read back with section.get_channel(Name('Fade')) (the channel is named after the parameter). get_material_info logs a (misleading) deprecation warning.",
+  "Visibility track: MovieSceneVisibilityTrack with set_property_name_and_path('bHidden','bHidden'); the bool channel stores VISIBLE semantics (True = visible).",
+  "Attach: MovieScene3DAttachSection.set_constraint_binding_id(sequence.get_binding_id(parent binding)); attach_socket_name and attachment_*_rule are editor properties (unreal.AttachmentRule.KEEP_WORLD).",
+  "Skeletal animation: section.get_editor_property('params') -> set animation and slot_name -> section.set_editor_property('params', params); set_range_seconds to the clip length (AN_Warden_LookAround is 4.467 s).",
+  "PointLight spawnable template: intensity_units is UNITLESS (not lumens) and intensity 5000 by default. The plan's 600 lm Lantern needs intensity_units = LUMENS set on the template component in P17-5a."
+ ],
+ "caveat": "scripted OK = read back correctly from the reloaded asset. Nothing here proves runtime behaviour (spawn, blend, attach, material fade): that is S1b."
+}
