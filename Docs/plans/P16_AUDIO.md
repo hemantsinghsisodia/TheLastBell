@@ -914,3 +914,21 @@ One editor agent at a time. A1, A2 and A3 run without the editor, in parallel wi
 3. Wooden steps on the tower stairs at 2.0: loud enough, and not too loud against the stone ones.
 4. Creatures, once the emitters are placed: bats (a squeak should read small and high up, not a shriek; the two flurries should be a brief startle of wings); owls (soft, far, not a bird in the room); howls (beyond the walls, not a dog next door; the 3 s tail should fade without a hiss; Howl_02 is a coyote); rats (squeaks small and dry; the scurry should read as claws on stone, say if it is thin or boomy; hiss in Rat_03 and Rat_05).
 5. Repeats: owls and howls have 4 and 3 variants against intervals of 30-60 s and 120-240 s.
+
+### P16-6, part 2: creature listening check (2026-11-10, owner in Play)
+| Item | Owner's choice | Saved |
+|---|---|---|
+| Owls | too loud → `SFX_LB_Owl_01..04` `Volume` **0.4** ("fine now") | yes |
+| Howls | inaudible: the emitters are 95–120 m away and `ATT_LB_Large` falls silent at 68 m → `SFX_LB_Howl_01..03` attenuation **`ATT_LB_Thunder`** (20000 / 60000), `Volume` **0.5** ("audible") | yes |
+| Belfry wind | too loud → `AUD_Zone_Belfry` `Howl` 1.0 → **0.25**, `RoomToneVolume` 0.5 → **0.4** ("fine now") | yes (editor actor; map saved directly) |
+| Bats, rats | fine | — |
+
+**Not yet checked; paused at the owner's request, it's late:**
+- the note pickup and put-down rustle;
+- the great bell's finale toll under the ending pause, and whether to tighten the 5 s finale spacing;
+- the performance readings.
+
+**Pending bookkeeping (next session):**
+- add the owl, howl and belfry choices to `OWNER_CHOICES` in `Tools/audio/p16_2_assets.py` (howl attenuation `ATT_LB_Thunder`);
+- add them to `Tools/audio/p16_level.py`, whose `--check` still expects Belfry `Howl` 1.0 and `RoomToneVolume` 0.5;
+- re-run both checks.
