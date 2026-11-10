@@ -977,3 +977,19 @@ One editor agent at a time. A1, A2 and A3 run without the editor, in parallel wi
   - `SFX_LB_Bell_Stage5` `Volume` 1.0 → **2.0**.
 
   Both saved (`DA_Audio`, `SFX_LB_Bell_Stage5`). The bookkeeping in `OWNER_CHOICES` (stage-5 volume and the finale beat spacing) is still to do.
+
+### P16-7 final (2026-11-10, QA fixes and closing checks)
+**Fixes** (commit 9d3ada8 for 1 and 2, the rest below):
+- **QA-01:** `OWNER_CHOICES["wave_volume"]` has `SFX_LB_Bell_Stage5` = 2.0, ahead of the generic bell rule (`Tools/audio/p16_2_assets.py`).
+- **QA-02 / QA-05:** the `State.Event.Finale` beat spacing is 2.0 in the script's beats table, in `ULBAudioSettings::FillPlanDefaults()` (`LBAudioSettings.cpp`), in the beat tables of `LastBell.Audio.Logic.BellPlan` (`LBAudioTests.cpp`) and in the section 5.3 row of this plan. `verify_da` now also checks every beat in full (trigger, stage, strikes, first delay, spacing, drone), 36 extra checks.
+- **Docs:** `ASSET_REGISTRY.md` (58 Kenney and Freesound rows now "imported (P16, via SourceArt/Audio/Recorded)"; the 3 "not used" rows kept), `TECHNICAL_DESIGN.md` (`OnLightningStrike` is what Phase 16 binds; the two stale finale notes in section 16 closed), section 1 item 11 of this plan (performance waived, D-113), `RISKS.md` R-77 (Phase 17/18 coupling: `Deactivate` clears the scheduled finale strikes; a pause menu would not silence the UI-sound bell strikes).
+
+**Headless runs (Unreal closed):**
+- `LB_MODE=apply`: PASS, 1921 checks, 0 failures, **nothing saved, imported or set** (`git status` shows no `.uasset` change), so the saved assets already equal the script.
+- fresh-process `LB_MODE=verify`: PASS, **1727 checks, 0 failures**; `p16_2_report.json` records `SFX_LB_Bell_Stage5` volume 2.0 (commit 204c25b).
+
+**Build and suite:** editor target rebuilt for real (`LBAudioTests.cpp` and `Module.LastBell.cpp` compiled, both DLLs relinked); full suite, run 1: 174 passed, 1 failed (`LastBell.Functional.Audio.NewGameToll`, "strikes about 0.4 s apart", the known timing flake of MCP_NOTES; it passes alone); run 2 (nothing else running): **175 / 175 pass**, 0 `Error:` lines, 0 invalid tags, exit code 0.
+**Game target:** `Build.bat TheLastBell Win64 Development` -> `Result: Succeeded` (31 s).
+
+**Still for the owner or later phases:** the performance readings (Phase 20, R-75), `p16_level.py --check` with the editor open, and the R-77 decisions in Phase 17/18.
+
