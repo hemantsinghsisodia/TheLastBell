@@ -13,6 +13,12 @@ namespace
 		return FDefaultValueHelper::ParseInt(Text, Out);
 	}
 
+	/** FString::operator== ignores case; the marker grammar is case-sensitive. */
+	bool Is(const FString& Text, const TCHAR* Expected)
+	{
+		return Text.Equals(Expected, ESearchCase::CaseSensitive);
+	}
+
 	bool Fail(FString& OutError, const FString& Label, const TCHAR* Reason)
 	{
 		OutError = FString::Printf(TEXT("marker '%s': %s"), *Label, Reason);
@@ -92,13 +98,13 @@ namespace LBCinematicLogic
 			return true;
 		};
 
-		if (Kind == TEXT("card"))
+		if (Is(Kind, TEXT("card")))
 		{
 			if (!NeedArgs(1, 1)) { return false; }
 			Parsed.Kind = ELBCineMarkerKind::Card;
 			Parsed.Name = FName(*Args[0]);
 		}
-		else if (Kind == TEXT("tag"))
+		else if (Is(Kind, TEXT("tag")))
 		{
 			if (!NeedArgs(1, 1)) { return false; }
 			Parsed.Kind = ELBCineMarkerKind::Tag;
@@ -109,13 +115,13 @@ namespace LBCinematicLogic
 				return false;
 			}
 		}
-		else if (Kind == TEXT("bell"))
+		else if (Is(Kind, TEXT("bell")))
 		{
 			if (!NeedArgs(1, 1)) { return false; }
 			Parsed.Kind = ELBCineMarkerKind::Bell;
 			FString StageText;
 			FString StrikeText;
-			if (!Args[0].Split(TEXT("x"), &StageText, &StrikeText) || !ParseIntArg(StageText, Parsed.Stage) || !ParseIntArg(StrikeText, Parsed.Strikes))
+			if (!Args[0].Split(TEXT("x"), &StageText, &StrikeText, ESearchCase::CaseSensitive) || !ParseIntArg(StageText, Parsed.Stage) || !ParseIntArg(StrikeText, Parsed.Strikes))
 			{
 				return Fail(OutError, Label, TEXT("expected bell:<Stage>x<Strikes>, for example bell:5x1"));
 			}
@@ -128,7 +134,7 @@ namespace LBCinematicLogic
 				return Fail(OutError, Label, TEXT("the number of strikes must be 1 to 32"));
 			}
 		}
-		else if (Kind == TEXT("strike"))
+		else if (Is(Kind, TEXT("strike")))
 		{
 			if (!NeedArgs(1, 2)) { return false; }
 			Parsed.Kind = ELBCineMarkerKind::Strike;
@@ -141,7 +147,7 @@ namespace LBCinematicLogic
 				}
 			}
 		}
-		else if (Kind == TEXT("flash"))
+		else if (Is(Kind, TEXT("flash")))
 		{
 			if (!NeedArgs(1, 1)) { return false; }
 			Parsed.Kind = ELBCineMarkerKind::Flash;
@@ -150,10 +156,10 @@ namespace LBCinematicLogic
 				return Fail(OutError, Label, TEXT("the brightness must be a number from 0 to 1"));
 			}
 		}
-		else if (Kind == TEXT("look") || Kind == TEXT("mark"))
+		else if (Is(Kind, TEXT("look")) || Is(Kind, TEXT("mark")))
 		{
 			if (!NeedArgs(1, 2)) { return false; }
-			Parsed.Kind = Kind == TEXT("look") ? ELBCineMarkerKind::Look : ELBCineMarkerKind::Mark;
+			Parsed.Kind = Is(Kind, TEXT("look")) ? ELBCineMarkerKind::Look : ELBCineMarkerKind::Mark;
 			Parsed.Name = FName(*Args[0]);
 			if (Args.Num() > 1)
 			{
@@ -163,19 +169,19 @@ namespace LBCinematicLogic
 				}
 			}
 		}
-		else if (Kind == TEXT("lock"))
+		else if (Is(Kind, TEXT("lock")))
 		{
 			if (!NeedArgs(1, 1)) { return false; }
 			Parsed.Kind = ELBCineMarkerKind::Lock;
-			if (Args[0] == TEXT("None"))
+			if (Is(Args[0], TEXT("None")))
 			{
 				Parsed.Lock = ELBInputLock::None;
 			}
-			else if (Args[0] == TEXT("Look"))
+			else if (Is(Args[0], TEXT("Look")))
 			{
 				Parsed.Lock = ELBInputLock::Look;
 			}
-			else if (Args[0] == TEXT("Full"))
+			else if (Is(Args[0], TEXT("Full")))
 			{
 				Parsed.Lock = ELBInputLock::Full;
 			}
@@ -184,27 +190,27 @@ namespace LBCinematicLogic
 				return Fail(OutError, Label, TEXT("the lock must be None, Look or Full"));
 			}
 		}
-		else if (Kind == TEXT("skip"))
+		else if (Is(Kind, TEXT("skip")))
 		{
 			if (!NeedArgs(1, 1)) { return false; }
 			Parsed.Kind = ELBCineMarkerKind::Skip;
-			if (Args[0] != TEXT("0") && Args[0] != TEXT("1"))
+			if (!Is(Args[0], TEXT("0")) && !Is(Args[0], TEXT("1")))
 			{
 				return Fail(OutError, Label, TEXT("skip needs 0 or 1"));
 			}
-			Parsed.bFlag = Args[0] == TEXT("1");
+			Parsed.bFlag = Is(Args[0], TEXT("1"));
 		}
-		else if (Kind == TEXT("mix"))
+		else if (Is(Kind, TEXT("mix")))
 		{
 			if (!NeedArgs(1, 1)) { return false; }
 			Parsed.Kind = ELBCineMarkerKind::Mix;
-			if (Args[0] != TEXT("on") && Args[0] != TEXT("off"))
+			if (!Is(Args[0], TEXT("on")) && !Is(Args[0], TEXT("off")))
 			{
 				return Fail(OutError, Label, TEXT("mix needs on or off"));
 			}
-			Parsed.bFlag = Args[0] == TEXT("on");
+			Parsed.bFlag = Is(Args[0], TEXT("on"));
 		}
-		else if (Kind == TEXT("credits"))
+		else if (Is(Kind, TEXT("credits")))
 		{
 			if (!NeedArgs(0, 1)) { return false; }
 			Parsed.Kind = ELBCineMarkerKind::Credits;
@@ -216,7 +222,7 @@ namespace LBCinematicLogic
 				}
 			}
 		}
-		else if (Kind == TEXT("end"))
+		else if (Is(Kind, TEXT("end")))
 		{
 			if (!NeedArgs(0, 0)) { return false; }
 			Parsed.Kind = ELBCineMarkerKind::End;

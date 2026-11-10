@@ -2950,7 +2950,8 @@ bool FLBAudioArrivalBeatTest::RunTest(const FString& Parameters)
 				Test->TestEqual(TEXT("It is stage 1"), Immediate[0].Aux, 1);
 				Test->TestEqual(TEXT("It plays Bell.Stage[0]"), Immediate[0].Variant, 0);
 			}
-			Test->TestEqual(TEXT("The other two strikes are scheduled"), Audio->GetScheduledCount(), 2);
+			// Two more bell strikes and Drone A (the beat's drone, scheduled at once).
+			Test->TestEqual(TEXT("The other two strikes and the drone are scheduled"), Audio->GetScheduledCount(), 3);
 			S->Phase = 1;
 			return false;
 		}
@@ -3023,7 +3024,8 @@ bool FLBAudioGreatBellStrikeDelegateTest::RunTest(const FString& Parameters)
 			S->Phase = 1;
 			return false;
 		}
-		if (C.Now - S->T0 < 1.5)
+		// PlayBellSpacing is 4.5 s in the transient settings.
+		if (C.Now - S->T0 < 5.0)
 		{
 			return false;
 		}

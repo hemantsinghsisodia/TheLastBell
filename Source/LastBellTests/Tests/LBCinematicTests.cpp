@@ -269,11 +269,11 @@ bool FLBCineEaseAndYawTest::RunTest(const FString& Parameters)
 
 	// The shortest way round.
 	TestNearlyEqual(TEXT("10 to 30 at half"), ShortestYawLerp(10.f, 30.f, 0.5f), 20.f);
-	TestNearlyEqual(TEXT("350 to 10 goes through 0 (half is 360)"), FRotator::NormalizeAxis(ShortestYawLerp(350.f, 10.f, 0.5f)), 0.f, 1.0e-3f);
-	TestNearlyEqual(TEXT("10 to 350 goes through 0 (half is 0)"), FRotator::NormalizeAxis(ShortestYawLerp(10.f, 350.f, 0.5f)), 0.f, 1.0e-3f);
-	TestNearlyEqual(TEXT("-170 to 170 goes through 180"), FMath::Abs(FRotator::NormalizeAxis(ShortestYawLerp(-170.f, 170.f, 0.5f))), 180.f, 1.0e-3f);
+	TestNearlyEqual(TEXT("350 to 10 goes through 0 (half is 360)"), static_cast<float>(FRotator::NormalizeAxis(ShortestYawLerp(350.f, 10.f, 0.5f))), 0.f, 1.0e-3f);
+	TestNearlyEqual(TEXT("10 to 350 goes through 0 (half is 0)"), static_cast<float>(FRotator::NormalizeAxis(ShortestYawLerp(10.f, 350.f, 0.5f))), 0.f, 1.0e-3f);
+	TestNearlyEqual(TEXT("-170 to 170 goes through 180"), FMath::Abs(static_cast<float>(FRotator::NormalizeAxis(ShortestYawLerp(-170.f, 170.f, 0.5f)))), 180.f, 1.0e-3f);
 	TestNearlyEqual(TEXT("alpha 0 is the start"), ShortestYawLerp(40.f, 200.f, 0.f), 40.f);
-	TestNearlyEqual(TEXT("alpha 1 is the end (same angle)"), FRotator::NormalizeAxis(ShortestYawLerp(40.f, 200.f, 1.f) - 200.f), 0.f, 1.0e-3f);
+	TestNearlyEqual(TEXT("alpha 1 is the end (same angle)"), static_cast<float>(FRotator::NormalizeAxis(ShortestYawLerp(40.f, 200.f, 1.f) - 200.f)), 0.f, 1.0e-3f);
 
 	// Card opacity: 0.3 in, 2.4 hold, 0.3 out.
 	TestNearlyEqual(TEXT("card at 0"), CardOpacity(0.f, 0.3f, 2.4f), 0.f);
@@ -491,7 +491,7 @@ bool FLBCineCameraCutCanBlendHelperTest::RunTest(const FString& Parameters)
 	TestFalse(TEXT("can blend reads back false"), ULBCineAuthoringLibrary::GetCameraCutTrackCanBlend(Track));
 
 	// A null track: false, with a warning.
-	AddExpectedError(TEXT("SetCameraCutTrackCanBlend: the track is null"), EAutomationExpectedErrorFlags::Contains, 1);
+	AddExpectedErrorPlain(TEXT("SetCameraCutTrackCanBlend: the track is null"), EAutomationExpectedErrorFlags::Contains, 1);
 	TestFalse(TEXT("set on a null track is false"), ULBCineAuthoringLibrary::SetCameraCutTrackCanBlend(nullptr, true));
 	TestFalse(TEXT("get on a null track is false"), ULBCineAuthoringLibrary::GetCameraCutTrackCanBlend(nullptr));
 	return true;

@@ -418,7 +418,7 @@ bool FLBCineDisabledByCVarTest::RunTest(const FString& Parameters)
 			Test->TestFalse(TEXT("The HUD is back"), LBController(C.W)->IsHUDHidden());
 			Test->TestFalse(TEXT("No must marker fired on the way out"), LBPie::HasState(LBPie::Tag(TEXT("State.Test.Door2Open"))));
 			Test->TestTrue(TEXT("No fade is left on the camera"), FadeIsClear(C.W));
-			Test->AddExpectedError(TEXT("lb.Cine.Enabled is 0"), EAutomationExpectedErrorFlags::Contains, 1);
+			Test->AddExpectedErrorPlain(TEXT("lb.Cine.Enabled is 0"), EAutomationExpectedErrorFlags::Contains, 1);
 			Test->TestFalse(TEXT("Play is refused while disabled"), Sub->Play(TEXT("Test")));
 			Test->TestFalse(TEXT("No intro is pending"), Sub->IsStartPending());
 			Test->TestFalse(TEXT("Nothing is playing"), Sub->IsPlaying());
@@ -461,7 +461,7 @@ bool FLBCineMissingSequenceFailsSafeTest::RunTest(const FString& Parameters)
 
 		S->Counter = 0;
 		Sub->OnCinematicFinished.AddLambda([S](FName) { ++S->Counter; });
-		Test->AddExpectedError(TEXT("failed (the sequence did not load)"), EAutomationExpectedErrorFlags::Contains, 1);
+		Test->AddExpectedErrorPlain(TEXT("failed (the sequence did not load)"), EAutomationExpectedErrorFlags::Contains, 1);
 		Sub->Play(TEXT("Missing"));
 
 		Test->TestFalse(TEXT("It is not left playing"), Sub->IsPlaying());
