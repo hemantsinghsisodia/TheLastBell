@@ -316,9 +316,15 @@ private:
 	void HandleCandleState(bool bLit);
 	UFUNCTION()
 	void HandleRelightStarted();
-	/** The player opened an inspection: a note rustles on pick-up (the put-down cue is the interactable's OnInteracted). */
+	/** The player opened an inspection: a note rustles on pick-up. */
 	UFUNCTION()
 	void HandleInspectBegin(ULBInspectableComponent* Inspectable);
+	/**
+	 * The inspection ended (kept or put back, including CancelInspect, which never fires OnInteracted): the inspected actor's
+	 * Interact cue plays again as the put-down. A kept item already played it through OnInteracted in the same frame; that one is not doubled.
+	 */
+	UFUNCTION()
+	void HandleInspectEnd(bool bKept);
 	UFUNCTION()
 	void HandleApparitionAppeared(ALBWardenApparition* Apparition, int32 StationIndex);
 
@@ -339,6 +345,8 @@ private:
 
 	// ---- Helpers ----
 	void BindPlayerEvents();
+	/** The Interact / Denied row play of NotifyInteracted, without the same-frame inspection bookkeeping. */
+	void PlayInteractCue(AActor* Actor, bool bDenied);
 	/** bPlayFirstNow: when FirstDelay <= 0 the first strike plays in this call and only the rest are scheduled (story beats). */
 	void ScheduleBell(int32 Stage, int32 Strikes, float FirstDelay, float Spacing, bool bAmbient, bool bPlayFirstNow = false);
 	void ScheduleDrone(int32 Drone, float Delay);
@@ -380,6 +388,13 @@ private:
 	TWeakObjectPtr<ULBWardenBrainComponent> BoundBrain;
 	TWeakObjectPtr<UObject> BoundCandle;
 	TWeakObjectPtr<UObject> BoundInspection;
+	/** The actor of the running inspection (from OnInspectBegin), so OnInspectEnd (which carries no actor) can play its put-down cue. */
+	TWeakObjectPtr<AActor> InspectedActor;
+	/** Same-frame markers so a kept item's Interact cue is not played twice (OnInteracted and OnInspectEnd both fire on a keep). */
+	TWeakObjectPtr<AActor> LastInteractedActor;
+	uint64 LastInteractedFrame = 0;
+	TWeakObjectPtr<AActor> LastInspectEndActor;
+	uint64 LastInspectEndFrame = 0;
 	TWeakObjectPtr<ALBWarden> CachedWarden;
 	TWeakObjectPtr<const ALBAudioZone> CurrentZone;
 	TArray<TWeakObjectPtr<ALBAudioZone>> Zones;

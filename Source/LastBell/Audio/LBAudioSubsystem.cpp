@@ -777,8 +777,10 @@ void ULBAudioSubsystem::UnbindWorldEvents()
 	if (ULBInspectionComponent* Inspection = Cast<ULBInspectionComponent>(BoundInspection.Get()))
 	{
 		Inspection->OnInspectBegin.RemoveDynamic(this, &ULBAudioSubsystem::HandleInspectBegin);
+		Inspection->OnInspectEnd.RemoveDynamic(this, &ULBAudioSubsystem::HandleInspectEnd);
 	}
 	BoundInspection.Reset();
+	InspectedActor.Reset();
 	for (const TWeakObjectPtr<ALBWardenApparition>& Weak : BoundApparitions)
 	{
 		if (ALBWardenApparition* Apparition = Weak.Get())
@@ -1081,10 +1083,13 @@ void ULBAudioSubsystem::BindPlayerEvents()
 		if (ULBInspectionComponent* OldInspection = Cast<ULBInspectionComponent>(BoundInspection.Get()))
 		{
 			OldInspection->OnInspectBegin.RemoveDynamic(this, &ULBAudioSubsystem::HandleInspectBegin);
+			OldInspection->OnInspectEnd.RemoveDynamic(this, &ULBAudioSubsystem::HandleInspectEnd);
 		}
+		InspectedActor.Reset();
 		if (Inspection)
 		{
 			Inspection->OnInspectBegin.AddUniqueDynamic(this, &ULBAudioSubsystem::HandleInspectBegin);
+			Inspection->OnInspectEnd.AddUniqueDynamic(this, &ULBAudioSubsystem::HandleInspectEnd);
 		}
 		BoundInspection = Inspection;
 	}
@@ -1639,6 +1644,25 @@ void ULBAudioSubsystem::NotifyInteracted(AActor* Actor, bool bDenied)
 	{
 		return;
 	}
+	if (!bDenied)
+	{
+		// A put-down that ended in this very frame already played the Interact cue (OnInspectEnd came first): not a second rustle.
+		if (LastInspectEndActor.Get() == Actor && LastInspectEndFrame == GFrameCounter)
+		{
+			return;
+		}
+		LastInteractedActor = Actor;
+		LastInteractedFrame = GFrameCounter;
+	}
+	PlayInteractCue(Actor, bDenied);
+}
+
+void ULBAudioSubsystem::PlayInteractCue(AActor* Actor, bool bDenied)
+{
+	if (!bActive || !Actor)
+	{
+		return;
+	}
 	int32 CueIndex = INDEX_NONE;
 	bool bSilent = false;
 	const FLBInteractionCue* Cue = FindInteractionCue(Actor, CueIndex, bSilent);
@@ -1683,12 +1707,31 @@ void ULBAudioSubsystem::NotifyDialChanged(AActor* Actor, int32 NewIndex)
 
 void ULBAudioSubsystem::HandleInspectBegin(ULBInspectableComponent* Inspectable)
 {
-	// A note is picked up: its mapped Interact cue (the paper rustle) plays now. Putting it down plays it again through OnInteracted.
+	// A note is picked up: its mapped Interact cue (the paper rustle) plays now. Putting it down plays it again (HandleInspectEnd).
 	AActor* Item = Inspectable ? Inspectable->GetOwner() : nullptr;
+	InspectedActor = Item;
 	if (bActive && Item)
 	{
-		NotifyInteracted(Item, /*bDenied*/ false);
+		PlayInteractCue(Item, /*bDenied*/ false);
 	}
+}
+
+void ULBAudioSubsystem::HandleInspectEnd(bool bKept)
+{
+	AActor* Item = InspectedActor.Get();
+	InspectedActor.Reset();
+	if (!bActive || !Item)
+	{
+		return;
+	}
+	// A kept item's grant (CompleteInspection -> OnInteracted) runs before OnInspectEnd and has already played the cue in this frame.
+	if (bKept && LastInteractedActor.Get() == Item && LastInteractedFrame == GFrameCounter)
+	{
+		return;
+	}
+	LastInspectEndActor = Item;
+	LastInspectEndFrame = GFrameCounter;
+	PlayInteractCue(Item, /*bDenied*/ false);
 }
 
 AActor* ULBAudioSubsystem::FindStepActor(const FGameplayTag& Step) const

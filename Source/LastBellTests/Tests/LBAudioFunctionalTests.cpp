@@ -1620,7 +1620,7 @@ bool FLBAudioNotePickupCueTest::RunTest(const FString& Parameters)
 				Test->TestTrue(TEXT("A variant was picked and loaded"), Interacts[0].Variant >= 0 && Interacts[0].Variant < 3 && Interacts[0].bSoundResolved);
 			}
 			Inspection->CancelInspect();
-			Test->TestEqual(TEXT("Cancelling the inspection plays nothing more (the put-down cue belongs to OnInteracted)"), Requests(Audio, LBAudioCue::Interact).Num(), 1);
+			Test->TestEqual(TEXT("Cancelling the inspection plays the put-down cue (a second request; NotePutDownCue checks it in detail)"), Requests(Audio, LBAudioCue::Interact).Num(), 2);
 		}
 
 		// An inspectable whose class has no row makes no request (an unmapped class is silent).
@@ -1640,6 +1640,132 @@ bool FLBAudioNotePickupCueTest::RunTest(const FString& Parameters)
 			Bare->Destroy();
 		}
 		Note->Destroy();
+		return true;
+	}, 60.f);
+
+	AudioEnqueue(R);
+	return true;
+}
+
+// =====================================================================================================================
+// 9b2. P16-6: a note also rustles when it is put down (every inspection end, kept or cancelled), and a kept item rustles once, not twice
+// =====================================================================================================================
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBAudioNotePutDownCueTest, "LastBell.Functional.Audio.NotePutDownCue", LB_AUDIOFUNC_FLAGS)
+bool FLBAudioNotePutDownCueTest::RunTest(const FString& Parameters)
+{
+	TSharedRef<FAudioRunner> R = AudioStartSession(this);
+	const TSharedRef<FAudioState> S = R->S;
+	FAutomationTestBase* Test = this;
+
+	R->Add(TEXT("PIE ready; AStaticMeshActor is mapped to a 3-variant Interact cue (volume 0.8)"), [S, Test](FAudioCtx& C)
+	{
+		if (!LBPie::WorldReady() || C.Frames < 5)
+		{
+			return false;
+		}
+		ActivateAudio(C, *S, Test, [](ULBAudioSettings& A)
+		{
+			FLBInteractionCue Note;
+			Note.ActorClass = TSoftClassPtr<AActor>(AStaticMeshActor::StaticClass());
+			FillSet(Note.Interact, 3);
+			Note.Volume = 0.8f;
+			A.InteractionCues.Add(Note);
+		});
+		return true;
+	});
+
+	R->Add(TEXT("Cancel and a normal close each play one put-down request at the note; a kept item makes one request at put-down, not two"), [S, Test](FAudioCtx& C)
+	{
+		ULBAudioSubsystem* Audio = S->Audio(C.W);
+		ALBCharacter* Pawn = LBPie::Pawn();
+		if (!Audio || !Pawn || !Pawn->GetInspection())
+		{
+			Test->AddError(TEXT("Audio subsystem, the pawn or its inspection component is gone"));
+			return true;
+		}
+		if (!Audio->IsActive() || C.Frames < 4)
+		{
+			if (C.Elapsed > 3.0)
+			{
+				Test->AddError(TEXT("The director did not become active within 3 s"));
+				return true;
+			}
+			return false;
+		}
+		ULBInspectionComponent* Inspection = Pawn->GetInspection();
+		const FVector Base = Pawn->GetActorLocation() + FVector(300.0, 0.0, 100.0);
+
+		// ---- A note put back (bKeepOnClose false) ----
+		ULBInteractableComponent* NoteInteractable = nullptr;
+		AStaticMeshActor* Note = SpawnInteractable<AStaticMeshActor>(C.W, Base, NoteInteractable);
+		if (!Test->TestTrue(TEXT("The note spawned"), Note && NoteInteractable))
+		{
+			return true;
+		}
+		ULBInspectableComponent* NoteInspectable = NewObject<ULBInspectableComponent>(Note);
+		Note->AddInstanceComponent(NoteInspectable);
+		NoteInspectable->RegisterComponent();
+		Audio->RefreshBindings();
+
+		Audio->ClearRequests();
+		if (Test->TestTrue(TEXT("BeginInspect succeeded"), Inspection->BeginInspect(NoteInspectable, NoteInteractable)))
+		{
+			Test->TestEqual(TEXT("Cancel path: one request at pick-up"), Requests(Audio, LBAudioCue::Interact).Num(), 1);
+			Inspection->CancelInspect();
+			const TArray<FLBAudioRequest> After = Requests(Audio, LBAudioCue::Interact);
+			if (Test->TestEqual(TEXT("Cancel path: one more request at put-down"), After.Num(), 2))
+			{
+				Test->TestTrue(TEXT("Cancel path: the put-down is at the note"), After[1].bPositional && After[1].Location.Equals(Base, 1.0));
+			}
+
+			Audio->ClearRequests();
+			Test->TestTrue(TEXT("BeginInspect again succeeded"), Inspection->BeginInspect(NoteInspectable, NoteInteractable));
+			Inspection->EndInspect();
+			Test->TestEqual(TEXT("Normal close of an item that is put back: pick-up and put-down, two requests"), Requests(Audio, LBAudioCue::Interact).Num(), 2);
+			Test->TestFalse(TEXT("The inspection is over"), Inspection->IsInspecting());
+
+			// A second end with nothing inspected plays nothing.
+			Audio->ClearRequests();
+			Inspection->CancelInspect();
+			Test->TestEqual(TEXT("Cancelling while not inspecting plays nothing"), Requests(Audio, LBAudioCue::Interact).Num(), 0);
+		}
+		Note->Destroy();
+
+		// ---- A kept item: OnInteracted (the grant) and OnInspectEnd both fire; only one put-down rustle ----
+		ULBInteractableComponent* KeyInteractable = nullptr;
+		AStaticMeshActor* Key = SpawnInteractable<AStaticMeshActor>(C.W, Base + FVector(0.0, 300.0, 0.0), KeyInteractable);
+		if (Test->TestTrue(TEXT("The kept item spawned"), Key && KeyInteractable))
+		{
+			KeyInteractable->bInspectOnInteract = true;
+			ULBInspectableComponent* KeyInspectable = NewObject<ULBInspectableComponent>(Key);
+			KeyInspectable->bKeepOnClose = true;
+			Key->AddInstanceComponent(KeyInspectable);
+			KeyInspectable->RegisterComponent();
+			Audio->RefreshBindings();
+
+			Audio->ClearRequests();
+			KeyInteractable->Interact(Pawn);
+			if (Test->TestTrue(TEXT("Interact opened the inspection"), Inspection->IsInspecting()))
+			{
+				Test->TestEqual(TEXT("Kept item: one request at pick-up"), Requests(Audio, LBAudioCue::Interact).Num(), 1);
+				Inspection->EndInspect();
+				Test->TestEqual(TEXT("Kept item: exactly one more request at put-down (two in all, not three)"), Requests(Audio, LBAudioCue::Interact).Num(), 2);
+			}
+			Key->Destroy();
+		}
+
+		// ---- A plain interactable (not inspected) is unchanged: one request per Interact ----
+		ULBInteractableComponent* DoorInteractable = nullptr;
+		AStaticMeshActor* Door = SpawnInteractable<AStaticMeshActor>(C.W, Base + FVector(0.0, -300.0, 0.0), DoorInteractable);
+		if (Test->TestTrue(TEXT("The plain interactable spawned"), Door && DoorInteractable))
+		{
+			Audio->RefreshBindings();
+			Audio->ClearRequests();
+			DoorInteractable->Interact(Pawn);
+			Test->TestEqual(TEXT("A plain interactable still makes one Interact request"), Requests(Audio, LBAudioCue::Interact).Num(), 1);
+			Door->Destroy();
+		}
 		return true;
 	}, 60.f);
 
