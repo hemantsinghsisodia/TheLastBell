@@ -2,6 +2,17 @@
 
 **Status:** approved by the owner on 2026-11-10 ("approve"). P17-0 done.
 
+**Hold (owner, 2026-11-10): no Blender work.** The owner has changed the Warden asset and will ask for it to be copied in later. Until then:
+- **F0b** waits for the new source.
+- **F0 item 6** (Warden slots, bones, `mask` socket) waits for the new `SK_Warden`.
+- **P17-3** waits as well: the mask mesh, the hood void, the clip retarget and any Blender-keyed fallback.
+
+**Not affected:**
+- F0 items 1–5 and 7;
+- A1, because the Mixamo clips are Y Bot downloads;
+- P17-1, P17-2 and P17-4;
+- S1a, which uses the current `SK_Warden` only to test the Sequencer API.
+
 Branch `claude/phase-17-cinematics`, created from `main` at 88e164e. **The lead plans; every implementation agent is spawned with `model: "sonnet", effort: "high"`** (D-048).
 
 Every task follows the standing rules:
