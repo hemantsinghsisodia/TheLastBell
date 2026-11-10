@@ -304,3 +304,43 @@ def soft_limit(x: np.ndarray, thr: float = 0.5, ceil: float = 0.89) -> np.ndarra
     y = x.copy()
     y[over] = np.sign(x[over]) * (thr + (ceil - thr) * np.tanh((a[over] - thr) / (ceil - thr)))
     return y
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# noise reduction (P16-6, creature recordings)
+# ---------------------------------------------------------------------------------------------------------------------
+def spectral_gate(x: np.ndarray, reduce_db: float = 14.0, oversub: float = 1.5, pct: float = 15.0, nfft: int = 1024,
+                  hop: int = 256) -> np.ndarray:
+    """Spectral-subtraction denoiser, deterministic. The noise profile is a low percentile (minimum statistics) of each
+    frequency bin's power over the whole slice, bias-corrected to the mean power of exponential-distributed noise. Per frame and
+    bin the gain is sqrt(max(1 - oversub * noise / power, floor)) with floor = -reduce_db; the gain is smoothed over 3 frames
+    and 3 bins (fewer 'musical noise' blips). Hann analysis and synthesis, overlap-add. Works per channel."""
+    x = ensure2d(x)
+    n = len(x)
+    win = np.hanning(nfft + 1)[:nfft]
+    pad = nfft
+    floor = undb(-reduce_db) ** 2
+    q = pct / 100.0
+    bias = 1.0 / -math.log(1.0 - q)  # mean / q-quantile of an exponential distribution
+    out = np.zeros_like(x)
+    for c in range(x.shape[1]):
+        xp = np.concatenate([np.zeros(pad), x[:, c], np.zeros(pad + nfft)])
+        nfr = 1 + (len(xp) - nfft) // hop
+        idx = np.arange(nfft)[None, :] + hop * np.arange(nfr)[:, None]
+        spec = np.fft.rfft(xp[idx] * win[None, :], axis=1)
+        pw = np.abs(spec) ** 2
+        noise = np.percentile(pw, pct, axis=0) * bias
+        g2 = np.maximum(1.0 - oversub * noise[None, :] / np.maximum(pw, 1e-20), floor)
+        g = np.sqrt(g2)
+        gp = np.pad(g, ((1, 1), (1, 1)), mode="edge")
+        g = (gp[:-2, 1:-1] + gp[1:-1, 1:-1] + gp[2:, 1:-1] + gp[1:-1, :-2] + gp[1:-1, 2:]) / 5.0 * 0.5 + g * 0.5
+        y = np.fft.irfft(spec * g, nfft, axis=1) * win[None, :]
+        acc = np.zeros(len(xp))
+        wsum = np.zeros(len(xp))
+        for i in range(nfr):
+            a = i * hop
+            acc[a: a + nfft] += y[i]
+            wsum[a: a + nfft] += win ** 2
+        res = acc / np.maximum(wsum, 1e-9)
+        out[:, c] = res[pad: pad + n]
+    return out

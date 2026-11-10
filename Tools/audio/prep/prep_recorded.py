@@ -92,6 +92,8 @@ def build_layer(lay: dict, ch: int, info: dict) -> np.ndarray:
     elif seg.shape[1] == 1:
         seg = np.repeat(seg, 2, axis=1)
     seg = seg - seg.mean(axis=0, keepdims=True)  # DC
+    if lay.get("denoise"):  # spectral-subtraction denoise of the slice (P16-6: tape hiss, field noise); keys of L.spectral_gate
+        seg = L.spectral_gate(seg, **lay["denoise"])
     hp = lay.get("hp", 30.0)
     if hp:
         seg = L.fft_filter(seg, "hp", hp, 2)

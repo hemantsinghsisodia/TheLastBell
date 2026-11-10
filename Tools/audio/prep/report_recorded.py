@@ -39,6 +39,7 @@ EXPECTED = {
     "SFX_LB_Warden_Breath_": 3, "SFX_LB_Warden_Step_": 5, "SFX_LB_Warden_Chain_": 4, "SFX_LB_Warden_Robe": 1,
     "SFX_LB_Warden_Spotted_": 3, "SFX_LB_Warden_Roar_": 3, "SFX_LB_Warden_Windup_": 3, "SFX_LB_Warden_Exhale_": 3,
     "SFX_LB_Warden_Caught_": 2, "SFX_LB_Apparition_Whisper_": 3,
+    "SFX_LB_Bat_": 6, "SFX_LB_Owl_": 4, "SFX_LB_Howl_": 3, "SFX_LB_Rat_": 5,  # P16-6 creature ambience (D-112)
 }
 
 GROUPS = [
@@ -48,6 +49,7 @@ GROUPS = [
     ("room", "Room emitters: wood creaks, distant chains (9)"),
     ("warden", "Warden: steps, chains, robe, breath loops (13)"),
     ("voice", "Warden voice tells and apparition whispers (17)"),
+    ("creatures", "Creatures: bats, owls, far howls, rats (18; P16-6, D-112)"),
 ]
 
 LISTEN = {
@@ -85,6 +87,10 @@ LISTEN = {
     "Warden_Exhale": "Soft, long exhale: relief/loss of the player. Quiet and low.",
     "Warden_Caught": "Brutal 2.3-2.8 s growl/roar.",
     "Apparition_Whisper": "Ghostly whispers with a tail; check they are not intelligible words.",
+    "Bat_": "01-03 squeaks (chirp trains from one close-up recording, 03 pitched down 15 %), 04-05 startled flurries (wing flutter plus chirps or colony swarm, at most 2.4 s), 06 a wing-flutter burst. Very high and quick: they should read as small and far up in the roof beams, never as a shriek.",
+    "Owl_": "Distant hoots (low-passed at 5 kHz, short tail). 01 single hoot, 02 a short-then-long phrase, 03-04 the second owl. Check the hoot is soft and far, not a bird in the room.",
+    "Howl_": "Far-off howls (low-passed at 3 kHz, 3 s synthetic tail, slow fades). 01 and 03 solitary wolf, 02 coyote. They must sound like something beyond the walls, not a dog next door.",
+    "Rat_": "01-03 squeaks (one, two, three baby), 04 a scurry of claw taps, 05 scratching. Small and dry; listen for hiss in 03 and 05.",
 }
 
 WEAK = {
@@ -108,6 +114,10 @@ FAM_WEAK = {
     "Warden_Chain": "chain drags can sound rhythmic (pulses about every 0.25 s in 03/04)",
     "Chain_Distant": "03/04 reuse the Warden chain recordings with a darkened, long-tail treatment",
     "Warden_Breath": "check the loop wrap and that it reads as a creature, not a person",
+    "Bat_": "the three squeaks are one recording (a bat in a duct) so they share a voice; flurry sources are caves and a vintage tape transfer, not a belfry; 05 has the tape hiss spectrally gated (can sound slightly watery)",
+    "Owl_": "03/04 come from a field recording with its noise spectrally gated (can sound slightly watery); 867131 was rejected (ke-wick sweeps, not hoots)",
+    "Howl_": "howls are 7-10 s long; 02 is a coyote, not a wolf; the tail is synthetic",
+    "Rat_": "no clean recording of a rat running on stone exists in the CC0 set: 04 is a creature scurry (not a rat), 05 is a rat gnawing wood",
 }
 
 

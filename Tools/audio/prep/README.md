@@ -1,7 +1,7 @@
 # Tools/audio/prep: recorded audio prep (Phase 16, task A3)
 
 Turns the CC0 downloads (Kenney Impact Sounds, Kenney RPG Audio, 58 Freesound files; all git-ignored under `ExternalAssets/Incoming/`) into the
-**K / F** cues of `Docs/plans/P16_AUDIO.md` section 3: `SourceArt/Audio/Recorded/<cue>.wav` (48 kHz, 16-bit; 124 files). Every output is
+**K / F** cues of `Docs/plans/P16_AUDIO.md` section 3: `SourceArt/Audio/Recorded/<cue>.wav` (48 kHz, 16-bit; 142 files: 124 + the 18 creature cues of P16-6). Every output is
 described by one entry in `recipes.json`, so it can be rebuilt exactly (deterministic: the same inputs give byte-identical WAVs, `--verify` proves it).
 
 ## Requirements
@@ -10,7 +10,7 @@ raw files). Raw downloads are untrusted data: they are only decoded by ffmpeg, n
 
 ## Rebuild (run from the repo root)
 ```
-python -I Tools/audio/prep/prep_recorded.py                     # all 124 files + SourceArt/Audio/Recorded/manifest.json (about 15 s)
+python -I Tools/audio/prep/prep_recorded.py                     # all 142 files + SourceArt/Audio/Recorded/manifest.json (about 15 s)
 python -I Tools/audio/prep/prep_recorded.py --only Warden_Roar  # only items whose name contains the text
 python -I Tools/audio/prep/prep_recorded.py --verify            # build twice into temp folders, compare SHA-256 (writes nothing in the repo)
 python -I Tools/audio/prep/report_recorded.py                   # objective checks + Docs/ArtTest/audio/rec_<group>.png + audition_recorded.md
@@ -36,6 +36,11 @@ over the generated rumble of the same seed, rumble peak 0.85 against the crack's
 `python -I Tools/audio/gen/build_all.py --group thunder --no-audition` reproduces them (manifest entries carry a `composition` record). `--audition` edits the Near/Strike rows of
 `Docs/ArtTest/audio/audition.md` and adds the crack-layer section; then `python -I Tools/audio/make_audition_page.py`. `--diag` prints the envelope around each onset; `--verify` proves determinism.
 
+## Creature ambience (P16-6, D-112; recipe group `creatures`)
+`SFX_LB_Bat_01..06`, `Owl_01..04`, `Howl_01..03`, `Rat_01..05` (18 mono files, -3 dBFS peak) are items of `recipes.json` written by `build_recipes.py` (section "creature ambience"); nothing else in the recipes changed (the 124 older files are byte-identical).
+Two additions to the engine: a layer key `denoise` (a dict for `prep_lib.spectral_gate`: spectral subtraction, the noise profile being the 15th percentile of each bin's power over the slice, `reduce_db` = depth of the floor, `oversub` = how hard) used on the noisy sources (437935 tape hiss, 688869 / 640060 / 333094 / 841571 field noise, 500646 lightly), and the existing `lp` / `tail` post chain used for distance (owls: 5 kHz low-pass and a 0.7 s tail; howls: 3 kHz and a 3 s tail with slow fades).
+Slice choices come from per-source surveys (band-limited envelope events plus spectrograms); the picks are in each item's `note`. Sources rejected or kept as spares are in `Docs/ASSET_REGISTRY.md` (404152, 867131, 503516).
+
 ## Source aliases in `recipes.json`
 `fs:<id>` = `ExternalAssets/Incoming/freesound/<id>__*` · `ki:<name>` = `ExternalAssets/Incoming/kenney-impact-sounds/extracted/Audio/<name>.ogg` ·
 `kr:<name>` = `ExternalAssets/Incoming/kenney-rpg-audio/extracted/Audio/<name>.ogg`.
@@ -53,6 +58,7 @@ over the generated rumble of the same seed, rumble peak 0.85 against the crack's
 largest sample jump versus the 99.9th-percentile jump (internal click detector); loudness within 1 dB of target; loop seam (first 0.5 s against last 0.5 s, < 0.5 dB, and a wrap click ratio < 8); variant counts equal the cue sheet.
 
 ## Sources not used
+Creatures (P16-6): `404152` (noise-gated cave blocks, one harmonic scream), `867131` (ke-wick sweeps, not hoots) and the spare `503516` (a pitch-shifted dog, f0 about 430 Hz).
 Freesound `669449` (stone scrape, only 0.6 s of sound) and `834029` (metal steps, quieter and thinner than `698697`, which already gave all six) are downloaded but unused. All other 56 Freesound files and 36 Kenney files are used; see `Docs/ASSET_REGISTRY.md`.
 
 Output WAVs are LFS-tracked (`*.wav`). Listening notes and weak spots: `Docs/ArtTest/audio/audition_recorded.md`.

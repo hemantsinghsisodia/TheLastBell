@@ -255,6 +255,64 @@ add("SFX_LB_Apparition_Whisper_02", "voice", [L("fs:339827", 1.0, 3.6, pitch=0.9
 add("SFX_LB_Apparition_Whisper_03", "voice", [L("fs:316797", 9.5, 12.0, pitch=0.92, **WH)], post={"tail": tail(1.2, -12.0, 0.8, 0.02)}, max_len=4.0,
     fade_in=0.05, fade_out=0.3, note="316797 ghostly whispers -8 %, tail")
 
+# ------------------------------------------------------------------------------------------------ creature ambience (P16-6, D-112)
+# Occasional, mostly distant creatures played by ALBAmbientEmitter. Freesound CC0 sources chosen from spectrogram surveys (see
+# Docs/ArtTest/audio/freesound_creatures.md); slice times are in the SOURCE. Noisy sources get the spectral-subtraction denoise
+# (`denoise`, prep_lib.spectral_gate). Distance is made with low-passes and synthetic tails, not with volume (the attenuation does that).
+DN = dict(reduce_db=14.0, oversub=1.5, pct=15.0)
+
+# Bats: chirp trains (455593 close-up iPhone recording, clean; 03 pitched down 15 %), two startled flurries, one wing-flutter burst
+add("SFX_LB_Bat_01", "creatures", [L("fs:455593", 25.38, 26.02, hp=1500.0, lp=14000.0)], fade_out=0.08,
+    note="455593 chirp train (5 chirps) @ 25.38-26.02 s")
+add("SFX_LB_Bat_02", "creatures", [L("fs:455593", 3.75, 4.45, hp=1500.0, lp=14000.0)], fade_out=0.08,
+    note="455593 chirp trio @ 3.75-4.45 s")
+add("SFX_LB_Bat_03", "creatures", [L("fs:455593", 12.45, 13.0, pitch=0.85, hp=1200.0, lp=14000.0)], fade_out=0.08,
+    note="455593 chirp trio @ 12.45-13.0 s, pitch -15 % (a lower, slower voice). 404152 (cave) was rejected: noise-gated blocks plus one harmonic scream")
+add("SFX_LB_Bat_04", "creatures",
+    [L("fs:546823", 14.0, 15.5, hp=500.0, norm=-28.0, fade_in=0.08, fade_out=0.5),
+     L("fs:455593", 23.52, 24.30, hp=1500.0, lp=14000.0, norm=-28.0, gain=-3.0, delay=0.35, fade_in=0.01, fade_out=0.25)],
+    max_len=2.4, fade_out=0.3, note="startled flurry A: 546823 wing flutter @ 14.0-15.5 s + 455593 chirps @ 23.52-24.30 s from 0.35 s")
+add("SFX_LB_Bat_05", "creatures",
+    [L("fs:437935", 13.2, 15.0, hp=500.0, denoise=DN, norm=-28.0, fade_in=0.1, fade_out=0.6),
+     L("fs:806573", 104.5, 106.3, hp=800.0, lp=10000.0, norm=-28.0, gain=-5.0, delay=0.1, fade_in=0.3, fade_out=0.6)],
+    max_len=2.4, fade_out=0.3, note="startled flurry B: 437935 flapping pass @ 13.2-15.0 s (tape hiss gated) + 806573 colony swarm @ 104.5-106.3 s from 0.1 s")
+add("SFX_LB_Bat_06", "creatures", [L("fs:546823", 19.0, 20.4, hp=500.0, fade_in=0.08, fade_out=0.5)], max_len=1.6, fade_out=0.4,
+    note="546823 wing-flutter burst @ 19.0-20.4 s")
+
+# Owls: distant hoots (864872 cleaned tawny owl, 688869 tawny owl). Low-pass 5 kHz + a short room tail so they read as distant.
+OWL = dict(hp=250.0, lp=5000.0)
+OWL_TAIL = {"rt60": 0.9, "wet_db": -12.0, "predelay": 0.04, "lp": 3000.0, "tail_s": 0.7}
+add("SFX_LB_Owl_01", "creatures", [L("fs:864872", 1.45, 3.5, fade_out=0.25, **OWL)], post={"tail": OWL_TAIL}, max_len=3.0, fade_out=0.3,
+    note="864872 single hoot @ 1.45-3.5 s, low-pass 5 kHz, short tail")
+add("SFX_LB_Owl_02", "creatures", [L("fs:864872", 6.1, 9.0, fade_out=0.25, **OWL)], post={"tail": OWL_TAIL}, max_len=3.6, fade_out=0.3,
+    note="864872 hoot phrase (short + long hoot) @ 6.1-9.0 s, low-pass 5 kHz, short tail")
+add("SFX_LB_Owl_03", "creatures", [L("fs:688869", 2.3, 4.0, denoise=DN, fade_out=0.25, **OWL)], post={"tail": dict(OWL_TAIL, seed=11)}, max_len=3.0, fade_out=0.3,
+    note="688869 hoot @ 2.3-4.0 s (field noise gated), low-pass 5 kHz, short tail")
+add("SFX_LB_Owl_04", "creatures", [L("fs:688869", 7.55, 9.2, denoise=DN, fade_out=0.25, **OWL)], post={"tail": dict(OWL_TAIL, seed=12)}, max_len=3.0, fade_out=0.3,
+    note="688869 hoot with vibrato @ 7.55-9.2 s (field noise gated), low-pass 5 kHz, short tail")
+
+# Howls: far-off (wolf 500646 and coyote 640060): low-pass 3 kHz, long synthetic tail, slow fades.
+HOWL = dict(hp=120.0, lp=3000.0)
+HOWL_TAIL = {"rt60": 3.2, "wet_db": -8.0, "predelay": 0.08, "lp": 2000.0, "tail_s": 3.0}
+add("SFX_LB_Howl_01", "creatures", [L("fs:500646", 1.6, 10.6, denoise=dict(DN, reduce_db=10.0), fade_in=0.9, fade_out=1.2, **HOWL)],
+    post={"tail": HOWL_TAIL}, max_len=13.0, fade_in=0.9, fade_out=1.5, note="500646 solitary wolf, first howl @ 1.6-10.6 s, low-pass 3 kHz, 3 s tail")
+add("SFX_LB_Howl_02", "creatures", [L("fs:640060", 3.7, 10.0, denoise=dict(DN, reduce_db=14.0), fade_in=0.9, fade_out=1.2, **HOWL)],
+    post={"tail": dict(HOWL_TAIL, seed=13)}, max_len=10.0, fade_in=0.9, fade_out=1.5,
+    note="640060 coyote howl @ 3.7-10.0 s (noise gated), low-pass 3 kHz, 3 s tail")
+add("SFX_LB_Howl_03", "creatures", [L("fs:500646", 29.4, 38.6, denoise=dict(DN, reduce_db=10.0), fade_in=0.9, fade_out=1.8, **HOWL)],
+    post={"tail": dict(HOWL_TAIL, seed=14)}, max_len=13.0, fade_in=0.9, fade_out=1.5,
+    note="500646 solitary wolf, third howl @ 29.4-38.6 s, low-pass 3 kHz, 3 s tail")
+
+# Rats: squeaks (143125 close pet rat, 841571 baby rats), a scurry (872940 creature scurry, not a recorded rat), scratching (333094 rat gnawing wood)
+add("SFX_LB_Rat_01", "creatures", [L("fs:143125", 2.52, 2.86, hp=800.0)], fade_out=0.08, note="143125 single squeak @ 2.52-2.86 s")
+add("SFX_LB_Rat_02", "creatures", [L("fs:143125", 6.3, 7.1, hp=800.0)], fade_out=0.1, note="143125 two squeaks @ 6.3-7.1 s")
+add("SFX_LB_Rat_03", "creatures", [L("fs:841571", 3.3, 4.25, hp=800.0, denoise=dict(DN, reduce_db=12.0))], fade_out=0.12,
+    note="841571 three baby-rat squeaks @ 3.3-4.25 s (noise gated)")
+add("SFX_LB_Rat_04", "creatures", [L("fs:872940", 2.1, 3.55, hp=1000.0, fade_out=0.25)], fade_out=0.25,
+    note="872940 creature scurry (a dozen taps) @ 2.1-3.55 s, high-passed at 1 kHz (the recording is mostly 150-350 Hz thumps; the claw ticks sit above)")
+add("SFX_LB_Rat_05", "creatures", [L("fs:333094", 7.78, 8.8, hp=300.0, denoise=DN, fade_out=0.2)], fade_out=0.2,
+    note="333094 scratching bursts @ 7.78-8.8 s (noise gated)")
+
 if __name__ == "__main__":
     out = os.path.join(HERE, "recipes.json")
     with open(out, "w", encoding="utf8", newline="\n") as f:

@@ -23,6 +23,56 @@
   ],
   "src_clipped_samples": 0
  },
+ "SFX_LB_Bat_01": {
+  "channels": 1,
+  "group": "creatures",
+  "src": [
+   "fs:455593"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Bat_02": {
+  "channels": 1,
+  "group": "creatures",
+  "src": [
+   "fs:455593"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Bat_03": {
+  "channels": 1,
+  "group": "creatures",
+  "src": [
+   "fs:455593"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Bat_04": {
+  "channels": 1,
+  "group": "creatures",
+  "src": [
+   "fs:455593",
+   "fs:546823"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Bat_05": {
+  "channels": 1,
+  "group": "creatures",
+  "src": [
+   "fs:437935",
+   "fs:806573"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Bat_06": {
+  "channels": 1,
+  "group": "creatures",
+  "src": [
+   "fs:546823"
+  ],
+  "src_clipped_samples": 0
+ },
  "SFX_LB_Breath_Calm_01": {
   "channels": 1,
   "group": "player",
@@ -368,6 +418,30 @@
   ],
   "src_clipped_samples": 0
  },
+ "SFX_LB_Howl_01": {
+  "channels": 1,
+  "group": "creatures",
+  "src": [
+   "fs:500646"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Howl_02": {
+  "channels": 1,
+  "group": "creatures",
+  "src": [
+   "fs:640060"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Howl_03": {
+  "channels": 1,
+  "group": "creatures",
+  "src": [
+   "fs:500646"
+  ],
+  "src_clipped_samples": 0
+ },
  "SFX_LB_Key_Pickup_01": {
   "channels": 1,
   "group": "player",
@@ -417,6 +491,38 @@
   ],
   "src_clipped_samples": 15
  },
+ "SFX_LB_Owl_01": {
+  "channels": 1,
+  "group": "creatures",
+  "src": [
+   "fs:864872"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Owl_02": {
+  "channels": 1,
+  "group": "creatures",
+  "src": [
+   "fs:864872"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Owl_03": {
+  "channels": 1,
+  "group": "creatures",
+  "src": [
+   "fs:688869"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Owl_04": {
+  "channels": 1,
+  "group": "creatures",
+  "src": [
+   "fs:688869"
+  ],
+  "src_clipped_samples": 0
+ },
  "SFX_LB_Paper_01": {
   "channels": 2,
   "group": "player",
@@ -438,6 +544,46 @@
   "group": "player",
   "src": [
    "fs:449127"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Rat_01": {
+  "channels": 1,
+  "group": "creatures",
+  "src": [
+   "fs:143125"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Rat_02": {
+  "channels": 1,
+  "group": "creatures",
+  "src": [
+   "fs:143125"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Rat_03": {
+  "channels": 1,
+  "group": "creatures",
+  "src": [
+   "fs:841571"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Rat_04": {
+  "channels": 1,
+  "group": "creatures",
+  "src": [
+   "fs:872940"
+  ],
+  "src_clipped_samples": 0
+ },
+ "SFX_LB_Rat_05": {
+  "channels": 1,
+  "group": "creatures",
+  "src": [
+   "fs:333094"
   ],
   "src_clipped_samples": 0
  },

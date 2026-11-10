@@ -172,3 +172,28 @@ Turn the volume down before the Warden roars, spotted, caught and windup files. 
 | [SFX_LB_Apparition_Whisper_01](../../../SourceArt/Audio/Recorded/SFX_LB_Apparition_Whisper_01.wav) | 3.84 s | 1 | -3.0 | -22.2 | 316797 | Ghostly whispers with a tail; check they are not intelligible words. |  | |
 | [SFX_LB_Apparition_Whisper_02](../../../SourceArt/Audio/Recorded/SFX_LB_Apparition_Whisper_02.wav) | 3.38 s | 1 | -3.0 | -19.2 | 339827 | as above |  | |
 | [SFX_LB_Apparition_Whisper_03](../../../SourceArt/Audio/Recorded/SFX_LB_Apparition_Whisper_03.wav) | 3.27 s | 1 | -3.0 | -22.6 | 316797 | as above |  | |
+
+## Creatures: bats, owls, far howls, rats (18; P16-6, D-112)
+
+![spectrograms](rec_creatures.png)
+
+| File | Len | Ch | Peak | RMS | Src | What to listen for | Weak / note | Keep / redo / replace |
+|---|---|---|---|---|---|---|---|---|
+| [SFX_LB_Bat_01](../../../SourceArt/Audio/Recorded/SFX_LB_Bat_01.wav) | 0.58 s | 1 | -3.0 | -24.4 | 455593 | 01-03 squeaks (chirp trains from one close-up recording, 03 pitched down 15 %), 04-05 startled flurries (wing flutter plus chirps or colony swarm, at most 2.4 s), 06 a wing-flutter burst. Very high and quick: they should read as small and far up in the roof beams, never as a shriek. | the three squeaks are one recording (a bat in a duct) so they share a voice; flurry sources are caves and a vintage tape transfer, not a belfry; 05 has the tape hiss spectrally gated (can sound slightly watery) (applies to the whole set) | |
+| [SFX_LB_Bat_02](../../../SourceArt/Audio/Recorded/SFX_LB_Bat_02.wav) | 0.70 s | 1 | -3.0 | -25.2 | 455593 | as above |  | |
+| [SFX_LB_Bat_03](../../../SourceArt/Audio/Recorded/SFX_LB_Bat_03.wav) | 0.65 s | 1 | -3.0 | -26.5 | 455593 | as above |  | |
+| [SFX_LB_Bat_04](../../../SourceArt/Audio/Recorded/SFX_LB_Bat_04.wav) | 1.43 s | 1 | -3.0 | -31.9 | 455593, 546823 | as above |  | |
+| [SFX_LB_Bat_05](../../../SourceArt/Audio/Recorded/SFX_LB_Bat_05.wav) | 1.80 s | 1 | -3.0 | -26.0 | 437935, 806573 | as above |  | |
+| [SFX_LB_Bat_06](../../../SourceArt/Audio/Recorded/SFX_LB_Bat_06.wav) | 1.33 s | 1 | -3.0 | -33.0 | 546823 | as above |  | |
+| [SFX_LB_Owl_01](../../../SourceArt/Audio/Recorded/SFX_LB_Owl_01.wav) | 1.42 s | 1 | -3.0 | -15.4 | 864872 | Distant hoots (low-passed at 5 kHz, short tail). 01 single hoot, 02 a short-then-long phrase, 03-04 the second owl. Check the hoot is soft and far, not a bird in the room. | 03/04 come from a field recording with its noise spectrally gated (can sound slightly watery); 867131 was rejected (ke-wick sweeps, not hoots) (applies to the whole set) | |
+| [SFX_LB_Owl_02](../../../SourceArt/Audio/Recorded/SFX_LB_Owl_02.wav) | 2.40 s | 1 | -3.0 | -16.5 | 864872 | as above |  | |
+| [SFX_LB_Owl_03](../../../SourceArt/Audio/Recorded/SFX_LB_Owl_03.wav) | 1.72 s | 1 | -3.0 | -15.1 | 688869 | as above |  | |
+| [SFX_LB_Owl_04](../../../SourceArt/Audio/Recorded/SFX_LB_Owl_04.wav) | 1.80 s | 1 | -3.0 | -14.4 | 688869 | as above |  | |
+| [SFX_LB_Howl_01](../../../SourceArt/Audio/Recorded/SFX_LB_Howl_01.wav) | 10.52 s | 1 | -3.0 | -16.8 | 500646 | Far-off howls (low-passed at 3 kHz, 3 s synthetic tail, slow fades). 01 and 03 solitary wolf, 02 coyote. They must sound like something beyond the walls, not a dog next door. | howls are 7-10 s long; 02 is a coyote, not a wolf; the tail is synthetic (applies to the whole set) | |
+| [SFX_LB_Howl_02](../../../SourceArt/Audio/Recorded/SFX_LB_Howl_02.wav) | 7.47 s | 1 | -3.0 | -19.3 | 640060 | as above |  | |
+| [SFX_LB_Howl_03](../../../SourceArt/Audio/Recorded/SFX_LB_Howl_03.wav) | 9.78 s | 1 | -3.0 | -15.1 | 500646 | as above |  | |
+| [SFX_LB_Rat_01](../../../SourceArt/Audio/Recorded/SFX_LB_Rat_01.wav) | 0.27 s | 1 | -3.0 | -23.6 | 143125 | 01-03 squeaks (one, two, three baby), 04 a scurry of claw taps, 05 scratching. Small and dry; listen for hiss in 03 and 05. | no clean recording of a rat running on stone exists in the CC0 set: 04 is a creature scurry (not a rat), 05 is a rat gnawing wood (applies to the whole set) | |
+| [SFX_LB_Rat_02](../../../SourceArt/Audio/Recorded/SFX_LB_Rat_02.wav) | 0.76 s | 1 | -3.0 | -19.1 | 143125 | as above |  | |
+| [SFX_LB_Rat_03](../../../SourceArt/Audio/Recorded/SFX_LB_Rat_03.wav) | 0.95 s | 1 | -3.0 | -19.1 | 841571 | as above |  | |
+| [SFX_LB_Rat_04](../../../SourceArt/Audio/Recorded/SFX_LB_Rat_04.wav) | 1.28 s | 1 | -3.0 | -32.0 | 872940 | as above |  | |
+| [SFX_LB_Rat_05](../../../SourceArt/Audio/Recorded/SFX_LB_Rat_05.wav) | 0.99 s | 1 | -3.0 | -31.1 | 333094 | as above |  | |
