@@ -448,6 +448,25 @@ Branch `claude/phase-16-audio`. Spec and plan: `Docs/plans/P16_AUDIO.md` (D-108�
 | P16-6 | Run-through and performance | owner + performance-engineer | P16-5 |
 | P16-7 | QA, docs, full suite, Game build; PHASE 16 READY FOR YOUR REVIEW | qa-reviewer, docs agent, lead | all |
 
+**Outcome** (results in `Docs/plans/P16_AUDIO.md`, "Results"; commits from `git log --oneline main..HEAD`; D-108…D-113, R-70…R-76):
+- **P16-0:** plan for approval (1f6482a); approved with occasional distant tolls and darkness/candle-out breathing; D-108…D-111, R-70…R-76, this table, the naming line (c753ebc).
+- **F0 (and S1):** read-only survey of `L_Monastery` (fb5b47e); data in `Docs/ArtTest/audio/p16_f0.json` and `p16_f0_tables.md`; nothing set or saved. 29 interactables in 12 unmapped classes; 168 floor hits, 81 % on greybox collision (so per-actor `PhysMaterialOverride`); no MCP tool can import a WAV or create a SoundClass, mix, attenuation, concurrency, reverb or physical material. **Verdict: all audio assets are made by headless Unreal Python with the editor closed, which replaces the S1 spike** (S1 was not run). Lead decisions: small-bell sounds only for the bell puzzle; belfry box from z 2400 with priority 4 (e1ad68b). R-70 closed.
+- **A1 (sourcing):** Kenney "Impact Sounds" and "RPG Audio" downloaded, CC0 (c371daf); 127 Freesound CC0 candidates, a 58-file minimum set downloaded by the owner (caaeeff). R-72 mitigated.
+- **A2 (generated sounds):** 51 WAVs (rain, wind, thunder, bells, music, rooms, drips), 145 objective checks, byte-identical rebuilds (90dc110); `Sting_Spotted` made an immediate hit, small-bell hum 0.6 → 0.2 (7be3279).
+- **A3 (recorded sounds):** 124 WAVs from 56 Freesound and 36 Kenney sources, recipes, checks, registry rows (e4820fc).
+- **A4 (owner audition):** local audition page (af9431a); the owner judged all 175 sounds keep (af6013c).
+- **P16-1 (code):** `ULBAudioSubsystem`, `ULBAudioSettings`, `ALBAudioZone`, `ALBAmbientEmitter`, `ULBWardenAudioComponent`, apparition event, footstep variants and gait volumes, surface types, user volumes, console, config and `LastBell.Audio.*` tests (df45a81).
+- **P16-2 (assets):** the small-bell gating and `CandlePuzzleNotBells` (ceb5fae); a unity-build name clash fixed (fcf6041); 175 SoundWaves imported headless, 25 mix assets, 6 `PM_LB_*`, `DA_Audio`, `DT_Footsteps` (7 rows × 6 variants), fresh verify 1390 checks, 0 failures (2b782d7). Suite 170/171, the failure being the zone count (75030b8).
+- **P16-3 (level):** 7 zones, 7 AudioVolumes, 18 emitters, floor overrides on 207 actors, 3 water pads; census 3054 → 3089, `--check` 97 PASS, one map save (6b39939). Suite 171/171 (0850688).
+- **P16-4 (listening session, owner on headphones):** outdoor rain 0.8 → 0.22, wind 0.08 / 0.2, roof rain 0.03, exposure power 1.5, master 0.7, steps 0.6, bell stages 1–4 and far thunder at 1.0, Warden roar 2.0; the synthetic cracks were rejected (b644d97, 2ade8f4, 1dcf4be). Candle-flame bug found.
+- **P16-5:** the owner's level values (chapel tone 0.4, crypt chains 8–18 s) (90f0dda); the candle flame hides on snuff (7851031); the five recorded cracks replace the synthetic ones (c9a7d97, 6d4ade3); `OWNER_CHOICES` in the asset script, headless re-import, fresh verify 1565 checks, 0 failures (b850aac). Suite 172/172 (7b78386). R-71 mitigated.
+- **P16-6 (play-through, owner in Play):**
+  - Fixes: wooden steps 0.6 → 2.0; the paper rustle on pick-up and put-down, with re-sliced paper files; the finale bell's first strike at once and kept sounding under the ending pause (917b0c6, 8d40b06, 83733ed, a2b1bbe). The owner set the finale spacing to 2.0 s and stage 5 to volume 2.0 (5ad0ab0).
+  - **D-112, creature ambience:** 18 recorded cues from 12 Freesound CC0 sources (ad4be97), imported headless (279b472), 13 emitters (4 bats, 3 owls, 2 howls, 4 rats); census 3089 → 3102, `--check` 107 PASS, map saved (ab59951). Owner: owls 0.4, howls on `ATT_LB_Thunder` at 0.5, belfry howl 0.25 and tone 0.4 (5d2fa55). R-72 mitigated.
+  - **D-113:** the owner skipped the audio performance readings; the cost moves to the Phase 20 performance pass and R-75 stays open (5e802a1).
+  - Records: d440a3b, 79fdcaf, badfddf.
+- **Suite:** 175/175 with the editor closed (141 from Phase 15 plus 34 new: 9 unit, 24 audio functional including `Monastery.AudioSetup`, and the candle flame test), 0 invalid tags, 0 `Error:` lines.
+
 **Status 2026-11-10:** P16-0 to P16-5 are done. P16-6 is in progress: play-through fixes (wooden steps, note rustle on pick-up and put-down, finale bell under the ending pause) and creature ambience (D-112: bats, owls, distant howls, rats) are done, and the suite passes 175/175. Still to do in P16-6, with the owner: the note and finale-bell checks, the performance readings, and `p16_level.py --check` with the editor open. Then P16-7.
 
 ## Deferred to Phase 14–15 (Lighting, VFX: storm work)
