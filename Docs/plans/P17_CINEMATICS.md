@@ -1,6 +1,6 @@
 # Phase 17: Cinematics
 
-**Status:** approved by the owner on 2026-11-10 ("approve"). P17-0 done. F0 items 1–5 and 7 done (6596144); the values are written into the sections below and summarised in Results. **Open for the owner before P17-5:** the Intro_1 wording and one line of `Note_Gatehouse` (Results, F0).
+**Status:** approved by the owner on 2026-11-10 ("approve"). P17-0 done. F0 items 1–5 and 7 done (6596144); the values are written into the sections below and summarised in Results. The owner accepted both story changes from F0 on 2026-11-10 ("use both suggestions"): the new Intro_1 text (section 3.1) and the `Note_Gatehouse` line (section 5).
 
 **Hold (owner, 2026-11-10): no Blender work.** The owner has changed the Warden asset and will ask for it to be copied in later. Until then:
 - **F0b** waits for the new source.
@@ -149,7 +149,7 @@ Every float is clamped, with units in its tooltip. No hard asset references: eve
 - **`OnWorldBeginPlay`:**
   1. Load the settings: `OverrideSettings` for tests, otherwise `ULBGameSettings::CinematicSettings`. If neither exists, do nothing for this world.
   2. Bind `ULBWorldStateSubsystem::OnStateChanged`.
-  3. Find the bell (the first actor with `BellActorTag`) and bind `ULBAudioSubsystem::OnGreatBellStrike` (section 2.6).
+  3. Find the bell (the first actor with `BellActorTag`), the headstock (`BellHeadstockTag`) and the rope (`BellRopeTag`), store their rest transforms (section 2.8), and bind `ULBAudioSubsystem::OnGreatBellStrike` (section 2.6).
   4. **The NewGame rule:** a `NewGame` def is chosen when all of these hold:
      - the world's package, with any PIE prefix removed (`UWorld::RemovePIEPrefix`), is `ULBGameSettings::NewGameMap`;
      - `ULBSaveSubsystem::HasPendingRestore()` is false (so not Continue, a death or a checkpoint load);
@@ -300,7 +300,7 @@ Cards fade by render opacity. The widget draws no black itself: black comes from
 
 | Card | Text |
 |---|---|
-| Intro_1 | For forty years no one has climbed to the monastery on the ridge. |
+| Intro_1 | For forty years, no one has come back from the monastery on the ridge. |
 | Intro_2 | Its great bell fell silent the night the brothers vanished. |
 | Intro_3 | Tonight, the whole village heard it ring. |
 | Intro_4 | Someone has to go up. |
@@ -465,7 +465,12 @@ All are scalar or vector parameters. The owner tunes them in P17-7.
 | `Bell` (existing) | `BP_TagInteractable_GreatBell` instance | Unchanged. F0: its component `Mesh` is already **Movable**, so `--apply` doesn't touch mobility and `--check` verifies it | add `LB_Cine_Bell` |
 | `TWA_Headstock` (existing, `StaticMeshActor_1498`) | `StaticMeshActor` | Unchanged transform; its `StaticMeshComponent0` mobility **Static → Movable** (section 2.8) | add `LB_Cine_BellHeadstock` |
 | `TWA_BellRope` (existing, `StaticMeshActor_1499`) | `StaticMeshActor` | Unchanged transform; its `StaticMeshComponent0` mobility **Static → Movable** (section 2.8) | add `LB_Cine_BellRope` |
+| `Note_Gatehouse` (existing, `BP_Inspectable_Note_C` instance) | — | Unchanged transform. Set `bodyText` on the actor **and** on its `InspectableComp` (F0: they hold identical copies) to the text below. Only the placed instance changes; the never-save `BP_Inspectable_Note` asset is not touched | — |
 | `EndingTrigger` (existing) | `BP_EndingTrigger` | **Deleted from the level.** The Blueprint asset and `WBP_Ending` are left untouched and unused; deleting them is offered at review | — |
+
+- **`Note_Gatehouse` text** (owner, 2026-11-10; only "has no rope and no clapper" → "no living hand has rung" changes). `displayName` stays "A Traveller's Note":
+
+  > I came up the cliff path at dusk and heard it before I saw the tower. One toll, slow, from a bell the villagers swear no living hand has rung. They say it rings only for the one who is meant to hear it. I wrote this by the gate, and I am no longer sure I will leave by it.
 
 - `LB_StrikeTarget_Tower` exists exactly once (F0: `FX_StrikeTarget_Tower` at (12530.8, 2000, 4844.8)); `--check` re-verifies it.
 - **Census:** +2 actors, −1: 3102 → 3103. Then one map save.
@@ -474,7 +479,8 @@ All are scalar or vector parameters. The owner tunes them in P17-7.
   - the mark is on the floor (a downward trace within 2 cm);
   - a capsule sweep (r 42, h 110) from `CINE_StairTop` to the stop point (12165, 2200, 2500) is clear. r 42 is the Warden figure's size; the player's capsule is r 34 (F0);
   - the bell's `Mesh`, `TWA_Headstock` and `TWA_BellRope` are Movable;
-  - `EndingTrigger` is absent.
+  - `EndingTrigger` is absent;
+  - `Note_Gatehouse` `bodyText`, on both the actor and `InspectableComp`, equals the text above exactly.
 
 ## 6. Credits (`Tools/cine/make_credits.py`, run in P17-2; output `Docs/plans/p17_credits.json` and `Docs/ArtTest/cine/credits_preview.md`)
 **Fixed lines, in order:**
@@ -717,7 +723,9 @@ Items 1–5 and 7 are done. Item 6 and F0b are on hold for the new Warden asset.
 6. **S1a stays headless Python.** MCP `SequencerTools` is the first fallback.
 7. **`CP_Approach`** starts 50 cm east of the PlayerStart, so it saves on the first steps after the intro. No change.
 
-**For the owner (narrative; needed before P17-5, not before P17-1):**
+**Owner decision (2026-11-10): "use both suggestions".** (a) and (b) below are accepted as recommended. Intro_1 is changed in section 3.1, and the note line is a P17-5b level edit (section 5).
+
+**Raised to the owner:**
 - **(a) Intro_1** says "For forty years no one has climbed to the monastery on the ridge." `Note_Gatehouse`, a traveller's note left at the gate, says they "came up the cliff path at dusk" and may not "leave by it".
   - **Recommended:** Intro_1 → "For forty years, no one has come back from the monastery on the ridge."
   - This keeps the traveller (who came up and never came back) and the brothers (who vanished) consistent.

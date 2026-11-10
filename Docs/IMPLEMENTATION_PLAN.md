@@ -491,7 +491,7 @@ Branch `claude/phase-17-cinematics`. Spec and plan: `Docs/plans/P17_CINEMATICS.m
 | P17-4 | `M_LB_PP_MaskView` and its MI | technical-artist | F0 |
 | P17-5a | `LS_LB_Intro`, `LS_LB_Finale` by script; `--check` | animation-specialist | S1a, P17-2, P17-3, P17-4 |
 | S1b | Spike playback in PIE (owner 5 min) | lead + owner | P17-1 |
-| P17-5b | Level: finale mark, stair top, the bell, headstock and rope tags; headstock and rope set Movable; `EndingTrigger` removed; one map save; suite | environment-designer [EDITOR] | P17-5a, S1b |
+| P17-5b | Level: finale mark, stair top, the bell, headstock and rope tags; headstock and rope set Movable; the `Note_Gatehouse` text; `EndingTrigger` removed; one map save; suite | environment-designer [EDITOR] | P17-5a, S1b |
 | P17-6 | Owner intro review | lead + owner | P17-5b |
 | P17-7 | Owner finale review | lead + owner | P17-6 |
 | P17-8 | QA and owner play-through | qa-reviewer + owner | P17-7 |
@@ -505,7 +505,7 @@ Branch `claude/phase-17-cinematics`. Spec and plan: `Docs/plans/P17_CINEMATICS.m
   - a longer lantern path;
   - the headstock and rope swing with the bell.
   
-  Two narrative points are open for the owner before P17-5: the Intro_1 wording and the `Note_Gatehouse` rope line.
+  The owner accepted both story changes (2026-11-10): the new Intro_1 text, and the `Note_Gatehouse` rope line, changed by P17-5b.
 
 ## Deferred to Phase 14–15 (Lighting, VFX: storm work)
 Items the owner asked to fold into the storm pass. **Foliage wind is now in Phase 14** (P14 section 6, D-096: `MPC_LB_Storm` replaces the planned `MPC_LB_Wind`).
