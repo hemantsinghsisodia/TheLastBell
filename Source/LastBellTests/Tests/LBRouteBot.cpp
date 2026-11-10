@@ -3,6 +3,7 @@
 #if WITH_DEV_AUTOMATION_TESTS && WITH_EDITOR
 
 #include "Editor.h"
+#include "HAL/IConsoleManager.h"
 #include "EngineUtils.h"
 #include "Engine/World.h"
 #include "GameFramework/PlayerController.h"
@@ -95,6 +96,40 @@ namespace LBPie
 	FWardenSwitch::~FWardenSwitch()
 	{
 		ULBWardenBrainComponent::SetWardenSystemEnabled(bPrevious);
+	}
+
+	FCineSwitch::FCineSwitch(bool bEnabled)
+	{
+		if (IConsoleVariable* Var = IConsoleManager::Get().FindConsoleVariable(TEXT("lb.Cine.Enabled")))
+		{
+			Previous = Var->GetInt();
+			Var->Set(bEnabled ? 1 : 0, ECVF_SetByCode);
+		}
+	}
+
+	FCineSwitch::~FCineSwitch()
+	{
+		if (IConsoleVariable* Var = IConsoleManager::Get().FindConsoleVariable(TEXT("lb.Cine.Enabled")))
+		{
+			Var->Set(Previous, ECVF_SetByCode);
+		}
+	}
+
+	FCineRate::FCineRate(float Rate)
+	{
+		if (IConsoleVariable* Var = IConsoleManager::Get().FindConsoleVariable(TEXT("lb.Cine.Rate")))
+		{
+			Previous = Var->GetFloat();
+			Var->Set(Rate, ECVF_SetByCode);
+		}
+	}
+
+	FCineRate::~FCineRate()
+	{
+		if (IConsoleVariable* Var = IConsoleManager::Get().FindConsoleVariable(TEXT("lb.Cine.Rate")))
+		{
+			Var->Set(Previous, ECVF_SetByCode);
+		}
 	}
 }
 

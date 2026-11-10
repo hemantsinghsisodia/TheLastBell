@@ -45,6 +45,36 @@ namespace LBPie
 	private:
 		bool bPrevious = true;
 	};
+
+	/**
+	 * Sets lb.Cine.Enabled for the lifetime of the object and restores the previous value afterwards (P17, R-82). A functional test that
+	 * opens L_Monastery holds one with false before StartPie, so the New Game intro cannot lock its input or add State.Event.Arrival.
+	 * RouteBot.Monastery and the Cine.* tests do not (they play the cinematics).
+	 */
+	class FCineSwitch
+	{
+	public:
+		explicit FCineSwitch(bool bEnabled);
+		~FCineSwitch();
+		FCineSwitch(const FCineSwitch&) = delete;
+		FCineSwitch& operator=(const FCineSwitch&) = delete;
+
+	private:
+		int32 Previous = 1;
+	};
+
+	/** Sets lb.Cine.Rate for the lifetime of the object and restores the previous value afterwards (the Cine tests and RouteBot use 8). */
+	class FCineRate
+	{
+	public:
+		explicit FCineRate(float Rate);
+		~FCineRate();
+		FCineRate(const FCineRate&) = delete;
+		FCineRate& operator=(const FCineRate&) = delete;
+
+	private:
+		float Previous = 1.f;
+	};
 }
 
 /**

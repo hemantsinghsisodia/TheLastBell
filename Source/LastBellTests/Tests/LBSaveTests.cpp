@@ -145,6 +145,8 @@ namespace LBSaveT
 		}
 
 		FAutomationTestBase* Test;
+		// P17 (R-82): the New Game intro would lock input and add State.Event.Arrival in L_Monastery; the save tests do not test it.
+		LBPie::FCineSwitch CineOff{ false };
 		TArray<FStep> Steps;
 		int32 StepIndex = 0;
 		int32 Frames = 0;

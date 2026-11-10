@@ -368,6 +368,8 @@ namespace
 
 		FAutomationTestBase* Test;
 		LBPie::FWardenSwitch WardenOn;
+		// P17 (R-82): the New Game intro would lock input and add State.Event.Arrival in L_Monastery; these runs do not test it.
+		LBPie::FCineSwitch CineOff{ false };
 		TArray<FStep> Steps;
 		FWInput Input;
 		int32 StepIndex = 0;

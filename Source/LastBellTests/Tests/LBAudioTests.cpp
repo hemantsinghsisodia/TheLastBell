@@ -24,6 +24,7 @@ namespace LBAudioUnitTest
 	{
 		struct FRow { const TCHAR* Tag; int32 Stage; int32 Strikes; float First; float Spacing; int32 Drone; };
 		static const FRow Rows[] = {
+			{ TEXT("State.Event.Arrival"), 1, 3, 0.f, 4.5f, 0 }, // P17: the intro's first toll
 			{ TEXT("State.Ritual.1"), 2, 3, 2.f, 4.5f, 1 },
 			{ TEXT("State.Event.CryptEntered"), 1, 0, 0.f, 0.f, 0 },
 			{ TEXT("State.Ritual.2"), 3, 3, 2.f, 4.5f, 2 },
@@ -430,6 +431,7 @@ bool FLBAudioBellPlanTest::RunTest(const FString& Parameters)
 
 	struct FRow { const TCHAR* Tag; int32 Stage; int32 Strikes; float First; float Spacing; int32 Drone; };
 	const FRow Expected[] = {
+		{ TEXT("State.Event.Arrival"), 1, 3, 0.f, 4.5f, 0 }, // P17: the intro's first toll
 		{ TEXT("State.Ritual.1"), 2, 3, 2.f, 4.5f, 1 },
 		{ TEXT("State.Event.CryptEntered"), 1, 0, 0.f, 0.f, 0 },
 		{ TEXT("State.Ritual.2"), 3, 3, 2.f, 4.5f, 2 },
@@ -481,7 +483,7 @@ bool FLBAudioBellPlanTest::RunTest(const FString& Parameters)
 	{
 		ULBAudioSettings* Settings = NewObject<ULBAudioSettings>(GetTransientPackage());
 		Settings->FillPlanDefaults();
-		TestEqual(TEXT("FillPlanDefaults: six beats"), Settings->BellBeats.Num(), 6);
+		TestEqual(TEXT("FillPlanDefaults: seven beats (the six of P16 and the P17 Arrival beat)"), Settings->BellBeats.Num(), 7);
 		for (const FRow& Row : Expected)
 		{
 			const LBAudioLogic::FBellPlan Plan = LBAudioLogic::BellPlan(Tag(Row.Tag), Settings->BellBeats);

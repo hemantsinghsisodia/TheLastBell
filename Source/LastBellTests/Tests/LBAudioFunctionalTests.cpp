@@ -267,6 +267,8 @@ namespace LBAudioTest
 
 		FAutomationTestBase* Test;
 		LBPie::FWardenSwitch WardenOff;
+		// P17 (R-82): the New Game intro would lock input and add State.Event.Arrival in L_Monastery; these runs do not test it.
+		LBPie::FCineSwitch CineOff{ false };
 		FAudioEnabledGuard AudioEnabled;
 		FUserVolumeGuard UserVolumes;
 		TArray<FStep> Steps;
@@ -2894,6 +2896,148 @@ bool FLBAudioMonasteryTest::RunTest(const FString& Parameters)
 		}
 		return true;
 	}, 90.f);
+
+	AudioEnqueue(R);
+	return true;
+}
+
+// =====================================================================================================================
+// P17: the Arrival beat and the great-bell strike delegate
+// =====================================================================================================================
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBAudioArrivalBeatTest, "LastBell.Functional.Audio.ArrivalBeat", LB_AUDIOFUNC_FLAGS)
+bool FLBAudioArrivalBeatTest::RunTest(const FString& Parameters)
+{
+	TSharedRef<FAudioRunner> R = AudioStartSession(this);
+	const TSharedRef<FAudioState> S = R->S;
+	FAutomationTestBase* Test = this;
+
+	R->Add(TEXT("PIE ready, storm and director active"), [S, Test](FAudioCtx& C)
+	{
+		if (!LBPie::WorldReady() || C.Frames < 5)
+		{
+			return false;
+		}
+		ActivateAudio(C, *S, Test);
+		return true;
+	});
+
+	R->Add(TEXT("State.Event.Arrival: stage 1 x 3, the first strike at once, the others follow"), [S, Test](FAudioCtx& C)
+	{
+		ULBAudioSubsystem* Audio = S->Audio(C.W);
+		if (!Audio)
+		{
+			Test->AddError(TEXT("Audio subsystem is gone"));
+			return true;
+		}
+		if (C.Elapsed > 10.0)
+		{
+			Test->AddError(FString::Printf(TEXT("Timed out in phase %d"), S->Phase));
+			return true;
+		}
+		if (S->Phase == 0)
+		{
+			if (!Audio->IsActive() || C.Frames < 4)
+			{
+				return false;
+			}
+			Audio->ClearRequests();
+			S->T0 = C.Now;
+			ULBWorldStateSubsystem::Get(C.W)->AddState(AudioTag(TEXT("State.Event.Arrival")));
+			const TArray<FLBAudioRequest> Immediate = Requests(Audio, LBAudioCue::Bell);
+			if (Test->TestEqual(TEXT("One strike was requested before AddState returned"), Immediate.Num(), 1))
+			{
+				Test->TestEqual(TEXT("It is stage 1"), Immediate[0].Aux, 1);
+				Test->TestEqual(TEXT("It plays Bell.Stage[0]"), Immediate[0].Variant, 0);
+			}
+			Test->TestEqual(TEXT("The other two strikes are scheduled"), Audio->GetScheduledCount(), 2);
+			S->Phase = 1;
+			return false;
+		}
+		if (C.Now - S->T0 < 1.5)
+		{
+			return false;
+		}
+		const TArray<FLBAudioRequest> Bells = Requests(Audio, LBAudioCue::Bell);
+		if (Test->TestEqual(TEXT("Three strikes in all"), Bells.Num(), 3))
+		{
+			for (const FLBAudioRequest& Bell : Bells)
+			{
+				Test->TestEqual(TEXT("Every strike is stage 1"), Bell.Aux, 1);
+			}
+		}
+		Test->TestEqual(TEXT("The bell stage stays 1"), Audio->GetBellStage(), 1);
+		return true;
+	}, 60.f);
+
+	AudioEnqueue(R);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBAudioGreatBellStrikeDelegateTest, "LastBell.Functional.Audio.GreatBellStrikeDelegate", LB_AUDIOFUNC_FLAGS)
+bool FLBAudioGreatBellStrikeDelegateTest::RunTest(const FString& Parameters)
+{
+	TSharedRef<FAudioRunner> R = AudioStartSession(this);
+	const TSharedRef<FAudioState> S = R->S;
+	FAutomationTestBase* Test = this;
+	// The strikes the delegate announced: stage and the world time it came at.
+	const TSharedRef<TArray<TPair<int32, double>>> Heard = MakeShared<TArray<TPair<int32, double>>>();
+
+	R->Add(TEXT("PIE ready, storm and director active"), [S, Test](FAudioCtx& C)
+	{
+		if (!LBPie::WorldReady() || C.Frames < 5)
+		{
+			return false;
+		}
+		ActivateAudio(C, *S, Test);
+		return true;
+	});
+
+	R->Add(TEXT("PlayBell(3, 2) announces two stage-3 strikes, exactly when each is requested"), [S, Test, Heard](FAudioCtx& C)
+	{
+		ULBAudioSubsystem* Audio = S->Audio(C.W);
+		if (!Audio)
+		{
+			Test->AddError(TEXT("Audio subsystem is gone"));
+			return true;
+		}
+		if (C.Elapsed > 10.0)
+		{
+			Test->AddError(FString::Printf(TEXT("Timed out in phase %d"), S->Phase));
+			return true;
+		}
+		if (S->Phase == 0)
+		{
+			if (!Audio->IsActive() || C.Frames < 4)
+			{
+				return false;
+			}
+			Audio->ClearRequests();
+			UWorld* World = C.W;
+			Audio->OnGreatBellStrike.AddLambda([Heard, World](int32 Stage, float Volume)
+			{
+				Heard->Add({ Stage, World->GetTimeSeconds() });
+			});
+			S->T0 = C.Now;
+			Audio->PlayBell(3, 2);
+			S->Phase = 1;
+			return false;
+		}
+		if (C.Now - S->T0 < 1.5)
+		{
+			return false;
+		}
+		const TArray<FLBAudioRequest> Bells = Requests(Audio, LBAudioCue::Bell);
+		if (Test->TestEqual(TEXT("Two strikes were played"), Bells.Num(), 2) && Test->TestEqual(TEXT("...and announced"), Heard->Num(), 2))
+		{
+			for (int32 Index = 0; Index < 2; ++Index)
+			{
+				Test->TestEqual(TEXT("The announced stage is 3"), (*Heard)[Index].Key, 3);
+				Test->TestNearlyEqual(TEXT("It comes at the moment the strike plays"), static_cast<float>((*Heard)[Index].Value - Bells[Index].Time), 0.f, 0.05f);
+			}
+		}
+		return true;
+	}, 60.f);
 
 	AudioEnqueue(R);
 	return true;

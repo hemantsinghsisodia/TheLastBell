@@ -10,6 +10,7 @@
 #include "Components/ArrowComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Character/LBCharacter.h"
+#include "Cinematics/LBCinematicSubsystem.h"
 #include "Objectives/LBObjectiveChainData.h"
 #include "Objectives/LBObjectiveSubsystem.h"
 #include "Save/LBCheckpoint.h"
@@ -196,31 +197,17 @@ namespace
 		return false;
 	}
 
-	/** Reads the BP_EndingTrigger "EndingSeconds" property by reflection; falls back to the spec value of 8 s. */
-	float ReadEndingSeconds()
-	{
-		for (TActorIterator<AActor> It(LBPie::World()); It; ++It)
-		{
-			if (It->GetClass()->GetName().Contains(TEXT("EndingTrigger")))
-			{
-				if (const FNumericProperty* P = FindFProperty<FNumericProperty>(It->GetClass(), TEXT("EndingSeconds")))
-				{
-					const void* Ptr = P->ContainerPtrToValuePtr<void>(*It);
-					return P->IsFloatingPoint() ? static_cast<float>(P->GetFloatingPointPropertyValue(Ptr)) : static_cast<float>(P->GetSignedIntPropertyValue(Ptr));
-				}
-			}
-		}
-		return 8.f;
-	}
-
 	/** State shared between the Monastery steps. */
 	struct FMonasteryContext
 	{
 		int32 IndexBeforeDeath = INDEX_NONE;
 		FVector TowerBaseSpawn = FVector::ZeroVector;
 		TWeakObjectPtr<UWorld> OldWorld;
-		float EndingSeconds = 8.f;
+		/** Wall time the finale bot finished (the bell was rung). */
 		double FinaleTime = 0.0;
+		bool bSkipped = false;
+		/** lb.Cine.Rate 8 for the whole run (restored when the context is released with the runner). */
+		TSharedPtr<LBPie::FCineRate> Rate;
 	};
 }
 
@@ -264,6 +251,8 @@ bool FLBRouteBotMonasteryTest::RunTest(const FString& Parameters)
 	StartPie(GMonasteryMap);
 
 	TSharedRef<FMonasteryContext> Ctx = MakeShared<FMonasteryContext>();
+	// P17: the intro and the finale play for real, at 8x. With no DA_Cinematics (today) nothing plays and the old EndingTrigger still travels.
+	Ctx->Rate = MakeShared<LBPie::FCineRate>(8.f);
 	FLBRouteBot::FConfig ToTower;
 	const int32 ClimbTowerIndex = FindClimbTowerIndex();
 	if (ClimbTowerIndex == INDEX_NONE)
@@ -277,6 +266,13 @@ bool FLBRouteBotMonasteryTest::RunTest(const FString& Parameters)
 
 	TArray<FStep> Steps;
 	Steps.Add(WaitPieStart());
+
+	// 0. The New Game intro, if one plays (it locks input), is waited out before the bot drives.
+	Steps.Add({ TEXT("Intro (if any) finishes"), 120.f, [](FLBStepRunner&)
+	{
+		const ULBCinematicSubsystem* Cine = LBPie::World() ? LBPie::World()->GetSubsystem<ULBCinematicSubsystem>() : nullptr;
+		return !Cine || (!Cine->IsStartPending() && !Cine->IsPlaying());
+	} });
 
 	// 1. New Game state
 	Steps.Add({ TEXT("New Game state"), 20.f, [this](FLBStepRunner&)
@@ -298,7 +294,6 @@ bool FLBRouteBotMonasteryTest::RunTest(const FString& Parameters)
 		TestEqual(TEXT("Active objective index"), LBPie::ObjIndex(), ClimbTowerIndex);
 		Ctx->IndexBeforeDeath = LBPie::ObjIndex();
 		if (!FindCheckpointSpawn(TEXT("CP_TowerBase"), Ctx->TowerBaseSpawn)) { AddError(TEXT("CP_TowerBase actor not found in the map")); }
-		Ctx->EndingSeconds = ReadEndingSeconds();
 		return true;
 	} });
 
@@ -329,15 +324,24 @@ bool FLBRouteBotMonasteryTest::RunTest(const FString& Parameters)
 	// 4. Through the finale
 	Steps.Add(BotStep(TEXT("Route through State.Event.Finale"), FinaleBot, 400.f, [Ctx]() { Ctx->FinaleTime = FPlatformTime::Seconds(); }));
 
-	// 5. Ending: travel to the main menu, save wiped
+	// 5. Ending: within 60 s of the ring the game is at the main menu with the save wiped. If the finale cinematic plays, it is skipped once
+	// the credits are skippable; without it, the old EndingTrigger travels by itself.
 	Steps.Add({ TEXT("Ending returns to main menu"), 120.f, [this, Ctx](FLBStepRunner& R)
 	{
 		if (LBPie::MapShortName() != GMainMenuMap)
 		{
-			if (FPlatformTime::Seconds() - Ctx->FinaleTime > Ctx->EndingSeconds + 5.0)
+			if (FPlatformTime::Seconds() - Ctx->FinaleTime > 60.0)
 			{
-				AddError(FString::Printf(TEXT("Ending did not travel to L_MainMenu within %.0fs (still on %s)"), Ctx->EndingSeconds + 5.f, *LBPie::MapShortName()));
+				AddError(FString::Printf(TEXT("The ending did not travel to L_MainMenu within 60 s of the ring (still on %s)"), *LBPie::MapShortName()));
 				R.Abort(TEXT("Ending timeout"));
+				return false;
+			}
+			ULBCinematicSubsystem* Cine = LBPie::World() ? LBPie::World()->GetSubsystem<ULBCinematicSubsystem>() : nullptr;
+			if (Cine && Cine->IsPlaying() && Cine->IsSkippable() && !Ctx->bSkipped)
+			{
+				Ctx->bSkipped = true;
+				UE_LOG(LogLB, Display, TEXT("[RouteTest] skipping the credits of %s"), *Cine->GetActiveId().ToString());
+				Cine->RequestSkip();
 			}
 			return false;
 		}

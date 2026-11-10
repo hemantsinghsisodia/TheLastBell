@@ -458,6 +458,8 @@ namespace
 
 		/** Walk-path tests must not be disturbed by an active Warden (lb.Warden.Enabled = 0 for the whole command). */
 		LBPie::FWardenSwitch WardenOff{ false };
+		// P17 (R-82): the New Game intro would lock input and add State.Event.Arrival in L_Monastery; these runs do not test it.
+		LBPie::FCineSwitch CineOff{ false };
 
 		FAutomationTestBase* Test;
 		bool bSynthetic;
