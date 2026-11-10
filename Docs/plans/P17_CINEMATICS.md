@@ -469,6 +469,36 @@ The inside of a mask seen from the wearer: one fused binocular opening.
 
 All are scalar or vector parameters. The owner tunes them in P17-7.
 
+**Exact formula (lead, before P17-4).** Units are screen UV, with u to the right and v down, both 0–1. A = ViewSize.x / ViewSize.y. Every length below is in **screen-width units**, so a vertical length in v is multiplied by A.
+
+| Parameter (scalar unless noted) | Default |
+|---|---|
+| `CenterLX` / `CenterRX` / `CenterY` | 0.40 / 0.60 / 0.50 |
+| `RadiusX` / `RadiusY` | 0.17 / 0.085 |
+| `Feather` | 0.06 |
+| `NoseMinX` / `NoseMaxX` / `NoseAlpha` | 0.485 / 0.515 / 0.35 |
+| `Darkness` | 0.97 |
+| `EdgeTint` | 0.15 |
+| `EdgeTintColor` (vector) | (1.0, 0.55, 0.40, 1) |
+| `Breath` / `BreathHz` | 0.02 / 0.25 |
+
+1. **Breath:** b = 1 + Breath · sin(2π · BreathHz · Time); then rx = RadiusX · b and ry = RadiusY · b.
+2. **Each eye** i, with cx = CenterLX or CenterRX:
+   - e_i = length( (u − cx) / rx , (v − CenterY) / (ry · A) );
+   - the approximate edge distance is sd_i = (e_i − 1) · ry;
+   - open_i = 1 − smoothstep(−Feather/2, +Feather/2, sd_i).
+3. **Union:** open = max(open_L, open_R).
+4. **Nose bridge:** band = smoothstep(NoseMinX − 0.01, NoseMinX, u) · (1 − smoothstep(NoseMaxX, NoseMaxX + 0.01, u)); then open = open · (1 − NoseAlpha · band).
+5. **Edge:** edge = saturate(4 · open · (1 − open)), which peaks in the feather band.
+6. **Output (Emissive):** Scene × lerp(1 − Darkness, 1, open) × lerp((1, 1, 1), EdgeTintColor.rgb, EdgeTint · edge). Scene is `SceneTexture:PostProcessInput0`.rgb.
+
+**Material settings:**
+- Material Domain Post Process; Blendable Location **After Tonemapping** (in UE 5.8 it is `BL_SceneColorAfterTonemapping`; read the enum's names from the property).
+- Emissive only.
+- No texture samples.
+
+**The MI** `MI_LB_PP_MaskView` keeps every parent default; no overrides.
+
 ## 5. Level edits (P17-5b, environment-designer [EDITOR], `Tools/cine/p17_level.py --apply/--check/--save`, Outliner folder `Cinematics`)
 | Actor | Class | Placement | Tags |
 |---|---|---|---|
