@@ -850,3 +850,67 @@ One editor agent at a time. A1, A2 and A3 run without the editor, in parallel wi
 3. **Level** (Unreal **open**): add the 13 creature emitters to `Tools/audio/p16_level.py`, then `--apply`, `--check` and one map save.
 4. **Listening check (owner):** the creatures and the fixed paper and bell.
 5. **Performance readings (owner):** the 6 spots plus a chase, audio on/off, read off first.
+
+### P16-6 fixes and creature sounds: results (2026-11-10; Unreal closed, no PIE; commits 917b0c6 code, ad4be97 sounds, 279b472 assets)
+**Code (917b0c6).**
+- **Paper.** `ULBAudioSubsystem::BindPlayerEvents` also binds the player's `ULBInspectionComponent::OnInspectBegin` (and rebinds when the pawn changes, unbinding on deactivation). `HandleInspectBegin` calls `NotifyInteracted(owner, false)`, so the inspected actor's mapped `Interact` cue (found by `FindCueRow`, the same rules as every interaction cue) plays at the actor on pick-up; the put-down cue (`OnInteracted` at `CompleteInspection`) is unchanged, so a note rustles both ways.
+- **Finale bell.**
+  - `IsTickableWhenPaused()` returns true; `IsTickable` is unchanged.
+  - While the world is paused `Tick` runs only `UpdateScheduled`.
+  - `HandleStateChanged` calls `ScheduleBell(..., bPlayFirstNow = true)`: when a beat's `FirstDelay <= 0` the first strike plays in that call and only the rest are scheduled. The finale beat (stage 5 x 5, first delay 0) therefore requests its first strike before `AddState` returns.
+  - Strikes of the non-ambient bell (beats, `PlayBell`, new-game toll) call `SetUISound(true)` on their component, so they keep sounding under a pause.
+  - **One addition to the brief, needed for strikes 2 to 5:** under a pause `World->GetTimeSeconds()` stands still, so a schedule on it would never come due. Bell strikes are therefore scheduled on `GetUnpausedTimeSeconds()` (`FScheduled::bUnpausedClock`); thunder, cracks, drones and the ambient toll stay on the world clock and wait for the game to resume (no other behaviour changed). Outside a pause the two clocks are equal.
+  - The finale's timing stays with Phase 17.
+- **Tests (new).**
+  - `LastBell.Functional.Audio.NotePickupCue`: a movable `AStaticMeshActor` with a `ULBInspectableComponent`, `AStaticMeshActor` mapped to a 3-variant `Interact` row (0.8). `BeginInspect` makes one request in the same call, at the note, volume 0.8, a loaded variant; `CancelInspect` adds none; an unmapped class (an `ATargetPoint`) makes no request.
+  - `LastBell.Functional.Audio.FinaleBellImmediate`: `AddState(State.Event.Finale)` makes exactly one stage-5 `Bell` request (variant 4, the same world time) before it returns, 4 are scheduled, and 5 strikes in all come 0.4 s apart (the test shortens the spacing), then nothing is left.
+  - First run after the code: build real (LBAudioSubsystem.cpp and LBAudioFunctionalTests.cpp compiled, linked), suite **174 / 174**.
+
+**Creatures (ad4be97).** `Tools/audio/prep` extended: `build_recipes.py` writes 18 new items (`group: creatures`) into `recipes.json` (the 124 older items are byte-identical, so are their WAVs); `prep_lib.spectral_gate` and the layer key `denoise` are new; `report_recorded.py` has the Creatures group (cue-sheet counts 6 / 4 / 3 / 5, notes, spectrogram sheet `Docs/ArtTest/audio/rec_creatures.png`); `audition_recorded.md` and `audition.html` (now 197 sounds) have the group; 12 registry rows plus 3 "not used" rows. `prep_recorded.py --verify`: all 142 files identical on a second build. Slice times are in the source; every file is mono 48 kHz 16-bit, one-shots at a -3 dBFS peak.
+
+| File | Source(s), slice in the source | Processing | Length |
+|---|---|---|---|
+| `SFX_LB_Bat_01` | 455593, 25.38-26.02 s (5 chirps) | hp 1.5 kHz, lp 14 kHz | 0.58 s |
+| `SFX_LB_Bat_02` | 455593, 3.75-4.45 s (3 chirps) | same | 0.70 s |
+| `SFX_LB_Bat_03` | 455593, 12.45-13.0 s (3 chirps) | pitch -15 %, hp 1.2 kHz, lp 14 kHz | 0.65 s |
+| `SFX_LB_Bat_04` flurry A | 546823, 14.0-15.5 s (wing flutter) + 455593, 23.52-24.30 s (chirps, from 0.35 s, -3 dB) | hp 500 Hz / 1.5 kHz, layers levelled, cut at 2.4 s max | 1.43 s |
+| `SFX_LB_Bat_05` flurry B | 437935, 13.2-15.0 s (flapping pass, tape hiss gated) + 806573, 104.5-106.3 s (colony swarm, from 0.1 s, -5 dB) | spectral gate -14 dB, hp 500 / 800 Hz, swarm lp 10 kHz, fades | 1.80 s |
+| `SFX_LB_Bat_06` | 546823, 19.0-20.4 s (flutter burst) | hp 500 Hz, 0.5 s fade out | 1.33 s |
+| `SFX_LB_Owl_01` | 864872, 1.45-3.5 s (one hoot) | hp 250 Hz, lp 5 kHz, 0.7 s tail (rt60 0.9) | 1.42 s |
+| `SFX_LB_Owl_02` | 864872, 6.1-9.0 s (short + long hoot) | same | 2.40 s |
+| `SFX_LB_Owl_03` | 688869, 2.3-4.0 s | spectral gate -14 dB, hp 250, lp 5 kHz, tail | 1.72 s |
+| `SFX_LB_Owl_04` | 688869, 7.55-9.2 s (hoot with vibrato) | same | 1.80 s |
+| `SFX_LB_Howl_01` | 500646 (wolf), 1.6-10.6 s | gate -10 dB, hp 120, lp 3 kHz, 3 s tail (rt60 3.2), fade in 0.9 s / out 1.5 s | 10.52 s |
+| `SFX_LB_Howl_02` | 640060 (coyote), 3.7-10.0 s | gate -14 dB, same | 7.47 s |
+| `SFX_LB_Howl_03` | 500646 (wolf), 29.4-38.6 s | gate -10 dB, same | 9.78 s |
+| `SFX_LB_Rat_01` | 143125, 2.52-2.86 s (1 squeak) | hp 800 Hz | 0.27 s |
+| `SFX_LB_Rat_02` | 143125, 6.3-7.1 s (2 squeaks) | hp 800 Hz | 0.76 s |
+| `SFX_LB_Rat_03` | 841571, 3.3-4.25 s (3 baby squeaks) | gate -12 dB, hp 800 Hz | 0.95 s |
+| `SFX_LB_Rat_04` | 872940, 2.1-3.55 s (scurry, about 12 taps) | hp 1 kHz | 1.28 s |
+| `SFX_LB_Rat_05` | 333094, 7.78-8.8 s (scratching) | gate -14 dB, hp 300 Hz | 0.99 s |
+
+- **Judgements.**
+  - Bat squeaks: 404152 (cave) was rejected after the survey: gated noise blocks plus one harmonic scream whose energy sat above 13 kHz. All three squeaks therefore come from the clean 455593 (one voice; 03 pitched down 15 % to differ).
+  - Owls: 867131 was rejected (1.5-4 kHz ke-wick sweeps with noise-reduction holes, not hoots).
+  - Howls: 503516 was measured but not used. Its fundamental is about 430 Hz, inside the wolf range (500646: 352-369 Hz; 640060 coyote: about 740 Hz), so it does not read as a small dog by pitch; it is also spliced from several takes, and the real recordings were preferred. It is a spare.
+  - Rat scurry: the CC0 set has no rat on stone. 872940 is a creature scurry whose energy was mostly 150-350 Hz thumps (50 % below 220 Hz), so it is high-passed at 1 kHz to leave the claw ticks (50 % below 966 Hz after). No synthetic ticks were needed; if the owner finds it thin, a filtered-noise tick scurry is the fallback.
+- **Objective checks** (`report_recorded.py --checks`, 142 files, 0 problems; plus a creature-only table): 48 kHz / 16-bit / mono, peak -3.00 dBFS exactly, 0 clipped samples, worst DC 1.3e-7, first and last samples 0, worst click ratio 6.6 (Rat_04; the limit is 40), no source clipping in any slice. Spectral reading: owl energy below 900 Hz, howl energy below 1.1-1.9 kHz (95 %), bat squeaks 50 % below 6.9-8.7 kHz. Objective only; the ear test is the owner's.
+
+**Assets (279b472).**
+- `Tools/audio/p16_2_assets.py`: the creature rules (folder Room; Ambience; `ATT_LB_Medium` bats, `ATT_LB_Large` owls and howls, `ATT_LB_Small` rats; no concurrency), `SFX_LB_Step_Wood_*` 2.0 in `OWNER_CHOICES` (the other 30 steps stay 0.6), totals 193 = 51 + 142.
+- Headless `apply` (`LB_REIMPORT` unset): 18 imported, 18 packages saved, nothing else touched (git shows only the 18 new `.uasset`s), **1957 checks, 0 failures**.
+- Fresh-process `LB_MODE=verify`: **1691 checks, 0 failures** (`Docs/ArtTest/audio/p16_2_report.json`): 193 sounds, 18 creature waves correct (class, attenuation, no concurrency, volume 1.0, duration equal to the WAV), Step_Wood 2.0 x 6, the other steps 0.6, everything else as before. `L_Monastery` and the never-save list were not touched.
+- **Suite after the assets: 174 / 174** pass, 0 `Error:` lines; `Monastery.AudioSetup`, `NotePickupCue` and `FinaleBellImmediate` pass; the log reads "Audio: active (111 sounds loaded, 7 zones, 29 bound actors)" (the creatures are not loaded by the director: the emitters do not exist yet).
+
+**For the level step (P16-6 part 3), the sound assets of the 13 emitters** (`/Game/LastBell/Audio/Room/<name>.<name>`):
+- 4 bat emitters: variants `SFX_LB_Bat_01..06`;
+- 3 owl emitters: variants `SFX_LB_Owl_01..04`;
+- 2 howl emitters: variants `SFX_LB_Howl_01..03`;
+- 4 rat emitters: variants `SFX_LB_Rat_01..05`.
+
+**For the owner to listen for.**
+1. Paper: pick up a note (a rustle at once) and put it down (a second rustle).
+2. Finale: ring the great bell; the first stage-5 strike must now sound with the ring, and keep sounding under the ending pause. **Expect only the strikes that fall before the return to the menu:** the beat table spaces the 5 strikes 5 s apart (0, 5, 10, 15, 20 s) while the ending returns to the menu after about 5-8 s, so roughly two strikes are heard. That timing belongs to Phase 17 and was not changed.
+3. Wooden steps on the tower stairs at 2.0: loud enough, and not too loud against the stone ones.
+4. Creatures, once the emitters are placed: bats (a squeak should read small and high up, not a shriek; the two flurries should be a brief startle of wings); owls (soft, far, not a bird in the room); howls (beyond the walls, not a dog next door; the 3 s tail should fade without a hiss; Howl_02 is a coyote); rats (squeaks small and dry; the scurry should read as claws on stone, say if it is thin or boomy; hiss in Rat_03 and Rat_05).
+5. Repeats: owls and howls have 4 and 3 variants against intervals of 30-60 s and 120-240 s.
