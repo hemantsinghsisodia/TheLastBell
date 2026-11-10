@@ -969,3 +969,11 @@ One editor agent at a time. A1, A2 and A3 run without the editor, in parallel wi
 2. The files are shorter; say if the rustle feels too brief.
 3. With the editor open: `p16_level.py --check` (Belfry row) and the still-unchecked items above: great-bell finale toll under the ending pause and the 5 s spacing, and the performance readings.
 
+
+### P16-6, part 3: note and finale checks (2026-11-10, owner in Play)
+- **Note rustle:** "works both times" (pick-up and put-down).
+- **Great bell (finale):** heard. Owner's choices:
+  - the `State.Event.Finale` beat spacing 5.0 → 1.2 → **2.0 s** (5 strikes);
+  - `SFX_LB_Bell_Stage5` `Volume` 1.0 → **2.0**.
+
+  Both saved (`DA_Audio`, `SFX_LB_Bell_Stage5`). The bookkeeping in `OWNER_CHOICES` (stage-5 volume and the finale beat spacing) is still to do.
