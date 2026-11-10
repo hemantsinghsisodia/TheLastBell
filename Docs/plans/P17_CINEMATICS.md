@@ -79,8 +79,9 @@ New folder `Source/LastBell/Cinematics/`:
 | `LBCinematicSettings.{h,cpp}` | `ULBCinematicSettings` (`UPrimaryDataAsset`), asset `/Game/LastBell/Data/DA_Cinematics` |
 | `LBCinematicSubsystem.{h,cpp}` | `ULBCinematicSubsystem` (`UTickableWorldSubsystem`). Defines the CVars, so it is **never Live Coded** |
 | `LBCinematicWidget.{h,cpp}` | `ULBCinematicWidget` (`UUserWidget`, builds its own tree in C++; no WBP asset) |
+| `LBCineAuthoringLibrary.{h,cpp}` | `ULBCineAuthoringLibrary` (`UBlueprintFunctionLibrary`): `SetCameraCutTrackCanBlend` and `GetCameraCutTrackCanBlend`, for headless authoring. Added after S1a: `UMovieSceneCameraCutTrack::bCanBlend` is a public C++ member with a bare `UPROPERTY()`, so Python can't set it. Python calls `unreal.LBCineAuthoringLibrary.set_camera_cut_track_can_blend(track, True)` |
 
-- **`LastBell.Build.cs`:** add `"LevelSequence"` and `"MovieScene"` to the public dependencies.
+- **`LastBell.Build.cs`:** add `"LevelSequence"`, `"MovieScene"` and `"MovieSceneTracks"` (the last for the authoring helper) to the public dependencies.
 - **`ULBGameSettings`:** add `UPROPERTY(Config, EditAnywhere, Category = "Cinematics") TSoftObjectPtr<ULBCinematicSettings> CinematicSettings;`.
 - **`Config/DefaultGame.ini`** (`[/Script/LastBell.LBGameSettings]`): add `CinematicSettings=/Game/LastBell/Data/DA_Cinematics.DA_Cinematics`.
 
@@ -569,6 +570,29 @@ If the mask faces are not 100 % on `head`, report the largest other weight. P17-
 
 It saves, reloads and reads back every item, then writes `Docs/ArtTest/cine/p17_s1.json` listing, per item, "scripted OK", "needs MCP" or "needs manual editor step".
 
+**S1a result (2026-11-10, 5ac14db; `Docs/ArtTest/cine/p17_s1.json`).** 87 of the 88 read-back checks pass after a fresh-process reload. Scripted OK:
+- the spawnable camera (filmback 16:9 DSLR = 36 × 20.25 mm) and the camera cut section with its eases;
+- the Warden spawnable (mesh, anim class, tag, `AlwaysTickPose`), with its transform, visibility, slot animation, and component material `Fade` tracks;
+- the cube's attach track (`head`, then `hand_r` with Keep World);
+- the light intensity track;
+- 2D audio and audio on a binding;
+- the fade track;
+- the three marked frames.
+
+The one failure is the camera cut track's `bCanBlend`, which Python can't set. Without it, `SupportsEasing` returns None and `RearrangeAllSections` strips the eases, so the cut back to gameplay would be hard. **Lead decision:** P17-1 adds `ULBCineAuthoringLibrary` (section 2), and S1a is re-run with it after the P17-1 build, before S1b. This is a third route beside MCP and an owner step. MCP doesn't cover `bCanBlend` either.
+
+**Facts for P17-5a** (the full list is in the JSON `findings`):
+- **Time units:**
+  - channel `add_key` uses display frames;
+  - `set_ease_in_duration` and `set_ease_out_duration` take ticks (24000 per second);
+  - `add_scalar_parameter_key` takes ticks;
+  - `set_range_seconds` takes seconds.
+- **Spawnables:** `LevelSequence.add_spawnable_from_class` is deprecated but is the call that works headless.
+- **Component tracks** (material, light intensity) need a component possessable. To get one: spawn through a `LevelSequencePlayer` in the commandlet's editor world, find the live component, then `add_possessable(<component>)`.
+- **Order:** set `bCanBlend` **before** adding camera cut sections and eases.
+- **Light:** the `PointLight` template defaults to Unitless intensity, so set `intensity_units` to Lumens for the Lantern's 600 lm.
+- **Mask slot (provisional):** the current `SK_Warden`'s mask slot is index 1, `M_Warden_BellMetal`. The bones are `head` and `hand_r`. F0 item 6 re-checks both on the new Warden asset.
+
 **S1b** (after P17-1, Unreal open, **owner present about 5 min**):
 - `lb.Cine.Play` is pointed at the spike through a test-only def (`OverrideSettings` via a console helper `lb.Cine.PlayAsset <path>`, non-shipping);
 - in PIE, the log shows the three markers firing in order;
@@ -605,6 +629,7 @@ The headless Python spike S1a stays the primary route, because it is repeatable 
     - at 16° the bell origin (12420, 2000, 2860) moves 20·sin 16° ≈ 5.5 cm in X;
     - `RopeZAboutAxle` changes only Z, by about ±36 cm at ±16° for the rope top (12550, 1835, 2750);
   - `CreditsSpeed`;
+  - `CameraCutCanBlendHelper`: on a transient sequence's camera cut track, set to true and read back true; a null track returns false;
   - `Warden.Stage6IsDormant`.
 - **Functional** (`LBCinematicFunctionalTests.cpp`, `LastBell.Functional.Cine.*`, on `L_Monastery` unless noted; `lb.Cine.Rate 8`):
   - `IntroOnNewGame`: `StartNewGame`; the intro starts; lock Full; HUD hidden; Arrival set once; lock None at the end; the view is the player's camera.
@@ -682,6 +707,9 @@ The GPU cost of the cinematic shots is not measured in this phase (the finale cl
 
 ## Results
 (Filled in as the tasks finish.)
+
+### S1a (2026-11-10, 5ac14db)
+Everything scripts headless except the camera cut track's `bCanBlend`, which P17-1's `ULBCineAuthoringLibrary` will set. The details are in section 8. Runtime behaviour (spawning, component bindings, attach, the material fade, the blend) is for S1b. `LS_P17_Spike` is local and git-ignored, because it uses a Mixamo clip.
 
 ### F0 (2026-11-10, 6596144; lead review the same day)
 Items 1–5 and 7 are done. Item 6 and F0b are on hold for the new Warden asset. The run was read-only: before and after, PIE was off and nothing was dirty (not the map, not the 14 never-save packages), and the census stayed at 3102. The lead's extra checks were also read-only (`Docs/ArtTest/cine/p17_f0_lead_checks.json`). The data is in `Docs/ArtTest/cine/p17_f0.json` and `p17_f0_tables.md`.

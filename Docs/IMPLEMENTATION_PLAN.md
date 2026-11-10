@@ -506,6 +506,7 @@ Branch `claude/phase-17-cinematics`. Spec and plan: `Docs/plans/P17_CINEMATICS.m
   - the headstock and rope swing with the bell.
   
   The owner accepted both story changes (2026-11-10): the new Intro_1 text, and the `Note_Gatehouse` rope line, changed by P17-5b.
+- **S1a (2026-11-10):** done (5ac14db). Everything scripts headless except the camera cut track's `bCanBlend`; a C++ authoring helper in P17-1 sets it, and S1a is re-run after the build.
 
 ## Deferred to Phase 14–15 (Lighting, VFX: storm work)
 Items the owner asked to fold into the storm pass. **Foliage wind is now in Phase 14** (P14 section 6, D-096: `MPC_LB_Storm` replaces the planned `MPC_LB_Wind`).
