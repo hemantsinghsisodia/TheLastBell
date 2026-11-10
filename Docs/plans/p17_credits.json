@@ -1,0 +1,174 @@
+[
+ {
+  "style": "Heading",
+  "text": "THE LAST BELL"
+ },
+ {
+  "style": "Gap",
+  "text": ""
+ },
+ {
+  "style": "Small",
+  "text": "Created by"
+ },
+ {
+  "style": "Name",
+  "text": "Hemant Singh Sisodia"
+ },
+ {
+  "style": "Gap",
+  "text": ""
+ },
+ {
+  "style": "Small",
+  "text": "Developed with"
+ },
+ {
+  "style": "Name",
+  "text": "Claude (Anthropic)"
+ },
+ {
+  "style": "Gap",
+  "text": ""
+ },
+ {
+  "style": "Small",
+  "text": "Made with"
+ },
+ {
+  "style": "Name",
+  "text": "Unreal Engine 5"
+ },
+ {
+  "style": "Name",
+  "text": "Blender"
+ },
+ {
+  "style": "Gap",
+  "text": ""
+ },
+ {
+  "style": "Small",
+  "text": "Warden base model"
+ },
+ {
+  "style": "Name",
+  "text": "Generated with Tencent Hunyuan3D-2 mini, via Modly"
+ },
+ {
+  "style": "Gap",
+  "text": ""
+ },
+ {
+  "style": "Small",
+  "text": "Animation"
+ },
+ {
+  "style": "Name",
+  "text": "Adobe Mixamo"
+ },
+ {
+  "style": "Gap",
+  "text": ""
+ },
+ {
+  "style": "Heading",
+  "text": "Models and textures"
+ },
+ {
+  "style": "Name",
+  "text": "Poly Haven: Amal Kumar, Benny Weimer, Blemonade, colormass, Dario Barresi, Dennis Halbeck,"
+ },
+ {
+  "style": "Name",
+  "text": "Dimitrios Savva, Greg Zaal, James Ray Cock, Jenelle van Heerden, Josh Dean, Kless Gyzen,"
+ },
+ {
+  "style": "Name",
+  "text": "Kuutti Siitonen, Rico Cilliers, Rob Tuytel, Serhii Khromov, Tina, Ulan Cabanilla"
+ },
+ {
+  "style": "Name",
+  "text": "ambientCG"
+ },
+ {
+  "style": "Name",
+  "text": "Fab: Bugrimov Maksim, PackDev, PawelBrzustowski, UB / Bucket team"
+ },
+ {
+  "style": "Name",
+  "text": "BlenderKit: Joshua Whitney"
+ },
+ {
+  "style": "Gap",
+  "text": ""
+ },
+ {
+  "style": "Heading",
+  "text": "Sound"
+ },
+ {
+  "style": "Name",
+  "text": "Kenney"
+ },
+ {
+  "style": "Name",
+  "text": "Freesound: _stubb, ani_music, AppleCorey, audioninja001, aUREa, Autobot8299, Beefmaster69,"
+ },
+ {
+  "style": "Name",
+  "text": "BenjaminNelan, bertiehs, betchkal, brachern, celldroid, coelhoigor, coffeemakessounds,"
+ },
+ {
+  "style": "Name",
+  "text": "cognito perceptu, craigsmith, dimbark1, ecfike, Elanor1995, EverydayEldritch,"
+ },
+ {
+  "style": "Name",
+  "text": "Gammelsmurfen778, giddster, GoatsheadCastle, Greg_Surr, HarpyHarpHarp, harrisonlace,"
+ },
+ {
+  "style": "Name",
+  "text": "husky70, IENBA, JacobEmanuelMadrid, jcdecha, jemburyturner, juansua990, keweldog, Kinoton,"
+ },
+ {
+  "style": "Name",
+  "text": "Krokulator, kyles, LampEight, ldezem, loganzsound, marc.om, martian, mucky_pete7,"
+ },
+ {
+  "style": "Name",
+  "text": "NahuelMartinez, NicknameLarry, noahpardo, Noxdl, patchytherat, PostProdDog, pp87, qubodup,"
+ },
+ {
+  "style": "Name",
+  "text": "RealSquink, Reitanna, Robson220pl, Rudmer_Rotteveel, RyanTheBlockhead, SamsterBirdies,"
+ },
+ {
+  "style": "Name",
+  "text": "scalywhale, ShaneF91, Sheyvan, sophiehall3535, sound368, squareal, TheKingOfGeeks360,"
+ },
+ {
+  "style": "Name",
+  "text": "tlcolbe, tony2metal, TRP, ulla_petersen, Voices_Of_Marz, Zabuhailo, Zrte"
+ },
+ {
+  "style": "Gap",
+  "text": ""
+ },
+ {
+  "style": "Small",
+  "text": "Fonts"
+ },
+ {
+  "style": "Name",
+  "text": "Roboto, Christian Robertson (Apache 2.0)"
+ },
+ {
+  "style": "Gap",
+  "text": ""
+ },
+ {
+  "style": "Name",
+  "text": "Thank you for playing."
+ }
+]

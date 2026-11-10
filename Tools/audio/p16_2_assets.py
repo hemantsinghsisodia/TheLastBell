@@ -212,7 +212,9 @@ OWNER_CHOICES = {
     # SoundClass Properties.volume by class key (CLASS_NAMES): the overall loudness
     "class_volume": {"Master": 0.7},
     # DA_Audio (LBAudioSettings) editor properties; the script writes only these, the other fields are left as they are on disk
-    "da_audio": {"rain_out_gain": 0.22, "rain_in_gain": 0.03, "rain_exposure_power": 1.5, "wind_out_gain": 0.08, "wind_min": 0.2},
+    "da_audio": {"rain_out_gain": 0.22, "rain_in_gain": 0.03, "rain_exposure_power": 1.5, "wind_out_gain": 0.08, "wind_min": 0.2,
+                 # P17-2 (D-117): the intro's State.Event.Arrival beat (the first row of BellBeats) replaces the new-game toll
+                 "new_game_toll": False},
 }
 
 # ---------------------------------------------------------------------------------------------------------------------------------
@@ -588,6 +590,7 @@ def build_da_json():
     ]
     silent = ["Interactables/BP_TagInteractable_GreatBell", "Puzzles/BP_SequencePuzzle", "Puzzles/BP_SmallBell_Cloister"]
     beats = [  # FLBAudioSettings::FillPlanDefaults, plan 5.3: tag, stage, strikes, first delay, spacing, drone (0 A, 1 B, 2 C)
+        ("State.Event.Arrival", 1, 3, 0.0, 4.5, 0),  # P17-2 (D-117): the intro's first toll, replaces the new-game toll; FillPlanDefaults' first row
         ("State.Ritual.1", 2, 3, 2.0, 4.5, 1),
         ("State.Event.CryptEntered", 1, 0, 0.0, 0.0, 0),
         ("State.Ritual.2", 3, 3, 2.0, 4.5, 2),
@@ -761,7 +764,7 @@ def verify_da(da, expected):
     # Typed read through the Python property names (a second reader than ToolsetLibrary)
     check("DA_Audio.bell_location", same(da.get_editor_property("bell_location"), unreal.Vector(12420.1, 2000.0, 2750.0)))
     beats = da.get_editor_property("bell_beats")
-    check("DA_Audio.bell_beats count", len(beats) == 6)
+    check("DA_Audio.bell_beats count", len(beats) == 7)
     for want, beat in zip(expected["BellBeats"], beats):  # every beat in full (typed read), not just the count
         tag = want["trigger"]["tagName"]
         trig = beat.get_editor_property("trigger")
