@@ -734,6 +734,18 @@ Also: `RopeZAboutAxle` is the exact rotation, giving −30.9 / +40.9 cm at ±16�
 
 **Not verified yet:** the widget on screen, the skip prompt and progress bar, the credits roll, the mark move and look assist in the world, and the camera blend. These are covered by S1b, P17-6 and P17-7.
 
+**Independent review and fixes (cfec379).** A read-only architecture review found 1 High, 2 Medium and 6 Low items. All were fixed:
+- **`end` was lost when the sequence finished during the credits.** The game could not end, though the authored timing was safe. Now a post-sequence hold keeps the screen black until the roll ends, then runs `end`.
+- **A skip could leave the screen black.** A timer now clears the fade after `SkipFadeSeconds` + 0.2 s.
+- **A mark move cut short is now completed** on finish and skip.
+- **`Deinitialize` now restores** the lock, HUD, fade and widget when a world ends mid-run.
+- **Shipping guards** were added for the debug, `PlayAsset` and fallback paths.
+- **The credits height** is measured once, not every tick.
+- **A warning is logged** when a cinematic trigger is dropped.
+- **Two unused members** were removed.
+
+Two tests were added: `EndWaitsForCreditsPastSequenceEnd` and `SkipClearsFade`. After the fixes the suite gives **193 passed, 5 failed** (the same 5 expected content tests), and the lead checked the log. `RouteBot.Monastery` passes, and the Game target builds. The review's other point, that `TECHNICAL_DESIGN` has no cinematics section yet, is scheduled for P17-9.
+
 ### S1a (2026-11-10, 5ac14db)
 Everything scripts headless except the camera cut track's `bCanBlend`, which P17-1's `ULBCineAuthoringLibrary` sets.
 
