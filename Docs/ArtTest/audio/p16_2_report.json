@@ -1,7 +1,7 @@
 {
  "mode": "verify",
  "ok": true,
- "checks": 1691,
+ "checks": 1727,
  "failures": [],
  "counts": {
   "Music": 8,
@@ -111,7 +111,7 @@
    "att": "ATT_LB_Bell",
    "con": null,
    "loop": false,
-   "volume": 1.0
+   "volume": 2.0
   },
   "SFX_LB_Drip_Stone_01": {
    "cls": "SCL_LB_Ambience",
