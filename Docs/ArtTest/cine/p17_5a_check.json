@@ -1,0 +1,2860 @@
+{
+ "generated": "2026-11-10 23:37:10",
+ "total_checks": 347,
+ "passed": 347,
+ "failed": 0,
+ "per_sequence": {
+  "Intro": {
+   "total": 39,
+   "failed": 0
+  },
+  "Finale": {
+   "total": 308,
+   "failed": 0
+  }
+ },
+ "facts": {
+  "errors": [],
+  "apparition_skeletal_components": [
+   {
+    "name": "Figure",
+    "rel_loc": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "rel_rot_pyr": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "rel_scale": [
+     1.0,
+     1.0,
+     1.0
+    ],
+    "mesh": "SK_Warden"
+   }
+  ],
+  "mesh_yaw": 0.0,
+  "mesh_rel_loc": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "mesh_rel_scale": [
+   1.0,
+   1.0,
+   1.0
+  ],
+  "sk_bounds_min_z": 3.940716851502657e-06,
+  "head_z": 239.36507418953977,
+  "cam_mask_pitch": 41.14211149845222
+ },
+ "deps": {
+  "Intro": [],
+  "Finale": [
+   "/Game/LastBell/Audio/Music/MUS_LB_Drone_C",
+   "/Game/LastBell/Audio/Player/SFX_LB_Step_Metal_02",
+   "/Game/LastBell/Audio/Player/SFX_LB_Step_Wood_01",
+   "/Game/LastBell/Audio/Player/SFX_LB_Step_Wood_02",
+   "/Game/LastBell/Audio/Player/SFX_LB_Step_Wood_03",
+   "/Game/LastBell/Audio/Player/SFX_LB_Step_Wood_04",
+   "/Game/LastBell/Audio/Player/SFX_LB_Step_Wood_05",
+   "/Game/LastBell/Audio/Player/SFX_LB_Step_Wood_06",
+   "/Game/LastBell/Audio/Warden/SFX_LB_Warden_Breath_Heavy",
+   "/Game/LastBell/Audio/Warden/SFX_LB_Warden_Breath_Slow",
+   "/Game/LastBell/Audio/Warden/SFX_LB_Warden_Chain_01",
+   "/Game/LastBell/Audio/Warden/SFX_LB_Warden_Chain_02",
+   "/Game/LastBell/Audio/Warden/SFX_LB_Warden_Chain_03",
+   "/Game/LastBell/Audio/Warden/SFX_LB_Warden_Chain_04",
+   "/Game/LastBell/Audio/Warden/SFX_LB_Warden_Step_01",
+   "/Game/LastBell/Audio/Warden/SFX_LB_Warden_Step_02",
+   "/Game/LastBell/Audio/Warden/SFX_LB_Warden_Step_03",
+   "/Game/LastBell/Audio/Warden/SFX_LB_Warden_Step_04",
+   "/Game/LastBell/Characters/Warden/ABP_Warden",
+   "/Game/LastBell/Characters/Warden/Meshes/SK_Warden",
+   "/Game/LastBell/Materials/PostProcess/MI_LB_PP_MaskView"
+  ]
+ },
+ "notes": [],
+ "failures": [],
+ "checks": [
+  {
+   "seq": "Intro",
+   "item": "setup",
+   "name": "asset loads as LevelSequence",
+   "ok": true,
+   "got": "'LevelSequence'",
+   "want": "'LevelSequence'"
+  },
+  {
+   "seq": "Intro",
+   "item": "setup",
+   "name": "display rate",
+   "ok": true,
+   "got": "(30, 1)",
+   "want": "(30, 1)"
+  },
+  {
+   "seq": "Intro",
+   "item": "setup",
+   "name": "tick resolution",
+   "ok": true,
+   "got": "(24000, 1)",
+   "want": "(24000, 1)"
+  },
+  {
+   "seq": "Intro",
+   "item": "setup",
+   "name": "playback range s",
+   "ok": true,
+   "got": "(0.0, 29.0)",
+   "want": "(0.0, 29.0)"
+  },
+  {
+   "seq": "Intro",
+   "item": "setup",
+   "name": "spawnable names",
+   "ok": true,
+   "got": "['Cam_Intro']",
+   "want": "['Cam_Intro']"
+  },
+  {
+   "seq": "Intro",
+   "item": "markers",
+   "name": "marked frames (label, display frame)",
+   "ok": true,
+   "got": "[(0, 'skip:1'), (24, 'card:Intro_1'), (114, 'card:Intro_2'), (204, 'card:Intro_3'), (294, 'card:Intro_4'), (510, 'strike:LB_StrikeTarget_Tow...",
+   "want": "[(0, 'skip:1'), (24, 'card:Intro_1'), (114, 'card:Intro_2'), (204, 'card:Intro_3'), (294, 'card:Intro_4'), (510, 'strike:LB_StrikeTarget_Tow..."
+  },
+  {
+   "seq": "Intro",
+   "item": "markers",
+   "name": "every label parses against the grammar",
+   "ok": true,
+   "got": "[]",
+   "want": "[]"
+  },
+  {
+   "seq": "Intro",
+   "item": "fade",
+   "name": "one fade track with one section",
+   "ok": true,
+   "got": "(1, 1)",
+   "want": "(1, 1)"
+  },
+  {
+   "seq": "Intro",
+   "item": "fade",
+   "name": "completion mode",
+   "ok": true,
+   "got": "'KEEP_STATE'",
+   "want": "'KEEP_STATE'"
+  },
+  {
+   "seq": "Intro",
+   "item": "fade",
+   "name": "fade keys (3 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Intro",
+   "item": "cut",
+   "name": "one camera cut track",
+   "ok": true,
+   "got": "1",
+   "want": "1"
+  },
+  {
+   "seq": "Intro",
+   "item": "cut",
+   "name": "bCanBlend (LBCineAuthoringLibrary)",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Intro",
+   "item": "cut",
+   "name": "section count",
+   "ok": true,
+   "got": "1",
+   "want": "1"
+  },
+  {
+   "seq": "Intro",
+   "item": "cut",
+   "name": "Cam_Intro range (s)",
+   "ok": true,
+   "got": "(13.0, 27.0)",
+   "want": "(13.0, 27.0)"
+  },
+  {
+   "seq": "Intro",
+   "item": "cut",
+   "name": "Cam_Intro ease in (ticks)",
+   "ok": true,
+   "got": "0",
+   "want": "0"
+  },
+  {
+   "seq": "Intro",
+   "item": "cut",
+   "name": "Cam_Intro ease out (ticks)",
+   "ok": true,
+   "got": "36000",
+   "want": "36000"
+  },
+  {
+   "seq": "Intro",
+   "item": "cut",
+   "name": "Cam_Intro bound to the camera spawnable",
+   "ok": true,
+   "got": "'931CCD114813B931DAF9A597502EE2E2'",
+   "want": "'931CCD114813B931DAF9A597502EE2E2'"
+  },
+  {
+   "seq": "Intro",
+   "item": "Cam_Intro",
+   "name": "binding exists and is a spawnable",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Intro",
+   "item": "Cam_Intro",
+   "name": "template class",
+   "ok": true,
+   "got": "'CineCameraActor'",
+   "want": "'CineCameraActor'"
+  },
+  {
+   "seq": "Intro",
+   "item": "Cam_Intro",
+   "name": "filmback 16:9 DSLR (36 x 20.25)",
+   "ok": true,
+   "got": "(36.0, 20.25)",
+   "want": "(36.0, 20.25)"
+  },
+  {
+   "seq": "Intro",
+   "item": "Cam_Intro",
+   "name": "focal length",
+   "ok": true,
+   "got": "30.0",
+   "want": "30.0"
+  },
+  {
+   "seq": "Intro",
+   "item": "Cam_Intro",
+   "name": "constrain_aspect_ratio",
+   "ok": true,
+   "got": "False",
+   "want": "False"
+  },
+  {
+   "seq": "Intro",
+   "item": "Cam_Intro",
+   "name": "aperture",
+   "ok": true,
+   "got": "2.799999952316284",
+   "want": "2.8"
+  },
+  {
+   "seq": "Intro",
+   "item": "Cam_Intro",
+   "name": "focus method / manual distance",
+   "ok": true,
+   "got": "('MANUAL', 6000.0)",
+   "want": "('MANUAL', 6000.0)"
+  },
+  {
+   "seq": "Intro",
+   "item": "Cam_Intro",
+   "name": "transform track count",
+   "ok": true,
+   "got": "1",
+   "want": "1"
+  },
+  {
+   "seq": "Intro",
+   "item": "Cam_Intro",
+   "name": "transform Location.X (2 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Intro",
+   "item": "Cam_Intro",
+   "name": "transform Location.Y (2 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Intro",
+   "item": "Cam_Intro",
+   "name": "transform Location.Z (2 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Intro",
+   "item": "Cam_Intro",
+   "name": "transform Rotation.X (2 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Intro",
+   "item": "Cam_Intro",
+   "name": "transform Rotation.Y (2 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Intro",
+   "item": "Cam_Intro",
+   "name": "transform Rotation.Z (2 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Intro",
+   "item": "Cam_Intro",
+   "name": "transform Scale.X (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Intro",
+   "item": "Cam_Intro",
+   "name": "transform Scale.Y (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Intro",
+   "item": "Cam_Intro",
+   "name": "transform Scale.Z (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Intro",
+   "item": "Cam_Intro",
+   "name": "visibility track count",
+   "ok": true,
+   "got": "0",
+   "want": "0"
+  },
+  {
+   "seq": "Intro",
+   "item": "Cam_Intro",
+   "name": "camera_component component binding is a child possessable",
+   "ok": true,
+   "got": "1",
+   "want": "1"
+  },
+  {
+   "seq": "Intro",
+   "item": "Cam_Intro",
+   "name": "CurrentFocalLength float track",
+   "ok": true,
+   "got": "1",
+   "want": "1"
+  },
+  {
+   "seq": "Intro",
+   "item": "Cam_Intro",
+   "name": "CurrentFocalLength property name / path",
+   "ok": true,
+   "got": "('CurrentFocalLength', 'CurrentFocalLength')",
+   "want": "('CurrentFocalLength', 'CurrentFocalLength')"
+  },
+  {
+   "seq": "Intro",
+   "item": "Cam_Intro",
+   "name": "CurrentFocalLength keys (2 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "setup",
+   "name": "asset loads as LevelSequence",
+   "ok": true,
+   "got": "'LevelSequence'",
+   "want": "'LevelSequence'"
+  },
+  {
+   "seq": "Finale",
+   "item": "setup",
+   "name": "display rate",
+   "ok": true,
+   "got": "(30, 1)",
+   "want": "(30, 1)"
+  },
+  {
+   "seq": "Finale",
+   "item": "setup",
+   "name": "tick resolution",
+   "ok": true,
+   "got": "(24000, 1)",
+   "want": "(24000, 1)"
+  },
+  {
+   "seq": "Finale",
+   "item": "setup",
+   "name": "playback range s",
+   "ok": true,
+   "got": "(0.0, 150.0)",
+   "want": "(0.0, 150.0)"
+  },
+  {
+   "seq": "Finale",
+   "item": "setup",
+   "name": "spawnable names",
+   "ok": true,
+   "got": "['Cam_Mask', 'Cam_WallTop', 'Lantern', 'Snd_Base', 'Snd_Low', 'Snd_Mid', 'WardenFigure']",
+   "want": "['Cam_Mask', 'Cam_WallTop', 'Lantern', 'Snd_Base', 'Snd_Low', 'Snd_Mid', 'WardenFigure']"
+  },
+  {
+   "seq": "Finale",
+   "item": "markers",
+   "name": "marked frames (label, display frame)",
+   "ok": true,
+   "got": "[(0, 'mark:LB_Cine_FinaleMark,1.5'), (48, 'lock:Look'), (540, 'bell:5x1'), (660, 'flash:0.9'), (1080, 'bell:5x1'), (1155, 'look:LB_Cine_Stai...",
+   "want": "[(0, 'mark:LB_Cine_FinaleMark,1.5'), (48, 'lock:Look'), (540, 'bell:5x1'), (660, 'flash:0.9'), (1080, 'bell:5x1'), (1155, 'look:LB_Cine_Stai..."
+  },
+  {
+   "seq": "Finale",
+   "item": "markers",
+   "name": "every label parses against the grammar",
+   "ok": true,
+   "got": "[]",
+   "want": "[]"
+  },
+  {
+   "seq": "Finale",
+   "item": "fade",
+   "name": "one fade track with one section",
+   "ok": true,
+   "got": "(1, 1)",
+   "want": "(1, 1)"
+  },
+  {
+   "seq": "Finale",
+   "item": "fade",
+   "name": "completion mode",
+   "ok": true,
+   "got": "'KEEP_STATE'",
+   "want": "'KEEP_STATE'"
+  },
+  {
+   "seq": "Finale",
+   "item": "fade",
+   "name": "fade keys (7 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "cut",
+   "name": "one camera cut track",
+   "ok": true,
+   "got": "1",
+   "want": "1"
+  },
+  {
+   "seq": "Finale",
+   "item": "cut",
+   "name": "bCanBlend (LBCineAuthoringLibrary)",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "cut",
+   "name": "section count",
+   "ok": true,
+   "got": "2",
+   "want": "2"
+  },
+  {
+   "seq": "Finale",
+   "item": "cut",
+   "name": "Cam_Mask range (s)",
+   "ok": true,
+   "got": "(65.0, 75.0)",
+   "want": "(65.0, 75.0)"
+  },
+  {
+   "seq": "Finale",
+   "item": "cut",
+   "name": "Cam_Mask ease in (ticks)",
+   "ok": true,
+   "got": "19200",
+   "want": "19200"
+  },
+  {
+   "seq": "Finale",
+   "item": "cut",
+   "name": "Cam_Mask ease out (ticks)",
+   "ok": true,
+   "got": "0",
+   "want": "0"
+  },
+  {
+   "seq": "Finale",
+   "item": "cut",
+   "name": "Cam_Mask bound to the camera spawnable",
+   "ok": true,
+   "got": "'F234630747D402E3FC9513A0B4458B5E'",
+   "want": "'F234630747D402E3FC9513A0B4458B5E'"
+  },
+  {
+   "seq": "Finale",
+   "item": "cut",
+   "name": "Cam_WallTop range (s)",
+   "ok": true,
+   "got": "(75.0, 150.0)",
+   "want": "(75.0, 150.0)"
+  },
+  {
+   "seq": "Finale",
+   "item": "cut",
+   "name": "Cam_WallTop ease in (ticks)",
+   "ok": true,
+   "got": "0",
+   "want": "0"
+  },
+  {
+   "seq": "Finale",
+   "item": "cut",
+   "name": "Cam_WallTop ease out (ticks)",
+   "ok": true,
+   "got": "0",
+   "want": "0"
+  },
+  {
+   "seq": "Finale",
+   "item": "cut",
+   "name": "Cam_WallTop bound to the camera spawnable",
+   "ok": true,
+   "got": "'D6363B89418504E708A3BAA6F04F6509'",
+   "want": "'D6363B89418504E708A3BAA6F04F6509'"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "binding exists and is a spawnable",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "template class",
+   "ok": true,
+   "got": "'SkeletalMeshActor'",
+   "want": "'SkeletalMeshActor'"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "skeletal mesh",
+   "ok": true,
+   "got": "'SK_Warden'",
+   "want": "'SK_Warden'"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "anim class",
+   "ok": true,
+   "got": "'ABP_Warden_C'",
+   "want": "'ABP_Warden_C'"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "actor tag",
+   "ok": true,
+   "got": "['LB_Cine_Warden']",
+   "want": "['LB_Cine_Warden']"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "VisibilityBasedAnimTickOption",
+   "ok": true,
+   "got": "'ALWAYS_TICK_POSE'",
+   "want": "'ALWAYS_TICK_POSE'"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "collision enabled",
+   "ok": true,
+   "got": "'NO_COLLISION'",
+   "want": "'NO_COLLISION'"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "collision profile",
+   "ok": true,
+   "got": "'NoCollision'",
+   "want": "'NoCollision'"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "cast shadow",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "transform track count",
+   "ok": true,
+   "got": "1",
+   "want": "1"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "transform Location.X (10 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "transform Location.Y (10 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "transform Location.Z (10 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "transform Rotation.X (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "transform Rotation.Y (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "transform Rotation.Z (9 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "transform Scale.X (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "transform Scale.Y (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "transform Scale.Z (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "visibility track count",
+   "ok": true,
+   "got": "1",
+   "want": "1"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "visibility (True = visible) (3 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "audio track count",
+   "ok": true,
+   "got": "1",
+   "want": "1"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "audio section count",
+   "ok": true,
+   "got": "24",
+   "want": "24"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Warden_Step_04 @40.600 present",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Warden_Step_04 @40.600 end (s)",
+   "ok": true,
+   "got": "41.3571662902832",
+   "want": "41.35712502002716"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Warden_Step_04 @40.600 looping",
+   "ok": true,
+   "got": "False",
+   "want": "False"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Warden_Step_04 @40.600 pitch",
+   "ok": true,
+   "got": "1.0",
+   "want": "1.0"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Warden_Chain_04 @40.600 present",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Warden_Chain_04 @40.600 end (s)",
+   "ok": true,
+   "got": "42.1341667175293",
+   "want": "42.134104108810426"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Warden_Chain_04 @40.600 looping",
+   "ok": true,
+   "got": "False",
+   "want": "False"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Warden_Chain_04 @40.600 pitch",
+   "ok": true,
+   "got": "1.0",
+   "want": "1.0"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Step_Wood_01 @46.000 present",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Step_Wood_01 @46.000 end (s)",
+   "ok": true,
+   "got": "46.11433410644531",
+   "want": "46.11428571173123"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Step_Wood_01 @46.000 looping",
+   "ok": true,
+   "got": "False",
+   "want": "False"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Step_Wood_01 @46.000 pitch",
+   "ok": true,
+   "got": "0.699999988079071",
+   "want": "0.7"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Warden_Chain_01 @46.000 present",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Warden_Chain_01 @46.000 end (s)",
+   "ok": true,
+   "got": "47.413082122802734",
+   "want": "47.41304171085358"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Warden_Chain_01 @46.000 looping",
+   "ok": true,
+   "got": "False",
+   "want": "False"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Warden_Chain_01 @46.000 pitch",
+   "ok": true,
+   "got": "1.0",
+   "want": "1.0"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Step_Wood_02 @47.360 present",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Step_Wood_02 @47.360 end (s)",
+   "ok": true,
+   "got": "47.47291564941406",
+   "want": "47.47285714805126"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Step_Wood_02 @47.360 looping",
+   "ok": true,
+   "got": "False",
+   "want": "False"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Step_Wood_02 @47.360 pitch",
+   "ok": true,
+   "got": "0.699999988079071",
+   "want": "0.7"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Step_Wood_03 @48.720 present",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Step_Wood_03 @48.720 end (s)",
+   "ok": true,
+   "got": "48.831459045410156",
+   "want": "48.83142857372761"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Step_Wood_03 @48.720 looping",
+   "ok": true,
+   "got": "False",
+   "want": "False"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Step_Wood_03 @48.720 pitch",
+   "ok": true,
+   "got": "0.699999988079071",
+   "want": "0.7"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Warden_Chain_02 @48.720 present",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Warden_Chain_02 @48.720 end (s)",
+   "ok": true,
+   "got": "50.26350021362305",
+   "want": "50.263479204177855"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Warden_Chain_02 @48.720 looping",
+   "ok": true,
+   "got": "False",
+   "want": "False"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Warden_Chain_02 @48.720 pitch",
+   "ok": true,
+   "got": "1.0",
+   "want": "1.0"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Step_Wood_04 @50.080 present",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Step_Wood_04 @50.080 end (s)",
+   "ok": true,
+   "got": "50.18574905395508",
+   "want": "50.18571428707668"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Step_Wood_04 @50.080 looping",
+   "ok": true,
+   "got": "False",
+   "want": "False"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Step_Wood_04 @50.080 pitch",
+   "ok": true,
+   "got": "0.699999988079071",
+   "want": "0.7"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Step_Wood_05 @51.440 present",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Step_Wood_05 @51.440 end (s)",
+   "ok": true,
+   "got": "51.55004119873047",
+   "want": "51.54999999940395"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Step_Wood_05 @51.440 looping",
+   "ok": true,
+   "got": "False",
+   "want": "False"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Step_Wood_05 @51.440 pitch",
+   "ok": true,
+   "got": "0.699999988079071",
+   "want": "0.7"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Warden_Chain_03 @51.440 present",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Warden_Chain_03 @51.440 end (s)",
+   "ok": true,
+   "got": "52.853084564208984",
+   "want": "52.853041710853574"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Warden_Chain_03 @51.440 looping",
+   "ok": true,
+   "got": "False",
+   "want": "False"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Warden_Chain_03 @51.440 pitch",
+   "ok": true,
+   "got": "1.0",
+   "want": "1.0"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Step_Wood_06 @52.800 present",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Step_Wood_06 @52.800 end (s)",
+   "ok": true,
+   "got": "52.91433334350586",
+   "want": "52.914285711731225"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Step_Wood_06 @52.800 looping",
+   "ok": true,
+   "got": "False",
+   "want": "False"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Step_Wood_06 @52.800 pitch",
+   "ok": true,
+   "got": "0.699999988079071",
+   "want": "0.7"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Step_Wood_01 @54.160 present",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Step_Wood_01 @54.160 end (s)",
+   "ok": true,
+   "got": "54.27433395385742",
+   "want": "54.274285711731224"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Step_Wood_01 @54.160 looping",
+   "ok": true,
+   "got": "False",
+   "want": "False"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Step_Wood_01 @54.160 pitch",
+   "ok": true,
+   "got": "0.699999988079071",
+   "want": "0.7"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Warden_Chain_04 @54.160 present",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Warden_Chain_04 @54.160 end (s)",
+   "ok": true,
+   "got": "55.69412612915039",
+   "want": "55.69410410881042"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Warden_Chain_04 @54.160 looping",
+   "ok": true,
+   "got": "False",
+   "want": "False"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Warden_Chain_04 @54.160 pitch",
+   "ok": true,
+   "got": "1.0",
+   "want": "1.0"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Step_Wood_02 @55.520 present",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Step_Wood_02 @55.520 end (s)",
+   "ok": true,
+   "got": "55.63291549682617",
+   "want": "55.632857148051265"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Step_Wood_02 @55.520 looping",
+   "ok": true,
+   "got": "False",
+   "want": "False"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Step_Wood_02 @55.520 pitch",
+   "ok": true,
+   "got": "0.699999988079071",
+   "want": "0.7"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Step_Wood_03 @56.880 present",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Step_Wood_03 @56.880 end (s)",
+   "ok": true,
+   "got": "56.991458892822266",
+   "want": "56.99142857372761"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Step_Wood_03 @56.880 looping",
+   "ok": true,
+   "got": "False",
+   "want": "False"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Step_Wood_03 @56.880 pitch",
+   "ok": true,
+   "got": "0.699999988079071",
+   "want": "0.7"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Warden_Chain_01 @56.880 present",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Warden_Chain_01 @56.880 end (s)",
+   "ok": true,
+   "got": "58.29308319091797",
+   "want": "58.29304171085358"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Warden_Chain_01 @56.880 looping",
+   "ok": true,
+   "got": "False",
+   "want": "False"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Warden_Chain_01 @56.880 pitch",
+   "ok": true,
+   "got": "1.0",
+   "want": "1.0"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Step_Wood_04 @58.240 present",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Step_Wood_04 @58.240 end (s)",
+   "ok": true,
+   "got": "58.34574890136719",
+   "want": "58.34571428707668"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Step_Wood_04 @58.240 looping",
+   "ok": true,
+   "got": "False",
+   "want": "False"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Step_Wood_04 @58.240 pitch",
+   "ok": true,
+   "got": "0.699999988079071",
+   "want": "0.7"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Step_Wood_05 @59.600 present",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Step_Wood_05 @59.600 end (s)",
+   "ok": true,
+   "got": "59.71004104614258",
+   "want": "59.709999999403955"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Step_Wood_05 @59.600 looping",
+   "ok": true,
+   "got": "False",
+   "want": "False"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Step_Wood_05 @59.600 pitch",
+   "ok": true,
+   "got": "0.699999988079071",
+   "want": "0.7"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Warden_Chain_02 @59.600 present",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Warden_Chain_02 @59.600 end (s)",
+   "ok": true,
+   "got": "61.14350128173828",
+   "want": "61.14347920417786"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Warden_Chain_02 @59.600 looping",
+   "ok": true,
+   "got": "False",
+   "want": "False"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Warden_Chain_02 @59.600 pitch",
+   "ok": true,
+   "got": "1.0",
+   "want": "1.0"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Step_Wood_06 @60.960 present",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Step_Wood_06 @60.960 end (s)",
+   "ok": true,
+   "got": "61.07433319091797",
+   "want": "61.07428571173123"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Step_Wood_06 @60.960 looping",
+   "ok": true,
+   "got": "False",
+   "want": "False"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Step_Wood_06 @60.960 pitch",
+   "ok": true,
+   "got": "0.699999988079071",
+   "want": "0.7"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Step_Wood_01 @62.320 present",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Step_Wood_01 @62.320 end (s)",
+   "ok": true,
+   "got": "62.43433380126953",
+   "want": "62.43428571173123"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Step_Wood_01 @62.320 looping",
+   "ok": true,
+   "got": "False",
+   "want": "False"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Step_Wood_01 @62.320 pitch",
+   "ok": true,
+   "got": "0.699999988079071",
+   "want": "0.7"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Warden_Chain_03 @62.320 present",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Warden_Chain_03 @62.320 end (s)",
+   "ok": true,
+   "got": "63.73308181762695",
+   "want": "63.73304171085358"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Warden_Chain_03 @62.320 looping",
+   "ok": true,
+   "got": "False",
+   "want": "False"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Warden_Chain_03 @62.320 pitch",
+   "ok": true,
+   "got": "1.0",
+   "want": "1.0"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Step_Wood_02 @63.680 present",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Step_Wood_02 @63.680 end (s)",
+   "ok": true,
+   "got": "63.79291534423828",
+   "want": "63.79285714805126"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Step_Wood_02 @63.680 looping",
+   "ok": true,
+   "got": "False",
+   "want": "False"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Step_Wood_02 @63.680 pitch",
+   "ok": true,
+   "got": "0.699999988079071",
+   "want": "0.7"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Warden_Breath_Heavy @46.000 present",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Warden_Breath_Heavy @46.000 end (s)",
+   "ok": true,
+   "got": "72.00003814697266",
+   "want": "72.0"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Warden_Breath_Heavy @46.000 looping",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Warden_Breath_Heavy @46.000 pitch",
+   "ok": true,
+   "got": "1.0",
+   "want": "1.0"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "no overlapping sections within a row",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Base",
+   "name": "binding exists and is a spawnable",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Base",
+   "name": "template class",
+   "ok": true,
+   "got": "'TargetPoint'",
+   "want": "'TargetPoint'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Base",
+   "name": "transform track count",
+   "ok": true,
+   "got": "1",
+   "want": "1"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Base",
+   "name": "transform Location.X (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Base",
+   "name": "transform Location.Y (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Base",
+   "name": "transform Location.Z (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Base",
+   "name": "transform Rotation.X (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Base",
+   "name": "transform Rotation.Y (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Base",
+   "name": "transform Rotation.Z (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Base",
+   "name": "transform Scale.X (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Base",
+   "name": "transform Scale.Y (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Base",
+   "name": "transform Scale.Z (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Base",
+   "name": "visibility track count",
+   "ok": true,
+   "got": "0",
+   "want": "0"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Base",
+   "name": "audio track count",
+   "ok": true,
+   "got": "1",
+   "want": "1"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Base",
+   "name": "audio section count",
+   "ok": true,
+   "got": "4",
+   "want": "4"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Base",
+   "name": "SFX_LB_Warden_Step_01 @12.000 present",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Base",
+   "name": "SFX_LB_Warden_Step_01 @12.000 end (s)",
+   "ok": true,
+   "got": "12.650041580200195",
+   "want": "12.649999976158142"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Base",
+   "name": "SFX_LB_Warden_Step_01 @12.000 looping",
+   "ok": true,
+   "got": "False",
+   "want": "False"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Base",
+   "name": "SFX_LB_Warden_Step_01 @12.000 pitch",
+   "ok": true,
+   "got": "1.0",
+   "want": "1.0"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Base",
+   "name": "SFX_LB_Warden_Chain_01 @12.000 present",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Base",
+   "name": "SFX_LB_Warden_Chain_01 @12.000 end (s)",
+   "ok": true,
+   "got": "13.41308307647705",
+   "want": "13.413041710853577"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Base",
+   "name": "SFX_LB_Warden_Chain_01 @12.000 looping",
+   "ok": true,
+   "got": "False",
+   "want": "False"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Base",
+   "name": "SFX_LB_Warden_Chain_01 @12.000 pitch",
+   "ok": true,
+   "got": "1.0",
+   "want": "1.0"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Base",
+   "name": "SFX_LB_Warden_Step_02 @12.900 present",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Base",
+   "name": "SFX_LB_Warden_Step_02 @12.900 end (s)",
+   "ok": true,
+   "got": "13.635041236877441",
+   "want": "13.635000014305115"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Base",
+   "name": "SFX_LB_Warden_Step_02 @12.900 looping",
+   "ok": true,
+   "got": "False",
+   "want": "False"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Base",
+   "name": "SFX_LB_Warden_Step_02 @12.900 pitch",
+   "ok": true,
+   "got": "1.0",
+   "want": "1.0"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Base",
+   "name": "SFX_LB_Warden_Chain_02 @12.900 present",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Base",
+   "name": "SFX_LB_Warden_Chain_02 @12.900 end (s)",
+   "ok": true,
+   "got": "14.443541526794434",
+   "want": "14.443479204177857"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Base",
+   "name": "SFX_LB_Warden_Chain_02 @12.900 looping",
+   "ok": true,
+   "got": "False",
+   "want": "False"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Base",
+   "name": "SFX_LB_Warden_Chain_02 @12.900 pitch",
+   "ok": true,
+   "got": "1.0",
+   "want": "1.0"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Base",
+   "name": "no overlapping sections within a row",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Low",
+   "name": "binding exists and is a spawnable",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Low",
+   "name": "template class",
+   "ok": true,
+   "got": "'TargetPoint'",
+   "want": "'TargetPoint'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Low",
+   "name": "transform track count",
+   "ok": true,
+   "got": "1",
+   "want": "1"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Low",
+   "name": "transform Location.X (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Low",
+   "name": "transform Location.Y (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Low",
+   "name": "transform Location.Z (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Low",
+   "name": "transform Rotation.X (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Low",
+   "name": "transform Rotation.Y (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Low",
+   "name": "transform Rotation.Z (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Low",
+   "name": "transform Scale.X (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Low",
+   "name": "transform Scale.Y (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Low",
+   "name": "transform Scale.Z (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Low",
+   "name": "visibility track count",
+   "ok": true,
+   "got": "0",
+   "want": "0"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Low",
+   "name": "audio track count",
+   "ok": true,
+   "got": "1",
+   "want": "1"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Low",
+   "name": "audio section count",
+   "ok": true,
+   "got": "2",
+   "want": "2"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Low",
+   "name": "SFX_LB_Warden_Step_03 @22.300 present",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Low",
+   "name": "SFX_LB_Warden_Step_03 @22.300 end (s)",
+   "ok": true,
+   "got": "23.057167053222656",
+   "want": "23.05712502002716"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Low",
+   "name": "SFX_LB_Warden_Step_03 @22.300 looping",
+   "ok": true,
+   "got": "False",
+   "want": "False"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Low",
+   "name": "SFX_LB_Warden_Step_03 @22.300 pitch",
+   "ok": true,
+   "got": "1.0",
+   "want": "1.0"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Low",
+   "name": "SFX_LB_Warden_Chain_03 @22.300 present",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Low",
+   "name": "SFX_LB_Warden_Chain_03 @22.300 end (s)",
+   "ok": true,
+   "got": "23.713083267211914",
+   "want": "23.713041710853577"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Low",
+   "name": "SFX_LB_Warden_Chain_03 @22.300 looping",
+   "ok": true,
+   "got": "False",
+   "want": "False"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Low",
+   "name": "SFX_LB_Warden_Chain_03 @22.300 pitch",
+   "ok": true,
+   "got": "1.0",
+   "want": "1.0"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Low",
+   "name": "no overlapping sections within a row",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Mid",
+   "name": "binding exists and is a spawnable",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Mid",
+   "name": "template class",
+   "ok": true,
+   "got": "'TargetPoint'",
+   "want": "'TargetPoint'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Mid",
+   "name": "transform track count",
+   "ok": true,
+   "got": "1",
+   "want": "1"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Mid",
+   "name": "transform Location.X (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Mid",
+   "name": "transform Location.Y (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Mid",
+   "name": "transform Location.Z (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Mid",
+   "name": "transform Rotation.X (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Mid",
+   "name": "transform Rotation.Y (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Mid",
+   "name": "transform Rotation.Z (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Mid",
+   "name": "transform Scale.X (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Mid",
+   "name": "transform Scale.Y (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Mid",
+   "name": "transform Scale.Z (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Mid",
+   "name": "visibility track count",
+   "ok": true,
+   "got": "0",
+   "want": "0"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Mid",
+   "name": "audio track count",
+   "ok": true,
+   "got": "1",
+   "want": "1"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Mid",
+   "name": "audio section count",
+   "ok": true,
+   "got": "3",
+   "want": "3"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Mid",
+   "name": "SFX_LB_Step_Wood_01 @28.000 present",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Mid",
+   "name": "SFX_LB_Step_Wood_01 @28.000 end (s)",
+   "ok": true,
+   "got": "28.114334106445312",
+   "want": "28.11428571173123"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Mid",
+   "name": "SFX_LB_Step_Wood_01 @28.000 looping",
+   "ok": true,
+   "got": "False",
+   "want": "False"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Mid",
+   "name": "SFX_LB_Step_Wood_01 @28.000 pitch",
+   "ok": true,
+   "got": "0.699999988079071",
+   "want": "0.7"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Mid",
+   "name": "SFX_LB_Step_Wood_02 @29.400 present",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Mid",
+   "name": "SFX_LB_Step_Wood_02 @29.400 end (s)",
+   "ok": true,
+   "got": "29.512916564941406",
+   "want": "29.51285714805126"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Mid",
+   "name": "SFX_LB_Step_Wood_02 @29.400 looping",
+   "ok": true,
+   "got": "False",
+   "want": "False"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Mid",
+   "name": "SFX_LB_Step_Wood_02 @29.400 pitch",
+   "ok": true,
+   "got": "0.699999988079071",
+   "want": "0.7"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Mid",
+   "name": "SFX_LB_Step_Wood_03 @30.800 present",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Mid",
+   "name": "SFX_LB_Step_Wood_03 @30.800 end (s)",
+   "ok": true,
+   "got": "30.91145896911621",
+   "want": "30.91142857372761"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Mid",
+   "name": "SFX_LB_Step_Wood_03 @30.800 looping",
+   "ok": true,
+   "got": "False",
+   "want": "False"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Mid",
+   "name": "SFX_LB_Step_Wood_03 @30.800 pitch",
+   "ok": true,
+   "got": "0.699999988079071",
+   "want": "0.7"
+  },
+  {
+   "seq": "Finale",
+   "item": "Snd_Mid",
+   "name": "no overlapping sections within a row",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "Cam_Mask",
+   "name": "binding exists and is a spawnable",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "Cam_Mask",
+   "name": "template class",
+   "ok": true,
+   "got": "'CineCameraActor'",
+   "want": "'CineCameraActor'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Cam_Mask",
+   "name": "filmback 16:9 DSLR (36 x 20.25)",
+   "ok": true,
+   "got": "(36.0, 20.25)",
+   "want": "(36.0, 20.25)"
+  },
+  {
+   "seq": "Finale",
+   "item": "Cam_Mask",
+   "name": "focal length",
+   "ok": true,
+   "got": "35.0",
+   "want": "35.0"
+  },
+  {
+   "seq": "Finale",
+   "item": "Cam_Mask",
+   "name": "constrain_aspect_ratio",
+   "ok": true,
+   "got": "False",
+   "want": "False"
+  },
+  {
+   "seq": "Finale",
+   "item": "Cam_Mask",
+   "name": "transform track count",
+   "ok": true,
+   "got": "1",
+   "want": "1"
+  },
+  {
+   "seq": "Finale",
+   "item": "Cam_Mask",
+   "name": "transform Location.X (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Cam_Mask",
+   "name": "transform Location.Y (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Cam_Mask",
+   "name": "transform Location.Z (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Cam_Mask",
+   "name": "transform Rotation.X (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Cam_Mask",
+   "name": "transform Rotation.Y (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Cam_Mask",
+   "name": "transform Rotation.Z (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Cam_Mask",
+   "name": "transform Scale.X (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Cam_Mask",
+   "name": "transform Scale.Y (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Cam_Mask",
+   "name": "transform Scale.Z (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Cam_Mask",
+   "name": "visibility track count",
+   "ok": true,
+   "got": "0",
+   "want": "0"
+  },
+  {
+   "seq": "Finale",
+   "item": "Cam_Mask",
+   "name": "camera_component component binding is a child possessable",
+   "ok": true,
+   "got": "1",
+   "want": "1"
+  },
+  {
+   "seq": "Finale",
+   "item": "Cam_Mask",
+   "name": "FocusSettings.ManualFocusDistance float track",
+   "ok": true,
+   "got": "1",
+   "want": "1"
+  },
+  {
+   "seq": "Finale",
+   "item": "Cam_Mask",
+   "name": "FocusSettings.ManualFocusDistance property name / path",
+   "ok": true,
+   "got": "('ManualFocusDistance', 'FocusSettings.ManualFocusDistance')",
+   "want": "('ManualFocusDistance', 'FocusSettings.ManualFocusDistance')"
+  },
+  {
+   "seq": "Finale",
+   "item": "Cam_Mask",
+   "name": "FocusSettings.ManualFocusDistance keys (2 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Cam_WallTop",
+   "name": "binding exists and is a spawnable",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "Cam_WallTop",
+   "name": "template class",
+   "ok": true,
+   "got": "'CineCameraActor'",
+   "want": "'CineCameraActor'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Cam_WallTop",
+   "name": "filmback 16:9 DSLR (36 x 20.25)",
+   "ok": true,
+   "got": "(36.0, 20.25)",
+   "want": "(36.0, 20.25)"
+  },
+  {
+   "seq": "Finale",
+   "item": "Cam_WallTop",
+   "name": "focal length",
+   "ok": true,
+   "got": "35.0",
+   "want": "35.0"
+  },
+  {
+   "seq": "Finale",
+   "item": "Cam_WallTop",
+   "name": "constrain_aspect_ratio",
+   "ok": true,
+   "got": "False",
+   "want": "False"
+  },
+  {
+   "seq": "Finale",
+   "item": "Cam_WallTop",
+   "name": "focus method / manual distance",
+   "ok": true,
+   "got": "('MANUAL', 6000.0)",
+   "want": "('MANUAL', 6000.0)"
+  },
+  {
+   "seq": "Finale",
+   "item": "Cam_WallTop",
+   "name": "weighted blendables = [MI_LB_PP_MaskView, 1.0]",
+   "ok": true,
+   "got": "[('MI_LB_PP_MaskView', 1.0)]",
+   "want": "[('MI_LB_PP_MaskView', 1.0)]"
+  },
+  {
+   "seq": "Finale",
+   "item": "Cam_WallTop",
+   "name": "post_process_blend_weight",
+   "ok": true,
+   "got": "1.0",
+   "want": "1.0"
+  },
+  {
+   "seq": "Finale",
+   "item": "Cam_WallTop",
+   "name": "transform track count",
+   "ok": true,
+   "got": "1",
+   "want": "1"
+  },
+  {
+   "seq": "Finale",
+   "item": "Cam_WallTop",
+   "name": "transform Location.X (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Cam_WallTop",
+   "name": "transform Location.Y (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Cam_WallTop",
+   "name": "transform Location.Z (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Cam_WallTop",
+   "name": "transform Rotation.X (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Cam_WallTop",
+   "name": "transform Rotation.Y (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Cam_WallTop",
+   "name": "transform Rotation.Z (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Cam_WallTop",
+   "name": "transform Scale.X (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Cam_WallTop",
+   "name": "transform Scale.Y (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Cam_WallTop",
+   "name": "transform Scale.Z (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Cam_WallTop",
+   "name": "visibility track count",
+   "ok": true,
+   "got": "0",
+   "want": "0"
+  },
+  {
+   "seq": "Finale",
+   "item": "Lantern",
+   "name": "binding exists and is a spawnable",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "Lantern",
+   "name": "template class",
+   "ok": true,
+   "got": "'PointLight'",
+   "want": "'PointLight'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Lantern",
+   "name": "intensity units",
+   "ok": true,
+   "got": "'LUMENS'",
+   "want": "'LUMENS'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Lantern",
+   "name": "intensity",
+   "ok": true,
+   "got": "600.0",
+   "want": "600.0"
+  },
+  {
+   "seq": "Finale",
+   "item": "Lantern",
+   "name": "light colour",
+   "ok": true,
+   "got": "(255, 150, 70)",
+   "want": "(255, 150, 70)"
+  },
+  {
+   "seq": "Finale",
+   "item": "Lantern",
+   "name": "attenuation radius",
+   "ok": true,
+   "got": "650.0",
+   "want": "650.0"
+  },
+  {
+   "seq": "Finale",
+   "item": "Lantern",
+   "name": "source radius",
+   "ok": true,
+   "got": "2.0",
+   "want": "2.0"
+  },
+  {
+   "seq": "Finale",
+   "item": "Lantern",
+   "name": "cast shadows",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "Lantern",
+   "name": "transform track count",
+   "ok": true,
+   "got": "1",
+   "want": "1"
+  },
+  {
+   "seq": "Finale",
+   "item": "Lantern",
+   "name": "transform Location.X (3 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Lantern",
+   "name": "transform Location.Y (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Lantern",
+   "name": "transform Location.Z (141 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Lantern",
+   "name": "transform Rotation.X (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Lantern",
+   "name": "transform Rotation.Y (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Lantern",
+   "name": "transform Rotation.Z (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Lantern",
+   "name": "transform Scale.X (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Lantern",
+   "name": "transform Scale.Y (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Lantern",
+   "name": "transform Scale.Z (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Lantern",
+   "name": "visibility track count",
+   "ok": true,
+   "got": "1",
+   "want": "1"
+  },
+  {
+   "seq": "Finale",
+   "item": "Lantern",
+   "name": "visibility (True = visible) (2 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Lantern",
+   "name": "light_component component binding is a child possessable",
+   "ok": true,
+   "got": "1",
+   "want": "1"
+  },
+  {
+   "seq": "Finale",
+   "item": "Lantern",
+   "name": "Intensity float track",
+   "ok": true,
+   "got": "1",
+   "want": "1"
+  },
+  {
+   "seq": "Finale",
+   "item": "Lantern",
+   "name": "Intensity property name / path",
+   "ok": true,
+   "got": "('Intensity', 'Intensity')",
+   "want": "('Intensity', 'Intensity')"
+  },
+  {
+   "seq": "Finale",
+   "item": "Lantern",
+   "name": "Intensity keys (205 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "audio2d",
+   "name": "master audio track count",
+   "ok": true,
+   "got": "1",
+   "want": "1"
+  },
+  {
+   "seq": "Finale",
+   "item": "audio2d",
+   "name": "2D audio section count",
+   "ok": true,
+   "got": "4",
+   "want": "4"
+  },
+  {
+   "seq": "Finale",
+   "item": "audio2d",
+   "name": "2D SFX_LB_Step_Metal_02 @72.000 present",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "audio2d",
+   "name": "2D SFX_LB_Step_Metal_02 @72.000 end (s)",
+   "ok": true,
+   "got": "72.90912628173828",
+   "want": "72.9090909090909"
+  },
+  {
+   "seq": "Finale",
+   "item": "audio2d",
+   "name": "2D SFX_LB_Step_Metal_02 @72.000 looping",
+   "ok": true,
+   "got": "False",
+   "want": "False"
+  },
+  {
+   "seq": "Finale",
+   "item": "audio2d",
+   "name": "2D SFX_LB_Step_Metal_02 @72.000 pitch",
+   "ok": true,
+   "got": "0.550000011920929",
+   "want": "0.55"
+  },
+  {
+   "seq": "Finale",
+   "item": "audio2d",
+   "name": "2D SFX_LB_Warden_Chain_02 @72.000 present",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "audio2d",
+   "name": "2D SFX_LB_Warden_Chain_02 @72.000 end (s)",
+   "ok": true,
+   "got": "74.20500183105469",
+   "want": "74.20497029168266"
+  },
+  {
+   "seq": "Finale",
+   "item": "audio2d",
+   "name": "2D SFX_LB_Warden_Chain_02 @72.000 looping",
+   "ok": true,
+   "got": "False",
+   "want": "False"
+  },
+  {
+   "seq": "Finale",
+   "item": "audio2d",
+   "name": "2D SFX_LB_Warden_Chain_02 @72.000 pitch",
+   "ok": true,
+   "got": "0.699999988079071",
+   "want": "0.7"
+  },
+  {
+   "seq": "Finale",
+   "item": "audio2d",
+   "name": "2D SFX_LB_Warden_Breath_Slow @72.300 present",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "audio2d",
+   "name": "2D SFX_LB_Warden_Breath_Slow @72.300 end (s)",
+   "ok": true,
+   "got": "92.00003814697266",
+   "want": "92.0"
+  },
+  {
+   "seq": "Finale",
+   "item": "audio2d",
+   "name": "2D SFX_LB_Warden_Breath_Slow @72.300 looping",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "audio2d",
+   "name": "2D SFX_LB_Warden_Breath_Slow @72.300 pitch",
+   "ok": true,
+   "got": "1.0",
+   "want": "1.0"
+  },
+  {
+   "seq": "Finale",
+   "item": "audio2d",
+   "name": "2D MUS_LB_Drone_C @104.000 present",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "audio2d",
+   "name": "2D MUS_LB_Drone_C @104.000 end (s)",
+   "ok": true,
+   "got": "149.0000457763672",
+   "want": "149.0"
+  },
+  {
+   "seq": "Finale",
+   "item": "audio2d",
+   "name": "2D MUS_LB_Drone_C @104.000 looping",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "audio2d",
+   "name": "2D MUS_LB_Drone_C @104.000 pitch",
+   "ok": true,
+   "got": "1.0",
+   "want": "1.0"
+  },
+  {
+   "seq": "Finale",
+   "item": "audio2d",
+   "name": "2D MUS_LB_Drone_C @104.000 volume keys (4 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "audio2d",
+   "name": "2D no overlapping sections within a row",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  }
+ ]
+}
