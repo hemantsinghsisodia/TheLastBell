@@ -755,6 +755,27 @@ The GPU cost of the cinematic shots is not measured in this phase (the finale cl
 ## Results
 (Filled in as the tasks finish.)
 
+### P17-2 (2026-11-10, 3d9a1f9, f1cf1d0, ee0fb76)
+- **`DA_Cinematics`:**
+  - the Intro and Finale rows, with `FailSafeMarkers`;
+  - 7 cards (Intro_1 as the owner changed it);
+  - 42 credit lines;
+  - every scalar, the bell tags and axis, and `CineFadeMix`.
+- **`SMX_LB_CineFade`:** Ambience, SFX and Voice at 0, fade in 4.0 s, fade out 1.0 s, duration −1, EQ off.
+- **`DA_Audio` (rewritten by `p16_2_assets.py`):** the Arrival beat first (7 beats), `bNewGameToll` false. The owner's P16-6 values are kept: the finale beat 2.0 s apart, and `SFX_LB_Bell_Stage5` at volume 2.0. The lead checked the script diff since the last `DA_Audio` save: it holds only these changes.
+- **Checks** (each verify in a fresh process):
+
+  | Script | Apply | Verify |
+  |---|---|---|
+  | `p17_assets.py` | 155 / 0 | 149 / 0 |
+  | `p16_2_assets.py` | 1931 / 0 | 1734 / 0 |
+- **Credits:**
+  - `make_credits.py` also excludes registry rows whose Unreal path says "not imported": the BlenderKit tree, the dropped Warden robe and skin textures, and the unused sounds;
+  - no author was lost;
+  - the result is in `Docs/ArtTest/cine/credits_preview.md`, for the owner at P17-6.
+- **Suite:** 193 passed, 6 failed. The failures are the 5 expected content tests plus `Audio.FinaleBellImmediate`, a P16-6 test that measured 0.38 s against its 0.38 s floor and passed 3 of 3 when rerun alone. **Carry-over:** widen that test's lower bound to 0.30 s at the next C++ touch, as frame-timing robustness; it is not a behaviour change.
+- **Interim state on the branch:** a New Game has no intro and no first toll until P17-5a adds the `DefaultGame.ini` line (accepted).
+
 ### A1 (2026-11-10, owner)
 Mixamo turned up only "reaching out" and "picking up" for the search terms in section 4.1. In neither do the hands go to the face, so neither can pass gate (a). Nothing was downloaded.
 
