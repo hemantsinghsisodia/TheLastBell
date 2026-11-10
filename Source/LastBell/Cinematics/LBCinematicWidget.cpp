@@ -180,6 +180,8 @@ void ULBCinematicWidget::BuildCredits(const TArray<FLBCreditLine>& Lines)
 	}
 	CreditsBox->ClearChildren();
 	CreditLineCount = 0;
+	CachedCreditsHeight = 0.f;
+	bCreditsPrepassDone = false;
 	for (const FLBCreditLine& Line : Lines)
 	{
 		UWidget* Child = nullptr;
@@ -267,9 +269,23 @@ void ULBCinematicWidget::SetCreditsProgress(float ElapsedSeconds, float TotalSec
 		ViewportHeight = FallbackViewportHeight;
 	}
 
-	CreditsBox->ForceLayoutPrepass();
-	const float BoxHeight = FMath::Max(static_cast<float>(CreditsBox->GetDesiredSize().Y), 1.f);
-	PanelSlot->SetSize(FVector2D(CreditsWidth, BoxHeight));
+	// Measured once: the first layout pass in which the content has a height. Until then the box stays parked below the screen.
+	if (CachedCreditsHeight <= 0.f)
+	{
+		if (!bCreditsPrepassDone)
+		{
+			bCreditsPrepassDone = true;
+			CreditsBox->ForceLayoutPrepass();
+		}
+		const float Measured = static_cast<float>(CreditsBox->GetDesiredSize().Y);
+		if (Measured <= 1.f)
+		{
+			return;
+		}
+		CachedCreditsHeight = Measured;
+		PanelSlot->SetSize(FVector2D(CreditsWidth, CachedCreditsHeight));
+	}
+	const float BoxHeight = CachedCreditsHeight;
 
 	const float Speed = LBCinematicLogic::CreditsPixelsPerSecond(BoxHeight, ViewportHeight, TotalSeconds);
 	PanelSlot->SetPosition(FVector2D(0.0, ViewportHeight - FMath::Clamp(ElapsedSeconds, 0.f, TotalSeconds) * Speed));

@@ -24,6 +24,7 @@
 #include "Misc/PackageName.h"
 #include "Save/LBSaveSubsystem.h"
 #include "Sound/SoundMix.h"
+#include "TimerManager.h"
 #include "Storm/LBStormSubsystem.h"
 #include "Systems/LBGameSettings.h"
 #include "Systems/LBPlayerController.h"
@@ -61,7 +62,9 @@ namespace
 	constexpr float SkipFadeSeconds = 0.5f;
 	/** The widget sits above the HUD. */
 	constexpr int32 WidgetZOrder = 1000;
+#if !UE_BUILD_SHIPPING
 	constexpr uint64 DebugKey = 0x4C42434E45ull;
+#endif
 
 	/** The head bone for a skeletal actor (the Warden figure), else the actor's location. */
 	FVector LookTargetLocation(const AActor* Actor)
@@ -129,6 +132,33 @@ void ULBCinematicSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 
 void ULBCinematicSubsystem::Deinitialize()
 {
+	if (UWorld* World = GetWorld())
+	{
+		World->GetTimerManager().ClearTimer(SkipFadeTimer);
+	}
+	if (bRunActive && !bTravelling)
+	{
+		// Torn down mid-run without a travel (a test ending PIE, a map change): put the player back, guarded for objects already going.
+		if (Widget && IsValid(Widget))
+		{
+			Widget->RemoveFromParent();
+		}
+		if (ALBCharacter* Character = GetPlayerCharacter())
+		{
+			Character->SetInputLock(ELBInputLock::None);
+		}
+		if (APlayerController* PC = GetPlayerController())
+		{
+			if (ALBPlayerController* LBPC = Cast<ALBPlayerController>(PC))
+			{
+				LBPC->SetHUDHidden(false);
+			}
+			if (PC->PlayerCameraManager && IsValid(PC->PlayerCameraManager))
+			{
+				PC->PlayerCameraManager->StopCameraFade();
+			}
+		}
+	}
 	UnbindPlayerInput();
 	if (Player)
 	{
@@ -145,7 +175,6 @@ void ULBCinematicSubsystem::Deinitialize()
 void ULBCinematicSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 {
 	Super::OnWorldBeginPlay(InWorld);
-	bWorldBegun = true;
 	SetupWorld();
 	if (!Settings || !IsEnabled())
 	{
@@ -428,7 +457,7 @@ int32 ULBCinematicSubsystem::GetFiredMarkerCount() const
 
 void ULBCinematicSubsystem::HandleStateChanged(FGameplayTag Tag, bool bAdded)
 {
-	if (!bAdded || !Settings || bRunActive || !IsEnabled())
+	if (!bAdded || !Settings)
 	{
 		return;
 	}
@@ -442,6 +471,12 @@ void ULBCinematicSubsystem::HandleStateChanged(FGameplayTag Tag, bool bAdded)
 		if (State && Def.BlockingTag.IsValid() && State->HasState(Def.BlockingTag))
 		{
 			continue;
+		}
+		if (bRunActive || !IsEnabled())
+		{
+			UE_LOG(LogLB, Warning, TEXT("Cine: %s not played when %s was added: %s"), *Def.Id.ToString(), *Tag.ToString(),
+				bRunActive ? *FString::Printf(TEXT("%s is already playing"), *RunDef.Id.ToString()) : TEXT("lb.Cine.Enabled is 0"));
+			return;
 		}
 		// Copy: the settings array must not change under the run, and PlayDef grants tags that re-enter this handler.
 		const FLBCinematicDef Copy = Def;
@@ -481,6 +516,7 @@ bool ULBCinematicSubsystem::Play(FName Id)
 	return PlayDef(Copy);
 }
 
+#if !UE_BUILD_SHIPPING
 bool ULBCinematicSubsystem::PlayAsset(const FSoftObjectPath& SequencePath)
 {
 	if (!IsEnabled() || bRunActive)
@@ -508,6 +544,7 @@ bool ULBCinematicSubsystem::PlayAsset(const FSoftObjectPath& SequencePath)
 	Def.bSkippableAtStart = true;
 	return PlayDef(Def);
 }
+#endif // !UE_BUILD_SHIPPING
 
 // ---------------------------------------------------------------------------------------------------------------------
 // The run
@@ -555,12 +592,18 @@ bool ULBCinematicSubsystem::PlayDef(const FLBCinematicDef& Def)
 	}
 	if (!Settings)
 	{
+#if !UE_BUILD_SHIPPING
+		// Only PlayAsset reaches here without settings (the S1b spike): the class defaults give the lock, skip and fade numbers.
 		if (!FallbackSettings)
 		{
 			FallbackSettings = NewObject<ULBCinematicSettings>(this);
 		}
 		Settings = FallbackSettings;
+#else
+		return false;
+#endif
 	}
+	GetWorld()->GetTimerManager().ClearTimer(SkipFadeTimer);
 
 	// Fresh run state.
 	Markers.Reset();
@@ -569,6 +612,7 @@ bool ULBCinematicSubsystem::PlayDef(const FLBCinematicDef& Def)
 	CurSeconds = 0.0;
 	SequenceSeconds = 0.0;
 	bPlayerFinished = false;
+	bPostHold = false;
 	bTravelling = false;
 	bFailSafe = false;
 	bCardActive = false;
@@ -770,26 +814,52 @@ void ULBCinematicSubsystem::TickRun(float ScaledDelta)
 	}
 
 	TArray<int32> Indices;
-	if (bPlayerFinished)
+	if (bPlayerFinished && !bPostHold)
 	{
 		// The sequence reached its end: everything left up to the end counts as crossed.
 		LBCinematicLogic::MarkersToFire(Markers, PrevSeconds, SequenceSeconds + 1.0, Fired, Indices);
 		FireIndices(Indices);
-		if (bRunActive)
+		if (!bRunActive)
 		{
-			FinishRun(TEXT("finished"));
+			return;
 		}
-		return;
+		if (bCreditsRolling)
+		{
+			// The credits outlast the sequence: hold the run (cards, credits and skip keep ticking, no markers are read) until the roll
+			// ends or is skipped, so a pending end is not lost. Black stays whatever the sequence's completion state restored.
+			bPostHold = true;
+			if (const APlayerController* PC = GetPlayerController())
+			{
+				if (PC->PlayerCameraManager)
+				{
+					PC->PlayerCameraManager->SetManualCameraFade(1.f, FLinearColor::Black, false);
+				}
+			}
+		}
+		else
+		{
+			if (bEndPending)
+			{
+				DoEnd();
+			}
+			else
+			{
+				FinishRun(TEXT("finished"), /*bKeepFade*/ false, /*bSnapMark*/ true);
+			}
+			return;
+		}
 	}
-
-	CurSeconds = FMath::Max(Player->GetCurrentTime().AsSeconds() - Player->GetStartTime().AsSeconds(), 0.0);
-	const double From = PrevSeconds;
-	PrevSeconds = FMath::Max(PrevSeconds, CurSeconds);
-	LBCinematicLogic::MarkersToFire(Markers, From, CurSeconds, Fired, Indices);
-	FireIndices(Indices);
-	if (!bRunActive)
+	else if (!bPostHold)
 	{
-		return;
+		CurSeconds = FMath::Max(Player->GetCurrentTime().AsSeconds() - Player->GetStartTime().AsSeconds(), 0.0);
+		const double From = PrevSeconds;
+		PrevSeconds = FMath::Max(PrevSeconds, CurSeconds);
+		LBCinematicLogic::MarkersToFire(Markers, From, CurSeconds, Fired, Indices);
+		FireIndices(Indices);
+		if (!bRunActive)
+		{
+			return;
+		}
 	}
 
 	TickMark(ScaledDelta);
@@ -798,6 +868,12 @@ void ULBCinematicSubsystem::TickRun(float ScaledDelta)
 	TickCredits(ScaledDelta);
 	if (!bRunActive)
 	{
+		return;
+	}
+	if (bPostHold && !bCreditsRolling)
+	{
+		// The roll is over and no end was waiting for it.
+		FinishRun(TEXT("finished"), /*bKeepFade*/ false, /*bSnapMark*/ true);
 		return;
 	}
 
@@ -947,7 +1023,7 @@ void ULBCinematicSubsystem::DoEnd()
 	if (CVarCineNoEnd.GetValueOnGameThread() != 0)
 	{
 		UE_LOG(LogLB, Log, TEXT("Cine: end suppressed (lb.Cine.NoEnd)"));
-		FinishRun(TEXT("end suppressed"));
+		FinishRun(TEXT("end suppressed"), false, true);
 		return;
 	}
 #endif
@@ -962,7 +1038,7 @@ void ULBCinematicSubsystem::DoEnd()
 	Save->CompleteGame();
 	// A refused CompleteGame (no menu map, a travel already pending) leaves no travel: then this is an ordinary restore.
 	bTravelling = Save->IsTravelPending();
-	FinishRun(bTravelling ? TEXT("game completed") : TEXT("end did not travel"));
+	FinishRun(bTravelling ? TEXT("game completed") : TEXT("end did not travel"), false, true);
 }
 
 void ULBCinematicSubsystem::RequestSkip()
@@ -1008,7 +1084,31 @@ void ULBCinematicSubsystem::RequestSkip()
 			PC->PlayerCameraManager->StartCameraFade(1.f, 0.f, SkipFadeSeconds, FLinearColor::Black, false, false);
 		}
 	}
-	FinishRun(TEXT("skipped"), /*bKeepFade*/ true);
+	FinishRun(TEXT("skipped"), /*bKeepFade*/ true, /*bSnapMark*/ true);
+
+	// Sequencer's pre-animated restore (black, from bStartBlack) could land after the fade-up and leave the screen black: clear the fade
+	// a moment after the fade-up should have ended, unless a new run started or the game is travelling.
+	if (!bTravelling)
+	{
+		if (UWorld* World = GetWorld())
+		{
+			World->GetTimerManager().SetTimer(SkipFadeTimer, FTimerDelegate::CreateWeakLambda(this, [this]()
+			{
+				const ULBSaveSubsystem* Save = ULBSaveSubsystem::Get(this);
+				if (bRunActive || (Save && Save->IsTravelPending()))
+				{
+					return;
+				}
+				if (const APlayerController* PC = GetPlayerController())
+				{
+					if (PC->PlayerCameraManager)
+					{
+						PC->PlayerCameraManager->StopCameraFade();
+					}
+				}
+			}), SkipFadeSeconds + 0.2f, false);
+		}
+	}
 }
 
 void ULBCinematicSubsystem::StopCinematic()
@@ -1070,7 +1170,7 @@ void ULBCinematicSubsystem::ApplyLock(ELBInputLock Lock)
 	}
 }
 
-void ULBCinematicSubsystem::FinishRun(const TCHAR* Reason, bool bKeepFade)
+void ULBCinematicSubsystem::FinishRun(const TCHAR* Reason, bool bKeepFade, bool bSnapMark)
 {
 	if (!bRunActive)
 	{
@@ -1080,7 +1180,7 @@ void ULBCinematicSubsystem::FinishRun(const TCHAR* Reason, bool bKeepFade)
 	const bool bGoingAway = bTravelling;
 
 	UnbindPlayerInput();
-	EndMark();
+	EndMark(bSnapMark);
 	EndLook(/*bRestoreLock*/ false);
 	bCardActive = false;
 	bCreditsRolling = false;
@@ -1136,6 +1236,7 @@ void ULBCinematicSubsystem::FinishRun(const TCHAR* Reason, bool bKeepFade)
 	bRunActive = false;
 	bFailSafe = false;
 	bPlayerFinished = false;
+	bPostHold = false;
 	UE_LOG(LogLB, Log, TEXT("Cine: %s finished (%s)"), *Id.ToString(), Reason);
 	OnCinematicFinished.Broadcast(Id);
 }
@@ -1245,10 +1346,20 @@ void ULBCinematicSubsystem::TickMark(float ScaledDelta)
 	}
 }
 
-void ULBCinematicSubsystem::EndMark()
+void ULBCinematicSubsystem::EndMark(bool bSnapToEnd)
 {
+	ALBCharacter* Character = GetPlayerCharacter();
+	if (Mark.bActive && bSnapToEnd && Character)
+	{
+		// A move cut short by a finish or a skip is completed, not left partway.
+		Character->SetActorLocation(Mark.End, false, nullptr, ETeleportType::TeleportPhysics);
+		if (APlayerController* PC = GetPlayerController())
+		{
+			PC->SetControlRotation(FRotator(0.f, Mark.EndYaw, 0.f));
+		}
+	}
 	Mark.bActive = false;
-	if (ALBCharacter* Character = GetPlayerCharacter())
+	if (Character)
 	{
 		if (UCharacterMovementComponent* Movement = Character->GetCharacterMovement())
 		{
@@ -1486,6 +1597,7 @@ void ULBCinematicSubsystem::ApplyBellAngle(float AngleDeg)
 // Debug
 // ---------------------------------------------------------------------------------------------------------------------
 
+#if !UE_BUILD_SHIPPING
 void ULBCinematicSubsystem::DrawDebug()
 {
 	if (!GEngine)
@@ -1515,3 +1627,4 @@ void ULBCinematicSubsystem::DrawDebug()
 	}
 	GEngine->AddOnScreenDebugMessage(DebugKey, 0.f, FColor::Cyan, Text);
 }
+#endif // !UE_BUILD_SHIPPING

@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "Containers/BitArray.h"
 #include "GameplayTagContainer.h"
+#include "Engine/TimerHandle.h"
 #include "Subsystems/WorldSubsystem.h"
 #include "Cinematics/LBCinematicLogic.h"
 #include "Cinematics/LBCinematicTypes.h"
@@ -59,8 +60,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "LastBell|Cinematics")
 	bool Play(FName Id);
 
+#if !UE_BUILD_SHIPPING
 	/** Plays any Level Sequence through a temporary definition (InitialLock Full, skippable): lb.Cine.PlayAsset, for spikes and reviews. */
 	bool PlayAsset(const FSoftObjectPath& SequencePath);
+#endif
 
 	/** Skips: fires the must markers not yet fired, jumps to the end, fades up from black and restores. Works even when not skippable. */
 	UFUNCTION(BlueprintCallable, Category = "LastBell|Cinematics")
@@ -163,7 +166,8 @@ private:
 	bool PlayDef(const FLBCinematicDef& Def);
 	void FailRun(const FLBCinematicDef& Def, const TCHAR* Why);
 	void TickRun(float ScaledDelta);
-	void FinishRun(const TCHAR* Reason, bool bKeepFade = false);
+	/** bSnapMark: complete a mark move cut short (finish and skip do, a stop, a fail-safe and the CVar stop do not). */
+	void FinishRun(const TCHAR* Reason, bool bKeepFade = false, bool bSnapMark = false);
 	void FireMarkerAt(int32 Index);
 	void FireMarker(const FLBCineMarker& Marker);
 	void FireIndices(const TArray<int32>& Indices);
@@ -181,7 +185,7 @@ private:
 	void StopCredits();
 	void PushMix();
 	void PopMix();
-	void EndMark();
+	void EndMark(bool bSnapToEnd);
 	void EndLook(bool bRestoreLock);
 	void TickMark(float ScaledDelta);
 	void TickLook(float ScaledDelta);
@@ -189,7 +193,9 @@ private:
 	void TickCredits(float ScaledDelta);
 	void TickBell(float Delta);
 	void ApplyBellAngle(float AngleDeg);
+#if !UE_BUILD_SHIPPING
 	void DrawDebug();
+#endif
 
 	// ---- Helpers ----
 	ALBCharacter* GetPlayerCharacter() const;
@@ -214,7 +220,6 @@ private:
 	// ---- Start ----
 	bool bStartPending = false;
 	FLBCinematicDef StartDef;
-	bool bWorldBegun = false;
 	bool bStateBound = false;
 
 	// ---- The run ----
@@ -229,6 +234,10 @@ private:
 	float RunRate = 1.f;
 	bool bSkippable = false;
 	bool bPlayerFinished = false;
+	/** The sequence finished while the credits still roll: the run holds (no markers) until the roll ends or is skipped. */
+	bool bPostHold = false;
+	/** Clears the camera fade a moment after a skip's fade-up (see RequestSkip). */
+	FTimerHandle SkipFadeTimer;
 	bool bTravelling = false;
 	bool bPushedMix = false;
 	LBCinematicLogic::FSkipHold SkipHold;
@@ -278,7 +287,6 @@ private:
 	FVector SwingPivot = FVector::ZeroVector;
 	FVector SwingAxis = FVector::YAxisVector;
 	LBCinematicLogic::FBellPendulum Pendulum;
-	bool bBellStrikeBound = false;
 	FDelegateHandle BellStrikeHandle;
 	TWeakObjectPtr<ULBAudioSubsystem> BoundAudio;
 	bool bWarnedNoHeadstock = false;

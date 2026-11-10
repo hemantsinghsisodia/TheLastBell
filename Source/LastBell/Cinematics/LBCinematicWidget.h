@@ -72,6 +72,9 @@ private:
 	TObjectPtr<UProgressBar> SkipBar;
 
 	int32 CreditLineCount = 0;
+	/** The credits content height, measured once after the first layout pass in which it is non-zero (0 = not measured yet). */
+	float CachedCreditsHeight = 0.f;
+	bool bCreditsPrepassDone = false;
 	/** The style of the card now shown. */
 	ELBCineCardStyle ShownStyle = ELBCineCardStyle::Line;
 };

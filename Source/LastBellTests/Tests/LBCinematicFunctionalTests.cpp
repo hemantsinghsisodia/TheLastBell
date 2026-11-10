@@ -57,8 +57,35 @@ namespace LBCineTest
 		int32 Frames = 0;
 	};
 
+	/** Sets lb.Cine.NoEnd for its lifetime and puts the previous value back. */
+	class FNoEndGuard
+	{
+	public:
+		explicit FNoEndGuard(int32 Value)
+		{
+			if (IConsoleVariable* Var = IConsoleManager::Get().FindConsoleVariable(TEXT("lb.Cine.NoEnd")))
+			{
+				Previous = Var->GetInt();
+				Var->Set(Value, ECVF_SetByCode);
+			}
+		}
+		~FNoEndGuard()
+		{
+			if (IConsoleVariable* Var = IConsoleManager::Get().FindConsoleVariable(TEXT("lb.Cine.NoEnd")))
+			{
+				Var->Set(Previous, ECVF_SetByCode);
+			}
+		}
+		FNoEndGuard(const FNoEndGuard&) = delete;
+		FNoEndGuard& operator=(const FNoEndGuard&) = delete;
+
+	private:
+		int32 Previous = 0;
+	};
+
 	struct FCineState
 	{
+		TSharedPtr<FNoEndGuard> NoEnd;
 		TStrongObjectPtr<ULBCinematicSettings> Settings;
 		TArray<TStrongObjectPtr<ULevelSequence>> Sequences;
 		TArray<FString> Fired;
@@ -474,6 +501,145 @@ bool FLBCineMissingSequenceFailsSafeTest::RunTest(const FString& Parameters)
 		Test->TestTrue(TEXT("The screen is not left black"), FadeIsClear(C.W));
 		return true;
 	}, 30.f);
+
+	Enqueue(R);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBCineEndWaitsForCreditsPastSequenceEndTest, "LastBell.Functional.Cine.EndWaitsForCreditsPastSequenceEnd", LB_CINEFUNC_FLAGS)
+bool FLBCineEndWaitsForCreditsPastSequenceEndTest::RunTest(const FString& Parameters)
+{
+	TSharedRef<FCineRunner> R = StartSession(this, GCineTestMap, /*bCineEnabled*/ true, /*Rate*/ 1.f);
+	const TSharedRef<FCineState> S = R->S;
+	FAutomationTestBase* Test = this;
+	AddReady(*R);
+
+	R->Add(TEXT("The sequence ends at 2 s while the 3 s credits (from 0.5 s) roll: the run holds, black, and the end runs when the roll does"), [S, Test](FCineCtx& C)
+	{
+		ULBCinematicSubsystem* Sub = Cine(C.W);
+		if (!Sub)
+		{
+			Test->AddError(TEXT("The cinematic subsystem is missing"));
+			return true;
+		}
+		if (S->Phase == 0)
+		{
+			S->NoEnd = MakeShared<FNoEndGuard>(1);
+			FLBCinematicDef Def;
+			Def.Id = TEXT("Test");
+			Def.InitialLock = ELBInputLock::Full;
+			Def.Sequence = MakeSequence(*S, 2.0, { { 0.5, TEXT("credits:3") }, { 1.0, TEXT("!end") } });
+			Sub->OverrideSettings(MakeSettings(*S, Def));
+			Sub->Rearm();
+			S->Counter = 0;
+			Sub->OnCinematicFinished.AddLambda([S, W = TWeakObjectPtr<UWorld>(C.W)](FName)
+			{
+				++S->Counter;
+				S->TSkip = W.IsValid() ? W->GetTimeSeconds() : 0.0;
+			});
+			if (!Test->TestTrue(TEXT("Play starts the cinematic"), Sub->Play(TEXT("Test"))))
+			{
+				return true;
+			}
+			S->T0 = C.Now;
+			S->Phase = 1;
+			return false;
+		}
+		if (S->Phase == 1)
+		{
+			if (C.Now - S->T0 < 2.5)
+			{
+				return false;
+			}
+			Test->TestTrue(TEXT("At 2.5 s the run is still going (the credits outlast the sequence)"), Sub->IsPlaying());
+			Test->TestTrue(TEXT("...and the credits are rolling"), Sub->IsCreditsRolling());
+			const APlayerController* PC = C.W->GetFirstPlayerController();
+			const bool bBlack = PC && PC->PlayerCameraManager && PC->PlayerCameraManager->bEnableFading && PC->PlayerCameraManager->FadeAmount > 0.99f;
+			Test->TestTrue(TEXT("...and the screen is black"), bBlack);
+			Test->TestEqual(TEXT("Nothing has finished yet"), S->Counter, 0);
+			S->Phase = 2;
+			return false;
+		}
+		if (C.Now - S->T0 < 3.8)
+		{
+			return false;
+		}
+		Test->TestFalse(TEXT("By 3.8 s the run has finished"), Sub->IsPlaying());
+		Test->TestEqual(TEXT("It finished once (the end ran once, suppressed by lb.Cine.NoEnd)"), S->Counter, 1);
+		const double FinishedAt = S->TSkip - S->T0;
+		Test->TestTrue(FString::Printf(TEXT("It finished when the roll did, about 3.5 s (%.2f)"), FinishedAt), FinishedAt >= 3.3 && FinishedAt <= 3.8);
+		Test->TestTrue(TEXT("The screen is clear again"), FadeIsClear(C.W));
+		Test->TestTrue(TEXT("The input is free"), LBPie::Pawn()->GetInputLock() == ELBInputLock::None);
+		S->NoEnd.Reset();
+		return true;
+	}, 60.f);
+
+	Enqueue(R);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBCineSkipClearsFadeTest, "LastBell.Functional.Cine.SkipClearsFade", LB_CINEFUNC_FLAGS)
+bool FLBCineSkipClearsFadeTest::RunTest(const FString& Parameters)
+{
+	TSharedRef<FCineRunner> R = StartSession(this, GCineTestMap, /*bCineEnabled*/ true, /*Rate*/ 1.f);
+	const TSharedRef<FCineState> S = R->S;
+	FAutomationTestBase* Test = this;
+	AddReady(*R);
+
+	R->Add(TEXT("A skip of a cinematic that started black leaves no fade 0.8 s later"), [S, Test](FCineCtx& C)
+	{
+		ULBCinematicSubsystem* Sub = Cine(C.W);
+		if (!Sub)
+		{
+			Test->AddError(TEXT("The cinematic subsystem is missing"));
+			return true;
+		}
+		const APlayerController* PC = C.W->GetFirstPlayerController();
+		const APlayerCameraManager* Camera = PC ? PC->PlayerCameraManager.Get() : nullptr;
+		if (!Camera)
+		{
+			Test->AddError(TEXT("There is no camera manager"));
+			return true;
+		}
+		if (S->Phase == 0)
+		{
+			FLBCinematicDef Def;
+			Def.Id = TEXT("Test");
+			Def.InitialLock = ELBInputLock::Full;
+			Def.bStartBlack = true;
+			Def.bSkippableAtStart = true;
+			Def.Sequence = MakeSequence(*S, 10.0, {});
+			Sub->OverrideSettings(MakeSettings(*S, Def));
+			Sub->Rearm();
+			if (!Test->TestTrue(TEXT("Play starts the cinematic"), Sub->Play(TEXT("Test"))))
+			{
+				return true;
+			}
+			Test->TestTrue(TEXT("The screen starts black"), Camera->bEnableFading && Camera->FadeAmount > 0.99f);
+			S->T0 = C.Now;
+			S->Phase = 1;
+			return false;
+		}
+		if (S->Phase == 1)
+		{
+			if (C.Now - S->T0 < 0.5)
+			{
+				return false;
+			}
+			Sub->RequestSkip();
+			Test->TestFalse(TEXT("The skip ended the run"), Sub->IsPlaying());
+			S->T0 = C.Now;
+			S->Phase = 2;
+			return false;
+		}
+		if (C.Now - S->T0 < 0.8)
+		{
+			return false;
+		}
+		Test->TestTrue(FString::Printf(TEXT("0.8 s after the skip the fade amount is 0 (%.3f)"), Camera->FadeAmount), Camera->FadeAmount <= 0.001f);
+		Test->TestFalse(TEXT("...and fading is off"), Camera->bEnableFading);
+		return true;
+	}, 60.f);
 
 	Enqueue(R);
 	return true;
