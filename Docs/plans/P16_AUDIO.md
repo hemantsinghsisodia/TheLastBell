@@ -804,3 +804,49 @@ One editor agent at a time. A1, A2 and A3 run without the editor, in parallel wi
   3. Level: the cracks are normalised to the same -3 dBFS peak as before, so a long recorded crack may feel louder than the synthetic one; also repeats (same crack in a Near and a Strike).
   4. The candle: blow it out (the flame mesh disappears with the light) and relight it (reappears with the light, not before).
   5. The owner choices now come from the script: bells, far thunder, steps 0.6, roar 2.0, master 0.7, rain/wind gains, chapel room tone 0.4 and the crypt chains 8-18 s.
+
+### P16-6, part 1: play-through findings (2026-11-10, owner in Play)
+- **Fine:**
+  - the new recorded cracks, both the near thunder and the tower strike;
+  - the candle flame, which hides when snuffed;
+  - doors, levers, winch, key and candles (no complaints).
+- **Wooden steps:** inaudible on the tower stairs. The 6 `SFX_LB_Step_Wood_*` `Volume` went 0.6 → **2.0** ("fine now"); **saved**.
+- **Paper rustle not heard.** `ULBInteractableComponent::Interact` starts an inspection for `bInspectOnInteract` notes and returns. `OnInteracted` fires only in `CompleteInspection`, when the note is closed, so the rustle sat at the put-down.
+- **Great bell silent.** The ring granted `State.Event.Finale` (the `lb.State.Dump` log shows it), and about 5 s later `ULBSaveSubsystem::CompleteGame` returned to the main menu. The finale beat (stage 5 × 5, first delay 0) never played. Likely cause: the ending sequence (`BP_EndingTrigger`, never-save) pauses the game, so `ULBAudioSubsystem` (not tickable while paused) never ran its schedule, and the world's sounds would be paused anyway. P16-6 fix (below).
+
+**Owner addition (2026-11-10, D-112): creature ambience.** All four kinds approved, occasional and mostly distant ("dread over shock"). They use the existing `ALBAmbientEmitter`; no new code.
+
+| Creature | Cues (Freesound CC0, the owner downloads) | Emitters | Interval (s) | `ActiveRadius` | Attenuation | Class |
+|---|---|---|---|---|---|---|
+| Bats (belfry and upper tower) | `SFX_LB_Bat_01..06`: squeaks and wing-flutter bursts, at least 2 of them a startled flurry | 4: 3 in the belfry roof beams (Z 3300–3600, at least 300 cm apart, at least 600 cm from the bell) and 1 near the top of the stair shaft | (6, 15) | 2500 | `ATT_LB_Medium` | Ambience |
+| Owls (outdoors) | `SFX_LB_Owl_01..04` (distant hoots) | 3: on wall tops or trees around the courtyard (2) and the cloister garth (1), Z 600–900 | (30, 60) | 6000 | `ATT_LB_Large` | Ambience |
+| Wolves or dogs (far away) | `SFX_LB_Howl_01..03`: far-off howls, processed with distance (low-pass, reverb) | 2: outside the perimeter walls (beyond `Perim_*`), one north-east and one south-west, Z 500 | (120, 240) | 15000 | `ATT_LB_Large` | Ambience |
+| Rats (crypt) | `SFX_LB_Rat_01..05`: scurrying and squeaks | 4: crypt wall bases, Z −590, at least 150 cm from walk lanes and AI points | (15, 35) | 2000 | `ATT_LB_Small` | Ambience |
+
+- **Census:** +13 emitters, 3089 → **3102**.
+- **Processing:**
+  - mono;
+  - one-shots at −3 dBFS peak;
+  - howls low-passed to about 3 kHz with a long synthetic tail, so they read as far away;
+  - bat flurries kept short (≤ 2.5 s);
+  - registry rows for every source.
+
+### P16-6 fix and creature work, in order
+1. **Sourcing:** an asset-curator lists Freesound CC0 candidates for the 4 creature groups (a minimum set of about 12–14 files plus extras). The owner downloads them, about 10 minutes.
+2. **Code and assets** (Unreal **closed**):
+   - **(a) Paper:** `ULBAudioSubsystem` binds the player's `ULBInspectionComponent::OnInspectBegin` and plays the inspected actor's mapped `Interact` cue when a note is picked up. Putting it down keeps the existing `OnInteracted` cue. Notes rustle both ways.
+   - **(b) Finale bell:**
+     - `ULBAudioSubsystem` is tickable while paused (`IsTickableWhenPaused` true);
+     - when a beat has `FirstDelay` ≤ 0, its first strike plays immediately in `HandleStateChanged`;
+     - bell strikes play with `bIsUISound` (they keep sounding while the game is paused for the ending).
+
+     The finale's timing still belongs to Phase 17.
+   - **(c) Prep:** process the creature recordings (`Tools/audio/prep`).
+   - **(d) Assets:** add the creature cues and `SFX_LB_Step_Wood_* = 2.0` to `OWNER_CHOICES` in `Tools/audio/p16_2_assets.py`, and headless-import the creature WAVs.
+   - **(e) Tests:**
+     - a test that the note pickup plays the cue on inspect begin;
+     - a test that the finale bell's first strike is requested in the same frame as the tag;
+     - the suite.
+3. **Level** (Unreal **open**): add the 13 creature emitters to `Tools/audio/p16_level.py`, then `--apply`, `--check` and one map save.
+4. **Listening check (owner):** the creatures and the fixed paper and bell.
+5. **Performance readings (owner):** the 6 spots plus a chase, audio on/off, read off first.
