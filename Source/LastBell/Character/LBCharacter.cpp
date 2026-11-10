@@ -14,11 +14,13 @@
 #include "Perception/AISense_Sight.h"
 #include "Components/CapsuleComponent.h"
 #include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "Engine/World.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/PlayerController.h"
+#include "Engine/LocalPlayer.h"
 #include "LBLog.h"
 
 const FName& LBCatchCamera::MaskSocketName()
@@ -140,6 +142,11 @@ void ALBCharacter::Tick(float DeltaSeconds)
 	{
 		TickCatch(DeltaSeconds);
 	}
+	// The Interact action may fire Completed right after a press (Pressed trigger), so the real release is read from the key state.
+	if (bLockedInteractHeld && !IsInteractKeyDown())
+	{
+		ReleaseLockedInteract();
+	}
 }
 
 void ALBCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -166,6 +173,8 @@ void ALBCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	if (InteractAction)
 	{
 		Input->BindAction(InteractAction, ETriggerEvent::Started, this, &ALBCharacter::Interact);
+		Input->BindAction(InteractAction, ETriggerEvent::Completed, this, &ALBCharacter::InteractReleased);
+		Input->BindAction(InteractAction, ETriggerEvent::Canceled, this, &ALBCharacter::InteractReleased);
 	}
 	if (SprintAction)
 	{
@@ -195,7 +204,7 @@ void ALBCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 void ALBCharacter::Move(const FInputActionValue& Value)
 {
-	if (IsInspecting())
+	if (IsInspecting() || InputLock != ELBInputLock::None)
 	{
 		MoveInput = FVector2D::ZeroVector;
 		UpdateSprintState();
@@ -216,6 +225,10 @@ void ALBCharacter::MoveCompleted()
 
 void ALBCharacter::SprintStarted()
 {
+	if (InputLock != ELBInputLock::None)
+	{
+		return;
+	}
 	bSprintHeld = true;
 	UpdateSprintState();
 }
@@ -228,7 +241,7 @@ void ALBCharacter::SprintCompleted()
 
 void ALBCharacter::CrouchStarted()
 {
-	if (!IsInspecting())
+	if (!IsInspecting() && InputLock == ELBInputLock::None)
 	{
 		Crouch();
 	}
@@ -242,7 +255,7 @@ void ALBCharacter::CrouchCompleted()
 
 void ALBCharacter::CandlePressed()
 {
-	if (Candle)
+	if (Candle && InputLock == ELBInputLock::None)
 	{
 		Candle->ToggleCandle();
 	}
@@ -266,7 +279,7 @@ void ALBCharacter::InspectExit()
 
 void ALBCharacter::Look(const FInputActionValue& Value)
 {
-	if (IsInspecting())
+	if (IsInspecting() || InputLock == ELBInputLock::Full)
 	{
 		return;
 	}
@@ -294,6 +307,16 @@ void ALBCharacter::Interact()
 	{
 		return;
 	}
+	if (InputLock != ELBInputLock::None)
+	{
+		// A cinematic has the player: Interact only feeds its skip hold.
+		if (!bLockedInteractHeld)
+		{
+			bLockedInteractHeld = true;
+			OnLockedInteractPressed.Broadcast();
+		}
+		return;
+	}
 	if (IsInspecting())
 	{
 		Inspection->RequestClose();
@@ -306,6 +329,70 @@ void ALBCharacter::Interact()
 	if (Interactor)
 	{
 		Interactor->TryInteract();
+	}
+}
+
+void ALBCharacter::SetInputLock(ELBInputLock NewLock)
+{
+	if (InputLock == NewLock)
+	{
+		return;
+	}
+	InputLock = NewLock;
+	if (NewLock == ELBInputLock::None)
+	{
+		return;
+	}
+	if (IsInspecting())
+	{
+		// An open inspection would keep the item in the player's hands under a cinematic: put it back, granting nothing.
+		Inspection->CancelInspect();
+	}
+	MoveInput = FVector2D::ZeroVector;
+	bSprintHeld = false;
+	ConsumeMovementInputVector();
+	if (UCharacterMovementComponent* Movement = GetCharacterMovement())
+	{
+		Movement->StopMovementImmediately();
+	}
+	UnCrouch();
+	UpdateSprintState();
+}
+
+bool ALBCharacter::IsInteractKeyDown() const
+{
+	const APlayerController* PC = Cast<APlayerController>(GetController());
+	if (!PC || !InteractAction)
+	{
+		return false;
+	}
+	if (const UEnhancedInputLocalPlayerSubsystem* Input = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PC->GetLocalPlayer()))
+	{
+		for (const FKey& Key : Input->QueryKeysMappedToAction(InteractAction))
+		{
+			if (PC->IsInputKeyDown(Key))
+			{
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+void ALBCharacter::ReleaseLockedInteract()
+{
+	if (bLockedInteractHeld)
+	{
+		bLockedInteractHeld = false;
+		OnLockedInteractReleased.Broadcast();
+	}
+}
+
+void ALBCharacter::InteractReleased()
+{
+	if (bLockedInteractHeld && !IsInteractKeyDown())
+	{
+		ReleaseLockedInteract();
 	}
 }
 

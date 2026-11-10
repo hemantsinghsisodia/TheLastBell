@@ -29,6 +29,9 @@ class USoundMix;
 class ULBWorldStateSubsystem;
 struct FLBInteractionCue;
 
+/** The moment any great-bell strike starts (beats, the new-game toll, ambient tolls, PlayBell), never for the small bells: Stage 1..5 and the volume. */
+DECLARE_MULTICAST_DELEGATE_TwoParams(FOnLBGreatBellStrike, int32 /*Stage*/, float /*Volume*/);
+
 /** One play request, as the test sink records it (non-shipping builds). Loops record one request when they start. */
 struct FLBAudioRequest
 {
@@ -209,6 +212,12 @@ public:
 
 	float RandomFraction() { return Stream.FRand(); }
 	float RandomRange(float Min, float Max) { return Stream.FRandRange(Min, FMath::Max(Min, Max)); }
+
+	/**
+	 * Broadcast the moment a great-bell strike starts playing (P17: the cinematic subsystem swings the bell on it). Fires for story beats,
+	 * the new-game toll, ambient tolls and PlayBell; never for the small bells.
+	 */
+	FOnLBGreatBellStrike OnGreatBellStrike;
 
 	// ---- Queries --------------------------------------------------------------------------------------------------------------
 

@@ -3,6 +3,7 @@
 #include "Character/LBCharacter.h"
 #include "AI/LBWardenBrainComponent.h"
 #include "AI/LBWardenController.h"
+#include "Cinematics/LBCinematicSubsystem.h"
 #include "Engine/World.h"
 #include "GameFramework/PlayerController.h"
 #include "TimerManager.h"
@@ -54,10 +55,15 @@ void ALBCheckpoint::OnTriggerBeginOverlap(UPrimitiveComponent* OverlappedCompone
 
 bool ALBCheckpoint::CanSaveNow() const
 {
+	return GetSaveRefusalReason() == nullptr;
+}
+
+const TCHAR* ALBCheckpoint::GetSaveRefusalReason() const
+{
 	const UWorld* World = GetWorld();
 	if (!World)
 	{
-		return true;
+		return nullptr;
 	}
 	// The Warden's controllers are found through the world's controller list: no manager actor and no registry to keep in sync.
 	for (FConstControllerIterator It = World->GetControllerIterator(); It; ++It)
@@ -66,10 +72,18 @@ bool ALBCheckpoint::CanSaveNow() const
 		const ULBWardenBrainComponent* Brain = WardenController ? WardenController->GetBrain() : nullptr;
 		if (Brain && Brain->IsChasingOrAttacking())
 		{
-			return false;
+			return TEXT("the Warden is chasing");
 		}
 	}
-	return true;
+	// P17: nothing is saved while a cinematic plays. CP_Approach therefore saves after the intro, with Arrival already set.
+	if (const ULBCinematicSubsystem* Cinematics = World->GetSubsystem<ULBCinematicSubsystem>())
+	{
+		if (Cinematics->IsPlaying())
+		{
+			return TEXT("a cinematic is playing");
+		}
+	}
+	return nullptr;
 }
 
 void ALBCheckpoint::TrySave(const ALBCharacter* Character)
@@ -85,12 +99,14 @@ void ALBCheckpoint::TrySave(const ALBCharacter* Character)
 		return;
 	}
 
+	// CanSaveNow is virtual (a test double may override it), so ask it first; the reason only words the log.
 	if (!CanSaveNow())
 	{
-		// Refused while the Warden hunts the player (D-019). Try again while the player is still inside, after the chase ends.
+		// Refused while the Warden hunts the player (D-019) or a cinematic plays. Try again while the player is still inside.
 		if (!World->GetTimerManager().IsTimerActive(RetryTimer))
 		{
-			UE_LOG(LogLB, Log, TEXT("Checkpoint '%s' refused: the Warden is chasing. Retrying while the player stays inside."), *CheckpointId.ToString());
+			const TCHAR* Reason = GetSaveRefusalReason();
+			UE_LOG(LogLB, Log, TEXT("Checkpoint '%s' refused (%s). Retrying while the player stays inside."), *CheckpointId.ToString(), Reason ? Reason : TEXT("not allowed now"));
 			World->GetTimerManager().SetTimer(RetryTimer, this, &ALBCheckpoint::RetryWhileInside, 0.5f, true);
 		}
 		return;

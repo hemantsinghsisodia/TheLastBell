@@ -6,6 +6,7 @@
 #include "LBGameSettings.generated.h"
 
 class ULBAudioSettings;
+class ULBCinematicSettings;
 class ULBStormSettings;
 
 /** Project Settings > Game > The Last Bell. */
@@ -32,4 +33,8 @@ public:
 	/** DA_Audio: every sound and number of the audio director (P16). Unset: the audio subsystem stays silent. */
 	UPROPERTY(Config, EditAnywhere, Category = "Audio")
 	TSoftObjectPtr<ULBAudioSettings> AudioSettings;
+
+	/** DA_Cinematics: the intro, the finale, the cards and the credits (P17). Unset: the cinematic subsystem does nothing. */
+	UPROPERTY(Config, EditAnywhere, Category = "Cinematics")
+	TSoftObjectPtr<ULBCinematicSettings> CinematicSettings;
 };

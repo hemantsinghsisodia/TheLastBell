@@ -38,7 +38,7 @@ void ULBAudioSettings::FillPlanDefaults()
 {
 	BellBeats.Reset();
 
-	// Plan P16 section 5.3. The new-game toll is not a beat (bNewGameToll and its fields). Drone: 0 A, 1 B, 2 C.
+	// Plan P16 section 5.3 and P17 section 2.6. The new-game toll is not a beat (bNewGameToll and its fields). Drone: 0 A, 1 B, 2 C.
 	struct FBeatRow
 	{
 		const TCHAR* Tag;
@@ -49,6 +49,8 @@ void ULBAudioSettings::FillPlanDefaults()
 		int32 Drone;
 	};
 	static const FBeatRow Rows[] = {
+		// P17: the intro's first toll (stage 1 x 3, the first strike at once, Drone A). bNewGameToll is off in DA_Audio since this replaces it.
+		{ TEXT("State.Event.Arrival"), 1, 3, 0.f, 4.5f, 0 },
 		{ TEXT("State.Ritual.1"), 2, 3, 2.f, 4.5f, 1 },
 		{ TEXT("State.Event.CryptEntered"), 1, 0, 0.f, 0.f, 0 },
 		{ TEXT("State.Ritual.2"), 3, 3, 2.f, 4.5f, 2 },

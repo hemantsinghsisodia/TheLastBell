@@ -36,6 +36,10 @@ void ALBPlayerController::BeginPlay()
 		if (HUDWidget)
 		{
 			HUDWidget->AddToViewport();
+			if (bHUDHidden)
+			{
+				HUDWidget->SetVisibility(ESlateVisibility::Collapsed);
+			}
 		}
 	}
 	else
@@ -64,6 +68,15 @@ void ALBPlayerController::SetInspectionContextActive(bool bActive)
 		{
 			Input->RemoveMappingContext(InspectMappingContext);
 		}
+	}
+}
+
+void ALBPlayerController::SetHUDHidden(bool bInHidden)
+{
+	bHUDHidden = bInHidden;
+	if (HUDWidget)
+	{
+		HUDWidget->SetVisibility(bInHidden ? ESlateVisibility::Collapsed : ESlateVisibility::SelfHitTestInvisible);
 	}
 }
 

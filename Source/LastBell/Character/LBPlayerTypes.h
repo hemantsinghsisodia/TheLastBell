@@ -12,6 +12,18 @@ enum class ELBGait : uint8
 	Crouch
 };
 
+/**
+ * How much of the player's control a cinematic takes (P17, section 2.4). None is normal play. Look blocks move, sprint, crouch, the
+ * candle and interact, but the player can still turn their head. Full blocks look as well.
+ */
+UENUM(BlueprintType)
+enum class ELBInputLock : uint8
+{
+	None,
+	Look,
+	Full
+};
+
 /** Pure, engine-free player logic so it can be unit tested without a world. */
 namespace LBPlayerLogic
 {

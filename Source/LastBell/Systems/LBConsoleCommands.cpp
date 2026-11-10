@@ -15,6 +15,7 @@
 #include "Storm/LBStormFXSubsystem.h"
 #include "Audio/LBAudioSubsystem.h"
 #include "Audio/LBAudioTypes.h"
+#include "Cinematics/LBCinematicSubsystem.h"
 #include "Misc/DefaultValueHelper.h"
 #include "LBLog.h"
 
@@ -374,6 +375,75 @@ namespace LBConsole
 		FConsoleCommandWithWorldAndArgsDelegate::CreateStatic(&AudioVolume));
 	static FAutoConsoleCommandWithWorldAndArgs CmdAudioDebug(TEXT("lb.Audio.Debug"), TEXT("lb.Audio.Debug 0|1: on-screen readout of the audio director"),
 		FConsoleCommandWithWorldAndArgsDelegate::CreateStatic(&AudioDebug));
+
+	static ULBCinematicSubsystem* GetCinematics(UWorld* World, const TCHAR* Cmd)
+	{
+		ULBCinematicSubsystem* Cinematics = World ? World->GetSubsystem<ULBCinematicSubsystem>() : nullptr;
+		if (!Cinematics)
+		{
+			UE_LOG(LogLB, Warning, TEXT("%s: there is no cinematic subsystem in this world"), Cmd);
+		}
+		return Cinematics;
+	}
+
+	/** lb.Cine.Play <Id>: plays a cinematic from DA_Cinematics (Intro, Finale). Ignores its trigger and blocking tag. */
+	static void CinePlay(const TArray<FString>& Args, UWorld* World)
+	{
+		if (Args.Num() < 1)
+		{
+			UE_LOG(LogLB, Error, TEXT("lb.Cine.Play: expected <Id> (Intro or Finale)"));
+			return;
+		}
+		if (ULBCinematicSubsystem* Cinematics = GetCinematics(World, TEXT("lb.Cine.Play")))
+		{
+			Cinematics->Play(FName(*Args[0]));
+		}
+	}
+
+	/** lb.Cine.Skip: skips the running cinematic, even when it is not skippable. */
+	static void CineSkip(const TArray<FString>& Args, UWorld* World)
+	{
+		if (ULBCinematicSubsystem* Cinematics = GetCinematics(World, TEXT("lb.Cine.Skip")))
+		{
+			if (!Cinematics->IsPlaying())
+			{
+				UE_LOG(LogLB, Warning, TEXT("lb.Cine.Skip: no cinematic is playing"));
+			}
+			Cinematics->RequestSkip();
+		}
+	}
+
+	/** lb.Cine.Stop: stops the running cinematic at once (restore; no must markers). */
+	static void CineStop(const TArray<FString>& Args, UWorld* World)
+	{
+		if (ULBCinematicSubsystem* Cinematics = GetCinematics(World, TEXT("lb.Cine.Stop")))
+		{
+			Cinematics->StopCinematic();
+		}
+	}
+
+	/** lb.Cine.PlayAsset <LevelSequence path>: plays any sequence through a temporary definition (Full lock, skippable). */
+	static void CinePlayAsset(const TArray<FString>& Args, UWorld* World)
+	{
+		if (Args.Num() < 1)
+		{
+			UE_LOG(LogLB, Error, TEXT("lb.Cine.PlayAsset: expected <LevelSequence asset path>, for example /Game/LastBell/ArtTest/P17/LS_P17_Spike.LS_P17_Spike"));
+			return;
+		}
+		if (ULBCinematicSubsystem* Cinematics = GetCinematics(World, TEXT("lb.Cine.PlayAsset")))
+		{
+			Cinematics->PlayAsset(FSoftObjectPath(Args[0]));
+		}
+	}
+
+	static FAutoConsoleCommandWithWorldAndArgs CmdCinePlay(TEXT("lb.Cine.Play"), TEXT("lb.Cine.Play <Id>: play a cinematic from DA_Cinematics (Intro, Finale). lb.Cine.Enabled / Rate / NoEnd / Debug are CVars"),
+		FConsoleCommandWithWorldAndArgsDelegate::CreateStatic(&CinePlay));
+	static FAutoConsoleCommandWithWorldAndArgs CmdCineSkip(TEXT("lb.Cine.Skip"), TEXT("Skip the running cinematic (even when it is not skippable)"),
+		FConsoleCommandWithWorldAndArgsDelegate::CreateStatic(&CineSkip));
+	static FAutoConsoleCommandWithWorldAndArgs CmdCineStop(TEXT("lb.Cine.Stop"), TEXT("Stop the running cinematic at once and restore input and the view"),
+		FConsoleCommandWithWorldAndArgsDelegate::CreateStatic(&CineStop));
+	static FAutoConsoleCommandWithWorldAndArgs CmdCinePlayAsset(TEXT("lb.Cine.PlayAsset"), TEXT("lb.Cine.PlayAsset <LevelSequence path>: play any sequence (Full lock, skippable)"),
+		FConsoleCommandWithWorldAndArgsDelegate::CreateStatic(&CinePlayAsset));
 
 	static FAutoConsoleCommandWithWorldAndArgs CmdKill(TEXT("lb.Kill"), TEXT("Kill the local player (death path)"),
 		FConsoleCommandWithWorldAndArgsDelegate::CreateStatic(&Kill));

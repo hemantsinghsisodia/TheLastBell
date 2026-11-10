@@ -1353,6 +1353,8 @@ void ULBAudioSubsystem::PlayScheduled(const FScheduled& Item, double Now)
 			// A UI sound keeps sounding while the game is paused (the ending sequence pauses it).
 			Strike->SetUISound(true);
 		}
+		// P17: the bell swings by itself on every great-bell strike (also without an audio device, when Strike is null).
+		OnGreatBellStrike.Broadcast(Stage, Item.Volume);
 		break;
 	}
 	case FScheduled::EKind::Drone:

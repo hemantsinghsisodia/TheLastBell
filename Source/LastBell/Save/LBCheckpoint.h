@@ -20,8 +20,14 @@ public:
 	UPROPERTY(EditInstanceOnly, BlueprintReadOnly, Category = "LastBell|Checkpoint")
 	FName CheckpointId;
 
-	/** False while any Warden is in Chase or Attack (D-019). A refused checkpoint retries while the player stays inside the trigger. */
+	/**
+	 * False while any Warden is in Chase or Attack (D-019) or a cinematic plays (P17: nothing is saved under a cinematic). A refused
+	 * checkpoint retries while the player stays inside the trigger.
+	 */
 	virtual bool CanSaveNow() const;
+
+	/** Why CanSaveNow is false ("the Warden is chasing" or "a cinematic is playing"), or null when saving is allowed. */
+	const TCHAR* GetSaveRefusalReason() const;
 
 protected:
 	virtual void PostInitializeComponents() override;

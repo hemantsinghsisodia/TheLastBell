@@ -16,6 +16,9 @@ class ULBInspectionComponent;
 class UAIPerceptionStimuliSourceComponent;
 struct FInputActionValue;
 
+/** Fired by the character while an input lock is on and the player presses or releases Interact (the cinematic skip hold binds these). */
+DECLARE_MULTICAST_DELEGATE(FLBLockedInteractSignature);
+
 /** Where the catch camera looks. Public so tests can compare the view against the same point. */
 namespace LBCatchCamera
 {
@@ -62,6 +65,23 @@ public:
 
 	UFUNCTION(BlueprintPure, Category = "LastBell|Player")
 	ELBGait GetGait() const;
+
+	/**
+	 * Sets how much of the player's control a cinematic takes (P17 section 2.4). Any lock other than None clears the move input, stops the
+	 * character, stands it up and turns sprint off (an open inspection is cancelled). Look: only turning the head works. Full: nothing
+	 * works. Interact presses and releases are forwarded to OnLockedInteractPressed / OnLockedInteractReleased.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "LastBell|Player")
+	void SetInputLock(ELBInputLock NewLock);
+
+	UFUNCTION(BlueprintPure, Category = "LastBell|Player")
+	ELBInputLock GetInputLock() const { return InputLock; }
+
+	/** The player pressed Interact while an input lock was on. */
+	FLBLockedInteractSignature OnLockedInteractPressed;
+
+	/** The player let go of Interact after a locked press (polled from the key state, so it also works if the lock ended meanwhile). */
+	FLBLockedInteractSignature OnLockedInteractReleased;
 
 	/** The assigned tuning asset, or the class defaults when none is assigned. Never null. */
 	const ULBPlayerTuningData& GetTuning() const;
@@ -136,6 +156,11 @@ private:
 	void MoveCompleted();
 	void Look(const FInputActionValue& Value);
 	void Interact();
+	/** Interact Completed / Canceled. Releases a locked press only if no key bound to Interact is still down. */
+	void InteractReleased();
+	/** True while any key mapped to the Interact action is held. */
+	bool IsInteractKeyDown() const;
+	void ReleaseLockedInteract();
 	void SprintStarted();
 	void SprintCompleted();
 	void CrouchStarted();
@@ -164,6 +189,10 @@ private:
 	FRotator CatchStartRotation = FRotator::ZeroRotator;
 	FVector CatchLastTarget = FVector::ZeroVector;
 	TWeakObjectPtr<AActor> CatchKiller;
+
+	ELBInputLock InputLock = ELBInputLock::None;
+	/** A locked Interact press was forwarded and its release has not been yet. */
+	bool bLockedInteractHeld = false;
 
 	bool bIsDead = false;
 	bool bSprintHeld = false;

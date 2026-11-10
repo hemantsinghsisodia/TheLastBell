@@ -41,10 +41,22 @@ public:
 	UFUNCTION(BlueprintPure, Category = "LastBell|UI")
 	UUserWidget* GetHUDWidget() const { return HUDWidget; }
 
+	/**
+	 * Collapses or restores the gameplay HUD (cinematics hide it). Never touches the input mode or the cursor, so mouse look keeps working.
+	 * A HUD created while it is hidden stays hidden.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "LastBell|UI")
+	void SetHUDHidden(bool bInHidden);
+
+	UFUNCTION(BlueprintPure, Category = "LastBell|UI")
+	bool IsHUDHidden() const { return bHUDHidden; }
+
 protected:
 	virtual void BeginPlay() override;
 
 private:
 	UPROPERTY(Transient)
 	TObjectPtr<UUserWidget> HUDWidget;
+
+	bool bHUDHidden = false;
 };
