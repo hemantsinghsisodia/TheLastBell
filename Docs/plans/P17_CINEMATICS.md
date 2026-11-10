@@ -735,7 +735,12 @@ Also: `RopeZAboutAxle` is the exact rotation, giving −30.9 / +40.9 cm at ±16�
 **Not verified yet:** the widget on screen, the skip prompt and progress bar, the credits roll, the mark move and look assist in the world, and the camera blend. These are covered by S1b, P17-6 and P17-7.
 
 ### S1a (2026-11-10, 5ac14db)
-Everything scripts headless except the camera cut track's `bCanBlend`, which P17-1's `ULBCineAuthoringLibrary` will set. The details are in section 8. Runtime behaviour (spawning, component bindings, attach, the material fade, the blend) is for S1b. `LS_P17_Spike` is local and git-ignored, because it uses a Mixamo clip.
+Everything scripts headless except the camera cut track's `bCanBlend`, which P17-1's `ULBCineAuthoringLibrary` sets.
+
+**Re-run after the P17-1 build (0e5aab7):** 88 of 88 checks pass after a fresh-process reload.
+- `bCanBlend` reads back true.
+- The eases (1.0 s in, 1.5 s out) survive the reload, because the helper is called before the section and eases are added.
+- The logs show no errors, only DeprecationWarnings. The details are in section 8. Runtime behaviour (spawning, component bindings, attach, the material fade, the blend) is for S1b. `LS_P17_Spike` is local and git-ignored, because it uses a Mixamo clip.
 
 ### F0 (2026-11-10, 6596144; lead review the same day)
 Items 1–5 and 7 are done. Item 6 and F0b are on hold for the new Warden asset. The run was read-only: before and after, PIE was off and nothing was dirty (not the map, not the 14 never-save packages), and the census stayed at 3102. The lead's extra checks were also read-only (`Docs/ArtTest/cine/p17_f0_lead_checks.json`). The data is in `Docs/ArtTest/cine/p17_f0.json` and `p17_f0_tables.md`.
