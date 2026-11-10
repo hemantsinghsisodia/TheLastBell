@@ -755,6 +755,23 @@ The GPU cost of the cinematic shots is not measured in this phase (the finale cl
 ## Results
 (Filled in as the tasks finish.)
 
+### P17-5a-1 (2026-11-11, 2eab748)
+`LS_LB_Intro` and `LS_LB_Finale` (without the mask moment) were built headless by `Tools/cine/p17_sequences.py`.
+- **Build:** 883 API calls, 0 errors, only the 2 packages saved.
+- **Check:** 347 of 347 pass, in a fresh process.
+- **Licensing:** no git-ignored (Mixamo) asset is referenced directly.
+- **Also in the commit:**
+  - `DefaultGame.ini` now has the `CinematicSettings` line, so cinematics are live on the branch;
+  - the `FinaleBellImmediate` lower bounds went from 0.38 to 0.30.
+- **Suite:** 196 passed, 3 failed. The failures are `Monastery.CinematicSetup`, `BellSwingsOnStrike` and `FinaleOnBell`, all expected until P17-5b. `IntroOnNewGame`, `IntroSkip` and `RouteBot.Monastery` pass. The first suite run ended abruptly at 68 tests, with no crash dump; the rerun was complete and clean. Watch for it to recur.
+- **Facts found:**
+  - `BP_WardenApparition`'s `Figure` component has no relative offset, so `MeshYaw` is 0 and the travel yaws are used as is;
+  - `SK_Warden`'s origin is at the feet;
+  - HeadZ is 239.4 cm, so `Cam_Mask` pitches up about 41°, toward a tall figure 1 m away. The owner judges this in P17-7.
+- **Needs eyes:** whether the component-bound tracks (focal length, focus, lantern intensity) resolve at runtime, and the figure's facing.
+
+**Resume point (paused for the owner's shutdown, 2026-11-11):** next is **P17-5b**, the level edits in section 5, with Unreal open. It runs `Tools/cine/p17_level.py --apply/--check/--save` (environment-designer), then the suite with Unreal closed, then the **P17-6** intro review with the owner (about 15 min). Still waiting on the owner's new Warden asset: F0 item 6, F0b, P17-3 and 5a-2.
+
 ### P17-2 (2026-11-10, 3d9a1f9, f1cf1d0, ee0fb76)
 - **`DA_Cinematics`:**
   - the Intro and Finale rows, with `FailSafeMarkers`;
