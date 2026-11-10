@@ -238,6 +238,8 @@ private:
 	bool bPostHold = false;
 	/** Clears the camera fade a moment after a skip's fade-up (see RequestSkip). */
 	FTimerHandle SkipFadeTimer;
+	/** The next-tick start of a skip's fade-up (after Sequencer's fade restore). */
+	FTimerHandle SkipFadeStartTimer;
 	bool bTravelling = false;
 	bool bPushedMix = false;
 	LBCinematicLogic::FSkipHold SkipHold;

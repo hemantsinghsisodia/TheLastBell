@@ -22,6 +22,8 @@
 #include "HAL/IConsoleManager.h"
 #include "LevelSequence.h"
 #include "MovieScene.h"
+#include "Sections/MovieSceneFadeSection.h"
+#include "Tracks/MovieSceneFadeTrack.h"
 #include "Misc/PackageName.h"
 #include "Save/LBCheckpoint.h"
 #include "Save/LBSaveSubsystem.h"
@@ -628,6 +630,8 @@ bool FLBCineSkipClearsFadeTest::RunTest(const FString& Parameters)
 			}
 			Sub->RequestSkip();
 			Test->TestFalse(TEXT("The skip ended the run"), Sub->IsPlaying());
+			// The black phase: the skip holds black until the fade-up starts on the next tick.
+			Test->TestTrue(FString::Printf(TEXT("Right after the skip the screen is black (%.3f)"), Camera->FadeAmount), Camera->bEnableFading && Camera->FadeAmount >= 0.9f);
 			S->T0 = C.Now;
 			S->Phase = 2;
 			return false;
@@ -637,6 +641,110 @@ bool FLBCineSkipClearsFadeTest::RunTest(const FString& Parameters)
 			return false;
 		}
 		Test->TestTrue(FString::Printf(TEXT("0.8 s after the skip the fade amount is 0 (%.3f)"), Camera->FadeAmount), Camera->FadeAmount <= 0.001f);
+		Test->TestFalse(TEXT("...and fading is off"), Camera->bEnableFading);
+		return true;
+	}, 60.f);
+
+	Enqueue(R);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBCineSkipFadesUpTest, "LastBell.Functional.Cine.SkipFadesUp", LB_CINEFUNC_FLAGS)
+bool FLBCineSkipFadesUpTest::RunTest(const FString& Parameters)
+{
+	TSharedRef<FCineRunner> R = StartSession(this, GCineTestMap, /*bCineEnabled*/ true, /*Rate*/ 1.f);
+	const TSharedRef<FCineState> S = R->S;
+	FAutomationTestBase* Test = this;
+	AddReady(*R);
+
+	R->Add(TEXT("A skip of a sequence with a fade track (Restore State): black at once, a visible fade-up, then clear"), [S, Test](FCineCtx& C)
+	{
+		ULBCinematicSubsystem* Sub = Cine(C.W);
+		if (!Sub)
+		{
+			Test->AddError(TEXT("The cinematic subsystem is missing"));
+			return true;
+		}
+		const APlayerController* PC = C.W->GetFirstPlayerController();
+		const APlayerCameraManager* Camera = PC ? PC->PlayerCameraManager.Get() : nullptr;
+		if (!Camera)
+		{
+			Test->AddError(TEXT("There is no camera manager"));
+			return true;
+		}
+		if (S->Phase == 0)
+		{
+			FLBCinematicDef Def;
+			Def.Id = TEXT("Test");
+			Def.InitialLock = ELBInputLock::Full;
+			Def.bStartBlack = true;
+			Def.bSkippableAtStart = true;
+			Def.Sequence = MakeSequence(*S, 10.0, {});
+			ULevelSequence* Sequence = Def.Sequence.Get();
+
+			// A fade track keyed 1 at 0 s and 0 at 0.5 s, left at the section's default completion mode (the case that broke).
+			UMovieScene* MovieScene = Sequence->GetMovieScene();
+			UMovieSceneFadeTrack* Track = MovieScene->AddTrack<UMovieSceneFadeTrack>();
+			UMovieSceneFadeSection* Section = Track ? Cast<UMovieSceneFadeSection>(Track->CreateNewSection()) : nullptr;
+			if (!Test->TestNotNull(TEXT("A fade track and section were built"), Section))
+			{
+				return true;
+			}
+			Section->FloatCurve.AddLinearKey(FFrameNumber(0), 1.f);
+			Section->FloatCurve.AddLinearKey(FFrameNumber(12000), 0.f);
+			Track->AddSection(*Section);
+
+			Sub->OverrideSettings(MakeSettings(*S, Def));
+			Sub->Rearm();
+			if (!Test->TestTrue(TEXT("Play starts the cinematic"), Sub->Play(TEXT("Test"))))
+			{
+				return true;
+			}
+			S->T0 = C.Now;
+			S->Phase = 1;
+			return false;
+		}
+		if (S->Phase == 1)
+		{
+			if (C.Now - S->T0 < 1.0)
+			{
+				return false;
+			}
+			Sub->RequestSkip();
+			Test->TestFalse(TEXT("The skip ended the run"), Sub->IsPlaying());
+			Test->TestTrue(FString::Printf(TEXT("Right after the skip the screen is black (%.3f)"), Camera->FadeAmount), Camera->bEnableFading && Camera->FadeAmount >= 0.9f);
+			S->T0 = C.Now;
+			S->Counter = 0;
+			S->Phase = 2;
+			return false;
+		}
+		if (S->Phase == 2)
+		{
+			// Within 2 frames of the skip the fade amount is still high (the fade-up has barely begun).
+			if (++S->Counter <= 2)
+			{
+				S->Number = FMath::Max(S->Number, Camera->FadeAmount);
+				return false;
+			}
+			Test->TestTrue(FString::Printf(TEXT("Within 2 frames of the skip the fade amount was at least 0.9 (%.3f)"), S->Number), S->Number >= 0.9f);
+			S->Phase = 3;
+		}
+		if (S->Phase == 3)
+		{
+			if (C.Now - S->T0 < 0.25)
+			{
+				return false;
+			}
+			Test->TestTrue(FString::Printf(TEXT("About 0.25 s after the skip it is fading (%.3f, between 0.2 and 0.8)"), Camera->FadeAmount),
+				Camera->bEnableFading && Camera->FadeAmount >= 0.2f && Camera->FadeAmount <= 0.8f);
+			S->Phase = 4;
+			return false;
+		}
+		if (C.Now - S->T0 < 0.8)
+		{
+			return false;
+		}
+		Test->TestTrue(FString::Printf(TEXT("0.8 s after the skip the fade is 0 (%.3f)"), Camera->FadeAmount), Camera->FadeAmount <= 0.001f);
 		Test->TestFalse(TEXT("...and fading is off"), Camera->bEnableFading);
 		return true;
 	}, 60.f);

@@ -135,6 +135,7 @@ void ULBCinematicSubsystem::Deinitialize()
 	if (UWorld* World = GetWorld())
 	{
 		World->GetTimerManager().ClearTimer(SkipFadeTimer);
+		World->GetTimerManager().ClearTimer(SkipFadeStartTimer);
 	}
 	if (bRunActive && !bTravelling)
 	{
@@ -604,6 +605,7 @@ bool ULBCinematicSubsystem::PlayDef(const FLBCinematicDef& Def)
 #endif
 	}
 	GetWorld()->GetTimerManager().ClearTimer(SkipFadeTimer);
+	GetWorld()->GetTimerManager().ClearTimer(SkipFadeStartTimer);
 
 	// Fresh run state.
 	Markers.Reset();
@@ -1070,6 +1072,15 @@ void ULBCinematicSubsystem::RequestSkip()
 		}
 	}
 
+	// Stopping and destroying the sequence makes Sequencer's fade system restore its pre-animated fade (black, from bStartBlack), which
+	// would override a fade started now. So: black at once, stop and destroy, and start the fade-up on the NEXT tick, after that restore.
+	if (const APlayerController* PC = GetPlayerController())
+	{
+		if (PC->PlayerCameraManager)
+		{
+			PC->PlayerCameraManager->SetManualCameraFade(1.f, FLinearColor::Black, false);
+		}
+	}
 	if (Player && (Player->IsPlaying() || Player->IsPaused()))
 	{
 		// Jump to the last frame (so the final state is evaluated), then stop.
@@ -1077,25 +1088,27 @@ void ULBCinematicSubsystem::RequestSkip()
 		Player->SetPlaybackPosition(FMovieSceneSequencePlaybackParams(EndFrame, EUpdatePositionMethod::Jump));
 		Player->Stop();
 	}
-	if (const APlayerController* PC = GetPlayerController())
-	{
-		if (PC->PlayerCameraManager)
-		{
-			PC->PlayerCameraManager->StartCameraFade(1.f, 0.f, SkipFadeSeconds, FLinearColor::Black, false, false);
-		}
-	}
 	FinishRun(TEXT("skipped"), /*bKeepFade*/ true, /*bSnapMark*/ true);
 
-	// Sequencer's pre-animated restore (black, from bStartBlack) could land after the fade-up and leave the screen black: clear the fade
-	// a moment after the fade-up should have ended, unless a new run started or the game is travelling.
 	if (!bTravelling)
 	{
+		// The jump evaluated the sequence's own fade (and the stop restored the saved one): black again for the frames until the fade-up.
+		if (const APlayerController* PC = GetPlayerController())
+		{
+			if (PC->PlayerCameraManager)
+			{
+				PC->PlayerCameraManager->SetManualCameraFade(1.f, FLinearColor::Black, false);
+			}
+		}
 		if (UWorld* World = GetWorld())
 		{
-			World->GetTimerManager().SetTimer(SkipFadeTimer, FTimerDelegate::CreateWeakLambda(this, [this]()
+			World->GetTimerManager().ClearTimer(SkipFadeStartTimer);
+			World->GetTimerManager().ClearTimer(SkipFadeTimer);
+			SkipFadeStartTimer = World->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateWeakLambda(this, [this]()
 			{
+				UWorld* TickWorld = GetWorld();
 				const ULBSaveSubsystem* Save = ULBSaveSubsystem::Get(this);
-				if (bRunActive || (Save && Save->IsTravelPending()))
+				if (!TickWorld || bRunActive || (Save && Save->IsTravelPending()))
 				{
 					return;
 				}
@@ -1103,10 +1116,26 @@ void ULBCinematicSubsystem::RequestSkip()
 				{
 					if (PC->PlayerCameraManager)
 					{
-						PC->PlayerCameraManager->StopCameraFade();
+						PC->PlayerCameraManager->StartCameraFade(1.f, 0.f, SkipFadeSeconds, FLinearColor::Black, false, false);
 					}
 				}
-			}), SkipFadeSeconds + 0.2f, false);
+				// The clear timer runs from the start of the fade-up: if a late restore still left a fade, it is cleared after the fade-up.
+				TickWorld->GetTimerManager().SetTimer(SkipFadeTimer, FTimerDelegate::CreateWeakLambda(this, [this]()
+				{
+					const ULBSaveSubsystem* ClearSave = ULBSaveSubsystem::Get(this);
+					if (bRunActive || (ClearSave && ClearSave->IsTravelPending()))
+					{
+						return;
+					}
+					if (const APlayerController* ClearPC = GetPlayerController())
+					{
+						if (ClearPC->PlayerCameraManager)
+						{
+							ClearPC->PlayerCameraManager->StopCameraFade();
+						}
+					}
+				}), SkipFadeSeconds + 0.2f, false);
+			}));
 		}
 	}
 }
