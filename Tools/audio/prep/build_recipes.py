@@ -93,9 +93,10 @@ add("SFX_LB_Candle_Relight", "player", [L("fs:386385", 0.0, 0.6)], note="386385 
 
 add("SFX_LB_Key_Pickup_01", "player", [L("fs:788310", 0.2, 0.85)], note="788310 key pickup")
 add("SFX_LB_Key_Pickup_02", "player", [L("fs:248037", 0.38, 1.05)], note="248037 keys pickup")
-add("SFX_LB_Paper_01", "player", [L("fs:353125", 0.18, 1.1)], channels=2, note="353125 paper rustle (stereo)")
-add("SFX_LB_Paper_02", "player", [L("fs:181774", 0.35, 1.9)], channels=2, fade_out=0.08, note="181774 rustling paper (stereo)")
-add("SFX_LB_Paper_03", "player", [L("fs:449127", 5.6, 6.4)], channels=2, fade_out=0.08, note="449127 rustling paper (stereo)")
+# P16-6 (owner: the rustle came 0.5-1 s after the pick-up): each slice now starts AT a rustle onset, so the main crumple begins within ~0.05 s and peaks by ~0.15 s
+add("SFX_LB_Paper_01", "player", [L("fs:353125", 0.715, 1.13)], channels=2, fade_out=0.08, note="353125 paper rustle (stereo); P16-6 re-slice: the closing crumple only (the old 0.18-1.1 slice built up for 0.68 s)")
+add("SFX_LB_Paper_02", "player", [L("fs:181774", 1.12, 2.3)], channels=2, fade_out=0.08, note="181774 rustling paper (stereo); P16-6 re-slice: starts at the first crackle at 1.12 s (was 0.35 s, a 0.78 s build-up)")
+add("SFX_LB_Paper_03", "player", [L("fs:449127", 1.555, 2.05)], channels=2, fade_out=0.08, note="449127 rustling paper (stereo); P16-6 re-slice: the 1.555-2.05 s crumple (sharp onset at 1.56 s, peak at 1.67 s)")
 
 # ------------------------------------------------------------------------------------------------ interactions
 add("SFX_LB_Door_Wood_Open_01", "interact", [L("fs:402464", 0.15, 2.95)], fade_out=0.12, note="402464 wooden door opening")

@@ -80,9 +80,9 @@ Turn the volume down before the Warden roars, spotted, caught and windup files. 
 | [SFX_LB_Candle_Relight](../../../SourceArt/Audio/Recorded/SFX_LB_Candle_Relight.wav) | 0.38 s | 1 | -3.0 | -19.2 | 386385 | Soft flame whoosh. |  | |
 | [SFX_LB_Key_Pickup_01](../../../SourceArt/Audio/Recorded/SFX_LB_Key_Pickup_01.wav) | 0.47 s | 1 | -3.0 | -24.8 | 788310 | Jingle of keys, bright. 2D. |  | |
 | [SFX_LB_Key_Pickup_02](../../../SourceArt/Audio/Recorded/SFX_LB_Key_Pickup_02.wav) | 0.41 s | 1 | -3.0 | -24.8 | 248037 | as above |  | |
-| [SFX_LB_Paper_01](../../../SourceArt/Audio/Recorded/SFX_LB_Paper_01.wav) | 0.91 s | 2 | -3.0 | -32.5 | 353125 | Rustle of a note, stereo, 2D. |  | |
-| [SFX_LB_Paper_02](../../../SourceArt/Audio/Recorded/SFX_LB_Paper_02.wav) | 1.54 s | 2 | -3.0 | -32.1 | 181774 | as above |  | |
-| [SFX_LB_Paper_03](../../../SourceArt/Audio/Recorded/SFX_LB_Paper_03.wav) | 0.51 s | 2 | -3.0 | -34.6 | 449127 | as above |  | |
+| [SFX_LB_Paper_01](../../../SourceArt/Audio/Recorded/SFX_LB_Paper_01.wav) | 0.38 s | 2 | -3.0 | -31.4 | 353125 | Rustle of a note, stereo, 2D. P16-6 re-slice: the crumple starts at once (first -10 dB at 0.07 s, peak at 0.15 s); check it lands with the pick-up and the put-down. |  | |
+| [SFX_LB_Paper_02](../../../SourceArt/Audio/Recorded/SFX_LB_Paper_02.wav) | 1.18 s | 2 | -3.0 | -30.6 | 181774 | as above; starts at the first crackle (-10 dB at 0.03 s, peak at 0.12 s). |  | |
+| [SFX_LB_Paper_03](../../../SourceArt/Audio/Recorded/SFX_LB_Paper_03.wav) | 0.47 s | 2 | -3.0 | -34.3 | 449127 | as above; sharp onset (-10 dB at 0.09 s, peak at 0.11 s). |  | |
 
 ## Doors, levers, winch, stone grind, generic use (28)
 

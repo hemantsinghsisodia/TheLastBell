@@ -1348,14 +1348,15 @@
    "layers": [
     {
      "src": "fs:353125",
-     "t0": 0.18,
-     "t1": 1.1,
+     "t0": 0.715,
+     "t1": 1.13,
      "gain_db": 0.0,
      "pitch": 1.0,
      "delay": 0.0
     }
    ],
-   "note": "353125 paper rustle (stereo)"
+   "note": "353125 paper rustle (stereo); P16-6 re-slice: the closing crumple only (the old 0.18-1.1 slice built up for 0.68 s)",
+   "fade_out": 0.08
   },
   {
    "name": "SFX_LB_Paper_02",
@@ -1368,14 +1369,14 @@
    "layers": [
     {
      "src": "fs:181774",
-     "t0": 0.35,
-     "t1": 1.9,
+     "t0": 1.12,
+     "t1": 2.3,
      "gain_db": 0.0,
      "pitch": 1.0,
      "delay": 0.0
     }
    ],
-   "note": "181774 rustling paper (stereo)",
+   "note": "181774 rustling paper (stereo); P16-6 re-slice: starts at the first crackle at 1.12 s (was 0.35 s, a 0.78 s build-up)",
    "fade_out": 0.08
   },
   {
@@ -1389,14 +1390,14 @@
    "layers": [
     {
      "src": "fs:449127",
-     "t0": 5.6,
-     "t1": 6.4,
+     "t0": 1.555,
+     "t1": 2.05,
      "gain_db": 0.0,
      "pitch": 1.0,
      "delay": 0.0
     }
    ],
-   "note": "449127 rustling paper (stereo)",
+   "note": "449127 rustling paper (stereo); P16-6 re-slice: the 1.555-2.05 s crumple (sharp onset at 1.56 s, peak at 1.67 s)",
    "fade_out": 0.08
   },
   {
