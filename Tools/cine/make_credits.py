@@ -12,7 +12,7 @@ Rules:
   * Provider lines: "Poly Haven: A, B", "ambientCG", "Fab: ...", "BlenderKit: ...", "Kenney", "Freesound: ...". Authors are
     de-duplicated (case-insensitive), sorted (case-insensitive) and comma-joined; a line over MAX_LINE characters wraps at an
     author boundary into several Name lines (a continued line ends with a comma).
-  * Excluded rows: in-house / generated in-project / the owner's own build / Epic template rows; Mixamo rows (the fixed
+  * Excluded rows: any row whose Unreal path column says "not imported" (nothing ships); in-house / generated in-project / the owner's own build / Epic template rows; Mixamo rows (the fixed
     "Animation / Adobe Mixamo" line covers them); the Roboto font row (the Fonts line covers it); rows whose Use says "not used" or
     "reference ... only" (nothing of them ships).
   * Privacy: no e-mail address is ever written (the script asserts it).
@@ -39,7 +39,7 @@ PROVIDERS = [
     ("Freesound", "Freesound", "Sound"),
 ]
 
-COL_ASSET, COL_SOURCE, COL_AUTHOR, COL_USE = 0, 1, 2, 9
+COL_ASSET, COL_SOURCE, COL_AUTHOR, COL_UNREAL_PATH, COL_USE = 0, 1, 2, 8, 9
 
 
 def provider_of(source):
@@ -123,6 +123,9 @@ def build():
             excluded.append((asset, why))
             continue
         use_low = use.lower()
+        if "not imported" in cells[COL_UNREAL_PATH].lower():
+            excluded.append((asset, "not imported (nothing ships)"))
+            continue
         if use_low.startswith("not used"):
             excluded.append((asset, "not used in the game"))
             continue
