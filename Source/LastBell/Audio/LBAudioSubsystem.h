@@ -18,6 +18,8 @@ class ALBWardenApparition;
 class UAudioComponent;
 class ULBAudioSettings;
 class ULBAudioSubsystem;
+class ULBInspectableComponent;
+class ULBInspectionComponent;
 class ULBInteractableComponent;
 class ULBStormSubsystem;
 class ULBWardenBrainComponent;
@@ -149,6 +151,8 @@ public:
 	virtual TStatId GetStatId() const override;
 	/** Ticks while active or still waiting for the storm's first active tick. */
 	virtual bool IsTickable() const override { return !bGaveUp; }
+	/** True: the great bell of the ending must keep tolling while the ending sequence pauses the game (P16-6). */
+	virtual bool IsTickableWhenPaused() const override { return true; }
 
 	// ---- Control --------------------------------------------------------------------------------------------------------------
 
@@ -283,6 +287,11 @@ private:
 		/** Thunder: the direction (horizontal, unit) from the listener. */
 		FVector Direction = FVector::ForwardVector;
 		bool bAmbient = false;
+		/**
+		 * Time is on World->GetUnpausedTimeSeconds() (which keeps running while the game is paused) instead of GetTimeSeconds().
+		 * The great bell's strikes use it so the finale keeps tolling under the ending's pause (P16-6).
+		 */
+		bool bUnpausedClock = false;
 	};
 
 	// ---- Activation ----
@@ -307,6 +316,9 @@ private:
 	void HandleCandleState(bool bLit);
 	UFUNCTION()
 	void HandleRelightStarted();
+	/** The player opened an inspection: a note rustles on pick-up (the put-down cue is the interactable's OnInteracted). */
+	UFUNCTION()
+	void HandleInspectBegin(ULBInspectableComponent* Inspectable);
 	UFUNCTION()
 	void HandleApparitionAppeared(ALBWardenApparition* Apparition, int32 StationIndex);
 
@@ -315,7 +327,7 @@ private:
 
 	// ---- Per frame ----
 	void TickWorld(UWorld& World, ULBStormSubsystem& Storm, float DeltaSeconds);
-	void UpdateScheduled(double Now);
+	void UpdateScheduled(double Now, double UnpausedNow, bool bPaused);
 	void UpdateZone(double Now);
 	void UpdateWardenLink(double Now);
 	void UpdateWeather(const ULBStormSubsystem& Storm, float DeltaSeconds);
@@ -327,7 +339,8 @@ private:
 
 	// ---- Helpers ----
 	void BindPlayerEvents();
-	void ScheduleBell(int32 Stage, int32 Strikes, float FirstDelay, float Spacing, bool bAmbient);
+	/** bPlayFirstNow: when FirstDelay <= 0 the first strike plays in this call and only the rest are scheduled (story beats). */
+	void ScheduleBell(int32 Stage, int32 Strikes, float FirstDelay, float Spacing, bool bAmbient, bool bPlayFirstNow = false);
 	void ScheduleDrone(int32 Drone, float Delay);
 	void StartDrone(int32 Drone, double Now);
 	void PlayScheduled(const FScheduled& Item, double Now);
@@ -366,6 +379,7 @@ private:
 	TWeakObjectPtr<ULBWorldStateSubsystem> BoundState;
 	TWeakObjectPtr<ULBWardenBrainComponent> BoundBrain;
 	TWeakObjectPtr<UObject> BoundCandle;
+	TWeakObjectPtr<UObject> BoundInspection;
 	TWeakObjectPtr<ALBWarden> CachedWarden;
 	TWeakObjectPtr<const ALBAudioZone> CurrentZone;
 	TArray<TWeakObjectPtr<ALBAudioZone>> Zones;

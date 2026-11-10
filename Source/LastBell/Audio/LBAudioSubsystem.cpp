@@ -8,8 +8,10 @@
 #include "Camera/PlayerCameraManager.h"
 #include "Character/LBCandleComponent.h"
 #include "Character/LBCharacter.h"
+#include "Character/LBInspectionComponent.h"
 #include "Components/AudioComponent.h"
 #include "Components/LBInteractableComponent.h"
+#include "Components/LBInspectableComponent.h"
 #include "Engine/Engine.h"
 #include "Engine/World.h"
 #include "EngineUtils.h"
@@ -772,6 +774,11 @@ void ULBAudioSubsystem::UnbindWorldEvents()
 		Candle->OnRelightStarted.RemoveDynamic(this, &ULBAudioSubsystem::HandleRelightStarted);
 	}
 	BoundCandle.Reset();
+	if (ULBInspectionComponent* Inspection = Cast<ULBInspectionComponent>(BoundInspection.Get()))
+	{
+		Inspection->OnInspectBegin.RemoveDynamic(this, &ULBAudioSubsystem::HandleInspectBegin);
+	}
+	BoundInspection.Reset();
 	for (const TWeakObjectPtr<ALBWardenApparition>& Weak : BoundApparitions)
 	{
 		if (ALBWardenApparition* Apparition = Weak.Get())
@@ -954,6 +961,12 @@ void ULBAudioSubsystem::Tick(float DeltaTime)
 		}
 	}
 
+	if (World->IsPaused())
+	{
+		// The ending sequence pauses the game: only the great bell's strikes keep running (they use the unpaused clock and play as UI sounds).
+		UpdateScheduled(World->GetTimeSeconds(), World->GetUnpausedTimeSeconds(), /*bPaused*/ true);
+		return;
+	}
 	TickWorld(*World, *Storm, DeltaTime);
 }
 
@@ -972,7 +985,7 @@ void ULBAudioSubsystem::TickWorld(UWorld& World, ULBStormSubsystem& Storm, float
 		LastListener = Listener;
 	}
 
-	UpdateScheduled(Now);
+	UpdateScheduled(Now, World.GetUnpausedTimeSeconds(), /*bPaused*/ false);
 	UpdateZone(Now);
 	UpdateWardenLink(Now);
 	BindPlayerEvents();
@@ -1062,6 +1075,19 @@ void ULBAudioSubsystem::UpdateWardenLink(double Now)
 void ULBAudioSubsystem::BindPlayerEvents()
 {
 	ALBCharacter* Player = GetPlayer();
+	ULBInspectionComponent* Inspection = Player ? Player->GetInspection() : nullptr;
+	if (Inspection != BoundInspection.Get())
+	{
+		if (ULBInspectionComponent* OldInspection = Cast<ULBInspectionComponent>(BoundInspection.Get()))
+		{
+			OldInspection->OnInspectBegin.RemoveDynamic(this, &ULBAudioSubsystem::HandleInspectBegin);
+		}
+		if (Inspection)
+		{
+			Inspection->OnInspectBegin.AddUniqueDynamic(this, &ULBAudioSubsystem::HandleInspectBegin);
+		}
+		BoundInspection = Inspection;
+	}
 	ULBCandleComponent* Candle = Player ? Player->GetCandle() : nullptr;
 	if (Candle == BoundCandle.Get())
 	{
@@ -1272,7 +1298,7 @@ void ULBAudioSubsystem::DrawDebugOverlay(double Now)
 // Scheduled sounds
 // ---------------------------------------------------------------------------------------------------------------------
 
-void ULBAudioSubsystem::UpdateScheduled(double Now)
+void ULBAudioSubsystem::UpdateScheduled(double Now, double UnpausedNow, bool bPaused)
 {
 	if (Scheduled.IsEmpty())
 	{
@@ -1282,7 +1308,9 @@ void ULBAudioSubsystem::UpdateScheduled(double Now)
 	TArray<FScheduled, TInlineAllocator<8>> Due;
 	for (int32 Index = Scheduled.Num() - 1; Index >= 0; --Index)
 	{
-		if (Scheduled[Index].Time <= Now)
+		const FScheduled& Candidate = Scheduled[Index];
+		// While paused only the items on the unpaused clock (the great bell) are due; the others wait for the game to resume.
+		if (Candidate.bUnpausedClock ? Candidate.Time <= UnpausedNow : (!bPaused && Candidate.Time <= Now))
 		{
 			Due.Add(Scheduled[Index]);
 			Scheduled.RemoveAtSwap(Index, EAllowShrinking::No);
@@ -1314,7 +1342,12 @@ void ULBAudioSubsystem::PlayScheduled(const FScheduled& Item, double Now)
 		const int32 Stage = FMath::Clamp(Item.Aux, 1, 5);
 		const TArray<TSoftObjectPtr<USoundBase>>& Set = Settings->Bell.Stage;
 		const TSoftObjectPtr<USoundBase> Ref = Set.IsValidIndex(Stage - 1) ? Set[Stage - 1] : TSoftObjectPtr<USoundBase>();
-		PlayAt(Item.bAmbient ? LBAudioCue::BellAmbient : LBAudioCue::Bell, Ref, Settings->BellLocation, Item.Volume, 1.f, Stage - 1, Stage);
+		UAudioComponent* Strike = PlayAt(Item.bAmbient ? LBAudioCue::BellAmbient : LBAudioCue::Bell, Ref, Settings->BellLocation, Item.Volume, 1.f, Stage - 1, Stage);
+		if (Strike && !Item.bAmbient)
+		{
+			// A UI sound keeps sounding while the game is paused (the ending sequence pauses it).
+			Strike->SetUISound(true);
+		}
 		break;
 	}
 	case FScheduled::EKind::Drone:
@@ -1343,7 +1376,7 @@ void ULBAudioSubsystem::PlayThunder(int32 Set, float Volume, const FVector& Dire
 	PlayAt(LBAudioCue::Thunder, Variant >= 0 ? (*Variants)[Variant] : TSoftObjectPtr<USoundBase>(), Location, Volume, RandomRange(0.95f, 1.05f), Variant, Set);
 }
 
-void ULBAudioSubsystem::ScheduleBell(int32 Stage, int32 Strikes, float FirstDelay, float Spacing, bool bAmbient)
+void ULBAudioSubsystem::ScheduleBell(int32 Stage, int32 Strikes, float FirstDelay, float Spacing, bool bAmbient, bool bPlayFirstNow)
 {
 	const UWorld* World = GetWorld();
 	if (!World || !Settings || Strikes <= 0)
@@ -1351,15 +1384,25 @@ void ULBAudioSubsystem::ScheduleBell(int32 Stage, int32 Strikes, float FirstDela
 		return;
 	}
 	const double Now = World->GetTimeSeconds();
-	for (int32 K = 0; K < Strikes && Scheduled.Num() < MaxScheduled; ++K)
+	const double UnpausedNow = World->GetUnpausedTimeSeconds();
+	for (int32 K = 0; K < Strikes; ++K)
 	{
 		FScheduled Item;
 		Item.Kind = FScheduled::EKind::Bell;
-		Item.Time = Now + static_cast<double>(FirstDelay) + static_cast<double>(Spacing) * K;
 		Item.Aux = Stage;
 		Item.Volume = bAmbient ? Settings->AmbientTollVolume : 1.f;
 		Item.bAmbient = bAmbient;
-		Scheduled.Add(Item);
+		Item.bUnpausedClock = !bAmbient;
+		Item.Time = (Item.bUnpausedClock ? UnpausedNow : Now) + static_cast<double>(FirstDelay) + static_cast<double>(Spacing) * K;
+		if (K == 0 && bPlayFirstNow && FirstDelay <= 0.f)
+		{
+			PlayScheduled(Item, Now);
+			continue;
+		}
+		if (Scheduled.Num() < MaxScheduled)
+		{
+			Scheduled.Add(Item);
+		}
 	}
 	// A toll of any kind restarts the wait for the next ambient one.
 	const double LastStrike = Now + static_cast<double>(FirstDelay) + static_cast<double>(Spacing) * FMath::Max(Strikes - 1, 0);
@@ -1473,7 +1516,7 @@ void ULBAudioSubsystem::HandleStateChanged(FGameplayTag Tag, bool bAdded)
 	LastBeatTime = Now;
 	if (Plan.Strikes > 0)
 	{
-		ScheduleBell(Plan.Stage, Plan.Strikes, Plan.FirstDelay, Plan.Spacing, false);
+		ScheduleBell(Plan.Stage, Plan.Strikes, Plan.FirstDelay, Plan.Spacing, false, /*bPlayFirstNow*/ true);
 	}
 	if (Plan.Drone >= 0)
 	{
@@ -1636,6 +1679,16 @@ void ULBAudioSubsystem::NotifyDialChanged(AActor* Actor, int32 NewIndex)
 	const int32 Variant = PickVariantFor(Key, Cue->DialNotch.Num());
 	PlayAt(LBAudioCue::DialNotch, Cue->DialNotch[Variant], Actor->GetActorLocation(), Cue->Volume,
 		RandomRange(static_cast<float>(Cue->Pitch.X), static_cast<float>(Cue->Pitch.Y)), Variant, NewIndex);
+}
+
+void ULBAudioSubsystem::HandleInspectBegin(ULBInspectableComponent* Inspectable)
+{
+	// A note is picked up: its mapped Interact cue (the paper rustle) plays now. Putting it down plays it again through OnInteracted.
+	AActor* Item = Inspectable ? Inspectable->GetOwner() : nullptr;
+	if (bActive && Item)
+	{
+		NotifyInteracted(Item, /*bDenied*/ false);
+	}
 }
 
 AActor* ULBAudioSubsystem::FindStepActor(const FGameplayTag& Step) const

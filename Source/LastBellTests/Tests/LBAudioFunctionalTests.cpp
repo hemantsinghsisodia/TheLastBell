@@ -36,6 +36,8 @@ void ULBAudioTestSink::HandleStrike(const FLBLightningStrikeInfo& Info)
 #include "Character/LBCandleComponent.h"
 #include "Character/LBCharacter.h"
 #include "Character/LBFootstepComponent.h"
+#include "Character/LBInspectionComponent.h"
+#include "Components/LBInspectableComponent.h"
 #include "Components/LBInteractableComponent.h"
 #include "Engine/DataTable.h"
 #include "Engine/DirectionalLight.h"
@@ -1540,6 +1542,181 @@ bool FLBAudioDeniedCueTest::RunTest(const FString& Parameters)
 		Interactable->Interact(Pawn);
 		Test->TestEqual(TEXT("Unlocked: the interact sound"), Requests(Audio, LBAudioCue::Interact).Num(), 1);
 		Test->TestEqual(TEXT("Unlocked: no denied sound"), Requests(Audio, LBAudioCue::Denied).Num(), 0);
+		return true;
+	}, 60.f);
+
+	AudioEnqueue(R);
+	return true;
+}
+
+// =====================================================================================================================
+// 9b. P16-6: a note rustles when it is picked up (the inspection begins), not only when it is put down
+// =====================================================================================================================
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBAudioNotePickupCueTest, "LastBell.Functional.Audio.NotePickupCue", LB_AUDIOFUNC_FLAGS)
+bool FLBAudioNotePickupCueTest::RunTest(const FString& Parameters)
+{
+	TSharedRef<FAudioRunner> R = AudioStartSession(this);
+	const TSharedRef<FAudioState> S = R->S;
+	FAutomationTestBase* Test = this;
+
+	R->Add(TEXT("PIE ready; AStaticMeshActor is mapped to a 3-variant Interact cue (volume 0.8)"), [S, Test](FAudioCtx& C)
+	{
+		if (!LBPie::WorldReady() || C.Frames < 5)
+		{
+			return false;
+		}
+		ActivateAudio(C, *S, Test, [](ULBAudioSettings& A)
+		{
+			FLBInteractionCue Note;
+			Note.ActorClass = TSoftClassPtr<AActor>(AStaticMeshActor::StaticClass());
+			FillSet(Note.Interact, 3);
+			Note.Volume = 0.8f;
+			A.InteractionCues.Add(Note);
+		});
+		return true;
+	});
+
+	R->Add(TEXT("Beginning an inspection plays the mapped Interact cue at the actor once; an unmapped actor stays silent"), [S, Test](FAudioCtx& C)
+	{
+		ULBAudioSubsystem* Audio = S->Audio(C.W);
+		ALBCharacter* Pawn = LBPie::Pawn();
+		if (!Audio || !Pawn || !Pawn->GetInspection())
+		{
+			Test->AddError(TEXT("Audio subsystem, the pawn or its inspection component is gone"));
+			return true;
+		}
+		if (!Audio->IsActive() || C.Frames < 4)
+		{
+			if (C.Elapsed > 3.0)
+			{
+				Test->AddError(TEXT("The director did not become active within 3 s"));
+				return true;
+			}
+			return false;
+		}
+
+		const FVector Base = Pawn->GetActorLocation() + FVector(300.0, 0.0, 100.0);
+		AStaticMeshActor* Note = C.W->SpawnActor<AStaticMeshActor>(Base, FRotator::ZeroRotator);
+		if (!Test->TestNotNull(TEXT("The note actor spawned"), Note))
+		{
+			return true;
+		}
+		Note->SetMobility(EComponentMobility::Movable);
+		Note->SetActorLocation(Base);
+		ULBInspectableComponent* Inspectable = NewObject<ULBInspectableComponent>(Note);
+		Note->AddInstanceComponent(Inspectable);
+		Inspectable->RegisterComponent();
+
+		ULBInspectionComponent* Inspection = Pawn->GetInspection();
+		Audio->ClearRequests();
+		if (Test->TestTrue(TEXT("BeginInspect succeeded"), Inspection->BeginInspect(Inspectable)))
+		{
+			const TArray<FLBAudioRequest> Interacts = Requests(Audio, LBAudioCue::Interact);
+			if (Test->TestEqual(TEXT("The pick-up made one Interact request, in the same call"), Interacts.Num(), 1))
+			{
+				Test->TestTrue(FString::Printf(TEXT("It is at the note (%s)"), *Interacts[0].Location.ToString()), Interacts[0].bPositional && Interacts[0].Location.Equals(Base, 1.0));
+				Test->TestNearlyEqual(TEXT("It uses the row's volume 0.8"), Interacts[0].Volume, 0.8f, 1.0e-4f);
+				Test->TestTrue(TEXT("A variant was picked and loaded"), Interacts[0].Variant >= 0 && Interacts[0].Variant < 3 && Interacts[0].bSoundResolved);
+			}
+			Inspection->CancelInspect();
+			Test->TestEqual(TEXT("Cancelling the inspection plays nothing more (the put-down cue belongs to OnInteracted)"), Requests(Audio, LBAudioCue::Interact).Num(), 1);
+		}
+
+		// An inspectable whose class has no row makes no request (an unmapped class is silent).
+		Audio->ClearRequests();
+		ATargetPoint* Bare = C.W->SpawnActor<ATargetPoint>(Base + FVector(0.0, 300.0, 0.0), FRotator::ZeroRotator);
+		if (Test->TestNotNull(TEXT("The unmapped actor spawned"), Bare) && Bare->GetRootComponent())
+		{
+			Bare->GetRootComponent()->SetMobility(EComponentMobility::Movable);
+			ULBInspectableComponent* BareInspectable = NewObject<ULBInspectableComponent>(Bare);
+			Bare->AddInstanceComponent(BareInspectable);
+			BareInspectable->RegisterComponent();
+			if (Inspection->BeginInspect(BareInspectable))
+			{
+				Test->TestEqual(TEXT("An unmapped class makes no Interact request"), Requests(Audio, LBAudioCue::Interact).Num(), 0);
+				Inspection->CancelInspect();
+			}
+			Bare->Destroy();
+		}
+		Note->Destroy();
+		return true;
+	}, 60.f);
+
+	AudioEnqueue(R);
+	return true;
+}
+
+// =====================================================================================================================
+// 9c. P16-6: the great bell of the finale: the first strike is requested in the same frame as the tag (the ending pauses the game)
+// =====================================================================================================================
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBAudioFinaleBellImmediateTest, "LastBell.Functional.Audio.FinaleBellImmediate", LB_AUDIOFUNC_FLAGS)
+bool FLBAudioFinaleBellImmediateTest::RunTest(const FString& Parameters)
+{
+	TSharedRef<FAudioRunner> R = AudioStartSession(this);
+	const TSharedRef<FAudioState> S = R->S;
+	FAutomationTestBase* Test = this;
+
+	R->Add(TEXT("PIE ready, storm and director active"), [S, Test](FAudioCtx& C)
+	{
+		if (!LBPie::WorldReady() || C.Frames < 5)
+		{
+			return false;
+		}
+		ActivateAudio(C, *S, Test);
+		return true;
+	});
+
+	R->Add(TEXT("State.Event.Finale: strike 1 (stage 5) is requested by the AddState call itself, the other four follow 0.4 s apart"), [S, Test](FAudioCtx& C)
+	{
+		ULBAudioSubsystem* Audio = S->Audio(C.W);
+		if (!Audio)
+		{
+			Test->AddError(TEXT("Audio subsystem is gone"));
+			return true;
+		}
+		if (C.Elapsed > 10.0)
+		{
+			Test->AddError(FString::Printf(TEXT("Timed out in phase %d"), S->Phase));
+			return true;
+		}
+		if (S->Phase == 0)
+		{
+			if (!Audio->IsActive() || C.Frames < 4)
+			{
+				return false;
+			}
+			Audio->ClearRequests();
+			S->T0 = C.Now;
+			ULBWorldStateSubsystem::Get(C.W)->AddState(AudioTag(TEXT("State.Event.Finale")));
+			const TArray<FLBAudioRequest> Immediate = Requests(Audio, LBAudioCue::Bell);
+			if (Test->TestEqual(TEXT("One stage-5 strike was requested before AddState returned"), Immediate.Num(), 1))
+			{
+				Test->TestEqual(TEXT("It is stage 5"), Immediate[0].Aux, 5);
+				Test->TestEqual(TEXT("It plays Bell.Stage[4]"), Immediate[0].Variant, 4);
+				Test->TestNearlyEqual(TEXT("It is at the same world time as the tag"), static_cast<float>(Immediate[0].Time - S->T0), 0.f, 1.0e-4f);
+			}
+			Test->TestEqual(TEXT("The other four strikes are scheduled"), Audio->GetScheduledCount(), 4);
+			S->Phase = 1;
+			return false;
+		}
+		if (C.Now - S->T0 < 2.4)
+		{
+			return false;
+		}
+		const TArray<FLBAudioRequest> Bells = Requests(Audio, LBAudioCue::Bell);
+		if (Test->TestEqual(TEXT("Five strikes in all"), Bells.Num(), 5))
+		{
+			for (int32 Index = 1; Index < Bells.Num(); ++Index)
+			{
+				const double Gap = Bells[Index].Time - Bells[Index - 1].Time;
+				Test->TestTrue(FString::Printf(TEXT("Strike %d comes %.2f s after the one before (about 0.4)"), Index, Gap), Gap >= 0.38 && Gap <= 0.75);
+				Test->TestEqual(TEXT("Every strike is stage 5"), Bells[Index].Aux, 5);
+			}
+		}
+		Test->TestEqual(TEXT("The bell stage is 5"), Audio->GetBellStage(), 5);
+		Test->TestEqual(TEXT("Nothing is left scheduled"), Audio->GetScheduledCount(), 0);
 		return true;
 	}, 60.f);
 
