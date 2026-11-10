@@ -745,24 +745,24 @@
   },
   "SFX_LB_Howl_01": {
    "cls": "SCL_LB_Ambience",
-   "att": "ATT_LB_Large",
+   "att": "ATT_LB_Thunder",
    "con": null,
    "loop": false,
-   "volume": 1.0
+   "volume": 0.5
   },
   "SFX_LB_Howl_02": {
    "cls": "SCL_LB_Ambience",
-   "att": "ATT_LB_Large",
+   "att": "ATT_LB_Thunder",
    "con": null,
    "loop": false,
-   "volume": 1.0
+   "volume": 0.5
   },
   "SFX_LB_Howl_03": {
    "cls": "SCL_LB_Ambience",
-   "att": "ATT_LB_Large",
+   "att": "ATT_LB_Thunder",
    "con": null,
    "loop": false,
-   "volume": 1.0
+   "volume": 0.5
   },
   "SFX_LB_Key_Pickup_01": {
    "cls": "SCL_LB_SFX",
@@ -811,28 +811,28 @@
    "att": "ATT_LB_Large",
    "con": null,
    "loop": false,
-   "volume": 1.0
+   "volume": 0.4
   },
   "SFX_LB_Owl_02": {
    "cls": "SCL_LB_Ambience",
    "att": "ATT_LB_Large",
    "con": null,
    "loop": false,
-   "volume": 1.0
+   "volume": 0.4
   },
   "SFX_LB_Owl_03": {
    "cls": "SCL_LB_Ambience",
    "att": "ATT_LB_Large",
    "con": null,
    "loop": false,
-   "volume": 1.0
+   "volume": 0.4
   },
   "SFX_LB_Owl_04": {
    "cls": "SCL_LB_Ambience",
    "att": "ATT_LB_Large",
    "con": null,
    "loop": false,
-   "volume": 1.0
+   "volume": 0.4
   },
   "SFX_LB_Paper_01": {
    "cls": "SCL_LB_SFX",

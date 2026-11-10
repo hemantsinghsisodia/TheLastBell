@@ -110,7 +110,8 @@ SOUND_RULES = [
     (r"^SFX_LB_Chain_Distant_", "Ambience", "ATT_LB_Large"),
     # P16-6 creature ambience (D-112): played by ALBAmbientEmitter, no concurrency set
     (r"^SFX_LB_Bat_", "Ambience", "ATT_LB_Medium"),
-    (r"^SFX_LB_(Owl|Howl)_", "Ambience", "ATT_LB_Large"),
+    (r"^SFX_LB_Howl_", "Ambience", "ATT_LB_Thunder"),   # P16-6 owner: the howl emitters are 95-120 m away; ATT_LB_Large is silent beyond 68 m
+    (r"^SFX_LB_Owl_", "Ambience", "ATT_LB_Large"),
     (r"^SFX_LB_Rat_", "Ambience", "ATT_LB_Small"),
     (r"^SFX_LB_Step_", "SFX", "ATT_LB_Step"),
     (r"^SFX_LB_(Breath_|Candle_|Key_|Paper_)", "SFX", None),
@@ -201,6 +202,8 @@ OWNER_CHOICES = {
     "wave_volume": [
         (r"^SFX_LB_Bell_Stage[1-4]$", 1.0),    # was 0.126 / 0.200 / 0.316 / 0.501: stage 1 was inaudible; the files' own filtering carries the distance
         (r"^SFX_LB_Thunder_Far_", 1.0),        # was 0.398 (-8 dB): "fine now" at full volume
+        (r"^SFX_LB_Owl_", 0.4),                # P16-6: too loud at 1.0 -> "fine now" at 0.4
+        (r"^SFX_LB_Howl_", 0.5),               # P16-6: with ATT_LB_Thunder (above) -> "audible" at 0.5
         (r"^SFX_LB_Step_Wood_", 2.0),          # P16-6: inaudible on the tower stairs at 0.6 -> "fine now" at 2.0 (the 6 wooden steps)
         (r"^SFX_LB_Step_", 0.6),               # the other 30 player footsteps were too loud at 1.0
         (r"^SFX_LB_Warden_Roar_", 2.0),        # was inaudible under the chase music
