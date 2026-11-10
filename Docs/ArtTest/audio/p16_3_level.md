@@ -91,3 +91,40 @@ From the P16-4 listening session (the owner's choices), written to the editor le
 - `AUD_Zone_Chapel.RoomToneVolume` = 0.4 (the script's table said 0.6; the editor level held 1.0).
 - `AUD_Emit_Chain_C1/C2/C3` `IntervalMin` 8, `IntervalMax` 18 (were 20, 45).
 - Each float is written in its own `set_properties` call and read back. The map was saved with `--save` (only `/Game/LastBell/Maps/L_Monastery`).
+
+## P16-6 creature emitters (D-112)
+Step `creatures` of `Tools/audio/p16_level.py` (`--apply --resume --only creatures`; the census guard needs `--resume` because the map already holds the 3089 actors). 13 `ALBAmbientEmitter` actors in the outliner folder `Audio`, labels `AUD_Emit_<Kind>_<id>`, rotation 0, scale 1, default volume range (0.7, 1.0) and pitch range (0.95, 1.05), no loop, variants `/Game/LastBell/Audio/Room/<name>.<name>` in order. Each float (`intervalMin`, `intervalMax`, `activeRadius`) was written in its own `set_properties` call and read back. Coordinates are constants in the script, probed from the live level (bounds over MCP) and re-checked by `--check`.
+
+| Emitter | Location | Sounds | Interval (s) | ActiveRadius | Why this point |
+|---|---|---|---|---|---|
+| AUD_Emit_Bat_B1 | (12250, 2250, 3430) | SFX_LB_Bat_01..06 | 6..15 | 2500 | belfry NW roof beam, 70 cm under the roof (Tw_Roof underside z 3500) |
+| AUD_Emit_Bat_B2 | (12800, 1700, 3430) | SFX_LB_Bat_01..06 | 6..15 | 2500 | belfry SE roof beam, the opposite corner |
+| AUD_Emit_Bat_B3 | (12480, 2000, 3430) | SFX_LB_Bat_01..06 | 6..15 | 2500 | over the bell's beam (Bell_Beam, z 3300..3400), 683 cm from the bell |
+| AUD_Emit_Bat_T1 | (12440, 1970, 2440) | SFX_LB_Bat_01..06 | 6..15 | 2500 | inside the shaft core (Tw_Core), 60 cm under the belfry floor (z 2500), 67 cm from the axis |
+| AUD_Emit_Owl_C1 | (4550, 550, 650) | SFX_LB_Owl_01..04 | 30..60 | 6000 | crown of the dead tree `Garden_DeadTree_A` (bounds x 4332..4768, y 310..790, z 0..700), mid-courtyard |
+| AUD_Emit_Owl_C2 | (3000, 3620, 810) | SFX_LB_Owl_01..04 | 30..60 | 6000 | top of the north perimeter wall `Perim_N` (y 3600..3640, top z 800) |
+| AUD_Emit_Owl_G1 | (10750, 2250, 640) | SFX_LB_Owl_01..04 | 30..60 | 6000 | top of the north garth arcade arch `CLA_Arch_N_1` (top z 620), garth side (inside the Garth zone, y <= 2260) |
+| AUD_Emit_Howl_NE | (14800, 4900, 500) | SFX_LB_Howl_01..03 | 120..240 | 15000 | north-east, outside the walls |
+| AUD_Emit_Howl_SW | (-4400, -4900, 500) | SFX_LB_Howl_01..03 | 120..240 | 15000 | south-west, outside the walls |
+| AUD_Emit_Rat_R1 | (6325, -2000, -590) | SFX_LB_Rat_01..05 | 15..35 | 2000 | west hall, base of `CA_Wall_W6300` (face x 6302) |
+| AUD_Emit_Rat_R2 | (7525, -1900, -590) | SFX_LB_Rat_01..05 | 15..35 | 2000 | ossuary hall, base of `CA_Wall_W_OS_N` (face x 7502) |
+| AUD_Emit_Rat_R3 | (10750, -2475, -590) | SFX_LB_Rat_01..05 | 15..35 | 2000 | east crypt south row, base of `CA_Wall_S_CC_1` (face y -2498) |
+| AUD_Emit_Rat_R4 | (9600, -2635, -590) | SFX_LB_Rat_01..05 | 15..35 | 2000 | south niche behind the flooded hall, base of `CA_Wall_S_FP_1` (face y -2612) |
+
+Geometry used: belfry interior x 12040..12960, y 1540..2460 between the `Tw_*` walls, roof underside z 3500; great bell (12420, 2000, 2750); perimeter walls `Perim_W/E/S/N` hull x -3040..13440, y -3640..3640, top z 800; crypt floor top z -600.
+
+**Clearances** (computed live by `--check`, 3D distances):
+- Bats B1..B3: z within 3300..3600; bell 744 / 835 / 683 cm (>= 600); apart 340 cm at the least (>= 300); nearest existing emitter 421 cm (drip, belfry NW corner), 709 cm (creak B1) and 530 cm (drip, belfry N wall), all >= 400; inside the belfry walls.
+- Bat T1: inside the `Tw_Core` footprint, z 2440 < 2500, 150 cm from the nearest core face; nearest existing emitter 410 cm (creak T3, needed >= 400).
+- Owls: z 650 / 810 / 640 (600..900); apart 3443 cm at the least (>= 1500); nearest existing emitter 3191 / 6573 / 1768 cm.
+- Howls: 1854 cm beyond the perimeter hull each (>= 1000), NE quadrant (x > 13440, y > 3640) and SW quadrant (x < -3040, y < -3640), z 500.
+- Rats: z -590, inside the Crypt zone box; nearest walk lane (all 10 `WP_*` lanes, 80 points): R1 928 cm (`WP_SacristyToCrypt`), R2 862 cm (same), R3 509 cm (`WP_FloodedLedge`), R4 255 cm (`WP_FloodedLedge`), all >= 150; nearest crypt AI point (Patrol, Search, WSpawn): 325 (`Search_Crypt_09`), 372 (`_02`), 410 (`_13`), 561 (`_12`) cm, all >= 150; nearest existing emitter 511 / 716 / 758 / 633 cm, all >= 400; rats at least 1161 cm apart.
+- A first R4 candidate on the east wall (11475, -1100) was dropped: it was 51 cm from the `WP_CryptToCloister` lane.
+
+**Census:** 3089 -> **3102** (+13); 48 actors in the folder `Audio` (7 zones, 7 volumes, 31 emitters, 3 water pads).
+
+**Checks:**
+- `--apply --resume --only creatures`: 29 PASS, 0 FAIL (13 emitter reads, 16 clearance items), 411 editor calls.
+- Full `--check` (before the save): **107 PASS, 0 FAIL** (1474 editor calls); census 3102, folder content, the never-save list and all audio packages not dirty.
+- `--save` (repeats the full check first, then saves): **126 PASS, 0 FAIL** (1721 editor calls); `save_assets` saved only `/Game/LastBell/Maps/L_Monastery`, `is_dirty` false afterwards; the 17 never-save packages and 226 audio packages (`Audio/**`, `PM_LB_*`, `DA_Audio`, `DT_Footsteps`; the 18 creature waves included) were not dirty before or after.
+- Not verifiable here: how each creature sounds in the space (the owner's listening check), the howls' level at the player's position (ActiveRadius 15000 puts them inside the active set across most of the level; the attenuation is `ATT_LB_Large`), and whether the belfry bats are masked by the wind. No sound was played, no PIE.

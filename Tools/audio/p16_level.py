@@ -1,20 +1,22 @@
 """P16-3: the Phase 16 level work in L_Monastery (Docs/plans/P16_AUDIO.md section 2.4, 2.9, 6.5, F0, P16-3 brief).
 
 Run with the editor open on L_Monastery, PIE off (Windows Python, from PowerShell or Git Bash with MSYS_NO_PATHCONV=1):
-    python -I Tools/audio/p16_level.py --apply [--resume] [--only zones,volumes,emitters,floors,water]
+    python -I Tools/audio/p16_level.py --apply [--resume] [--only zones,volumes,emitters,floors,water,creatures]
     python -I Tools/audio/p16_level.py --check [--only ...] [--start 3054]
-    python -I Tools/audio/p16_level.py --save           (only when the full --check is all PASS and the census is 3089)
+    python -I Tools/audio/p16_level.py --save           (only when the full --check is all PASS and the census is 3102)
     python -I Tools/audio/p16_level.py --reload-check   (after --save: reload the map from disk, then run the full --check)
 
-What it places (census 3054 -> 3089, outliner folder "Audio"):
+What it places (census 3054 -> 3102, outliner folder "Audio"; 3089 is the end of P16-3, the 13 creature emitters are P16-6 / D-112, step "creatures"):
   7  ALBAudioZone    AUD_Zone_<Name>   (Chapel, Crypt, Cloister, Garth, Passage, TowerStair, Belfry)
   7  AudioVolume     AUD_Vol_<Name>    (same boxes, brush scale = size / 200; reverb RVB_LB_<Area>; Garth without reverb)
   18 ALBAmbientEmitter AUD_Emit_<Kind>_<id>  (10 drips at the P15 F0.8 points, 5 creaks, 3 distant chains)
   3  StaticMeshActor AUD_Water_W / _E / _Ledge (thin hidden boxes under the crypt pools: block Visibility only, PM_LB_Water)
+  13 ALBAmbientEmitter AUD_Emit_<Kind>_<id>  (P16-6: 4 bats, 3 owls, 2 howls, 4 rats; step "creatures")
 and sets BodyInstance.PhysMaterialOverride on the F0 floor actors (Wood 166, Grass 1, Earth 40).
 
 --apply is idempotent: every actor is found by its EXACT label (find_actors matches substrings, so the result is filtered) and updated, or
-created when missing. --apply never saves. The census at the start must be 3054 (--resume skips that guard so a partial run can be continued).
+created when missing. --apply never saves. The census at the start must be 3054 (--resume skips that guard so a partial run can be continued, and
+is needed to add the creatures to a map that already holds the 3089 actors of P16-3).
 --check only reads and prints PASS / FAIL per item (exit code 1 when any FAIL).
 --save runs the full check first, then saves ONLY /Game/LastBell/Maps/L_Monastery (one package) and checks is_dirty afterwards; it then checks
 that the never-save list and every audio asset are still not dirty. Never save-all.
@@ -29,6 +31,7 @@ import argparse
 import json
 import math
 import os
+import re
 import sys
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
@@ -42,7 +45,7 @@ S, A, O, AS, E = L.S, L.A, L.O, L.AS, L.E
 MAP_PKG = L.MAP_PKG
 FOLDER = "Audio"
 CENSUS_START = 3054
-NEW_ACTORS = 7 + 7 + 18 + 3          # 35 -> 3089
+NEW_ACTORS = 7 + 7 + 18 + 3 + 13     # 48 -> 3102 (35 -> 3089 after P16-3, +13 creature emitters in P16-6)
 NEVER_SAVE = list(P15.NEVER_SAVE_P158)
 
 ZONE_CLASS = "/Script/LastBell.LBAudioZone"
@@ -135,6 +138,46 @@ for tag, loc, _ in CHAINS:
 
 BELL = (12420.1, 2000.0, 2750.0)
 CORE = ((12290.0, 1790.0), (12710.0, 2210.0))     # Tw_Core footprint
+
+# ---------------------------------------------------------------------------------------------- 3b. creature emitters (P16-6, D-112)
+# Each coordinate comes from the live geometry (probed over MCP) and is checked by --check; one line of reason each.
+BATS = [   # belfry interior x 12040..12960, y 1540..2460, roof underside z 3500 (Tw_Roof); bell (12420, 2000, 2750)
+    ("B1", (12250.0, 2250.0, 3430.0), "belfry NW roof beam, 421 cm from the NW corner drip, 744 cm from the bell"),
+    ("B2", (12800.0, 1700.0, 3430.0), "belfry SE roof beam, the opposite corner, 835 cm from the bell, 709 cm from the creak B1"),
+    ("B3", (12480.0, 2000.0, 3430.0), "belfry ridge over the bell (Bell_Beam, z 3300..3400), 683 cm from the bell, 340 cm from B1"),
+    ("T1", (12440.0, 1970.0, 2440.0), "inside the shaft core 60 cm below the belfry floor (z 2500), 67 cm from the axis, 410 cm from the creak T3: bats under the top slab"),
+]
+OWLS = [
+    ("C1", (4550.0, 550.0, 650.0), "crown of the dead tree Garden_DeadTree_A (bounds x 4332..4768, y 310..790, z 0..700), mid-courtyard"),
+    ("C2", (3000.0, 3620.0, 810.0), "top of the north perimeter wall Perim_N (y 3600..3640, top z 800), 3440 cm from the tree"),
+    ("G1", (10750.0, 2250.0, 640.0), "top of the north garth arcade arch CLA_Arch_N_1 (top z 620), on the garth side (inside the Garth zone, y <= 2260)"),
+]
+HOWLS = [
+    ("NE", (14800.0, 4900.0, 500.0), "north-east, 1360 cm beyond Perim_E (x 13440) and 1260 cm beyond Perim_N (y 3640)"),
+    ("SW", (-4400.0, -4900.0, 500.0), "south-west, 1360 cm beyond Perim_W (x -3040) and 1260 cm beyond Perim_S (y -3640)"),
+]
+RATS = [
+    ("R1", (6325.0, -2000.0, -590.0), "west hall, base of the west wall CA_Wall_W6300 (face x 6302); 325 cm from Search_Crypt_09 and _10"),
+    ("R2", (7525.0, -1900.0, -590.0), "ossuary hall, base of CA_Wall_W_OS_N (face x 7502); 862 cm from the sacristy lane"),
+    ("R3", (10750.0, -2475.0, -590.0), "east crypt south row, base of CA_Wall_S_CC_1 (face y -2498); 509 cm from the flooded ledge lane"),
+    ("R4", (9600.0, -2635.0, -590.0), "south niche behind the flooded hall, base of CA_Wall_S_FP_1 (face y -2612); 255 cm from the ledge lane"),
+]
+BAT = dict(var=variants("SFX_LB_Bat", 6), imin=6.0, imax=15.0)
+OWL = dict(var=variants("SFX_LB_Owl", 4), imin=30.0, imax=60.0)
+HOWL = dict(var=variants("SFX_LB_Howl", 3), imin=120.0, imax=240.0)
+RAT = dict(var=variants("SFX_LB_Rat", 5), imin=15.0, imax=35.0)
+BAT_RADIUS, OWL_RADIUS, HOWL_RADIUS, RAT_RADIUS = 2500.0, 6000.0, 15000.0, 2000.0
+CREATURES = []        # label, location, spec, active radius
+for tag, loc, _ in BATS:
+    CREATURES.append(("AUD_Emit_Bat_" + tag, loc, BAT, BAT_RADIUS))
+for tag, loc, _ in OWLS:
+    CREATURES.append(("AUD_Emit_Owl_" + tag, loc, OWL, OWL_RADIUS))
+for tag, loc, _ in HOWLS:
+    CREATURES.append(("AUD_Emit_Howl_" + tag, loc, HOWL, HOWL_RADIUS))
+for tag, loc, _ in RATS:
+    CREATURES.append(("AUD_Emit_Rat_" + tag, loc, RAT, RAT_RADIUS))
+BELFRY_INT = ((12040.0, 1540.0), (12960.0, 2460.0))   # inside the Tw_* walls
+CRYPT_BOX = ((6300.0, -2950.0, -1200.0), (12000.0, 520.0, -20.0))    # the Crypt zone box
 # ---------------------------------------------------------------------------------------------- 4. floors
 WOOD = (["Tw_Landing_%02d" % i for i in range(1, 11)] + ["Stair_F%02d_%02d" % (f, s) for f in range(1, 12) for s in range(14)] + ["Top_Slab_N", "Top_Slab_W"])
 GRASS = ["Garth"]
@@ -305,7 +348,15 @@ def check_volumes(ed):
 
 # ---------------------------------------------------------------------------------------------- 3. emitters
 def apply_emitters(ed):
-    for label, loc, spec, radius in EMITTERS:
+    apply_emitter_list(ed, EMITTERS)
+
+
+def apply_creatures(ed):
+    apply_emitter_list(ed, CREATURES)
+
+
+def apply_emitter_list(ed, emitters):
+    for label, loc, spec, radius in emitters:
         ref, created = ed.get_or_create(EMIT_CLASS, label, loc)
         ed.set_xform(ref, loc, (0, 0, 0), (1, 1, 1))
         cur = [R(x) for x in ed.props(ref, ["variants"])["variants"]]
@@ -318,8 +369,18 @@ def apply_emitters(ed):
 
 
 def check_emitters(ed):
+    check_emitter_list(ed, EMITTERS)
+    clearance_report(ed)
+
+
+def check_creatures(ed):
+    check_emitter_list(ed, CREATURES)
+    creature_clearances(ed)
+
+
+def check_emitter_list(ed, emitters):
     fs = ed.folder_actors()
-    for label, loc, spec, radius in EMITTERS:
+    for label, loc, spec, radius in emitters:
         ref = ed.find_one(label)
         if not ref:
             rec(False, "%s exists" % label)
@@ -335,7 +396,6 @@ def check_emitters(ed):
         rec(ok, "%s at %s %d variants (%s..%s) interval %.1f..%.1f radius %g vol %s pitch %s folder %s" % (
             label, rnd(l, 1), len(got), (got[0] if got else "-").rsplit(".", 1)[-1], (got[-1] if got else "-").rsplit(".", 1)[-1], p["intervalMin"], p["intervalMax"],
             p["activeRadius"], rnd([vr["x"], vr["y"]], 2), rnd([pr["x"], pr["y"]], 2), FOLDER if ref in fs else "NOT-IN-FOLDER"))
-    clearance_report(ed)
 
 
 def seg_dist(p, a, b):
@@ -380,6 +440,81 @@ def clearance_report(ed):
         lane = min(poly_dist(loc, pts) for pts in crypt_lanes if len(pts) > 1)
         aid = min(math.dist(loc, q) for q in ai)
         rec(lane >= 300.0 and aid >= 150.0, "Chain %s %s: walk lane %.0f cm (>=300), nearest AI point %.0f cm (>=150)" % (tag, rnd(loc, 1), lane, aid))
+
+
+def all_lanes(ed):
+    """Every WP_* walk path (WalkPath TargetPoints) grouped by the label prefix without the trailing index, in label order."""
+    groups = {}
+    for r in ed.find_all(name="WP_"):
+        lab = ed.label(r)
+        if lab.startswith("WP_"):
+            groups.setdefault(re.sub(r"_\d+$", "", lab), []).append((lab, ed.xform(r)[0]))
+    return {k: [p for _, p in sorted(v)] for k, v in groups.items()}
+
+
+def lane_dist(p, pts):
+    return math.dist(p, pts[0]) if len(pts) == 1 else poly_dist(p, pts)
+
+
+def box_dist2d(p, lo, hi):
+    dx = max(lo[0] - p[0], 0.0, p[0] - hi[0])
+    dy = max(lo[1] - p[1], 0.0, p[1] - hi[1])
+    return math.hypot(dx, dy)
+
+
+def creature_clearances(ed):
+    """The geometric promises of the D-112 table, computed from the live level (walk paths, AI points, Perim_* walls) and the constants above."""
+    existing = [(lab, loc) for lab, loc, _, _ in EMITTERS]
+
+    def min_existing(p):
+        lab, loc = min(existing, key=lambda e: math.dist(p, e[1]))
+        return math.dist(p, loc), lab
+
+    def pair_min(items):
+        return min(math.dist(a[1], b[1]) for i, a in enumerate(items) for b in items[i + 1:])
+
+    belfry = [(t, l) for t, l, _ in BATS if t.startswith("B")]
+    t1 = [l for t, l, _ in BATS if t == "T1"][0]
+    for tag, loc in belfry:
+        bell, ex = math.dist(loc, BELL), min_existing(loc)
+        inside = BELFRY_INT[0][0] <= loc[0] <= BELFRY_INT[1][0] and BELFRY_INT[0][1] <= loc[1] <= BELFRY_INT[1][1]
+        rec(3300.0 <= loc[2] <= 3600.0 and bell >= 600.0 and ex[0] >= 400.0 and inside,
+            "Bat %s %s: z %.0f (3300..3600), bell %.0f cm (>=600), nearest existing emitter %.0f cm %s (>=400), inside the belfry walls %s" % (tag, rnd(loc, 1), loc[2], bell, ex[0], ex[1], inside))
+    rec(pair_min(belfry) >= 300.0, "Bats B1..B3 are %.0f cm apart at the least (>=300)" % pair_min(belfry))
+    ex = min_existing(t1)
+    face = min(t1[0] - CORE[0][0], CORE[1][0] - t1[0], t1[1] - CORE[0][1], CORE[1][1] - t1[1])
+    rec(2400.0 <= t1[2] < 2500.0 and face > 0 and ex[0] >= 400.0,
+        "Bat T1 %s: just below the belfry floor (z %.0f < 2500), inside the Tw_Core footprint (%.0f cm from the nearest face), nearest existing emitter %.0f cm %s (>=400)" % (rnd(t1, 1), t1[2], face, ex[0], ex[1]))
+    owls = [(t, l) for t, l, _ in OWLS]
+    for tag, loc in owls:
+        ex = min_existing(loc)
+        rec(600.0 <= loc[2] <= 900.0 and ex[0] >= 400.0, "Owl %s %s: z %.0f (600..900), nearest existing emitter %.0f cm (>=400)" % (tag, rnd(loc, 1), loc[2], ex[0]))
+    rec(pair_min(owls) >= 1500.0, "Owls are %.0f cm apart at the least (>=1500)" % pair_min(owls))
+    pb = [ed.bounds(ed.find_one(n, must=True)) for n in ("Perim_W", "Perim_E", "Perim_S", "Perim_N")]
+    lo = (min(b[0][0] for b in pb), min(b[0][1] for b in pb))
+    hi = (max(b[1][0] for b in pb), max(b[1][1] for b in pb))
+    info("perimeter walls hull x %.0f..%.0f, y %.0f..%.0f" % (lo[0], hi[0], lo[1], hi[1]))
+    for tag, loc, _ in HOWLS:
+        d = box_dist2d(loc, lo, hi)
+        quadrant = (loc[0] > hi[0] and loc[1] > hi[1]) if tag == "NE" else (loc[0] < lo[0] and loc[1] < lo[1])
+        rec(d >= 1000.0 and quadrant and loc[2] == 500.0, "Howl %s %s: %.0f cm beyond the perimeter hull (>=1000), %s quadrant %s, z %.0f" % (tag, rnd(loc, 1), d, tag, quadrant, loc[2]))
+    lanes = all_lanes(ed)
+    ai = []
+    for pre in ("Patrol_Crypt_", "Search_Crypt_", "WSpawn_Crypt"):
+        for r in ed.find_all(name=pre):
+            if ed.label(r).startswith(pre):
+                ai.append((ed.label(r), ed.xform(r)[0]))
+    info("rat inputs: %d WP_ lanes (%d points), %d crypt AI points" % (len(lanes), sum(len(v) for v in lanes.values()), len(ai)))
+    rats = [(t, l) for t, l, _ in RATS]
+    for tag, loc in rats:
+        lane_n, lane_d = min(((k, lane_dist(loc, v)) for k, v in lanes.items()), key=lambda e: e[1])
+        ai_n, ai_d = min(((n, math.dist(loc, q)) for n, q in ai), key=lambda e: e[1])
+        ex = min_existing(loc)
+        incrypt = all(CRYPT_BOX[0][i] <= loc[i] <= CRYPT_BOX[1][i] for i in range(3))
+        rec(loc[2] == -590.0 and lane_d >= 150.0 and ai_d >= 150.0 and ex[0] >= 400.0 and incrypt,
+            "Rat %s %s: z %.0f, nearest walk lane %.0f cm %s (>=150), nearest AI point %.0f cm %s (>=150), nearest existing emitter %.0f cm %s (>=400), inside the Crypt zone %s" % (
+                tag, rnd(loc, 1), loc[2], lane_d, lane_n, ai_d, ai_n, ex[0], ex[1], incrypt))
+    rec(pair_min(rats) >= 1000.0, "Rats are %.0f cm apart at the least (different rooms, >=1000)" % pair_min(rats))
 
 
 # ---------------------------------------------------------------------------------------------- 4. floors
@@ -542,8 +677,9 @@ def check_census(ed, start):
     rec(len(fa) == NEW_ACTORS, "%d actors in the outliner folder %s (expected %d)" % (len(fa), FOLDER, NEW_ACTORS))
     labels = [ed.label(r) for r in fa]
     rec(sum(1 for x in labels if x.startswith("AUD_Zone_")) == 7 and sum(1 for x in labels if x.startswith("AUD_Vol_")) == 7
-        and sum(1 for x in labels if x.startswith("AUD_Emit_")) == 18 and sum(1 for x in labels if x.startswith("AUD_Water_")) == 3,
-        "folder content: 7 zones, 7 volumes, 18 emitters, 3 water pads")
+        and sum(1 for x in labels if x.startswith("AUD_Emit_")) == 31 and sum(1 for x in labels if x.startswith("AUD_Water_")) == 3
+        and sum(1 for k in ("Bat", "Owl", "Howl", "Rat") for x in labels if x.startswith("AUD_Emit_%s_" % k)) == 13,
+        "folder content: 7 zones, 7 volumes, 31 emitters (18 + 13 creatures: 4 bats, 3 owls, 2 howls, 4 rats), 3 water pads")
     return n
 
 
@@ -600,9 +736,9 @@ def do_reload_check(ed, start):
     check_dirty(ed)
 
 
-STEPS = ["zones", "volumes", "emitters", "floors", "water"]
-APPLY = {"zones": apply_zones, "volumes": apply_volumes, "emitters": apply_emitters, "floors": apply_floors, "water": apply_water}
-CHECK = {"zones": check_zones, "volumes": check_volumes, "emitters": check_emitters, "floors": check_floors, "water": check_water}
+STEPS = ["zones", "volumes", "emitters", "floors", "water", "creatures"]
+APPLY = {"zones": apply_zones, "volumes": apply_volumes, "emitters": apply_emitters, "floors": apply_floors, "water": apply_water, "creatures": apply_creatures}
+CHECK = {"zones": check_zones, "volumes": check_volumes, "emitters": check_emitters, "floors": check_floors, "water": check_water, "creatures": check_creatures}
 
 
 def main():
@@ -613,8 +749,8 @@ def main():
     g.add_argument("--save", action="store_true")
     g.add_argument("--reload-check", action="store_true")
     ap.add_argument("--only", default="", help="comma list of: " + ",".join(STEPS))
-    ap.add_argument("--start", type=int, default=CENSUS_START, help="actor count before P16-3 (3054); the final state is start + 35 = 3089")
-    ap.add_argument("--resume", action="store_true", help="--apply: skip the census-is-3054 guard (continue a partial run)")
+    ap.add_argument("--start", type=int, default=CENSUS_START, help="actor count before P16-3 (3054); the final state is start + 48 = 3102 (3089 before the P16-6 creatures)")
+    ap.add_argument("--resume", action="store_true", help="--apply: skip the census-is-3054 guard (continue a partial run, or add the creatures to the 3089 map)")
     a = ap.parse_args()
     steps = [s for s in STEPS if not a.only or s in a.only.split(",")]
     bad = [s for s in a.only.split(",") if s and s not in STEPS]
