@@ -755,6 +755,15 @@ The GPU cost of the cinematic shots is not measured in this phase (the finale cl
 ## Results
 (Filled in as the tasks finish.)
 
+### P17-4 (2026-11-10, a9e8055)
+`M_LB_PP_MaskView` and `MI_LB_PP_MaskView` are in `/Game/LastBell/Materials/PostProcess/`.
+- **Graph:** a single Custom HLSL node fed by 14 real parameters (13 scalar, 1 vector, group `MaskView`), plus `SceneTexture` PostProcessInput0, `ScreenPosition` ViewportUV, `ViewSize` and `Time`.
+- **Settings:** domain Post Process, blendable location `BL_SceneColorAfterTonemapping`.
+- **Checks:** `--check` gives 66 PASS, 0 FAIL, and `recompile` is clean. The MI has no overrides and was created with its parent (no `set_parent`). Nothing else became dirty.
+- **Lead review:** the HLSL matches the section 4.3 formula line by line.
+- **Still open:** the look itself, never rendered yet, is the owner's call in P17-7. No instruction count is available over MCP.
+- **MCP quirks** (Custom node `inputs` array resizing, parameter tool argument names, the blendable location names) are in the agent's report and go into `MCP_NOTES` at P17-9.
+
 ### S1b (2026-11-10, owner in PIE; in-memory spike edits only, nothing saved)
 The spike was played with `lb.Cine.PlayAsset`. Two in-memory edits were made through MCP first, and neither was saved:
 - the fade track was removed, so the blends could be seen;
