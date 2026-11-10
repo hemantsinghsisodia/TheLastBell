@@ -11,7 +11,7 @@ Environment variables:
                  (P16-5: LB_REIMPORT="^SFX_LB_Thunder_(Near|Strike)_" re-imports the recorded-crack thunder only)
 
 What it does (docs/plans/P16_AUDIO.md, "P16-2 brief"):
- 1. imports the 175 WAVs of SourceArt/Audio/Generated and Recorded into /Game/LastBell/Audio/<Folder>/
+ 1. imports the 193 WAVs (P16-6: +18 creature cues) of SourceArt/Audio/Generated and Recorded into /Game/LastBell/Audio/<Folder>/
  2. sets looping, sound class, attenuation, concurrency and volume per SoundWave (cue sheet, section 3)
  3. creates the SoundClasses, SMX_LB_User, 8 attenuation, 4 concurrency and 6 reverb assets (sections 6.1 to 6.4)
  4. creates the 6 PM_LB_* physical materials (SurfaceType1..6)
@@ -90,7 +90,7 @@ FOLDERS = [  # (regex on the asset name, folder under /Game/LastBell/Audio)
     (r"^SFX_LB_Thunder_", "Thunder"),
     (r"^SFX_LB_(Bell_|SmallBell_)", "Bell"),
     (r"^MUS_LB_", "Music"),
-    (r"^SFX_LB_(Room_|Drip_|Creak_|Chain_Distant_)", "Room"),
+    (r"^SFX_LB_(Room_|Drip_|Creak_|Chain_Distant_|Bat_|Owl_|Howl_|Rat_)", "Room"),
     (r"^SFX_LB_(Step_|Breath_|Candle_|Key_|Paper_)", "Player"),
     (r"^SFX_LB_(Door_|Lever_|Winch_|Stone_|Generic_)", "Interact"),
     (r"^SFX_LB_(Warden_|Apparition_)", "Warden"),
@@ -108,6 +108,10 @@ SOUND_RULES = [
     (r"^SFX_LB_Drip_", "Ambience", "ATT_LB_Small"),
     (r"^SFX_LB_Creak_", "Ambience", "ATT_LB_Medium"),
     (r"^SFX_LB_Chain_Distant_", "Ambience", "ATT_LB_Large"),
+    # P16-6 creature ambience (D-112): played by ALBAmbientEmitter, no concurrency set
+    (r"^SFX_LB_Bat_", "Ambience", "ATT_LB_Medium"),
+    (r"^SFX_LB_(Owl|Howl)_", "Ambience", "ATT_LB_Large"),
+    (r"^SFX_LB_Rat_", "Ambience", "ATT_LB_Small"),
     (r"^SFX_LB_Step_", "SFX", "ATT_LB_Step"),
     (r"^SFX_LB_(Breath_|Candle_|Key_|Paper_)", "SFX", None),
     (r"^SFX_LB_Door_", "SFX", "ATT_LB_Medium"),
@@ -197,7 +201,8 @@ OWNER_CHOICES = {
     "wave_volume": [
         (r"^SFX_LB_Bell_Stage[1-4]$", 1.0),    # was 0.126 / 0.200 / 0.316 / 0.501: stage 1 was inaudible; the files' own filtering carries the distance
         (r"^SFX_LB_Thunder_Far_", 1.0),        # was 0.398 (-8 dB): "fine now" at full volume
-        (r"^SFX_LB_Step_", 0.6),               # the 36 player footsteps were too loud at 1.0
+        (r"^SFX_LB_Step_Wood_", 2.0),          # P16-6: inaudible on the tower stairs at 0.6 -> "fine now" at 2.0 (the 6 wooden steps)
+        (r"^SFX_LB_Step_", 0.6),               # the other 30 player footsteps were too loud at 1.0
         (r"^SFX_LB_Warden_Roar_", 2.0),        # was inaudible under the chase music
     ],
     # SoundClass Properties.volume by class key (CLASS_NAMES): the overall loudness
@@ -880,14 +885,14 @@ def count_folders(items):
     check("folder Physics holds 6 assets", len(phys_listed) == 6, len(phys_listed))
     report["counts"] = counts
     report["counts"]["sounds_total"] = sum(counts[f] for f in expected)
-    check("175 sounds in total", report["counts"]["sounds_total"] == 175, report["counts"]["sounds_total"])
+    check("193 sounds in total", report["counts"]["sounds_total"] == 193, report["counts"]["sounds_total"])
 
 
 def verify_all(items, classes, attenuation, concurrency, reverbs, mix, phys):
     """Reads everything back (in a fresh process this proves the saved files)."""
     count_folders(items)
-    check("175 WAVs found in SourceArt", len(items) == 175, len(items))
-    check("51 generated + 124 recorded", sum(1 for i in items.values() if i["source"] == "generated") == 51 and sum(1 for i in items.values() if i["source"] == "recorded") == 124)
+    check("193 WAVs found in SourceArt", len(items) == 193, len(items))
+    check("51 generated + 142 recorded (124 + 18 creature cues)", sum(1 for i in items.values() if i["source"] == "generated") == 51 and sum(1 for i in items.values() if i["source"] == "recorded") == 142)
     loops = []
     for name, info in items.items():
         wave = EAL.load_asset(sound_package(name))

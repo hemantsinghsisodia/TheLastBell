@@ -1,12 +1,12 @@
 {
  "mode": "verify",
  "ok": true,
- "checks": 1565,
+ "checks": 1691,
  "failures": [],
  "counts": {
   "Music": 8,
   "Bell": 8,
-  "Room": 25,
+  "Room": 43,
   "Weather": 4,
   "Thunder": 15,
   "Warden": 30,
@@ -14,11 +14,11 @@
   "Interact": 22,
   "Mix": 25,
   "Physics": 6,
-  "sounds_total": 175
+  "sounds_total": 193
  },
  "saved": [],
  "notes": [
-  "mode=verify reimport=False; 175 WAVs found"
+  "mode=verify reimport=False; 193 WAVs found"
  ],
  "set_log": [],
  "properties": {
@@ -400,6 +400,48 @@
    "loop": false,
    "volume": 1.0
   },
+  "SFX_LB_Bat_01": {
+   "cls": "SCL_LB_Ambience",
+   "att": "ATT_LB_Medium",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Bat_02": {
+   "cls": "SCL_LB_Ambience",
+   "att": "ATT_LB_Medium",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Bat_03": {
+   "cls": "SCL_LB_Ambience",
+   "att": "ATT_LB_Medium",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Bat_04": {
+   "cls": "SCL_LB_Ambience",
+   "att": "ATT_LB_Medium",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Bat_05": {
+   "cls": "SCL_LB_Ambience",
+   "att": "ATT_LB_Medium",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Bat_06": {
+   "cls": "SCL_LB_Ambience",
+   "att": "ATT_LB_Medium",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
   "SFX_LB_Breath_Calm_01": {
    "cls": "SCL_LB_SFX",
    "att": null,
@@ -701,6 +743,27 @@
    "loop": false,
    "volume": 1.0
   },
+  "SFX_LB_Howl_01": {
+   "cls": "SCL_LB_Ambience",
+   "att": "ATT_LB_Large",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Howl_02": {
+   "cls": "SCL_LB_Ambience",
+   "att": "ATT_LB_Large",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Howl_03": {
+   "cls": "SCL_LB_Ambience",
+   "att": "ATT_LB_Large",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
   "SFX_LB_Key_Pickup_01": {
    "cls": "SCL_LB_SFX",
    "att": null,
@@ -743,6 +806,34 @@
    "loop": false,
    "volume": 1.0
   },
+  "SFX_LB_Owl_01": {
+   "cls": "SCL_LB_Ambience",
+   "att": "ATT_LB_Large",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Owl_02": {
+   "cls": "SCL_LB_Ambience",
+   "att": "ATT_LB_Large",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Owl_03": {
+   "cls": "SCL_LB_Ambience",
+   "att": "ATT_LB_Large",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Owl_04": {
+   "cls": "SCL_LB_Ambience",
+   "att": "ATT_LB_Large",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
   "SFX_LB_Paper_01": {
    "cls": "SCL_LB_SFX",
    "att": null,
@@ -760,6 +851,41 @@
   "SFX_LB_Paper_03": {
    "cls": "SCL_LB_SFX",
    "att": null,
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Rat_01": {
+   "cls": "SCL_LB_Ambience",
+   "att": "ATT_LB_Small",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Rat_02": {
+   "cls": "SCL_LB_Ambience",
+   "att": "ATT_LB_Small",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Rat_03": {
+   "cls": "SCL_LB_Ambience",
+   "att": "ATT_LB_Small",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Rat_04": {
+   "cls": "SCL_LB_Ambience",
+   "att": "ATT_LB_Small",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "SFX_LB_Rat_05": {
+   "cls": "SCL_LB_Ambience",
+   "att": "ATT_LB_Small",
    "con": null,
    "loop": false,
    "volume": 1.0
@@ -979,42 +1105,42 @@
    "att": "ATT_LB_Step",
    "con": "CON_LB_Steps",
    "loop": false,
-   "volume": 0.6
+   "volume": 2.0
   },
   "SFX_LB_Step_Wood_02": {
    "cls": "SCL_LB_SFX",
    "att": "ATT_LB_Step",
    "con": "CON_LB_Steps",
    "loop": false,
-   "volume": 0.6
+   "volume": 2.0
   },
   "SFX_LB_Step_Wood_03": {
    "cls": "SCL_LB_SFX",
    "att": "ATT_LB_Step",
    "con": "CON_LB_Steps",
    "loop": false,
-   "volume": 0.6
+   "volume": 2.0
   },
   "SFX_LB_Step_Wood_04": {
    "cls": "SCL_LB_SFX",
    "att": "ATT_LB_Step",
    "con": "CON_LB_Steps",
    "loop": false,
-   "volume": 0.6
+   "volume": 2.0
   },
   "SFX_LB_Step_Wood_05": {
    "cls": "SCL_LB_SFX",
    "att": "ATT_LB_Step",
    "con": "CON_LB_Steps",
    "loop": false,
-   "volume": 0.6
+   "volume": 2.0
   },
   "SFX_LB_Step_Wood_06": {
    "cls": "SCL_LB_SFX",
    "att": "ATT_LB_Step",
    "con": "CON_LB_Steps",
    "loop": false,
-   "volume": 0.6
+   "volume": 2.0
   },
   "SFX_LB_Stone_Grind_01": {
    "cls": "SCL_LB_SFX",
