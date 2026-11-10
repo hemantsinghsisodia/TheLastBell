@@ -175,6 +175,15 @@ Every float is clamped, with units in its tooltip. No hard asset references: eve
   - The character's locked-interact delegates (section 2.4) call `BeginSkipHold` and `EndSkipHold`. While skippable, holding for `SkipHoldSeconds` calls `RequestSkip()`; the widget shows the prompt and a progress bar.
   - **`RequestSkip()`:** fire every must marker not yet fired (in order); jump the player to the end (`SetPlaybackPosition` with `EUpdatePositionMethod::Jump`, then `Stop`); fade the camera from black over 0.5 s (`StartCameraFade(1, 0, 0.5, Black)`); restore.
   - Skipping during the credits stops the roll, so the pending `end` completes at once.
+  - **Fix from S1b (to build with P17-2):**
+    - **The cause:** the skip's fade-up got cancelled. When the player is stopped or destroyed, the engine's fade system (`MovieSceneFadeSystem`) restores its pre-animated fade with `SetManualCameraFade(saved value)`. That restore runs after `StartCameraFade`, so it overrides the fade-up. In the intro, the saved value is black (from `bStartBlack`), so a skip would show black until the 0.7 s timer, then pop clear.
+    - **`RequestSkip` becomes:**
+      1. fire the must markers;
+      2. `SetManualCameraFade(1, Black)` at once;
+      3. jump, stop and `FinishRun(bKeepFade)`, which destroys the sequence actor;
+      4. **on the next tick** (`SetTimerForNextTick`, a weak lambda; skipped if a new run started or a travel is pending), `StartCameraFade(1, 0, SkipFadeSeconds, Black)`;
+      5. arm the clear timer (`SkipFadeSeconds` + 0.2 s) from that point.
+    - **Also, in P17-5a:** every fade section uses completion mode **Keep State**, so Sequencer never restores the fade and the subsystem owns it after the sequence. This also avoids a possible one-frame black flash at the intro's natural end.
 - **Restore** (on finish, skip, stop or failure):
   - lock `None`, HUD shown;
   - destroy the sequence actor and remove the widget, unless a `CompleteGame` travel is pending;
@@ -632,6 +641,12 @@ The headless Python spike S1a stays the primary route, because it is repeatable 
     - `RopeZAboutAxle` changes only Z, by about ±36 cm at ±16° for the rope top (12550, 1835, 2750);
   - `CreditsSpeed`;
   - `CameraCutCanBlendHelper`: on a transient sequence's camera cut track, set to true and read back true; a null track returns false;
+  - (functional, content-free) `SkipFadesUp`. The setup is a transient sequence with a fade track keyed 1 → 0 over 0–0.5 s, at the default completion mode (Restore State, the case that broke), and a skip at 1.0 s. Expected:
+    - within 2 frames the fade is at least 0.9;
+    - 0.25 s later it is between 0.2 and 0.8;
+    - by 0.8 s it is clear.
+
+    `SkipClearsFade` also checks the black phase.
   - `Warden.Stage6IsDormant`.
 - **Functional** (`LBCinematicFunctionalTests.cpp`, `LastBell.Functional.Cine.*`, on `L_Monastery` unless noted; `lb.Cine.Rate 8`):
   - `IntroOnNewGame`: `StartNewGame`; the intro starts; lock Full; HUD hidden; Arrival set once; lock None at the end; the view is the player's camera.
@@ -709,6 +724,25 @@ The GPU cost of the cinematic shots is not measured in this phase (the finale cl
 
 ## Results
 (Filled in as the tasks finish.)
+
+### S1b (2026-11-10, owner in PIE; in-memory spike edits only, nothing saved)
+The spike was played with `lb.Cine.PlayAsset`. Two in-memory edits were made through MCP first, and neither was saved:
+- the fade track was removed, so the blends could be seen;
+- the `!lock:None` marker was deleted, so the lock held and the skip could be tried.
+
+**Passes:**
+- the camera blend eases both in and out;
+- the markers fire in order, on time;
+- the Warden figure plays its slot animation without turning;
+- the cube moves from `head` to `hand_r`;
+- the skip prompt shows bottom-right, and holding E skips.
+
+**Fail: the fade-up after a skip.** The view went straight back to the player's eyes, with no black and no fade. The cause and the fix are in section 2.3 (Skip); the fix ships with the next Unreal-closed build.
+
+**Notes:**
+- The skip only listens while input is locked. That is by design, and both sequences are locked whenever they are skippable.
+- The spike's figure had collision, so the player standing on its foot caused `AddForceAtLocation` warnings. The real `WardenFigure` is NoCollision (section 3.2), and P17-5a must set it on the template.
+- The marker `tag:State.Test.A` was rejected as an unknown tag, as expected.
 
 ### P17-1 (2026-11-10, e24a3ef…5f981b8)
 The code in section 2 is built. The editor build is clean (no compiler warnings), and the game target built in phase A.
