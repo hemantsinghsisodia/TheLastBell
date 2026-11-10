@@ -1,4 +1,6 @@
-# Phase 17: Cinematics (plan for owner approval)
+# Phase 17: Cinematics
+
+**Status:** approved by the owner on 2026-11-10 ("approve"). P17-0 done.
 
 Branch `claude/phase-17-cinematics`, created from `main` at 88e164e. **The lead plans; every implementation agent is spawned with `model: "sonnet", effort: "high"`** (D-048).
 

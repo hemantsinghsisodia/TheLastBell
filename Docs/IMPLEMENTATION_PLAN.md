@@ -467,7 +467,37 @@ Branch `claude/phase-16-audio`. Spec and plan: `Docs/plans/P16_AUDIO.md` (D-108�
   - Records: d440a3b, 79fdcaf, badfddf.
 - **Suite:** 175/175 with the editor closed (141 from Phase 15 plus 34 new: 9 unit, 24 audio functional including `Monastery.AudioSetup`, and the candle flame test), 0 invalid tags, 0 `Error:` lines.
 
-**Status 2026-11-10:** Phase 16 is complete on `claude/phase-16-audio`: P16-0, F0, A1–A4 and P16-1 to P16-7 are done. Owner listening session, play-through and creature check; QA has no P0/P1 findings; final suite 175/175; the Game target builds. The performance readings were waived by the owner (D-113; Phase 20). PHASE 16 READY FOR YOUR REVIEW; merge to main only on the owner's "approve and merge".
+**Status 2026-11-10:** Phase 16 is complete on `claude/phase-16-audio`: P16-0, F0, A1–A4 and P16-1 to P16-7 are done. Owner listening session, play-through and creature check; QA has no P0/P1 findings; final suite 175/175; the Game target builds. The performance readings were waived by the owner (D-113; Phase 20). The owner approved it, and it was merged to `main` on 2026-11-10 (88e164e).
+
+## Phase 17 — Cinematics: task breakdown
+
+Branch `claude/phase-17-cinematics`. Spec and plan: `Docs/plans/P17_CINEMATICS.md` (D-114…D-118, R-78…R-84). The owner approved the plan on 2026-11-10:
+- finale "trapped in the belfry", look-only after the ring; the Warden climbs while the bell tolls and swings by itself;
+- ending "you become the Warden": a shown mask lift, darkness under the hood, the last view through the mask from the courtyard wall top as a lantern comes through the gate;
+- a short skippable intro on New Game only; the player is a villager from below;
+- end cards, then skippable credits, then the menu;
+- built with Sequencer (visuals) plus labelled markers carried out by `ULBCinematicSubsystem`.
+
+| Task | Scope | Owner | Depends on |
+|---|---|---|---|
+| P17-0 | Plan approval; D-114…D-118, R-78…R-84, R-77 update; this table; `GAME_DESIGN` ending resolved | lead + owner | — |
+| F0 | Read-only survey: spawn and eye, gatehouse passage, wall top, bell and swing axis, tower top, sight lines for the mark and glimpses, Warden slots and bones, note texts, MCP toolsets | environment-designer [EDITOR read-only] | P17-0 |
+| F0b | Blender read-only: mask faces, weights, bounds; mask on/off renders | technical-artist | P17-0 |
+| A1 | Mixamo mask-lift candidates (owner downloads) | owner | P17-0 |
+| S1a | Sequencer authoring spike, headless | animation-specialist | F0 |
+| P17-1 | C++: cinematic subsystem, settings, logic, widget, input lock, HUD hide, checkpoint rule, stage 6 dormant, bell strike delegate and Arrival beat, CVars and commands, tests; the Arrival tag | gameplay-programmer | P17-0 |
+| P17-2 | `DA_Audio` (Arrival row, no new-game toll), `DA_Cinematics`, `SMX_LB_CineFade`, credits, config | gameplay-programmer + audio-designer | P17-1, F0 |
+| P17-3 | `SM_LB_WardenMask`, hood void (if needed), `AN_Warden_MaskLift` (Mixamo or Blender-keyed), imports | technical-artist + animation-specialist | F0b, A1, S1a |
+| P17-4 | `M_LB_PP_MaskView` and its MI | technical-artist | F0 |
+| P17-5a | `LS_LB_Intro`, `LS_LB_Finale` by script; `--check` | animation-specialist | S1a, P17-2, P17-3, P17-4 |
+| S1b | Spike playback in PIE (owner 5 min) | lead + owner | P17-1 |
+| P17-5b | Level: finale mark, stair top, bell tag and mobility, `EndingTrigger` removed; one map save; suite | environment-designer [EDITOR] | P17-5a, S1b |
+| P17-6 | Owner intro review | lead + owner | P17-5b |
+| P17-7 | Owner finale review | lead + owner | P17-6 |
+| P17-8 | QA and owner play-through | qa-reviewer + owner | P17-7 |
+| P17-9 | Docs, final suite, Game build; PHASE 17 READY FOR YOUR REVIEW | lead + docs agent | all |
+
+**Outcome:** filled in as the tasks finish.
 
 ## Deferred to Phase 14–15 (Lighting, VFX: storm work)
 Items the owner asked to fold into the storm pass. **Foliage wind is now in Phase 14** (P14 section 6, D-096: `MPC_LB_Storm` replaces the planned `MPC_LB_Wind`).

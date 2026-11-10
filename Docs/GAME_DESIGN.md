@@ -43,5 +43,5 @@ Ominous restraint in the style of Amnesia: The Dark Descent and SOMA, monastery 
 ## Open design questions (resolved in later phases)
 - Is stamina needed for sprinting? Phase 3 playtest decides.
 - Is object inspection needed? Phase 3, only if puzzles benefit.
-- Which ending variant to use: single ending, likely "the bell rings for you". Phase 17.
+- Which ending variant to use: **resolved in Phase 17 (D-114):** a single ending, "the bell rings for you". The player is trapped in the belfry, the Warden reaches them and puts its mask on them, and they become the Warden; the last view is through the mask, as the next villager's lantern comes through the gate.
 - Exact puzzle choices per mechanism: Phase 2 greybox and Phase 4.
