@@ -716,7 +716,7 @@ The headless Python spike S1a stays the primary route, because it is repeatable 
 | S1a | Section 8 | animation-specialist | **Unreal closed** | F0 |
 | P17-1 | Section 2 code, CVars and commands, section 10 tests; build and suite. Also adds `State.Event.Arrival` to `Config/Tags/LBGameplayTags.ini` (editor closed): `GameplayTagList=(Tag="State.Event.Arrival",DevComment="Intro played or skipped: the first toll; never repeats")`. Until P17-5b the content-dependent tests (`Monastery.CinematicSetup`, `IntroOnNewGame`, `NoIntroOnContinue`, `IntroSkip`, `FinaleOnBell`, `BellSwingsOnStrike`) are expected to fail; every other test must pass. `RouteBot.Monastery` must pass in both states: with no `DA_Cinematics` nothing plays and the old `EndingTrigger` still travels | gameplay-programmer | **Unreal closed** | P17-0 (data values come from F0 in P17-2) |
 | P17-2 | `p16_2_assets.py` (Arrival row via `FillPlanDefaults`, `bNewGameToll` false in `OWNER_CHOICES`; apply, then verify). `p17_assets.py` (`DA_Cinematics` with the F0 values, including `FailSafeMarkers` per section 2.2 and `CineFadeMix` set; `SMX_LB_CineFade`). `make_credits.py`. (The `DefaultGame.ini` line moved to P17-5a.) Until then, a New Game has no first toll: `bNewGameToll` is off and no intro grants Arrival. That interim state is accepted on the work branch | gameplay-programmer | **Unreal closed**, serial | P17-1, F0 |
-| P17-3 | Mask mesh, void (if needed), `M_LB_Invisible` (if needed), the clip (4.1 steps 2–3), headless imports, `.gitignore` first | technical-artist + animation-specialist | Blender; **Unreal closed** for imports | F0b, A1, S1a |
+| P17-3 | Mask mesh, void (if needed), `M_LB_Invisible` (if needed), the clip (**Blender-keyed, 4.1 step 3**; A1 found no Mixamo fit), headless imports | technical-artist + animation-specialist | Blender; **Unreal closed** for imports | F0b, the new Warden asset, S1a |
 | P17-4 | `M_LB_PP_MaskView` and its MI (route per `MCP_NOTES`) | technical-artist | as `MCP_NOTES` says | F0 |
 | P17-5a | `p17_sequences.py` builds both sequences per section 3 and the S1 route; `--check`; then the `DefaultGame.ini` `CinematicSettings` line and the suite | animation-specialist | **Unreal closed** | S1a, P17-2, P17-3, P17-4 |
 | S1b | Section 8 | lead + **owner** | Unreal open | P17-1 |
@@ -754,6 +754,13 @@ The GPU cost of the cinematic shots is not measured in this phase (the finale cl
 
 ## Results
 (Filled in as the tasks finish.)
+
+### A1 (2026-11-10, owner)
+Mixamo turned up only "reaching out" and "picking up" for the search terms in section 4.1. In neither do the hands go to the face, so neither can pass gate (a). Nothing was downloaded.
+
+**Decision (lead, following the approved section 4.1 step 3):** `AN_Warden_MaskLift` is the **Blender-keyed clip** on the Warden rig, with the same −90° root yaw convention and the same gates (a)–(d).
+- It is the project's own work, so it is committed. **R-80** (a local-only Mixamo clip, so a fresh clone loses the lift) therefore doesn't arise.
+- It is made in P17-3, after the owner's new Warden asset is copied in (the Blender hold), on that asset's rig rather than `V5_5w2` if the rig changed.
 
 ### P17-4 (2026-11-10, a9e8055)
 `M_LB_PP_MaskView` and `MI_LB_PP_MaskView` are in `/Game/LastBell/Materials/PostProcess/`.
