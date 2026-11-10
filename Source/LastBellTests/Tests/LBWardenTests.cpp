@@ -59,19 +59,47 @@ bool FLBWardenStageTest::RunTest(const FString& Parameters)
 	{
 		const FLBWardenCaps C = LBWardenLogic::CapsForStage(Stage);
 		const FString Label = FString::Printf(TEXT("stage %d"), Stage);
-		TestEqual(*(Label + TEXT(" active")), C.bActive, Stage >= 3);
+		// D-116: stage 6 is the scripted finale, so the AI pawn is inactive (Dormant) there; the other capabilities keep their stage rule.
+		const bool bAiStage = Stage >= 3 && Stage <= 5;
+		TestEqual(*(Label + TEXT(" active")), C.bActive, bAiStage);
 		TestEqual(*(Label + TEXT(" patrol")), C.bPatrol, Stage >= 4);
 		TestEqual(*(Label + TEXT(" search")), C.bSearch, Stage >= 4);
 		TestEqual(*(Label + TEXT(" chase")), C.bChase, Stage >= 5);
 
 		// Which states are legal.
-		TEST_ENUM(*(Label + TEXT(" Dormant legal")), LBWardenLogic::IsStateAllowed(ELBWardenState::Dormant, C), Stage < 3);
-		TEST_ENUM(*(Label + TEXT(" Investigate legal")), LBWardenLogic::IsStateAllowed(ELBWardenState::Investigate, C), Stage >= 3);
-		TEST_ENUM(*(Label + TEXT(" Suspicious legal")), LBWardenLogic::IsStateAllowed(ELBWardenState::Suspicious, C), Stage >= 3);
-		TEST_ENUM(*(Label + TEXT(" Return legal")), LBWardenLogic::IsStateAllowed(ELBWardenState::Return, C), Stage >= 3);
-		TEST_ENUM(*(Label + TEXT(" Attack legal")), LBWardenLogic::IsStateAllowed(ELBWardenState::Attack, C), Stage >= 3);
-		TEST_ENUM(*(Label + TEXT(" Search legal")), LBWardenLogic::IsStateAllowed(ELBWardenState::Search, C), Stage >= 4);
-		TEST_ENUM(*(Label + TEXT(" Chase legal")), LBWardenLogic::IsStateAllowed(ELBWardenState::Chase, C), Stage >= 5);
+		TEST_ENUM(*(Label + TEXT(" Dormant legal")), LBWardenLogic::IsStateAllowed(ELBWardenState::Dormant, C), Stage < 3 || Stage == 6);
+		TEST_ENUM(*(Label + TEXT(" Investigate legal")), LBWardenLogic::IsStateAllowed(ELBWardenState::Investigate, C), bAiStage);
+		TEST_ENUM(*(Label + TEXT(" Suspicious legal")), LBWardenLogic::IsStateAllowed(ELBWardenState::Suspicious, C), bAiStage);
+		TEST_ENUM(*(Label + TEXT(" Return legal")), LBWardenLogic::IsStateAllowed(ELBWardenState::Return, C), bAiStage);
+		TEST_ENUM(*(Label + TEXT(" Attack legal")), LBWardenLogic::IsStateAllowed(ELBWardenState::Attack, C), bAiStage);
+		TEST_ENUM(*(Label + TEXT(" Search legal")), LBWardenLogic::IsStateAllowed(ELBWardenState::Search, C), bAiStage && Stage >= 4);
+		TEST_ENUM(*(Label + TEXT(" Chase legal")), LBWardenLogic::IsStateAllowed(ELBWardenState::Chase, C), bAiStage && Stage >= 5);
+	}
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBWardenStage6DormantTest, "LastBell.Warden.Stage6IsDormant", LB_TEST_FLAGS)
+bool FLBWardenStage6DormantTest::RunTest(const FString& Parameters)
+{
+	// D-116: stage 6 is the scripted finale. The AI pawn must stand down there whatever it was doing, and stage 5 still hunts.
+	const FLBWardenCaps C6 = LBWardenLogic::CapsForStage(6);
+	TestFalse(TEXT("Stage 6: the AI pawn is not active"), C6.bActive);
+	TestTrue(TEXT("Stage 5: the AI pawn is active"), LBWardenLogic::CapsForStage(5).bActive);
+	TestTrue(TEXT("Stage 6: Dormant is legal"), LBWardenLogic::IsStateAllowed(ELBWardenState::Dormant, C6));
+
+	for (const ELBWardenState State : AllStates)
+	{
+		FLBWardenFacts F = Facts(6);
+		F.bSeesPlayer = true;
+		F.bSightConfirmed = true;
+		F.bNoiseHeard = true;
+		F.bInAttackRange = true;
+		F.bAttackStillValid = true;
+		F.bCanMaterialize = true;
+		F.StateTime = 100.f;
+		const FLBWardenDecision D = LBWardenLogic::Evaluate(State, F, Tuning());
+		TEST_ENUM(*FString::Printf(TEXT("Stage 6: %s goes Dormant"), LBWardenLogic::StateName(State)), D.Next, ELBWardenState::Dormant);
+		TestFalse(*FString::Printf(TEXT("Stage 6: %s never kills"), LBWardenLogic::StateName(State)), D.bKillPlayer);
 	}
 	return true;
 }
@@ -117,7 +145,7 @@ bool FLBWardenTransitionInvariantTest::RunTest(const FString& Parameters)
 								LBWardenLogic::StateName(State), LBWardenLogic::StateName(D.Next), Mask));
 							return false;
 						}
-						if (Stage < 3 && D.Next != ELBWardenState::Dormant)
+						if ((Stage < 3 || Stage == 6) && D.Next != ELBWardenState::Dormant) // stage 6: D-116, the scripted finale
 						{
 							AddError(FString::Printf(TEXT("stage %d: %s -> %s, expected Dormant"), Stage, LBWardenLogic::StateName(State), LBWardenLogic::StateName(D.Next)));
 							return false;
@@ -160,7 +188,7 @@ bool FLBWardenTransitionTableTest::RunTest(const FString& Parameters)
 	}
 
 	// ---- Noise ----
-	for (int32 Stage = 3; Stage <= 6; ++Stage)
+	for (int32 Stage = 3; Stage <= 5; ++Stage) // D-116: stage 6 is dormant (the scripted finale), see Warden.Stage6IsDormant
 	{
 		FLBWardenFacts F = Facts(Stage);
 		F.bNoiseHeard = true;
@@ -182,7 +210,7 @@ bool FLBWardenTransitionTableTest::RunTest(const FString& Parameters)
 	}
 
 	// ---- Sight ----
-	for (int32 Stage = 3; Stage <= 6; ++Stage)
+	for (int32 Stage = 3; Stage <= 5; ++Stage) // D-116: stage 6 is dormant (the scripted finale), see Warden.Stage6IsDormant
 	{
 		FLBWardenFacts F = Facts(Stage);
 		F.bSeesPlayer = true;
@@ -263,7 +291,7 @@ bool FLBWardenTransitionTableTest::RunTest(const FString& Parameters)
 	}
 
 	// ---- Attack ----
-	for (int32 Stage = 3; Stage <= 6; ++Stage)
+	for (int32 Stage = 3; Stage <= 5; ++Stage) // D-116: stage 6 is dormant (the scripted finale), see Warden.Stage6IsDormant
 	{
 		FLBWardenFacts F = Facts(Stage);
 		F.bInAttackRange = true;

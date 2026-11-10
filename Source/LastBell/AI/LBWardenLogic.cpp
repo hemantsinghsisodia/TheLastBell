@@ -71,7 +71,8 @@ namespace LBWardenLogic
 	FLBWardenCaps CapsForStage(int32 Stage)
 	{
 		FLBWardenCaps Caps;
-		Caps.bActive = Stage >= 3;
+		// D-116: stage 6 is the scripted finale. The AI pawn goes Dormant and only the Sequencer's figure exists.
+		Caps.bActive = Stage >= 3 && Stage <= 5;
 		Caps.bPatrol = Stage >= 4;
 		Caps.bSearch = Stage >= 4;
 		Caps.bChase = Stage >= 5;

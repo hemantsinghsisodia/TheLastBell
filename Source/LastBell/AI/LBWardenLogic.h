@@ -14,7 +14,7 @@ class ULBWardenTuningData;
 /** What the current escalation stage lets the Warden do (AI_DESIGN / D-018). */
 struct FLBWardenCaps
 {
-	bool bActive = false;  // stage 3+: the pawn exists and can investigate, return and attack
+	bool bActive = false;  // stages 3 to 5: the pawn exists and can investigate, return and attack (stage 6 is the scripted finale, D-116)
 	bool bPatrol = false;  // stage 4+
 	bool bSearch = false;  // stage 4+
 	bool bChase = false;   // stage 5+
@@ -175,7 +175,7 @@ namespace LBWardenLogic
 	/** Highest State.Warden.Stage.N present, 0 when none. */
 	LASTBELL_API int32 HighestStage(const FGameplayTagContainer& WorldState);
 
-	/** Stage <= 2 dormant; 3 investigate/suspicious/return; 4 adds patrol and search; 5+ adds chase. */
+	/** Stage <= 2 dormant; 3 investigate/suspicious/return; 4 adds patrol and search; 5 adds chase; 6 is dormant again (D-116: the scripted finale owns the Warden). */
 	LASTBELL_API FLBWardenCaps CapsForStage(int32 Stage);
 
 	/** Is the state legal for the capabilities? Return is legal whenever active. */
