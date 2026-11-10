@@ -134,7 +134,8 @@ Markers fire in time order. Several crossed in one tick all fire in that tick, i
 - `Trigger` (`NewGame` or `TagAdded`) with `TriggerTag`;
 - `BlockingTag`: the def never starts while this tag is present;
 - `InitialLock` (`ELBInputLock`), `bStartBlack`, `bSkippableAtStart`;
-- `GrantOnStart` (`FGameplayTagContainer`).
+- `GrantOnStart` (`FGameplayTagContainer`);
+- `FailSafeMarkers` (`TArray<FString>`; added in P17-1): the labels fired, in order, when the sequence can't be loaded or played, because its own markers are then unavailable. Intro: `!tag:State.Event.Arrival`. Finale: `!end`.
 
 The two rows:
 
@@ -166,7 +167,7 @@ Every float is clamped, with units in its tooltip. No hard asset references: eve
   4. Create the player with `ULevelSequencePlayer::CreateLevelSequencePlayer` (`bAutoPlay` false; `PlayRate` = `lb.Cine.Rate`; `bDisableMovementInput`, `bDisableLookAtInput`, `bHidePlayer` and `bHideHud` all false, since the subsystem handles them).
   5. Bind `OnFinished`, set the lock to `InitialLock`, hide the HUD (`ALBPlayerController::SetHUDHidden(true)`), create the widget, then `Play()`.
 
-  If loading or creation fails: log an Error, then **fail safe**: fire every must marker in order, restore and finish.
+  If loading or creation fails: log an Error, then **fail safe**: fire the def's `FailSafeMarkers` in order, restore and finish.
 - **`Tick`:**
   - read `Player->GetCurrentTime()` and fire the crossed markers (section 2.1);
   - advance the mark move, the look assist, the bell pendulum, the credits, the cards and the skip hold. Everything is scaled by the play rate, so tests at 8× see the same order.
@@ -180,6 +181,7 @@ Every float is clamped, with units in its tooltip. No hard asset references: eve
   - `StopCameraFade()` unless travelling;
   - pop the mix if it was pushed, unless travelling (then `Deinitialize` pops it);
   - log "Cine: <Id> finished (<reason>)".
+  - **With a `CompleteGame` travel pending,** the lock, HUD, fade, widget and mix are all left as they are, so the HUD doesn't flash over the black screen; the world is torn down anyway. The `lb.Cine.NoEnd` path and a failed `CompleteGame` do the full restore. (P17-1.)
 - **Public API:**
   - `IsPlaying()` and `GetActiveId()`;
   - `Play(FName Id)` (BlueprintCallable, also behind `lb.Cine.Play`);
@@ -217,7 +219,7 @@ Every float is clamped, with units in its tooltip. No hard asset references: eve
   | `Look` | allowed | ignored |
   | `Interact` | broadcasts `OnLockedInteractPressed` and returns | same |
 
-  `Interact` on `Completed`/`Canceled` (new bindings) broadcasts `OnLockedInteractReleased`. Both delegates are non-dynamic multicast; the subsystem binds them while it plays, so the character never includes the cinematic headers.
+  `Interact` on `Completed`/`Canceled` (new bindings) broadcasts `OnLockedInteractReleased`. **As built (P17-1):** `IA_Interact` has a Pressed trigger, so `Completed` fires one frame after the press. The release is therefore broadcast only when no key bound to Interact is still down, checked on `Completed`/`Canceled` and on every tick while a locked press is held. A lock other than `None` also cancels an open inspection. The owner checks hold-to-skip in P17-6. Both delegates are non-dynamic multicast; the subsystem binds them while it plays, so the character never includes the cinematic headers.
 - **Mark move:** the subsystem eases the capsule with smoothstep from its start to the target with `SetActorLocation` each tick, and eases the control yaw along the shortest path. Movement mode is `MOVE_None` during the move, and `MOVE_Walking` again on restore. No velocity means no footsteps.
 - **`ALBPlayerController::SetHUDHidden(bool)`:** sets `HUDWidget` Collapsed or `SelfHitTestInvisible`. Cinematics never use `SetMenuMode`; the input mode stays game-only, so mouse look works.
 
@@ -668,7 +670,7 @@ The headless Python spike S1a stays the primary route, because it is repeatable 
 | A1 | Section 4.1 step 1 | **owner** | — | P17-0 |
 | S1a | Section 8 | animation-specialist | **Unreal closed** | F0 |
 | P17-1 | Section 2 code, CVars and commands, section 10 tests; build and suite. Also adds `State.Event.Arrival` to `Config/Tags/LBGameplayTags.ini` (editor closed): `GameplayTagList=(Tag="State.Event.Arrival",DevComment="Intro played or skipped: the first toll; never repeats")`. Until P17-5b the content-dependent tests (`Monastery.CinematicSetup`, `IntroOnNewGame`, `NoIntroOnContinue`, `IntroSkip`, `FinaleOnBell`, `BellSwingsOnStrike`) are expected to fail; every other test must pass. `RouteBot.Monastery` must pass in both states: with no `DA_Cinematics` nothing plays and the old `EndingTrigger` still travels | gameplay-programmer | **Unreal closed** | P17-0 (data values come from F0 in P17-2) |
-| P17-2 | `p16_2_assets.py` (Arrival row via `FillPlanDefaults`, `bNewGameToll` false in `OWNER_CHOICES`; apply, then verify). `p17_assets.py` (`DA_Cinematics` with the F0 values, `SMX_LB_CineFade`). `make_credits.py`. The `DefaultGame.ini` line | gameplay-programmer (data) + audio-designer (mix) | **Unreal closed**, serial | P17-1, F0 |
+| P17-2 | `p16_2_assets.py` (Arrival row via `FillPlanDefaults`, `bNewGameToll` false in `OWNER_CHOICES`; apply, then verify). `p17_assets.py` (`DA_Cinematics` with the F0 values, including `FailSafeMarkers` per section 2.2 and `CineFadeMix` set; `SMX_LB_CineFade`). `make_credits.py`. The `DefaultGame.ini` line | gameplay-programmer (data) + audio-designer (mix) | **Unreal closed**, serial | P17-1, F0 |
 | P17-3 | Mask mesh, void (if needed), `M_LB_Invisible` (if needed), the clip (4.1 steps 2–3), headless imports, `.gitignore` first | technical-artist + animation-specialist | Blender; **Unreal closed** for imports | F0b, A1, S1a |
 | P17-4 | `M_LB_PP_MaskView` and its MI (route per `MCP_NOTES`) | technical-artist | as `MCP_NOTES` says | F0 |
 | P17-5a | `p17_sequences.py` builds both sequences per section 3 and the S1 route; `--check` | animation-specialist | **Unreal closed** | S1a, P17-2, P17-3, P17-4 |
@@ -707,6 +709,30 @@ The GPU cost of the cinematic shots is not measured in this phase (the finale cl
 
 ## Results
 (Filled in as the tasks finish.)
+
+### P17-1 (2026-11-10, e24a3ef…5f981b8)
+The code in section 2 is built. The editor build is clean (no compiler warnings), and the game target built in phase A.
+
+**Suite:** 191 passed, 5 failed (the lead checked `Saved/Logs/LBTests_All.log`), with 0 invalid tags.
+- The failures are exactly the content tests expected to fail until P17-5b: `Monastery.CinematicSetup`, `IntroOnNewGame`, `IntroSkip`, `FinaleOnBell` and `BellSwingsOnStrike`.
+- `RouteBot.Monastery` passes in today's state, with no `DA_Cinematics` and the old `EndingTrigger`.
+- `NoIntroOnContinue` passes only because nothing plays yet, so it means something only after P17-5b.
+
+**Additions:**
+- `ULBCineAuthoringLibrary` (`bCanBlend`);
+- `FLBCinematicDef.FailSafeMarkers`;
+- the test `BellSwingPieces`;
+- `FCineRate` beside `FCineSwitch`;
+- `Slate`, `SlateCore` and `MovieSceneTracks` added as module dependencies.
+
+**Accepted deviations,** written into sections 2.2–2.4:
+- the release poll for the locked press;
+- the restore with a travel pending;
+- a locked pawn cancels an open inspection.
+
+Also: `RopeZAboutAxle` is the exact rotation, giving −30.9 / +40.9 cm at ±16°, because the rope's top is 130 cm below the axle.
+
+**Not verified yet:** the widget on screen, the skip prompt and progress bar, the credits roll, the mark move and look assist in the world, and the camera blend. These are covered by S1b, P17-6 and P17-7.
 
 ### S1a (2026-11-10, 5ac14db)
 Everything scripts headless except the camera cut track's `bCanBlend`, which P17-1's `ULBCineAuthoringLibrary` will set. The details are in section 8. Runtime behaviour (spawning, component bindings, attach, the material fade, the blend) is for S1b. `LS_P17_Spike` is local and git-ignored, because it uses a Mixamo clip.
