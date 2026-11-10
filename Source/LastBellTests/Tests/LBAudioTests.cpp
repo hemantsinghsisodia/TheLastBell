@@ -29,7 +29,7 @@ namespace LBAudioUnitTest
 			{ TEXT("State.Ritual.2"), 3, 3, 2.f, 4.5f, 2 },
 			{ TEXT("State.Ritual.3"), 4, 3, 2.f, 4.0f, 1 },
 			{ TEXT("State.Event.TowerTop"), 4, 4, 1.f, 3.5f, 2 },
-			{ TEXT("State.Event.Finale"), 5, 5, 0.f, 5.0f, -1 },
+			{ TEXT("State.Event.Finale"), 5, 5, 0.f, 2.0f, -1 },
 		};
 		TArray<FLBBellBeat> Beats;
 		for (const FRow& Row : Rows)
@@ -435,7 +435,7 @@ bool FLBAudioBellPlanTest::RunTest(const FString& Parameters)
 		{ TEXT("State.Ritual.2"), 3, 3, 2.f, 4.5f, 2 },
 		{ TEXT("State.Ritual.3"), 4, 3, 2.f, 4.0f, 1 },
 		{ TEXT("State.Event.TowerTop"), 4, 4, 1.f, 3.5f, 2 },
-		{ TEXT("State.Event.Finale"), 5, 5, 0.f, 5.0f, -1 },
+		{ TEXT("State.Event.Finale"), 5, 5, 0.f, 2.0f, -1 },
 	};
 	for (const FRow& Row : Expected)
 	{

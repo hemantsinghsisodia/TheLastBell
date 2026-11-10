@@ -200,6 +200,7 @@ PHYS_MATS = {"PM_LB_Stone": 1, "PM_LB_Wood": 2, "PM_LB_Earth": 3, "PM_LB_Grass":
 OWNER_CHOICES = {
     # SoundWave Volume by name regex (first match wins; sounds that match nothing keep the cue-sheet volume = 10^(mix_gain_db / 20))
     "wave_volume": [
+        (r"^SFX_LB_Bell_Stage5$", 2.0),        # P16-6 part 3: the finale bell "heard" at 2.0 (the owner), louder than stages 1-4
         (r"^SFX_LB_Bell_Stage[1-4]$", 1.0),    # was 0.126 / 0.200 / 0.316 / 0.501: stage 1 was inaudible; the files' own filtering carries the distance
         (r"^SFX_LB_Thunder_Far_", 1.0),        # was 0.398 (-8 dB): "fine now" at full volume
         (r"^SFX_LB_Owl_", 0.4),                # P16-6: too loud at 1.0 -> "fine now" at 0.4
@@ -592,7 +593,7 @@ def build_da_json():
         ("State.Ritual.2", 3, 3, 2.0, 4.5, 2),
         ("State.Ritual.3", 4, 3, 2.0, 4.0, 1),
         ("State.Event.TowerTop", 4, 4, 1.0, 3.5, 2),
-        ("State.Event.Finale", 5, 5, 0.0, 5.0, -1),
+        ("State.Event.Finale", 5, 5, 0.0, 2.0, -1),  # spacing 5.0 -> 1.2 -> 2.0 s (owner, P16-6 part 3)
     ]
     tag_key = lambda t: '(TagName="%s")' % t
     return {
@@ -759,7 +760,21 @@ def verify_da(da, expected):
     check("DA_Audio.debug_force_music_state == -1", int(da.get_editor_property("debug_force_music_state")) == -1)
     # Typed read through the Python property names (a second reader than ToolsetLibrary)
     check("DA_Audio.bell_location", same(da.get_editor_property("bell_location"), unreal.Vector(12420.1, 2000.0, 2750.0)))
-    check("DA_Audio.bell_beats count", len(da.get_editor_property("bell_beats")) == 6)
+    beats = da.get_editor_property("bell_beats")
+    check("DA_Audio.bell_beats count", len(beats) == 6)
+    for want, beat in zip(expected["BellBeats"], beats):  # every beat in full (typed read), not just the count
+        tag = want["trigger"]["tagName"]
+        trig = beat.get_editor_property("trigger")
+        try:
+            got_tag = str(trig.get_editor_property("tag_name"))
+        except Exception:
+            got_tag = str(trig)
+        check("DA_Audio beat %s: trigger" % tag, tag in got_tag, got_tag)
+        check("DA_Audio beat %s: stage" % tag, int(beat.get_editor_property("stage")) == want["stage"], beat.get_editor_property("stage"))
+        check("DA_Audio beat %s: strikes" % tag, int(beat.get_editor_property("strikes")) == want["strikes"], beat.get_editor_property("strikes"))
+        check("DA_Audio beat %s: first_delay" % tag, feq(beat.get_editor_property("first_delay"), want["firstDelay"]), beat.get_editor_property("first_delay"))
+        check("DA_Audio beat %s: spacing" % tag, feq(beat.get_editor_property("spacing"), want["spacing"]), beat.get_editor_property("spacing"))
+        check("DA_Audio beat %s: drone" % tag, int(beat.get_editor_property("drone")) == want["drone"], beat.get_editor_property("drone"))
     check("DA_Audio.interaction_cues count", len(da.get_editor_property("interaction_cues")) == 9)
     check("DA_Audio.silent_classes count", len(da.get_editor_property("silent_classes")) == 3)
     check("DA_Audio.small_bell_pitch count", len(da.get_editor_property("small_bell_pitch")) == 4)
