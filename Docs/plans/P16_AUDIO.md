@@ -932,3 +932,6 @@ One editor agent at a time. A1, A2 and A3 run without the editor, in parallel wi
 - add the owl, howl and belfry choices to `OWNER_CHOICES` in `Tools/audio/p16_2_assets.py` (howl attenuation `ATT_LB_Thunder`);
 - add them to `Tools/audio/p16_level.py`, whose `--check` still expects Belfry `Howl` 1.0 and `RoomToneVolume` 0.5;
 - re-run both checks.
+- **Owner (2026-11-10, late): the paper rustle comes 0.5–1 s after picking the note up, and nothing plays on putting it down.**
+  - **Cause 1, the delay:** the files build up slowly. `SFX_LB_Paper_02` reaches −10 dB only at 0.78 s and peaks at 0.88 s; `Paper_01` peaks at 0.68 s. **Fix:** re-slice all three in `Tools/audio/prep/recipes.json` so the main rustle starts within about 0.05 s and peaks by about 0.15 s; re-import headless.
+  - **Cause 2, no put-down:** a read note is put back with `CancelInspect`, which broadcasts `OnInspectEnd(bKept = false)` without `CompleteInspection`, so `OnInteracted` never fires. **Fix:** `ULBAudioSubsystem` also binds `ULBInspectionComponent::OnInspectEnd` and plays the inspected actor's `Interact` cue on every end. It skips the `OnInteracted` cue for an actor whose inspection ended in the same frame, so a kept item doesn't rustle twice. Extend `NotePickupCue`, or add `NotePutDownCue`.
