@@ -928,10 +928,44 @@ One editor agent at a time. A1, A2 and A3 run without the editor, in parallel wi
 - the great bell's finale toll under the ending pause, and whether to tighten the 5 s finale spacing;
 - the performance readings.
 
-**Pending bookkeeping (next session):**
+**Pending bookkeeping (next session; done in "P16-6 paper fixes and bookkeeping" below, except re-running `p16_level.py --check`, which needs the editor):**
 - add the owl, howl and belfry choices to `OWNER_CHOICES` in `Tools/audio/p16_2_assets.py` (howl attenuation `ATT_LB_Thunder`);
 - add them to `Tools/audio/p16_level.py`, whose `--check` still expects Belfry `Howl` 1.0 and `RoomToneVolume` 0.5;
 - re-run both checks.
 - **Owner (2026-11-10, late): the paper rustle comes 0.5–1 s after picking the note up, and nothing plays on putting it down.**
   - **Cause 1, the delay:** the files build up slowly. `SFX_LB_Paper_02` reaches −10 dB only at 0.78 s and peaks at 0.88 s; `Paper_01` peaks at 0.68 s. **Fix:** re-slice all three in `Tools/audio/prep/recipes.json` so the main rustle starts within about 0.05 s and peaks by about 0.15 s; re-import headless.
   - **Cause 2, no put-down:** a read note is put back with `CancelInspect`, which broadcasts `OnInspectEnd(bKept = false)` without `CompleteInspection`, so `OnInteracted` never fires. **Fix:** `ULBAudioSubsystem` also binds `ULBInspectionComponent::OnInspectEnd` and plays the inspected actor's `Interact` cue on every end. It skips the `OnInteracted` cue for an actor whose inspection ended in the same frame, so a kept item doesn't rustle twice. Extend `NotePickupCue`, or add `NotePutDownCue`.
+
+### P16-6 paper fixes and bookkeeping (2026-11-10, headless, editor closed)
+**1. Put-down rustle (code, commit 8d40b06).**
+- `ULBAudioSubsystem::BindPlayerEvents` binds `OnInspectEnd` beside `OnInspectBegin` (same rebind logic, both removed in `Deinitialize`). `HandleInspectBegin` remembers the inspected actor (`InspectedActor`); `HandleInspectEnd(bKept)` plays that actor's mapped `Interact` cue on every end (`EndInspect`, `CancelInspect`, kept or not), then forgets it.
+- Order matters: in `FinishInspect` a keep runs `CompleteInspection` (`OnInteracted`, which the proxy turns into `NotifyInteracted`) BEFORE `OnInspectEnd`. So `NotifyInteracted` records the actor and `GFrameCounter` of its non-denied play, `HandleInspectEnd` skips a kept item already played in the same frame, and `NotifyInteracted` skips an actor whose end already played in the frame (the reverse order). The cue body moved to `PlayInteractCue` (used by pick-up and put-down, which are not de-duplicated against each other). Every other interactable is unchanged; unmapped classes stay silent; a destroyed item makes no sound.
+- Tests: new `LastBell.Functional.Audio.NotePutDownCue` (cancel: 1 at pick-up + 1 at put-down, positional at the note; normal close of a put-back item: 2; cancel while not inspecting: 0; a kept item (`bKeepOnClose`, `bInspectOnInteract`): 1 at pick-up, exactly 1 more at put-down, not 2; a plain interactable still makes 1) and `NotePickupCue` updated (Begin + Cancel now make 2 requests).
+- Build: real rebuild (`LBAudioSubsystem.cpp` compiled, both DLLs relinked), full suite 175 / 175.
+
+**2. Paper files (commit 83733ed).** Re-sliced in `build_recipes.py` / `recipes.json` (each slice starts at a rustle onset where the slice maximum is also an early event; stereo, -3.00 dBFS peak, `fade_out` 0.08 s, first and last sample 0). 10 ms RMS envelope of the OUTPUT, times from the file start:
+
+| File | Source slice | Length | First -20 dB | First -10 dB | Envelope peak | Before (-10 dB / peak) |
+|---|---|---|---|---|---|---|
+| `SFX_LB_Paper_01` | 353125, 0.715-1.13 s | 0.38 s | 0.01 s | 0.07 s | 0.15 s | 0.11 s / 0.68 s |
+| `SFX_LB_Paper_02` | 181774, 1.12-2.3 s | 1.18 s | 0.01 s | 0.03 s | 0.12 s | 0.78 s / 0.88 s |
+| `SFX_LB_Paper_03` | 449127, 1.555-2.05 s | 0.47 s | 0.04 s | 0.09 s | 0.11 s | 0.11 s / 0.20 s |
+
+- `prep_recorded.py --verify`: all 142 files identical across two builds; a full rebuild left the other 139 WAVs and `manifest.json` unchanged in `git status` (only the three Paper WAVs differ). `report_recorded.py --checks`: 142 files, 0 problems.
+- Audition: the three Paper rows of `audition_recorded.md` (length, RMS, note) updated and `audition.html` regenerated (197 sounds; only those rows changed).
+- The files are shorter (0.38 / 1.18 / 0.47 s against 0.91 / 1.54 / 0.51 s). If the owner finds Paper_01 too brief, the source has no other clean opening event; the fallback is layering two slices.
+
+**3. Bookkeeping and re-import (commit a2b1bbe).**
+- `OWNER_CHOICES["wave_volume"]`: `SFX_LB_Owl_*` 0.4, `SFX_LB_Howl_*` 0.5 (Step_Wood 2.0 was already there). `SOUND_RULES`: `SFX_LB_Howl_` now uses `ATT_LB_Thunder` (owls stay `ATT_LB_Large`).
+- Headless `LB_REIMPORT='^SFX_LB_Paper_0[123]$'` apply: 3 imported, 3 packages saved, **1894 checks, 0 failures**; `git status` shows only the three `Player/SFX_LB_Paper_0n.uasset` changed (so the editor-saved owl and howl values on disk already equalled the script's).
+- Fresh-process `LB_MODE=verify`: **1691 checks, 0 failures**; `p16_2_report.json` now records Howl 0.5 + `ATT_LB_Thunder` and Owl 0.4 (and every wave duration equals its WAV).
+- `Tools/audio/p16_level.py`: the `Belfry` row of `AREAS` now expects `Howl` 0.25 and `RoomToneVolume` 0.4 (the values already applied and saved in `L_Monastery`). **Not run** (`--check` needs the editor open and takes about 10 minutes); the owner/lead should run it once the editor is open: `--check` on the zones.
+- `L_Monastery` and the never-save list were not touched.
+
+**4. Suite after the assets: 175 / 175 pass**, 0 `Error:` lines, 0 invalid tags (`LBTests_All.log`; `NotePickupCue`, `NotePutDownCue`, `FinaleBellImmediate`, `Monastery.AudioSetup` pass).
+
+**For the owner to check next session.**
+1. Pick a note up: the rustle should now start at once (Paper_01 / 02 / 03 reach -10 dB within 0.03-0.09 s). Put it back: a second rustle (the same cue, a random variant). Pick up and keep an item such as a key: one rustle at pick-up and one at put-down, not two.
+2. The files are shorter; say if the rustle feels too brief.
+3. With the editor open: `p16_level.py --check` (Belfry row) and the still-unchecked items above: great-bell finale toll under the ending pause and the 5 s spacing, and the performance readings.
+
