@@ -42,7 +42,7 @@ Every task follows the standing rules:
 11. **Tests and performance:**
     - the suite passes, including the new `LastBell.Audio.*` tests;
     - no `Error:` lines;
-    - performance (P16-6): at most 48 active voices and an audio-thread CPU of at most 2.0 ms at the six standard spots and in a chase, and the game thread rises by at most 0.3 ms with audio on against `lb.Audio.Enabled 0` (judged with the D-107 caveat on `stat unit` noise).
+    - performance (P16-6): at most 48 active voices and an audio-thread CPU of at most 2.0 ms at the six standard spots and in a chase, and the game thread rises by at most 0.3 ms with audio on against `lb.Audio.Enabled 0` (judged with the D-107 caveat on `stat unit` noise) (waived by the owner, D-113: not measured; Phase 20).
 
 ## 2. Architecture (C++, gameplay-programmer, Unreal closed)
 Folder `Source/LastBell/Audio/`, prefix `LB`. Composition and subsystems; no hard asset references (soft pointers in `ULBAudioSettings`). Pure maths is in `LBAudioLogic` and unit tested.
@@ -360,7 +360,7 @@ Tells use `ATT_LB_WardenTell`, which carries farther than the breath, so the pla
 | `State.Ritual.2` | stage 3 × 3 (2 s, 4.5 s) | Drone C |
 | `State.Ritual.3` | stage 4 × 3 (2 s, 4.0 s) | Drone B |
 | `State.Event.TowerTop` | stage 4 × 4 (1 s, 3.5 s) | Drone C |
-| `State.Event.Finale` | stage 5 × 5 (0 s, 5.0 s); Phase 17 may replace this | none |
+| `State.Event.Finale` | stage 5 × 5 (0 s, 2.0 s; owner P16-6); Phase 17 may replace this | none |
 | Between beats (ambient) | the current stage × 1–2 at volume 0.5, every 240–420 s (section 2.3 rules) | none |
 
 ### 5.4 Processing (A3; `Tools/audio/prep/prep_recorded.py`)
