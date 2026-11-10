@@ -1,6 +1,6 @@
 # Phase 17: Cinematics
 
-**Status:** approved by the owner on 2026-11-10 ("approve"). P17-0 done.
+**Status:** approved by the owner on 2026-11-10 ("approve"). P17-0 done. F0 items 1–5 and 7 done (6596144); the values are written into the sections below and summarised in Results. **Open for the owner before P17-5:** the Intro_1 wording and one line of `Note_Gatehouse` (Results, F0).
 
 **Hold (owner, 2026-11-10): no Blender work.** The owner has changed the Warden asset and will ask for it to be copied in later. Until then:
 - **F0b** waits for the new source.
@@ -120,8 +120,10 @@ Markers fire in time order. Several crossed in one tick all fire in that tick, i
 | `SkipPromptText` | FText | `Hold E to skip` (key glyphs come in Phase 18) |
 | `MarkSeconds`, `LookAssistSeconds` | float (s) | 1.5, 1.5 |
 | `BellActorTag` | FName | `LB_Cine_Bell` |
-| `BellComponentName` | FName | from F0 (the bell's mesh component, expected `Mesh`) |
-| `BellSwingAxis` | `ELBBellSwingAxis` (Pitch, Roll) | from F0 (across the headstock) |
+| `BellComponentName` | FName | `Mesh` (F0: the bell's only mesh component, its root, already Movable) |
+| `BellHeadstockTag` | FName | `LB_Cine_BellHeadstock` (the actor that gives the axle point and swings with the bell; section 2.8) |
+| `BellRopeTag` | FName | `LB_Cine_BellRope` (the rope that follows the wheel rim vertically; section 2.8) |
+| `BellSwingAxis` | `ELBBellSwingAxis` (Pitch, Roll) | `Pitch` (F0: the wheel disc is in the XZ plane, the axle runs along world Y, and the bell's rotation is 0, so the axle is its local Y) |
 | `BellSwingKickDegrees` / `BellSwingMaxDegrees` | float (deg) | 6 / 16 |
 | `BellSwingPeriodSeconds` / `BellSwingDampingPerSecond` | float | 2.6 / 0.25 |
 | `CineFadeMix` | `TSoftObjectPtr<USoundMix>` | `/Game/LastBell/Audio/Mix/SMX_LB_CineFade` |
@@ -236,7 +238,7 @@ Every float is clamped, with units in its tooltip. No hard asset references: eve
 
 ### 2.7 Storm, save and checkpoints
 - **Storm:** no code change. It stays active until `CompleteGame`'s travel, so the finale strikes and the bell sound to the end (R-77 part 1). The ending no longer pauses the game. Bell strikes stay UI sounds on the unpaused clock (P16-6); what a pause menu does with them is Phase 18 (R-77 part 2).
-- **`ALBCheckpoint::CanSaveNow()`:** also false while `ULBCinematicSubsystem::IsPlaying()`. The refusal log becomes "Checkpoint '%s' refused (%s). Retrying while the player stays inside.", with the reason "the Warden is chasing" or "a cinematic is playing". `CP_Approach` therefore saves right after the intro, with `State.Event.Arrival` already set.
+- **`ALBCheckpoint::CanSaveNow()`:** also false while `ULBCinematicSubsystem::IsPlaying()`. The refusal log becomes "Checkpoint '%s' refused (%s). Retrying while the player stays inside.", with the reason "the Warden is chasing" or "a cinematic is playing". `CP_Approach` therefore saves after the intro, with `State.Event.Arrival` already set. (F0: its box spans X −2750…−2650, 50 cm east of the PlayerStart at X −2800, so the save happens on the player's first steps forward, not at the spawn. No change needed.)
 
 ### 2.8 The bell swing
 `LBCinematicLogic::FBellPendulum` (pure, unit tested):
@@ -244,7 +246,28 @@ Every float is clamped, with units in its tooltip. No hard asset references: eve
 - each kick adds `BellSwingKickDegrees` to A, clamped to `BellSwingMaxDegrees`;
 - below 0.05° it stops, and the tick goes idle.
 
-On `OnGreatBellStrike` the subsystem kicks the pendulum and writes the angle on `BellSwingAxis` into the relative rotation of the bell's `BellComponentName`. **This applies to every great-bell strike on the map, not only in the finale:** the bell swings by itself at the TowerTop beat and at ambient tolls too, consistent with "no hand on the rope". The owner can veto this in P17-7, and it would then become finale-only with a flag. The component must be Movable (P17-5b sets it on the placed instance).
+On `OnGreatBellStrike` the subsystem kicks the pendulum. **This applies to every great-bell strike on the map, not only in the finale:** the bell swings by itself at the TowerTop beat and at ambient tolls too, consistent with "no hand on the rope". The owner can veto this in P17-7, and it would then become finale-only with a flag.
+
+**How the angle is applied (from F0).** The bell's origin (z 2860, the crown) is 20 cm below the axle. The headstock wraps the crown, so a bell turning under a still headstock would clip through it. Three actors therefore move together:
+- **At world BeginPlay**, the subsystem finds:
+  - the bell actor (`BellActorTag`) and its component `BellComponentName`;
+  - the headstock actor (`BellHeadstockTag`; F0: `TWA_Headstock` at (12420, 2000, 2880), rotation 0);
+  - the rope actor (`BellRopeTag`; F0: `TWA_BellRope` at (12550, 1835, 2750), the rope's top on the wheel's east rim).
+
+  It stores each one's rest world location and rotation.
+- **Axle:**
+  - The pivot point P is the headstock actor's rest location.
+  - The axis is the headstock's rest rotation applied to local Y for `Pitch`, or to local X for `Roll`.
+- **Each tick while swinging,** with Q = FQuat(axis, angle in radians):
+  - the bell component and the headstock actor each get location P + Q·(rest location − P) and rotation Q·(rest rotation);
+  - the rope keeps its rest X and Y and takes the Z of P + Q·(rope rest location − P). A hanging rope stays vertical, and its top follows the rim up and down (about ±36 cm at 16°).
+
+  All three moves use `ETeleportType::TeleportPhysics` with no sweep. At rest, every actor gets its exact rest transform back.
+- **If a piece is missing,** the swing still runs:
+  - with no headstock, P is the bell component's rest location and the axis is the bell's rest local axis; log a warning once;
+  - with no rope, the rope step is skipped; log a warning once.
+- **Mobility:** all three must be Movable. F0 found the bell's `Mesh` already Movable, and `TWA_Headstock` and `TWA_BellRope` Static, so P17-5b sets those two to Movable.
+- **Clearance:** the lowest rim corner reaches about X 12587 at 16°. The frame's bounds end at X 12585, so whether the rim clips the frame's east brace is checked by eye in P17-7. If it clips, the owner lowers `BellSwingMaxDegrees`.
 
 ### 2.9 `ULBCinematicWidget` (C++ tree, no WBP; Phase 18 restyles it)
 Built in `NativeOnInitialized` with `WidgetTree->ConstructWidget` (a root `UCanvasPanel`). All text colour is (0.85, 0.82, 0.76, 1); fonts are `FCoreStyle::GetDefaultFontStyle`.
@@ -268,6 +291,7 @@ Cards fade by render opacity. The widget draws no black itself: black comes from
 | `MustMarkersOnSkip(Sorted, FiredMask)` | The must markers not yet fired, in order |
 | `Smoothstep`, `ShortestYawLerp` | Easing helpers |
 | `FBellPendulum` | Section 2.8 |
+| `SwingAboutAxle(RestLocation, RestRotation, Pivot, Axis, AngleDeg)` and `RopeZAboutAxle(RopeRestLocation, Pivot, Axis, AngleDeg)` | The transforms in section 2.8 |
 | `CreditsPixelsPerSecond(BoxHeight, ViewportHeight, Seconds)` | Credits scroll speed |
 
 ## 3. The script
@@ -298,9 +322,18 @@ Cards fade by render opacity. The widget draws no black itself: black comes from
 
 **`Cam_Intro`** (spawnable `CineCameraActor`):
 - Filmback 16:9 DSLR, `bConstrainAspectRatio` false, aperture f/2.8, manual focus 6000 cm.
-- **Pose B** is exactly the player's eye at spawn: `PlayerStart` XY, floor Z + `BaseEyeHeight` from F0, the spawn yaw, pitch 0. Focal 28 mm.
-- **Pose A** is B moved −350 cm along the facing and +80 cm up, pitched +6°. Focal 30 mm.
-- F0 confirms the tower top is visible from A through the gatehouse; if it isn't, A rises in 20 cm steps up to +200 until it is.
+- **Pose B** is exactly the player's eye at spawn: **(−2800, 0, 152.79), yaw 0, pitch 0**. Focal 28 mm.
+  - F0: floor 0.79 + capsule half height 88 + camera 64. `BaseEyeHeight` is measured from the capsule centre, so the old "floor + `BaseEyeHeight`" would be wrong.
+- **Pose A is a crane-down start, 500 cm straight above B: (−2800, 0, 652.79), yaw 0, pitch +6°.** Focal 30 mm. The move from A to B is purely vertical: X, Y and yaw stay fixed, and only Z, pitch and focal length are keyed.
+- **Why not "350 cm back and 80 up"** (the F0 data plus the lead's read-only traces in `Docs/ArtTest/cine/p17_f0_lead_checks.json`):
+  - the spawn is 145 cm from the face of the west cliff (`KA_CliffW_00/01`, X −3245…−2945, Z 0…600), so a camera 350 cm back would sit inside it;
+  - from the spawn eye, only the spire tip (`FX_StrikeTarget_Tower`, elevation 16.9°) clears the approach's north cliff (`KA_CliffN_03/04`, Z 600);
+  - the belfry (Z 3000–3600) is visible from 250 cm above the eye and higher.
+- **What the move shows:**
+  - From A, the whole tower is visible over the cliff tops.
+  - At the strike (17.0 s, camera at about Z 606), the tower is still in view.
+  - As the camera passes about Z 400 (around 20 s), the belfry sinks behind the north cliff, and only the spire is left by 27.0.
+  - With the 16:9 DSLR filmback, the vertical half-angle is about 18.6° at 30 mm, so the spire (elevation 15–17°, yaw +7.4°) stays in frame for the whole move.
 
 ### 3.2 Finale: `LS_LB_Finale` (30 fps, playback 0–150.0 s)
 Already sounding from the tags, with no markers needed:
@@ -313,26 +346,26 @@ Already sounding from the tags, with no markers needed:
 |---|---|
 | 0.0 | `mark:LB_Cine_FinaleMark,1.5` (GrantOnStart has already added Stage 6) |
 | 1.6 | `lock:Look` |
-| 12.0 | Audio on `Snd_Base` (spawnable `TargetPoint` at the tower base, F0): `SFX_LB_Warden_Step_01` + `SFX_LB_Warden_Chain_01`, then 0.9 s later `SFX_LB_Warden_Step_02` + `SFX_LB_Warden_Chain_02` |
+| 12.0 | Audio on `Snd_Base` (spawnable `TargetPoint` at **(12165, 1665, 100)**, the tower base, F0): `SFX_LB_Warden_Step_01` + `SFX_LB_Warden_Chain_01`, then 0.9 s later `SFX_LB_Warden_Step_02` + `SFX_LB_Warden_Chain_02` |
 | 18.0 | `bell:5x1` |
-| 21.5–23.5 | Glimpse G1: `WardenFigure` visible, standing still and facing the mark. `flash:0.9` at 22.0 |
-| 28.0 | Audio on `Snd_Mid` (spawnable `TargetPoint`, F0): `SFX_LB_Step_Wood_01`, `_02`, `_03` at pitch 0.7, 1.4 s apart |
-| 30.0 | The figure (hidden) moves to the G2 start pose, at least 1 s before it shows |
+| 21.5–23.5 | Glimpse G1, **sound-only** (F0: no stair point 6–15 m below the mark's eye is in sight). `flash:0.9` at 22.0. At 22.3, on `Snd_Low` (spawnable `TargetPoint` at **(12165, 2195, 1009.1)**, `WP_TowerStairs_08` + 100): `SFX_LB_Warden_Step_03` + `SFX_LB_Warden_Chain_03`. The figure stays hidden |
+| 28.0 | Audio on `Snd_Mid` (spawnable `TargetPoint` at **(12165, 1770, 1690.9)**, `WP_TowerStairs_15` + 100): `SFX_LB_Step_Wood_01`, `_02`, `_03` at pitch 0.7, 1.4 s apart |
+| 30.0 | The figure (hidden) is placed at **`WP_TowerStairs_18` (12695, 2335, 2045.45)**, the top of F09, facing `WP_TowerStairs_19` |
 | 36.0 | `bell:5x1` |
 | 38.5 | `look:LB_Cine_StairTop,1.5` |
-| 40.0–42.0 | Glimpse G2: the figure climbs 100 cm along the stair path (50 cm/s). `flash:1.0` at 40.3 |
-| 46.0 | The figure (hidden) moves to the start of F11. The steps begin on the figure's binding, one per stride (150 cm at 110 cm/s, so about 1.36 s): `SFX_LB_Step_Wood_01…06` in turn at pitch 0.7, plus `SFX_LB_Warden_Chain_01…04` in turn on every second stride. `SFX_LB_Warden_Breath_Heavy` (loop, 3D) starts on the figure |
+| 40.0–42.0 | Glimpse G2, **sound-only** (F0: no stair point 3–6 m below the eye is in sight). `flash:1.0` at 40.3. At 40.6, on the hidden figure's binding: `SFX_LB_Warden_Step_04` + `SFX_LB_Warden_Chain_04` |
+| 46.0 (nominal; see the arrival row) | The hidden figure starts walking at 110 cm/s: `WP_TowerStairs_18` → `_19` → `_20` → `_21` → the centre of `Stair_F11_00` (12695, 1665, 2288.96). That is 870.5 cm, 7.9 s. The steps begin on the figure's binding, one per stride (150 cm at 110 cm/s, about 1.36 s): `SFX_LB_Step_Wood_01…06` in turn at pitch 0.7, plus `SFX_LB_Warden_Chain_01…04` in turn on every second stride. `SFX_LB_Warden_Breath_Heavy` (loop, 3D) starts on the figure |
 | 54.0 | `bell:5x1` |
-| 55.0 | The figure becomes visible on F11 and climbs it at 110 cm/s to the stair top (the end time comes from the F0 path length) |
+| 53.9 | The figure becomes visible at `Stair_F11_00` and climbs F11 at 110 cm/s. The path is `Stair_F11_13` centre (12305, 1665, 2500), then the `CINE_StairTop` floor point (12165, 1665, 2500), reached at 59.2. The player can see only F11's upper half (from `Stair_F11_07`) and the top slab (F0) |
 | 57.0 | `look:LB_Cine_StairTop,1.2` |
-| Stair top → stop | It walks to the stop point, `StopDistance` in front of the mark's eye (P17-3 measures the clip's reach; nominal 100 cm), facing the mark. Nominal arrival 64.0 |
+| 59.2 → 64.1 | It turns north over 0.5 s and walks to the stop point **(12165, 2200, 2500)** (`StopDistance` 100 in front of the mark; P17-3 measures the clip's reach), facing the mark (yaw +90). F0: the lane is clear (±42 cm at floor + 20/110/200). The visible path from `Stair_F11_00` is 1118.4 cm, 10.2 s. **The arrival is fixed at 64.1.** P17-5a builds the path with the final `StopDistance`, back-computes the hidden walk's start (64.1 − total length / 110; nominal 46.0), and switches the figure visible when it reaches `Stair_F11_00` |
 | 62.5 | `look:LB_Cine_Warden,1.0` |
 | 64.5 | `lock:Full` |
 | 65.0 | Camera cut to `Cam_Mask` (ease-in 0.8 s from the player's camera). `Cam_Mask` sits at the mark's eye, aimed at the figure's `mask` socket. Focal 35 mm, manual focus 100 → 60 cm |
 | 65.5 | `AN_Warden_MaskLift` section on `WardenFigure` (slot `DefaultSlot`, blend in 0.3). Its key times (grip, lifted, extended) come from P17-3. At **grip**: the SK mask slot's `Fade` goes 1 → 0 within one frame; `SM_LB_WardenMask` becomes visible and its attach moves from bone `head` to the right-hand bone (Keep World); the hood void (if F0b needs it) becomes visible. **Lifted → extended:** the mask's `TellGlow` ramps 0 → 0.6 |
 | Extended + 0.3 (nominal 72.0) | Fade 0 → 1 over 0.3 s. The figure's breath loop stops. Audio (2D): the mask meeting the face, `SFX_LB_Step_Metal_02` at pitch 0.55 layered with `SFX_LB_Warden_Chain_02` at pitch 0.7; then `SFX_LB_Warden_Breath_Slow` (loop) as the player's own breathing, until 92.0 (the owner judges the choice of cues in P17-7) |
 | 75.0 | Camera cut to `Cam_WallTop`, with post-process blendable `MI_LB_PP_MaskView` at weight 1. Fade 1 → 0 over 2.0 s |
-| 76.0–90.0 | `Lantern` (spawnable `PointLight`) moves through the gate passage from the outer end to just inside the courtyard mouth (F0 coordinates). Bob ±3 cm at 1.1 Hz; intensity flicker ±8 % at 6 Hz (seeded keys) |
+| 76.0–90.0 | `Lantern` (spawnable `PointLight`) walks along the gate axis from **(−600, 0, 110.88)** on the approach, through the passage, to **(250, 0, 110.53)** just inside the courtyard mouth. That is 850 cm, about 61 cm/s, a slow walk. Transform keys at 76.0 (linear) and 90.0 (cubic), so it slows into the stop. Bob ±3 cm at 1.1 Hz; intensity flicker ±8 % at 6 Hz (seeded keys). The lead's traces: the wall-top eye sees all 9 rays to every point from X −600 to 300; X −700 gives 6 of 9 and X −900 gives none |
 | 86.0 | `bell:5x1` (heard from the tower, 64 m away) |
 | 90.0 | `mix:on` (Ambience, SFX and Voice fade to 0 over 4 s) |
 | 91.0 | Fade 0 → 1 over 2.0 s; the breath loop stops at 92.0 |
@@ -353,12 +386,12 @@ Already sounding from the tags, with no markers needed:
 - **`HoodVoid`** (`StaticMeshActor`): only if F0b needs it (section 4.2); attached to `head`.
 - **Cameras:** `Cam_Mask` and `Cam_WallTop` (`CineCameraActor`, same filmback as `Cam_Intro`).
   - `Cam_WallTop` sits at the `Apparition_Courtyard` station (6020, 1300) at wall-top Z + 232. F0 measures the wall top; the nominal Z is 1032.
-  - It is aimed at the gate passage centre at Z 200: yaw about −167.2°, pitch about −8°. F0 recomputes both from the measured points.
+  - F0: the wall top is Z 800, so the camera is at **(6020, 1300, 1032)**. It aims at the gate passage centre (150, 0, 200): **yaw −167.51°, pitch −7.88°**, 6069.5 cm away. All 9 rays to the passage mouth are clear.
   - Focal 35 mm, manual focus 5800 cm.
 - **`Lantern`** (`PointLight`): 600 lm, colour (255, 150, 70), radius 650, source radius 2, shadows on. The owner tunes the intensity in P17-7 (300–1500).
-- **`Snd_Base`, `Snd_Mid`:** `TargetPoint` spawnables (a scene root for 3D audio), placed per F0.
+- **`Snd_Base`, `Snd_Low`, `Snd_Mid`:** `TargetPoint` spawnables (a scene root for 3D audio) at (12165, 1665, 100), (12165, 2195, 1009.1) and (12165, 1770, 1690.9). The sound climbs: the base at 12.0, about Z 1000 at 22.3, about Z 1700 at 28.0, the hidden figure at Z 2045 from 40.6, then the figure itself.
 
-**Glimpse poses G1 and G2** follow the F0 sight-line rule (section 7, item 5). If fewer than two qualify, the missing glimpse becomes sound-only at the same time, and the owner judges it in P17-7. No new geometry.
+**Glimpses G1 and G2** followed the F0 sight-line rule (section 7, item 5). **Neither qualified** on any mark candidate: the belfry floor and the core hide every flight below F11, and every point in sight has a drop of at most 4.4 cm (drop = eye Z − (point Z + 245)), far short of the 3 m that G2 needs. Both are sound-only, as the rows above say. The owner judges this in P17-7. The traces see greybox collision only, so the art's open risers could show more than this. No new geometry.
 
 ### 3.3 Cards and styles (`DA_Cinematics.Cards`)
 | Id | Text | Style | Hold (s) | Fade (s) |
@@ -427,18 +460,20 @@ All are scalar or vector parameters. The owner tunes them in P17-7.
 ## 5. Level edits (P17-5b, environment-designer [EDITOR], `Tools/cine/p17_level.py --apply/--check/--save`, Outliner folder `Cinematics`)
 | Actor | Class | Placement | Tags |
 |---|---|---|---|
-| `CINE_FinaleMark` | `TargetPoint` | From F0 (nominal (12165, 2300, 2500), yaw −90) | `LB_Cine_FinaleMark` |
-| `CINE_StairTop` | `TargetPoint` | The F11 arrival at head height (nominal (12165, 1665, 2730)) | `LB_Cine_StairTop` |
-| `Bell` (existing) | `BP_TagInteractable_GreatBell` instance | Unchanged; component `BellComponentName` set to **Movable** | add `LB_Cine_Bell` |
+| `CINE_FinaleMark` | `TargetPoint` | **(12165, 2300, 2500), yaw −90** (F0 mark M1: the most visible stair points, clearance 125.4 cm; M2 failed at 79.7 cm). It stands at the old `EndingTrigger`'s XY | `LB_Cine_FinaleMark` |
+| `CINE_StairTop` | `TargetPoint` | **(12165, 1665, 2730)**: `WP_TowerStairs_23` (the F11 arrival on the top slab) + 230 cm head height (F0 reading B) | `LB_Cine_StairTop` |
+| `Bell` (existing) | `BP_TagInteractable_GreatBell` instance | Unchanged. F0: its component `Mesh` is already **Movable**, so `--apply` doesn't touch mobility and `--check` verifies it | add `LB_Cine_Bell` |
+| `TWA_Headstock` (existing, `StaticMeshActor_1498`) | `StaticMeshActor` | Unchanged transform; its `StaticMeshComponent0` mobility **Static → Movable** (section 2.8) | add `LB_Cine_BellHeadstock` |
+| `TWA_BellRope` (existing, `StaticMeshActor_1499`) | `StaticMeshActor` | Unchanged transform; its `StaticMeshComponent0` mobility **Static → Movable** (section 2.8) | add `LB_Cine_BellRope` |
 | `EndingTrigger` (existing) | `BP_EndingTrigger` | **Deleted from the level.** The Blueprint asset and `WBP_Ending` are left untouched and unused; deleting them is offered at review | — |
 
-- Check that an actor tagged `LB_StrikeTarget_Tower` exists (it does since P15; F0 confirms).
-- **Census:** +2 actors, −1. Then one map save.
+- `LB_StrikeTarget_Tower` exists exactly once (F0: `FX_StrikeTarget_Tower` at (12530.8, 2000, 4844.8)); `--check` re-verifies it.
+- **Census:** +2 actors, −1: 3102 → 3103. Then one map save.
 - `--check`:
   - the tags are unique;
   - the mark is on the floor (a downward trace within 2 cm);
-  - a capsule sweep (r 42, h 110) from `CINE_StairTop` to the stop point is clear;
-  - the bell component is Movable;
+  - a capsule sweep (r 42, h 110) from `CINE_StairTop` to the stop point (12165, 2200, 2500) is clear. r 42 is the Warden figure's size; the player's capsule is r 34 (F0);
+  - the bell's `Mesh`, `TWA_Headstock` and `TWA_BellRope` are Movable;
   - `EndingTrigger` is absent.
 
 ## 6. Credits (`Tools/cine/make_credits.py`, run in P17-2; output `Docs/plans/p17_credits.json` and `Docs/ArtTest/cine/credits_preview.md`)
@@ -534,7 +569,14 @@ It saves, reloads and reads back every item, then writes `Docs/ArtTest/cine/p17_
 - the camera blends in and out;
 - the figure animates in the slot without turning.
 
-**Decision:** whatever passes is scripted in P17-5a. For each failing item the lead picks MCP (if a toolset has it) or a short guided step for the owner in the Sequencer UI, written out step by step in the P17-5 brief. If camera blending back to gameplay or marker reading fails, stop and report to the owner (the architecture depends on them).
+**Decision:** whatever passes is scripted in P17-5a. For each failing item, the lead picks MCP or a short guided step for the owner in the Sequencer UI, written out step by step in the P17-5 brief.
+
+**F0 result:** MCP has Sequencer authoring: `animation_toolset.toolsets.sequencer.SequencerTools`, with 140 tools.
+- Its tools include `create_level_sequence`, `add_spawnable_from_class`, `create_camera`, `add_track_to_binding`, `add_section`, `set_camera_cut_binding`, `add_marked_frame` and `add_event_trigger_section`.
+- There are also keyframing, outliner, condition, custom-binding, import/export and Control Rig toolsets; the tool lists are in `Docs/ArtTest/cine/p17_f0_tables.md`.
+- MCP has no general editor Python: `ProgrammaticToolset.execute_tool_script` is a sandbox that only calls other tools.
+
+The headless Python spike S1a stays the primary route, because it is repeatable with `--rebuild` and needs no open editor. MCP `SequencerTools`, with Unreal open, is the first fallback for any S1a item that fails, before an owner UI step. If camera blending back to gameplay or marker reading fails, stop and report to the owner (the architecture depends on them).
 
 ## 9. Owner sessions
 | Session | Length | What | How |
@@ -552,6 +594,10 @@ It saves, reloads and reads back every item, then writes `Docs/ArtTest/cine/p17_
   - `SkipFiresMustOnce`;
   - `EaseAndYaw`;
   - `BellPendulum`: a kick, decay, the clamp, the stop threshold;
+  - `BellAxle`, with the F0 values (pivot (12420, 2000, 2880), axis +Y):
+    - `SwingAboutAxle` keeps the pivot fixed, and at 0° gives the rest transform back exactly;
+    - at 16° the bell origin (12420, 2000, 2860) moves 20·sin 16° ≈ 5.5 cm in X;
+    - `RopeZAboutAxle` changes only Z, by about ±36 cm at ±16° for the rope top (12550, 1835, 2750);
   - `CreditsSpeed`;
   - `Warden.Stage6IsDormant`.
 - **Functional** (`LBCinematicFunctionalTests.cpp`, `LastBell.Functional.Cine.*`, on `L_Monastery` unless noted; `lb.Cine.Rate 8`):
@@ -564,11 +610,13 @@ It saves, reloads and reads back every item, then writes `Docs/ArtTest/cine/p17_
     - `lb.Cine.Skip` in the credits; `CompleteGame` travels to `L_MainMenu`;
     - the save is gone.
   - `NoCheckpointDuringCinematic`.
-  - `BellSwingsOnStrike`: `PlayBell(5,1)`; the bell component rotates by more than 2° within 0.5 s and is back under 0.5° after 20 s, at rate 1.
+  - `BellSwingsOnStrike`: `PlayBell(5,1)`, at rate 1:
+    - within 0.5 s, the bell component rotates by more than 2°, the headstock actor by the same angle (±0.1°), and the rope moves in Z only (X and Y within 0.1 cm);
+    - after 20 s all three are back within 0.5° and 0.5 cm of rest.
   - `DisabledByCVar`: no intro; a running one stops and restores.
   - `MissingSequenceFailsSafe`: an override def with a bad path; must markers fire; lock None.
   - `Monastery.CinematicSetup`:
-    - the tagged actors exist once each;
+    - the tagged actors exist once each (`LB_Cine_FinaleMark`, `LB_Cine_StairTop`, `LB_Cine_Bell`, `LB_Cine_BellHeadstock`, `LB_Cine_BellRope`), and the last three are Movable;
     - `EndingTrigger` is absent;
     - `DA_Cinematics` loads;
     - both sequences load, every marker parses, and the must markers listed in 3.1 and 3.2 are present;
@@ -628,3 +676,54 @@ The GPU cost of the cinematic shots is not measured in this phase (the finale cl
 
 ## Results
 (Filled in as the tasks finish.)
+
+### F0 (2026-11-10, 6596144; lead review the same day)
+Items 1–5 and 7 are done. Item 6 and F0b are on hold for the new Warden asset. The run was read-only: before and after, PIE was off and nothing was dirty (not the map, not the 14 never-save packages), and the census stayed at 3102. The lead's extra checks were also read-only (`Docs/ArtTest/cine/p17_f0_lead_checks.json`). The data is in `Docs/ArtTest/cine/p17_f0.json` and `p17_f0_tables.md`.
+
+**Accepted values** (written into the sections above):
+- **Spawn eye:** (−2800, 0, 152.79), yaw 0. The plan's formula was wrong, because `BaseEyeHeight` counts from the capsule centre.
+- **Player capsule:** radius 34, half height 88.
+- **Gate passage:** roofed over X 0–300, 407 cm wide, centreline Y 0.
+- **Wall top:** Z 800; eye (6020, 1300, 1032); aim yaw −167.51°, pitch −7.88°.
+- **Bell:**
+  - its only mesh component is `Mesh`, the root, already Movable;
+  - the swing axis is Pitch, with the axle at the headstock's location (12420, 2000, 2880);
+  - `TWA_Headstock` and `TWA_BellRope` are Static, so P17-5b sets them Movable.
+- **Mark:** M1 at (12165, 2300, 2500), yaw −90. M2 failed clearance at 79.7 cm.
+- **`CINE_StairTop`:** (12165, 1665, 2730). Stop point (12165, 2200, 2500); the lane is clear. Visible path 1118.4 cm.
+- **Strike target:** `FX_StrikeTarget_Tower` exists once.
+- **MCP:**
+  - Sequencer authoring is available (`SequencerTools`, 140 tools, plus 6 more Sequencer toolsets);
+  - UMG has 23 tools;
+  - there is no general editor Python.
+
+**Lead decisions from F0:**
+1. **Intro camera: a crane-down.**
+   - The planned pose A (350 cm back) is inside the west cliff, and from the spawn eye the approach's north cliff hides the belfry.
+   - Pose A is now 500 cm straight above the eye. The belfry is in sight from 250 cm up; the spire is in sight from every height.
+2. **Glimpses G1 and G2 are sound-only.**
+   - No stair point below F11 is in sight from any mark.
+   - The sound climbs instead: `Snd_Base` at 12.0, `Snd_Low` at 22.3, `Snd_Mid` at 28.0, then the hidden figure from 40.6.
+   - The figure first shows at `Stair_F11_00` at 53.9, rising into view on F11's upper half.
+3. **Finale climb timing.**
+   - The hidden walk from `WP_TowerStairs_18` starts at 46.0 (nominal), so the arrival stays at about 64.1. Every cue from 62.5 on is unchanged.
+   - P17-5a back-computes the walk's start from the final `StopDistance`.
+4. **Lantern path:** (−600, 0, 110.88) → (250, 0, 110.53).
+   - The planned 200 cm in the roofed part over 14 s would have been a 14 cm/s crawl.
+   - The wall-top eye sees the gate axis from X −600 inward.
+5. **The bell swings with its headstock, and the rope follows the rim** (section 2.8). Swinging the bell alone would clip its crown through the headstock.
+   - New fields `BellHeadstockTag` and `BellRopeTag`, new logic helpers, and the `BellAxle` test.
+   - The bell's east rim at 16° reaches the frame's bounds edge. The owner checks it in P17-7.
+6. **S1a stays headless Python.** MCP `SequencerTools` is the first fallback.
+7. **`CP_Approach`** starts 50 cm east of the PlayerStart, so it saves on the first steps after the intro. No change.
+
+**For the owner (narrative; needed before P17-5, not before P17-1):**
+- **(a) Intro_1** says "For forty years no one has climbed to the monastery on the ridge." `Note_Gatehouse`, a traveller's note left at the gate, says they "came up the cliff path at dusk" and may not "leave by it".
+  - **Recommended:** Intro_1 → "For forty years, no one has come back from the monastery on the ridge."
+  - This keeps the traveller (who came up and never came back) and the brothers (who vanished) consistent.
+  - It also makes the traveller's line "it rings only for the one who is meant to hear it" set up the ending card "The bell rings for you."
+- **(b) `Note_Gatehouse`** says the villagers swear the bell "has no rope and no clapper", but a rope (`TWA_BellRope`) hangs in the belfry. `Note_Cloister` also says "no hand was on the rope".
+  - **Recommended:** "…from a bell the villagers swear no living hand has rung."
+  - The change is in P17-5b, on the placed instance's `bodyText` and its `InspectableComp` copy (a map edit; the never-save `BP_Inspectable_Note` asset is not touched).
+  - The alternative is to keep it as unreliable village rumour.
+- `Note_Cloister` fits Intro_2 and Intro_3 as written. No other mismatch.

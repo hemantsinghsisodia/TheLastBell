@@ -1,0 +1,774 @@
+{
+ "note": "Lead read-only checks after F0 (2026-11-10), editor open, PIE off, nothing set or saved; traces with Tools/cine/p17_f0_survey.py Tracer (helper volumes stepped through; greybox collision only). Hits at X 11999.6 are the tower's own west wall, i.e. the tower is in sight.",
+ "intro_camera": {
+  "spawn_eye_B": [
+   -2800.0,
+   0.0,
+   152.79
+  ],
+  "poses": "B, B+dz straight up (dz 150..600), and the planned A (-3150, 0, 232.79) with +20..+200",
+  "results_planned_A": {
+   "B:spire_tip": {
+    "visible": true,
+    "hit_at": null,
+    "elev_deg": 16.88,
+    "yaw_deg": 7.43
+   },
+   "B:belfry_z3600": {
+    "visible": false,
+    "hit_at": [
+     -1217.9,
+     207.9,
+     511.1
+    ],
+    "elev_deg": 12.66,
+    "yaw_deg": 7.49
+   },
+   "B:belfry_z3000": {
+    "visible": false,
+    "hit_at": [
+     -1200.1,
+     210.2,
+     452.1
+    ],
+    "elev_deg": 10.51,
+    "yaw_deg": 7.49
+   },
+   "B:tower_z2500": {
+    "visible": false,
+    "hit_at": [
+     -1066.8,
+     226.6,
+     418.7
+    ],
+    "elev_deg": 8.65,
+    "yaw_deg": 7.45
+   },
+   "A:spire_tip": {
+    "visible": false,
+    "hit_at": [
+     -3040.4,
+     14.0,
+     265.0
+    ],
+    "elev_deg": 16.26,
+    "yaw_deg": 7.27
+   },
+   "A:belfry_z3600": {
+    "visible": false,
+    "hit_at": [
+     -3040.4,
+     14.1,
+     256.5
+    ],
+    "elev_deg": 12.11,
+    "yaw_deg": 7.32
+   },
+   "A:belfry_z3000": {
+    "visible": false,
+    "hit_at": [
+     -3040.4,
+     14.1,
+     252.3
+    ],
+    "elev_deg": 10.0,
+    "yaw_deg": 7.32
+   },
+   "A:tower_z2500": {
+    "visible": false,
+    "hit_at": [
+     -3040.4,
+     14.0,
+     248.7
+    ],
+    "elev_deg": 8.18,
+    "yaw_deg": 7.28
+   },
+   "A+20:spire_tip": {
+    "visible": false,
+    "hit_at": [
+     -3040.4,
+     14.0,
+     284.9
+    ],
+    "elev_deg": 16.2,
+    "yaw_deg": 7.27
+   },
+   "A+20:belfry_z3600": {
+    "visible": false,
+    "hit_at": [
+     -3040.4,
+     14.1,
+     276.4
+    ],
+    "elev_deg": 12.04,
+    "yaw_deg": 7.32
+   },
+   "A+20:belfry_z3000": {
+    "visible": false,
+    "hit_at": [
+     -3040.4,
+     14.1,
+     272.1
+    ],
+    "elev_deg": 9.93,
+    "yaw_deg": 7.32
+   },
+   "A+20:tower_z2500": {
+    "visible": false,
+    "hit_at": [
+     -3040.4,
+     14.0,
+     268.5
+    ],
+    "elev_deg": 8.11,
+    "yaw_deg": 7.28
+   },
+   "A+40:spire_tip": {
+    "visible": false,
+    "hit_at": [
+     -3040.4,
+     14.0,
+     304.8
+    ],
+    "elev_deg": 16.13,
+    "yaw_deg": 7.27
+   },
+   "A+40:belfry_z3600": {
+    "visible": false,
+    "hit_at": [
+     -3040.4,
+     14.1,
+     296.2
+    ],
+    "elev_deg": 11.97,
+    "yaw_deg": 7.32
+   },
+   "A+40:belfry_z3000": {
+    "visible": false,
+    "hit_at": [
+     -3040.4,
+     14.1,
+     292.0
+    ],
+    "elev_deg": 9.86,
+    "yaw_deg": 7.32
+   },
+   "A+40:tower_z2500": {
+    "visible": false,
+    "hit_at": [
+     -3040.4,
+     14.0,
+     288.4
+    ],
+    "elev_deg": 8.04,
+    "yaw_deg": 7.28
+   },
+   "A+60:spire_tip": {
+    "visible": false,
+    "hit_at": [
+     -3040.4,
+     14.0,
+     324.6
+    ],
+    "elev_deg": 16.06,
+    "yaw_deg": 7.27
+   },
+   "A+60:belfry_z3600": {
+    "visible": false,
+    "hit_at": [
+     -3040.4,
+     14.1,
+     316.1
+    ],
+    "elev_deg": 11.9,
+    "yaw_deg": 7.32
+   },
+   "A+60:belfry_z3000": {
+    "visible": false,
+    "hit_at": [
+     -3040.4,
+     14.1,
+     311.9
+    ],
+    "elev_deg": 9.78,
+    "yaw_deg": 7.32
+   },
+   "A+60:tower_z2500": {
+    "visible": false,
+    "hit_at": [
+     -3040.4,
+     14.0,
+     308.3
+    ],
+    "elev_deg": 7.96,
+    "yaw_deg": 7.28
+   },
+   "A+80:spire_tip": {
+    "visible": false,
+    "hit_at": [
+     -3040.4,
+     14.0,
+     344.5
+    ],
+    "elev_deg": 16.0,
+    "yaw_deg": 7.27
+   },
+   "A+80:belfry_z3600": {
+    "visible": false,
+    "hit_at": [
+     -3040.4,
+     14.1,
+     335.9
+    ],
+    "elev_deg": 11.83,
+    "yaw_deg": 7.32
+   },
+   "A+80:belfry_z3000": {
+    "visible": false,
+    "hit_at": [
+     -3040.4,
+     14.1,
+     331.7
+    ],
+    "elev_deg": 9.71,
+    "yaw_deg": 7.32
+   },
+   "A+80:tower_z2500": {
+    "visible": false,
+    "hit_at": [
+     -3040.4,
+     14.0,
+     328.1
+    ],
+    "elev_deg": 7.89,
+    "yaw_deg": 7.28
+   },
+   "A+100:spire_tip": {
+    "visible": false,
+    "hit_at": [
+     -3040.4,
+     14.0,
+     364.3
+    ],
+    "elev_deg": 15.93,
+    "yaw_deg": 7.27
+   },
+   "A+100:belfry_z3600": {
+    "visible": false,
+    "hit_at": [
+     -3040.4,
+     14.1,
+     355.8
+    ],
+    "elev_deg": 11.76,
+    "yaw_deg": 7.32
+   },
+   "A+100:belfry_z3000": {
+    "visible": false,
+    "hit_at": [
+     -3040.4,
+     14.1,
+     351.6
+    ],
+    "elev_deg": 9.64,
+    "yaw_deg": 7.32
+   },
+   "A+100:tower_z2500": {
+    "visible": false,
+    "hit_at": [
+     -3040.4,
+     14.0,
+     348.0
+    ],
+    "elev_deg": 7.82,
+    "yaw_deg": 7.28
+   },
+   "A+120:spire_tip": {
+    "visible": false,
+    "hit_at": [
+     -3040.4,
+     14.0,
+     384.2
+    ],
+    "elev_deg": 15.86,
+    "yaw_deg": 7.27
+   },
+   "A+120:belfry_z3600": {
+    "visible": false,
+    "hit_at": [
+     -3040.4,
+     14.1,
+     375.7
+    ],
+    "elev_deg": 11.69,
+    "yaw_deg": 7.32
+   },
+   "A+120:belfry_z3000": {
+    "visible": false,
+    "hit_at": [
+     -3040.4,
+     14.1,
+     371.4
+    ],
+    "elev_deg": 9.57,
+    "yaw_deg": 7.32
+   },
+   "A+120:tower_z2500": {
+    "visible": false,
+    "hit_at": [
+     -3040.4,
+     14.0,
+     367.8
+    ],
+    "elev_deg": 7.75,
+    "yaw_deg": 7.28
+   },
+   "A+160:spire_tip": {
+    "visible": false,
+    "hit_at": [
+     -3040.4,
+     14.0,
+     423.9
+    ],
+    "elev_deg": 15.73,
+    "yaw_deg": 7.27
+   },
+   "A+160:belfry_z3600": {
+    "visible": false,
+    "hit_at": [
+     -3040.4,
+     14.1,
+     415.4
+    ],
+    "elev_deg": 11.55,
+    "yaw_deg": 7.32
+   },
+   "A+160:belfry_z3000": {
+    "visible": false,
+    "hit_at": [
+     -3040.4,
+     14.1,
+     411.1
+    ],
+    "elev_deg": 9.43,
+    "yaw_deg": 7.32
+   },
+   "A+160:tower_z2500": {
+    "visible": false,
+    "hit_at": [
+     -3040.4,
+     14.0,
+     407.6
+    ],
+    "elev_deg": 7.61,
+    "yaw_deg": 7.28
+   },
+   "A+200:spire_tip": {
+    "visible": false,
+    "hit_at": [
+     -3040.4,
+     14.0,
+     463.6
+    ],
+    "elev_deg": 15.59,
+    "yaw_deg": 7.27
+   },
+   "A+200:belfry_z3600": {
+    "visible": false,
+    "hit_at": [
+     -3040.4,
+     14.1,
+     455.1
+    ],
+    "elev_deg": 11.41,
+    "yaw_deg": 7.32
+   },
+   "A+200:belfry_z3000": {
+    "visible": false,
+    "hit_at": [
+     -3040.4,
+     14.1,
+     450.9
+    ],
+    "elev_deg": 9.29,
+    "yaw_deg": 7.32
+   },
+   "A+200:tower_z2500": {
+    "visible": false,
+    "hit_at": [
+     -3040.4,
+     14.0,
+     447.3
+    ],
+    "elev_deg": 7.46,
+    "yaw_deg": 7.28
+   }
+  },
+  "results_crane": {
+   "B:spire_tip": {
+    "visible": true,
+    "hit_at": null,
+    "elev_deg": 16.88,
+    "yaw_deg": 7.43
+   },
+   "B:belfry_z3600": {
+    "visible": false,
+    "hit_at": [
+     -1217.9,
+     207.9,
+     511.1
+    ],
+    "elev_deg": 12.66,
+    "yaw_deg": 7.49
+   },
+   "B:belfry_z3000": {
+    "visible": false,
+    "hit_at": [
+     -1200.1,
+     210.2,
+     452.1
+    ],
+    "elev_deg": 10.51,
+    "yaw_deg": 7.49
+   },
+   "B:tower_z2500": {
+    "visible": false,
+    "hit_at": [
+     -1066.8,
+     226.6,
+     418.7
+    ],
+    "elev_deg": 8.65,
+    "yaw_deg": 7.45
+   },
+   "B+150:spire_tip": {
+    "visible": true,
+    "hit_at": null,
+    "elev_deg": 16.37,
+    "yaw_deg": 7.43
+   },
+   "B+150:belfry_z3600": {
+    "visible": false,
+    "hit_at": [
+     11999.6,
+     1944.8,
+     3508.9
+    ],
+    "elev_deg": 12.12,
+    "yaw_deg": 7.49
+   },
+   "B+150:belfry_z3000": {
+    "visible": false,
+    "hit_at": [
+     -1226.4,
+     206.8,
+     581.7
+    ],
+    "elev_deg": 9.97,
+    "yaw_deg": 7.49
+   },
+   "B+150:tower_z2500": {
+    "visible": false,
+    "hit_at": [
+     -1210.2,
+     207.8,
+     531.1
+    ],
+    "elev_deg": 8.1,
+    "yaw_deg": 7.45
+   },
+   "B+250:spire_tip": {
+    "visible": true,
+    "hit_at": null,
+    "elev_deg": 16.03,
+    "yaw_deg": 7.43
+   },
+   "B+250:belfry_z3600": {
+    "visible": false,
+    "hit_at": [
+     11999.6,
+     1944.8,
+     3511.7
+    ],
+    "elev_deg": 11.77,
+    "yaw_deg": 7.49
+   },
+   "B+250:belfry_z3000": {
+    "visible": false,
+    "hit_at": [
+     11999.6,
+     1944.8,
+     2928.3
+    ],
+    "elev_deg": 9.6,
+    "yaw_deg": 7.49
+   },
+   "B+250:tower_z2500": {
+    "visible": false,
+    "hit_at": [
+     -0.3,
+     366.0,
+     786.6
+    ],
+    "elev_deg": 7.74,
+    "yaw_deg": 7.45
+   },
+   "B+350:spire_tip": {
+    "visible": true,
+    "hit_at": null,
+    "elev_deg": 15.69,
+    "yaw_deg": 7.43
+   },
+   "B+350:belfry_z3600": {
+    "visible": false,
+    "hit_at": [
+     11999.6,
+     1944.8,
+     3514.5
+    ],
+    "elev_deg": 11.41,
+    "yaw_deg": 7.49
+   },
+   "B+350:belfry_z3000": {
+    "visible": false,
+    "hit_at": [
+     11999.6,
+     1944.8,
+     2931.0
+    ],
+    "elev_deg": 9.24,
+    "yaw_deg": 7.49
+   },
+   "B+350:tower_z2500": {
+    "visible": false,
+    "hit_at": [
+     11999.6,
+     1934.6,
+     2434.7
+    ],
+    "elev_deg": 7.38,
+    "yaw_deg": 7.45
+   },
+   "B+450:spire_tip": {
+    "visible": true,
+    "hit_at": null,
+    "elev_deg": 15.34,
+    "yaw_deg": 7.43
+   },
+   "B+450:belfry_z3600": {
+    "visible": false,
+    "hit_at": [
+     11999.6,
+     1944.8,
+     3517.2
+    ],
+    "elev_deg": 11.05,
+    "yaw_deg": 7.49
+   },
+   "B+450:belfry_z3000": {
+    "visible": false,
+    "hit_at": [
+     11999.6,
+     1944.8,
+     2933.8
+    ],
+    "elev_deg": 8.88,
+    "yaw_deg": 7.49
+   },
+   "B+450:tower_z2500": {
+    "visible": false,
+    "hit_at": [
+     11999.6,
+     1934.6,
+     2438.0
+    ],
+    "elev_deg": 7.01,
+    "yaw_deg": 7.45
+   },
+   "B+500:spire_tip": {
+    "visible": true,
+    "hit_at": null,
+    "elev_deg": 15.17,
+    "yaw_deg": 7.43
+   },
+   "B+500:belfry_z3600": {
+    "visible": false,
+    "hit_at": [
+     11999.6,
+     1944.8,
+     3518.6
+    ],
+    "elev_deg": 10.87,
+    "yaw_deg": 7.49
+   },
+   "B+500:belfry_z3000": {
+    "visible": false,
+    "hit_at": [
+     11999.6,
+     1944.8,
+     2935.2
+    ],
+    "elev_deg": 8.69,
+    "yaw_deg": 7.49
+   },
+   "B+500:tower_z2500": {
+    "visible": false,
+    "hit_at": [
+     11999.6,
+     1934.6,
+     2439.6
+    ],
+    "elev_deg": 6.83,
+    "yaw_deg": 7.45
+   },
+   "B+600:spire_tip": {
+    "visible": true,
+    "hit_at": null,
+    "elev_deg": 14.82,
+    "yaw_deg": 7.43
+   },
+   "B+600:belfry_z3600": {
+    "visible": false,
+    "hit_at": [
+     11999.6,
+     1944.8,
+     3521.4
+    ],
+    "elev_deg": 10.51,
+    "yaw_deg": 7.49
+   },
+   "B+600:belfry_z3000": {
+    "visible": false,
+    "hit_at": [
+     11999.6,
+     1944.8,
+     2937.9
+    ],
+    "elev_deg": 8.33,
+    "yaw_deg": 7.49
+   },
+   "B+600:tower_z2500": {
+    "visible": false,
+    "hit_at": [
+     11999.6,
+     1934.6,
+     2442.9
+    ],
+    "elev_deg": 6.46,
+    "yaw_deg": 7.45
+   }
+  },
+  "blockers": {
+   "planned_A": "inside KA_CliffW_00/01 (X -3245..-2945, Z 0..600) and behind Perim_W (X -3040..-3000, Z 0..800)",
+   "from_B_below_belfry": "KA_CliffN_03/04 (X -1680..-740, Y 200..500, Z 0..600)"
+  }
+ },
+ "lantern_from_wall_top_eye": {
+  "eye": [
+   6020.0,
+   1300.0,
+   1032.0
+  ],
+  "points": [
+   {
+    "x": -1400,
+    "floor": 0.69,
+    "visible_of_9": 0
+   },
+   {
+    "x": -1300,
+    "floor": 0.98,
+    "visible_of_9": 0
+   },
+   {
+    "x": -1200,
+    "floor": 0.91,
+    "visible_of_9": 0
+   },
+   {
+    "x": -1100,
+    "floor": 0.49,
+    "visible_of_9": 0
+   },
+   {
+    "x": -1000,
+    "floor": 0.55,
+    "visible_of_9": 0
+   },
+   {
+    "x": -900,
+    "floor": 0.9,
+    "visible_of_9": 0
+   },
+   {
+    "x": -800,
+    "floor": 0.79,
+    "visible_of_9": 3
+   },
+   {
+    "x": -700,
+    "floor": 0.74,
+    "visible_of_9": 6
+   },
+   {
+    "x": -600,
+    "floor": 0.88,
+    "visible_of_9": 9
+   },
+   {
+    "x": -500,
+    "floor": 0.69,
+    "visible_of_9": 9
+   },
+   {
+    "x": -400,
+    "floor": 0.69,
+    "visible_of_9": 9
+   },
+   {
+    "x": -300,
+    "floor": 0.98,
+    "visible_of_9": 9
+   },
+   {
+    "x": -200,
+    "floor": 0.91,
+    "visible_of_9": 9
+   },
+   {
+    "x": -100,
+    "floor": 0.49,
+    "visible_of_9": 9
+   },
+   {
+    "x": 0,
+    "floor": 0.0,
+    "visible_of_9": 9
+   },
+   {
+    "x": 100,
+    "floor": 1.5,
+    "visible_of_9": 9
+   },
+   {
+    "x": 200,
+    "floor": 0.62,
+    "visible_of_9": 9
+   },
+   {
+    "x": 300,
+    "floor": 0.61,
+    "visible_of_9": 9
+   }
+  ],
+  "state_unchanged": true
+ },
+ "mobility": {
+  "TWA_Headstock": "Static",
+  "TWA_BellRope": "Static",
+  "TWA_BellFrame": "Static",
+  "Bell.Mesh": "Movable (F0)"
+ },
+ "state_unchanged": true
+}
