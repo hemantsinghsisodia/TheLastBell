@@ -448,7 +448,7 @@ Branch `claude/phase-16-audio`. Spec and plan: `Docs/plans/P16_AUDIO.md` (D-108�
 | P16-6 | Run-through and performance | owner + performance-engineer | P16-5 |
 | P16-7 | QA, docs, full suite, Game build; PHASE 16 READY FOR YOUR REVIEW | qa-reviewer, docs agent, lead | all |
 
-**Status 2026-11-10:** P16-0, F0, A1–A4, P16-1, P16-2, P16-3, P16-4 (listening session) and P16-5 (owner choices, recorded thunder cracks, candle-flame fix) are done; the suite passes 172/172. Next: P16-6 (play-through and performance with the owner), then P16-7 (QA, docs, suite).
+**Status 2026-11-10:** P16-0 to P16-5 are done. P16-6 is in progress: play-through fixes (wooden steps, note rustle on pick-up and put-down, finale bell under the ending pause) and creature ambience (D-112: bats, owls, distant howls, rats) are done, and the suite passes 175/175. Still to do in P16-6, with the owner: the note and finale-bell checks, the performance readings, and `p16_level.py --check` with the editor open. Then P16-7.
 
 ## Deferred to Phase 14–15 (Lighting, VFX: storm work)
 Items the owner asked to fold into the storm pass. **Foliage wind is now in Phase 14** (P14 section 6, D-096: `MPC_LB_Storm` replaces the planned `MPC_LB_Wind`).
