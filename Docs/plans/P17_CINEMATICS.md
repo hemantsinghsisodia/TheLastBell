@@ -83,7 +83,7 @@ New folder `Source/LastBell/Cinematics/`:
 
 - **`LastBell.Build.cs`:** add `"LevelSequence"`, `"MovieScene"` and `"MovieSceneTracks"` (the last for the authoring helper) to the public dependencies.
 - **`ULBGameSettings`:** add `UPROPERTY(Config, EditAnywhere, Category = "Cinematics") TSoftObjectPtr<ULBCinematicSettings> CinematicSettings;`.
-- **`Config/DefaultGame.ini`** (`[/Script/LastBell.LBGameSettings]`): add `CinematicSettings=/Game/LastBell/Data/DA_Cinematics.DA_Cinematics`.
+- **`Config/DefaultGame.ini`** (`[/Script/LastBell.LBGameSettings]`): add `CinematicSettings=/Game/LastBell/Data/DA_Cinematics.DA_Cinematics`. **This is done at the end of P17-5a, once both sequences pass `--check`** (lead, 2026-11-10), not in P17-2. With the line in place but no sequences, every New Game would take the fail-safe path and log a load Error, and the automation framework fails tests on unexpected Errors (`MenuFlow`, for example).
 
 ### 2.1 Markers: the timeline language
 Every action the sequence needs from the game is a **Sequencer marked frame** whose label follows the grammar below. Checked in the engine source: `UMovieScene::MarkedFrames` is a runtime `UPROPERTY`, not editor-only data, so markers ship in cooked builds.
@@ -715,10 +715,10 @@ The headless Python spike S1a stays the primary route, because it is repeatable 
 | A1 | Section 4.1 step 1 | **owner** | — | P17-0 |
 | S1a | Section 8 | animation-specialist | **Unreal closed** | F0 |
 | P17-1 | Section 2 code, CVars and commands, section 10 tests; build and suite. Also adds `State.Event.Arrival` to `Config/Tags/LBGameplayTags.ini` (editor closed): `GameplayTagList=(Tag="State.Event.Arrival",DevComment="Intro played or skipped: the first toll; never repeats")`. Until P17-5b the content-dependent tests (`Monastery.CinematicSetup`, `IntroOnNewGame`, `NoIntroOnContinue`, `IntroSkip`, `FinaleOnBell`, `BellSwingsOnStrike`) are expected to fail; every other test must pass. `RouteBot.Monastery` must pass in both states: with no `DA_Cinematics` nothing plays and the old `EndingTrigger` still travels | gameplay-programmer | **Unreal closed** | P17-0 (data values come from F0 in P17-2) |
-| P17-2 | `p16_2_assets.py` (Arrival row via `FillPlanDefaults`, `bNewGameToll` false in `OWNER_CHOICES`; apply, then verify). `p17_assets.py` (`DA_Cinematics` with the F0 values, including `FailSafeMarkers` per section 2.2 and `CineFadeMix` set; `SMX_LB_CineFade`). `make_credits.py`. The `DefaultGame.ini` line | gameplay-programmer (data) + audio-designer (mix) | **Unreal closed**, serial | P17-1, F0 |
+| P17-2 | `p16_2_assets.py` (Arrival row via `FillPlanDefaults`, `bNewGameToll` false in `OWNER_CHOICES`; apply, then verify). `p17_assets.py` (`DA_Cinematics` with the F0 values, including `FailSafeMarkers` per section 2.2 and `CineFadeMix` set; `SMX_LB_CineFade`). `make_credits.py`. (The `DefaultGame.ini` line moved to P17-5a.) Until then, a New Game has no first toll: `bNewGameToll` is off and no intro grants Arrival. That interim state is accepted on the work branch | gameplay-programmer | **Unreal closed**, serial | P17-1, F0 |
 | P17-3 | Mask mesh, void (if needed), `M_LB_Invisible` (if needed), the clip (4.1 steps 2–3), headless imports, `.gitignore` first | technical-artist + animation-specialist | Blender; **Unreal closed** for imports | F0b, A1, S1a |
 | P17-4 | `M_LB_PP_MaskView` and its MI (route per `MCP_NOTES`) | technical-artist | as `MCP_NOTES` says | F0 |
-| P17-5a | `p17_sequences.py` builds both sequences per section 3 and the S1 route; `--check` | animation-specialist | **Unreal closed** | S1a, P17-2, P17-3, P17-4 |
+| P17-5a | `p17_sequences.py` builds both sequences per section 3 and the S1 route; `--check`; then the `DefaultGame.ini` `CinematicSettings` line and the suite | animation-specialist | **Unreal closed** | S1a, P17-2, P17-3, P17-4 |
 | S1b | Section 8 | lead + **owner** | Unreal open | P17-1 |
 | P17-5b | Section 5 level edits; `--check`; one map save. Then the suite with Unreal closed | environment-designer [EDITOR] | Unreal open, then closed | P17-5a, S1b |
 | P17-6 | Owner intro review (section 9) | lead + **owner** | Unreal in front | P17-5b |
