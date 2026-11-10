@@ -364,6 +364,16 @@ def build_camera(seq):
     # camera cut
     ok, cut_track = call(item, "LevelSequence.add_track(MovieSceneCameraCutTrack)", seq.add_track, unreal.MovieSceneCameraCutTrack)
     if ok:
+        # bCanBlend FIRST: with it false the engine strips eases (RearrangeAllSections removes overlaps and easings; SupportsEasing is None)
+        item2 = "a.can_blend"
+        lib = getattr(unreal, "LBCineAuthoringLibrary", None)
+        if lib is None:
+            results["errors"].append({"item": item2, "api": "unreal.LBCineAuthoringLibrary", "error": "unreal.LBCineAuthoringLibrary is missing (editor binaries without the P17-1 helper?)"})
+            unreal.log_error("%s: unreal.LBCineAuthoringLibrary is missing" % TAG)
+        else:
+            call(item2, "LBCineAuthoringLibrary.set_camera_cut_track_can_blend(track, True)", lib.set_camera_cut_track_can_blend, cut_track, True)
+            ok_g, got = call(item2, "LBCineAuthoringLibrary.get_camera_cut_track_can_blend(track)", lib.get_camera_cut_track_can_blend, cut_track)
+            results["can_blend_after_build"] = got if ok_g else None
         ok, cut = call(item, "MovieSceneTrack.add_section() [camera cut]", cut_track.add_section)
         if ok:
             call(item, "MovieSceneSection.set_range_seconds(0,10) [camera cut]", cut.set_range_seconds, 0.0, 10.0)
@@ -373,17 +383,8 @@ def build_camera(seq):
             tps = ticks_per_sec(seq)
             call(item, "MovieSceneSection.set_ease_in_duration(%d ticks = 1.0 s)" % round(1.0 * tps), cut.set_ease_in_duration, int(round(1.0 * tps)))
             call(item, "MovieSceneSection.set_ease_out_duration(%d ticks = 1.5 s)" % round(1.5 * tps), cut.set_ease_out_duration, int(round(1.5 * tps)))
-        # bCanBlend (a plain UPROPERTY() on UMovieSceneCameraCutTrack: not editor-exposed to Python)
-        item2 = "a.can_blend"
-        ok, _ = call(item2, "UMovieSceneCameraCutTrack.set_editor_property('b_can_blend', True)", cut_track.set_editor_property, "b_can_blend", True)
-        got = tool_props(cut_track, ["bCanBlend"])
-        log("bCanBlend after set_editor_property attempt: %s" % got)
-        if not (isinstance(got, dict) and got.get("bCanBlend") is True):
-            ok2, _ = call(item2, "ToolsetLibrary.set_object_properties(track, {'bCanBlend': true})", unreal.ToolsetLibrary.set_object_properties,
-                          cut_track, json.dumps({"bCanBlend": True}))
-            got = tool_props(cut_track, ["bCanBlend"])
-            log("bCanBlend after ToolsetLibrary attempt: %s" % got)
-        results["can_blend_after_build"] = got
+            results["eases_after_build_ticks"] = [cut.get_ease_in_duration(), cut.get_ease_out_duration()]
+            log("eases right after build: in %s out %s ticks" % tuple(results["eases_after_build_ticks"]))
     return binding
 
 
@@ -871,9 +872,17 @@ def do_verify():
                 chk("a", "camera cut bound to the camera spawnable", guid_str(bid.get_editor_property("guid")), guid_str(cam.get_id()))
                 chk("a", "ease in (s)", cs.get_ease_in_duration() / tps, 1.0, 0.001)
                 chk("a", "ease out (s)", cs.get_ease_out_duration() / tps, 1.5, 0.001)
-            cb = tool_props(cut_tracks[0], ["bCanBlend"])
+            lib = getattr(unreal, "LBCineAuthoringLibrary", None)
+            cb = None
+            if lib is not None:
+                try:
+                    cb = lib.get_camera_cut_track_can_blend(cut_tracks[0])
+                except Exception as exc:  # noqa: BLE001
+                    note("get_camera_cut_track_can_blend failed: %s" % exc)
+            else:
+                note("unreal.LBCineAuthoringLibrary is missing")
             results["can_blend_readback"] = cb
-            chk("a.can_blend", "camera cut track bCanBlend", cb.get("bCanBlend") if isinstance(cb, dict) else None, True)
+            chk("a.can_blend", "camera cut track bCanBlend (LBCineAuthoringLibrary.get_camera_cut_track_can_blend)", cb, True)
 
     # ---- b
     w = one("WardenFigure")
@@ -1055,7 +1064,7 @@ def do_verify():
 
 # ---------------------------------------------------------------------------------------------------------------- verdict + output
 MCP_HINTS = {   # item -> Sequencer-toolset tools listed in Docs/ArtTest/cine/p17_f0_tables.md section 1 that cover the item
-    "a.can_blend": [],   # no listed tool sets the camera cut track's bCanBlend
+    "a.can_blend": [],   # no listed tool sets the camera cut track's bCanBlend; the C++ helper ULBCineAuthoringLibrary does
     "b4": ["SequencerTools.get_child_possessables", "SequencerTools.add_track_to_binding", "SequencerTools.rebind_component"],
     "d": ["SequencerTools.get_child_possessables", "SequencerTools.add_track_to_binding", "SequencerTools.rebind_component"],
 }
@@ -1072,7 +1081,8 @@ FINDINGS = [
     "Component bindings (needed for the Component Material Parameter track and the light Intensity track) CAN be scripted headless: the template component gives an invalid binding from add_possessable, but spawning the spawnable through a LevelSequencePlayer in the commandlet's Untitled editor world "
     "(EditorLevelLibrary.get_editor_world, LevelSequencePlayer.create_level_sequence_player, set_playback_position(frame 0, JUMP), player.get_bound_objects(binding id)) and calling LevelSequence.add_possessable(<live component>) creates a child possessable (parent = the spawnable) named SkeletalMeshComponent0 / LightComponent0. Nothing from that world is saved.",
     "Runtime resolution of those two component bindings (and of the attach, material fade, blend) is NOT proven by the read-back; it is what S1b (PIE) has to confirm.",
-    "bCanBlend of MovieSceneCameraCutTrack is a plain UPROPERTY(): set_editor_property fails ('Failed to find property'), and ToolsetLibrary.set_object_properties / get_object_properties refuse it ('could not be set / read'). The MCP ObjectTools use the same call, and no Sequencer tool in p17_f0_tables.md section 1 sets it, so it is a manual editor step (track context menu: Can Blend) or a hand-prepared seed asset.",
+    "bCanBlend of MovieSceneCameraCutTrack is a plain UPROPERTY(): Python set_editor_property fails ('Failed to find property'), and ToolsetLibrary.set_object_properties / get_object_properties refuse it; no Sequencer MCP tool sets it. "
+    "It is scripted through the project's C++ helper: unreal.LBCineAuthoringLibrary.set_camera_cut_track_can_blend(track, True) / get_camera_cut_track_can_blend(track). Call it RIGHT AFTER creating the camera cut track and BEFORE adding its section and eases: with bCanBlend false the engine strips eases (RearrangeAllSections removes overlaps and easings, SupportsEasing returns None).",
     "Component material track: MovieSceneComponentMaterialTrack.set_material_info(ComponentMaterialInfo{material_slot_name, material_slot_index, material_type=INDEXED_MATERIAL}); parameter keys via section.add_scalar_parameter_key(MaterialParameterInfo(name='Fade'), tick FrameNumber, value, '', ''); read back with section.get_channel(Name('Fade')) (the channel is named after the parameter). get_material_info logs a (misleading) deprecation warning.",
     "Visibility track: MovieSceneVisibilityTrack with set_property_name_and_path('bHidden','bHidden'); the bool channel stores VISIBLE semantics (True = visible).",
     "Attach: MovieScene3DAttachSection.set_constraint_binding_id(sequence.get_binding_id(parent binding)); attach_socket_name and attachment_*_rule are editor properties (unreal.AttachmentRule.KEEP_WORLD).",
@@ -1106,14 +1116,14 @@ def write_output():
                 apis.append(c["api"])
         errs = [c for c in build_calls if not c["ok"]]
         if not failed:
-            status = "scripted OK"
+            status = "scripted OK (via ULBCineAuthoringLibrary)" if it == "a" else "scripted OK"
         else:
             status = "needs MCP" if MCP_HINTS.get(it) else "needs manual editor step"
         parts = None
         if it == "a":
             parts = {"camera spawnable, filmback, focal length, transform track": "scripted OK",
                      "camera cut track, section bound to the camera, ease in 1.0 s, ease out 1.5 s": "scripted OK",
-                     "camera cut track bCanBlend = true": "needs manual editor step" if any(c["item"] == "a.can_blend" and not c["ok"] for c in checks) else "scripted OK"}
+                     "camera cut track bCanBlend = true (ULBCineAuthoringLibrary)": "needs manual editor step" if any(c["item"] == "a.can_blend" and not c["ok"] for c in checks) else "scripted OK (via ULBCineAuthoringLibrary)"}
         items[it] = {"status": status, "apis": apis, "values_read_back": [{"check": c["name"], "got": c["got"], "want": c["want"], "ok": c["ok"]} for c in its],
                      "failed_checks": [c["name"] for c in failed], "build_call_errors": [{"api": e["api"], "error": e.get("error")} for e in errs],
                      "mcp_tools_listed": MCP_HINTS.get(it, []), "parts": parts}

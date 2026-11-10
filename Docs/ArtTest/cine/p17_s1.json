@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-10 20:20:03",
+ "generated": "2026-11-10 21:21:49",
  "asset": "/Game/LastBell/ArtTest/P17/LS_P17_Spike",
  "items": {
   "setup": {
@@ -41,7 +41,7 @@
    "parts": null
   },
   "a": {
-   "status": "needs manual editor step",
+   "status": "scripted OK (via ULBCineAuthoringLibrary)",
    "apis": [
     "LevelSequenceEditorSubsystem.add_spawnable_from_class(CineCameraActor)",
     "LevelSequence.add_spawnable_from_class(CineCameraActor) [deprecated since 5.5]",
@@ -162,8 +162,8 @@
     },
     {
      "check": "camera cut bound to the camera spawnable",
-     "got": "'4B67566C4ACDCFC35E1230B2FA2C6C52'",
-     "want": "'4B67566C4ACDCFC35E1230B2FA2C6C52'",
+     "got": "'493F055046E26930F2ADB0A7018C74DE'",
+     "want": "'493F055046E26930F2ADB0A7018C74DE'",
      "ok": true
     },
     {
@@ -179,46 +179,37 @@
      "ok": true
     },
     {
-     "check": "camera cut track bCanBlend",
-     "got": "None",
+     "check": "camera cut track bCanBlend (LBCineAuthoringLibrary.get_camera_cut_track_can_blend)",
+     "got": "True",
      "want": "True",
-     "ok": false
+     "ok": true
     }
    ],
-   "failed_checks": [
-    "camera cut track bCanBlend"
-   ],
+   "failed_checks": [],
    "build_call_errors": [],
    "mcp_tools_listed": [],
    "parts": {
     "camera spawnable, filmback, focal length, transform track": "scripted OK",
     "camera cut track, section bound to the camera, ease in 1.0 s, ease out 1.5 s": "scripted OK",
-    "camera cut track bCanBlend = true": "needs manual editor step"
+    "camera cut track bCanBlend = true (ULBCineAuthoringLibrary)": "scripted OK (via ULBCineAuthoringLibrary)"
    }
   },
   "a.can_blend": {
-   "status": "needs manual editor step",
+   "status": "scripted OK",
    "apis": [
-    "UMovieSceneCameraCutTrack.set_editor_property('b_can_blend', True)",
-    "ToolsetLibrary.set_object_properties(track, {'bCanBlend': true})"
+    "LBCineAuthoringLibrary.set_camera_cut_track_can_blend(track, True)",
+    "LBCineAuthoringLibrary.get_camera_cut_track_can_blend(track)"
    ],
    "values_read_back": [
     {
-     "check": "camera cut track bCanBlend",
-     "got": "None",
+     "check": "camera cut track bCanBlend (LBCineAuthoringLibrary.get_camera_cut_track_can_blend)",
+     "got": "True",
      "want": "True",
-     "ok": false
+     "ok": true
     }
    ],
-   "failed_checks": [
-    "camera cut track bCanBlend"
-   ],
-   "build_call_errors": [
-    {
-     "api": "UMovieSceneCameraCutTrack.set_editor_property('b_can_blend', True)",
-     "error": "Exception: MovieSceneCameraCutTrack: Failed to find property 'b_can_blend' for attribute 'b_can_blend' on 'MovieSceneCameraCutTrack'"
-    }
-   ],
+   "failed_checks": [],
+   "build_call_errors": [],
    "mcp_tools_listed": [],
    "parts": null
   },
@@ -579,8 +570,8 @@
     },
     {
      "check": "attached to the Warden binding",
-     "got": "'1F471FA34CCE2F42388D9D9C23034776'",
-     "want": "'1F471FA34CCE2F42388D9D9C23034776'",
+     "got": "'FFD90BE14F3E259466113AB69416A4EB'",
+     "want": "'FFD90BE14F3E259466113AB69416A4EB'",
      "ok": true
     },
     {
@@ -597,8 +588,8 @@
     },
     {
      "check": "attached to the Warden binding",
-     "got": "'1F471FA34CCE2F42388D9D9C23034776'",
-     "want": "'1F471FA34CCE2F42388D9D9C23034776'",
+     "got": "'FFD90BE14F3E259466113AB69416A4EB'",
+     "want": "'FFD90BE14F3E259466113AB69416A4EB'",
      "ok": true
     },
     {
@@ -631,8 +622,8 @@
     },
     {
      "check": "attached to the Warden binding",
-     "got": "'1F471FA34CCE2F42388D9D9C23034776'",
-     "want": "'1F471FA34CCE2F42388D9D9C23034776'",
+     "got": "'FFD90BE14F3E259466113AB69416A4EB'",
+     "want": "'FFD90BE14F3E259466113AB69416A4EB'",
      "ok": true
     }
    ],
@@ -659,8 +650,8 @@
     },
     {
      "check": "attached to the Warden binding",
-     "got": "'1F471FA34CCE2F42388D9D9C23034776'",
-     "want": "'1F471FA34CCE2F42388D9D9C23034776'",
+     "got": "'FFD90BE14F3E259466113AB69416A4EB'",
+     "want": "'FFD90BE14F3E259466113AB69416A4EB'",
      "ok": true
     },
     {
@@ -1169,8 +1160,65 @@
  "anim_length_s": 4.4666666984558105,
  "bindings": [
   {
+   "name": "Cam_Spike",
+   "id": "493F055046E26930F2ADB0A7018C74DE",
+   "spawnable": true,
+   "possessable": false,
+   "class": "CineCameraActor",
+   "tracks": [
+    "MovieSceneSpawnTrack",
+    "MovieScene3DTransformTrack"
+   ],
+   "parent": null
+  },
+  {
+   "name": "LightComponent0",
+   "id": "8CB6F27E4EE29FECA628D4B84B56E2FD",
+   "spawnable": false,
+   "possessable": true,
+   "class": "PointLightComponent",
+   "tracks": [
+    "MovieSceneFloatTrack"
+   ],
+   "parent": "A16BB8CB42B0EACB8DF7E0B2CE6CD385"
+  },
+  {
+   "name": "Lantern",
+   "id": "A16BB8CB42B0EACB8DF7E0B2CE6CD385",
+   "spawnable": true,
+   "possessable": false,
+   "class": "PointLight",
+   "tracks": [
+    "MovieSceneSpawnTrack"
+   ],
+   "parent": null
+  },
+  {
+   "name": "SkeletalMeshComponent0",
+   "id": "B7B4833A43AA814B0160A99493A8EE74",
+   "spawnable": false,
+   "possessable": true,
+   "class": "SkeletalMeshComponent",
+   "tracks": [
+    "MovieSceneComponentMaterialTrack"
+   ],
+   "parent": "FFD90BE14F3E259466113AB69416A4EB"
+  },
+  {
+   "name": "Cube",
+   "id": "B8BBDD064471A2A016DBC6B138DAA219",
+   "spawnable": true,
+   "possessable": false,
+   "class": "StaticMeshActor",
+   "tracks": [
+    "MovieSceneSpawnTrack",
+    "MovieScene3DAttachTrack"
+   ],
+   "parent": null
+  },
+  {
    "name": "WardenFigure",
-   "id": "1F471FA34CCE2F42388D9D9C23034776",
+   "id": "FFD90BE14F3E259466113AB69416A4EB",
    "spawnable": true,
    "possessable": false,
    "class": "SkeletalMeshActor",
@@ -1182,63 +1230,6 @@
     "MovieSceneAudioTrack"
    ],
    "parent": null
-  },
-  {
-   "name": "SkeletalMeshComponent0",
-   "id": "2043595F4AC65010B9BC2AA9FA2D9640",
-   "spawnable": false,
-   "possessable": true,
-   "class": "SkeletalMeshComponent",
-   "tracks": [
-    "MovieSceneComponentMaterialTrack"
-   ],
-   "parent": "1F471FA34CCE2F42388D9D9C23034776"
-  },
-  {
-   "name": "Cam_Spike",
-   "id": "4B67566C4ACDCFC35E1230B2FA2C6C52",
-   "spawnable": true,
-   "possessable": false,
-   "class": "CineCameraActor",
-   "tracks": [
-    "MovieSceneSpawnTrack",
-    "MovieScene3DTransformTrack"
-   ],
-   "parent": null
-  },
-  {
-   "name": "Cube",
-   "id": "70D235A1429C0144C12588A3F948AF77",
-   "spawnable": true,
-   "possessable": false,
-   "class": "StaticMeshActor",
-   "tracks": [
-    "MovieSceneSpawnTrack",
-    "MovieScene3DAttachTrack"
-   ],
-   "parent": null
-  },
-  {
-   "name": "Lantern",
-   "id": "7687C6A8482C79859E49219B322C4C9C",
-   "spawnable": true,
-   "possessable": false,
-   "class": "PointLight",
-   "tracks": [
-    "MovieSceneSpawnTrack"
-   ],
-   "parent": null
-  },
-  {
-   "name": "LightComponent0",
-   "id": "E15A91B045032541440721885FB75D73",
-   "spawnable": false,
-   "possessable": true,
-   "class": "PointLightComponent",
-   "tracks": [
-    "MovieSceneFloatTrack"
-   ],
-   "parent": "7687C6A8482C79859E49219B322C4C9C"
   }
  ],
  "master_tracks": [
@@ -1263,21 +1254,15 @@
    "seconds": 3.0
   }
  ],
- "can_blend_after_build": {},
- "can_blend_readback": {},
- "build_errors": [
-  {
-   "item": "a.can_blend",
-   "api": "UMovieSceneCameraCutTrack.set_editor_property('b_can_blend', True)",
-   "error": "Exception: MovieSceneCameraCutTrack: Failed to find property 'b_can_blend' for attribute 'b_can_blend' on 'MovieSceneCameraCutTrack'"
-  }
- ],
+ "can_blend_after_build": true,
+ "can_blend_readback": true,
+ "build_errors": [],
  "build_notes": [
   "LS_P17_Spike already exists: reset in place"
  ],
  "verify_notes": [],
  "check_count": 88,
- "failed_count": 1,
+ "failed_count": 0,
  "findings": [
   "Run: UnrealEditor-Cmd -run=pythonscript works with the editor closed; build 11 s, verify 9 s (log lines tagged P17S1). Mode by the environment variable P17_MODE=build|verify.",
   "Tick resolution of a new LevelSequence is 24000, display rate set to 30 fps; 1 display frame = 800 ticks.",
@@ -1287,7 +1272,7 @@
   "CineCameraComponent.set_filmback_preset_by_name('16:9 DSLR') gives sensor 36.0 x 20.25 mm (not 23.76 x 13.365). The camera component of the template is tpl.get_editor_property('camera_component'); tpl.get_cine_camera_component() returns None on a template. Focal length: set_editor_property('current_focal_length', v).",
   "Component bindings (needed for the Component Material Parameter track and the light Intensity track) CAN be scripted headless: the template component gives an invalid binding from add_possessable, but spawning the spawnable through a LevelSequencePlayer in the commandlet's Untitled editor world (EditorLevelLibrary.get_editor_world, LevelSequencePlayer.create_level_sequence_player, set_playback_position(frame 0, JUMP), player.get_bound_objects(binding id)) and calling LevelSequence.add_possessable(<live component>) creates a child possessable (parent = the spawnable) named SkeletalMeshComponent0 / LightComponent0. Nothing from that world is saved.",
   "Runtime resolution of those two component bindings (and of the attach, material fade, blend) is NOT proven by the read-back; it is what S1b (PIE) has to confirm.",
-  "bCanBlend of MovieSceneCameraCutTrack is a plain UPROPERTY(): set_editor_property fails ('Failed to find property'), and ToolsetLibrary.set_object_properties / get_object_properties refuse it ('could not be set / read'). The MCP ObjectTools use the same call, and no Sequencer tool in p17_f0_tables.md section 1 sets it, so it is a manual editor step (track context menu: Can Blend) or a hand-prepared seed asset.",
+  "bCanBlend of MovieSceneCameraCutTrack is a plain UPROPERTY(): Python set_editor_property fails ('Failed to find property'), and ToolsetLibrary.set_object_properties / get_object_properties refuse it; no Sequencer MCP tool sets it. It is scripted through the project's C++ helper: unreal.LBCineAuthoringLibrary.set_camera_cut_track_can_blend(track, True) / get_camera_cut_track_can_blend(track). Call it RIGHT AFTER creating the camera cut track and BEFORE adding its section and eases: with bCanBlend false the engine strips eases (RearrangeAllSections removes overlaps and easings, SupportsEasing returns None).",
   "Component material track: MovieSceneComponentMaterialTrack.set_material_info(ComponentMaterialInfo{material_slot_name, material_slot_index, material_type=INDEXED_MATERIAL}); parameter keys via section.add_scalar_parameter_key(MaterialParameterInfo(name='Fade'), tick FrameNumber, value, '', ''); read back with section.get_channel(Name('Fade')) (the channel is named after the parameter). get_material_info logs a (misleading) deprecation warning.",
   "Visibility track: MovieSceneVisibilityTrack with set_property_name_and_path('bHidden','bHidden'); the bool channel stores VISIBLE semantics (True = visible).",
   "Attach: MovieScene3DAttachSection.set_constraint_binding_id(sequence.get_binding_id(parent binding)); attach_socket_name and attachment_*_rule are editor properties (unreal.AttachmentRule.KEEP_WORLD).",
