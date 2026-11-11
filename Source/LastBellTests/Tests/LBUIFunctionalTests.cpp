@@ -36,6 +36,11 @@
 #include "UI/LBBrightnessWidget.h"
 #include "UI/LBConfirmWidget.h"
 #include "UI/LBCreditsWidget.h"
+#include "UI/LBHUDWidget.h"
+#include "Components/LBInteractableComponent.h"
+#include "Components/LBInteractorComponent.h"
+#include "Character/LBCandleComponent.h"
+#include "Objectives/LBObjectiveSubsystem.h"
 #include "UI/LBGraphicsSettings.h"
 #include "UI/LBKeyBindings.h"
 #include "UI/LBKeyIconWidget.h"
@@ -1274,6 +1279,181 @@ bool FLBUICreditsTest::RunTest(const FString& Parameters)
 		}
 		Subsystem->HandleBack();
 		Test->TestEqual(TEXT("Back closes it"), Subsystem->GetScreenCount(), 0);
+		return true;
+	});
+
+	UIEnqueue(R);
+	return true;
+}
+
+// =====================================================================================================================
+// HUD (P18-3)
+// =====================================================================================================================
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBUIHUDTest, "LastBell.Functional.UI.HUD.PromptKeyAndObjective", LB_UIFUNC_FLAGS)
+bool FLBUIHUDTest::RunTest(const FString& Parameters)
+{
+	TSharedRef<FUIRunner> R = UIStartSession(this);
+	const TSharedRef<FUIState> S = R->S;
+	FAutomationTestBase* Test = this;
+	UIAddReady(*R);
+
+	R->Add(TEXT("The HUD is the C++ one and binds to the pawn and the objectives"), [S, Test](FUICtx& C)
+	{
+		ALBPlayerController* PC = UILBController(C.W);
+		ULBHUDWidget* HUD = PC ? Cast<ULBHUDWidget>(PC->GetHUDWidget()) : nullptr;
+		if (!Test->TestNotNull(TEXT("P18-3: BP_LBPlayerController.HUDWidgetClass is ULBHUDWidget"), HUD))
+		{
+			return true;
+		}
+		if (!HUD->IsBoundForTest())
+		{
+			if (C.Elapsed > 3.0)
+			{
+				Test->AddError(TEXT("The HUD did not bind to the pawn and the objective subsystem within 3 s"));
+				return true;
+			}
+			return false;
+		}
+		Test->TestFalse(TEXT("Nothing is prompted at the start"), HUD->IsPromptVisibleForTest());
+		Test->TestTrue(TEXT("The crosshair shows"), HUD->IsCrosshairVisibleForTest());
+		Test->TestFalse(TEXT("No inspection overlay"), HUD->IsInspectOverlayVisibleForTest());
+		Test->TestFalse(TEXT("No relight message"), HUD->IsCandleTextVisibleForTest());
+		return true;
+	});
+
+	R->Add(TEXT("The prompt shows the current Interact key and the interactable's text; a denied prompt names no key; the objective text follows"), [S, Test](FUICtx& C)
+	{
+		ALBPlayerController* PC = UILBController(C.W);
+		ULBHUDWidget* HUD = PC ? Cast<ULBHUDWidget>(PC->GetHUDWidget()) : nullptr;
+		ALBCharacter* Pawn = LBPie::Pawn();
+		ULocalPlayer* LocalPlayer = PC ? PC->GetLocalPlayer() : nullptr;
+		if (!HUD || !Pawn || !Pawn->GetInteractor() || !LocalPlayer)
+		{
+			Test->AddError(TEXT("The HUD, the pawn or its interactor is missing"));
+			return true;
+		}
+		ULBInteractorComponent* Interactor = Pawn->GetInteractor();
+
+		AActor* Door = C.W->SpawnActor<AActor>(Pawn->GetActorLocation() + FVector(500.0, 0.0, 0.0), FRotator::ZeroRotator);
+		if (!Test->TestNotNull(TEXT("A door actor"), Door))
+		{
+			return true;
+		}
+		S->Actors.Add(Door);
+		USceneComponent* DoorRoot = NewObject<USceneComponent>(Door);
+		Door->SetRootComponent(DoorRoot);
+		DoorRoot->RegisterComponent();
+		ULBInteractableComponent* Interactable = NewObject<ULBInteractableComponent>(Door);
+		Interactable->PromptText = FText::FromString(TEXT("Open"));
+		Interactable->DeniedPromptText = FText::FromString(TEXT("Locked"));
+		Door->AddInstanceComponent(Interactable);
+		Interactable->RegisterComponent();
+
+		// A usable prompt: the key of the Interact binding and the text.
+		Interactor->OnFocusChanged.Broadcast(Interactable, Interactable->PromptText);
+		Test->TestTrue(TEXT("The prompt shows"), HUD->IsPromptVisibleForTest());
+		Test->TestEqual(TEXT("...with the interactable's text"), HUD->GetPromptTextForTest().ToString(), FString(TEXT("Open")));
+		Test->TestTrue(TEXT("...and the key"), HUD->IsPromptKeyVisibleForTest());
+		const ULBKeyIconWidget* Key = HUD->GetPromptKeyIconForTest();
+		if (Test->TestNotNull(TEXT("The prompt has a key icon"), Key))
+		{
+			Test->TestEqual(TEXT("It shows the current Interact key"), Key->GetKey(), LBKeyBindings::GetKey(LocalPlayer, ELBBindAction::Interact));
+			Test->TestEqual(TEXT("...E by default"), Key->GetKey(), EKeys::E);
+		}
+
+		// Rebind: the prompt follows (P18-2 registered the mappings).
+		const LBKeyBindings::FRebindResult Done = LBKeyBindings::Rebind(LocalPlayer, ELBBindAction::Interact, EKeys::R);
+		Test->TestTrue(TEXT("Interact rebinds to R"), Done.bOk);
+		if (Key)
+		{
+			Test->TestEqual(TEXT("The prompt now shows R"), Key->GetKey(), EKeys::R);
+		}
+		LBKeyBindings::ResetAll(LocalPlayer);
+		if (Key)
+		{
+			Test->TestEqual(TEXT("Reset: E again"), Key->GetKey(), EKeys::E);
+		}
+
+		// A denied prompt: the text without the key.
+		Interactor->OnFocusChanged.Broadcast(Interactable, Interactable->DeniedPromptText);
+		Test->TestTrue(TEXT("The denied prompt shows"), HUD->IsPromptVisibleForTest());
+		Test->TestEqual(TEXT("...with the denied text"), HUD->GetPromptTextForTest().ToString(), FString(TEXT("Locked")));
+		Test->TestFalse(TEXT("...and no key"), HUD->IsPromptKeyVisibleForTest());
+
+		// Nothing focused.
+		Interactor->OnFocusChanged.Broadcast(nullptr, FText::GetEmpty());
+		Test->TestFalse(TEXT("The prompt hides"), HUD->IsPromptVisibleForTest());
+
+		// High contrast.
+		Interactor->OnFocusChanged.Broadcast(Interactable, Interactable->PromptText);
+		Test->TestFalse(TEXT("Normal prompt is not high-contrast"), HUD->IsPromptHighContrastForTest());
+		ULBUserSettings::GetUserSettings()->SetHighContrastPrompts(true);
+		Test->TestTrue(TEXT("High-contrast prompts switch the prompt's look"), HUD->IsPromptHighContrastForTest());
+		if (Key)
+		{
+			Test->TestTrue(TEXT("...and the key glyph's"), Key->IsHighContrastForTest());
+		}
+		ULBUserSettings::GetUserSettings()->SetHighContrastPrompts(false);
+		Interactor->OnFocusChanged.Broadcast(nullptr, FText::GetEmpty());
+
+		// The objective.
+		ULBObjectiveSubsystem* Objectives = C.W->GetSubsystem<ULBObjectiveSubsystem>();
+		if (Test->TestNotNull(TEXT("The objective subsystem"), Objectives))
+		{
+			Objectives->OnObjectiveChanged.Broadcast(3, FText::FromString(TEXT("Find the bell key")));
+			Test->TestTrue(TEXT("The objective shows"), HUD->IsObjectiveVisibleForTest());
+			Test->TestEqual(TEXT("...with its text"), HUD->GetObjectiveTextForTest().ToString(), FString(TEXT("Find the bell key")));
+			Objectives->OnObjectiveChanged.Broadcast(INDEX_NONE, FText::GetEmpty());
+			Test->TestFalse(TEXT("An empty objective hides"), HUD->IsObjectiveVisibleForTest());
+		}
+
+		// The candle.
+		if (ULBCandleComponent* Candle = Pawn->GetCandle())
+		{
+			Candle->OnRelightStarted.Broadcast();
+			Test->TestTrue(TEXT("Relighting shows the message"), HUD->IsCandleTextVisibleForTest());
+			Candle->OnCandleStateChanged.Broadcast(true);
+			Test->TestFalse(TEXT("The candle lit hides it"), HUD->IsCandleTextVisibleForTest());
+		}
+		return true;
+	});
+
+	R->Add(TEXT("The inspection overlay shows the item's name and text and hides the crosshair, then goes away"), [S, Test](FUICtx& C)
+	{
+		ALBPlayerController* PC = UILBController(C.W);
+		ULBHUDWidget* HUD = PC ? Cast<ULBHUDWidget>(PC->GetHUDWidget()) : nullptr;
+		ALBCharacter* Pawn = LBPie::Pawn();
+		if (!HUD || !Pawn || !Pawn->GetInspection())
+		{
+			Test->AddError(TEXT("The HUD, the pawn or its inspection component is missing"));
+			return true;
+		}
+		const FVector Base = Pawn->GetActorLocation() + FVector(300.0, 0.0, 100.0);
+		AStaticMeshActor* Note = C.W->SpawnActor<AStaticMeshActor>(Base, FRotator::ZeroRotator);
+		if (!Test->TestNotNull(TEXT("The note actor"), Note))
+		{
+			return true;
+		}
+		S->Actors.Add(Note);
+		Note->SetMobility(EComponentMobility::Movable);
+		Note->SetActorLocation(Base);
+		ULBInspectableComponent* Inspectable = NewObject<ULBInspectableComponent>(Note);
+		Inspectable->DisplayName = FText::FromString(TEXT("Torn page"));
+		Inspectable->BodyText = FText::FromString(TEXT("The bell must not ring."));
+		Note->AddInstanceComponent(Inspectable);
+		Inspectable->RegisterComponent();
+		if (!Test->TestTrue(TEXT("BeginInspect succeeded"), Pawn->GetInspection()->BeginInspect(Inspectable)))
+		{
+			return true;
+		}
+		Test->TestTrue(TEXT("The overlay shows"), HUD->IsInspectOverlayVisibleForTest());
+		Test->TestEqual(TEXT("...with the name"), HUD->GetInspectNameForTest().ToString(), FString(TEXT("Torn page")));
+		Test->TestEqual(TEXT("...and the text"), HUD->GetInspectBodyForTest().ToString(), FString(TEXT("The bell must not ring.")));
+		Test->TestFalse(TEXT("The crosshair hides while inspecting"), HUD->IsCrosshairVisibleForTest());
+		Pawn->GetInspection()->CancelInspect();
+		Test->TestFalse(TEXT("The overlay goes away"), HUD->IsInspectOverlayVisibleForTest());
+		Test->TestTrue(TEXT("The crosshair is back"), HUD->IsCrosshairVisibleForTest());
 		return true;
 	});
 
