@@ -88,6 +88,13 @@ void ULBUserSettings::SetBrightnessCalibrated(bool bNewValue)
 	OnUserSettingsChanged().Broadcast();
 }
 
+void ULBUserSettings::SetShowFPS(bool bNewValue)
+{
+	bShowFPS = bNewValue;
+	SaveConfig();
+	OnUserSettingsChanged().Broadcast();
+}
+
 void ULBUserSettings::ResetControlsToDefaults()
 {
 	MouseSensitivity = 1.0f;

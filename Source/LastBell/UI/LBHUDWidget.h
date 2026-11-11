@@ -53,6 +53,10 @@ public:
 	float GetCrosshairFocusAlphaForTest() const { return FocusAlpha; }
 	bool IsPromptHighContrastForTest() const { return bPromptHighContrast; }
 	bool IsBoundForTest() const { return bBound; }
+	bool IsFPSVisibleForTest() const;
+	FText GetFPSTextForTest() const;
+	/** Feeds one frame of this many seconds into the counter, as the tick does. */
+	void AddFPSSampleForTest(float DeltaSeconds) { AddFPSSample(DeltaSeconds); }
 
 	// The handlers are public so a test can drive them; the bound delegates call them.
 	UFUNCTION()
@@ -98,6 +102,10 @@ private:
 	void BindSettings();
 	void UnbindSettings();
 	void RefreshPromptVisibility();
+	void UpdateFPSVisibility();
+	void AddFPSSample(float DeltaSeconds);
+	/** The option is on and no menu screen is open. */
+	bool ShouldShowFPS() const;
 	void SetFocusTarget(bool bFocused);
 	void HandleSettingsChanged();
 
@@ -124,6 +132,10 @@ private:
 
 	UPROPERTY(Transient)
 	TObjectPtr<UTextBlock> CandleText;
+
+	/** "60 FPS", top right (ULBUserSettings::bShowFPS). */
+	UPROPERTY(Transient)
+	TObjectPtr<UTextBlock> FPSText;
 
 	UPROPERTY(Transient)
 	TObjectPtr<UCanvasPanel> InspectOverlay;
@@ -152,6 +164,10 @@ private:
 	bool bInspecting = false;
 	bool bPromptUsable = true;
 	bool bPromptHighContrast = false;
+	/** The last 0.5 s of frame times, newest last, and the time since the text was last updated. */
+	TArray<float> FPSSamples;
+	float FPSSampleSum = 0.f;
+	float FPSUpdateClock = 0.f;
 	float BindRetryClock = 100.f;
 	float FocusAlpha = 0.f;
 	float FocusTarget = 0.f;

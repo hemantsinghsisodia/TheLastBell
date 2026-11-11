@@ -19,6 +19,7 @@
 #include "Objectives/LBObjectiveSubsystem.h"
 #include "Systems/LBUserSettings.h"
 #include "UI/LBKeyIconWidget.h"
+#include "UI/LBUISubsystem.h"
 #include "UI/LBUIBuild.h"
 #include "UI/LBUIStyle.h"
 
@@ -29,6 +30,8 @@ namespace
 	constexpr float CrosshairFocusScale = 1.8f;
 	constexpr float CrosshairSpeed = 8.f;
 	constexpr float BindRetrySeconds = 0.25f;
+	constexpr float FPSWindowSeconds = 0.5f;
+	constexpr float FPSUpdateSeconds = 0.25f;
 	constexpr float VignetteSize = 70.f;
 	const FLinearColor VignetteColour(0.f, 0.f, 0.f, 0.35f);
 	const FLinearColor InspectInk(0.93f, 0.87f, 0.72f, 1.f);
@@ -196,6 +199,12 @@ void ULBHUDWidget::BuildTree()
 	CandleText->SetVisibility(ESlateVisibility::Collapsed);
 	Place(*Root, CandleText, FAnchors(0.5f, 1.f), FMargin(0.f, -70.f, 0.f, 0.f), FVector2D(0.5, 1.0), true);
 
+	// The FPS counter: top right.
+	FPSText = LBUIBuild::MakeText(*WidgetTree, FText::GetEmpty(), FSlateFontInfo(), FLinearColor::White, ETextJustify::Right);
+	Shadow(*FPSText, 0.7f);
+	FPSText->SetVisibility(ESlateVisibility::Collapsed);
+	Place(*Root, FPSText, FAnchors(1.f, 0.f), FMargin(-40.f, 40.f, 0.f, 0.f), FVector2D(1.0, 0.0), true);
+
 	// The inspection overlay: four vignette bands, the item's name at the top, its text on the right, the hint at the bottom.
 	InspectOverlay = WidgetTree->ConstructWidget<UCanvasPanel>(UCanvasPanel::StaticClass(), TEXT("InspectOverlay"));
 	InspectOverlay->SetVisibility(ESlateVisibility::Collapsed);
@@ -265,6 +274,8 @@ void ULBHUDWidget::ApplyLook()
 	// The rest.
 	ObjectiveText->SetFont(Style.MakeFont(ELBFontWeight::Regular, Style.SmallSize + 4));
 	ObjectiveText->SetColorAndOpacity(FSlateColor(FLinearColor(Style.Ink.R * 0.92f, Style.Ink.G * 0.92f, Style.Ink.B * 0.92f, 1.f)));
+	FPSText->SetFont(Style.MakeFont(ELBFontWeight::Regular, Style.SmallSize));
+	FPSText->SetColorAndOpacity(FSlateColor(Style.Dim));
 	CandleText->SetFont(Style.MakeFont(ELBFontWeight::Italic, Style.SmallSize));
 	CandleText->SetColorAndOpacity(FSlateColor(FLinearColor(Style.Accent.R, Style.Accent.G, Style.Accent.B, 0.9f)));
 	InspectName->SetFont(Style.MakeFont(ELBFontWeight::SemiBold, Style.ItemSize));
@@ -313,7 +324,67 @@ void ULBHUDWidget::ApplyLook()
 	AddHintText(NSLOCTEXT("LastBellUI", "InspectClose", "to close"));
 
 	RefreshPromptVisibility();
+	UpdateFPSVisibility();
 }
+
+// ---------------------------------------------------------------------------------------------------------------------
+// FPS counter
+// ---------------------------------------------------------------------------------------------------------------------
+
+bool ULBHUDWidget::ShouldShowFPS() const
+{
+	const ULBUserSettings* User = ULBUserSettings::Get();
+	if (!User || !User->bShowFPS)
+	{
+		return false;
+	}
+	// In play only: not behind the pause menu or any other screen.
+	const ULBUISubsystem* UI = ULBUISubsystem::Get(this);
+	return !(UI && UI->GetScreenCount() > 0 && UI->GetTopWidget() != nullptr);
+}
+
+void ULBHUDWidget::UpdateFPSVisibility()
+{
+	if (!FPSText)
+	{
+		return;
+	}
+	const bool bShow = ShouldShowFPS();
+	const bool bWasShown = FPSText->GetVisibility() != ESlateVisibility::Collapsed;
+	if (bShow && !bWasShown)
+	{
+		FPSSamples.Reset();
+		FPSSampleSum = 0.f;
+		FPSUpdateClock = FPSUpdateSeconds;
+		FPSText->SetText(FText::GetEmpty());
+	}
+	FPSText->SetVisibility(bShow ? ESlateVisibility::HitTestInvisible : ESlateVisibility::Collapsed);
+}
+
+void ULBHUDWidget::AddFPSSample(float DeltaSeconds)
+{
+	if (!FPSText || DeltaSeconds <= 0.f)
+	{
+		return;
+	}
+	// Real frame times over the last 0.5 s (always keeping the newest frame), shown as an integer about four times a second.
+	FPSSamples.Add(DeltaSeconds);
+	FPSSampleSum += DeltaSeconds;
+	while (FPSSamples.Num() > 1 && FPSSampleSum - FPSSamples[0] >= FPSWindowSeconds)
+	{
+		FPSSampleSum -= FPSSamples[0];
+		FPSSamples.RemoveAt(0, EAllowShrinking::No);
+	}
+	FPSUpdateClock += DeltaSeconds;
+	if (FPSUpdateClock >= FPSUpdateSeconds && FPSSampleSum > 0.f)
+	{
+		FPSUpdateClock = 0.f;
+		FPSText->SetText(FText::Format(NSLOCTEXT("LastBellUI", "FPSFormat", "{0} FPS"), FText::AsNumber(FMath::RoundToInt(static_cast<float>(FPSSamples.Num()) / FPSSampleSum))));
+	}
+}
+
+bool ULBHUDWidget::IsFPSVisibleForTest() const { return FPSText && FPSText->GetVisibility() != ESlateVisibility::Collapsed; }
+FText ULBHUDWidget::GetFPSTextForTest() const { return FPSText ? FPSText->GetText() : FText::GetEmpty(); }
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Binding to the game
@@ -330,6 +401,13 @@ void ULBHUDWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 	{
 		BindRetryClock = 0.f;
 		TryBind();
+	}
+
+	// The FPS counter (real frame time: Slate's delta keeps running while the game is paused).
+	UpdateFPSVisibility();
+	if (FPSText && FPSText->GetVisibility() != ESlateVisibility::Collapsed)
+	{
+		AddFPSSample(InDeltaTime);
 	}
 
 	// The crosshair eases toward its target.

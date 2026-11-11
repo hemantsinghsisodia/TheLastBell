@@ -6,6 +6,9 @@
 #include "Engine/Engine.h"
 #include "Engine/Texture2D.h"
 #include "GameFramework/GameUserSettings.h"
+#include "Misc/ConfigCacheIni.h"
+#include "Misc/Paths.h"
+#include "Scalability.h"
 #include "Systems/LBGameSettings.h"
 #include "Systems/LBUserSettings.h"
 #include "UI/LBGraphicsSettings.h"
@@ -327,6 +330,81 @@ bool FLBUIGraphicsPresetTest::RunTest(const FString& Parameters)
 	{
 		TestEqual(FString::Printf(TEXT("Restored: group %d is what it was"), Group), After.Groups[Group], Before.Groups[Group]);
 	}
+	return true;
+}
+
+// Applying really applies the scalability and persists it: SetPreset(Low) + Apply -> the engine's applied quality levels and GameUserSettings.ini say Low;
+// Revert puts the player's settings back (and saves them again).
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBUIGraphicsApplyTest, "LastBell.UI.Settings.GraphicsApplyPersists", LB_UI_UNIT_FLAGS)
+bool FLBUIGraphicsApplyTest::RunTest(const FString& Parameters)
+{
+	UGameUserSettings* GameSettings = FLBGraphicsSettings::Get();
+	if (!TestNotNull(TEXT("The engine's user settings"), GameSettings))
+	{
+		return false;
+	}
+	const FLBGraphicsSnapshot Before = FLBGraphicsSettings::Capture();
+
+	FLBGraphicsSettings::SetPreset(0);
+	FLBGraphicsSettings::SetGroupLevel(ELBGraphicsGroup::Shadows, 1);
+	const bool bNeedsKeep = FLBGraphicsSettings::Apply(Before);
+	TestFalse(TEXT("A quality-only change needs no keep dialog"), bNeedsKeep);
+
+	const Scalability::FQualityLevels Applied = Scalability::GetQualityLevels();
+	TestEqual(TEXT("Applied: shadows are at the level that was chosen (1)"), Applied.ShadowQuality, 1);
+	TestEqual(TEXT("Applied: view distance is Low"), Applied.ViewDistanceQuality, 0);
+	TestEqual(TEXT("Applied: textures are Low"), Applied.TextureQuality, 0);
+	// The engine saves the scalability state to the editor-settings ini in the editor and to GameUserSettings.ini in a game.
+	const FString& ScalabilityIni = GIsEditor ? GEditorSettingsIni : GGameUserSettingsIni;
+	int32 Saved = -1;
+	GConfig->GetInt(TEXT("ScalabilityGroups"), TEXT("sg.ShadowQuality"), Saved, ScalabilityIni);
+	TestEqual(TEXT("Persisted: the settings ini holds sg.ShadowQuality 1"), Saved, 1);
+	GConfig->GetInt(TEXT("ScalabilityGroups"), TEXT("sg.ViewDistanceQuality"), Saved, ScalabilityIni);
+	TestEqual(TEXT("Persisted: sg.ViewDistanceQuality 0"), Saved, 0);
+
+	FLBGraphicsSettings::Revert(Before);
+	const FLBGraphicsSnapshot After = FLBGraphicsSettings::Capture();
+	for (int32 Group = 0; Group < static_cast<int32>(ELBGraphicsGroup::Count); ++Group)
+	{
+		TestEqual(FString::Printf(TEXT("Reverted: group %d is back"), Group), After.Groups[Group], Before.Groups[Group]);
+	}
+	return true;
+}
+
+// The first-launch defaults (Config/DefaultGameUserSettings.ini): true fullscreen at the desktop resolution. A player's saved GameUserSettings.ini
+// overrides every key (the engine layers Saved over Default), so this reads the file itself.
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBUIDefaultDisplayTest, "LastBell.UI.Config.DefaultGameUserSettingsIsTrueFullscreen", LB_UI_UNIT_FLAGS)
+bool FLBUIDefaultDisplayTest::RunTest(const FString& Parameters)
+{
+	const FString Path = FPaths::Combine(FPaths::ProjectConfigDir(), TEXT("DefaultGameUserSettings.ini"));
+	if (!TestTrue(TEXT("Config/DefaultGameUserSettings.ini exists"), FPaths::FileExists(Path)))
+	{
+		return false;
+	}
+	FConfigFile File;
+	File.Read(Path);
+	const TCHAR* Section = TEXT("/Script/Engine.GameUserSettings");
+	int32 Value = -99;
+	TestTrue(TEXT("FullscreenMode is set"), File.GetInt(Section, TEXT("FullscreenMode"), Value));
+	TestEqual(TEXT("FullscreenMode 0 = true Fullscreen"), Value, 0);
+	Value = -99;
+	File.GetInt(Section, TEXT("LastConfirmedFullscreenMode"), Value);
+	TestEqual(TEXT("LastConfirmedFullscreenMode 0"), Value, 0);
+	Value = -99;
+	File.GetInt(Section, TEXT("PreferredFullscreenMode"), Value);
+	TestEqual(TEXT("PreferredFullscreenMode 0"), Value, 0);
+	Value = -99;
+	File.GetInt(Section, TEXT("Version"), Value);
+	TestEqual(TEXT("Version matches the engine's GameUserSettings version (5), or the engine ignores the file's window settings"), Value, 5);
+	bool bDesktop = false;
+	File.GetBool(Section, TEXT("bUseDesktopResolution"), bDesktop);
+	TestTrue(TEXT("The desktop resolution is used on first launch"), bDesktop);
+	Value = -99;
+	File.GetInt(Section, TEXT("ResolutionSizeX"), Value);
+	TestEqual(TEXT("ResolutionSizeX 0 (desktop)"), Value, 0);
+	Value = -99;
+	File.GetInt(Section, TEXT("ResolutionSizeY"), Value);
+	TestEqual(TEXT("ResolutionSizeY 0 (desktop)"), Value, 0);
 	return true;
 }
 

@@ -34,6 +34,7 @@ public:
 			bGrain = Settings->bFilmGrain;
 			bHighContrast = Settings->bHighContrastPrompts;
 			bCalibrated = Settings->bBrightnessCalibrated;
+			bFPS = Settings->bShowFPS;
 		}
 		EngineGamma = GEngine ? GEngine->DisplayGamma : 2.2f;
 	}
@@ -57,6 +58,7 @@ public:
 			Settings->bFilmGrain = bGrain;
 			Settings->bHighContrastPrompts = bHighContrast;
 			Settings->bBrightnessCalibrated = bCalibrated;
+			Settings->bShowFPS = bFPS;
 			Settings->SaveConfig();
 			ULBUserSettings::OnUserSettingsChanged().Broadcast();
 		}
@@ -80,6 +82,7 @@ private:
 	bool bGrain = true;
 	bool bHighContrast = false;
 	bool bCalibrated = false;
+	bool bFPS = false;
 	float EngineGamma = 2.2f;
 };
 

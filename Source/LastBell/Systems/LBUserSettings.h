@@ -99,6 +99,10 @@ public:
 	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Accessibility")
 	bool bHighContrastPrompts = false;
 
+	/** A small frames-per-second counter in the HUD's top-right corner (works in Shipping: it is drawn by the HUD, not by `stat fps`). */
+	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Display")
+	bool bShowFPS = false;
+
 	/** The first-launch brightness screen was confirmed. False: the main menu shows it first. */
 	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Display")
 	bool bBrightnessCalibrated = false;
@@ -121,6 +125,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "LastBell|Settings")
 	void SetBrightnessCalibrated(bool bNewValue);
+
+	UFUNCTION(BlueprintCallable, Category = "LastBell|Settings")
+	void SetShowFPS(bool bNewValue);
 
 	/** Applies the sliders without saving (live preview while a slider is dragged); the caller saves on release. */
 	void SetGammaTransient(float NewValue);

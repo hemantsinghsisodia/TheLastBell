@@ -1462,6 +1462,146 @@ bool FLBUIHUDTest::RunTest(const FString& Parameters)
 }
 
 // =====================================================================================================================
+// Quality preset cycle and the FPS counter (P18-5)
+// =====================================================================================================================
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBUIPresetCycleTest, "LastBell.Functional.UI.Settings.PresetCyclesFromEpicToLow", LB_UIFUNC_FLAGS)
+bool FLBUIPresetCycleTest::RunTest(const FString& Parameters)
+{
+	TSharedRef<FUIRunner> R = UIStartSession(this);
+	const TSharedRef<FUIState> S = R->S;
+	FAutomationTestBase* Test = this;
+	UIAddReady(*R);
+
+	R->Add(TEXT("The preset row cycles Low, Medium, High, Epic and round again; Custom is only ever displayed"), [S, Test](FUICtx& C)
+	{
+		ULBUISubsystem* Subsystem = UIGet(C.W);
+		if (!Test->TestNotNull(TEXT("The UI subsystem"), Subsystem))
+		{
+			return true;
+		}
+		const FLBGraphicsSnapshot Baseline = FLBGraphicsSettings::Capture();
+		Subsystem->OpenSettings();
+		ULBSettingsWidget* Screen = Cast<ULBSettingsWidget>(Subsystem->GetTopWidget());
+		if (!Test->TestNotNull(TEXT("The settings screen"), Screen))
+		{
+			return true;
+		}
+		Screen->SwitchTab(ELBSettingsTab::Graphics);
+		const int32 Preset = Screen->GetPresetItemForTest();
+		if (!Test->TestNotEqual(TEXT("The preset row exists"), Preset, static_cast<int32>(INDEX_NONE)))
+		{
+			return true;
+		}
+
+		Screen->SetPresetForTest(3);
+		Test->TestEqual(TEXT("Start at Epic"), FLBGraphicsSettings::GetPreset(), 3);
+		const int32 Expected[] = { 0, 1, 2, 3, 0 };
+		const TCHAR* Names[] = { TEXT("Low"), TEXT("Medium"), TEXT("High"), TEXT("Epic"), TEXT("Low again") };
+		for (int32 Step = 0; Step < 5; ++Step)
+		{
+			Screen->ActivateItem(Preset);
+			Test->TestEqual(FString::Printf(TEXT("Enter / click %d from Epic reaches %s"), Step + 1, Names[Step]), FLBGraphicsSettings::GetPreset(), Expected[Step]);
+			const FLBMenuItem* Row = Screen->GetItem(Preset);
+			Test->TestEqual(TEXT("...and the row shows it"), Row ? Row->Index : -1, Expected[Step]);
+		}
+
+		// Custom is a display-only state: it never sticks, and the next step leaves it.
+		const int32 Shadows = Screen->GetGroupItemForTest(ELBGraphicsGroup::Shadows);
+		Screen->SetPresetForTest(2);
+		Screen->AdjustItem(Shadows, -1);
+		Test->TestEqual(TEXT("A group differs: Custom"), FLBGraphicsSettings::GetPreset(), -1);
+		const FLBMenuItem* Row = Screen->GetItem(Preset);
+		Test->TestEqual(TEXT("...the row shows Custom (index 4)"), Row ? Row->Index : -1, 4);
+		Screen->ActivateItem(Preset);
+		Test->TestEqual(TEXT("From Custom the next step is Low"), FLBGraphicsSettings::GetPreset(), 0);
+
+		Screen->SetPresetForTest(2);
+		Screen->AdjustItem(Shadows, -1);
+		Test->TestEqual(TEXT("Custom again"), FLBGraphicsSettings::GetPreset(), -1);
+		Screen->AdjustItem(Preset, -1);
+		Test->TestEqual(TEXT("From Custom, Left goes to Epic (the last real preset)"), FLBGraphicsSettings::GetPreset(), 3);
+		Screen->AdjustItem(Preset, 1);
+		Test->TestEqual(TEXT("Right from Epic stays at Epic (no wrap on the arrows)"), FLBGraphicsSettings::GetPreset(), 3);
+
+		Subsystem->ClearScreens();
+		FLBGraphicsSettings::Restore(Baseline);
+		return true;
+	});
+
+	UIEnqueue(R);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBUIFPSTest, "LastBell.Functional.UI.HUD.ShowFPSToggle", LB_UIFUNC_FLAGS)
+bool FLBUIFPSTest::RunTest(const FString& Parameters)
+{
+	TSharedRef<FUIRunner> R = UIStartSession(this);
+	const TSharedRef<FUIState> S = R->S;
+	FAutomationTestBase* Test = this;
+	UIAddReady(*R);
+
+	R->Add(TEXT("The Display tab toggle shows and hides the HUD's FPS counter; it is hidden behind menus; it reads 60 FPS at 60 FPS"), [S, Test](FUICtx& C)
+	{
+		ALBPlayerController* PC = UILBController(C.W);
+		ULBHUDWidget* HUD = PC ? Cast<ULBHUDWidget>(PC->GetHUDWidget()) : nullptr;
+		ULBUISubsystem* Subsystem = UIGet(C.W);
+		ULBUserSettings* Settings = ULBUserSettings::GetUserSettings();
+		if (!HUD || !Subsystem || !Settings)
+		{
+			Test->AddError(TEXT("The HUD, the UI subsystem or the user settings are missing"));
+			return true;
+		}
+		Settings->SetShowFPS(false);
+		Test->TestFalse(TEXT("Off: the counter is hidden"), HUD->IsFPSVisibleForTest());
+
+		// The settings row.
+		Subsystem->OpenSettings();
+		ULBSettingsWidget* Screen = Cast<ULBSettingsWidget>(Subsystem->GetTopWidget());
+		if (Test->TestNotNull(TEXT("The settings screen"), Screen))
+		{
+			Screen->SwitchTab(ELBSettingsTab::Display);
+			const int32 Row = Screen->FindItemByLabel(NSLOCTEXT("LastBellUI", "DisplayShowFPS", "Show FPS counter"));
+			if (Test->TestNotEqual(TEXT("The Display tab has the Show FPS row"), Row, static_cast<int32>(INDEX_NONE)))
+			{
+				Screen->ActivateItem(Row);
+				Test->TestTrue(TEXT("The row switched the option on and saved it"), Settings->bShowFPS);
+				Screen->ActivateItem(Row);
+				Test->TestFalse(TEXT("...and off again"), Settings->bShowFPS);
+				Screen->ActivateItem(Row);
+				Test->TestTrue(TEXT("...on"), Settings->bShowFPS);
+			}
+			// A menu is open: not visible, even with the option on.
+			HUD->ApplyLook();
+			Test->TestFalse(TEXT("Behind a menu the counter is hidden"), HUD->IsFPSVisibleForTest());
+		}
+		Subsystem->ClearScreens();
+		HUD->ApplyLook();
+		Test->TestTrue(TEXT("In play with the option on the counter shows"), HUD->IsFPSVisibleForTest());
+
+		// 60 FPS for a second of frames: the text reads "60 FPS".
+		for (int32 Frame = 0; Frame < 60; ++Frame)
+		{
+			HUD->AddFPSSampleForTest(1.f / 60.f);
+		}
+		Test->TestEqual(TEXT("60 frames of 1/60 s read 60 FPS"), HUD->GetFPSTextForTest().ToString(), FString(TEXT("60 FPS")));
+		// A stall pushes the smoothed value down within the 0.5 s window, then it recovers.
+		for (int32 Frame = 0; Frame < 17; ++Frame)
+		{
+			HUD->AddFPSSampleForTest(1.f / 30.f);
+		}
+		Test->TestEqual(TEXT("Over half a second at 30 FPS reads 30 FPS"), HUD->GetFPSTextForTest().ToString(), FString(TEXT("30 FPS")));
+
+		Settings->SetShowFPS(false);
+		Test->TestFalse(TEXT("Off again: hidden"), HUD->IsFPSVisibleForTest());
+		return true;
+	});
+
+	UIEnqueue(R);
+	return true;
+}
+
+// =====================================================================================================================
 // Loading screen
 // =====================================================================================================================
 
