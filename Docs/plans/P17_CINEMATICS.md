@@ -633,6 +633,27 @@ Gates from P17-3: grip 2.2 s, lifted 3.4 s, extended 4.6 s, clip 6.0 s; `StopDis
 
 **Then:** `check`, then the suite. The owner's finale review (P17-7) follows.
 
+### 3.9 Finale review result and the villager's candle (owner, 2026-11-11)
+**P17-7, the owner's review: "rest is fine".** The owner accepts:
+- the mask lift and the hand-off;
+- the push-in to the eye;
+- the 70 mm wall-top shot;
+- the music levels;
+- the Warden's movement, with no further slowing asked for after V11.1 and the slow lift.
+
+**Bell swing: KEEP** at every great-bell strike (the 2.8 veto is not used).
+
+**Getting control back after the credits** was only `lb.Cine.NoEnd 1` (a review aid). In play, `!end` goes to the menu.
+
+**Change: the villager carries a CANDLE like the player's, not a lantern.** The next villager comes up as the player did, and the lantern's hand placement looked wrong.
+- **Prop:** the player's first-person candle meshes, read from the `BP_LBCharacter` CDO and `ULBCandleComponent`, including the flame mesh.
+- **Light:** a PointLight at the flame with the player's candle light settings (intensity, colour, radius, flicker), read from the same source. Report the values used.
+- **Remove** `LanternProp` and `Lantern`.
+- **Pose:** UAL2 `Walk_Carry_Loop` for the walk if a one-hand candle reads in it, otherwise the clip that best shows a candle held out in front. The end idle is UAL1 `Idle_Torch_Loop` or a held pose of the walk. The candle goes in `hand_r`, upright.
+- **Verify in Blender before Unreal:** a contact sheet, `Docs/ArtTest/cine/p17_villager_candle.png`, front and side, at 4 walk frames and the end idle. It must show the candle upright in the hand, the flame above it, and no clipping. **The lead reviews it before the sequence rebuild.**
+- **Also check the villager's materials** in Unreal: the owner's shot showed a pale figure. Confirm the darkened textures are assigned and sampled (sRGB, base colour), and fix them if not.
+- **Rebuild:** `LS_LB_Finale` only; the walk timing is unchanged. Then `check` and the suite.
+
 ### 3.3 Cards and styles (`DA_Cinematics.Cards`)
 | Id | Text | Style | Hold (s) | Fade (s) |
 |---|---|---|---|---|
