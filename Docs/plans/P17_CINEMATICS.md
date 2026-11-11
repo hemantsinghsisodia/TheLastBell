@@ -755,6 +755,13 @@ The GPU cost of the cinematic shots is not measured in this phase (the finale cl
 ## Results
 (Filled in as the tasks finish.)
 
+### Finale preview (2026-11-11, owner in PIE; before the mask moment)
+Played with `lb.Cine.NoEnd 1`, `BugItGo` to the mark, and `lb.State.Add State.Event.Finale`. **Owner: "all looked fine".** That covers the mark, the sound-only climb, the figure rising on F11 and walking up to the player, the close-up, the wall-top shot with the lantern, the end cards and the credits.
+
+The log shows all 18 markers firing on time, the Warden going to stage 6, and a skip during the credits (127 s) firing `!end` (suppressed by NoEnd), with no Errors or Warnings.
+
+The full P17-7 review (mask lift, hood void, the bell swing veto) waits for 5a-2.
+
 ### P17-6 (2026-11-11, owner in PIE)
 **Intro review: passed with no changes** (owner: "looks fine, skip worked"). The log confirms:
 - the New Game rule fired;
