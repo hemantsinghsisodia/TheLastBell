@@ -1,0 +1,20 @@
+{
+ "MUS_LB_Cine_IntroText": {
+  "seconds": 16.0,
+  "channels": 2,
+  "peak_dbfs": -3.0,
+  "sha256": "ee406f83e09446a60bad4055cb6da253345888f667f0408e5bf2d110820f6a15"
+ },
+ "MUS_LB_Cine_Finale": {
+  "seconds": 55.0,
+  "channels": 2,
+  "peak_dbfs": -3.0,
+  "sha256": "17992aea0bae85d6dadd2955530dded4a1b6ec749fca4ca18798b33c4fede0b8"
+ },
+ "MUS_LB_Cine_Credits": {
+  "seconds": 45.013,
+  "channels": 2,
+  "peak_dbfs": -3.0,
+  "sha256": "450066519a7875e23fc869334d41060703edd781a687d27ca140a435c2925d8e"
+ }
+}

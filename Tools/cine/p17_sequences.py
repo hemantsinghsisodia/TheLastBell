@@ -218,7 +218,10 @@ def spec_intro():
                         ("strike:LB_StrikeTarget_Tower,1.0", 17.0), ("!tag:State.Event.Arrival", 17.4), ("card:Title", 19.0), ("!lock:None", 27.5)],
             "fade": [(0.0, 1.0), (13.0, 1.0), (15.5, 0.0)],
             "cuts": [{"binding": "Cam_Intro", "start": 13.0, "end": 27.0, "ease_in": 0.0, "ease_out": 1.5}],
-            "bindings": [cam], "audio2d": []}
+            "bindings": [cam],
+            # 3.4: the owner's intro music (2D); it fades as the picture fades in
+            "audio2d": [{"sound": "MUS_LB_Cine_IntroText", "start": 0.0, "end": 15.5,
+                         "vol": [(0.0, 0.0, "L"), (0.5, 1.0, "L"), (13.0, 1.0, "L"), (15.5, 0.0, "L")]}]}
 
 
 # 3.2b (owner finale revision, 2026-11-11): the figure is in sight about 3.5 s after the ring; playback 0-97.5 s
@@ -271,7 +274,10 @@ def spec_finale(facts):
                "comps": [{"comp": "light_component", "tracks": [{"prop": "Intensity", "path": "Intensity", "keys": ik}]}], "audio": []}
 
     audio2d = [{"sound": "SFX_LB_Step_Metal_02", "start": 19.5, "pitch": 0.55}, {"sound": "SFX_LB_Warden_Chain_02", "start": 19.5, "pitch": 0.7},
-               {"sound": "SFX_LB_Warden_Breath_Slow", "start": 19.8, "end": 39.5, "loop": True}]
+               {"sound": "SFX_LB_Warden_Breath_Slow", "start": 19.8, "end": 39.5, "loop": True},
+               # 3.4: the owner's finale and credits music (2D)
+               {"sound": "MUS_LB_Cine_Finale", "start": 3.6, "end": 54.5, "vol": [(3.6, 0.0, "L"), (5.0, 1.0, "L"), (52.0, 1.0, "L"), (54.5, 0.0, "L")]},
+               {"sound": "MUS_LB_Cine_Credits", "start": 53.5, "end": 94.5, "vol": [(53.5, 0.0, "L"), (55.0, 1.0, "L"), (92.5, 1.0, "L"), (94.5, 0.0, "L")]}]
     markers = [("mark:LB_Cine_FinaleMark,1.2", 0.0), ("lock:Look", 1.3), ("look:LB_Cine_StairTop,1.0", 1.5), ("flash:1.0", 3.6),
                ("look:LB_Cine_Warden,1.0", 9.5), ("lock:Full", 12.0), ("bell:5x1", 33.5), ("mix:on", 37.5), ("card:End_1", 41.5),
                ("card:End_2", 47.5), ("skip:1", 53.5), ("credits:40", 53.5 + 1.0 / FPS), ("!end", 94.5)]

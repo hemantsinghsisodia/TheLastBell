@@ -1,15 +1,15 @@
 {
- "generated": "2026-11-11 08:08:38",
- "total_checks": 214,
- "passed": 214,
+ "generated": "2026-11-11 08:40:47",
+ "total_checks": 232,
+ "passed": 232,
  "failed": 0,
  "per_sequence": {
   "Intro": {
-   "total": 39,
+   "total": 47,
    "failed": 0
   },
   "Finale": {
-   "total": 175,
+   "total": 185,
    "failed": 0
   }
  },
@@ -52,8 +52,12 @@
   "cam_mask_pitch": 10.052544827076881
  },
  "deps": {
-  "Intro": [],
+  "Intro": [
+   "/Game/LastBell/Audio/Music/MUS_LB_Cine_IntroText"
+  ],
   "Finale": [
+   "/Game/LastBell/Audio/Music/MUS_LB_Cine_Credits",
+   "/Game/LastBell/Audio/Music/MUS_LB_Cine_Finale",
    "/Game/LastBell/Audio/Player/SFX_LB_Step_Metal_02",
    "/Game/LastBell/Audio/Player/SFX_LB_Step_Wood_01",
    "/Game/LastBell/Audio/Player/SFX_LB_Step_Wood_02",
@@ -208,8 +212,8 @@
    "item": "cut",
    "name": "Cam_Intro bound to the camera spawnable",
    "ok": true,
-   "got": "'931CCD114813B931DAF9A597502EE2E2'",
-   "want": "'931CCD114813B931DAF9A597502EE2E2'"
+   "got": "'E0C4D0D8462DBB329C9C12B9E903E44D'",
+   "want": "'E0C4D0D8462DBB329C9C12B9E903E44D'"
   },
   {
    "seq": "Intro",
@@ -388,6 +392,70 @@
    "want": "'ok'"
   },
   {
+   "seq": "Intro",
+   "item": "audio2d",
+   "name": "master audio track count",
+   "ok": true,
+   "got": "1",
+   "want": "1"
+  },
+  {
+   "seq": "Intro",
+   "item": "audio2d",
+   "name": "2D audio section count",
+   "ok": true,
+   "got": "1",
+   "want": "1"
+  },
+  {
+   "seq": "Intro",
+   "item": "audio2d",
+   "name": "2D MUS_LB_Cine_IntroText @0.000 present",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Intro",
+   "item": "audio2d",
+   "name": "2D MUS_LB_Cine_IntroText @0.000 end (s)",
+   "ok": true,
+   "got": "15.500041961669922",
+   "want": "15.5"
+  },
+  {
+   "seq": "Intro",
+   "item": "audio2d",
+   "name": "2D MUS_LB_Cine_IntroText @0.000 looping",
+   "ok": true,
+   "got": "False",
+   "want": "False"
+  },
+  {
+   "seq": "Intro",
+   "item": "audio2d",
+   "name": "2D MUS_LB_Cine_IntroText @0.000 pitch",
+   "ok": true,
+   "got": "1.0",
+   "want": "1.0"
+  },
+  {
+   "seq": "Intro",
+   "item": "audio2d",
+   "name": "2D MUS_LB_Cine_IntroText @0.000 volume keys (4 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Intro",
+   "item": "audio2d",
+   "name": "2D no overlapping sections within a row",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
    "seq": "Finale",
    "item": "setup",
    "name": "asset loads as LevelSequence",
@@ -520,8 +588,8 @@
    "item": "cut",
    "name": "Cam_Mask bound to the camera spawnable",
    "ok": true,
-   "got": "'E7626C6849898CD194976A823EC90BA1'",
-   "want": "'E7626C6849898CD194976A823EC90BA1'"
+   "got": "'722FD6254C813E6E163608B8460B4465'",
+   "want": "'722FD6254C813E6E163608B8460B4465'"
   },
   {
    "seq": "Finale",
@@ -552,8 +620,8 @@
    "item": "cut",
    "name": "Cam_WallTop bound to the camera spawnable",
    "ok": true,
-   "got": "'F6D47B68458AE5E68C8BC282CDF33C2B'",
-   "want": "'F6D47B68458AE5E68C8BC282CDF33C2B'"
+   "got": "'0F68A74E4F01A4E1E4787599025199E5'",
+   "want": "'0F68A74E4F01A4E1E4787599025199E5'"
   },
   {
    "seq": "Finale",
@@ -1680,8 +1748,8 @@
    "item": "audio2d",
    "name": "2D audio section count",
    "ok": true,
-   "got": "3",
-   "want": "3"
+   "got": "5",
+   "want": "5"
   },
   {
    "seq": "Finale",
@@ -1778,6 +1846,86 @@
    "ok": true,
    "got": "1.0",
    "want": "1.0"
+  },
+  {
+   "seq": "Finale",
+   "item": "audio2d",
+   "name": "2D MUS_LB_Cine_Finale @3.600 present",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "audio2d",
+   "name": "2D MUS_LB_Cine_Finale @3.600 end (s)",
+   "ok": true,
+   "got": "54.50004196166992",
+   "want": "54.5"
+  },
+  {
+   "seq": "Finale",
+   "item": "audio2d",
+   "name": "2D MUS_LB_Cine_Finale @3.600 looping",
+   "ok": true,
+   "got": "False",
+   "want": "False"
+  },
+  {
+   "seq": "Finale",
+   "item": "audio2d",
+   "name": "2D MUS_LB_Cine_Finale @3.600 pitch",
+   "ok": true,
+   "got": "1.0",
+   "want": "1.0"
+  },
+  {
+   "seq": "Finale",
+   "item": "audio2d",
+   "name": "2D MUS_LB_Cine_Finale @3.600 volume keys (4 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "audio2d",
+   "name": "2D MUS_LB_Cine_Credits @53.500 present",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "audio2d",
+   "name": "2D MUS_LB_Cine_Credits @53.500 end (s)",
+   "ok": true,
+   "got": "94.50003814697266",
+   "want": "94.5"
+  },
+  {
+   "seq": "Finale",
+   "item": "audio2d",
+   "name": "2D MUS_LB_Cine_Credits @53.500 looping",
+   "ok": true,
+   "got": "False",
+   "want": "False"
+  },
+  {
+   "seq": "Finale",
+   "item": "audio2d",
+   "name": "2D MUS_LB_Cine_Credits @53.500 pitch",
+   "ok": true,
+   "got": "1.0",
+   "want": "1.0"
+  },
+  {
+   "seq": "Finale",
+   "item": "audio2d",
+   "name": "2D MUS_LB_Cine_Credits @53.500 volume keys (4 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
   },
   {
    "seq": "Finale",

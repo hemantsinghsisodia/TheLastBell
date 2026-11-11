@@ -35,14 +35,15 @@ Fab: Bugrimov Maksim, PackDev, PawelBrzustowski, UB / Bucket team
 Kenney
 Freesound: _stubb, ani_music, AppleCorey, audioninja001, aUREa, Autobot8299, Beefmaster69,
 BenjaminNelan, bertiehs, betchkal, brachern, celldroid, coelhoigor, coffeemakessounds,
-cognito perceptu, craigsmith, dimbark1, ecfike, Elanor1995, EverydayEldritch,
-Gammelsmurfen778, giddster, GoatsheadCastle, Greg_Surr, HarpyHarpHarp, harrisonlace,
-husky70, IENBA, JacobEmanuelMadrid, jcdecha, jemburyturner, juansua990, keweldog, Kinoton,
-Krokulator, kyles, LampEight, ldezem, loganzsound, marc.om, martian, mucky_pete7,
-NahuelMartinez, NicknameLarry, noahpardo, Noxdl, patchytherat, PostProdDog, pp87, qubodup,
-RealSquink, Reitanna, Robson220pl, Rudmer_Rotteveel, RyanTheBlockhead, SamsterBirdies,
-scalywhale, ShaneF91, Sheyvan, sophiehall3535, sound368, squareal, TheKingOfGeeks360,
-tlcolbe, tony2metal, TRP, ulla_petersen, Voices_Of_Marz, Zabuhailo, Zrte
+cognito perceptu, craigsmith, CVLTIV8R, Dasgoat, dimbark1, ecfike, Elanor1995,
+EverydayEldritch, Gammelsmurfen778, giddster, GoatsheadCastle, Greg_Surr, HarpyHarpHarp,
+harrisonlace, husky70, IENBA, JacobEmanuelMadrid, jcdecha, jemburyturner, juansua990,
+keweldog, Kinoton, Krokulator, kyles, LampEight, ldezem, loganzsound, marc.om, martian,
+mucky_pete7, NahuelMartinez, NicknameLarry, noahpardo, Noxdl, patchytherat, PostProdDog,
+pp87, qubodup, RealSquink, Reitanna, Robson220pl, Rudmer_Rotteveel, RyanTheBlockhead,
+SamsterBirdies, scalywhale, ShaneF91, Sheyvan, sophiehall3535, sound368, squareal,
+szegvari, TheKingOfGeeks360, tlcolbe, tony2metal, TRP, ulla_petersen, Voices_Of_Marz,
+Zabuhailo, Zrte
 ~
 (small) Fonts
 Roboto, Christian Robertson (Apache 2.0)
@@ -52,14 +53,14 @@ Thank you for playing.
 
 ## Summary
 
-- 42 lines: 3 Heading, 6 Small, 24 Name, 9 Gap
+- 43 lines: 3 Heading, 6 Small, 25 Name, 9 Gap
 - Registry rows credited and distinct authors per provider:
   - Poly Haven: 42 rows, 18 authors
   - ambientCG: 12 rows, 0 authors
   - Fab: 32 rows, 4 authors
   - BlenderKit: 0 rows, 0 authors
   - Kenney: 2 rows, 0 authors
-  - Freesound: 73 rows, 70 authors
+  - Freesound: 76 rows, 73 authors
 - Excluded registry rows (29):
   - Mixamo (fixed Animation line) (13): Y Bot (character, Mixamo T-pose); Mixamo clip: Mutant Walking; Mixamo clip: Zombie Walk; Mixamo clip: Mutant Run; Mixamo clip: Zombie Running; Mixamo clip: Mutant Breathing Idle ...
   - engine font (Fonts line) (1): Roboto Bold (font, outlines only)

@@ -11,7 +11,8 @@ Environment variables:
                  (P16-5: LB_REIMPORT="^SFX_LB_Thunder_(Near|Strike)_" re-imports the recorded-crack thunder only)
 
 What it does (docs/plans/P16_AUDIO.md, "P16-2 brief"):
- 1. imports the 193 WAVs (P16-6: +18 creature cues) of SourceArt/Audio/Generated and Recorded into /Game/LastBell/Audio/<Folder>/
+ 1. imports the 196 WAVs (P16-6: +18 creature cues; P17: +3 cinematic music tracks of SourceArt/Audio/Music) of SourceArt/Audio/Generated, Recorded and Music
+    into /Game/LastBell/Audio/<Folder>/
  2. sets looping, sound class, attenuation, concurrency and volume per SoundWave (cue sheet, section 3)
  3. creates the SoundClasses, SMX_LB_User, 8 attenuation, 4 concurrency and 6 reverb assets (sections 6.1 to 6.4)
  4. creates the 6 PM_LB_* physical materials (SurfaceType1..6)
@@ -38,6 +39,7 @@ import unreal
 ROOT = r"C:\Hemant\Prj\Learning\TheLastBell"
 GEN_DIR = os.path.join(ROOT, "SourceArt", "Audio", "Generated")
 REC_DIR = os.path.join(ROOT, "SourceArt", "Audio", "Recorded")
+MUS_DIR = os.path.join(ROOT, "SourceArt", "Audio", "Music")   # P17 section 3.4: the owner's cinematic music (Tools/audio/prep/prep_cine_music.py)
 OUT = os.environ.get("LB_OUT", "")
 MODE = os.environ.get("LB_MODE", "apply").lower()
 _REIMPORT_ENV = os.environ.get("LB_REIMPORT", "0")
@@ -103,6 +105,7 @@ SOUND_RULES = [
     (r"^SFX_LB_Bell_Stage", "Ambience", "ATT_LB_Bell"),
     (r"^SFX_LB_SmallBell_Solved", "SFX", "ATT_LB_Medium"),
     (r"^SFX_LB_SmallBell_", "SFX", "ATT_LB_Small"),
+    (r"^MUS_LB_Cine_", "CineMusic", None),   # P17 3.4: 2D, SCL_LB_CineMusic (a child of SCL_LB_Music)
     (r"^MUS_LB_", "Music", None),
     (r"^SFX_LB_Room_", "Ambience", None),
     (r"^SFX_LB_Drip_", "Ambience", "ATT_LB_Small"),
@@ -158,6 +161,12 @@ def object_path(package_path):
 # ---------------------------------------------------------------------------------------------------------------------------------
 
 CLASS_NAMES = {"Master": "SCL_LB_Master", "SFX": "SCL_LB_SFX", "Ambience": "SCL_LB_Ambience", "Music": "SCL_LB_Music", "Voice": "SCL_LB_Voice", "UI": "SCL_LB_UI"}
+# P17 3.4: not a user volume group (DA_Audio.UserClasses stays CLASS_NAMES); a child of SCL_LB_Music, so the user's music slider applies to it
+EXTRA_CLASSES = {"CineMusic": "SCL_LB_CineMusic"}
+
+
+def class_name(key):
+    return CLASS_NAMES.get(key) or EXTRA_CLASSES[key]
 
 # inner = the near distance (sphere inner radius); fall = the falloff distance; natural = Natural Sound distance model;
 # omni = non-spatialized radius; absorb = (start cm, end cm, low-pass Hz at the end); occl = (volume, low-pass Hz or None, interpolation s or None)
@@ -305,7 +314,7 @@ def set_from(obj_set):
 
 def build_sound_classes():
     assets = {}
-    for key, name in CLASS_NAMES.items():
+    for key, name in list(CLASS_NAMES.items()) + list(EXTRA_CLASSES.items()):
         assets[key] = find_or_create(MIX + "/" + name, unreal.SoundClass, unreal.SoundClassFactory)
     master = assets["Master"]
     if master is None or any(v is None for v in assets.values()):
@@ -323,6 +332,19 @@ def build_sound_classes():
             record("SCL_LB_Master", "child_classes", "+%d" % len(missing))
         else:
             check("SCL_LB_Master.child_classes", False, "missing %s" % [m.get_name() for m in missing])
+    # P17: SCL_LB_CineMusic is a child of SCL_LB_Music (not of Master); the Music class's child list must hold it
+    cine = assets["CineMusic"]
+    if cine.get_editor_property("parent_class") != assets["Music"] and APPLY:
+        mark_changed(assets["Music"])      # assigning the parent also edits the parent's package (the editor keeps the child list in step)
+    set_prop(cine, "parent_class", assets["Music"], "SCL_LB_CineMusic")
+    mkids = list(assets["Music"].get_editor_property("child_classes"))
+    if cine not in mkids:
+        if APPLY:
+            assets["Music"].set_editor_property("child_classes", mkids + [cine])
+            mark_changed(assets["Music"])
+            record("SCL_LB_Music", "child_classes", "+SCL_LB_CineMusic")
+        else:
+            check("SCL_LB_Music.child_classes", False, "missing SCL_LB_CineMusic")
     # Volume 1 everywhere except the owner's choices (SCL_LB_Master 0.7). The write goes through the Properties struct and the package is marked
     # changed by hand: an MCP write to a SoundClass's Properties does not dirty the package, but save_asset(only_if_dirty=False) saves it.
     for key, asset in assets.items():
@@ -473,6 +495,12 @@ def collect_wavs():
         name = fname[:-4]
         check("unique name " + name, name not in items)
         items[name] = dict(path=os.path.join(REC_DIR, fname), source="recorded", loop=name in RECORDED_LOOPS, gain_db=0.0)
+    for fname in sorted(os.listdir(MUS_DIR)):   # P17 3.4: the three cinematic music tracks (2D, not looping)
+        if not fname.lower().endswith(".wav"):
+            continue
+        name = fname[:-4]
+        check("unique name " + name, name not in items)
+        items[name] = dict(path=os.path.join(MUS_DIR, fname), source="music", loop=False, gain_db=0.0)
     return items
 
 
@@ -900,21 +928,22 @@ def count_folders(items):
         check("folder %s holds %d assets" % (folder, expected[folder]), len(listed) == expected[folder], len(listed))
     mix_listed = EAL.list_assets(MIX, recursive=False, include_folder=False)
     counts["Mix"] = len(mix_listed)
-    # + 1: SMX_LB_CineFade, made by Tools/cine/p17_assets.py (P17-2) in the same folder
-    check("folder Mix holds 26 assets", len(mix_listed) == 6 + 1 + len(ATTENUATION) + len(CONCURRENCY) + len(REVERB) + 1, len(mix_listed))
+    # + 2: SMX_LB_CineFade (Tools/cine/p17_assets.py, P17-2) and SCL_LB_CineMusic (P17 3.4)
+    check("folder Mix holds 27 assets", len(mix_listed) == 6 + 1 + len(ATTENUATION) + len(CONCURRENCY) + len(REVERB) + 2, len(mix_listed))
     phys_listed = EAL.list_assets(PHYS, recursive=False, include_folder=False)
     counts["Physics"] = len(phys_listed)
     check("folder Physics holds 6 assets", len(phys_listed) == 6, len(phys_listed))
     report["counts"] = counts
     report["counts"]["sounds_total"] = sum(counts[f] for f in expected)
-    check("193 sounds in total", report["counts"]["sounds_total"] == 193, report["counts"]["sounds_total"])
+    check("196 sounds in total", report["counts"]["sounds_total"] == 196, report["counts"]["sounds_total"])
 
 
 def verify_all(items, classes, attenuation, concurrency, reverbs, mix, phys):
     """Reads everything back (in a fresh process this proves the saved files)."""
     count_folders(items)
-    check("193 WAVs found in SourceArt", len(items) == 193, len(items))
-    check("51 generated + 142 recorded (124 + 18 creature cues)", sum(1 for i in items.values() if i["source"] == "generated") == 51 and sum(1 for i in items.values() if i["source"] == "recorded") == 142)
+    check("196 WAVs found in SourceArt", len(items) == 196, len(items))
+    check("51 generated + 142 recorded (124 + 18 creature cues) + 3 cinematic music", sum(1 for i in items.values() if i["source"] == "generated") == 51
+          and sum(1 for i in items.values() if i["source"] == "recorded") == 142 and sum(1 for i in items.values() if i["source"] == "music") == 3)
     loops = []
     for name, info in items.items():
         wave = EAL.load_asset(sound_package(name))
@@ -933,7 +962,7 @@ def verify_all(items, classes, attenuation, concurrency, reverbs, mix, phys):
                     "asset %.3f s, WAV %.3f s" % (float(wave.get_editor_property("duration")), wav_seconds(info["path"])))
         if loop:
             loops.append(name)
-        report["properties"][name] = dict(cls=CLASS_NAMES[cls_key], att=att_name, con=con_name, loop=loop, volume=round(volume, 6))
+        report["properties"][name] = dict(cls=class_name(cls_key), att=att_name, con=con_name, loop=loop, volume=round(volume, 6))
     check("loop list: 4 weather + 6 rooms + 3 drones + tension + chase + 3 warden breaths + robe = 19", len(loops) == 19, loops)
     # Mix assets
     master = classes["Master"]
@@ -942,6 +971,9 @@ def verify_all(items, classes, attenuation, concurrency, reverbs, mix, phys):
     for key in ("SFX", "Ambience", "Music", "Voice", "UI"):
         c = classes[key]
         check("%s parent is Master" % CLASS_NAMES[key], c is not None and c.get_editor_property("parent_class") == master)
+    cine = classes["CineMusic"]
+    check("SCL_LB_CineMusic parent is SCL_LB_Music", cine is not None and cine.get_editor_property("parent_class") == classes["Music"])
+    check("SCL_LB_Music children = [SCL_LB_CineMusic]", [k.get_name() for k in classes["Music"].get_editor_property("child_classes")] == ["SCL_LB_CineMusic"])
     for name, spec in ATTENUATION.items():
         asset = attenuation[name]
         if asset is None:
@@ -962,6 +994,14 @@ def verify_all(items, classes, attenuation, concurrency, reverbs, mix, phys):
             check("%s.%s" % (name, prop), feq(asset.get_editor_property(prop), value), asset.get_editor_property(prop))
         report["properties"][name] = dict(decay=decay, density=density, diffusion=diffusion, gain=gain, gain_hf=gainhf)
     check("SMX_LB_User exists", mix is not None and mix.get_class().get_name() == "SoundMix")
+    # P17 3.4: the user volumes are runtime class overrides (ULBAudioSubsystem::ApplyUserVolumes -> SetSoundMixClassOverride(..., bApplyToChildren = true)),
+    # so SMX_LB_User has no adjusters of its own; if the Music class ever gets one, it must apply to children (SCL_LB_CineMusic is a child of SCL_LB_Music)
+    if mix is not None:
+        user_effects = list(mix.get_editor_property("sound_class_effects"))
+        music_adj = [a for a in user_effects if a.get_editor_property("sound_class_object") == classes["Music"]]
+        check("SMX_LB_User: any Music adjuster applies to children", all(bool(a.get_editor_property("apply_to_children")) for a in music_adj),
+              [(a.get_editor_property("apply_to_children")) for a in music_adj])
+        note("SMX_LB_User holds %d adjusters (%d for Music)" % (len(user_effects), len(music_adj)))
     for name, surface in PHYS_MATS.items():
         asset = phys[name]
         check("%s surface_type" % name, asset is not None and asset.get_editor_property("surface_type") == getattr(unreal.PhysicalSurface, "SURFACE_TYPE%d" % surface),

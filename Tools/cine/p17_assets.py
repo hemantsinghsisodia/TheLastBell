@@ -355,6 +355,11 @@ def verify_mix(mix, classes):
         return
     ok, detail = effects_state(mix, classes)
     check("verify SMX effects", ok, detail)
+    # P17 3.4: mix:on must fade the game's drones (SCL_LB_Music) but never the cinematic music (SCL_LB_CineMusic, a child of SCL_LB_Music)
+    for adj in mix.get_editor_property("sound_class_effects"):
+        cls = adj.get_editor_property("sound_class_object")
+        check("verify SMX %s bApplyToChildren == False" % (cls.get_name() if cls else None), not bool(adj.get_editor_property("apply_to_children")),
+              adj.get_editor_property("apply_to_children"))
     check("verify SMX fade_in_time == 4.0", feq(mix.get_editor_property("fade_in_time"), 4.0), mix.get_editor_property("fade_in_time"))
     check("verify SMX fade_out_time == 1.0", feq(mix.get_editor_property("fade_out_time"), 1.0), mix.get_editor_property("fade_out_time"))
     check("verify SMX duration == -1", feq(mix.get_editor_property("duration"), -1.0), mix.get_editor_property("duration"))
@@ -400,6 +405,10 @@ def build_da(credits):
     if errors and APPLY:
         # Variant 1: Sequence as {"refPath": ...}. If only the Sequence fields differ afterwards, variant 2 writes them as bare path strings.
         ok = TL.set_object_properties(da, json.dumps(expected))
+        if not ok:
+            # a longer credits list: "ArrayAdd: elements changed alongside the size change; insertion points are ambiguous" -> write it as one ValueSet
+            note("set_object_properties refused (credits size change); retrying with BypassContainerCheck.YES")
+            ok = TL.set_object_properties(da, json.dumps(expected), unreal.BypassContainerCheck.YES)
         check("DA_Cinematics set_object_properties", bool(ok), ok)
         mark_changed(da)
         record("DA_Cinematics", "(all groups)", "%d top-level properties" % len(expected))

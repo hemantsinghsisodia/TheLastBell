@@ -1,10 +1,10 @@
 {
  "mode": "verify",
  "ok": true,
- "checks": 1734,
+ "checks": 1760,
  "failures": [],
  "counts": {
-  "Music": 8,
+  "Music": 11,
   "Bell": 8,
   "Room": 43,
   "Weather": 4,
@@ -12,13 +12,14 @@
   "Warden": 30,
   "Player": 63,
   "Interact": 22,
-  "Mix": 26,
+  "Mix": 27,
   "Physics": 6,
-  "sounds_total": 193
+  "sounds_total": 196
  },
  "saved": [],
  "notes": [
-  "mode=verify reimport=False; 193 WAVs found"
+  "mode=verify reimport=False; 196 WAVs found",
+  "SMX_LB_User holds 0 adjusters (0 for Music)"
  ],
  "set_log": [],
  "properties": {
@@ -1369,6 +1370,27 @@
   "SFX_LB_Winch_03": {
    "cls": "SCL_LB_SFX",
    "att": "ATT_LB_Medium",
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "MUS_LB_Cine_Credits": {
+   "cls": "SCL_LB_CineMusic",
+   "att": null,
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "MUS_LB_Cine_Finale": {
+   "cls": "SCL_LB_CineMusic",
+   "att": null,
+   "con": null,
+   "loop": false,
+   "volume": 1.0
+  },
+  "MUS_LB_Cine_IntroText": {
+   "cls": "SCL_LB_CineMusic",
+   "att": null,
    "con": null,
    "loop": false,
    "volume": 1.0
