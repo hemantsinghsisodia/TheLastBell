@@ -250,7 +250,7 @@ Every float is clamped, with units in its tooltip. No hard asset references: eve
 
 ### 2.7 Storm, save and checkpoints
 - **Storm:** no code change. It stays active until `CompleteGame`'s travel, so the finale strikes and the bell sound to the end (R-77 part 1). The ending no longer pauses the game. Bell strikes stay UI sounds on the unpaused clock (P16-6); what a pause menu does with them is Phase 18 (R-77 part 2).
-- **`ALBCheckpoint::CanSaveNow()`:** also false while `ULBCinematicSubsystem::IsPlaying()`. The refusal log becomes "Checkpoint '%s' refused (%s). Retrying while the player stays inside.", with the reason "the Warden is chasing" or "a cinematic is playing". **Corrected after QA (M1):** the controls return at 27.5 s, but the intro runs to 29.0 s, so a player who walks on at once used to leave the box while saving was still refused, and `CP_Approach` never saved. A checkpoint refused because a cinematic is playing saves once when that cinematic finishes, even if the player has left its box (`OnCinematicFinished`, QA M1, 1f84499; test `CheckpointSavesAfterCinematic`). So `CP_Approach`, reached while the intro still runs, saves the moment the intro ends, with `State.Event.Arrival` already set.
+- **`ALBCheckpoint::CanSaveNow()`:** also false while `ULBCinematicSubsystem::IsPlaying()`. The refusal log becomes "Checkpoint '%s' refused (%s). Retrying while the player stays inside.", with the reason "the Warden is chasing" or "a cinematic is playing". **Corrected after QA (M1):** the controls return at 27.5 s, but the intro runs to 29.0 s, so a player who walks on at once used to leave the box while saving was still refused, and `CP_Approach` never saved. A checkpoint refused because a cinematic is playing saves once when that cinematic finishes, even if the player has left its box (`OnCinematicFinished`, QA M1, 740edc9; test `CheckpointSavesAfterCinematic`). So `CP_Approach`, reached while the intro still runs, saves the moment the intro ends, with `State.Event.Arrival` already set.
 
 ### 2.8 The bell swing
 `LBCinematicLogic::FBellPendulum` (pure, unit tested):
@@ -1009,7 +1009,7 @@ The GPU cost of the cinematic shots is not measured in this phase (the finale cl
 
 **Cinematic music 3.4 (3934c8a):** the owner's three Freesound CC0 tracks on `SCL_LB_CineMusic`. Check 232 / 232; suite 199 / 199.
 
-**Warden V11.1 (W0 09cc3df; W1–W5 27dc7f2 … 3ebb5d7):**
+**Warden V11.1 (W0 7097824; W1–W5 d9fc23e … b6088cc):**
 - the robe reweighted (stretch 16.2 / 17.6 / 30.7 / 33.1);
 - `SK_Warden` reimported in place with 8 slots: engine vertices 66,640 / 54,206 / 26,722, as measured after the reimport;
 - the materials re-tuned;
@@ -1018,7 +1018,7 @@ The GPU cost of the cinematic shots is not measured in this phase (the finale cl
 
 **P17-3, mask and lift (2bcd49a):** `SM_LB_WardenMask` and the Blender-keyed `AN_Warden_MaskLift` (6.0 s). Gates (a), (b) and (d) passed, and the lead reviewed (c) from the contact sheet. `StopDistance` is 80.
 
-**5a-2 rebuild (a3cc0cd, 2042242, f8d8f30, 2919da0):**
+**5a-2 rebuild (48e2503, cd63def, 5d0bcbd, 53041b0):**
 - the mask moment (`Fade` on `M_Warden_BellMetal`, `MaskProp`, the push-in);
 - the villager (Quaternius CC0);
 - the 70 mm wall-top shot;
@@ -1027,17 +1027,17 @@ The GPU cost of the cinematic shots is not measured in this phase (the finale cl
 
 Check 339 / 339; suite 199 / 199.
 
-**Owner's finale review (P17-7):** "rest is fine". The bell swing is kept. The villager now carries the player's candle (3.9). The lead approved the contact sheet (5f50da8), then the rebuild followed (d307bab): check 366 / 366, suite 199 / 199.
+**Owner's finale review (P17-7):** "rest is fine". The bell swing is kept. The villager now carries the player's candle (3.9). The lead approved the contact sheet (9a5ea29), then the rebuild followed (11f8330): check 366 / 366, suite 199 / 199.
 
-**P17-8 QA (2bfe731, Opus):** 1 major and 6 minor findings, no blocker. Fixed:
-- **M1:** a checkpoint refused during a cinematic now saves when the cinematic ends (1f84499, test `CheckpointSavesAfterCinematic`).
+**P17-8 QA (38be1ad, Opus):** 1 major and 6 minor findings, no blocker. Fixed:
+- **M1:** a checkpoint refused during a cinematic now saves when the cinematic ends (740edc9, test `CheckpointSavesAfterCinematic`).
 - **m2:** the new test `FinaleCreditsRunOut`; stale comments corrected.
-- **m1:** the orphan lantern template in `LS_LB_Finale` (57507c3; check 370 / 370, which now asserts the dependency list).
-- **m5:** the V11.1 materials moved from the Content root to `/Game/LastBell/Characters/Warden/V11_1/` (788c4d3).
+- **m1:** the orphan lantern template in `LS_LB_Finale` (daa6473; check 370 / 370, which now asserts the dependency list).
+- **m5:** the V11.1 materials moved from the Content root to `/Game/LastBell/Characters/Warden/V11_1/` (9f42465).
 
 The rest is recorded as R-88, R-89 and R-90; the cleanup list waits for the owner.
 
-**P17-9 docs (b6acb9b),** plus the lead's corrections.
+**P17-9 docs (dc08fe2),** plus the lead's corrections.
 
 ### Finale preview (2026-11-11, owner in PIE; before the mask moment)
 Played with `lb.Cine.NoEnd 1`, `BugItGo` to the mark, and `lb.State.Add State.Event.Finale`. **Owner: "all looked fine".** That covers the mark, the sound-only climb, the figure rising on F11 and walking up to the player, the close-up, the wall-top shot with the lantern, the end cards and the credits.
@@ -1050,7 +1050,7 @@ The full P17-7 review (mask lift, hood void, the bell swing veto) waits for 5a-2
 **Intro review: passed with no changes** (owner: "looks fine, skip worked"). The log confirms:
 - the New Game rule fired;
 - all 9 markers fired at their times;
-- `CP_Approach` refused to save during the cinematic, then the next checkpoint saved normally. **This was not a pass:** QA (M1) found `CP_Approach` never saved. Fixed in 1f84499;
+- `CP_Approach` refused to save during the cinematic, then the next checkpoint saved normally. **This was not a pass:** QA (M1) found `CP_Approach` never saved. Fixed in 740edc9;
 - a skip at 5.02 s fired the 2 must markers (Arrival, unlock) and finished the run.
 
 The credits preview is still open for the owner's comments.
@@ -1221,7 +1221,7 @@ Items 1–5 and 7 are done. Item 6 and F0b are on hold for the new Warden asset.
    - New fields `BellHeadstockTag` and `BellRopeTag`, new logic helpers, and the `BellAxle` test.
    - The bell's east rim at 16° reaches the frame's bounds edge. The owner checks it in P17-7.
 6. **S1a stays headless Python.** MCP `SequencerTools` is the first fallback.
-7. **`CP_Approach`** starts 50 cm east of the PlayerStart. *(Wrong as first written: see 2.7 and QA M1; fixed in 1f84499.)*
+7. **`CP_Approach`** starts 50 cm east of the PlayerStart. *(Wrong as first written: see 2.7 and QA M1; fixed in 740edc9.)*
 
 **Owner decision (2026-11-10): "use both suggestions".** (a) and (b) below are accepted as recommended. Intro_1 is changed in section 3.1, and the note line is a P17-5b level edit (section 5).
 
