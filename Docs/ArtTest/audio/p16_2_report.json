@@ -1,7 +1,7 @@
 {
  "mode": "verify",
  "ok": true,
- "checks": 1727,
+ "checks": 1734,
  "failures": [],
  "counts": {
   "Music": 8,
@@ -12,7 +12,7 @@
   "Warden": 30,
   "Player": 63,
   "Interact": 22,
-  "Mix": 25,
+  "Mix": 26,
   "Physics": 6,
   "sounds_total": 193
  },
@@ -1524,7 +1524,7 @@
    ],
    "interaction_cues": 9,
    "silent_classes": 3,
-   "bell_beats": 6
+   "bell_beats": 7
   }
  },
  "failure_count": 0

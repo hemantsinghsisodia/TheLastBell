@@ -1,4 +1,4 @@
-"""P17-5a-1: build the two real cinematics headless (Unreal CLOSED). Spec: Docs/plans/P17_CINEMATICS.md sections 3.1, 3.2, 2.1.
+"""P17-5a-1: build the two real cinematics headless (Unreal CLOSED). Spec: Docs/plans/P17_CINEMATICS.md sections 3.1, 3.2b (replaces 3.2), 2.1.
 Recipes come from the S1 spike (Tools/cine/p17_s1_spike.py, Docs/ArtTest/cine/p17_s1.json "findings").
 
 Run (editor closed, never two at once):
@@ -6,6 +6,7 @@ Run (editor closed, never two at once):
 Environment:
     P17_MODE     build | check
     P17_REBUILD  1 = reset LS_LB_Intro and LS_LB_Finale in place and rebuild them (default: build refuses to touch an existing one)
+    P17_ONLY     Intro | Finale = build (and save) only that sequence; the other is not touched. Finale = 3.2b (owner revision 2026-11-11)
 Build creates /Game/LastBell/Cinematics/LS_LB_Intro and LS_LB_Finale and saves ONLY those two packages (explicit save_asset).
 Check runs in a FRESH process, reads everything back and writes Docs/ArtTest/cine/p17_5a_check.json.
 Nothing else is saved. No PIE, no MCP.
@@ -220,81 +221,65 @@ def spec_intro():
             "bindings": [cam], "audio2d": []}
 
 
-WARDEN_LOC = [(0.0, (12695.0, 2335.0, 2045.45)), (30.0, (12695.0, 2335.0, 2045.45)), (46.0, (12695.0, 2335.0, 2045.45)),
-              (47.591, (12835.0, 2230.0, 2045.45)), (51.972, (12835.0, 1805.0, 2272.73)), (53.563, (12730.0, 1665.0, 2272.73)),
-              (53.914, (12695.0, 1665.0, 2288.96)), (57.945, (12305.0, 1665.0, 2500.0)), (59.218, (12165.0, 1665.0, 2500.0)),
-              (64.082, (12165.0, 2200.0, 2500.0))]
-WARDEN_YAW = [(0.0, -36.87), (47.341, -36.87), (47.841, -90.0), (51.722, -90.0), (52.222, -126.87), (53.313, -126.87), (53.813, -180.0),
-              (58.968, -180.0), (59.468, -270.0)]
+# 3.2b (owner finale revision, 2026-11-11): the figure is in sight about 3.5 s after the ring; playback 0-97.5 s
+WARDEN_LOC = [(0.0, (12730.0, 1665.0, 2272.73)), (1.0, (12730.0, 1665.0, 2272.73)), (1.351, (12695.0, 1665.0, 2288.96)),
+              (5.382, (12305.0, 1665.0, 2500.0)), (6.655, (12165.0, 1665.0, 2500.0)), (11.519, (12165.0, 2200.0, 2500.0))]
+WARDEN_YAW = [(0.0, -180.0), (6.405, -180.0), (6.905, -270.0)]
+LANTERN_T0 = 23.5     # the lantern walk starts here (was 76.0 in 3.2)
 
 
 def spec_finale(facts):
     mesh_yaw = facts["mesh_yaw"]
-    head_z = facts["head_z"]
-    mask_pitch = math.degrees(math.atan2(head_z + 2500.0 - 2652.0, 100.0))
+    # 3.2b: Cam_Mask looks at the head point (12165, 2200, 2739) from (12165, 2420, 2700): pitch = atan2(39, 220), the spec's own numbers
+    mask_pitch = math.degrees(math.atan2(39.0, 220.0))
     facts["cam_mask_pitch"] = mask_pitch
     warden = {"name": "WardenFigure", "cls": "SkeletalMeshActor", "tpl": {},
               "xf": xf_channels(lx=[(t, p[0], "L") for t, p in WARDEN_LOC], ly=[(t, p[1], "L") for t, p in WARDEN_LOC],
                                 lz=[(t, p[2], "L") for t, p in WARDEN_LOC], rr=single(0.0), rp=single(0.0),
                                 ry=[(t, y + mesh_yaw, "L") for t, y in WARDEN_YAW]),
-              "vis": [(0.0, False), (53.914, True), (74.0, False)], "comps": [], "audio": []}
+              "vis": [(0.0, False), (1.351, True), (21.5, False)], "comps": [], "audio": []}
     a = warden["audio"]
-    a.append({"sound": "SFX_LB_Warden_Step_04", "start": 40.6})
-    a.append({"sound": "SFX_LB_Warden_Chain_04", "start": 40.6})
-    for k in range(14):
-        t = round(46.0 + 1.36 * k, 3)
+    for k in range(8):
+        t = round(1.0 + 1.36 * k, 3)
         a.append({"sound": "SFX_LB_Step_Wood_0%d" % ((k % 6) + 1), "start": t, "pitch": 0.7})
         if k % 2 == 0:
             a.append({"sound": "SFX_LB_Warden_Chain_0%d" % (((k // 2) % 4) + 1), "start": t})
-    a.append({"sound": "SFX_LB_Warden_Breath_Heavy", "start": 46.0, "end": 72.0, "loop": True})
-
-    def snd(name, loc):
-        return {"name": name, "cls": "TargetPoint", "tpl": {}, "xf": fixed_xf(loc), "vis": None, "comps": [], "audio": []}
-
-    base = snd("Snd_Base", (12165.0, 1665.0, 100.0))
-    base["audio"] = [{"sound": "SFX_LB_Warden_Step_01", "start": 12.0}, {"sound": "SFX_LB_Warden_Chain_01", "start": 12.0},
-                     {"sound": "SFX_LB_Warden_Step_02", "start": 12.9}, {"sound": "SFX_LB_Warden_Chain_02", "start": 12.9}]
-    low = snd("Snd_Low", (12165.0, 2195.0, 1009.1))
-    low["audio"] = [{"sound": "SFX_LB_Warden_Step_03", "start": 22.3}, {"sound": "SFX_LB_Warden_Chain_03", "start": 22.3}]
-    mid = snd("Snd_Mid", (12165.0, 1770.0, 1690.9))
-    mid["audio"] = [{"sound": "SFX_LB_Step_Wood_01", "start": 28.0, "pitch": 0.7}, {"sound": "SFX_LB_Step_Wood_02", "start": 29.4, "pitch": 0.7},
-                    {"sound": "SFX_LB_Step_Wood_03", "start": 30.8, "pitch": 0.7}]
+    a.append({"sound": "SFX_LB_Warden_Breath_Heavy", "start": 1.0, "end": 19.5, "loop": True})
 
     cam_mask = {"name": "Cam_Mask", "cls": "CineCameraActor", "tpl": {"focal": 35.0, "aperture": None, "focus": None, "constrain": False, "pps": False},
-                "xf": fixed_xf((12165.0, 2300.0, 2652.0), yaw=-90.0, pitch=mask_pitch), "vis": None,
+                "xf": fixed_xf((12165.0, 2420.0, 2700.0), yaw=-90.0, pitch=mask_pitch), "vis": None,
                 "comps": [{"comp": "camera_component", "tracks": [{"prop": "ManualFocusDistance", "path": "FocusSettings.ManualFocusDistance",
-                                                                   "keys": [(65.5, 100.0, "A"), (71.0, 60.0, "A")]}]}], "audio": []}
+                                                                   "keys": [(13.0, 220.0, "A"), (18.5, 200.0, "A")]}]}], "audio": []}
     cam_wall = {"name": "Cam_WallTop", "cls": "CineCameraActor", "tpl": {"focal": 35.0, "aperture": None, "focus": 6000.0, "constrain": False, "pps": True},
                 "xf": fixed_xf((6020.0, 1300.0, 1032.0), yaw=-167.51, pitch=-7.88), "vis": None, "comps": [], "audio": []}
 
-    # Lantern
+    # Lantern (3.2b: everything of 3.2 shifted so that the walk starts at 23.5 s)
+    t0 = LANTERN_T0
     zk, ik = [], []
     for k in range(141):
-        t = round(76.0 + 0.1 * k, 3)
-        u = t - 76.0
+        t = round(t0 + 0.1 * k, 3)
+        u = t - t0
         base_z = 110.88 + (110.53 - 110.88) * u / 14.0
-        amp = 3.0 if t <= 88.5 + 1e-9 else 3.0 * max(0.0, (90.0 - t) / 1.5)
+        amp = 3.0 if t <= t0 + 12.5 + 1e-9 else 3.0 * max(0.0, (t0 + 14.0 - t) / 1.5)
         zk.append((t, base_z + amp * math.sin(2 * math.pi * 1.1 * u), "A"))
     rng = random.Random(1717)
     for k in range(205):
-        ik.append((76.0 + k / 12.0, 600.0 * (1.0 + 0.08 * rng.uniform(-1, 1)), "L"))
+        ik.append((t0 + k / 12.0, 600.0 * (1.0 + 0.08 * rng.uniform(-1, 1)), "L"))
     lantern = {"name": "Lantern", "cls": "PointLight", "tpl": {},
-               "xf": xf_channels(lx=[(76.0, -600.0, "L"), (88.5, 204.0, "A"), (90.0, 250.0, "A")], ly=single(0.0), lz=zk, rr=single(0.0), rp=single(0.0), ry=single(0.0)),
-               "vis": [(0.0, False), (76.0, True)],
+               "xf": xf_channels(lx=[(t0, -600.0, "L"), (36.0, 204.0, "A"), (37.5, 250.0, "A")], ly=single(0.0), lz=zk, rr=single(0.0), rp=single(0.0), ry=single(0.0)),
+               "vis": [(0.0, False), (t0, True)],
                "comps": [{"comp": "light_component", "tracks": [{"prop": "Intensity", "path": "Intensity", "keys": ik}]}], "audio": []}
 
-    audio2d = [{"sound": "SFX_LB_Step_Metal_02", "start": 72.0, "pitch": 0.55}, {"sound": "SFX_LB_Warden_Chain_02", "start": 72.0, "pitch": 0.7},
-               {"sound": "SFX_LB_Warden_Breath_Slow", "start": 72.3, "end": 92.0, "loop": True},
-               {"sound": "MUS_LB_Drone_C", "start": 104.0, "end": 149.0, "vol": [(104.0, 0.0, "L"), (107.0, 1.0, "L"), (145.0, 1.0, "L"), (149.0, 0.0, "L")]}]
-    markers = [("mark:LB_Cine_FinaleMark,1.5", 0.0), ("lock:Look", 1.6), ("bell:5x1", 18.0), ("flash:0.9", 22.0), ("bell:5x1", 36.0),
-               ("look:LB_Cine_StairTop,1.5", 38.5), ("flash:1.0", 40.3), ("bell:5x1", 54.0), ("look:LB_Cine_StairTop,1.2", 57.0),
-               ("look:LB_Cine_Warden,1.0", 62.5), ("lock:Full", 64.5), ("bell:5x1", 86.0), ("mix:on", 90.0), ("card:End_1", 94.0),
-               ("card:End_2", 100.0), ("skip:1", 106.0), ("credits:40", 106.0 + 1.0 / FPS), ("!end", 147.0)]
-    return {"key": "Finale", "path": FINALE_PATH, "end": 150.0, "markers": markers,
-            "fade": [(0.0, 0.0), (72.0, 0.0), (72.3, 1.0), (75.0, 1.0), (77.0, 0.0), (91.0, 0.0), (93.0, 1.0)],
-            "cuts": [{"binding": "Cam_Mask", "start": 65.0, "end": 75.0, "ease_in": 0.8, "ease_out": 0.0},
-                     {"binding": "Cam_WallTop", "start": 75.0, "end": 150.0, "ease_in": 0.0, "ease_out": 0.0}],
-            "bindings": [warden, base, low, mid, cam_mask, cam_wall, lantern], "audio2d": audio2d}
+    audio2d = [{"sound": "SFX_LB_Step_Metal_02", "start": 19.5, "pitch": 0.55}, {"sound": "SFX_LB_Warden_Chain_02", "start": 19.5, "pitch": 0.7},
+               {"sound": "SFX_LB_Warden_Breath_Slow", "start": 19.8, "end": 39.5, "loop": True}]
+    markers = [("mark:LB_Cine_FinaleMark,1.2", 0.0), ("lock:Look", 1.3), ("look:LB_Cine_StairTop,1.0", 1.5), ("flash:1.0", 3.6),
+               ("look:LB_Cine_Warden,1.0", 9.5), ("lock:Full", 12.0), ("bell:5x1", 33.5), ("mix:on", 37.5), ("card:End_1", 41.5),
+               ("card:End_2", 47.5), ("skip:1", 53.5), ("credits:40", 53.5 + 1.0 / FPS), ("!end", 94.5)]
+    return {"key": "Finale", "path": FINALE_PATH, "end": 97.5, "markers": markers,
+            "fade": [(0.0, 0.0), (19.5, 0.0), (19.8, 1.0), (22.5, 1.0), (24.5, 0.0), (38.5, 0.0), (40.5, 1.0)],
+            "cuts": [{"binding": "Cam_Mask", "start": 12.5, "end": 22.5, "ease_in": 0.8, "ease_out": 0.0},
+                     {"binding": "Cam_WallTop", "start": 22.5, "end": 97.5, "ease_in": 0.0, "ease_out": 0.0}],
+            "bindings": [warden, cam_mask, cam_wall, lantern], "audio2d": audio2d}
 
 
 MARKER_RE = re.compile(r"^!?(skip:[01]|card:\w+|tag:[A-Za-z0-9_.]+|bell:\d+x\d+|strike:[\w]+(,[0-9.]+)?|flash:[0-9.]+|look:\w+(,[0-9.]+)?|mark:\w+(,[0-9.]+)?|"
@@ -577,7 +562,11 @@ def do_build():
     results["facts"] = facts
     log("FACTS %s" % json.dumps(facts))
     specs = [spec_intro(), spec_finale(facts)]
-    existing = [s["path"] for s in specs if EAL.does_asset_exist(s["path"])]
+    only = os.environ.get("P17_ONLY", "").strip()
+    if only:     # e.g. P17_ONLY=Finale: build (and save) just that one; the other asset is left untouched
+        specs = [sp for sp in specs if sp["key"] == only]
+        log("P17_ONLY=%s: building %s" % (only, [sp["key"] for sp in specs]))
+    existing = [sp["path"] for sp in specs if EAL.does_asset_exist(sp["path"])]
     if existing and not REBUILD:
         msg = "refusing to overwrite %s (set P17_REBUILD=1 to rebuild)" % existing
         results["errors"].append({"item": "setup", "api": "exists", "error": msg})

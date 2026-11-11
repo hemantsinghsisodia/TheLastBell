@@ -2950,8 +2950,8 @@ bool FLBAudioArrivalBeatTest::RunTest(const FString& Parameters)
 				Test->TestEqual(TEXT("It is stage 1"), Immediate[0].Aux, 1);
 				Test->TestEqual(TEXT("It plays Bell.Stage[0]"), Immediate[0].Variant, 0);
 			}
-			// Two more bell strikes and Drone A (the beat's drone, scheduled at once).
-			Test->TestEqual(TEXT("The other two strikes and the drone are scheduled"), Audio->GetScheduledCount(), 3);
+			// Two more bell strikes; no drone (owner 2026-11-11: no intro music, the Arrival beat's drone is -1).
+			Test->TestEqual(TEXT("The other two strikes are scheduled (no drone)"), Audio->GetScheduledCount(), 2);
 			S->Phase = 1;
 			return false;
 		}

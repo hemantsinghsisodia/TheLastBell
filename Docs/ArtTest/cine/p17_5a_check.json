@@ -1,7 +1,7 @@
 {
- "generated": "2026-11-10 23:37:10",
- "total_checks": 347,
- "passed": 347,
+ "generated": "2026-11-11 08:08:38",
+ "total_checks": 214,
+ "passed": 214,
  "failed": 0,
  "per_sequence": {
   "Intro": {
@@ -9,7 +9,7 @@
    "failed": 0
   },
   "Finale": {
-   "total": 308,
+   "total": 175,
    "failed": 0
   }
  },
@@ -49,12 +49,11 @@
   ],
   "sk_bounds_min_z": 3.940716851502657e-06,
   "head_z": 239.36507418953977,
-  "cam_mask_pitch": 41.14211149845222
+  "cam_mask_pitch": 10.052544827076881
  },
  "deps": {
   "Intro": [],
   "Finale": [
-   "/Game/LastBell/Audio/Music/MUS_LB_Drone_C",
    "/Game/LastBell/Audio/Player/SFX_LB_Step_Metal_02",
    "/Game/LastBell/Audio/Player/SFX_LB_Step_Wood_01",
    "/Game/LastBell/Audio/Player/SFX_LB_Step_Wood_02",
@@ -68,10 +67,6 @@
    "/Game/LastBell/Audio/Warden/SFX_LB_Warden_Chain_02",
    "/Game/LastBell/Audio/Warden/SFX_LB_Warden_Chain_03",
    "/Game/LastBell/Audio/Warden/SFX_LB_Warden_Chain_04",
-   "/Game/LastBell/Audio/Warden/SFX_LB_Warden_Step_01",
-   "/Game/LastBell/Audio/Warden/SFX_LB_Warden_Step_02",
-   "/Game/LastBell/Audio/Warden/SFX_LB_Warden_Step_03",
-   "/Game/LastBell/Audio/Warden/SFX_LB_Warden_Step_04",
    "/Game/LastBell/Characters/Warden/ABP_Warden",
    "/Game/LastBell/Characters/Warden/Meshes/SK_Warden",
    "/Game/LastBell/Materials/PostProcess/MI_LB_PP_MaskView"
@@ -421,24 +416,24 @@
    "item": "setup",
    "name": "playback range s",
    "ok": true,
-   "got": "(0.0, 150.0)",
-   "want": "(0.0, 150.0)"
+   "got": "(0.0, 97.5)",
+   "want": "(0.0, 97.5)"
   },
   {
    "seq": "Finale",
    "item": "setup",
    "name": "spawnable names",
    "ok": true,
-   "got": "['Cam_Mask', 'Cam_WallTop', 'Lantern', 'Snd_Base', 'Snd_Low', 'Snd_Mid', 'WardenFigure']",
-   "want": "['Cam_Mask', 'Cam_WallTop', 'Lantern', 'Snd_Base', 'Snd_Low', 'Snd_Mid', 'WardenFigure']"
+   "got": "['Cam_Mask', 'Cam_WallTop', 'Lantern', 'WardenFigure']",
+   "want": "['Cam_Mask', 'Cam_WallTop', 'Lantern', 'WardenFigure']"
   },
   {
    "seq": "Finale",
    "item": "markers",
    "name": "marked frames (label, display frame)",
    "ok": true,
-   "got": "[(0, 'mark:LB_Cine_FinaleMark,1.5'), (48, 'lock:Look'), (540, 'bell:5x1'), (660, 'flash:0.9'), (1080, 'bell:5x1'), (1155, 'look:LB_Cine_Stai...",
-   "want": "[(0, 'mark:LB_Cine_FinaleMark,1.5'), (48, 'lock:Look'), (540, 'bell:5x1'), (660, 'flash:0.9'), (1080, 'bell:5x1'), (1155, 'look:LB_Cine_Stai..."
+   "got": "[(0, 'mark:LB_Cine_FinaleMark,1.2'), (39, 'lock:Look'), (45, 'look:LB_Cine_StairTop,1.0'), (108, 'flash:1.0'), (285, 'look:LB_Cine_Warden,1....",
+   "want": "[(0, 'mark:LB_Cine_FinaleMark,1.2'), (39, 'lock:Look'), (45, 'look:LB_Cine_StairTop,1.0'), (108, 'flash:1.0'), (285, 'look:LB_Cine_Warden,1...."
   },
   {
    "seq": "Finale",
@@ -501,8 +496,8 @@
    "item": "cut",
    "name": "Cam_Mask range (s)",
    "ok": true,
-   "got": "(65.0, 75.0)",
-   "want": "(65.0, 75.0)"
+   "got": "(12.5, 22.5)",
+   "want": "(12.5, 22.5)"
   },
   {
    "seq": "Finale",
@@ -525,16 +520,16 @@
    "item": "cut",
    "name": "Cam_Mask bound to the camera spawnable",
    "ok": true,
-   "got": "'F234630747D402E3FC9513A0B4458B5E'",
-   "want": "'F234630747D402E3FC9513A0B4458B5E'"
+   "got": "'E7626C6849898CD194976A823EC90BA1'",
+   "want": "'E7626C6849898CD194976A823EC90BA1'"
   },
   {
    "seq": "Finale",
    "item": "cut",
    "name": "Cam_WallTop range (s)",
    "ok": true,
-   "got": "(75.0, 150.0)",
-   "want": "(75.0, 150.0)"
+   "got": "(22.5, 97.5)",
+   "want": "(22.5, 97.5)"
   },
   {
    "seq": "Finale",
@@ -557,8 +552,8 @@
    "item": "cut",
    "name": "Cam_WallTop bound to the camera spawnable",
    "ok": true,
-   "got": "'D6363B89418504E708A3BAA6F04F6509'",
-   "want": "'D6363B89418504E708A3BAA6F04F6509'"
+   "got": "'F6D47B68458AE5E68C8BC282CDF33C2B'",
+   "want": "'F6D47B68458AE5E68C8BC282CDF33C2B'"
   },
   {
    "seq": "Finale",
@@ -643,7 +638,7 @@
   {
    "seq": "Finale",
    "item": "WardenFigure",
-   "name": "transform Location.X (10 keys)",
+   "name": "transform Location.X (6 keys)",
    "ok": true,
    "got": "'ok'",
    "want": "'ok'"
@@ -651,7 +646,7 @@
   {
    "seq": "Finale",
    "item": "WardenFigure",
-   "name": "transform Location.Y (10 keys)",
+   "name": "transform Location.Y (6 keys)",
    "ok": true,
    "got": "'ok'",
    "want": "'ok'"
@@ -659,7 +654,7 @@
   {
    "seq": "Finale",
    "item": "WardenFigure",
-   "name": "transform Location.Z (10 keys)",
+   "name": "transform Location.Z (6 keys)",
    "ok": true,
    "got": "'ok'",
    "want": "'ok'"
@@ -683,7 +678,7 @@
   {
    "seq": "Finale",
    "item": "WardenFigure",
-   "name": "transform Rotation.Z (9 keys)",
+   "name": "transform Rotation.Z (3 keys)",
    "ok": true,
    "got": "'ok'",
    "want": "'ok'"
@@ -741,13 +736,13 @@
    "item": "WardenFigure",
    "name": "audio section count",
    "ok": true,
-   "got": "24",
-   "want": "24"
+   "got": "13",
+   "want": "13"
   },
   {
    "seq": "Finale",
    "item": "WardenFigure",
-   "name": "SFX_LB_Warden_Step_04 @40.600 present",
+   "name": "SFX_LB_Step_Wood_01 @1.000 present",
    "ok": true,
    "got": "True",
    "want": "True"
@@ -755,15 +750,15 @@
   {
    "seq": "Finale",
    "item": "WardenFigure",
-   "name": "SFX_LB_Warden_Step_04 @40.600 end (s)",
+   "name": "SFX_LB_Step_Wood_01 @1.000 end (s)",
    "ok": true,
-   "got": "41.3571662902832",
-   "want": "41.35712502002716"
+   "got": "1.1143333911895752",
+   "want": "1.1142857117312295"
   },
   {
    "seq": "Finale",
    "item": "WardenFigure",
-   "name": "SFX_LB_Warden_Step_04 @40.600 looping",
+   "name": "SFX_LB_Step_Wood_01 @1.000 looping",
    "ok": true,
    "got": "False",
    "want": "False"
@@ -771,7 +766,39 @@
   {
    "seq": "Finale",
    "item": "WardenFigure",
-   "name": "SFX_LB_Warden_Step_04 @40.600 pitch",
+   "name": "SFX_LB_Step_Wood_01 @1.000 pitch",
+   "ok": true,
+   "got": "0.699999988079071",
+   "want": "0.7"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Warden_Chain_01 @1.000 present",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Warden_Chain_01 @1.000 end (s)",
+   "ok": true,
+   "got": "2.41308331489563",
+   "want": "2.4130417108535767"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Warden_Chain_01 @1.000 looping",
+   "ok": true,
+   "got": "False",
+   "want": "False"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Warden_Chain_01 @1.000 pitch",
    "ok": true,
    "got": "1.0",
    "want": "1.0"
@@ -779,7 +806,7 @@
   {
    "seq": "Finale",
    "item": "WardenFigure",
-   "name": "SFX_LB_Warden_Chain_04 @40.600 present",
+   "name": "SFX_LB_Step_Wood_02 @2.360 present",
    "ok": true,
    "got": "True",
    "want": "True"
@@ -787,15 +814,15 @@
   {
    "seq": "Finale",
    "item": "WardenFigure",
-   "name": "SFX_LB_Warden_Chain_04 @40.600 end (s)",
+   "name": "SFX_LB_Step_Wood_02 @2.360 end (s)",
    "ok": true,
-   "got": "42.1341667175293",
-   "want": "42.134104108810426"
+   "got": "2.472916603088379",
+   "want": "2.4728571480512618"
   },
   {
    "seq": "Finale",
    "item": "WardenFigure",
-   "name": "SFX_LB_Warden_Chain_04 @40.600 looping",
+   "name": "SFX_LB_Step_Wood_02 @2.360 looping",
    "ok": true,
    "got": "False",
    "want": "False"
@@ -803,7 +830,71 @@
   {
    "seq": "Finale",
    "item": "WardenFigure",
-   "name": "SFX_LB_Warden_Chain_04 @40.600 pitch",
+   "name": "SFX_LB_Step_Wood_02 @2.360 pitch",
+   "ok": true,
+   "got": "0.699999988079071",
+   "want": "0.7"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Step_Wood_03 @3.720 present",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Step_Wood_03 @3.720 end (s)",
+   "ok": true,
+   "got": "3.831458330154419",
+   "want": "3.831428573727608"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Step_Wood_03 @3.720 looping",
+   "ok": true,
+   "got": "False",
+   "want": "False"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Step_Wood_03 @3.720 pitch",
+   "ok": true,
+   "got": "0.699999988079071",
+   "want": "0.7"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Warden_Chain_02 @3.720 present",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Warden_Chain_02 @3.720 end (s)",
+   "ok": true,
+   "got": "5.2635416984558105",
+   "want": "5.263479204177857"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Warden_Chain_02 @3.720 looping",
+   "ok": true,
+   "got": "False",
+   "want": "False"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Warden_Chain_02 @3.720 pitch",
    "ok": true,
    "got": "1.0",
    "want": "1.0"
@@ -811,7 +902,7 @@
   {
    "seq": "Finale",
    "item": "WardenFigure",
-   "name": "SFX_LB_Step_Wood_01 @46.000 present",
+   "name": "SFX_LB_Step_Wood_04 @5.080 present",
    "ok": true,
    "got": "True",
    "want": "True"
@@ -819,15 +910,15 @@
   {
    "seq": "Finale",
    "item": "WardenFigure",
-   "name": "SFX_LB_Step_Wood_01 @46.000 end (s)",
+   "name": "SFX_LB_Step_Wood_04 @5.080 end (s)",
    "ok": true,
-   "got": "46.11433410644531",
-   "want": "46.11428571173123"
+   "got": "5.1857500076293945",
+   "want": "5.185714287076678"
   },
   {
    "seq": "Finale",
    "item": "WardenFigure",
-   "name": "SFX_LB_Step_Wood_01 @46.000 looping",
+   "name": "SFX_LB_Step_Wood_04 @5.080 looping",
    "ok": true,
    "got": "False",
    "want": "False"
@@ -835,7 +926,7 @@
   {
    "seq": "Finale",
    "item": "WardenFigure",
-   "name": "SFX_LB_Step_Wood_01 @46.000 pitch",
+   "name": "SFX_LB_Step_Wood_04 @5.080 pitch",
    "ok": true,
    "got": "0.699999988079071",
    "want": "0.7"
@@ -843,7 +934,7 @@
   {
    "seq": "Finale",
    "item": "WardenFigure",
-   "name": "SFX_LB_Warden_Chain_01 @46.000 present",
+   "name": "SFX_LB_Step_Wood_05 @6.440 present",
    "ok": true,
    "got": "True",
    "want": "True"
@@ -851,15 +942,15 @@
   {
    "seq": "Finale",
    "item": "WardenFigure",
-   "name": "SFX_LB_Warden_Chain_01 @46.000 end (s)",
+   "name": "SFX_LB_Step_Wood_05 @6.440 end (s)",
    "ok": true,
-   "got": "47.413082122802734",
-   "want": "47.41304171085358"
+   "got": "6.550041675567627",
+   "want": "6.549999999403954"
   },
   {
    "seq": "Finale",
    "item": "WardenFigure",
-   "name": "SFX_LB_Warden_Chain_01 @46.000 looping",
+   "name": "SFX_LB_Step_Wood_05 @6.440 looping",
    "ok": true,
    "got": "False",
    "want": "False"
@@ -867,7 +958,39 @@
   {
    "seq": "Finale",
    "item": "WardenFigure",
-   "name": "SFX_LB_Warden_Chain_01 @46.000 pitch",
+   "name": "SFX_LB_Step_Wood_05 @6.440 pitch",
+   "ok": true,
+   "got": "0.699999988079071",
+   "want": "0.7"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Warden_Chain_03 @6.440 present",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Warden_Chain_03 @6.440 end (s)",
+   "ok": true,
+   "got": "7.85308313369751",
+   "want": "7.853041710853577"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Warden_Chain_03 @6.440 looping",
+   "ok": true,
+   "got": "False",
+   "want": "False"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "SFX_LB_Warden_Chain_03 @6.440 pitch",
    "ok": true,
    "got": "1.0",
    "want": "1.0"
@@ -875,7 +998,7 @@
   {
    "seq": "Finale",
    "item": "WardenFigure",
-   "name": "SFX_LB_Step_Wood_02 @47.360 present",
+   "name": "SFX_LB_Step_Wood_06 @7.800 present",
    "ok": true,
    "got": "True",
    "want": "True"
@@ -883,15 +1006,15 @@
   {
    "seq": "Finale",
    "item": "WardenFigure",
-   "name": "SFX_LB_Step_Wood_02 @47.360 end (s)",
+   "name": "SFX_LB_Step_Wood_06 @7.800 end (s)",
    "ok": true,
-   "got": "47.47291564941406",
-   "want": "47.47285714805126"
+   "got": "7.914333343505859",
+   "want": "7.914285711731229"
   },
   {
    "seq": "Finale",
    "item": "WardenFigure",
-   "name": "SFX_LB_Step_Wood_02 @47.360 looping",
+   "name": "SFX_LB_Step_Wood_06 @7.800 looping",
    "ok": true,
    "got": "False",
    "want": "False"
@@ -899,7 +1022,7 @@
   {
    "seq": "Finale",
    "item": "WardenFigure",
-   "name": "SFX_LB_Step_Wood_02 @47.360 pitch",
+   "name": "SFX_LB_Step_Wood_06 @7.800 pitch",
    "ok": true,
    "got": "0.699999988079071",
    "want": "0.7"
@@ -907,7 +1030,7 @@
   {
    "seq": "Finale",
    "item": "WardenFigure",
-   "name": "SFX_LB_Step_Wood_03 @48.720 present",
+   "name": "SFX_LB_Step_Wood_01 @9.160 present",
    "ok": true,
    "got": "True",
    "want": "True"
@@ -915,15 +1038,15 @@
   {
    "seq": "Finale",
    "item": "WardenFigure",
-   "name": "SFX_LB_Step_Wood_03 @48.720 end (s)",
+   "name": "SFX_LB_Step_Wood_01 @9.160 end (s)",
    "ok": true,
-   "got": "48.831459045410156",
-   "want": "48.83142857372761"
+   "got": "9.274333000183105",
+   "want": "9.27428571173123"
   },
   {
    "seq": "Finale",
    "item": "WardenFigure",
-   "name": "SFX_LB_Step_Wood_03 @48.720 looping",
+   "name": "SFX_LB_Step_Wood_01 @9.160 looping",
    "ok": true,
    "got": "False",
    "want": "False"
@@ -931,7 +1054,7 @@
   {
    "seq": "Finale",
    "item": "WardenFigure",
-   "name": "SFX_LB_Step_Wood_03 @48.720 pitch",
+   "name": "SFX_LB_Step_Wood_01 @9.160 pitch",
    "ok": true,
    "got": "0.699999988079071",
    "want": "0.7"
@@ -939,7 +1062,7 @@
   {
    "seq": "Finale",
    "item": "WardenFigure",
-   "name": "SFX_LB_Warden_Chain_02 @48.720 present",
+   "name": "SFX_LB_Warden_Chain_04 @9.160 present",
    "ok": true,
    "got": "True",
    "want": "True"
@@ -947,15 +1070,15 @@
   {
    "seq": "Finale",
    "item": "WardenFigure",
-   "name": "SFX_LB_Warden_Chain_02 @48.720 end (s)",
+   "name": "SFX_LB_Warden_Chain_04 @9.160 end (s)",
    "ok": true,
-   "got": "50.26350021362305",
-   "want": "50.263479204177855"
+   "got": "10.694167137145996",
+   "want": "10.694104108810425"
   },
   {
    "seq": "Finale",
    "item": "WardenFigure",
-   "name": "SFX_LB_Warden_Chain_02 @48.720 looping",
+   "name": "SFX_LB_Warden_Chain_04 @9.160 looping",
    "ok": true,
    "got": "False",
    "want": "False"
@@ -963,7 +1086,7 @@
   {
    "seq": "Finale",
    "item": "WardenFigure",
-   "name": "SFX_LB_Warden_Chain_02 @48.720 pitch",
+   "name": "SFX_LB_Warden_Chain_04 @9.160 pitch",
    "ok": true,
    "got": "1.0",
    "want": "1.0"
@@ -971,7 +1094,7 @@
   {
    "seq": "Finale",
    "item": "WardenFigure",
-   "name": "SFX_LB_Step_Wood_04 @50.080 present",
+   "name": "SFX_LB_Step_Wood_02 @10.520 present",
    "ok": true,
    "got": "True",
    "want": "True"
@@ -979,15 +1102,15 @@
   {
    "seq": "Finale",
    "item": "WardenFigure",
-   "name": "SFX_LB_Step_Wood_04 @50.080 end (s)",
+   "name": "SFX_LB_Step_Wood_02 @10.520 end (s)",
    "ok": true,
-   "got": "50.18574905395508",
-   "want": "50.18571428707668"
+   "got": "10.632916450500488",
+   "want": "10.632857148051261"
   },
   {
    "seq": "Finale",
    "item": "WardenFigure",
-   "name": "SFX_LB_Step_Wood_04 @50.080 looping",
+   "name": "SFX_LB_Step_Wood_02 @10.520 looping",
    "ok": true,
    "got": "False",
    "want": "False"
@@ -995,7 +1118,7 @@
   {
    "seq": "Finale",
    "item": "WardenFigure",
-   "name": "SFX_LB_Step_Wood_04 @50.080 pitch",
+   "name": "SFX_LB_Step_Wood_02 @10.520 pitch",
    "ok": true,
    "got": "0.699999988079071",
    "want": "0.7"
@@ -1003,7 +1126,7 @@
   {
    "seq": "Finale",
    "item": "WardenFigure",
-   "name": "SFX_LB_Step_Wood_05 @51.440 present",
+   "name": "SFX_LB_Warden_Breath_Heavy @1.000 present",
    "ok": true,
    "got": "True",
    "want": "True"
@@ -1011,31 +1134,15 @@
   {
    "seq": "Finale",
    "item": "WardenFigure",
-   "name": "SFX_LB_Step_Wood_05 @51.440 end (s)",
+   "name": "SFX_LB_Warden_Breath_Heavy @1.000 end (s)",
    "ok": true,
-   "got": "51.55004119873047",
-   "want": "51.54999999940395"
+   "got": "19.500041961669922",
+   "want": "19.5"
   },
   {
    "seq": "Finale",
    "item": "WardenFigure",
-   "name": "SFX_LB_Step_Wood_05 @51.440 looping",
-   "ok": true,
-   "got": "False",
-   "want": "False"
-  },
-  {
-   "seq": "Finale",
-   "item": "WardenFigure",
-   "name": "SFX_LB_Step_Wood_05 @51.440 pitch",
-   "ok": true,
-   "got": "0.699999988079071",
-   "want": "0.7"
-  },
-  {
-   "seq": "Finale",
-   "item": "WardenFigure",
-   "name": "SFX_LB_Warden_Chain_03 @51.440 present",
+   "name": "SFX_LB_Warden_Breath_Heavy @1.000 looping",
    "ok": true,
    "got": "True",
    "want": "True"
@@ -1043,23 +1150,7 @@
   {
    "seq": "Finale",
    "item": "WardenFigure",
-   "name": "SFX_LB_Warden_Chain_03 @51.440 end (s)",
-   "ok": true,
-   "got": "52.853084564208984",
-   "want": "52.853041710853574"
-  },
-  {
-   "seq": "Finale",
-   "item": "WardenFigure",
-   "name": "SFX_LB_Warden_Chain_03 @51.440 looping",
-   "ok": true,
-   "got": "False",
-   "want": "False"
-  },
-  {
-   "seq": "Finale",
-   "item": "WardenFigure",
-   "name": "SFX_LB_Warden_Chain_03 @51.440 pitch",
+   "name": "SFX_LB_Warden_Breath_Heavy @1.000 pitch",
    "ok": true,
    "got": "1.0",
    "want": "1.0"
@@ -1067,1126 +1158,6 @@
   {
    "seq": "Finale",
    "item": "WardenFigure",
-   "name": "SFX_LB_Step_Wood_06 @52.800 present",
-   "ok": true,
-   "got": "True",
-   "want": "True"
-  },
-  {
-   "seq": "Finale",
-   "item": "WardenFigure",
-   "name": "SFX_LB_Step_Wood_06 @52.800 end (s)",
-   "ok": true,
-   "got": "52.91433334350586",
-   "want": "52.914285711731225"
-  },
-  {
-   "seq": "Finale",
-   "item": "WardenFigure",
-   "name": "SFX_LB_Step_Wood_06 @52.800 looping",
-   "ok": true,
-   "got": "False",
-   "want": "False"
-  },
-  {
-   "seq": "Finale",
-   "item": "WardenFigure",
-   "name": "SFX_LB_Step_Wood_06 @52.800 pitch",
-   "ok": true,
-   "got": "0.699999988079071",
-   "want": "0.7"
-  },
-  {
-   "seq": "Finale",
-   "item": "WardenFigure",
-   "name": "SFX_LB_Step_Wood_01 @54.160 present",
-   "ok": true,
-   "got": "True",
-   "want": "True"
-  },
-  {
-   "seq": "Finale",
-   "item": "WardenFigure",
-   "name": "SFX_LB_Step_Wood_01 @54.160 end (s)",
-   "ok": true,
-   "got": "54.27433395385742",
-   "want": "54.274285711731224"
-  },
-  {
-   "seq": "Finale",
-   "item": "WardenFigure",
-   "name": "SFX_LB_Step_Wood_01 @54.160 looping",
-   "ok": true,
-   "got": "False",
-   "want": "False"
-  },
-  {
-   "seq": "Finale",
-   "item": "WardenFigure",
-   "name": "SFX_LB_Step_Wood_01 @54.160 pitch",
-   "ok": true,
-   "got": "0.699999988079071",
-   "want": "0.7"
-  },
-  {
-   "seq": "Finale",
-   "item": "WardenFigure",
-   "name": "SFX_LB_Warden_Chain_04 @54.160 present",
-   "ok": true,
-   "got": "True",
-   "want": "True"
-  },
-  {
-   "seq": "Finale",
-   "item": "WardenFigure",
-   "name": "SFX_LB_Warden_Chain_04 @54.160 end (s)",
-   "ok": true,
-   "got": "55.69412612915039",
-   "want": "55.69410410881042"
-  },
-  {
-   "seq": "Finale",
-   "item": "WardenFigure",
-   "name": "SFX_LB_Warden_Chain_04 @54.160 looping",
-   "ok": true,
-   "got": "False",
-   "want": "False"
-  },
-  {
-   "seq": "Finale",
-   "item": "WardenFigure",
-   "name": "SFX_LB_Warden_Chain_04 @54.160 pitch",
-   "ok": true,
-   "got": "1.0",
-   "want": "1.0"
-  },
-  {
-   "seq": "Finale",
-   "item": "WardenFigure",
-   "name": "SFX_LB_Step_Wood_02 @55.520 present",
-   "ok": true,
-   "got": "True",
-   "want": "True"
-  },
-  {
-   "seq": "Finale",
-   "item": "WardenFigure",
-   "name": "SFX_LB_Step_Wood_02 @55.520 end (s)",
-   "ok": true,
-   "got": "55.63291549682617",
-   "want": "55.632857148051265"
-  },
-  {
-   "seq": "Finale",
-   "item": "WardenFigure",
-   "name": "SFX_LB_Step_Wood_02 @55.520 looping",
-   "ok": true,
-   "got": "False",
-   "want": "False"
-  },
-  {
-   "seq": "Finale",
-   "item": "WardenFigure",
-   "name": "SFX_LB_Step_Wood_02 @55.520 pitch",
-   "ok": true,
-   "got": "0.699999988079071",
-   "want": "0.7"
-  },
-  {
-   "seq": "Finale",
-   "item": "WardenFigure",
-   "name": "SFX_LB_Step_Wood_03 @56.880 present",
-   "ok": true,
-   "got": "True",
-   "want": "True"
-  },
-  {
-   "seq": "Finale",
-   "item": "WardenFigure",
-   "name": "SFX_LB_Step_Wood_03 @56.880 end (s)",
-   "ok": true,
-   "got": "56.991458892822266",
-   "want": "56.99142857372761"
-  },
-  {
-   "seq": "Finale",
-   "item": "WardenFigure",
-   "name": "SFX_LB_Step_Wood_03 @56.880 looping",
-   "ok": true,
-   "got": "False",
-   "want": "False"
-  },
-  {
-   "seq": "Finale",
-   "item": "WardenFigure",
-   "name": "SFX_LB_Step_Wood_03 @56.880 pitch",
-   "ok": true,
-   "got": "0.699999988079071",
-   "want": "0.7"
-  },
-  {
-   "seq": "Finale",
-   "item": "WardenFigure",
-   "name": "SFX_LB_Warden_Chain_01 @56.880 present",
-   "ok": true,
-   "got": "True",
-   "want": "True"
-  },
-  {
-   "seq": "Finale",
-   "item": "WardenFigure",
-   "name": "SFX_LB_Warden_Chain_01 @56.880 end (s)",
-   "ok": true,
-   "got": "58.29308319091797",
-   "want": "58.29304171085358"
-  },
-  {
-   "seq": "Finale",
-   "item": "WardenFigure",
-   "name": "SFX_LB_Warden_Chain_01 @56.880 looping",
-   "ok": true,
-   "got": "False",
-   "want": "False"
-  },
-  {
-   "seq": "Finale",
-   "item": "WardenFigure",
-   "name": "SFX_LB_Warden_Chain_01 @56.880 pitch",
-   "ok": true,
-   "got": "1.0",
-   "want": "1.0"
-  },
-  {
-   "seq": "Finale",
-   "item": "WardenFigure",
-   "name": "SFX_LB_Step_Wood_04 @58.240 present",
-   "ok": true,
-   "got": "True",
-   "want": "True"
-  },
-  {
-   "seq": "Finale",
-   "item": "WardenFigure",
-   "name": "SFX_LB_Step_Wood_04 @58.240 end (s)",
-   "ok": true,
-   "got": "58.34574890136719",
-   "want": "58.34571428707668"
-  },
-  {
-   "seq": "Finale",
-   "item": "WardenFigure",
-   "name": "SFX_LB_Step_Wood_04 @58.240 looping",
-   "ok": true,
-   "got": "False",
-   "want": "False"
-  },
-  {
-   "seq": "Finale",
-   "item": "WardenFigure",
-   "name": "SFX_LB_Step_Wood_04 @58.240 pitch",
-   "ok": true,
-   "got": "0.699999988079071",
-   "want": "0.7"
-  },
-  {
-   "seq": "Finale",
-   "item": "WardenFigure",
-   "name": "SFX_LB_Step_Wood_05 @59.600 present",
-   "ok": true,
-   "got": "True",
-   "want": "True"
-  },
-  {
-   "seq": "Finale",
-   "item": "WardenFigure",
-   "name": "SFX_LB_Step_Wood_05 @59.600 end (s)",
-   "ok": true,
-   "got": "59.71004104614258",
-   "want": "59.709999999403955"
-  },
-  {
-   "seq": "Finale",
-   "item": "WardenFigure",
-   "name": "SFX_LB_Step_Wood_05 @59.600 looping",
-   "ok": true,
-   "got": "False",
-   "want": "False"
-  },
-  {
-   "seq": "Finale",
-   "item": "WardenFigure",
-   "name": "SFX_LB_Step_Wood_05 @59.600 pitch",
-   "ok": true,
-   "got": "0.699999988079071",
-   "want": "0.7"
-  },
-  {
-   "seq": "Finale",
-   "item": "WardenFigure",
-   "name": "SFX_LB_Warden_Chain_02 @59.600 present",
-   "ok": true,
-   "got": "True",
-   "want": "True"
-  },
-  {
-   "seq": "Finale",
-   "item": "WardenFigure",
-   "name": "SFX_LB_Warden_Chain_02 @59.600 end (s)",
-   "ok": true,
-   "got": "61.14350128173828",
-   "want": "61.14347920417786"
-  },
-  {
-   "seq": "Finale",
-   "item": "WardenFigure",
-   "name": "SFX_LB_Warden_Chain_02 @59.600 looping",
-   "ok": true,
-   "got": "False",
-   "want": "False"
-  },
-  {
-   "seq": "Finale",
-   "item": "WardenFigure",
-   "name": "SFX_LB_Warden_Chain_02 @59.600 pitch",
-   "ok": true,
-   "got": "1.0",
-   "want": "1.0"
-  },
-  {
-   "seq": "Finale",
-   "item": "WardenFigure",
-   "name": "SFX_LB_Step_Wood_06 @60.960 present",
-   "ok": true,
-   "got": "True",
-   "want": "True"
-  },
-  {
-   "seq": "Finale",
-   "item": "WardenFigure",
-   "name": "SFX_LB_Step_Wood_06 @60.960 end (s)",
-   "ok": true,
-   "got": "61.07433319091797",
-   "want": "61.07428571173123"
-  },
-  {
-   "seq": "Finale",
-   "item": "WardenFigure",
-   "name": "SFX_LB_Step_Wood_06 @60.960 looping",
-   "ok": true,
-   "got": "False",
-   "want": "False"
-  },
-  {
-   "seq": "Finale",
-   "item": "WardenFigure",
-   "name": "SFX_LB_Step_Wood_06 @60.960 pitch",
-   "ok": true,
-   "got": "0.699999988079071",
-   "want": "0.7"
-  },
-  {
-   "seq": "Finale",
-   "item": "WardenFigure",
-   "name": "SFX_LB_Step_Wood_01 @62.320 present",
-   "ok": true,
-   "got": "True",
-   "want": "True"
-  },
-  {
-   "seq": "Finale",
-   "item": "WardenFigure",
-   "name": "SFX_LB_Step_Wood_01 @62.320 end (s)",
-   "ok": true,
-   "got": "62.43433380126953",
-   "want": "62.43428571173123"
-  },
-  {
-   "seq": "Finale",
-   "item": "WardenFigure",
-   "name": "SFX_LB_Step_Wood_01 @62.320 looping",
-   "ok": true,
-   "got": "False",
-   "want": "False"
-  },
-  {
-   "seq": "Finale",
-   "item": "WardenFigure",
-   "name": "SFX_LB_Step_Wood_01 @62.320 pitch",
-   "ok": true,
-   "got": "0.699999988079071",
-   "want": "0.7"
-  },
-  {
-   "seq": "Finale",
-   "item": "WardenFigure",
-   "name": "SFX_LB_Warden_Chain_03 @62.320 present",
-   "ok": true,
-   "got": "True",
-   "want": "True"
-  },
-  {
-   "seq": "Finale",
-   "item": "WardenFigure",
-   "name": "SFX_LB_Warden_Chain_03 @62.320 end (s)",
-   "ok": true,
-   "got": "63.73308181762695",
-   "want": "63.73304171085358"
-  },
-  {
-   "seq": "Finale",
-   "item": "WardenFigure",
-   "name": "SFX_LB_Warden_Chain_03 @62.320 looping",
-   "ok": true,
-   "got": "False",
-   "want": "False"
-  },
-  {
-   "seq": "Finale",
-   "item": "WardenFigure",
-   "name": "SFX_LB_Warden_Chain_03 @62.320 pitch",
-   "ok": true,
-   "got": "1.0",
-   "want": "1.0"
-  },
-  {
-   "seq": "Finale",
-   "item": "WardenFigure",
-   "name": "SFX_LB_Step_Wood_02 @63.680 present",
-   "ok": true,
-   "got": "True",
-   "want": "True"
-  },
-  {
-   "seq": "Finale",
-   "item": "WardenFigure",
-   "name": "SFX_LB_Step_Wood_02 @63.680 end (s)",
-   "ok": true,
-   "got": "63.79291534423828",
-   "want": "63.79285714805126"
-  },
-  {
-   "seq": "Finale",
-   "item": "WardenFigure",
-   "name": "SFX_LB_Step_Wood_02 @63.680 looping",
-   "ok": true,
-   "got": "False",
-   "want": "False"
-  },
-  {
-   "seq": "Finale",
-   "item": "WardenFigure",
-   "name": "SFX_LB_Step_Wood_02 @63.680 pitch",
-   "ok": true,
-   "got": "0.699999988079071",
-   "want": "0.7"
-  },
-  {
-   "seq": "Finale",
-   "item": "WardenFigure",
-   "name": "SFX_LB_Warden_Breath_Heavy @46.000 present",
-   "ok": true,
-   "got": "True",
-   "want": "True"
-  },
-  {
-   "seq": "Finale",
-   "item": "WardenFigure",
-   "name": "SFX_LB_Warden_Breath_Heavy @46.000 end (s)",
-   "ok": true,
-   "got": "72.00003814697266",
-   "want": "72.0"
-  },
-  {
-   "seq": "Finale",
-   "item": "WardenFigure",
-   "name": "SFX_LB_Warden_Breath_Heavy @46.000 looping",
-   "ok": true,
-   "got": "True",
-   "want": "True"
-  },
-  {
-   "seq": "Finale",
-   "item": "WardenFigure",
-   "name": "SFX_LB_Warden_Breath_Heavy @46.000 pitch",
-   "ok": true,
-   "got": "1.0",
-   "want": "1.0"
-  },
-  {
-   "seq": "Finale",
-   "item": "WardenFigure",
-   "name": "no overlapping sections within a row",
-   "ok": true,
-   "got": "True",
-   "want": "True"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Base",
-   "name": "binding exists and is a spawnable",
-   "ok": true,
-   "got": "True",
-   "want": "True"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Base",
-   "name": "template class",
-   "ok": true,
-   "got": "'TargetPoint'",
-   "want": "'TargetPoint'"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Base",
-   "name": "transform track count",
-   "ok": true,
-   "got": "1",
-   "want": "1"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Base",
-   "name": "transform Location.X (1 keys)",
-   "ok": true,
-   "got": "'ok'",
-   "want": "'ok'"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Base",
-   "name": "transform Location.Y (1 keys)",
-   "ok": true,
-   "got": "'ok'",
-   "want": "'ok'"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Base",
-   "name": "transform Location.Z (1 keys)",
-   "ok": true,
-   "got": "'ok'",
-   "want": "'ok'"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Base",
-   "name": "transform Rotation.X (1 keys)",
-   "ok": true,
-   "got": "'ok'",
-   "want": "'ok'"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Base",
-   "name": "transform Rotation.Y (1 keys)",
-   "ok": true,
-   "got": "'ok'",
-   "want": "'ok'"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Base",
-   "name": "transform Rotation.Z (1 keys)",
-   "ok": true,
-   "got": "'ok'",
-   "want": "'ok'"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Base",
-   "name": "transform Scale.X (1 keys)",
-   "ok": true,
-   "got": "'ok'",
-   "want": "'ok'"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Base",
-   "name": "transform Scale.Y (1 keys)",
-   "ok": true,
-   "got": "'ok'",
-   "want": "'ok'"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Base",
-   "name": "transform Scale.Z (1 keys)",
-   "ok": true,
-   "got": "'ok'",
-   "want": "'ok'"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Base",
-   "name": "visibility track count",
-   "ok": true,
-   "got": "0",
-   "want": "0"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Base",
-   "name": "audio track count",
-   "ok": true,
-   "got": "1",
-   "want": "1"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Base",
-   "name": "audio section count",
-   "ok": true,
-   "got": "4",
-   "want": "4"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Base",
-   "name": "SFX_LB_Warden_Step_01 @12.000 present",
-   "ok": true,
-   "got": "True",
-   "want": "True"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Base",
-   "name": "SFX_LB_Warden_Step_01 @12.000 end (s)",
-   "ok": true,
-   "got": "12.650041580200195",
-   "want": "12.649999976158142"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Base",
-   "name": "SFX_LB_Warden_Step_01 @12.000 looping",
-   "ok": true,
-   "got": "False",
-   "want": "False"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Base",
-   "name": "SFX_LB_Warden_Step_01 @12.000 pitch",
-   "ok": true,
-   "got": "1.0",
-   "want": "1.0"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Base",
-   "name": "SFX_LB_Warden_Chain_01 @12.000 present",
-   "ok": true,
-   "got": "True",
-   "want": "True"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Base",
-   "name": "SFX_LB_Warden_Chain_01 @12.000 end (s)",
-   "ok": true,
-   "got": "13.41308307647705",
-   "want": "13.413041710853577"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Base",
-   "name": "SFX_LB_Warden_Chain_01 @12.000 looping",
-   "ok": true,
-   "got": "False",
-   "want": "False"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Base",
-   "name": "SFX_LB_Warden_Chain_01 @12.000 pitch",
-   "ok": true,
-   "got": "1.0",
-   "want": "1.0"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Base",
-   "name": "SFX_LB_Warden_Step_02 @12.900 present",
-   "ok": true,
-   "got": "True",
-   "want": "True"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Base",
-   "name": "SFX_LB_Warden_Step_02 @12.900 end (s)",
-   "ok": true,
-   "got": "13.635041236877441",
-   "want": "13.635000014305115"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Base",
-   "name": "SFX_LB_Warden_Step_02 @12.900 looping",
-   "ok": true,
-   "got": "False",
-   "want": "False"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Base",
-   "name": "SFX_LB_Warden_Step_02 @12.900 pitch",
-   "ok": true,
-   "got": "1.0",
-   "want": "1.0"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Base",
-   "name": "SFX_LB_Warden_Chain_02 @12.900 present",
-   "ok": true,
-   "got": "True",
-   "want": "True"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Base",
-   "name": "SFX_LB_Warden_Chain_02 @12.900 end (s)",
-   "ok": true,
-   "got": "14.443541526794434",
-   "want": "14.443479204177857"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Base",
-   "name": "SFX_LB_Warden_Chain_02 @12.900 looping",
-   "ok": true,
-   "got": "False",
-   "want": "False"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Base",
-   "name": "SFX_LB_Warden_Chain_02 @12.900 pitch",
-   "ok": true,
-   "got": "1.0",
-   "want": "1.0"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Base",
-   "name": "no overlapping sections within a row",
-   "ok": true,
-   "got": "True",
-   "want": "True"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Low",
-   "name": "binding exists and is a spawnable",
-   "ok": true,
-   "got": "True",
-   "want": "True"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Low",
-   "name": "template class",
-   "ok": true,
-   "got": "'TargetPoint'",
-   "want": "'TargetPoint'"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Low",
-   "name": "transform track count",
-   "ok": true,
-   "got": "1",
-   "want": "1"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Low",
-   "name": "transform Location.X (1 keys)",
-   "ok": true,
-   "got": "'ok'",
-   "want": "'ok'"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Low",
-   "name": "transform Location.Y (1 keys)",
-   "ok": true,
-   "got": "'ok'",
-   "want": "'ok'"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Low",
-   "name": "transform Location.Z (1 keys)",
-   "ok": true,
-   "got": "'ok'",
-   "want": "'ok'"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Low",
-   "name": "transform Rotation.X (1 keys)",
-   "ok": true,
-   "got": "'ok'",
-   "want": "'ok'"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Low",
-   "name": "transform Rotation.Y (1 keys)",
-   "ok": true,
-   "got": "'ok'",
-   "want": "'ok'"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Low",
-   "name": "transform Rotation.Z (1 keys)",
-   "ok": true,
-   "got": "'ok'",
-   "want": "'ok'"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Low",
-   "name": "transform Scale.X (1 keys)",
-   "ok": true,
-   "got": "'ok'",
-   "want": "'ok'"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Low",
-   "name": "transform Scale.Y (1 keys)",
-   "ok": true,
-   "got": "'ok'",
-   "want": "'ok'"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Low",
-   "name": "transform Scale.Z (1 keys)",
-   "ok": true,
-   "got": "'ok'",
-   "want": "'ok'"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Low",
-   "name": "visibility track count",
-   "ok": true,
-   "got": "0",
-   "want": "0"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Low",
-   "name": "audio track count",
-   "ok": true,
-   "got": "1",
-   "want": "1"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Low",
-   "name": "audio section count",
-   "ok": true,
-   "got": "2",
-   "want": "2"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Low",
-   "name": "SFX_LB_Warden_Step_03 @22.300 present",
-   "ok": true,
-   "got": "True",
-   "want": "True"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Low",
-   "name": "SFX_LB_Warden_Step_03 @22.300 end (s)",
-   "ok": true,
-   "got": "23.057167053222656",
-   "want": "23.05712502002716"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Low",
-   "name": "SFX_LB_Warden_Step_03 @22.300 looping",
-   "ok": true,
-   "got": "False",
-   "want": "False"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Low",
-   "name": "SFX_LB_Warden_Step_03 @22.300 pitch",
-   "ok": true,
-   "got": "1.0",
-   "want": "1.0"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Low",
-   "name": "SFX_LB_Warden_Chain_03 @22.300 present",
-   "ok": true,
-   "got": "True",
-   "want": "True"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Low",
-   "name": "SFX_LB_Warden_Chain_03 @22.300 end (s)",
-   "ok": true,
-   "got": "23.713083267211914",
-   "want": "23.713041710853577"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Low",
-   "name": "SFX_LB_Warden_Chain_03 @22.300 looping",
-   "ok": true,
-   "got": "False",
-   "want": "False"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Low",
-   "name": "SFX_LB_Warden_Chain_03 @22.300 pitch",
-   "ok": true,
-   "got": "1.0",
-   "want": "1.0"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Low",
-   "name": "no overlapping sections within a row",
-   "ok": true,
-   "got": "True",
-   "want": "True"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Mid",
-   "name": "binding exists and is a spawnable",
-   "ok": true,
-   "got": "True",
-   "want": "True"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Mid",
-   "name": "template class",
-   "ok": true,
-   "got": "'TargetPoint'",
-   "want": "'TargetPoint'"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Mid",
-   "name": "transform track count",
-   "ok": true,
-   "got": "1",
-   "want": "1"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Mid",
-   "name": "transform Location.X (1 keys)",
-   "ok": true,
-   "got": "'ok'",
-   "want": "'ok'"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Mid",
-   "name": "transform Location.Y (1 keys)",
-   "ok": true,
-   "got": "'ok'",
-   "want": "'ok'"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Mid",
-   "name": "transform Location.Z (1 keys)",
-   "ok": true,
-   "got": "'ok'",
-   "want": "'ok'"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Mid",
-   "name": "transform Rotation.X (1 keys)",
-   "ok": true,
-   "got": "'ok'",
-   "want": "'ok'"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Mid",
-   "name": "transform Rotation.Y (1 keys)",
-   "ok": true,
-   "got": "'ok'",
-   "want": "'ok'"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Mid",
-   "name": "transform Rotation.Z (1 keys)",
-   "ok": true,
-   "got": "'ok'",
-   "want": "'ok'"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Mid",
-   "name": "transform Scale.X (1 keys)",
-   "ok": true,
-   "got": "'ok'",
-   "want": "'ok'"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Mid",
-   "name": "transform Scale.Y (1 keys)",
-   "ok": true,
-   "got": "'ok'",
-   "want": "'ok'"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Mid",
-   "name": "transform Scale.Z (1 keys)",
-   "ok": true,
-   "got": "'ok'",
-   "want": "'ok'"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Mid",
-   "name": "visibility track count",
-   "ok": true,
-   "got": "0",
-   "want": "0"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Mid",
-   "name": "audio track count",
-   "ok": true,
-   "got": "1",
-   "want": "1"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Mid",
-   "name": "audio section count",
-   "ok": true,
-   "got": "3",
-   "want": "3"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Mid",
-   "name": "SFX_LB_Step_Wood_01 @28.000 present",
-   "ok": true,
-   "got": "True",
-   "want": "True"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Mid",
-   "name": "SFX_LB_Step_Wood_01 @28.000 end (s)",
-   "ok": true,
-   "got": "28.114334106445312",
-   "want": "28.11428571173123"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Mid",
-   "name": "SFX_LB_Step_Wood_01 @28.000 looping",
-   "ok": true,
-   "got": "False",
-   "want": "False"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Mid",
-   "name": "SFX_LB_Step_Wood_01 @28.000 pitch",
-   "ok": true,
-   "got": "0.699999988079071",
-   "want": "0.7"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Mid",
-   "name": "SFX_LB_Step_Wood_02 @29.400 present",
-   "ok": true,
-   "got": "True",
-   "want": "True"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Mid",
-   "name": "SFX_LB_Step_Wood_02 @29.400 end (s)",
-   "ok": true,
-   "got": "29.512916564941406",
-   "want": "29.51285714805126"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Mid",
-   "name": "SFX_LB_Step_Wood_02 @29.400 looping",
-   "ok": true,
-   "got": "False",
-   "want": "False"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Mid",
-   "name": "SFX_LB_Step_Wood_02 @29.400 pitch",
-   "ok": true,
-   "got": "0.699999988079071",
-   "want": "0.7"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Mid",
-   "name": "SFX_LB_Step_Wood_03 @30.800 present",
-   "ok": true,
-   "got": "True",
-   "want": "True"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Mid",
-   "name": "SFX_LB_Step_Wood_03 @30.800 end (s)",
-   "ok": true,
-   "got": "30.91145896911621",
-   "want": "30.91142857372761"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Mid",
-   "name": "SFX_LB_Step_Wood_03 @30.800 looping",
-   "ok": true,
-   "got": "False",
-   "want": "False"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Mid",
-   "name": "SFX_LB_Step_Wood_03 @30.800 pitch",
-   "ok": true,
-   "got": "0.699999988079071",
-   "want": "0.7"
-  },
-  {
-   "seq": "Finale",
-   "item": "Snd_Mid",
    "name": "no overlapping sections within a row",
    "ok": true,
    "got": "True",
@@ -2709,13 +1680,13 @@
    "item": "audio2d",
    "name": "2D audio section count",
    "ok": true,
-   "got": "4",
-   "want": "4"
+   "got": "3",
+   "want": "3"
   },
   {
    "seq": "Finale",
    "item": "audio2d",
-   "name": "2D SFX_LB_Step_Metal_02 @72.000 present",
+   "name": "2D SFX_LB_Step_Metal_02 @19.500 present",
    "ok": true,
    "got": "True",
    "want": "True"
@@ -2723,15 +1694,15 @@
   {
    "seq": "Finale",
    "item": "audio2d",
-   "name": "2D SFX_LB_Step_Metal_02 @72.000 end (s)",
+   "name": "2D SFX_LB_Step_Metal_02 @19.500 end (s)",
    "ok": true,
-   "got": "72.90912628173828",
-   "want": "72.9090909090909"
+   "got": "20.40912437438965",
+   "want": "20.40909090909091"
   },
   {
    "seq": "Finale",
    "item": "audio2d",
-   "name": "2D SFX_LB_Step_Metal_02 @72.000 looping",
+   "name": "2D SFX_LB_Step_Metal_02 @19.500 looping",
    "ok": true,
    "got": "False",
    "want": "False"
@@ -2739,7 +1710,7 @@
   {
    "seq": "Finale",
    "item": "audio2d",
-   "name": "2D SFX_LB_Step_Metal_02 @72.000 pitch",
+   "name": "2D SFX_LB_Step_Metal_02 @19.500 pitch",
    "ok": true,
    "got": "0.550000011920929",
    "want": "0.55"
@@ -2747,7 +1718,7 @@
   {
    "seq": "Finale",
    "item": "audio2d",
-   "name": "2D SFX_LB_Warden_Chain_02 @72.000 present",
+   "name": "2D SFX_LB_Warden_Chain_02 @19.500 present",
    "ok": true,
    "got": "True",
    "want": "True"
@@ -2755,15 +1726,15 @@
   {
    "seq": "Finale",
    "item": "audio2d",
-   "name": "2D SFX_LB_Warden_Chain_02 @72.000 end (s)",
+   "name": "2D SFX_LB_Warden_Chain_02 @19.500 end (s)",
    "ok": true,
-   "got": "74.20500183105469",
-   "want": "74.20497029168266"
+   "got": "21.704999923706055",
+   "want": "21.704970291682653"
   },
   {
    "seq": "Finale",
    "item": "audio2d",
-   "name": "2D SFX_LB_Warden_Chain_02 @72.000 looping",
+   "name": "2D SFX_LB_Warden_Chain_02 @19.500 looping",
    "ok": true,
    "got": "False",
    "want": "False"
@@ -2771,7 +1742,7 @@
   {
    "seq": "Finale",
    "item": "audio2d",
-   "name": "2D SFX_LB_Warden_Chain_02 @72.000 pitch",
+   "name": "2D SFX_LB_Warden_Chain_02 @19.500 pitch",
    "ok": true,
    "got": "0.699999988079071",
    "want": "0.7"
@@ -2779,7 +1750,7 @@
   {
    "seq": "Finale",
    "item": "audio2d",
-   "name": "2D SFX_LB_Warden_Breath_Slow @72.300 present",
+   "name": "2D SFX_LB_Warden_Breath_Slow @19.800 present",
    "ok": true,
    "got": "True",
    "want": "True"
@@ -2787,15 +1758,15 @@
   {
    "seq": "Finale",
    "item": "audio2d",
-   "name": "2D SFX_LB_Warden_Breath_Slow @72.300 end (s)",
+   "name": "2D SFX_LB_Warden_Breath_Slow @19.800 end (s)",
    "ok": true,
-   "got": "92.00003814697266",
-   "want": "92.0"
+   "got": "39.50004196166992",
+   "want": "39.5"
   },
   {
    "seq": "Finale",
    "item": "audio2d",
-   "name": "2D SFX_LB_Warden_Breath_Slow @72.300 looping",
+   "name": "2D SFX_LB_Warden_Breath_Slow @19.800 looping",
    "ok": true,
    "got": "True",
    "want": "True"
@@ -2803,50 +1774,10 @@
   {
    "seq": "Finale",
    "item": "audio2d",
-   "name": "2D SFX_LB_Warden_Breath_Slow @72.300 pitch",
+   "name": "2D SFX_LB_Warden_Breath_Slow @19.800 pitch",
    "ok": true,
    "got": "1.0",
    "want": "1.0"
-  },
-  {
-   "seq": "Finale",
-   "item": "audio2d",
-   "name": "2D MUS_LB_Drone_C @104.000 present",
-   "ok": true,
-   "got": "True",
-   "want": "True"
-  },
-  {
-   "seq": "Finale",
-   "item": "audio2d",
-   "name": "2D MUS_LB_Drone_C @104.000 end (s)",
-   "ok": true,
-   "got": "149.0000457763672",
-   "want": "149.0"
-  },
-  {
-   "seq": "Finale",
-   "item": "audio2d",
-   "name": "2D MUS_LB_Drone_C @104.000 looping",
-   "ok": true,
-   "got": "True",
-   "want": "True"
-  },
-  {
-   "seq": "Finale",
-   "item": "audio2d",
-   "name": "2D MUS_LB_Drone_C @104.000 pitch",
-   "ok": true,
-   "got": "1.0",
-   "want": "1.0"
-  },
-  {
-   "seq": "Finale",
-   "item": "audio2d",
-   "name": "2D MUS_LB_Drone_C @104.000 volume keys (4 keys)",
-   "ok": true,
-   "got": "'ok'",
-   "want": "'ok'"
   },
   {
    "seq": "Finale",

@@ -590,7 +590,7 @@ def build_da_json():
     ]
     silent = ["Interactables/BP_TagInteractable_GreatBell", "Puzzles/BP_SequencePuzzle", "Puzzles/BP_SmallBell_Cloister"]
     beats = [  # FLBAudioSettings::FillPlanDefaults, plan 5.3: tag, stage, strikes, first delay, spacing, drone (0 A, 1 B, 2 C)
-        ("State.Event.Arrival", 1, 3, 0.0, 4.5, 0),  # P17-2 (D-117): the intro's first toll, replaces the new-game toll; FillPlanDefaults' first row
+        ("State.Event.Arrival", 1, 3, 0.0, 4.5, -1),  # P17-2 (D-117): the intro's first toll, replaces the new-game toll; FillPlanDefaults' first row. Drone -1: no intro music (owner 2026-11-11)
         ("State.Ritual.1", 2, 3, 2.0, 4.5, 1),
         ("State.Event.CryptEntered", 1, 0, 0.0, 0.0, 0),
         ("State.Ritual.2", 3, 3, 2.0, 4.5, 2),
@@ -900,7 +900,8 @@ def count_folders(items):
         check("folder %s holds %d assets" % (folder, expected[folder]), len(listed) == expected[folder], len(listed))
     mix_listed = EAL.list_assets(MIX, recursive=False, include_folder=False)
     counts["Mix"] = len(mix_listed)
-    check("folder Mix holds 25 assets", len(mix_listed) == 6 + 1 + len(ATTENUATION) + len(CONCURRENCY) + len(REVERB), len(mix_listed))
+    # + 1: SMX_LB_CineFade, made by Tools/cine/p17_assets.py (P17-2) in the same folder
+    check("folder Mix holds 26 assets", len(mix_listed) == 6 + 1 + len(ATTENUATION) + len(CONCURRENCY) + len(REVERB) + 1, len(mix_listed))
     phys_listed = EAL.list_assets(PHYS, recursive=False, include_folder=False)
     counts["Physics"] = len(phys_listed)
     check("folder Physics holds 6 assets", len(phys_listed) == 6, len(phys_listed))

@@ -8,7 +8,8 @@ Environment variables (the same pattern as Tools/audio/p16_2_assets.py):
              "verify": read-only, nothing is created, set or saved; run it in a FRESH process to prove what is on disk
 
 What it does (docs/plans/P17_CINEMATICS.md sections 2.2, 3.1, 3.3, 4 and 6):
- 1. /Game/LastBell/Audio/Mix/SMX_LB_CineFade (SoundMix): SoundClassEffects for SCL_LB_Ambience, SCL_LB_SFX and SCL_LB_Voice at
+ 1. /Game/LastBell/Audio/Mix/SMX_LB_CineFade (SoundMix): SoundClassEffects for SCL_LB_Ambience, SCL_LB_SFX, SCL_LB_Voice and SCL_LB_Music (owner 2026-11-11: the
+    TowerTop drone fades with everything else at mix:on) at
     VolumeAdjuster 0.0, FadeInTime 4.0, FadeOutTime 1.0, Duration -1, EQ off.
  2. /Game/LastBell/Data/DA_Cinematics (class /Script/LastBell.LBCinematicSettings): the two Cinematics rows (with FailSafeMarkers), the
     seven Cards, the Credits (Docs/plans/p17_credits.json, made by Tools/cine/make_credits.py), every number and tag of section 2.2 and
@@ -283,11 +284,11 @@ def build_expected(credits, seq_variant="ref"):
 # SMX_LB_CineFade
 # ---------------------------------------------------------------------------------------------------------------------------------
 
-CLASS_PATHS = [MIX_DIR + "/SCL_LB_Ambience", MIX_DIR + "/SCL_LB_SFX", MIX_DIR + "/SCL_LB_Voice"]
+CLASS_PATHS = [MIX_DIR + "/SCL_LB_Ambience", MIX_DIR + "/SCL_LB_SFX", MIX_DIR + "/SCL_LB_Voice", MIX_DIR + "/SCL_LB_Music"]
 
 
 def effects_state(mix, classes):
-    """(ok, detail): exactly the three class effects, each at VolumeAdjuster 0.0 (and pitch 1.0)."""
+    """(ok, detail): exactly the four class effects, each at VolumeAdjuster 0.0 (and pitch 1.0)."""
     cur = list(mix.get_editor_property("sound_class_effects"))
     if len(cur) != len(classes):
         return False, "%d class effects, wanted %d" % (len(cur), len(classes))
@@ -338,7 +339,7 @@ def build_mix():
                         "bApplyToChildren": False, "voiceCenterChannelVolumeAdjuster": 1.0} for p in CLASS_PATHS]
             check("SMX set_object_properties", bool(TL.set_object_properties(mix, json.dumps({"SoundClassEffects": effects}))))
         mark_changed(mix)
-        record("SMX_LB_CineFade", "sound_class_effects", "3 effects at volume 0.0")
+        record("SMX_LB_CineFade", "sound_class_effects", "%d effects at volume 0.0" % len(CLASS_PATHS))
         ok, detail = effects_state(mix, classes)
     check("SMX_LB_CineFade class effects", ok, detail)
 
