@@ -106,7 +106,7 @@
   - **Rebind call:** `UEnhancedInputUserSettings::MapPlayerKey` for the rebind, saved with `SaveSettings`.
   - **Pause key:** `IA_Pause` (new, Escape) is rebindable except to the mouse buttons.
   - **Inspection keys:** `IMC_LB_Inspect` keeps fixed keys (documented).
-- **Main menu:** `BP_MenuPlayerController`'s `HUDWidgetClass` becomes `ULBMainMenuWidget`, and `WBP_MainMenu` is retired: unused, deleted at review if the owner agrees.
+- **Main menu:** `BP_MenuPlayerController`'s `HUDWidgetClass` becomes `ULBMainMenuWidget`, and `WBP_MainMenu` is retired and was deleted at the review (owner approved, 2026-11-12).
 
 ## 3. Menu background (S1 decides)
 - **Shot:** `LS_LB_MenuDrift`, built headless by the `p17_sequences` tooling.
@@ -229,7 +229,7 @@ The credits gain "Fonts / EB Garamond, Georg Duffner, Octavio Pardo and Deborah 
 ### P18-3 HUD and key icons (2026-11-11)
 - **Built:** `ULBHUDWidget` replaces `WBP_HUD` and `WBP_Inspect` (crosshair, the prompt with a key icon bound to Interact, the objective, the relight message and the inspection overlay); `BP_LBPlayerController.HUDWidgetClass` set by `Tools/ui/p18_3_assets.py`; the key icon follows rebinding from creation (1154880, eed66c8, D-132). The cinematic widget's restyle and the "Hold [key] to skip" prompt came with P18-1 (bbf89d2).
 - **Test:** `LastBell.Functional.UI.HUD.PromptKeyAndObjective`.
-- **Left in place:** `WBP_HUD`, `WBP_Inspect` and `WBP_MainMenu`, unused, for the owner to approve deleting at the review.
+- **Deleted (owner approved, 2026-11-12):** `WBP_HUD`, `WBP_Inspect` and `WBP_MainMenu`, with `Tools/ui/p18_cleanup.py`.
 
 ### Owner additions during P18-4 (2026-11-11)
 These are queued for P18-5, together with the session notes:
