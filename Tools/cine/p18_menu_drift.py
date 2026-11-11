@@ -9,9 +9,11 @@ Environment:
 Build creates /Game/LastBell/Cinematics/LS_LB_MenuDrift and saves ONLY that package. Check runs in a FRESH process and writes
 Docs/ArtTest/cine/p18_menu_drift_check.json. Nothing is rendered or captured; no PIE, no MCP.
 
-THE SHOT (pose reasoning in Docs/ArtTest/cine/p18_menu_drift.md): one CineCamera on the approach axis, the line the player walks and Cam_Intro already uses (x -2800, y 0), looking +X over the
-gatehouse at the tower. The camera dollies 400 cm along +X and pans 6 deg from 0 to 20 s, and the same move mirrored back from 20 to 40 s. Every key has an AUTO tangent and
-the keys at 0, 20 and 40 s are extrema or end keys, so the tangents there are flat (zero speed at 0, 20 and 40 s): the loop has no seam and the turn at 20 s is soft.
+THE SHOT (pose reasoning in Docs/ArtTest/cine/p18_menu_drift.md, owner choice 2026-11-11: inside the courtyard, not the approach): one CineCamera just inside the gate at
+(700..1100, -300, 300) looking east across the courtyard: the well-head lantern (3400, 0) mid-frame, the south and north arcade rows converging either side, the chapel front with its
+door and gable (X 6000), and the belfry of the bell tower (12400, 2000) rising over the chapel gable. The camera dollies 400 cm east and pans 5 deg to the right from 0 to 20 s, and the same
+move mirrored back from 20 to 40 s. Every key has an AUTO tangent and the keys at 0, 20 and 40 s are extrema or end keys, so the tangents there are flat (zero speed at 0, 20 and 40 s): the
+loop has no seam and the turn at 20 s is soft.
 """
 import json
 import math
@@ -37,18 +39,42 @@ BUILD_RECORD = os.path.join(ROOT, "Saved", "p18_menu_drift_build.json")
 TAG = "P18Menu"
 
 # ---- the pose. Units cm and degrees; UE rotation: yaw + is to the right, pitch + is up.
-CAM_X0, CAM_X1 = -2800.0, -2400.0        # dolly 400 cm toward the gate
-CAM_Y, CAM_Z = 0.0, 560.0
-CAM_YAW0, CAM_YAW1 = 1.0, 7.0            # pan 6 deg to the right
-CAM_PITCH = 6.0
+CAM_X0, CAM_X1 = 700.0, 1100.0           # dolly 400 cm east, away from the gate (the gate wall is X 168..580 and the arch X 0..300, behind the camera)
+CAM_Y, CAM_Z = -300.0, 300.0
+CAM_YAW0, CAM_YAW1 = 4.5, 9.5            # pan 5 deg to the right
+CAM_PITCH = 6.5
 FOCAL, APERTURE, FOCUS = 35.0, 2.8, 6000.0
-# ---- landmarks for the framing check (F0 survey, Saved/p17_f0_scratch/gate.json, bell.json, tower.json; Docs/TECHNICAL_DESIGN strike target)
-GATE_TOP_CENTRE = (0.0, 0.0, 800.0)                  # KG_GateArch bounds X 0..300, Y -600..600, Z 0..800 (the face toward the camera is X 0)
-GATE_TOP_LEFT, GATE_TOP_RIGHT = (0.0, -600.0, 800.0), (0.0, 600.0, 800.0)
-TOWER_DECK = (12165.0, 2000.0, 2500.0)               # Top_Slab_W centre, the belfry floor
-TOWER_BELL = (12420.0, 2000.0, 2860.0)               # BP_TagInteractable_GreatBell top
-TOWER_FINIAL = (12530.8, 2000.0, 4824.8)             # TWA_Roof finial tip (the strike target is 20 cm above)
-FILMBACK = (36.0, 20.25)                             # 16:9 DSLR
+# ---- landmarks for the framing check (courtyard layout: Docs/plans/P7_FIX3_COURTYARD_RESTRUCTURE.md section 1; chapel: Docs/plans/P8_CHAPEL_ART.md; tower: F0 survey, bell.json, TECHNICAL_DESIGN)
+LM_WELL_LANTERN = (3400.0, 0.0, 130.0)       # well-head at (3400, 0), coping 85 high, lantern on the coping's south side
+LM_WELL_BASE = (3400.0, 0.0, 0.0)
+LM_ARC_S_FAR = (5000.0, -950.0, 700.0)       # south arcade row Y -1000..-900, pier centres X 2000..5000, tops Z 700
+LM_ARC_N_FAR = (5000.0, 950.0, 700.0)        # north row Y 900..1000
+LM_DOOR = (6000.0, 0.0, 240.0)               # chapel west front, main door, centre Y 0
+LM_GABLE_APEX = (6000.0, 0.0, 2215.0)        # Ch_Gable_W apex (rake top Z 1250 at Y +-810 to 2215 at Y 0)
+LM_GABLE_L, LM_GABLE_R = (6000.0, -810.0, 1250.0), (6000.0, 810.0, 1250.0)
+LM_TOWER_BELFRY = (12400.0, 2000.0, 3500.0)  # belfry (bell Z 2640..2860, belfry roof to Z 4825); the deck at Z 2500 and below is hidden behind the chapel
+LM_TOWER_FINIAL = (12530.8, 2000.0, 4824.8)  # TWA_Roof finial tip
+FILMBACK = (36.0, 20.25)                     # 16:9 DSLR
+
+
+def chapel_top(x, y):
+    """Top of the chapel mass seen from the courtyard (P8): west gable parapet X 6000..6060, then the roof slab (plane Z 1200 at Y +-810 to 2165 at Y 0, 20 thick) to X 9020, eaves to Y +-850."""
+    if 6000.0 <= x <= 9020.0 and abs(y) <= 850.0:
+        k = (810.0 - min(abs(y), 810.0)) / 810.0
+        return 1250.0 + k * 965.0 if x <= 6060.0 else 1220.0 + k * 965.0
+    return 0.0
+
+
+def clearance(pose, pt):
+    """Smallest height of the line camera -> pt above the chapel top along its length (cm); a large number when it never crosses the chapel."""
+    x, y, z = pose[0], pose[1], pose[2]
+    worst = 1e9
+    for i in range(1, 801):
+        f = i / 800.0
+        top = chapel_top(x + (pt[0] - x) * f, y + (pt[1] - y) * f)
+        if top > 0.0:
+            worst = min(worst, z + (pt[2] - z) * f - top)
+    return worst
 
 
 def cam_spec():
@@ -209,25 +235,27 @@ def check(spec):
             tv = [t for d in tangents for t in d.values() if t is not None]
             P.chk(sk, item, "%s: arrive and leave tangents of the three keys are readable (6 values)" % nm, len(tv), 6)
             P.chk(sk, item, "%s: all six tangents are flat (max |tangent|)" % nm, max([abs(t) for t in tv] or [1.0]), 0.0, 1e-4)
-    # analytic framing (the cached F0 survey; a live trace waits for the editor): every landmark inside the frustum over the first half (the second is the mirror),
-    # and the line to the belfry deck and the bell passes over the gate crown (z 800 at X 0) with a margin
+    # analytic framing (the P7 courtyard layout and the P8 chapel; a live trace waits for the editor): every landmark inside the frustum over the first half (the second is the mirror),
+    # and the lines to the belfry and the finial pass over the chapel gable and roof with a margin
     half_h = math.degrees(math.atan(FILMBACK[0] / 2.0 / FOCAL))
     half_v = math.degrees(math.atan(FILMBACK[1] / 2.0 / FOCAL))
     rows = []
+    lms = (("well_lantern", LM_WELL_LANTERN), ("well_base", LM_WELL_BASE), ("arcade_south_far", LM_ARC_S_FAR), ("arcade_north_far", LM_ARC_N_FAR), ("chapel_door", LM_DOOR),
+           ("gable_apex", LM_GABLE_APEX), ("gable_left", LM_GABLE_L), ("gable_right", LM_GABLE_R), ("tower_belfry", LM_TOWER_BELFRY), ("tower_finial", LM_TOWER_FINIAL))
     for t in (0.0, 5.0, 10.0, 15.0, 20.0):
         pose = pose_at(t)
         row = {"t": t, "pose": [round(v, 2) for v in pose]}
-        for nm, pt in (("gate_top_centre", GATE_TOP_CENTRE), ("gate_top_left", GATE_TOP_LEFT), ("gate_top_right", GATE_TOP_RIGHT),
-                       ("tower_deck", TOWER_DECK), ("tower_bell", TOWER_BELL), ("tower_finial", TOWER_FINIAL)):
+        for nm, pt in lms:
             az, el, dist = project(pose, pt)
             row[nm] = {"az": round(az, 2), "el": round(el, 2), "dist": round(dist)}
             P.chk(sk, "frame", "%s in frame at t=%.0f s (az %.1f of +-%.1f, el %.1f of +-%.1f)" % (nm, t, az, half_h, el, half_v),
                   abs(az) < half_h - 2.0 and abs(el) < half_v - 1.0, True)
-        for nm, pt in (("tower_deck", TOWER_DECK), ("tower_bell", TOWER_BELL)):
-            f = (0.0 - pose[0]) / (pt[0] - pose[0])
-            z_at_gate = pose[2] + (pt[2] - pose[2]) * f
-            row["line_z_at_gate_plane_to_" + nm] = round(z_at_gate, 1)
-            P.chk(sk, "frame", "line to %s clears the gate crown (z 800) by >= 40 cm at t=%.0f s" % (nm, t), z_at_gate - 800.0 >= 40.0, True)
+        for nm, pt in (("tower_belfry", LM_TOWER_BELFRY), ("tower_finial", LM_TOWER_FINIAL)):
+            c = clearance(pose, pt)
+            row["line_clearance_over_chapel_to_" + nm] = round(c, 1)
+            P.chk(sk, "frame", "line to %s clears the chapel gable and roof by >= 150 cm at t=%.0f s (%.0f)" % (nm, t, c), c >= 150.0, True)
+        # camera stays inside the courtyard clear of the gate wall (X 168..580), the south rubble heap (X 560..960, Y -720..-420, Z 130) and the first bed (X 1700..)
+        P.chk(sk, "frame", "camera is east of the gate wall, outside the rubble heap and the beds at t=%.0f s" % t, pose[0] > 600.0 and pose[0] < 1700.0 and not (560.0 <= pose[0] <= 960.0 and -720.0 <= pose[1] <= -420.0 and pose[2] < 200.0), True)
         rows.append(row)
     P.results["framing"] = rows
     P.results["tangents"] = flat

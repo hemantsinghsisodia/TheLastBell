@@ -2,24 +2,29 @@
 
 Spec: `Docs/plans/P18_UI_SETTINGS.md` section 3. Nothing here has been rendered. The sequence is built and checked headless; the render and encode scripts are prepared and their first half (the queue manifest) was run.
 
-## The shot: `/Game/LastBell/Cinematics/LS_LB_MenuDrift`
+## The shot: `/Game/LastBell/Cinematics/LS_LB_MenuDrift` (courtyard version, owner's choice 2026-11-11)
 
-40.0 s at 30 fps (1200 frames), one spawnable CineCamera `Cam_MenuDrift` (16:9 DSLR filmback, 35 mm, f/2.8, manual focus 6000 cm), one camera-cut section 0-40 s (bCanBlend on, no eases), no fade, no audio, no markers, no characters, no other bindings. The package has no `/Game` dependencies.
+The first version looked down the approach lane at the gatehouse; the owner asked for the courtyard instead. 40.0 s at 30 fps (1200 frames), one spawnable CineCamera `Cam_MenuDrift` (16:9 DSLR filmback, 35 mm, f/2.8, manual focus 6000 cm), one camera-cut section 0-40 s (bCanBlend on, no eases), no fade, no audio, no markers, no characters, no other bindings. No /Game dependencies.
 
 | | start (0 s and 40 s) | turn (20 s) |
 |---|---|---|
-| Location | (-2800, 0, 560) | (-2400, 0, 560) |
-| Yaw / pitch / roll | 1.0 / 6.0 / 0 | 7.0 / 6.0 / 0 |
+| Location | (700, -300, 300) | (1100, -300, 300) |
+| Yaw / pitch / roll | 4.5 / 6.5 / 0 | 9.5 / 6.5 / 0 |
 
-X and yaw have three keys (0, 20, 40 s), all AUTO. The keys at 0 and 40 s are end keys and the one at 20 s is an extremum, so all six tangents read 0.0 (the check asserts it): the camera is at rest at 0, 20 and 40 s, the loop has no seam and the turn is soft. The peak speed is 30 cm/s and 0.45 deg/s, mid-way through each half.
+X and yaw have three keys (0, 20, 40 s), all AUTO; all six tangents read 0.0 (the check asserts it): the camera is at rest at 0, 20 and 40 s, the loop has no seam. Peak speed 30 cm/s and 0.375 deg/s.
 
-Why this pose and not the brief's example (2500, -1800, 250):
-- From the courtyard the gate (X 0..300, west wall) and the tower (X about 12400, east) are about 120 degrees apart, so no 35 mm view holds both. The only line that frames the gatehouse and the tower together is the approach axis, the line the player walks (spawn (-2800, 0)), and `Cam_Intro` already looks down it.
-- Eye height 560, not 250: at 250 the gate crown (z 800 at X 0, 2800 cm ahead) is 11 degrees above the camera and hides everything of the tower below z 3200, leaving only the belfry roof. The intro says the whole tower shows over the cliffs from 652 and sinks behind them at 152. At 560 the line to the belfry deck (z 2500) passes the gate-crown plane at z 923 at the start and 880 at the turn (+123 / +80 cm clear), and the bell at z 983 / 933.
-- X starts at the player's spawn and moves toward the gate: the F0 survey found the west cliff 350 cm behind the spawn (a camera there would be inside it), so the dolly goes forward, never back. Y stays 0, the walked lane.
-- The pan to the right takes the tower from 6.4 degrees right of centre (start) to 0.6 right (turn); the gate crown stays 1 to 7 degrees left of centre, just below the horizon of the frame. Landmark elevations in frame (half FOV is 27.2 deg wide, 16.1 deg tall): gate crown -1.1 to -0.3, tower deck +1.3 to +1.5, bell +2.5 to +2.7, finial +9.4 to +9.8. The check asserts every landmark is inside the frustum (with 2 / 1 degree margins) at 0, 5, 10, 15 and 20 s.
+What is in frame (the check asserts each inside the frustum, with 2 / 1 degree margins, at 0, 5, 10, 15 and 20 s; azimuth / elevation relative to the view axis, half FOV 27.2 wide and 16.1 tall):
+- the well-head lantern (3400, 0) at az +1.8 to -2.1, el -10 to -11 (centre of the frame horizontally, lower third); the south arcade row's far end (5000, -950) at az -13 to -19 and the north row's far end at +12 to +8, both at the horizon: the rows converge on the chapel either side of the well;
+- the chapel door (6000, 0) at az -1.3 to -6, el -7, and the gable (apex 2215, corners 1250) at el +13 to +15;
+- the belfry (12400, 2000, 3500) at az +6.6 to +2.0, el +8.5 to +9.0 and the finial (4825) at el +14.1 to +14.7, to the right of the gable apex and above the gable's right slope.
 
-NOT verified: a live line-of-sight trace (`Tracer` of `p17_f0_survey.py` needs the editor open) and any picture. The check is analytic from the cached F0 survey (`Saved/p17_f0_scratch`). The tower is 152 m away and fills about 8 degrees of the 32 degree frame height: look at the first test frames for scale, fog and whether the cliff tops hide more than computed. To change the pose edit the constants at the top of `Tools/cine/p18_menu_drift.py` and rebuild (below).
+Why this pose (the brief suggested about (700, -600, 260), yaw 6, pitch 4):
+- Y -300, not -600: from -600 the well is 6.5 deg left of centre and the north arcade row is out of frame; at -300 the well sits on the axis, the door near it and the two rows balance. It also keeps the camera clear of the rubble heap `KD_Heap_N` (X 560..960, Y -720..-420, Z 130) and the first bed (X 1700..).
+- Z 300, not 260: the chapel west gable (parapet to Z 2215, 5300 cm away) hides the tower below about Z 3000. A line to the belfry (Z 3500) clears the gable and roof by 420 cm at the start and 300 cm at the turn, to the finial by 990 / 840 cm (the check asserts at least 150 cm). The tower deck (Z 2500) and the tower's body below the belfry stay hidden behind the chapel (clearance +12 cm at the start, negative later): what rises over the chapel is the belfry and the roof, not the tower's whole height. Raising the camera to 450 gains only about 200 cm of tower and moves the well toward the bottom edge, so it stays at 300; shifting Y north (toward Y 0 to +200) would clear the gable completely (the line then crosses X 6000 north of Y 810) but puts the well and the door off the left of the tower.
+- Pitch 6.5 so that the top of the frame holds the gable apex and the finial (both about +20 deg above the camera) while the bottom edge (-9.6 deg) still shows the floor 1770 cm ahead.
+- The gate wall (X 168..580) and the arch (X 0..300) are behind the camera. The camera is east of both and clear of the heap and the beds (the check asserts it). The dead snag (2300, -550, 650) stands left of centre at az -13 and the dead tree (4550, 550, 700) right of centre, both in frame as silhouettes.
+
+NOT verified: a live line-of-sight trace (the editor is needed) and any picture. The clearances come from the P7 courtyard layout and the P8 chapel dimensions as written in the docs (chapel mass: gable to 2215, roof plane 1200 at Y +-810 to 2165 at Y 0, 20 thick), not from the level. Things in the garth not modelled: the vegetation (grass clumps 50-180 cm, shrubs to 234 cm in the beds; the camera at Z 300 is above all of it but they may fill the lower frame), the arcade roofed walks (Z up to 700, well below the sightline), the lantern's exact height (assumed Z 130 on the coping). To change the pose edit the constants at the top of `Tools/cine/p18_menu_drift.py` and rebuild (below).
 
 ## Files
 
@@ -27,12 +32,12 @@ NOT verified: a live line-of-sight trace (`Tracer` of `p17_f0_survey.py` needs t
 |---|---|
 | `Content/LastBell/Cinematics/LS_LB_MenuDrift.uasset` | the sequence |
 | `Tools/cine/p18_menu_drift.py` | headless build and check (reuses `p17_sequences.py` helpers; `P17_MODE=lib` makes that file inert on import) |
-| `Docs/ArtTest/cine/p18_menu_drift_check.json` | check output (77 checks) |
+| `Docs/ArtTest/cine/p18_menu_drift_check.json` | check output (102 checks) |
 | `Tools/cine/p18_mrq_manifest.py` | writes the Movie Render Queue manifest `Saved/MovieRenderPipeline/QueueManifest.utxt` (git-ignored) |
 | `Tools/cine/p18_render_menu_drift.ps1` | the render |
 | `Tools/cine/p18_encode_menu_drift.ps1` | PNG sequence to `Content/Movies/LB_MenuDrift.mp4` |
 
-Rebuild: `P18_MODE=build P18_REBUILD=1` then `P18_MODE=check`, with `UnrealEditor-Cmd.exe <uproject> -run=pythonscript -script=Tools/cine/p18_menu_drift.py -unattended -nullrhi -nosplash -nosound -NoP4 -log -abslog=<log>` (editor closed). Only that package is saved.
+Rebuild: `P18_MODE=build` with `P18_REBUILD=1`, then `P18_MODE=check`, with `UnrealEditor-Cmd.exe <uproject> -run=pythonscript -script=Tools/cine/p18_menu_drift.py -unattended -nullrhi -nosplash -nosound -NoP4 -log -abslog=<log>` (editor closed). Only that package is saved.
 
 ## Render (needs the owner: it opens a game window)
 
@@ -70,6 +75,6 @@ The first test render was black (above), so no picture has been seen yet. Read `
 1. `-EnablePlugins` and the `/Engine/Maps/Entry` first map worked in the first test (plugin mounted, executor and pipeline found, map loaded).
 2. Storm: the first test log shows "Storm: active with 13 linked lights, intensity 0.55" and "StormFX: active (rain on, 4 bolts)". The frame shows the storm at the level's default state, since the MoviePipelineGameMode runs no LB gameplay (no pawn, no triggers, no story tags). `ULBStormSubsystem` and `ULBStormFXSubsystem` are world subsystems and the rain follows the player camera manager, which the camera cut drives, but whether the default intensity equals the intro's, and whether the rain, lightning and light flicker show, is for the eye. Lightning flashes are random: a flash that straddles the join will show when the video loops.
 3. Quality and VRAM at 1920x1080 native on 6 GB; try the `-Test` frames first.
-4. The pose: framing, scale of the tower, whether the cliffs at the sides crowd the frame, and the tower base hidden behind the gate.
+4. The pose: framing, how much of the belfry shows over the chapel gable, whether the vegetation or the snag crowd the lower and left frame, and the lantern glow at the well.
 5. The first and last second of the video on loop.
 6. The P18 menu code (`LBGameInstance`, in progress by another agent) is compiled into the module the render loads; it should be inert in the Entry map and L_Monastery, but if a menu appears on the render window, report it.
