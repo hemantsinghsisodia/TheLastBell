@@ -15,7 +15,7 @@ OUT = os.environ.get("W3_OUT", os.path.join(ROOT, "Saved", "w3_state.json"))
 MESH = "/Game/LastBell/Characters/Warden/Meshes/SK_Warden"
 ANIMS = "/Game/LastBell/Characters/Warden/Anims/"
 MATS = "/Game/LastBell/Characters/Warden/Materials/"
-V11 = "/Game/WardenArtV11_1/"
+V11 = "/Game/LastBell/Characters/Warden/V11_1/"
 SUB = unreal.get_editor_subsystem(unreal.SkeletalMeshEditorSubsystem)
 
 

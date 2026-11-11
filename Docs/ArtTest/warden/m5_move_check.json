@@ -1,0 +1,163 @@
+{
+ "task": "m5 move V11.1 Warden packages",
+ "new_root": "/Game/LastBell/Characters/Warden/V11_1",
+ "checks": {
+  "sk_warden_8_slots": true,
+  "sk_warden_slots_resolve_to_new_paths": true,
+  "mi_parents_resolve_new": true,
+  "recompile_no_errors": true,
+  "old_folder_gone_in_editor": true,
+  "no_old_assets_or_redirectors": true,
+  "content_WardenArtV11_1_gone_on_disk": true,
+  "materials_saved": true,
+  "no_dependency_on_old_path_new_packages": true,
+  "no_package_on_disk_references_old_path": true,
+  "nothing_dirty": true
+ },
+ "moved_count": 33,
+ "moved": [
+  "/Game/LastBell/Characters/Warden/V11_1/Materials/MI_Warden_BellMetal",
+  "/Game/LastBell/Characters/Warden/V11_1/Materials/MI_Warden_ChainIron",
+  "/Game/LastBell/Characters/Warden/V11_1/Materials/MI_Warden_RustedIron",
+  "/Game/LastBell/Characters/Warden/V11_1/Materials/MI_Warden_Skin",
+  "/Game/LastBell/Characters/Warden/V11_1/Materials/MI_Warden_Wool",
+  "/Game/LastBell/Characters/Warden/V11_1/Materials/M_Warden_BellMetal",
+  "/Game/LastBell/Characters/Warden/V11_1/Materials/M_Warden_ChainIron",
+  "/Game/LastBell/Characters/Warden/V11_1/Materials/M_Warden_DimEyes",
+  "/Game/LastBell/Characters/Warden/V11_1/Materials/M_Warden_Keratin",
+  "/Game/LastBell/Characters/Warden/V11_1/Materials/M_Warden_Leather",
+  "/Game/LastBell/Characters/Warden/V11_1/Materials/M_Warden_RustedIron",
+  "/Game/LastBell/Characters/Warden/V11_1/Materials/M_Warden_Skin",
+  "/Game/LastBell/Characters/Warden/V11_1/Materials/M_Warden_Wool",
+  "/Game/LastBell/Characters/Warden/V11_1/Textures/T_Warden_BellMetal_BaseColor",
+  "/Game/LastBell/Characters/Warden/V11_1/Textures/T_Warden_BellMetal_NormalDX",
+  "/Game/LastBell/Characters/Warden/V11_1/Textures/T_Warden_BellMetal_ORM",
+  "/Game/LastBell/Characters/Warden/V11_1/Textures/T_Warden_ChainIron_BaseColor",
+  "/Game/LastBell/Characters/Warden/V11_1/Textures/T_Warden_ChainIron_NormalDX",
+  "/Game/LastBell/Characters/Warden/V11_1/Textures/T_Warden_ChainIron_ORM",
+  "/Game/LastBell/Characters/Warden/V11_1/Textures/T_Warden_Leather_BaseColor",
+  "/Game/LastBell/Characters/Warden/V11_1/Textures/T_Warden_Leather_NormalDX",
+  "/Game/LastBell/Characters/Warden/V11_1/Textures/T_Warden_Leather_ORM",
+  "/Game/LastBell/Characters/Warden/V11_1/Textures/T_Warden_RustedIron_BaseColor",
+  "/Game/LastBell/Characters/Warden/V11_1/Textures/T_Warden_RustedIron_NormalDX",
+  "/Game/LastBell/Characters/Warden/V11_1/Textures/T_Warden_RustedIron_ORM",
+  "/Game/LastBell/Characters/Warden/V11_1/Textures/T_Warden_Skin_BaseColor",
+  "/Game/LastBell/Characters/Warden/V11_1/Textures/T_Warden_Skin_NormalDX",
+  "/Game/LastBell/Characters/Warden/V11_1/Textures/T_Warden_Skin_ORM",
+  "/Game/LastBell/Characters/Warden/V11_1/Textures/T_Warden_Wool_BaseColor",
+  "/Game/LastBell/Characters/Warden/V11_1/Textures/T_Warden_Wool_DetailMasks",
+  "/Game/LastBell/Characters/Warden/V11_1/Textures/T_Warden_Wool_DetailNormalDX",
+  "/Game/LastBell/Characters/Warden/V11_1/Textures/T_Warden_Wool_NormalDX",
+  "/Game/LastBell/Characters/Warden/V11_1/Textures/T_Warden_Wool_ORM"
+ ],
+ "all_exist_new": true,
+ "moved_not_dirty": [
+  "/Game/LastBell/Characters/Warden/V11_1/Materials/M_Warden_BellMetal",
+  "/Game/LastBell/Characters/Warden/V11_1/Materials/M_Warden_ChainIron",
+  "/Game/LastBell/Characters/Warden/V11_1/Materials/M_Warden_DimEyes",
+  "/Game/LastBell/Characters/Warden/V11_1/Materials/M_Warden_Keratin",
+  "/Game/LastBell/Characters/Warden/V11_1/Materials/M_Warden_Leather",
+  "/Game/LastBell/Characters/Warden/V11_1/Materials/M_Warden_RustedIron",
+  "/Game/LastBell/Characters/Warden/V11_1/Materials/M_Warden_Skin",
+  "/Game/LastBell/Characters/Warden/V11_1/Materials/M_Warden_Wool"
+ ],
+ "sk_warden_slots": {
+  "M_Warden_Wool": "{\"refPath\": \"/Game/LastBell/Characters/Warden/V11_1/Materials/MI_Warden_Wool.MI_Warden_Wool\"}",
+  "M_Warden_BellMetal": "{\"refPath\": \"/Game/LastBell/Characters/Warden/V11_1/Materials/MI_Warden_BellMetal.MI_Warden_BellMetal\"}",
+  "M_Warden_RustedIron": "{\"refPath\": \"/Game/LastBell/Characters/Warden/V11_1/Materials/MI_Warden_RustedIron.MI_Warden_RustedIron\"}",
+  "M_Warden_Skin": "{\"refPath\": \"/Game/LastBell/Characters/Warden/V11_1/Materials/MI_Warden_Skin.MI_Warden_Skin\"}",
+  "M_Warden_Leather": "{\"refPath\": \"/Game/LastBell/Characters/Warden/V11_1/Materials/M_Warden_Leather.M_Warden_Leather\"}",
+  "M_Warden_ChainIron": "{\"refPath\": \"/Game/LastBell/Characters/Warden/V11_1/Materials/MI_Warden_ChainIron.MI_Warden_ChainIron\"}",
+  "M_Warden_DimEyes": "{\"refPath\": \"/Game/LastBell/Characters/Warden/V11_1/Materials/M_Warden_DimEyes.M_Warden_DimEyes\"}",
+  "M_Warden_Keratin": "{\"refPath\": \"/Game/LastBell/Characters/Warden/V11_1/Materials/M_Warden_Keratin.M_Warden_Keratin\"}"
+ },
+ "mi_parents_raw": {
+  "/Game/LastBell/Characters/Warden/V11_1/Materials/MI_Warden_BellMetal": "{\"parent\":{\"refPath\":\"/Game/LastBell/Characters/Warden/V11_1/Materials/M_Warden_BellMetal.M_Warden_BellMetal\"}}",
+  "/Game/LastBell/Characters/Warden/V11_1/Materials/MI_Warden_ChainIron": "{\"parent\":{\"refPath\":\"/Game/LastBell/Characters/Warden/V11_1/Materials/M_Warden_ChainIron.M_Warden_ChainIron\"}}",
+  "/Game/LastBell/Characters/Warden/V11_1/Materials/MI_Warden_RustedIron": "{\"parent\":{\"refPath\":\"/Game/LastBell/Characters/Warden/V11_1/Materials/M_Warden_RustedIron.M_Warden_RustedIron\"}}",
+  "/Game/LastBell/Characters/Warden/V11_1/Materials/MI_Warden_Skin": "{\"parent\":{\"refPath\":\"/Game/LastBell/Characters/Warden/V11_1/Materials/M_Warden_Skin.M_Warden_Skin\"}}",
+  "/Game/LastBell/Characters/Warden/V11_1/Materials/MI_Warden_Wool": "{\"parent\":{\"refPath\":\"/Game/LastBell/Characters/Warden/V11_1/Materials/M_Warden_Wool.M_Warden_Wool\"}}"
+ },
+ "recompile": {
+  "/Game/LastBell/Characters/Warden/V11_1/Materials/M_Warden_BellMetal": {
+   "result": null
+  },
+  "/Game/LastBell/Characters/Warden/V11_1/Materials/M_Warden_ChainIron": {
+   "result": null
+  },
+  "/Game/LastBell/Characters/Warden/V11_1/Materials/M_Warden_DimEyes": {
+   "result": null
+  },
+  "/Game/LastBell/Characters/Warden/V11_1/Materials/M_Warden_Keratin": {
+   "result": null
+  },
+  "/Game/LastBell/Characters/Warden/V11_1/Materials/M_Warden_Leather": {
+   "result": null
+  },
+  "/Game/LastBell/Characters/Warden/V11_1/Materials/M_Warden_RustedIron": {
+   "result": null
+  },
+  "/Game/LastBell/Characters/Warden/V11_1/Materials/M_Warden_Skin": {
+   "result": null
+  },
+  "/Game/LastBell/Characters/Warden/V11_1/Materials/M_Warden_Wool": {
+   "result": null
+  }
+ },
+ "old_folder_assets": [],
+ "materials_saved_after_recompile": {
+  "/Game/LastBell/Characters/Warden/V11_1/Materials/M_Warden_BellMetal": true,
+  "/Game/LastBell/Characters/Warden/V11_1/Materials/M_Warden_ChainIron": true,
+  "/Game/LastBell/Characters/Warden/V11_1/Materials/M_Warden_DimEyes": true,
+  "/Game/LastBell/Characters/Warden/V11_1/Materials/M_Warden_Keratin": true,
+  "/Game/LastBell/Characters/Warden/V11_1/Materials/M_Warden_Leather": true,
+  "/Game/LastBell/Characters/Warden/V11_1/Materials/M_Warden_RustedIron": true,
+  "/Game/LastBell/Characters/Warden/V11_1/Materials/M_Warden_Skin": true,
+  "/Game/LastBell/Characters/Warden/V11_1/Materials/M_Warden_Wool": true
+ },
+ "disk_scan_packages": 1977,
+ "disk_scan_hits": [],
+ "external_referencers": [
+  "/Game/LastBell/Characters/Warden/Cine/SM_LB_WardenMask",
+  "/Game/LastBell/Characters/Warden/Meshes/SK_Warden"
+ ],
+ "dirty_after": {
+  "/Game/LastBell/Characters/Warden/V11_1/Materials/MI_Warden_BellMetal": false,
+  "/Game/LastBell/Characters/Warden/V11_1/Materials/MI_Warden_ChainIron": false,
+  "/Game/LastBell/Characters/Warden/V11_1/Materials/MI_Warden_RustedIron": false,
+  "/Game/LastBell/Characters/Warden/V11_1/Materials/MI_Warden_Skin": false,
+  "/Game/LastBell/Characters/Warden/V11_1/Materials/MI_Warden_Wool": false,
+  "/Game/LastBell/Characters/Warden/V11_1/Materials/M_Warden_BellMetal": false,
+  "/Game/LastBell/Characters/Warden/V11_1/Materials/M_Warden_ChainIron": false,
+  "/Game/LastBell/Characters/Warden/V11_1/Materials/M_Warden_DimEyes": false,
+  "/Game/LastBell/Characters/Warden/V11_1/Materials/M_Warden_Keratin": false,
+  "/Game/LastBell/Characters/Warden/V11_1/Materials/M_Warden_Leather": false,
+  "/Game/LastBell/Characters/Warden/V11_1/Materials/M_Warden_RustedIron": false,
+  "/Game/LastBell/Characters/Warden/V11_1/Materials/M_Warden_Skin": false,
+  "/Game/LastBell/Characters/Warden/V11_1/Materials/M_Warden_Wool": false,
+  "/Game/LastBell/Characters/Warden/V11_1/Textures/T_Warden_BellMetal_BaseColor": false,
+  "/Game/LastBell/Characters/Warden/V11_1/Textures/T_Warden_BellMetal_NormalDX": false,
+  "/Game/LastBell/Characters/Warden/V11_1/Textures/T_Warden_BellMetal_ORM": false,
+  "/Game/LastBell/Characters/Warden/V11_1/Textures/T_Warden_ChainIron_BaseColor": false,
+  "/Game/LastBell/Characters/Warden/V11_1/Textures/T_Warden_ChainIron_NormalDX": false,
+  "/Game/LastBell/Characters/Warden/V11_1/Textures/T_Warden_ChainIron_ORM": false,
+  "/Game/LastBell/Characters/Warden/V11_1/Textures/T_Warden_Leather_BaseColor": false,
+  "/Game/LastBell/Characters/Warden/V11_1/Textures/T_Warden_Leather_NormalDX": false,
+  "/Game/LastBell/Characters/Warden/V11_1/Textures/T_Warden_Leather_ORM": false,
+  "/Game/LastBell/Characters/Warden/V11_1/Textures/T_Warden_RustedIron_BaseColor": false,
+  "/Game/LastBell/Characters/Warden/V11_1/Textures/T_Warden_RustedIron_NormalDX": false,
+  "/Game/LastBell/Characters/Warden/V11_1/Textures/T_Warden_RustedIron_ORM": false,
+  "/Game/LastBell/Characters/Warden/V11_1/Textures/T_Warden_Skin_BaseColor": false,
+  "/Game/LastBell/Characters/Warden/V11_1/Textures/T_Warden_Skin_NormalDX": false,
+  "/Game/LastBell/Characters/Warden/V11_1/Textures/T_Warden_Skin_ORM": false,
+  "/Game/LastBell/Characters/Warden/V11_1/Textures/T_Warden_Wool_BaseColor": false,
+  "/Game/LastBell/Characters/Warden/V11_1/Textures/T_Warden_Wool_DetailMasks": false,
+  "/Game/LastBell/Characters/Warden/V11_1/Textures/T_Warden_Wool_DetailNormalDX": false,
+  "/Game/LastBell/Characters/Warden/V11_1/Textures/T_Warden_Wool_NormalDX": false,
+  "/Game/LastBell/Characters/Warden/V11_1/Textures/T_Warden_Wool_ORM": false,
+  "/Game/LastBell/Characters/Warden/Cine/SM_LB_WardenMask": false,
+  "/Game/LastBell/Characters/Warden/Meshes/SK_Warden": false,
+  "/Game/LastBell/Maps/L_Monastery": false
+ },
+ "pass": true
+}

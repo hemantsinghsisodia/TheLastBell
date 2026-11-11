@@ -8,7 +8,7 @@ Environment:
     P17A_STEPS     comma list of steps to apply: fade,mask,lift,textures,materials,sk,clips (default: all)
 
 What it does (Docs/plans/P17_CINEMATICS.md section 3.8):
- 1. /Game/WardenArtV11_1/Materials/M_Warden_BellMetal: scalar `Fade` (default 0), blend mode Masked, OpacityMask = 1 - Fade, clip value 0.5 (replaces M_LB_Invisible).
+ 1. /Game/LastBell/Characters/Warden/V11_1/Materials/M_Warden_BellMetal: scalar `Fade` (default 0), blend mode Masked, OpacityMask = 1 - Fade, clip value 0.5 (replaces M_LB_Invisible).
  2. /Game/LastBell/Characters/Warden/Cine/SM_LB_WardenMask from SourceArt/Warden/P17/SM_LB_WardenMask.fbx: default conversion, Force Front X off, no Nanite, no
     collision, slot 0 = MI_Warden_BellMetal. Checks that a zero-offset attach to `head` lands on the skinned mask (centre and extents).
  3. /Game/LastBell/Characters/Warden/Anims/AN_Warden_MaskLift from SourceArt/Warden/P17/AN_Warden_MaskLift.fbx onto SK_Warden_Skeleton by W3's route (Interchange FBX off for
@@ -36,8 +36,8 @@ TAG = "P17A"
 
 SRC_P17 = os.path.join(ROOT, "SourceArt", "Warden", "P17")
 SRC_VIL = os.path.join(ROOT, "SourceArt", "Villager")
-BELL_M = "/Game/WardenArtV11_1/Materials/M_Warden_BellMetal"
-BELL_MI = "/Game/WardenArtV11_1/Materials/MI_Warden_BellMetal"
+BELL_M = "/Game/LastBell/Characters/Warden/V11_1/Materials/M_Warden_BellMetal"
+BELL_MI = "/Game/LastBell/Characters/Warden/V11_1/Materials/MI_Warden_BellMetal"
 CINE_DIR = "/Game/LastBell/Characters/Warden/Cine"
 MASK_SM = CINE_DIR + "/SM_LB_WardenMask"
 ANIM_DIR = "/Game/LastBell/Characters/Warden/Anims"
