@@ -8,6 +8,7 @@
 class ULBAudioSettings;
 class ULBCinematicSettings;
 class ULBStormSettings;
+class ULBUIStyle;
 
 /** Project Settings > Game > The Last Bell. */
 UCLASS(Config = Game, defaultconfig, meta = (DisplayName = "The Last Bell"))
@@ -37,4 +38,8 @@ public:
 	/** DA_Cinematics: the intro, the finale, the cards and the credits (P17). Unset: the cinematic subsystem does nothing. */
 	UPROPERTY(Config, EditAnywhere, Category = "Cinematics")
 	TSoftObjectPtr<ULBCinematicSettings> CinematicSettings;
+
+	/** DA_UIStyle: fonts, colours, key icons, UI sounds and the menu video of the C++ UI (P18). Unset: the UI uses its built-in defaults and the engine font. */
+	UPROPERTY(Config, EditAnywhere, Category = "UI")
+	TSoftObjectPtr<ULBUIStyle> UIStyle;
 };

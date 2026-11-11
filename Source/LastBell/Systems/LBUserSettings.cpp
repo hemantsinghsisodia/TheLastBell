@@ -1,8 +1,15 @@
 #include "Systems/LBUserSettings.h"
+#include "Engine/Engine.h"
+
+void ULBUserSettings::SetMouseSensitivityTransient(float NewValue)
+{
+	MouseSensitivity = FMath::Clamp(NewValue, MinSensitivity, MaxSensitivity);
+	OnUserSettingsChanged().Broadcast();
+}
 
 void ULBUserSettings::SetMouseSensitivity(float NewValue)
 {
-	MouseSensitivity = FMath::Clamp(NewValue, MinSensitivity, MaxSensitivity);
+	SetMouseSensitivityTransient(NewValue);
 	SaveConfig();
 }
 
@@ -10,12 +17,95 @@ void ULBUserSettings::SetInvertY(bool bNewValue)
 {
 	bInvertY = bNewValue;
 	SaveConfig();
+	OnUserSettingsChanged().Broadcast();
 }
 
 void ULBUserSettings::SetHeadBob(bool bNewValue)
 {
 	bHeadBob = bNewValue;
 	SaveConfig();
+	OnUserSettingsChanged().Broadcast();
+}
+
+void ULBUserSettings::ApplyGamma() const
+{
+	if (GEngine)
+	{
+		GEngine->DisplayGamma = LBUILogic::ClampGamma(Gamma);
+	}
+}
+
+void ULBUserSettings::SetGammaTransient(float NewValue)
+{
+	Gamma = LBUILogic::ClampGamma(NewValue);
+	ApplyGamma();
+	OnUserSettingsChanged().Broadcast();
+}
+
+void ULBUserSettings::SetGamma(float NewValue)
+{
+	SetGammaTransient(NewValue);
+	SaveConfig();
+}
+
+void ULBUserSettings::SetFieldOfViewTransient(float NewValue)
+{
+	FieldOfView = LBUILogic::ClampFOV(NewValue);
+	OnUserSettingsChanged().Broadcast();
+}
+
+void ULBUserSettings::SetFieldOfView(float NewValue)
+{
+	SetFieldOfViewTransient(NewValue);
+	SaveConfig();
+}
+
+void ULBUserSettings::SetMotionBlur(bool bNewValue)
+{
+	bMotionBlur = bNewValue;
+	SaveConfig();
+	OnUserSettingsChanged().Broadcast();
+}
+
+void ULBUserSettings::SetFilmGrain(bool bNewValue)
+{
+	bFilmGrain = bNewValue;
+	SaveConfig();
+	OnUserSettingsChanged().Broadcast();
+}
+
+void ULBUserSettings::SetHighContrastPrompts(bool bNewValue)
+{
+	bHighContrastPrompts = bNewValue;
+	SaveConfig();
+	OnUserSettingsChanged().Broadcast();
+}
+
+void ULBUserSettings::SetBrightnessCalibrated(bool bNewValue)
+{
+	bBrightnessCalibrated = bNewValue;
+	SaveConfig();
+	OnUserSettingsChanged().Broadcast();
+}
+
+void ULBUserSettings::ResetControlsToDefaults()
+{
+	MouseSensitivity = 1.0f;
+	bInvertY = false;
+	bHeadBob = true;
+	SaveConfig();
+	OnUserSettingsChanged().Broadcast();
+}
+
+void ULBUserSettings::Persist()
+{
+	SaveConfig();
+}
+
+FSimpleMulticastDelegate& ULBUserSettings::OnUserSettingsChanged()
+{
+	static FSimpleMulticastDelegate Delegate;
+	return Delegate;
 }
 
 namespace

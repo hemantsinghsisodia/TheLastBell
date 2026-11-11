@@ -11,7 +11,7 @@ public class LastBell : ModuleRules
 		PublicDependencyModuleNames.AddRange(new string[]
 		{
 			"Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "GameplayTags", "UMG", "DeveloperSettings", "PhysicsCore",
-			"AIModule", "NavigationSystem", "GameplayTasks", "AnimGraphRuntime", "Niagara", "LevelSequence", "MovieScene", "MovieSceneTracks", "Slate", "SlateCore"
+			"AIModule", "NavigationSystem", "GameplayTasks", "AnimGraphRuntime", "Niagara", "LevelSequence", "MovieScene", "MovieSceneTracks", "Slate", "SlateCore", "MoviePlayer", "MediaAssets"
 		});
 	}
 }

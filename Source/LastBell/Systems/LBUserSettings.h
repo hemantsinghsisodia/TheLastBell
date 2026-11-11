@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "Engine/DeveloperSettings.h"
 #include "Audio/LBAudioTypes.h"
+#include "UI/LBUILogic.h"
 #include "LBUserSettings.generated.h"
 
 /**
@@ -77,4 +78,64 @@ public:
 
 	static constexpr float MinSensitivity = 0.05f;
 	static constexpr float MaxSensitivity = 10.f;
+
+	// ---- Display and accessibility (P18) ----
+
+	/** Display gamma (the brightness setting). Applied to GEngine->DisplayGamma at startup by the game instance and on every change. */
+	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Display", meta = (ClampMin = "1.8", ClampMax = "2.6"))
+	float Gamma = LBUILogic::DefaultGamma;
+
+	/** The first-person camera's base vertical field of view, degrees. The default matches the camera before Phase 18. */
+	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Accessibility", meta = (ClampMin = "70", ClampMax = "110"))
+	float FieldOfView = LBUILogic::DefaultFOV;
+
+	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Accessibility")
+	bool bMotionBlur = false;
+
+	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Accessibility")
+	bool bFilmGrain = true;
+
+	/** Key prompts in white on a dark plate with an outline. */
+	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Accessibility")
+	bool bHighContrastPrompts = false;
+
+	/** The first-launch brightness screen was confirmed. False: the main menu shows it first. */
+	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Display")
+	bool bBrightnessCalibrated = false;
+
+	/** Each of these clamps, persists to GameUserSettings.ini and broadcasts OnUserSettingsChanged. */
+	UFUNCTION(BlueprintCallable, Category = "LastBell|Settings")
+	void SetGamma(float NewValue);
+
+	UFUNCTION(BlueprintCallable, Category = "LastBell|Settings")
+	void SetFieldOfView(float NewValue);
+
+	UFUNCTION(BlueprintCallable, Category = "LastBell|Settings")
+	void SetMotionBlur(bool bNewValue);
+
+	UFUNCTION(BlueprintCallable, Category = "LastBell|Settings")
+	void SetFilmGrain(bool bNewValue);
+
+	UFUNCTION(BlueprintCallable, Category = "LastBell|Settings")
+	void SetHighContrastPrompts(bool bNewValue);
+
+	UFUNCTION(BlueprintCallable, Category = "LastBell|Settings")
+	void SetBrightnessCalibrated(bool bNewValue);
+
+	/** Applies the sliders without saving (live preview while a slider is dragged); the caller saves on release. */
+	void SetGammaTransient(float NewValue);
+	void SetFieldOfViewTransient(float NewValue);
+	void SetMouseSensitivityTransient(float NewValue);
+
+	/** Puts the controls settings back to their defaults (sensitivity, invert Y, head bob) and saves. Key bindings are reset by LBKeyBindings. */
+	void ResetControlsToDefaults();
+
+	/** Pushes Gamma into GEngine->DisplayGamma. The game instance calls it at startup; the setters call it. Safe without an engine. */
+	void ApplyGamma() const;
+
+	/** Saves the config file once (after a transient drag ends). */
+	void Persist();
+
+	/** Fires after any setting above (and the controls settings) changed. */
+	static FSimpleMulticastDelegate& OnUserSettingsChanged();
 };
