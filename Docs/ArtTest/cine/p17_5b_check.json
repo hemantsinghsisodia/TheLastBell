@@ -1,0 +1,358 @@
+{
+ "script": "Tools/cine/p17_level.py",
+ "stage": "final-after-save",
+ "generated": "2026-11-11 06:51",
+ "level": "/Game/LastBell/Maps/L_Monastery",
+ "pass": 49,
+ "fail": 0,
+ "results": [
+  {
+   "ok": true,
+   "msg": "census: actor count 3103 (expected 3103 = 3102 + 2 - 1)"
+  },
+  {
+   "ok": true,
+   "msg": "outliner folder Cinematics holds exactly ['CINE_FinaleMark', 'CINE_StairTop'] (found ['CINE_FinaleMark', 'CINE_StairTop'])"
+  },
+  {
+   "ok": true,
+   "msg": "CINE_FinaleMark: TargetPoint at [12165.0, 2300.0, 2500.0] rot [0.0, -90.0, 0.0] scale [1.0, 1.0, 1.0] tags ['LB_Cine_FinaleMark'] folder Cinematics"
+  },
+  {
+   "ok": true,
+   "msg": "CINE_StairTop: TargetPoint at [12165.0, 1665.0, 2730.0] rot [0.0, 0.0, 0.0] scale [1.0, 1.0, 1.0] tags ['LB_Cine_StairTop'] folder Cinematics"
+  },
+  {
+   "ok": true,
+   "msg": "tag LB_Cine_FinaleMark is on exactly one actor: ['CINE_FinaleMark'] (expected [CINE_FinaleMark])"
+  },
+  {
+   "ok": true,
+   "msg": "tag LB_Cine_StairTop is on exactly one actor: ['CINE_StairTop'] (expected [CINE_StairTop])"
+  },
+  {
+   "ok": true,
+   "msg": "tag LB_Cine_Bell is on exactly one actor: ['Bell'] (expected [Bell])"
+  },
+  {
+   "ok": true,
+   "msg": "tag LB_Cine_BellHeadstock is on exactly one actor: ['TWA_Headstock'] (expected [TWA_Headstock])"
+  },
+  {
+   "ok": true,
+   "msg": "tag LB_Cine_BellRope is on exactly one actor: ['TWA_BellRope'] (expected [TWA_BellRope])"
+  },
+  {
+   "ok": true,
+   "msg": "tag LB_StrikeTarget_Tower is on exactly one actor: ['FX_StrikeTarget_Tower'] (expected [FX_StrikeTarget_Tower])"
+  },
+  {
+   "ok": true,
+   "msg": "Bell is BP_TagInteractable_GreatBell_C_0 of class BP_TagInteractable_GreatBell_C"
+  },
+  {
+   "ok": true,
+   "msg": "TWA_Headstock is StaticMeshActor_1498 of class StaticMeshActor"
+  },
+  {
+   "ok": true,
+   "msg": "TWA_BellRope is StaticMeshActor_1499 of class StaticMeshActor"
+  },
+  {
+   "ok": true,
+   "msg": "the mark is on the floor: downward trace from Z 2600 at (12165, 2300) hits at Z 2500.00 (floor 2500, tolerance 2 cm)"
+  },
+  {
+   "ok": true,
+   "msg": "lane (12165, 1665, 2500) -> (12165, 2200, 2500), Warden radius 42: 9 of 9 traces clear (lateral -42/0/+42, heights 20/110/200)"
+  },
+  {
+   "ok": true,
+   "msg": "Bell.Mesh mobility reads Movable"
+  },
+  {
+   "ok": true,
+   "msg": "TWA_Headstock.StaticMeshComponent0 mobility reads Movable"
+  },
+  {
+   "ok": true,
+   "msg": "TWA_BellRope.StaticMeshComponent0 mobility reads Movable"
+  },
+  {
+   "ok": true,
+   "msg": "EndingTrigger is absent (label matches 0, BP_EndingTrigger_C actors 0)"
+  },
+  {
+   "ok": true,
+   "msg": "Note_Gatehouse actor bodyText equals the section 5 text exactly (272 chars)"
+  },
+  {
+   "ok": true,
+   "msg": "Note_Gatehouse actor displayName unchanged: \"A Traveller's Note\""
+  },
+  {
+   "ok": true,
+   "msg": "Note_Gatehouse InspectableComp bodyText equals the section 5 text exactly (272 chars)"
+  },
+  {
+   "ok": true,
+   "msg": "Note_Gatehouse InspectableComp displayName unchanged: \"A Traveller's Note\""
+  },
+  {
+   "ok": true,
+   "msg": "Bell transform unchanged: [12420.0, 2000.0, 2860.0] rot [0.0, 0.0, 0.0] scale [1.0, 1.0, 1.0]"
+  },
+  {
+   "ok": true,
+   "msg": "TWA_Headstock transform unchanged: [12420.0, 2000.0, 2880.0] rot [0.0, 0.0, 0.0] scale [1.0, 1.0, 1.0]"
+  },
+  {
+   "ok": true,
+   "msg": "TWA_BellRope transform unchanged: [12550.0, 1835.0, 2750.0] rot [0.0, 0.0, 0.0] scale [1.0, 1.0, 1.0]"
+  },
+  {
+   "ok": true,
+   "msg": "Note_Gatehouse transform unchanged: [230.0, -145.0, 45.97] rot [0.0, 20.0, 0.0] scale [1.0, 1.0, 1.0]"
+  },
+  {
+   "ok": true,
+   "msg": "M_LB_Surface is not dirty (never-save list)"
+  },
+  {
+   "ok": true,
+   "msg": "BP_SmallBell is not dirty (never-save list)"
+  },
+  {
+   "ok": true,
+   "msg": "BP_SequencePuzzle is not dirty (never-save list)"
+  },
+  {
+   "ok": true,
+   "msg": "BP_Inscription is not dirty (never-save list)"
+  },
+  {
+   "ok": true,
+   "msg": "BP_RitualMechanism is not dirty (never-save list)"
+  },
+  {
+   "ok": true,
+   "msg": "BP_Door_Base is not dirty (never-save list)"
+  },
+  {
+   "ok": true,
+   "msg": "BP_TagInteractable is not dirty (never-save list)"
+  },
+  {
+   "ok": true,
+   "msg": "BP_TagTrigger is not dirty (never-save list)"
+  },
+  {
+   "ok": true,
+   "msg": "BP_EndingTrigger is not dirty (never-save list)"
+  },
+  {
+   "ok": true,
+   "msg": "BP_Inspectable_Note is not dirty (never-save list)"
+  },
+  {
+   "ok": true,
+   "msg": "BP_Door_Base_Dungeon is not dirty (never-save list)"
+  },
+  {
+   "ok": true,
+   "msg": "BP_RitualMechanism_CryptWinch is not dirty (never-save list)"
+  },
+  {
+   "ok": true,
+   "msg": "BP_WardenApparition is not dirty (never-save list)"
+  },
+  {
+   "ok": true,
+   "msg": "BP_PuzzleCandle is not dirty (never-save list)"
+  },
+  {
+   "ok": true,
+   "msg": "NS_LB_Rain is not dirty (never-save list)"
+  },
+  {
+   "ok": true,
+   "msg": "MI_LB_RainCurtain is not dirty (never-save list)"
+  },
+  {
+   "ok": true,
+   "msg": "MI_LB_Mist is not dirty (never-save list)"
+  },
+  {
+   "ok": true,
+   "msg": "LS_P17_Spike is not dirty (never-save list)"
+  },
+  {
+   "ok": true,
+   "msg": "LS_LB_Intro is not dirty (never-save list)"
+  },
+  {
+   "ok": true,
+   "msg": "LS_LB_Finale is not dirty (never-save list)"
+  },
+  {
+   "ok": true,
+   "msg": "DA_Cinematics is not dirty (never-save list)"
+  },
+  {
+   "ok": true,
+   "msg": "BP_TagInteractable_GreatBell is not dirty (never-save list)"
+  }
+ ],
+ "detail": {
+  "census_at_start": 3103,
+  "census": 3103,
+  "tags": {
+   "LB_Cine_FinaleMark": [
+    "CINE_FinaleMark"
+   ],
+   "LB_Cine_StairTop": [
+    "CINE_StairTop"
+   ],
+   "LB_Cine_Bell": [
+    "Bell"
+   ],
+   "LB_Cine_BellHeadstock": [
+    "TWA_Headstock"
+   ],
+   "LB_Cine_BellRope": [
+    "TWA_BellRope"
+   ],
+   "LB_StrikeTarget_Tower": [
+    "FX_StrikeTarget_Tower"
+   ]
+  },
+  "mark_floor": {
+   "from": [
+    12165.0,
+    2300.0,
+    2600.0
+   ],
+   "floor_z": 2500.0
+  },
+  "lane": {
+   "from": [
+    12165.0,
+    1665.0,
+    2500.0
+   ],
+   "to": [
+    12165.0,
+    2200.0,
+    2500.0
+   ],
+   "radius_cm": 42,
+   "traces": [
+    {
+     "side_cm": 0.0,
+     "height_above_floor": 20.0,
+     "length": 535.0,
+     "hit_distance": null,
+     "clear": true
+    },
+    {
+     "side_cm": 0.0,
+     "height_above_floor": 110.0,
+     "length": 535.0,
+     "hit_distance": null,
+     "clear": true
+    },
+    {
+     "side_cm": 0.0,
+     "height_above_floor": 200.0,
+     "length": 535.0,
+     "hit_distance": null,
+     "clear": true
+    },
+    {
+     "side_cm": 42.0,
+     "height_above_floor": 20.0,
+     "length": 535.0,
+     "hit_distance": null,
+     "clear": true
+    },
+    {
+     "side_cm": 42.0,
+     "height_above_floor": 110.0,
+     "length": 535.0,
+     "hit_distance": null,
+     "clear": true
+    },
+    {
+     "side_cm": 42.0,
+     "height_above_floor": 200.0,
+     "length": 535.0,
+     "hit_distance": null,
+     "clear": true
+    },
+    {
+     "side_cm": -42.0,
+     "height_above_floor": 20.0,
+     "length": 535.0,
+     "hit_distance": null,
+     "clear": true
+    },
+    {
+     "side_cm": -42.0,
+     "height_above_floor": 110.0,
+     "length": 535.0,
+     "hit_distance": null,
+     "clear": true
+    },
+    {
+     "side_cm": -42.0,
+     "height_above_floor": 200.0,
+     "length": 535.0,
+     "hit_distance": null,
+     "clear": true
+    }
+   ],
+   "tracer_raw_calls": 10,
+   "tracer_helper_volume_steps": 9
+  },
+  "mobility": {
+   "Bell.Mesh": "Movable",
+   "TWA_Headstock.StaticMeshComponent0": "Movable",
+   "TWA_BellRope.StaticMeshComponent0": "Movable"
+  },
+  "note": {
+   "actor": {
+    "displayName": "A Traveller's Note",
+    "bodyText": "I came up the cliff path at dusk and heard it before I saw the tower. One toll, slow, from a bell the villagers swear no living hand has rung. They say it rings only for the one who is meant to hear it. I wrote this by the gate, and I am no longer sure I will leave by it."
+   },
+   "InspectableComp": {
+    "displayName": "A Traveller's Note",
+    "bodyText": "I came up the cliff path at dusk and heard it before I saw the tower. One toll, slow, from a bell the villagers swear no living hand has rung. They say it rings only for the one who is meant to hear it. I wrote this by the gate, and I am no longer sure I will leave by it."
+   }
+  },
+  "map_dirty": false,
+  "never_save_dirty": {
+   "/Game/LastBell/Materials/Master/M_LB_Surface": false,
+   "/Game/LastBell/Blueprints/Puzzles/BP_SmallBell": false,
+   "/Game/LastBell/Blueprints/Puzzles/BP_SequencePuzzle": false,
+   "/Game/LastBell/Blueprints/Puzzles/BP_Inscription": false,
+   "/Game/LastBell/Blueprints/Interactables/BP_RitualMechanism": false,
+   "/Game/LastBell/Blueprints/Interactables/BP_Door_Base": false,
+   "/Game/LastBell/Blueprints/Interactables/BP_TagInteractable": false,
+   "/Game/LastBell/Blueprints/Interactables/BP_TagTrigger": false,
+   "/Game/LastBell/Blueprints/BP_EndingTrigger": false,
+   "/Game/LastBell/Blueprints/Interactables/BP_Inspectable_Note": false,
+   "/Game/LastBell/Blueprints/Interactables/BP_Door_Base_Dungeon": false,
+   "/Game/LastBell/Blueprints/Interactables/BP_RitualMechanism_CryptWinch": false,
+   "/Game/LastBell/Blueprints/Interactables/BP_WardenApparition": false,
+   "/Game/LastBell/Blueprints/Puzzles/BP_PuzzleCandle": false,
+   "/Game/LastBell/FX/Niagara/NS_LB_Rain": false,
+   "/Game/LastBell/Materials/Instances/FX/MI_LB_RainCurtain": false,
+   "/Game/LastBell/Materials/Instances/FX/MI_LB_Mist": false,
+   "/Game/LastBell/ArtTest/P17/LS_P17_Spike": false,
+   "/Game/LastBell/Cinematics/LS_LB_Intro": false,
+   "/Game/LastBell/Cinematics/LS_LB_Finale": false,
+   "/Game/LastBell/Data/DA_Cinematics": false,
+   "/Game/LastBell/Blueprints/Interactables/BP_TagInteractable_GreatBell": false
+  }
+ }
+}
