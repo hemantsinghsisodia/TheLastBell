@@ -215,3 +215,8 @@ The credits gain "Fonts / EB Garamond, Georg Duffner and Octavio Pardo (SIL OFL 
 - **Encoded:** `Content/Movies/LB_MenuDrift.mp4`, H.264 1920×1080 at 30 fps, 40.0 s, 68.7 MB, LFS.
 - **Known:** the render process crashes on the GPU thread at shutdown, after every frame is written (a Niagara dispatch), which is harmless to the output. The script verifies the frame count.
 
+### Owner additions during P18-4 (2026-11-11)
+These are queued for P18-5, together with the session notes:
+1. **True fullscreen by default on first launch.** Add `Config/DefaultGameUserSettings.ini` `[/Script/Engine.GameUserSettings]` with `FullscreenMode=0` (and `LastConfirmedFullscreenMode=0`, `PreferredFullscreenMode=0`) at the desktop resolution. A saved user setting overrides it.
+2. **A "Show FPS" option** (Accessibility or Display tab; default off). It's a small HUD counter in the top-right corner, in EB Garamond, smoothed over 0.5 s, persisted in `ULBUserSettings` (`bShowFPS`), and it works in Shipping too (no `stat` console).
+
