@@ -11,10 +11,12 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PlayerController.h"
 #include "EnhancedInputSubsystems.h"
+#include "InputAction.h"
 #include "InputActionValue.h"
 #include "Character/LBCharacter.h"
 #include "Save/LBSaveSubsystem.h"
 #include "Systems/LBPlayerController.h"
+#include "UI/LBUISubsystem.h"
 #include "LBLog.h"
 
 // D-033 regression: Main Menu -> New Game left the player unable to move or look. The menu controller's UI-only input
@@ -92,6 +94,9 @@ namespace
 					return false;
 				}
 				Test->TestTrue(TEXT("Menu controller bMenuMode"), LBPC->bMenuMode);
+				// P18: the menu is the C++ main menu on the UI stack. EXPECTED TO FAIL until P18-2 points BP_MenuPlayerController's HUDWidgetClass at ULBMainMenuWidget.
+				const ULBUISubsystem* MenuUI = ULBUISubsystem::Get(W);
+				Test->TestTrue(TEXT("P18-2: the menu map shows the C++ main menu (ULBMainMenuWidget) on the UI stack"), MenuUI && MenuUI->GetTopScreen() == ELBScreen::MainMenu);
 				UGameViewportClient* VP = PieViewport();
 				if (Test->TestNotNull(TEXT("PIE game viewport (menu)"), VP))
 				{
@@ -139,6 +144,10 @@ namespace
 				{
 					Test->TestFalse(TEXT("Gameplay controller bMenuMode"), LBPC->bMenuMode);
 					Test->TestFalse(TEXT("Mouse cursor hidden in game"), LBPC->bShowMouseCursor);
+					// P18: the menu's screens do not follow the player into the game, and the pause key is bound (EXPECTED TO FAIL until P18-2 assigns IA_Pause).
+					const ULBUISubsystem* GameUI = ULBUISubsystem::Get(W);
+					Test->TestEqual(TEXT("No UI screen carried over into the game"), GameUI ? GameUI->GetScreenCount() : -1, 0);
+					Test->TestNotNull(TEXT("P18-2: BP_LBPlayerController has IA_Pause assigned"), LBPC->PauseAction.Get());
 				}
 				Test->TestNotNull(TEXT("Pawn is an ALBCharacter"), Pawn);
 				Test->TestTrue(TEXT("Pawn is possessed by the player controller"), PC && Pawn->GetController() == PC);
