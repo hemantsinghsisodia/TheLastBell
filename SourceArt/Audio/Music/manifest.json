@@ -1,9 +1,9 @@
 {
  "MUS_LB_Cine_IntroText": {
-  "seconds": 16.0,
+  "seconds": 30.0,
   "channels": 2,
   "peak_dbfs": -3.0,
-  "sha256": "ee406f83e09446a60bad4055cb6da253345888f667f0408e5bf2d110820f6a15"
+  "sha256": "53e68a2bb5adb5a7c3bf20b5fc2ba214ba5a7c0ed90bdfea90c127f63b8189d0"
  },
  "MUS_LB_Cine_Finale": {
   "seconds": 55.0,
