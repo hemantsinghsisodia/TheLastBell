@@ -534,6 +534,42 @@ Run with Unreal **closed**: Blender is headless, and Unreal steps are headless `
 
   After that come 5a-2 and P17-7.
 
+### 3.7 After the V11.1 play-through (owner, 2026-11-11)
+1. **Intro music to the handover.**
+   - Re-prep `MUS_LB_Cine_IntroText` from Dasgoat 330599 as 0:00–0:30, peak −3 dBFS, with no baked fade.
+   - Intro section 0.0–27.5. Volume keys: 0 at 0.0, 1 at 0.5, 1 at 25.0, 0 at 27.5. This replaces the 3.4 intro window.
+2. **The mask moment (P17-3, now unblocked).**
+   - **`SM_LB_WardenMask`:** cut from `SourceArt/Warden/V11_1w/Warden_Rigged.blend`.
+     - All slot-1 (`M_Warden_BellMetal`) faces, 9 islands.
+     - Pivot = the `head` bone's bind transform, with the same +90° Z rotation rule as the LODs, so a zero-offset attach to `head` matches the skinned mask.
+     - `MI_Warden_BellMetal`; Nanite off; no collision.
+     - Sources go in `SourceArt/Warden/P17/`.
+   - **`M_LB_Invisible`:** masked, opacity mask 0. The mask is hidden on `SK_Warden` by switching slot 1's material to it, because the V11.1 bell-metal material has no `Fade` (W0).
+   - **`AN_Warden_MaskLift`:** Blender-keyed on the V11_1w rig, 6.0 s at 30 fps, following the 4.1 step 3 beats:
+     - 0–1.5 s, from the Idle frame-0 pose, the hands rise to the mask rims;
+     - 1.5–2.2 grip;
+     - 2.2–3.4 lift forward and up 25 cm;
+     - 3.4–4.6 the Warden leans and extends both arms, so the mask comes to the player's eye height (152 cm above the floor, about 100 cm in front);
+     - 4.6–6.0 hold.
+   - **Root convention:** the same as `AN_Warden_Idle` (W3: identity at frame 0), because the figure blends in from the ABP Idle. This replaces the −90° note in 4.1.
+   - **Gates (a)–(d) of 4.1** apply. Gate (d) sets `StopDistance`.
+   - **No hood void** (W0).
+3. **Villager in the courtyard** (owner's choice: a CC0 animated human).
+   - **Model:** a CC0 animated character with a walk cycle (Quaternius or similar, through `3d-assets-local`), cloaked, hooded or plain clothing, toned dark.
+   - **Lantern:** in the right hand, the project's `SM_Wooden_Lantern_01` with the `Lantern` PointLight attached inside it.
+   - **Walk:** the existing lantern path (X −600 → 250, Y 0, from 23.5 s to 37.5 s), at a walk play rate matched to the speed.
+   - **Registry:** the asset and its licence recorded in `ASSET_REGISTRY`.
+4. **`Cam_WallTop` focal length 70 mm** (was 35), with the same aim, so the gate and the figure read.
+5. **Rebuild (5a-2), with Unreal closed:**
+   - **Finale:**
+     - the mask moment;
+     - the villager;
+     - `Cam_Mask` re-framed on the real lift, aimed at the `mask` socket;
+     - the walk re-timed from the gate (d) `StopDistance`, keeping the arrival rule (in sight in under 5 s);
+     - the 70 mm lens.
+   - **Intro:** the new music section.
+   - Then the suite, and the owner's finale review (P17-7).
+
 ### 3.3 Cards and styles (`DA_Cinematics.Cards`)
 | Id | Text | Style | Hold (s) | Fade (s) |
 |---|---|---|---|---|
