@@ -1230,6 +1230,8 @@ def main():
         log("BUILD done: %d calls, %d errors, saved %s" % (results["calls"], len(results["errors"]), results["saved"]))
     elif MODE == "check":
         do_check()
+    elif MODE == "lib":     # imported by Tools/cine/p18_menu_drift.py for its helpers: do nothing
+        pass
     else:
         unreal.log_error("%s: set P17_MODE=build or P17_MODE=check" % TAG)
 
