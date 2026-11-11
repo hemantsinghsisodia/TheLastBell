@@ -1,7 +1,7 @@
 {
  "mode": "verify",
  "ok": true,
- "checks": 82,
+ "checks": 87,
  "failures": [],
  "notes": [],
  "saved": [],
@@ -198,6 +198,18 @@
    0.7071
   ],
   "villager_IdleLantern_root_pos_t0": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "villager_WalkCandle_length": 1.3333,
+  "villager_WalkCandle_root_quat_t0": [
+   0.0,
+   0.0,
+   -0.7071,
+   0.7071
+  ],
+  "villager_WalkCandle_root_pos_t0": [
    0.0,
    0.0,
    0.0

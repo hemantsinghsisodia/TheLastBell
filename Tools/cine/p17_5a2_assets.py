@@ -50,6 +50,7 @@ VIL_TEX = VIL_DIR + "/Textures"
 VIL_SK = VIL_DIR + "/SK_LB_Villager"
 VIL_WALK = VIL_DIR + "/AN_LB_Villager_Walk"
 VIL_IDLE = VIL_DIR + "/AN_LB_Villager_IdleLantern"
+VIL_WALKC = VIL_DIR + "/AN_LB_Villager_WalkCandle"          # P17 3.9: Walk_Loop with the right arm of Idle_Lantern_Loop frame 0 (villager_clips.py)
 VIL_CLOTH = VIL_DIR + "/M_LB_Villager_Cloth"
 VIL_SKIN = VIL_DIR + "/M_LB_Villager_Skin"
 
@@ -489,7 +490,7 @@ def step_villager_clips():
     if skel is None:
         check("villager skeleton exists before the clips", False)
         return
-    for path, fbx in ((VIL_WALK, "AN_LB_Villager_Walk.fbx"), (VIL_IDLE, "AN_LB_Villager_IdleLantern.fbx")):
+    for path, fbx in ((VIL_WALK, "AN_LB_Villager_Walk.fbx"), (VIL_IDLE, "AN_LB_Villager_IdleLantern.fbx"), (VIL_WALKC, "AN_LB_Villager_WalkCandle.fbx")):
         if exists(path) and not REBUILD:
             note("%s exists: left alone" % path.rsplit("/", 1)[1])
             continue
@@ -526,7 +527,7 @@ def verify_villager():
     report["facts"]["villager_yaw_offset_deg"] = round(yaw_off, 2)
     check("the mesh faces +X (toe ahead of the ankle on +X): yaw offset 0", abs(yaw_off) < 5.0, yaw_off)
     report["facts"]["villager_ref_hand_r"] = v3(ref["hand_r"].translation)
-    for path, label, length in ((VIL_WALK, "Walk", 1.3333), (VIL_IDLE, "IdleLantern", None)):
+    for path, label, length in ((VIL_WALK, "Walk", 1.3333), (VIL_IDLE, "IdleLantern", None), (VIL_WALKC, "WalkCandle", 1.3333)):
         a = load(path)
         if not check("%s clip loads" % label, a is not None and isinstance(a, unreal.AnimSequence), a):
             continue

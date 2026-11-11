@@ -1,7 +1,7 @@
 {
- "generated": "2026-11-11 12:07:22",
- "total_checks": 339,
- "passed": 339,
+ "generated": "2026-11-11 13:19:06",
+ "total_checks": 366,
+ "passed": 366,
  "failed": 0,
  "per_sequence": {
   "Intro": {
@@ -9,7 +9,7 @@
    "failed": 0
   },
   "Finale": {
-   "total": 291,
+   "total": 318,
    "failed": 0
   }
  },
@@ -57,20 +57,32 @@
   "villager_yaw_offset": 2.01736832252185e-05,
   "villager_native_speed": 97.5,
   "villager_walk_rate": 0.6256410256410256,
-  "lantern_rel_loc": [
-   -49.82098791373927,
-   -3.714468702669521,
-   -0.42411850603875223
+  "candle_parts_rel_loc": {
+   "wax": [
+    -0.3849995803295201,
+    -6.19299928116375,
+    0.3850052700464488
+   ],
+   "flame": [
+    5.67733919898285,
+    -6.5968080661466075,
+    0.6117700026525341
+   ],
+   "light": [
+    6.594666777431399,
+    -6.657910711242678,
+    0.6460830871916272
+   ]
+  },
+  "candle_rel_rot_rpy": [
+   87.71479630145268,
+   -20.711594469568492,
+   -93.00223881541626
   ],
-  "lantern_rel_rot_rpy": [
-   88.21259492581353,
-   -20.581354716149484,
-   -92.51849185175621
-  ],
-  "villager_grip_comp": [
-   36.473580182585664,
-   24.891937515580626,
-   140.19550924621174
+  "candle_grip_comp": [
+   37.63326692175921,
+   25.16990138234877,
+   138.7616835300478
   ],
   "cam_mask_pitch": 9.323557705850241,
   "mask_centre_world": [
@@ -101,12 +113,15 @@
    "/Game/LastBell/Audio/Warden/SFX_LB_Warden_Chain_03",
    "/Game/LastBell/Audio/Warden/SFX_LB_Warden_Chain_04",
    "/Game/LastBell/Characters/Villager/AN_LB_Villager_IdleLantern",
-   "/Game/LastBell/Characters/Villager/AN_LB_Villager_Walk",
+   "/Game/LastBell/Characters/Villager/AN_LB_Villager_WalkCandle",
    "/Game/LastBell/Characters/Villager/SK_LB_Villager",
    "/Game/LastBell/Characters/Warden/ABP_Warden",
    "/Game/LastBell/Characters/Warden/Anims/AN_Warden_MaskLift",
    "/Game/LastBell/Characters/Warden/Cine/SM_LB_WardenMask",
    "/Game/LastBell/Characters/Warden/Meshes/SK_Warden",
+   "/Game/LastBell/Environments/Props/Procedural/Chapel/SM_LB_Prop_CandleFlame_A",
+   "/Game/LastBell/Materials/Instances/FX/MI_Flame_Candle_Player",
+   "/Game/LastBell/Materials/Instances/MI_LB_CandleWax",
    "/Game/LastBell/Materials/PostProcess/MI_LB_PP_MaskView"
   ]
  },
@@ -534,8 +549,8 @@
    "item": "setup",
    "name": "spawnable names",
    "ok": true,
-   "got": "['Cam_Mask', 'Cam_WallTop', 'Lantern', 'LanternProp', 'MaskProp', 'Villager', 'WardenFigure']",
-   "want": "['Cam_Mask', 'Cam_WallTop', 'Lantern', 'LanternProp', 'MaskProp', 'Villager', 'WardenFigure']"
+   "got": "['Cam_Mask', 'Cam_WallTop', 'CandleFlame', 'CandleLight', 'CandleWax', 'MaskProp', 'Villager', 'WardenFigure']",
+   "want": "['Cam_Mask', 'Cam_WallTop', 'CandleFlame', 'CandleLight', 'CandleWax', 'MaskProp', 'Villager', 'WardenFigure']"
   },
   {
    "seq": "Finale",
@@ -630,8 +645,8 @@
    "item": "cut",
    "name": "Cam_Mask bound to the camera spawnable",
    "ok": true,
-   "got": "'3ABF15B942F17FF85E980A82B8C8FD32'",
-   "want": "'3ABF15B942F17FF85E980A82B8C8FD32'"
+   "got": "'324866F748BB9689D61C8D9A72320EEE'",
+   "want": "'324866F748BB9689D61C8D9A72320EEE'"
   },
   {
    "seq": "Finale",
@@ -662,8 +677,8 @@
    "item": "cut",
    "name": "Cam_WallTop bound to the camera spawnable",
    "ok": true,
-   "got": "'64010EB3470F999CC1FFAD93517C8C2F'",
-   "want": "'64010EB3470F999CC1FFAD93517C8C2F'"
+   "got": "'A72992584D88D45B08BBC2AB5CCEEB34'",
+   "want": "'A72992584D88D45B08BBC2AB5CCEEB34'"
   },
   {
    "seq": "Finale",
@@ -1534,8 +1549,8 @@
    "item": "MaskProp",
    "name": "attach WardenFigure [0.0-16.8] target binding",
    "ok": true,
-   "got": "'A434EC24445F29E944BEC4AD137D27EA'",
-   "want": "'A434EC24445F29E944BEC4AD137D27EA'"
+   "got": "'80C468074DBC4EEA29BF249A3A080532'",
+   "want": "'80C468074DBC4EEA29BF249A3A080532'"
   },
   {
    "seq": "Finale",
@@ -1566,8 +1581,8 @@
    "item": "MaskProp",
    "name": "attach WardenFigure [16.8-97.5] target binding",
    "ok": true,
-   "got": "'A434EC24445F29E944BEC4AD137D27EA'",
-   "want": "'A434EC24445F29E944BEC4AD137D27EA'"
+   "got": "'80C468074DBC4EEA29BF249A3A080532'",
+   "want": "'80C468074DBC4EEA29BF249A3A080532'"
   },
   {
    "seq": "Finale",
@@ -2084,7 +2099,7 @@
   {
    "seq": "Finale",
    "item": "Villager",
-   "name": "anim AN_LB_Villager_Walk @23.500 present",
+   "name": "anim AN_LB_Villager_WalkCandle @23.500 present",
    "ok": true,
    "got": "True",
    "want": "True"
@@ -2092,7 +2107,7 @@
   {
    "seq": "Finale",
    "item": "Villager",
-   "name": "anim AN_LB_Villager_Walk range (s)",
+   "name": "anim AN_LB_Villager_WalkCandle range (s)",
    "ok": true,
    "got": "(23.5, 37.5)",
    "want": "(23.5, 37.5)"
@@ -2100,7 +2115,7 @@
   {
    "seq": "Finale",
    "item": "Villager",
-   "name": "anim AN_LB_Villager_Walk slot",
+   "name": "anim AN_LB_Villager_WalkCandle slot",
    "ok": true,
    "got": "'DefaultSlot'",
    "want": "'DefaultSlot'"
@@ -2108,7 +2123,7 @@
   {
    "seq": "Finale",
    "item": "Villager",
-   "name": "anim AN_LB_Villager_Walk play rate",
+   "name": "anim AN_LB_Villager_WalkCandle play rate",
    "ok": true,
    "got": "0.6256410256410256",
    "want": "0.6256410256410256"
@@ -2116,7 +2131,7 @@
   {
    "seq": "Finale",
    "item": "Villager",
-   "name": "anim AN_LB_Villager_Walk row",
+   "name": "anim AN_LB_Villager_WalkCandle row",
    "ok": true,
    "got": "0",
    "want": "0"
@@ -2124,7 +2139,7 @@
   {
    "seq": "Finale",
    "item": "Villager",
-   "name": "anim AN_LB_Villager_Walk ease in (ticks)",
+   "name": "anim AN_LB_Villager_WalkCandle ease in (ticks)",
    "ok": true,
    "got": "0",
    "want": "0"
@@ -2132,7 +2147,7 @@
   {
    "seq": "Finale",
    "item": "Villager",
-   "name": "anim AN_LB_Villager_Walk ease out (ticks)",
+   "name": "anim AN_LB_Villager_WalkCandle ease out (ticks)",
    "ok": true,
    "got": "12000",
    "want": "12000"
@@ -2203,7 +2218,7 @@
   },
   {
    "seq": "Finale",
-   "item": "LanternProp",
+   "item": "CandleWax",
    "name": "binding exists and is a spawnable",
    "ok": true,
    "got": "True",
@@ -2211,7 +2226,7 @@
   },
   {
    "seq": "Finale",
-   "item": "LanternProp",
+   "item": "CandleWax",
    "name": "template class",
    "ok": true,
    "got": "'StaticMeshActor'",
@@ -2219,15 +2234,15 @@
   },
   {
    "seq": "Finale",
-   "item": "LanternProp",
+   "item": "CandleWax",
    "name": "static mesh",
    "ok": true,
-   "got": "'SM_Wooden_Lantern_01'",
-   "want": "'SM_Wooden_Lantern_01'"
+   "got": "'Cylinder'",
+   "want": "'Cylinder'"
   },
   {
    "seq": "Finale",
-   "item": "LanternProp",
+   "item": "CandleWax",
    "name": "collision enabled",
    "ok": true,
    "got": "'NO_COLLISION'",
@@ -2235,7 +2250,7 @@
   },
   {
    "seq": "Finale",
-   "item": "LanternProp",
+   "item": "CandleWax",
    "name": "collision profile",
    "ok": true,
    "got": "'NoCollision'",
@@ -2243,7 +2258,23 @@
   },
   {
    "seq": "Finale",
-   "item": "LanternProp",
+   "item": "CandleWax",
+   "name": "slot 0 material",
+   "ok": true,
+   "got": "'MI_LB_CandleWax'",
+   "want": "'MI_LB_CandleWax'"
+  },
+  {
+   "seq": "Finale",
+   "item": "CandleWax",
+   "name": "cast shadow off (the player's candle meshes)",
+   "ok": true,
+   "got": "False",
+   "want": "False"
+  },
+  {
+   "seq": "Finale",
+   "item": "CandleWax",
    "name": "transform track count",
    "ok": true,
    "got": "1",
@@ -2251,7 +2282,7 @@
   },
   {
    "seq": "Finale",
-   "item": "LanternProp",
+   "item": "CandleWax",
    "name": "transform Location.X (1 keys)",
    "ok": true,
    "got": "'ok'",
@@ -2259,7 +2290,7 @@
   },
   {
    "seq": "Finale",
-   "item": "LanternProp",
+   "item": "CandleWax",
    "name": "transform Location.Y (1 keys)",
    "ok": true,
    "got": "'ok'",
@@ -2267,7 +2298,7 @@
   },
   {
    "seq": "Finale",
-   "item": "LanternProp",
+   "item": "CandleWax",
    "name": "transform Location.Z (1 keys)",
    "ok": true,
    "got": "'ok'",
@@ -2275,7 +2306,7 @@
   },
   {
    "seq": "Finale",
-   "item": "LanternProp",
+   "item": "CandleWax",
    "name": "transform Rotation.X (1 keys)",
    "ok": true,
    "got": "'ok'",
@@ -2283,7 +2314,7 @@
   },
   {
    "seq": "Finale",
-   "item": "LanternProp",
+   "item": "CandleWax",
    "name": "transform Rotation.Y (1 keys)",
    "ok": true,
    "got": "'ok'",
@@ -2291,7 +2322,7 @@
   },
   {
    "seq": "Finale",
-   "item": "LanternProp",
+   "item": "CandleWax",
    "name": "transform Rotation.Z (1 keys)",
    "ok": true,
    "got": "'ok'",
@@ -2299,7 +2330,7 @@
   },
   {
    "seq": "Finale",
-   "item": "LanternProp",
+   "item": "CandleWax",
    "name": "transform Scale.X (1 keys)",
    "ok": true,
    "got": "'ok'",
@@ -2307,7 +2338,7 @@
   },
   {
    "seq": "Finale",
-   "item": "LanternProp",
+   "item": "CandleWax",
    "name": "transform Scale.Y (1 keys)",
    "ok": true,
    "got": "'ok'",
@@ -2315,7 +2346,7 @@
   },
   {
    "seq": "Finale",
-   "item": "LanternProp",
+   "item": "CandleWax",
    "name": "transform Scale.Z (1 keys)",
    "ok": true,
    "got": "'ok'",
@@ -2323,7 +2354,7 @@
   },
   {
    "seq": "Finale",
-   "item": "LanternProp",
+   "item": "CandleWax",
    "name": "visibility track count",
    "ok": true,
    "got": "1",
@@ -2331,7 +2362,7 @@
   },
   {
    "seq": "Finale",
-   "item": "LanternProp",
+   "item": "CandleWax",
    "name": "visibility (True = visible) (2 keys)",
    "ok": true,
    "got": "'ok'",
@@ -2339,7 +2370,7 @@
   },
   {
    "seq": "Finale",
-   "item": "LanternProp",
+   "item": "CandleWax",
    "name": "attach track count",
    "ok": true,
    "got": "1",
@@ -2347,7 +2378,7 @@
   },
   {
    "seq": "Finale",
-   "item": "LanternProp",
+   "item": "CandleWax",
    "name": "attach section count",
    "ok": true,
    "got": "1",
@@ -2355,7 +2386,7 @@
   },
   {
    "seq": "Finale",
-   "item": "LanternProp",
+   "item": "CandleWax",
    "name": "attach Villager [0.0-97.5] range (s)",
    "ok": true,
    "got": "(0.0, 97.5)",
@@ -2363,15 +2394,15 @@
   },
   {
    "seq": "Finale",
-   "item": "LanternProp",
+   "item": "CandleWax",
    "name": "attach Villager [0.0-97.5] target binding",
    "ok": true,
-   "got": "'3EF0EB894E24374AB999BE96840EE759'",
-   "want": "'3EF0EB894E24374AB999BE96840EE759'"
+   "got": "'462B66324514576216F89C908931ADD9'",
+   "want": "'462B66324514576216F89C908931ADD9'"
   },
   {
    "seq": "Finale",
-   "item": "LanternProp",
+   "item": "CandleWax",
    "name": "attach Villager [0.0-97.5] socket",
    "ok": true,
    "got": "'hand_r'",
@@ -2379,7 +2410,7 @@
   },
   {
    "seq": "Finale",
-   "item": "LanternProp",
+   "item": "CandleWax",
    "name": "attach Villager [0.0-97.5] rules (loc/rot/scale)",
    "ok": true,
    "got": "['KEEP_RELATIVE', 'KEEP_RELATIVE', 'KEEP_RELATIVE']",
@@ -2387,7 +2418,7 @@
   },
   {
    "seq": "Finale",
-   "item": "Lantern",
+   "item": "CandleFlame",
    "name": "binding exists and is a spawnable",
    "ok": true,
    "got": "True",
@@ -2395,63 +2426,55 @@
   },
   {
    "seq": "Finale",
-   "item": "Lantern",
+   "item": "CandleFlame",
    "name": "template class",
    "ok": true,
-   "got": "'PointLight'",
-   "want": "'PointLight'"
+   "got": "'StaticMeshActor'",
+   "want": "'StaticMeshActor'"
   },
   {
    "seq": "Finale",
-   "item": "Lantern",
-   "name": "intensity units",
+   "item": "CandleFlame",
+   "name": "static mesh",
    "ok": true,
-   "got": "'LUMENS'",
-   "want": "'LUMENS'"
+   "got": "'SM_LB_Prop_CandleFlame_A'",
+   "want": "'SM_LB_Prop_CandleFlame_A'"
   },
   {
    "seq": "Finale",
-   "item": "Lantern",
-   "name": "intensity",
+   "item": "CandleFlame",
+   "name": "collision enabled",
    "ok": true,
-   "got": "600.0",
-   "want": "600.0"
+   "got": "'NO_COLLISION'",
+   "want": "'NO_COLLISION'"
   },
   {
    "seq": "Finale",
-   "item": "Lantern",
-   "name": "light colour",
+   "item": "CandleFlame",
+   "name": "collision profile",
    "ok": true,
-   "got": "(255, 150, 70)",
-   "want": "(255, 150, 70)"
+   "got": "'NoCollision'",
+   "want": "'NoCollision'"
   },
   {
    "seq": "Finale",
-   "item": "Lantern",
-   "name": "attenuation radius",
+   "item": "CandleFlame",
+   "name": "slot 0 material",
    "ok": true,
-   "got": "650.0",
-   "want": "650.0"
+   "got": "'MI_Flame_Candle_Player'",
+   "want": "'MI_Flame_Candle_Player'"
   },
   {
    "seq": "Finale",
-   "item": "Lantern",
-   "name": "source radius",
+   "item": "CandleFlame",
+   "name": "cast shadow off (the player's candle meshes)",
    "ok": true,
-   "got": "2.0",
-   "want": "2.0"
+   "got": "False",
+   "want": "False"
   },
   {
    "seq": "Finale",
-   "item": "Lantern",
-   "name": "cast shadows",
-   "ok": true,
-   "got": "True",
-   "want": "True"
-  },
-  {
-   "seq": "Finale",
-   "item": "Lantern",
+   "item": "CandleFlame",
    "name": "transform track count",
    "ok": true,
    "got": "1",
@@ -2459,7 +2482,7 @@
   },
   {
    "seq": "Finale",
-   "item": "Lantern",
+   "item": "CandleFlame",
    "name": "transform Location.X (1 keys)",
    "ok": true,
    "got": "'ok'",
@@ -2467,7 +2490,7 @@
   },
   {
    "seq": "Finale",
-   "item": "Lantern",
+   "item": "CandleFlame",
    "name": "transform Location.Y (1 keys)",
    "ok": true,
    "got": "'ok'",
@@ -2475,7 +2498,7 @@
   },
   {
    "seq": "Finale",
-   "item": "Lantern",
+   "item": "CandleFlame",
    "name": "transform Location.Z (1 keys)",
    "ok": true,
    "got": "'ok'",
@@ -2483,7 +2506,7 @@
   },
   {
    "seq": "Finale",
-   "item": "Lantern",
+   "item": "CandleFlame",
    "name": "transform Rotation.X (1 keys)",
    "ok": true,
    "got": "'ok'",
@@ -2491,7 +2514,7 @@
   },
   {
    "seq": "Finale",
-   "item": "Lantern",
+   "item": "CandleFlame",
    "name": "transform Rotation.Y (1 keys)",
    "ok": true,
    "got": "'ok'",
@@ -2499,7 +2522,7 @@
   },
   {
    "seq": "Finale",
-   "item": "Lantern",
+   "item": "CandleFlame",
    "name": "transform Rotation.Z (1 keys)",
    "ok": true,
    "got": "'ok'",
@@ -2507,7 +2530,7 @@
   },
   {
    "seq": "Finale",
-   "item": "Lantern",
+   "item": "CandleFlame",
    "name": "transform Scale.X (1 keys)",
    "ok": true,
    "got": "'ok'",
@@ -2515,7 +2538,7 @@
   },
   {
    "seq": "Finale",
-   "item": "Lantern",
+   "item": "CandleFlame",
    "name": "transform Scale.Y (1 keys)",
    "ok": true,
    "got": "'ok'",
@@ -2523,7 +2546,7 @@
   },
   {
    "seq": "Finale",
-   "item": "Lantern",
+   "item": "CandleFlame",
    "name": "transform Scale.Z (1 keys)",
    "ok": true,
    "got": "'ok'",
@@ -2531,7 +2554,7 @@
   },
   {
    "seq": "Finale",
-   "item": "Lantern",
+   "item": "CandleFlame",
    "name": "visibility track count",
    "ok": true,
    "got": "1",
@@ -2539,7 +2562,7 @@
   },
   {
    "seq": "Finale",
-   "item": "Lantern",
+   "item": "CandleFlame",
    "name": "visibility (True = visible) (2 keys)",
    "ok": true,
    "got": "'ok'",
@@ -2547,39 +2570,7 @@
   },
   {
    "seq": "Finale",
-   "item": "Lantern",
-   "name": "light_component component binding is a child possessable",
-   "ok": true,
-   "got": "1",
-   "want": "1"
-  },
-  {
-   "seq": "Finale",
-   "item": "Lantern",
-   "name": "Intensity float track",
-   "ok": true,
-   "got": "1",
-   "want": "1"
-  },
-  {
-   "seq": "Finale",
-   "item": "Lantern",
-   "name": "Intensity property name / path",
-   "ok": true,
-   "got": "('Intensity', 'Intensity')",
-   "want": "('Intensity', 'Intensity')"
-  },
-  {
-   "seq": "Finale",
-   "item": "Lantern",
-   "name": "Intensity keys (205 keys)",
-   "ok": true,
-   "got": "'ok'",
-   "want": "'ok'"
-  },
-  {
-   "seq": "Finale",
-   "item": "Lantern",
+   "item": "CandleFlame",
    "name": "attach track count",
    "ok": true,
    "got": "1",
@@ -2587,7 +2578,7 @@
   },
   {
    "seq": "Finale",
-   "item": "Lantern",
+   "item": "CandleFlame",
    "name": "attach section count",
    "ok": true,
    "got": "1",
@@ -2595,32 +2586,272 @@
   },
   {
    "seq": "Finale",
-   "item": "Lantern",
-   "name": "attach LanternProp [0.0-97.5] range (s)",
+   "item": "CandleFlame",
+   "name": "attach Villager [0.0-97.5] range (s)",
    "ok": true,
    "got": "(0.0, 97.5)",
    "want": "(0.0, 97.5)"
   },
   {
    "seq": "Finale",
-   "item": "Lantern",
-   "name": "attach LanternProp [0.0-97.5] target binding",
+   "item": "CandleFlame",
+   "name": "attach Villager [0.0-97.5] target binding",
    "ok": true,
-   "got": "'D6EC85F94694DA235540BA8A5795E3DC'",
-   "want": "'D6EC85F94694DA235540BA8A5795E3DC'"
+   "got": "'462B66324514576216F89C908931ADD9'",
+   "want": "'462B66324514576216F89C908931ADD9'"
   },
   {
    "seq": "Finale",
-   "item": "Lantern",
-   "name": "attach LanternProp [0.0-97.5] socket",
+   "item": "CandleFlame",
+   "name": "attach Villager [0.0-97.5] socket",
    "ok": true,
-   "got": "'None'",
-   "want": "'None'"
+   "got": "'hand_r'",
+   "want": "'hand_r'"
   },
   {
    "seq": "Finale",
-   "item": "Lantern",
-   "name": "attach LanternProp [0.0-97.5] rules (loc/rot/scale)",
+   "item": "CandleFlame",
+   "name": "attach Villager [0.0-97.5] rules (loc/rot/scale)",
+   "ok": true,
+   "got": "['KEEP_RELATIVE', 'KEEP_RELATIVE', 'KEEP_RELATIVE']",
+   "want": "['KEEP_RELATIVE', 'KEEP_RELATIVE', 'KEEP_RELATIVE']"
+  },
+  {
+   "seq": "Finale",
+   "item": "CandleLight",
+   "name": "binding exists and is a spawnable",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "CandleLight",
+   "name": "template class",
+   "ok": true,
+   "got": "'PointLight'",
+   "want": "'PointLight'"
+  },
+  {
+   "seq": "Finale",
+   "item": "CandleLight",
+   "name": "intensity units",
+   "ok": true,
+   "got": "'CANDELAS'",
+   "want": "'CANDELAS'"
+  },
+  {
+   "seq": "Finale",
+   "item": "CandleLight",
+   "name": "intensity",
+   "ok": true,
+   "got": "10.0",
+   "want": "10.0"
+  },
+  {
+   "seq": "Finale",
+   "item": "CandleLight",
+   "name": "use temperature / temperature",
+   "ok": true,
+   "got": "(True, 1900.0)",
+   "want": "(True, 1900.0)"
+  },
+  {
+   "seq": "Finale",
+   "item": "CandleLight",
+   "name": "light colour white",
+   "ok": true,
+   "got": "(255, 255, 255)",
+   "want": "(255, 255, 255)"
+  },
+  {
+   "seq": "Finale",
+   "item": "CandleLight",
+   "name": "attenuation radius",
+   "ok": true,
+   "got": "600.0",
+   "want": "600.0"
+  },
+  {
+   "seq": "Finale",
+   "item": "CandleLight",
+   "name": "cast shadows off",
+   "ok": true,
+   "got": "False",
+   "want": "False"
+  },
+  {
+   "seq": "Finale",
+   "item": "CandleLight",
+   "name": "transform track count",
+   "ok": true,
+   "got": "1",
+   "want": "1"
+  },
+  {
+   "seq": "Finale",
+   "item": "CandleLight",
+   "name": "transform Location.X (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "CandleLight",
+   "name": "transform Location.Y (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "CandleLight",
+   "name": "transform Location.Z (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "CandleLight",
+   "name": "transform Rotation.X (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "CandleLight",
+   "name": "transform Rotation.Y (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "CandleLight",
+   "name": "transform Rotation.Z (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "CandleLight",
+   "name": "transform Scale.X (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "CandleLight",
+   "name": "transform Scale.Y (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "CandleLight",
+   "name": "transform Scale.Z (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "CandleLight",
+   "name": "visibility track count",
+   "ok": true,
+   "got": "1",
+   "want": "1"
+  },
+  {
+   "seq": "Finale",
+   "item": "CandleLight",
+   "name": "visibility (True = visible) (2 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "CandleLight",
+   "name": "light_component component binding is a child possessable",
+   "ok": true,
+   "got": "1",
+   "want": "1"
+  },
+  {
+   "seq": "Finale",
+   "item": "CandleLight",
+   "name": "Intensity float track",
+   "ok": true,
+   "got": "1",
+   "want": "1"
+  },
+  {
+   "seq": "Finale",
+   "item": "CandleLight",
+   "name": "Intensity property name / path",
+   "ok": true,
+   "got": "('Intensity', 'Intensity')",
+   "want": "('Intensity', 'Intensity')"
+  },
+  {
+   "seq": "Finale",
+   "item": "CandleLight",
+   "name": "Intensity keys (205 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "CandleLight",
+   "name": "attach track count",
+   "ok": true,
+   "got": "1",
+   "want": "1"
+  },
+  {
+   "seq": "Finale",
+   "item": "CandleLight",
+   "name": "attach section count",
+   "ok": true,
+   "got": "1",
+   "want": "1"
+  },
+  {
+   "seq": "Finale",
+   "item": "CandleLight",
+   "name": "attach Villager [0.0-97.5] range (s)",
+   "ok": true,
+   "got": "(0.0, 97.5)",
+   "want": "(0.0, 97.5)"
+  },
+  {
+   "seq": "Finale",
+   "item": "CandleLight",
+   "name": "attach Villager [0.0-97.5] target binding",
+   "ok": true,
+   "got": "'462B66324514576216F89C908931ADD9'",
+   "want": "'462B66324514576216F89C908931ADD9'"
+  },
+  {
+   "seq": "Finale",
+   "item": "CandleLight",
+   "name": "attach Villager [0.0-97.5] socket",
+   "ok": true,
+   "got": "'hand_r'",
+   "want": "'hand_r'"
+  },
+  {
+   "seq": "Finale",
+   "item": "CandleLight",
+   "name": "attach Villager [0.0-97.5] rules (loc/rot/scale)",
    "ok": true,
    "got": "['KEEP_RELATIVE', 'KEEP_RELATIVE', 'KEEP_RELATIVE']",
    "want": "['KEEP_RELATIVE', 'KEEP_RELATIVE', 'KEEP_RELATIVE']"

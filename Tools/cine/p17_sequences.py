@@ -39,9 +39,12 @@ MASK_SM = "/Game/LastBell/Characters/Warden/Cine/SM_LB_WardenMask"
 MASK_MI = "/Game/WardenArtV11_1/Materials/MI_Warden_BellMetal"
 LIFT_ANIM = "/Game/LastBell/Characters/Warden/Anims/AN_Warden_MaskLift"
 VIL_SK = "/Game/LastBell/Characters/Villager/SK_LB_Villager"
-VIL_WALK = "/Game/LastBell/Characters/Villager/AN_LB_Villager_Walk"
+VIL_WALK = "/Game/LastBell/Characters/Villager/AN_LB_Villager_WalkCandle"      # 3.9: Walk_Loop with the right arm of Idle_Lantern_Loop frame 0 (the candle hand)
 VIL_IDLE = "/Game/LastBell/Characters/Villager/AN_LB_Villager_IdleLantern"
-LANTERN_SM = "/Game/LastBell/ArtTest/Props/Wooden_Lantern_01/SM_Wooden_Lantern_01"
+CYLINDER_SM = "/Engine/BasicShapes/Cylinder"
+FLAME_SM = "/Game/LastBell/Environments/Props/Procedural/Chapel/SM_LB_Prop_CandleFlame_A"
+WAX_MI = "/Game/LastBell/Materials/Instances/MI_LB_CandleWax"
+FLAME_MI = "/Game/LastBell/Materials/Instances/FX/MI_Flame_Candle_Player"
 VIL_PREP = os.path.join(ROOT, "SourceArt", "Villager", "villager_prep.json")
 
 FPS = 30
@@ -160,7 +163,7 @@ def audio_end(snd, start, pitch, loop, end, seq_end):
 
 # ================================================================================================================ read-only facts
 def read_mesh_facts():
-    """MeshYaw (relative yaw of BP_WardenApparition's skeletal mesh component), the mask's rest centre, the villager's yaw offset / walk rate / lantern grip."""
+    """MeshYaw (relative yaw of BP_WardenApparition's skeletal mesh component), the mask's rest centre, the villager's yaw offset / walk rate / candle grip."""
     f = {"errors": []}
     try:
         bp = unreal.load_asset(APPARITION_BP)
@@ -207,14 +210,15 @@ def read_mesh_facts():
         f["villager_yaw_offset"] = math.degrees(math.atan2(float(bl.y - fl.y), float(bl.x - fl.x)))
         f["villager_native_speed"] = float(json.load(open(VIL_PREP, encoding="utf-8"))["walk_rm"]["native_speed_cm_s"])
         f["villager_walk_rate"] = VILLAGER_SPEED / f["villager_native_speed"]
+        # 3.9: the player's candle in the right hand (Docs/ArtTest/cine/p17_villager_candle.json, approved from the Blender sheet): the grip point is 55 % of the way from the wrist (hand_r)
+        # to the middle knuckle (middle_01_r) in the pose of Idle_Lantern_Loop at 47/24 s (the frame where the candle is closest to vertical over the cycle; the walk holds that arm pose),
+        # the wax's centre is the grip point, the candle stands upright in component space and is rigidly attached to hand_r.
         idle = unreal.load_asset(VIL_IDLE)
-        pose = unreal.AnimPoseExtensions.get_anim_pose_at_time(idle, 0.0, unreal.AnimPoseEvaluationOptions())
+        pose = unreal.AnimPoseExtensions.get_anim_pose_at_time(idle, CANDLE_REF_T, unreal.AnimPoseEvaluationOptions())
         hand = unreal.AnimPoseExtensions.get_bone_pose(pose, "hand_r", unreal.AnimPoseSpaces.WORLD)
         mid = unreal.AnimPoseExtensions.get_bone_pose(pose, "middle_01_r", unreal.AnimPoseSpaces.WORLD)
-        grip = unreal.Vector(hand.translation.x + 0.55 * (mid.translation.x - hand.translation.x), hand.translation.y + 0.55 * (mid.translation.y - hand.translation.y),
-                             hand.translation.z + 0.55 * (mid.translation.z - hand.translation.z))
-        # the lantern hangs upright (component frame): its handle ring (local (0, 0.68, 49.5)) sits in the palm, 55 % of the way from the wrist to the middle knuckle
-        origin = unreal.Vector(grip.x - 0.0, grip.y - 0.68, grip.z - LANTERN_HANDLE_Z)
+        g = [hand.translation.x + CANDLE_GRIP * (mid.translation.x - hand.translation.x), hand.translation.y + CANDLE_GRIP * (mid.translation.y - hand.translation.y),
+             hand.translation.z + CANDLE_GRIP * (mid.translation.z - hand.translation.z)]
         inv = None
         for fn in (lambda: unreal.MathLibrary.invert_transform(hand), lambda: hand.inverse()):
             try:
@@ -223,18 +227,21 @@ def read_mesh_facts():
             except Exception:  # noqa: BLE001
                 continue
         assert inv is not None, "no Transform inverse in this Python API"
-        rel_loc = unreal.MathLibrary.transform_location(inv, origin)
         rel_rot = inv.rotation.rotator()
-        f["lantern_rel_loc"] = [float(rel_loc.x), float(rel_loc.y), float(rel_loc.z)]
-        f["lantern_rel_rot_rpy"] = [float(rel_rot.roll), float(rel_rot.pitch), float(rel_rot.yaw)]
-        f["villager_grip_comp"] = [float(grip.x), float(grip.y), float(grip.z)]
+        parts = {}
+        for name, dz in (("wax", 0.0), ("flame", WAX_CENTRE_TO_FLAME_Z), ("light", -WAX_CENTRE_Z)):       # component-space points: wax centre = grip; flame base and light above it
+            pt = unreal.MathLibrary.transform_location(inv, unreal.Vector(g[0], g[1], g[2] + dz))
+            parts[name] = [float(pt.x), float(pt.y), float(pt.z)]
+        f["candle_parts_rel_loc"] = parts
+        f["candle_rel_rot_rpy"] = [float(rel_rot.roll), float(rel_rot.pitch), float(rel_rot.yaw)]
+        f["candle_grip_comp"] = g
     except Exception as exc:  # noqa: BLE001
         f["errors"].append("villager: %s" % exc)
         f["villager_yaw_offset"] = 0.0
         f["villager_native_speed"] = 97.5
         f["villager_walk_rate"] = VILLAGER_SPEED / 97.5
-        f["lantern_rel_loc"] = [0.0, 0.0, 0.0]
-        f["lantern_rel_rot_rpy"] = [0.0, 0.0, 0.0]
+        f["candle_parts_rel_loc"] = {"wax": [0.0, 0.0, 0.0], "flame": [0.0, 0.0, 0.0], "light": [0.0, 0.0, 0.0]}
+        f["candle_rel_rot_rpy"] = [0.0, 0.0, 0.0]
     return f
 
 
@@ -252,8 +259,14 @@ def fixed_xf(loc, yaw=0.0, pitch=0.0, roll=0.0):
 
 
 VILLAGER_SPEED = 61.0          # cm/s, the lantern walk of 3.2b (3.8: the walk play rate = 61 / the clip's native speed)
-LANTERN_HANDLE_Z = 49.5      # SM_Wooden_Lantern_01: base at z 0, top at 51.9; the handle ring
-FLAME_LOCAL = (0.0, 0.68, 18.0)   # the flame inside the lantern, in the prop's local frame
+# 3.9: the player's candle (BP_LBCharacter Candle component, DA_PlayerTuning): wax = engine Cylinder x (0.03, 0.03, 0.12) centred 7 cm below the component origin; flame = SM_LB_Prop_CandleFlame_A at
+# world scale 0.7 with its base 0.92 cm below the origin; the light at the origin: 10 cd, 1900 K, radius 600, no shadows, flicker 12 % (runtime noise, keyed here)
+WAX_CENTRE_Z = -7.0
+WAX_CENTRE_TO_FLAME_Z = 7.0 - 0.92        # flame base above the wax centre
+CANDLE_REF_T = 47.0 / 24.0
+CANDLE_GRIP = 0.55
+CANDLE_CD = 10.0
+CANDLE_FLICKER = 0.12
 CAM_TPL = {"focal": 35.0, "aperture": None, "focus": None, "constrain": False, "pps": False}
 
 
@@ -331,7 +344,7 @@ def spec_finale(facts):
     cam_wall = {"name": "Cam_WallTop", "cls": "CineCameraActor", "tpl": {"focal": 70.0, "aperture": None, "focus": 6000.0, "constrain": False, "pps": True},
                 "xf": fixed_xf((6020.0, 1300.0, 1032.0), yaw=-167.51, pitch=-7.88), "vis": None, "comps": [], "audio": []}
 
-    # the villager walks the lantern's old path (X keys), faces +X (plus the import's yaw offset), Walk_Loop at the matched rate, then Idle_Lantern_Loop
+    # the villager walks the old lantern path (X keys), faces +X (plus the import's yaw offset), Walk_Candle at the matched rate (the Walk_Loop's 97.5 cm/s), then Idle_Lantern_Loop
     t0 = LANTERN_T0
 
     def floor_z(x):
@@ -344,21 +357,25 @@ def spec_finale(facts):
                 "vis": [(0.0, False), (t0, True)], "comps": [], "audio": [],
                 "anims": [{"clip": VIL_WALK, "start": t0, "end": 37.5, "slot": "DefaultSlot", "ease_in": 0.0, "ease_out": 0.5, "rate": facts["villager_walk_rate"], "row": 0},
                           {"clip": VIL_IDLE, "start": 37.0, "end": 97.5, "slot": "DefaultSlot", "ease_in": 0.5, "ease_out": 0.0, "rate": 1.0, "row": 1}]}
-    lrl, lrr = facts["lantern_rel_loc"], facts["lantern_rel_rot_rpy"]
-    lanternprop = {"name": "LanternProp", "cls": "StaticMeshActor", "tpl": {"mesh": LANTERN_SM, "tag": None},
-                   "xf": xf_channels(lx=single(lrl[0]), ly=single(lrl[1]), lz=single(lrl[2]), rr=single(lrr[0]), rp=single(lrr[1]), ry=single(lrr[2])),
-                   "vis": [(0.0, False), (t0, True)], "comps": [], "audio": [],
-                   "attach": [{"start": 0.0, "end": 97.5, "target": "Villager", "socket": "hand_r", "keep_world": False}]}
-    # the Lantern light sits inside the prop at its flame; the walk carries it (no bob). Flicker 23.5-40.5 as before.
+    crr = facts["candle_rel_rot_rpy"]
+    pr = facts["candle_parts_rel_loc"]
+
+    def candle_part(name, cls, tpl, scale, key):
+        loc = pr[key]
+        return {"name": name, "cls": cls, "tpl": tpl, "scale": scale,
+                "xf": xf_channels(lx=single(loc[0]), ly=single(loc[1]), lz=single(loc[2]), rr=single(crr[0]), rp=single(crr[1]), ry=single(crr[2])),
+                "vis": [(0.0, False), (t0, True)], "comps": [], "audio": [],
+                "attach": [{"start": 0.0, "end": 97.5, "target": "Villager", "socket": "hand_r", "keep_world": False}]}
+
+    candle_wax = candle_part("CandleWax", "StaticMeshActor", {"mesh": CYLINDER_SM, "material": WAX_MI, "tag": None}, (0.03, 0.03, 0.12), "wax")
+    candle_flame = candle_part("CandleFlame", "StaticMeshActor", {"mesh": FLAME_SM, "material": FLAME_MI, "tag": None}, (0.7, 0.7, 0.7), "flame")
+    # the candle light: Candelas, 1900 K, radius 600, no shadows; intensity keyed 12 steps a second from 23.5 to 40.5 s as 10 x (1 + 0.12 x seeded noise)
     ik = []
     rng = random.Random(1717)
     for k in range(205):
-        ik.append((t0 + k / 12.0, 600.0 * (1.0 + 0.08 * rng.uniform(-1, 1)), "L"))
-    lantern = {"name": "Lantern", "cls": "PointLight", "tpl": {},
-               "xf": xf_channels(lx=single(FLAME_LOCAL[0]), ly=single(FLAME_LOCAL[1]), lz=single(FLAME_LOCAL[2]), rr=single(0.0), rp=single(0.0), ry=single(0.0)),
-               "vis": [(0.0, False), (t0, True)],
-               "comps": [{"comp": "light_component", "tracks": [{"prop": "Intensity", "path": "Intensity", "keys": ik}]}], "audio": [],
-               "attach": [{"start": 0.0, "end": 97.5, "target": "LanternProp", "socket": None, "keep_world": False}]}
+        ik.append((t0 + k / 12.0, CANDLE_CD * (1.0 + CANDLE_FLICKER * rng.uniform(-1, 1)), "L"))
+    candle_light = candle_part("CandleLight", "PointLight", {"candle": True}, (1.0, 1.0, 1.0), "light")
+    candle_light["comps"] = [{"comp": "light_component", "tracks": [{"prop": "Intensity", "path": "Intensity", "keys": ik}]}]
 
     audio2d = [{"sound": "SFX_LB_Step_Metal_02", "start": 19.5, "pitch": 0.55}, {"sound": "SFX_LB_Warden_Chain_02", "start": 19.5, "pitch": 0.7},
                {"sound": "SFX_LB_Warden_Breath_Slow", "start": 19.8, "end": 39.5, "loop": True},
@@ -372,7 +389,7 @@ def spec_finale(facts):
             "fade": [(0.0, 0.0), (19.5, 0.0), (19.8, 1.0), (22.5, 1.0), (24.5, 0.0), (38.5, 0.0), (40.5, 1.0)],
             "cuts": [{"binding": "Cam_Mask", "start": 12.5, "end": 22.5, "ease_in": 0.8, "ease_out": 0.0},
                      {"binding": "Cam_WallTop", "start": 22.5, "end": 97.5, "ease_in": 0.0, "ease_out": 0.0}],
-            "bindings": [warden, maskprop, cam_mask, cam_wall, villager, lanternprop, lantern], "audio2d": audio2d}
+            "bindings": [warden, maskprop, cam_mask, cam_wall, villager, candle_wax, candle_flame, candle_light], "audio2d": audio2d}
 
 
 MARKER_RE = re.compile(r"^!?(skip:[01]|card:\w+|tag:[A-Za-z0-9_.]+|bell:\d+x\d+|strike:[\w]+(,[0-9.]+)?|flash:[0-9.]+|look:\w+(,[0-9.]+)?|mark:\w+(,[0-9.]+)?|"
@@ -497,7 +514,18 @@ def set_template(item, cls_name, tpl, binding):
         call(item, "set_static_mesh(%s)" % tpl["mesh"].rsplit("/", 1)[1], smc.set_static_mesh, unreal.load_asset(tpl["mesh"]))
         call(item, "set_collision_enabled(NO_COLLISION)", smc.set_collision_enabled, unreal.CollisionEnabled.NO_COLLISION)
         call(item, "set_collision_profile_name('NoCollision')", smc.set_collision_profile_name, "NoCollision")
-        call(item, "set cast_shadow True", smc.set_editor_property, "cast_shadow", True)
+        call(item, "set cast_shadow %s" % (not tpl.get("material")), smc.set_editor_property, "cast_shadow", not tpl.get("material"))     # the candle's meshes do not cast shadows (BP_LBCharacter)
+        if tpl.get("material"):
+            call(item, "set_material(0, %s)" % tpl["material"].rsplit("/", 1)[1], smc.set_material, 0, unreal.load_asset(tpl["material"]))
+    elif cls_name == "PointLight" and tpl.get("candle"):
+        lc = t.get_editor_property("light_component")
+        call(item, "set intensity_units CANDELAS", lc.set_editor_property, "intensity_units", unreal.LightUnits.CANDELAS)
+        call(item, "set intensity 10", lc.set_editor_property, "intensity", CANDLE_CD)
+        call(item, "set light_color white", lc.set_editor_property, "light_color", unreal.Color(r=255, g=255, b=255, a=255))
+        call(item, "set use_temperature True", lc.set_editor_property, "use_temperature", True)
+        call(item, "set temperature 1900", lc.set_editor_property, "temperature", 1900.0)
+        call(item, "set attenuation_radius 600", lc.set_editor_property, "attenuation_radius", 600.0)
+        call(item, "set cast_shadows False", lc.set_editor_property, "cast_shadows", False)
     elif cls_name == "PointLight":
         lc = t.get_editor_property("light_component")
         call(item, "set intensity_units LUMENS", lc.set_editor_property, "intensity_units", unreal.LightUnits.LUMENS)
@@ -524,8 +552,9 @@ def build_transform(item, spec, binding, end_s):
     order = {"lx": "Location.X", "ly": "Location.Y", "lz": "Location.Z", "rr": "Rotation.X", "rp": "Rotation.Y", "ry": "Rotation.Z"}
     for k, nm in order.items():
         add_keys(item, "transform %s (%s)" % (k, nm), byname[nm], spec["xf"][k])
-    for nm in ("Scale.X", "Scale.Y", "Scale.Z"):
-        add_keys(item, "transform %s" % nm, byname[nm], [(0.0, 1.0, "L")])
+    sc = spec.get("scale", (1.0, 1.0, 1.0))
+    for nm, v in zip(("Scale.X", "Scale.Y", "Scale.Z"), sc):
+        add_keys(item, "transform %s" % nm, byname[nm], [(0.0, float(v), "L")])
 
 
 def build_vis(item, vis, binding, end_s):
@@ -870,6 +899,9 @@ def check_template(sk, item, b, binding):
         chk(sk, item, "collision profile", str(smc.get_collision_profile_name()), "NoCollision")
         if tpl["mesh"] == MASK_SM:
             chk(sk, item, "slot 0 material is MI_Warden_BellMetal", smc.get_material(0).get_name() if smc.get_material(0) else None, "MI_Warden_BellMetal")
+        if tpl.get("material"):
+            chk(sk, item, "slot 0 material", smc.get_material(0).get_name() if smc.get_material(0) else None, tpl["material"].rsplit("/", 1)[1])
+            chk(sk, item, "cast shadow off (the player's candle meshes)", smc.get_editor_property("cast_shadow"), False)
     elif b["cls"] == "SkeletalMeshActor":
         smc = t.get_editor_property("skeletal_mesh_component")
         mesh = smc.get_editor_property("skeletal_mesh_asset")
@@ -881,6 +913,15 @@ def check_template(sk, item, b, binding):
         chk(sk, item, "collision enabled", en(smc.get_collision_enabled()), "NO_COLLISION")
         chk(sk, item, "collision profile", str(smc.get_collision_profile_name()), "NoCollision")
         chk(sk, item, "cast shadow", smc.get_editor_property("cast_shadow"), True)
+    elif b["cls"] == "PointLight" and tpl.get("candle"):
+        lc = t.get_editor_property("light_component")
+        chk(sk, item, "intensity units", en(lc.get_editor_property("intensity_units")), "CANDELAS")
+        chk(sk, item, "intensity", lc.get_editor_property("intensity"), CANDLE_CD, 1e-3)
+        chk(sk, item, "use temperature / temperature", (bool(lc.get_editor_property("use_temperature")), round(lc.get_editor_property("temperature"), 1)), (True, 1900.0))
+        c = lc.get_editor_property("light_color")
+        chk(sk, item, "light colour white", (c.r, c.g, c.b), (255, 255, 255))
+        chk(sk, item, "attenuation radius", lc.get_editor_property("attenuation_radius"), 600.0, 1e-3)
+        chk(sk, item, "cast shadows off", lc.get_editor_property("cast_shadows"), False)
     elif b["cls"] == "PointLight":
         lc = t.get_editor_property("light_component")
         chk(sk, item, "intensity units", en(lc.get_editor_property("intensity_units")), "LUMENS")
@@ -1075,8 +1116,8 @@ def check_sequence(spec, facts):
                     cmp_keys(sk, item, "transform %s" % nm, chs[nm], b["xf"][k])
                 else:
                     chk(sk, item, "channel %s exists" % nm, False, True)
-            for nm in ("Scale.X", "Scale.Y", "Scale.Z"):
-                cmp_keys(sk, item, "transform %s" % nm, chs[nm], [(0.0, 1.0, "L")])
+            for nm, v in zip(("Scale.X", "Scale.Y", "Scale.Z"), b.get("scale", (1.0, 1.0, 1.0))):
+                cmp_keys(sk, item, "transform %s" % nm, chs[nm], [(0.0, float(v), "L")])
         # visibility
         vt = find_tracks(bd, "MovieSceneVisibilityTrack")
         chk(sk, item, "visibility track count", len(vt), 1 if b["vis"] else 0)
