@@ -271,24 +271,25 @@ CAM_TPL = {"focal": 35.0, "aperture": None, "focus": None, "constrain": False, "
 
 
 def spec_intro():
+    # 3.10 (owner, 2026-11-12): the four text cards stay up longer (fade 0.5 s, hold 3.6 s: 4.6 s each, one every 5.0 s from 0.8 s), so everything of 3.1 from the old 13.0 s on moves +8.0 s
     cam = {"name": "Cam_Intro", "cls": "CineCameraActor",
            "tpl": {"focal": 30.0, "aperture": 2.8, "focus": 6000.0, "constrain": False, "pps": False},
-           "xf": xf_channels(lx=[(13.0, -2800.0, "A"), (27.0, -2800.0, "A")], ly=[(13.0, 0.0, "A"), (27.0, 0.0, "A")],
-                             lz=[(13.0, 652.79, "A"), (27.0, 152.79, "A")], rr=[(13.0, 0.0, "A"), (27.0, 0.0, "A")],
-                             rp=[(13.0, 6.0, "A"), (27.0, 0.0, "A")], ry=[(13.0, 0.0, "A"), (27.0, 0.0, "A")]),
+           "xf": xf_channels(lx=[(21.0, -2800.0, "A"), (35.0, -2800.0, "A")], ly=[(21.0, 0.0, "A"), (35.0, 0.0, "A")],
+                             lz=[(21.0, 652.79, "A"), (35.0, 152.79, "A")], rr=[(21.0, 0.0, "A"), (35.0, 0.0, "A")],
+                             rp=[(21.0, 6.0, "A"), (35.0, 0.0, "A")], ry=[(21.0, 0.0, "A"), (35.0, 0.0, "A")]),
            "vis": None,
            "comps": [{"comp": "camera_component", "tracks": [{"prop": "CurrentFocalLength", "path": "CurrentFocalLength",
-                                                              "keys": [(13.0, 30.0, "A"), (27.0, 28.0, "A")]}]}],
+                                                              "keys": [(21.0, 30.0, "A"), (35.0, 28.0, "A")]}]}],
            "audio": []}
-    return {"key": "Intro", "path": INTRO_PATH, "end": 29.0,
-            "markers": [("skip:1", 0.0), ("card:Intro_1", 0.8), ("card:Intro_2", 3.8), ("card:Intro_3", 6.8), ("card:Intro_4", 9.8),
-                        ("strike:LB_StrikeTarget_Tower,1.0", 17.0), ("!tag:State.Event.Arrival", 17.4), ("card:Title", 19.0), ("!lock:None", 27.5)],
-            "fade": [(0.0, 1.0), (13.0, 1.0), (15.5, 0.0)],
-            "cuts": [{"binding": "Cam_Intro", "start": 13.0, "end": 27.0, "ease_in": 0.0, "ease_out": 1.5}],
+    return {"key": "Intro", "path": INTRO_PATH, "end": 37.0,
+            "markers": [("skip:1", 0.0), ("card:Intro_1", 0.8), ("card:Intro_2", 5.8), ("card:Intro_3", 10.8), ("card:Intro_4", 15.8),
+                        ("strike:LB_StrikeTarget_Tower,1.0", 25.0), ("!tag:State.Event.Arrival", 25.4), ("card:Title", 27.0), ("!lock:None", 35.5)],
+            "fade": [(0.0, 1.0), (21.0, 1.0), (23.5, 0.0)],
+            "cuts": [{"binding": "Cam_Intro", "start": 21.0, "end": 35.0, "ease_in": 0.0, "ease_out": 1.5}],
             "bindings": [cam],
-            # 3.8: the intro music runs to the handover (was 0.0-15.5 in 3.4)
-            "audio2d": [{"sound": "MUS_LB_Cine_IntroText", "start": 0.0, "end": 27.5,
-                         "vol": [(0.0, 0.0, "L"), (0.5, 1.0, "L"), (25.0, 1.0, "L"), (27.5, 0.0, "L")]}]}
+            # the intro music runs to the handover (3.8), now to 35.5 s: 0 at 0.0, 1 at 0.5, 1 at 33.0, 0 at 35.5
+            "audio2d": [{"sound": "MUS_LB_Cine_IntroText", "start": 0.0, "end": 35.5,
+                         "vol": [(0.0, 0.0, "L"), (0.5, 1.0, "L"), (33.0, 1.0, "L"), (35.5, 0.0, "L")]}]}
 
 
 # 3.2b (owner finale revision, 2026-11-11): the figure is in sight about 3.5 s after the ring; playback 0-97.5 s.

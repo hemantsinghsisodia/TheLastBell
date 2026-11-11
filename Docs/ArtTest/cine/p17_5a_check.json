@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-11 14:21:14",
+ "generated": "2026-11-11 15:41:55",
  "total_checks": 370,
  "passed": 370,
  "failed": 0,
@@ -156,8 +156,8 @@
    "item": "setup",
    "name": "playback range s",
    "ok": true,
-   "got": "(0.0, 29.0)",
-   "want": "(0.0, 29.0)"
+   "got": "(0.0, 37.0)",
+   "want": "(0.0, 37.0)"
   },
   {
    "seq": "Intro",
@@ -172,8 +172,8 @@
    "item": "markers",
    "name": "marked frames (label, display frame)",
    "ok": true,
-   "got": "[(0, 'skip:1'), (24, 'card:Intro_1'), (114, 'card:Intro_2'), (204, 'card:Intro_3'), (294, 'card:Intro_4'), (510, 'strike:LB_StrikeTarget_Tow...",
-   "want": "[(0, 'skip:1'), (24, 'card:Intro_1'), (114, 'card:Intro_2'), (204, 'card:Intro_3'), (294, 'card:Intro_4'), (510, 'strike:LB_StrikeTarget_Tow..."
+   "got": "[(0, 'skip:1'), (24, 'card:Intro_1'), (174, 'card:Intro_2'), (324, 'card:Intro_3'), (474, 'card:Intro_4'), (750, 'strike:LB_StrikeTarget_Tow...",
+   "want": "[(0, 'skip:1'), (24, 'card:Intro_1'), (174, 'card:Intro_2'), (324, 'card:Intro_3'), (474, 'card:Intro_4'), (750, 'strike:LB_StrikeTarget_Tow..."
   },
   {
    "seq": "Intro",
@@ -236,8 +236,8 @@
    "item": "cut",
    "name": "Cam_Intro range (s)",
    "ok": true,
-   "got": "(13.0, 27.0)",
-   "want": "(13.0, 27.0)"
+   "got": "(21.0, 35.0)",
+   "want": "(21.0, 35.0)"
   },
   {
    "seq": "Intro",
@@ -260,8 +260,8 @@
    "item": "cut",
    "name": "Cam_Intro bound to the camera spawnable",
    "ok": true,
-   "got": "'7ED5683141CC6C9681C71880A2DAF37E'",
-   "want": "'7ED5683141CC6C9681C71880A2DAF37E'"
+   "got": "'FF08E22744606E701FE160A453557257'",
+   "want": "'FF08E22744606E701FE160A453557257'"
   },
   {
    "seq": "Intro",
@@ -476,8 +476,8 @@
    "item": "audio2d",
    "name": "2D MUS_LB_Cine_IntroText @0.000 end (s)",
    "ok": true,
-   "got": "27.500041961669922",
-   "want": "27.5"
+   "got": "35.50004196166992",
+   "want": "35.5"
   },
   {
    "seq": "Intro",

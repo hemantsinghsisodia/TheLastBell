@@ -16,7 +16,7 @@ Out of scope unless approved: firearms, combat, crafting, inventory beyond key-i
 ## Progression (critical path)
 | # | Beat | Area | Warden stage | Target time |
 |---|---|---|---|---|
-| 0 | Main Menu → New Game: the intro cinematic (about 29 s, skippable; see "The intro and the ending, as built") | Approach | — | 0.5 min |
+| 0 | Main Menu → New Game: the intro cinematic (about 37 s, skippable; see "The intro and the ending, as built") | Approach | — | 0.5 min |
 | 1 | Arrival in the storm; the first toll has just rung (in the intro); the collapsed tower is visible | Approach → Courtyard | 1 Presence | 3–4 min |
 | 2 | Get into the chapel (gate or door puzzle) | Courtyard → Chapel | 1 | 2–3 min |
 | 3 | **Ritual Mechanism 1** (chapel puzzle: candles, stained glass or symbols) | Chapel | 1 → 2 | 4–5 min |
@@ -40,7 +40,7 @@ The player is **a villager from below**, sent up to find out why the bell rang. 
   2. "Its great bell fell silent the night the brothers vanished."
   3. "Tonight, the whole village heard it ring."
   4. "Someone has to go up."
-- At 13 s the picture fades in on the approach path, and the camera **cranes down** 5 m onto the player's eye height, so the whole tower shows over the cliffs and then sinks behind them as the camera settles at the spawn. Lightning **strikes the tower** at 17 s. Then the **Arrival tolls**: the great bell rings three times (stage 1, 4.5 s apart), the first at 17.4 s, with no drone under it (owner). The title "THE LAST BELL" shows at 19 s. A sparse **piano** (the owner's pick, CC0) plays under the whole intro and fades out as control returns at 27.5 s, so the player's first sounds are the storm and their own steps.
+- Each line stays up for 4.6 s (owner 3.10: longer than the first cut). At 21 s the picture fades in on the approach path, and the camera **cranes down** 5 m onto the player's eye height, so the whole tower shows over the cliffs and then sinks behind them as the camera settles at the spawn. Lightning **strikes the tower** at 25 s. Then the **Arrival tolls**: the great bell rings three times (stage 1, 4.5 s apart), the first at 25.4 s, with no drone under it (owner). The title "THE LAST BELL" shows at 27 s. A sparse **piano** (the owner's pick, CC0) plays under the whole intro and fades out as control returns at 35.5 s, so the player's first sounds are the storm and their own steps.
 - Holding Interact for 1 s skips it (the screen fades up from black; the first toll and the world state still happen). Nothing can be saved while it plays.
 
 **Beat 10, the finale (after the great bell is rung).**

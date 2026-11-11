@@ -654,6 +654,13 @@ Gates from P17-3: grip 2.2 s, lifted 3.4 s, extended 4.6 s, clip 6.0 s; `StopDis
 - **Also check the villager's materials** in Unreal: the owner's shot showed a pale figure. Confirm the darkened textures are assigned and sampled (sRGB, base colour), and fix them if not.
 - **Rebuild:** `LS_LB_Finale` only; the walk timing is unchanged. Then `check` and the suite.
 
+### 3.10 Intro retime (owner, 2026-11-12): the text lines stay up longer
+The owner found the four intro lines came and went too fast. **This supersedes the intro times of 3.1 and the intro music window of 3.7/3.8.**
+- **Cards `Intro_1`–`Intro_4`:** fade 0.5 s, hold 3.6 s, 4.6 s each (3.3 had 0.3 s and 2.4 s). The `Title` card keeps its own timing.
+- **Markers:** `card:Intro_1…4` at 0.8, 5.8, 10.8 and 15.8 s. Everything of 3.1 from the old 13.0 s on moves +8.0 s: the camera cut 21.0–35.0 s (ease-out 1.5 s), the `Cam_Intro` and focal keys at 21.0 and 35.0 s, the fade (1 at 0, 1 at 21.0, 0 at 23.5), `strike:LB_StrikeTarget_Tower,1.0` at 25.0, `!tag:State.Event.Arrival` at 25.4, `card:Title` at 27.0, `!lock:None` at 35.5, the end at **37.0 s**. `skip:1` stays at 0.0.
+- **Music:** `MUS_LB_Cine_IntroText` is re-prepped from Dasgoat 330599 as 0:00–0:40 (peak −3 dBFS, no baked fade); the section runs 0.0–35.5 s with volume 0 at 0.0, 1 at 0.5, 1 at 33.0, 0 at 35.5.
+- **Built by:** `Tools/cine/p17_assets.py` (cards), `Tools/cine/p17_sequences.py` (`P17_REBUILD=1 P17_ONLY=Intro`), `Tools/audio/prep/prep_cine_music.py` and `p16_2_assets.py` (the reimport).
+
 ### 3.3 Cards and styles (`DA_Cinematics.Cards`)
 | Id | Text | Style | Hold (s) | Fade (s) |
 |---|---|---|---|---|

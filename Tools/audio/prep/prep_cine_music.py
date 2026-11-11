@@ -4,8 +4,8 @@
   python -I Tools/audio/prep/prep_cine_music.py --verify   # build twice in memory and compare SHA-256 (writes nothing)
 
 Sources (owner-downloaded Freesound CC0, git-ignored): ExternalAssets/Incoming/audio/p17_music/
-  MUS_LB_Cine_IntroText  330599 Dasgoat "the sad piano" (MP3, stereo 44.1 kHz): 0:00-0:30, no baked fade (the sequence fades it), peak -3 dBFS
-                         (P17 3.7 / 3.8: the intro music runs to the handover; it was 0:00-0:16 with a 2 s fade-out tail in 3.4)
+  MUS_LB_Cine_IntroText  330599 Dasgoat "the sad piano" (MP3, stereo 44.1 kHz): 0:00-0:40, no baked fade (the sequence fades it), peak -3 dBFS
+                         (P17 3.7 / 3.8 / 3.10: the intro music runs to the handover, now at 35.5 s; it was 0:00-0:30 until 3.10)
   MUS_LB_Cine_Finale     610534 szegvari "...surround" (WAV, 5.1, 96 kHz, 24-bit): down-mixed to stereo, resampled to 48 kHz,
                          first 0:55, peak -3 dBFS
   MUS_LB_Cine_Credits    839571 CVLTIV8R "contemplative string loop" (WAV, stereo 44.1 kHz, float): 48 kHz, whole 45 s, peak -3 dBFS
@@ -39,7 +39,7 @@ PEAK_DB = -3.0
 G = 0.70710678118654752  # 0.707
 
 ITEMS = [
-    dict(name="MUS_LB_Cine_IntroText", src="330599__dasgoat__the-sad-piano.mp3", t0=0.0, t1=30.0, fade_out=0.0, downmix=False),
+    dict(name="MUS_LB_Cine_IntroText", src="330599__dasgoat__the-sad-piano.mp3", t0=0.0, t1=40.0, fade_out=0.0, downmix=False),
     dict(name="MUS_LB_Cine_Finale", src="610534__szegvari__", t0=0.0, t1=55.0, fade_out=0.0, downmix=True),
     dict(name="MUS_LB_Cine_Credits", src="839571__cvltiv8r__", t0=0.0, t1=None, fade_out=0.0, downmix=False),
 ]

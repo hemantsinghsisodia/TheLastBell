@@ -210,11 +210,11 @@ def subset_eq(exp, act, path, errors):
 # Data (plan sections 2.2, 3.1, 3.3)
 # ---------------------------------------------------------------------------------------------------------------------------------
 
-CARDS = [  # (id, text, style, hold seconds, fade seconds): plan 3.1 (Intro_1 as the owner changed it) and 3.3
-    ("Intro_1", "For forty years, no one has come back from the monastery on the ridge.", "Line", 2.4, 0.3),
-    ("Intro_2", "Its great bell fell silent the night the brothers vanished.", "Line", 2.4, 0.3),
-    ("Intro_3", "Tonight, the whole village heard it ring.", "Line", 2.4, 0.3),
-    ("Intro_4", "Someone has to go up.", "Line", 2.4, 0.3),
+CARDS = [  # (id, text, style, hold seconds, fade seconds): plan 3.1 (Intro_1 as the owner changed it), 3.3 and 3.10 (the intro cards: hold 3.6 s, fade 0.5 s)
+    ("Intro_1", "For forty years, no one has come back from the monastery on the ridge.", "Line", 3.6, 0.5),
+    ("Intro_2", "Its great bell fell silent the night the brothers vanished.", "Line", 3.6, 0.5),
+    ("Intro_3", "Tonight, the whole village heard it ring.", "Line", 3.6, 0.5),
+    ("Intro_4", "Someone has to go up.", "Line", 3.6, 0.5),
     ("Title", "THE LAST BELL", "Title", 3.5, 0.8),
     ("End_1", "The bell rings for you.", "Line", 3.5, 0.8),
     ("End_2", "THE LAST BELL", "Title", 4.0, 0.8),
