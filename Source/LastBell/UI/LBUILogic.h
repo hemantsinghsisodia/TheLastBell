@@ -38,6 +38,10 @@ namespace LBUILogic
 	LASTBELL_API int32 NearestFrameLimitIndex(float Limit);
 
 	/** The mapping name an action carries in IMC_LB_Gameplay (P18-2 sets exactly these as player-mappable names). */
+	/**
+	 * Crouch: C is the rebindable key (this name, first slot). Ctrl stays a second, FIXED key: P18-2 maps it in IMC_LB_Gameplay without a
+	 * player-mappable name, so the Controls tab never lists or changes it. Rebinding Crouch therefore never removes Ctrl.
+	 */
 	LASTBELL_API FName MappingNameFor(ELBBindAction Action);
 	LASTBELL_API FText DisplayNameFor(ELBBindAction Action);
 	/** The key the action has with no rebinding (the fallback when Enhanced Input user settings are off or the IMC is missing). */

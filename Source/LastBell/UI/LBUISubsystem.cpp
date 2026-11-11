@@ -121,7 +121,6 @@ void ULBUISubsystem::PruneStale()
 			bPausedByUI = false;
 		}
 	}
-	bFirstLaunchBrightness = bFirstLaunchBrightness && FindScreenNoPrune(ELBScreen::Brightness) != nullptr;
 }
 
 ULBMenuWidgetBase* ULBUISubsystem::FindScreenNoPrune(ELBScreen Screen) const

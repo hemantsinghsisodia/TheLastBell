@@ -7,12 +7,15 @@ public class LastBellTests : ModuleRules
 	public LastBellTests(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
+		// The test files keep helpers with the same names (Note, StartSession, HalfHeight...) in anonymous namespaces; a unity chunk that merges two of them
+		// fails to compile, and which files share a chunk changes whenever a file is added or edited. Each test file compiles on its own.
+		bUseUnity = false;
 
 		PublicIncludePaths.Add(ModuleDirectory);
 
 		PublicDependencyModuleNames.AddRange(new string[]
 		{
-			"Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "GameplayTags", "PhysicsCore", "LastBell"
+			"Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "GameplayTags", "PhysicsCore", "UMG", "Slate", "SlateCore", "LastBell"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[]

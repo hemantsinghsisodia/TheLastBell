@@ -24,6 +24,7 @@
 #include "Engine/World.h"
 #include "GameFramework/PlayerController.h"
 #include "HAL/IConsoleManager.h"
+#include "Misc/PackageName.h"
 #include "LevelSequence.h"
 #include "MovieScene.h"
 #include "Save/LBSaveSubsystem.h"
@@ -58,11 +59,11 @@
 
 namespace LBUITest
 {
-	const TCHAR* GMap = TEXT("/Game/LastBell/Maps/L_Test_Warden");
+	const TCHAR* GUIMap = TEXT("/Game/LastBell/Maps/L_Test_Warden");
 
-	void Note(const FString& Text) { UE_LOG(LogLB, Display, TEXT("[UITest] %s"), *Text); }
+	void UINote(const FString& Text) { UE_LOG(LogLB, Display, TEXT("[UITest] %s"), *Text); }
 
-	struct FCtx
+	struct FUICtx
 	{
 		UWorld* W = nullptr;
 		double Elapsed = 0.0; // world seconds since the step began (frozen while paused)
@@ -71,7 +72,7 @@ namespace LBUITest
 		int32 Frames = 0;
 	};
 
-	struct FState
+	struct FUIState
 	{
 		int32 Phase = 0;
 		int32 Counter = 0;
@@ -90,10 +91,10 @@ namespace LBUITest
 	};
 
 	/** Sets a console variable for its lifetime and puts it back. */
-	class FCVarGuard
+	class FUICVarGuard
 	{
 	public:
-		FCVarGuard(const TCHAR* InName, int32 Value) : Name(InName)
+		FUICVarGuard(const TCHAR* InName, int32 Value) : Name(InName)
 		{
 			if (IConsoleVariable* Var = IConsoleManager::Get().FindConsoleVariable(Name))
 			{
@@ -101,31 +102,31 @@ namespace LBUITest
 				Var->Set(Value, ECVF_SetByCode);
 			}
 		}
-		~FCVarGuard()
+		~FUICVarGuard()
 		{
 			if (IConsoleVariable* Var = IConsoleManager::Get().FindConsoleVariable(Name))
 			{
 				Var->Set(Previous, ECVF_SetByCode);
 			}
 		}
-		FCVarGuard(const FCVarGuard&) = delete;
-		FCVarGuard& operator=(const FCVarGuard&) = delete;
+		FUICVarGuard(const FUICVarGuard&) = delete;
+		FUICVarGuard& operator=(const FUICVarGuard&) = delete;
 
 	private:
 		const TCHAR* Name;
 		int32 Previous = 0;
 	};
 
-	ULBUISubsystem* GetUI(UWorld* W) { return ULBUISubsystem::Get(W); }
-	ALBPlayerController* LBController(UWorld* W) { return W ? Cast<ALBPlayerController>(W->GetFirstPlayerController()) : nullptr; }
+	ULBUISubsystem* UIGet(UWorld* W) { return ULBUISubsystem::Get(W); }
+	ALBPlayerController* UILBController(UWorld* W) { return W ? Cast<ALBPlayerController>(W->GetFirstPlayerController()) : nullptr; }
 
 	class FUIRunner : public IAutomationLatentCommand
 	{
 	public:
-		using FStepFn = TFunction<bool(FCtx&)>;
+		using FStepFn = TFunction<bool(FUICtx&)>;
 
 		FUIRunner(FAutomationTestBase* InTest, bool bWardenOn, bool bCineOn, bool bCalibrated)
-			: S(MakeShared<FState>()), Test(InTest), WardenSwitch(bWardenOn), CineSwitch(bCineOn), AudioOn(TEXT("lb.Audio.Enabled"), 1)
+			: S(MakeShared<FUIState>()), Test(InTest), WardenSwitch(bWardenOn), CineSwitch(bCineOn), AudioOn(TEXT("lb.Audio.Enabled"), 1)
 		{
 			if (ULBUserSettings* Settings = ULBUserSettings::GetUserSettings())
 			{
@@ -166,10 +167,10 @@ namespace LBUITest
 				WallStart = FPlatformTime::Seconds();
 				WorldStart = W ? W->GetTimeSeconds() : 0.0;
 				ErrorsAtStart = ErrCount();
-				Note(FString::Printf(TEXT("STEP %d begin: %s"), StepIndex + 1, *Step.Name));
+				UINote(FString::Printf(TEXT("STEP %d begin: %s"), StepIndex + 1, *Step.Name));
 			}
 
-			FCtx Ctx;
+			FUICtx Ctx;
 			Ctx.W = W;
 			Ctx.Now = W ? W->GetTimeSeconds() : 0.0;
 			Ctx.Elapsed = Ctx.Now - WorldStart;
@@ -185,7 +186,7 @@ namespace LBUITest
 			}
 			if (bDone || bTimedOut)
 			{
-				Note(FString::Printf(TEXT("STEP %d %s: %s"), StepIndex + 1, ErrCount() == ErrorsAtStart ? TEXT("PASS") : TEXT("FAIL"), *Step.Name));
+				UINote(FString::Printf(TEXT("STEP %d %s: %s"), StepIndex + 1, ErrCount() == ErrorsAtStart ? TEXT("PASS") : TEXT("FAIL"), *Step.Name));
 				if (bTimedOut || ErrCount() != ErrorsAtStart)
 				{
 					bAbort = true;
@@ -196,7 +197,7 @@ namespace LBUITest
 			return false;
 		}
 
-		TSharedRef<FState> S;
+		TSharedRef<FUIState> S;
 
 	private:
 		struct FStep
@@ -220,7 +221,7 @@ namespace LBUITest
 			if (UWorld* W = LBPie::World())
 			{
 				// Never leave the world paused or a screen up when the session ends.
-				if (ULBUISubsystem* Subsystem = GetUI(W))
+				if (ULBUISubsystem* Subsystem = UIGet(W))
 				{
 					Subsystem->ClosePause();
 					Subsystem->ClearScreens();
@@ -237,7 +238,7 @@ namespace LBUITest
 		FLBUserSettingsGuard SettingsGuard;
 		LBPie::FWardenSwitch WardenSwitch;
 		LBPie::FCineSwitch CineSwitch;
-		FCVarGuard AudioOn;
+		FUICVarGuard AudioOn;
 		TArray<FStep> Steps;
 		int32 StepIndex = 0;
 		int32 Frames = 0;
@@ -250,28 +251,28 @@ namespace LBUITest
 		int32 ErrorsAtStart = 0;
 	};
 
-	TSharedRef<FUIRunner> StartSession(FAutomationTestBase* Test, bool bWardenOn = false, bool bCineOn = false, bool bCalibrated = true)
+	TSharedRef<FUIRunner> UIStartSession(FAutomationTestBase* Test, bool bWardenOn = false, bool bCineOn = false, bool bCalibrated = true)
 	{
 		LBPie::ClearSlot();
 		TSharedRef<FUIRunner> Runner = MakeShared<FUIRunner>(Test, bWardenOn, bCineOn, bCalibrated);
-		FAutomationEditorCommonUtils::LoadMap(GMap);
+		FAutomationEditorCommonUtils::LoadMap(GUIMap);
 		FRequestPlaySessionParams PlayParams;
 		PlayParams.WorldType = EPlaySessionWorldType::PlayInEditor;
 		GEditor->RequestPlaySession(PlayParams);
 		return Runner;
 	}
 
-	void Enqueue(const TSharedRef<FUIRunner>& Runner)
+	void UIEnqueue(const TSharedRef<FUIRunner>& Runner)
 	{
 		FAutomationTestFramework::Get().EnqueueLatentCommand(Runner);
 	}
 
-	void AddReady(FUIRunner& R)
+	void UIAddReady(FUIRunner& R)
 	{
-		R.Add(TEXT("PIE ready"), [](FCtx& C) { return LBPie::WorldReady() && C.Frames >= 5; }, 90.f);
+		R.Add(TEXT("PIE ready"), [](FUICtx& C) { return LBPie::WorldReady() && C.Frames >= 5; }, 90.f);
 	}
 
-	ALBWarden* FindWarden(UWorld* W)
+	ALBWarden* UIFindWarden(UWorld* W)
 	{
 		for (TActorIterator<ALBWarden> It(W); It; ++It)
 		{
@@ -290,14 +291,14 @@ using namespace LBUITest;
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBUIMenuNoContinueTest, "LastBell.Functional.UI.MainMenu.ContinueHiddenWithoutSave", LB_UIFUNC_FLAGS)
 bool FLBUIMenuNoContinueTest::RunTest(const FString& Parameters)
 {
-	TSharedRef<FUIRunner> R = StartSession(this);
-	const TSharedRef<FState> S = R->S;
+	TSharedRef<FUIRunner> R = UIStartSession(this);
+	const TSharedRef<FUIState> S = R->S;
 	FAutomationTestBase* Test = this;
-	AddReady(*R);
+	UIAddReady(*R);
 
-	R->Add(TEXT("No save: the menu has no Continue item"), [S, Test](FCtx& C)
+	R->Add(TEXT("No save: the menu has no Continue item"), [S, Test](FUICtx& C)
 	{
-		ULBUISubsystem* Subsystem = GetUI(C.W);
+		ULBUISubsystem* Subsystem = UIGet(C.W);
 		ULBSaveSubsystem* Save = ULBSaveSubsystem::Get(C.W);
 		if (!Test->TestNotNull(TEXT("The UI subsystem"), Subsystem) || !Test->TestNotNull(TEXT("The save subsystem"), Save))
 		{
@@ -327,15 +328,15 @@ bool FLBUIMenuNoContinueTest::RunTest(const FString& Parameters)
 			Subsystem->HandleBack();
 			Test->TestEqual(TEXT("Back leaves the main menu on top"), Subsystem->GetTopScreen(), ELBScreen::MainMenu);
 			Test->TestFalse(TEXT("The menu never pauses the game"), C.W->IsPaused());
-			Test->TestTrue(TEXT("The cursor is shown"), LBController(C.W) && LBController(C.W)->bShowMouseCursor);
+			Test->TestTrue(TEXT("The cursor is shown"), UILBController(C.W) && UILBController(C.W)->bShowMouseCursor);
 		}
 		Subsystem->ClearScreens();
 		return true;
 	});
 
-	R->Add(TEXT("With a save: Continue is the first item"), [S, Test](FCtx& C)
+	R->Add(TEXT("With a save: Continue is the first item"), [S, Test](FUICtx& C)
 	{
-		ULBUISubsystem* Subsystem = GetUI(C.W);
+		ULBUISubsystem* Subsystem = UIGet(C.W);
 		ULBSaveSubsystem* Save = ULBSaveSubsystem::Get(C.W);
 		ALBCharacter* Pawn = LBPie::Pawn();
 		if (!Subsystem || !Save || !Pawn)
@@ -359,21 +360,21 @@ bool FLBUIMenuNoContinueTest::RunTest(const FString& Parameters)
 		return true;
 	});
 
-	Enqueue(R);
+	UIEnqueue(R);
 	return true;
 }
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBUIMenuNewGameConfirmTest, "LastBell.Functional.UI.MainMenu.NewGameConfirmsWhenSave", LB_UIFUNC_FLAGS)
 bool FLBUIMenuNewGameConfirmTest::RunTest(const FString& Parameters)
 {
-	TSharedRef<FUIRunner> R = StartSession(this);
-	const TSharedRef<FState> S = R->S;
+	TSharedRef<FUIRunner> R = UIStartSession(this);
+	const TSharedRef<FUIState> S = R->S;
 	FAutomationTestBase* Test = this;
-	AddReady(*R);
+	UIAddReady(*R);
 
-	R->Add(TEXT("With a save, New Game asks first; Cancel and Back keep everything"), [S, Test](FCtx& C)
+	R->Add(TEXT("With a save, New Game asks first; Cancel and Back keep everything"), [S, Test](FUICtx& C)
 	{
-		ULBUISubsystem* Subsystem = GetUI(C.W);
+		ULBUISubsystem* Subsystem = UIGet(C.W);
 		ULBSaveSubsystem* Save = ULBSaveSubsystem::Get(C.W);
 		ALBCharacter* Pawn = LBPie::Pawn();
 		if (!Subsystem || !Save || !Pawn)
@@ -420,7 +421,7 @@ bool FLBUIMenuNewGameConfirmTest::RunTest(const FString& Parameters)
 		return true;
 	});
 
-	Enqueue(R);
+	UIEnqueue(R);
 	return true;
 }
 
@@ -431,21 +432,21 @@ bool FLBUIMenuNewGameConfirmTest::RunTest(const FString& Parameters)
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBUIPauseFreezesWorldTest, "LastBell.Functional.UI.Pause.FreezesWorld", LB_UIFUNC_FLAGS)
 bool FLBUIPauseFreezesWorldTest::RunTest(const FString& Parameters)
 {
-	TSharedRef<FUIRunner> R = StartSession(this, /*bWardenOn*/ true);
-	const TSharedRef<FState> S = R->S;
+	TSharedRef<FUIRunner> R = UIStartSession(this, /*bWardenOn*/ true);
+	const TSharedRef<FUIState> S = R->S;
 	FAutomationTestBase* Test = this;
-	AddReady(*R);
+	UIAddReady(*R);
 
-	R->Add(TEXT("The world runs; Pause freezes it for a second of real time; Resume continues"), [S, Test](FCtx& C)
+	R->Add(TEXT("The world runs; Pause freezes it for a second of real time; Resume continues"), [S, Test](FUICtx& C)
 	{
-		ULBUISubsystem* Subsystem = GetUI(C.W);
+		ULBUISubsystem* Subsystem = UIGet(C.W);
 		ALBCharacter* Pawn = LBPie::Pawn();
 		if (!Subsystem || !Pawn)
 		{
 			Test->AddError(TEXT("The UI subsystem or the pawn is missing"));
 			return true;
 		}
-		ALBWarden* Warden = FindWarden(C.W);
+		ALBWarden* Warden = UIFindWarden(C.W);
 		ULBStormSubsystem* Storm = C.W->GetSubsystem<ULBStormSubsystem>();
 		ULBAudioSubsystem* Audio = C.W->GetSubsystem<ULBAudioSubsystem>();
 
@@ -498,7 +499,7 @@ bool FLBUIPauseFreezesWorldTest::RunTest(const FString& Parameters)
 			Subsystem->ClosePause();
 			Test->TestFalse(TEXT("Resume unpauses the world"), C.W->IsPaused());
 			Test->TestEqual(TEXT("No screen is left"), Subsystem->GetScreenCount(), 0);
-			Test->TestFalse(TEXT("The cursor is hidden again"), LBController(C.W) && LBController(C.W)->bShowMouseCursor);
+			Test->TestFalse(TEXT("The cursor is hidden again"), UILBController(C.W) && UILBController(C.W)->bShowMouseCursor);
 			S->Number0 = C.W->GetTimeSeconds();
 			S->Phase = 2;
 			return false;
@@ -513,13 +514,13 @@ bool FLBUIPauseFreezesWorldTest::RunTest(const FString& Parameters)
 		}
 	}, 60.f);
 
-	Enqueue(R);
+	UIEnqueue(R);
 	return true;
 }
 
 namespace LBUITest
 {
-	TSoftObjectPtr<ULevelSequence> MakeSequence(FState& S, double Seconds, const TArray<TPair<double, FString>>& Markers)
+	TSoftObjectPtr<ULevelSequence> UIMakeSequence(FUIState& S, double Seconds, const TArray<TPair<double, FString>>& Markers)
 	{
 		ULevelSequence* Sequence = NewObject<ULevelSequence>(GetTransientPackage());
 		Sequence->Initialize();
@@ -541,14 +542,14 @@ namespace LBUITest
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBUIPauseFreezesCinematicTest, "LastBell.Functional.UI.Pause.FreezesCinematic", LB_UIFUNC_FLAGS)
 bool FLBUIPauseFreezesCinematicTest::RunTest(const FString& Parameters)
 {
-	TSharedRef<FUIRunner> R = StartSession(this, /*bWardenOn*/ false, /*bCineOn*/ true);
-	const TSharedRef<FState> S = R->S;
+	TSharedRef<FUIRunner> R = UIStartSession(this, /*bWardenOn*/ false, /*bCineOn*/ true);
+	const TSharedRef<FUIState> S = R->S;
 	FAutomationTestBase* Test = this;
-	AddReady(*R);
+	UIAddReady(*R);
 
-	R->Add(TEXT("A cinematic plays; Pause freezes the sequence and its widget; Resume continues from the same moment"), [S, Test](FCtx& C)
+	R->Add(TEXT("A cinematic plays; Pause freezes the sequence and its widget; Resume continues from the same moment"), [S, Test](FUICtx& C)
 	{
-		ULBUISubsystem* Subsystem = GetUI(C.W);
+		ULBUISubsystem* Subsystem = UIGet(C.W);
 		ULBCinematicSubsystem* Cine = C.W->GetSubsystem<ULBCinematicSubsystem>();
 		if (!Subsystem || !Cine)
 		{
@@ -563,7 +564,7 @@ bool FLBUIPauseFreezesCinematicTest::RunTest(const FString& Parameters)
 			FLBCinematicDef Def;
 			Def.Id = TEXT("UIPause");
 			Def.InitialLock = ELBInputLock::Full;
-			Def.Sequence = MakeSequence(*S, 20.0, { { 0.0, TEXT("skip:1") }, { 12.0, TEXT("tag:State.Test.Door1Open") } });
+			Def.Sequence = UIMakeSequence(*S, 20.0, { { 0.0, TEXT("skip:1") }, { 12.0, TEXT("tag:State.Test.Door1Open") } });
 			S->CineSettings.Reset(NewObject<ULBCinematicSettings>(GetTransientPackage()));
 			S->CineSettings->Cinematics.Add(Def);
 			Cine->OverrideSettings(S->CineSettings.Get());
@@ -618,32 +619,36 @@ bool FLBUIPauseFreezesCinematicTest::RunTest(const FString& Parameters)
 			{
 				return false;
 			}
-			Test->TestTrue(FString::Printf(TEXT("After Resume the sequence continues from where it stopped (%.3f from %.3f)"), Cine->GetSequenceSeconds(), S->Number0),
-				Cine->GetSequenceSeconds() - S->Number0 < 0.35);
-			if (C.W->GetTimeSeconds() - S->Number1 < 0.6)
+			if (S->Counter != -1)
+			{
+				S->Counter = -1;
+				Test->TestTrue(FString::Printf(TEXT("After Resume the sequence continues from where it stopped (%.3f from %.3f)"), Cine->GetSequenceSeconds(), S->Number0),
+					Cine->GetSequenceSeconds() - S->Number0 < 0.6);
+			}
+			if (C.W->GetTimeSeconds() - S->Number1 < 0.8)
 			{
 				return false;
 			}
-			Test->TestTrue(TEXT("...and advances again"), Cine->GetSequenceSeconds() - S->Number0 > 0.3);
+			Test->TestTrue(TEXT("...and advances again"), Cine->GetSequenceSeconds() - S->Number0 > 0.5);
 			Cine->StopCinematic();
 			return true;
 		}
 		return true;
 	}, 90.f);
 
-	Enqueue(R);
+	UIEnqueue(R);
 	return true;
 }
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBUIPauseBellTest, "LastBell.Functional.UI.Pause.BellStopsAndResumes", LB_UIFUNC_FLAGS)
 bool FLBUIPauseBellTest::RunTest(const FString& Parameters)
 {
-	TSharedRef<FUIRunner> R = StartSession(this);
-	const TSharedRef<FState> S = R->S;
+	TSharedRef<FUIRunner> R = UIStartSession(this);
+	const TSharedRef<FUIState> S = R->S;
 	FAutomationTestBase* Test = this;
-	AddReady(*R);
+	UIAddReady(*R);
 
-	R->Add(TEXT("The audio director is up with a tagged moon and transient settings"), [S, Test](FCtx& C)
+	R->Add(TEXT("The audio director is up with a tagged moon and transient settings"), [S, Test](FUICtx& C)
 	{
 		if (S->Phase == 0)
 		{
@@ -684,15 +689,24 @@ bool FLBUIPauseBellTest::RunTest(const FString& Parameters)
 		return false;
 	});
 
-	R->Add(TEXT("A scheduled strike does not play during the pause; it plays after Resume"), [S, Test](FCtx& C)
+	R->Add(TEXT("A scheduled strike does not play during the pause; it plays after Resume"), [S, Test](FUICtx& C)
 	{
-		ULBUISubsystem* Subsystem = GetUI(C.W);
+		ULBUISubsystem* Subsystem = UIGet(C.W);
 		ULBAudioSubsystem* Audio = C.W->GetSubsystem<ULBAudioSubsystem>();
 		if (!Subsystem || !Audio)
 		{
 			Test->AddError(TEXT("The UI or the audio subsystem is missing"));
 			return true;
 		}
+		auto StageRequests = [Audio](int32 Stage)
+		{
+			int32 Count = 0;
+			for (const FLBAudioRequest& Request : Audio->GetRequests())
+			{
+				Count += (Request.Cue == LBAudioCue::Bell && Request.Aux == Stage) ? 1 : 0;
+			}
+			return Count;
+		};
 		auto BellRequests = [Audio]()
 		{
 			int32 Count = 0;
@@ -707,8 +721,9 @@ bool FLBUIPauseBellTest::RunTest(const FString& Parameters)
 		{
 		case 1:
 			Audio->ClearRequests();
+			S->Counter = Audio->GetScheduledCount();
 			Audio->PlayBell(3, 4);
-			Test->TestEqual(TEXT("Four strikes are scheduled"), Audio->GetScheduledCount(), 4);
+			Test->TestEqual(TEXT("Four strikes were added to the schedule"), Audio->GetScheduledCount(), S->Counter + 4);
 			// Pause in the same frame, before the schedule's next tick can play the first strike.
 			if (!Test->TestTrue(TEXT("OpenPause succeeds"), Subsystem->OpenPause()))
 			{
@@ -724,7 +739,7 @@ bool FLBUIPauseBellTest::RunTest(const FString& Parameters)
 				return false;
 			}
 			Test->TestEqual(TEXT("No bell strike played during the pause"), BellRequests(), 0);
-			Test->TestEqual(TEXT("All four strikes are still scheduled"), Audio->GetScheduledCount(), 4);
+			Test->TestEqual(TEXT("The schedule did not change"), Audio->GetScheduledCount(), S->Counter + 4);
 			Subsystem->ClosePause();
 			S->T0 = C.W->GetTimeSeconds();
 			S->Phase = 3;
@@ -735,8 +750,7 @@ bool FLBUIPauseBellTest::RunTest(const FString& Parameters)
 			{
 				return false;
 			}
-			Test->TestEqual(TEXT("After Resume all four strikes played"), BellRequests(), 4);
-			Test->TestEqual(TEXT("Nothing is left scheduled"), Audio->GetScheduledCount(), 0);
+			Test->TestEqual(TEXT("After Resume all four stage-3 strikes played"), StageRequests(3), 4);
 			for (const FLBAudioRequest& Request : Audio->GetRequests())
 			{
 				if (Request.Cue == LBAudioCue::Bell)
@@ -748,21 +762,21 @@ bool FLBUIPauseBellTest::RunTest(const FString& Parameters)
 		}
 	}, 60.f);
 
-	Enqueue(R);
+	UIEnqueue(R);
 	return true;
 }
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBUIPauseBlockedTest, "LastBell.Functional.UI.Pause.BlockedDuringTravelAndDeath", LB_UIFUNC_FLAGS)
 bool FLBUIPauseBlockedTest::RunTest(const FString& Parameters)
 {
-	TSharedRef<FUIRunner> R = StartSession(this);
-	const TSharedRef<FState> S = R->S;
+	TSharedRef<FUIRunner> R = UIStartSession(this);
+	const TSharedRef<FUIState> S = R->S;
 	FAutomationTestBase* Test = this;
-	AddReady(*R);
+	UIAddReady(*R);
 
-	R->Add(TEXT("Pause is refused on the main menu and while the player is dying; Escape is consumed, not leaked"), [S, Test](FCtx& C)
+	R->Add(TEXT("Pause is refused on the main menu and while the player is dying; Escape is consumed, not leaked"), [S, Test](FUICtx& C)
 	{
-		ULBUISubsystem* Subsystem = GetUI(C.W);
+		ULBUISubsystem* Subsystem = UIGet(C.W);
 		ALBCharacter* Pawn = LBPie::Pawn();
 		if (!Subsystem || !Pawn)
 		{
@@ -793,21 +807,21 @@ bool FLBUIPauseBlockedTest::RunTest(const FString& Parameters)
 		return true;
 	});
 
-	Enqueue(R);
+	UIEnqueue(R);
 	return true;
 }
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBUIPauseInspectionTest, "LastBell.Functional.UI.Pause.EscapeClosesInspectionFirst", LB_UIFUNC_FLAGS)
 bool FLBUIPauseInspectionTest::RunTest(const FString& Parameters)
 {
-	TSharedRef<FUIRunner> R = StartSession(this);
-	const TSharedRef<FState> S = R->S;
+	TSharedRef<FUIRunner> R = UIStartSession(this);
+	const TSharedRef<FUIState> S = R->S;
 	FAutomationTestBase* Test = this;
-	AddReady(*R);
+	UIAddReady(*R);
 
-	R->Add(TEXT("The first Escape closes the note, the second opens the pause menu"), [S, Test](FCtx& C)
+	R->Add(TEXT("The first Escape closes the note, the second opens the pause menu"), [S, Test](FUICtx& C)
 	{
-		ULBUISubsystem* Subsystem = GetUI(C.W);
+		ULBUISubsystem* Subsystem = UIGet(C.W);
 		ALBCharacter* Pawn = LBPie::Pawn();
 		if (!Subsystem || !Pawn || !Pawn->GetInspection())
 		{
@@ -819,16 +833,16 @@ bool FLBUIPauseInspectionTest::RunTest(const FString& Parameters)
 		if (S->Phase == 0)
 		{
 			const FVector Base = Pawn->GetActorLocation() + FVector(300.0, 0.0, 100.0);
-			AStaticMeshActor* Note = C.W->SpawnActor<AStaticMeshActor>(Base, FRotator::ZeroRotator);
-			if (!Test->TestNotNull(TEXT("The note actor spawned"), Note))
+			AStaticMeshActor* UINote = C.W->SpawnActor<AStaticMeshActor>(Base, FRotator::ZeroRotator);
+			if (!Test->TestNotNull(TEXT("The note actor spawned"), UINote))
 			{
 				return true;
 			}
-			S->Actors.Add(Note);
-			Note->SetMobility(EComponentMobility::Movable);
-			Note->SetActorLocation(Base);
-			ULBInspectableComponent* Inspectable = NewObject<ULBInspectableComponent>(Note);
-			Note->AddInstanceComponent(Inspectable);
+			S->Actors.Add(UINote);
+			UINote->SetMobility(EComponentMobility::Movable);
+			UINote->SetActorLocation(Base);
+			ULBInspectableComponent* Inspectable = NewObject<ULBInspectableComponent>(UINote);
+			UINote->AddInstanceComponent(Inspectable);
 			Inspectable->RegisterComponent();
 			if (!Test->TestTrue(TEXT("BeginInspect succeeded"), Inspection->BeginInspect(Inspectable)))
 			{
@@ -867,7 +881,7 @@ bool FLBUIPauseInspectionTest::RunTest(const FString& Parameters)
 		return true;
 	});
 
-	Enqueue(R);
+	UIEnqueue(R);
 	return true;
 }
 
@@ -878,12 +892,12 @@ bool FLBUIPauseInspectionTest::RunTest(const FString& Parameters)
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBUIRebindTest, "LastBell.Functional.UI.Rebind.InteractChangesPromptAndSkip", LB_UIFUNC_FLAGS)
 bool FLBUIRebindTest::RunTest(const FString& Parameters)
 {
-	TSharedRef<FUIRunner> R = StartSession(this);
-	const TSharedRef<FState> S = R->S;
+	TSharedRef<FUIRunner> R = UIStartSession(this);
+	const TSharedRef<FUIState> S = R->S;
 	FAutomationTestBase* Test = this;
-	AddReady(*R);
+	UIAddReady(*R);
 
-	R->Add(TEXT("Rebinding Interact changes the prompt icon and the skip prompt; conflicts are refused; Reset restores E"), [S, Test](FCtx& C)
+	R->Add(TEXT("Rebinding Interact changes the prompt icon and the skip prompt; conflicts are refused; Reset restores E"), [S, Test](FUICtx& C)
 	{
 		APlayerController* PC = C.W->GetFirstPlayerController();
 		ULocalPlayer* LocalPlayer = PC ? PC->GetLocalPlayer() : nullptr;
@@ -934,7 +948,7 @@ bool FLBUIRebindTest::RunTest(const FString& Parameters)
 		return true;
 	});
 
-	Enqueue(R);
+	UIEnqueue(R);
 	return true;
 }
 
@@ -945,12 +959,12 @@ bool FLBUIRebindTest::RunTest(const FString& Parameters)
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBUIFOVTest, "LastBell.Functional.UI.Settings.FOVApplies", LB_UIFUNC_FLAGS)
 bool FLBUIFOVTest::RunTest(const FString& Parameters)
 {
-	TSharedRef<FUIRunner> R = StartSession(this);
-	const TSharedRef<FState> S = R->S;
+	TSharedRef<FUIRunner> R = UIStartSession(this);
+	const TSharedRef<FUIState> S = R->S;
 	FAutomationTestBase* Test = this;
-	AddReady(*R);
+	UIAddReady(*R);
 
-	R->Add(TEXT("The camera takes the user's FOV, motion blur and film grain settings"), [S, Test](FCtx& C)
+	R->Add(TEXT("The camera takes the user's FOV, motion blur and film grain settings"), [S, Test](FUICtx& C)
 	{
 		ALBCharacter* Pawn = LBPie::Pawn();
 		ULBUserSettings* Settings = ULBUserSettings::GetUserSettings();
@@ -1016,21 +1030,21 @@ bool FLBUIFOVTest::RunTest(const FString& Parameters)
 		}
 	});
 
-	Enqueue(R);
+	UIEnqueue(R);
 	return true;
 }
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBUIBrightnessGateTest, "LastBell.Functional.UI.Brightness.FirstLaunchGate", LB_UIFUNC_FLAGS)
 bool FLBUIBrightnessGateTest::RunTest(const FString& Parameters)
 {
-	TSharedRef<FUIRunner> R = StartSession(this, false, false, /*bCalibrated*/ false);
-	const TSharedRef<FState> S = R->S;
+	TSharedRef<FUIRunner> R = UIStartSession(this, false, false, /*bCalibrated*/ false);
+	const TSharedRef<FUIState> S = R->S;
 	FAutomationTestBase* Test = this;
-	AddReady(*R);
+	UIAddReady(*R);
 
-	R->Add(TEXT("First launch: the brightness screen comes before the menu, cannot be skipped, and is never shown again once confirmed"), [S, Test](FCtx& C)
+	R->Add(TEXT("First launch: the brightness screen comes before the menu, cannot be skipped, and is never shown again once confirmed"), [S, Test](FUICtx& C)
 	{
-		ULBUISubsystem* Subsystem = GetUI(C.W);
+		ULBUISubsystem* Subsystem = UIGet(C.W);
 		ULBUserSettings* Settings = ULBUserSettings::GetUserSettings();
 		if (!Subsystem || !Settings)
 		{
@@ -1079,21 +1093,21 @@ bool FLBUIBrightnessGateTest::RunTest(const FString& Parameters)
 		return true;
 	});
 
-	Enqueue(R);
+	UIEnqueue(R);
 	return true;
 }
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBUISettingsScreenTest, "LastBell.Functional.UI.Settings.TabsApplyAndPersist", LB_UIFUNC_FLAGS)
 bool FLBUISettingsScreenTest::RunTest(const FString& Parameters)
 {
-	TSharedRef<FUIRunner> R = StartSession(this);
-	const TSharedRef<FState> S = R->S;
+	TSharedRef<FUIRunner> R = UIStartSession(this);
+	const TSharedRef<FUIState> S = R->S;
 	FAutomationTestBase* Test = this;
-	AddReady(*R);
+	UIAddReady(*R);
 
-	R->Add(TEXT("Each tab builds; Audio and Accessibility apply at once; the preset shows Custom; Back discards graphics changes"), [S, Test](FCtx& C)
+	R->Add(TEXT("Each tab builds; Audio and Accessibility apply at once; the preset shows Custom; Back discards graphics changes"), [S, Test](FUICtx& C)
 	{
-		ULBUISubsystem* Subsystem = GetUI(C.W);
+		ULBUISubsystem* Subsystem = UIGet(C.W);
 		ULBUserSettings* Settings = ULBUserSettings::GetUserSettings();
 		if (!Subsystem || !Settings)
 		{
@@ -1152,7 +1166,7 @@ bool FLBUISettingsScreenTest::RunTest(const FString& Parameters)
 		return true;
 	});
 
-	Enqueue(R);
+	UIEnqueue(R);
 	return true;
 }
 
@@ -1164,14 +1178,14 @@ bool FLBUISettingsScreenTest::RunTest(const FString& Parameters)
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBUIKeepDialogTest, "LastBell.Functional.UI.Confirm.KeepDialogRevertsOnTimeout", LB_UIFUNC_FLAGS)
 bool FLBUIKeepDialogTest::RunTest(const FString& Parameters)
 {
-	TSharedRef<FUIRunner> R = StartSession(this);
-	const TSharedRef<FState> S = R->S;
+	TSharedRef<FUIRunner> R = UIStartSession(this);
+	const TSharedRef<FUIState> S = R->S;
 	FAutomationTestBase* Test = this;
-	AddReady(*R);
+	UIAddReady(*R);
 
-	R->Add(TEXT("The keep dialog counts down in real time and answers Cancel (revert) when it ends; Keep stops the countdown"), [S, Test](FCtx& C)
+	R->Add(TEXT("The keep dialog counts down in real time and answers Cancel (revert) when it ends; Keep stops the countdown"), [S, Test](FUICtx& C)
 	{
-		ULBUISubsystem* Subsystem = GetUI(C.W);
+		ULBUISubsystem* Subsystem = UIGet(C.W);
 		if (!Test->TestNotNull(TEXT("The UI subsystem"), Subsystem))
 		{
 			return true;
@@ -1216,21 +1230,21 @@ bool FLBUIKeepDialogTest::RunTest(const FString& Parameters)
 		return true;
 	});
 
-	Enqueue(R);
+	UIEnqueue(R);
 	return true;
 }
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBUICreditsTest, "LastBell.Functional.UI.Credits.RollsFromCinematicCredits", LB_UIFUNC_FLAGS)
 bool FLBUICreditsTest::RunTest(const FString& Parameters)
 {
-	TSharedRef<FUIRunner> R = StartSession(this);
-	const TSharedRef<FState> S = R->S;
+	TSharedRef<FUIRunner> R = UIStartSession(this);
+	const TSharedRef<FUIState> S = R->S;
 	FAutomationTestBase* Test = this;
-	AddReady(*R);
+	UIAddReady(*R);
 
-	R->Add(TEXT("The Credits screen builds the ending's lines and closes on Back"), [S, Test](FCtx& C)
+	R->Add(TEXT("The Credits screen builds the ending's lines and closes on Back"), [S, Test](FUICtx& C)
 	{
-		ULBUISubsystem* Subsystem = GetUI(C.W);
+		ULBUISubsystem* Subsystem = UIGet(C.W);
 		if (!Test->TestNotNull(TEXT("The UI subsystem"), Subsystem))
 		{
 			return true;
@@ -1263,7 +1277,7 @@ bool FLBUICreditsTest::RunTest(const FString& Parameters)
 		return true;
 	});
 
-	Enqueue(R);
+	UIEnqueue(R);
 	return true;
 }
 
@@ -1274,17 +1288,17 @@ bool FLBUICreditsTest::RunTest(const FString& Parameters)
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBUILoadingTest, "LastBell.Functional.UI.Loading.ScreenShownOnTravel", LB_UIFUNC_FLAGS)
 bool FLBUILoadingTest::RunTest(const FString& Parameters)
 {
-	TSharedRef<FUIRunner> R = StartSession(this);
-	const TSharedRef<FState> S = R->S;
+	TSharedRef<FUIRunner> R = UIStartSession(this);
+	const TSharedRef<FUIState> S = R->S;
 	FAutomationTestBase* Test = this;
-	AddReady(*R);
+	UIAddReady(*R);
 
-	R->Add(TEXT("Return to main menu arms the loading screen, blocks the pause, and the screen is taken back after the load"), [S, Test](FCtx& C)
+	R->Add(TEXT("Return to main menu arms the loading screen, blocks the pause, and the screen is taken back after the load"), [S, Test](FUICtx& C)
 	{
 		if (S->Phase == 0)
 		{
 			ULBSaveSubsystem* Save = ULBSaveSubsystem::Get(C.W);
-			ULBUISubsystem* Subsystem = GetUI(C.W);
+			ULBUISubsystem* Subsystem = UIGet(C.W);
 			if (!Save || !Subsystem)
 			{
 				Test->AddError(TEXT("The save or the UI subsystem is missing"));
@@ -1306,7 +1320,7 @@ bool FLBUILoadingTest::RunTest(const FString& Parameters)
 			return false;
 		}
 		// The menu map is up: the movie player's screen was taken back.
-		if (!C.W || C.W == S->OldWorld.Get() || !C.W->HasBegunPlay() || LBPie::MapShortName() != TEXT("L_MainMenu"))
+		if (!C.W || C.W == S->OldWorld.Get() || !C.W->HasBegunPlay() || FPackageName::GetShortName(LBPie::MapShortName()) != TEXT("L_MainMenu"))
 		{
 			return false;
 		}
@@ -1314,7 +1328,7 @@ bool FLBUILoadingTest::RunTest(const FString& Parameters)
 		return true;
 	}, 90.f);
 
-	Enqueue(R);
+	UIEnqueue(R);
 	return true;
 }
 
