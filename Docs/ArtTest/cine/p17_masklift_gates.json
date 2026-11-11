@@ -1,0 +1,307 @@
+{
+ "task": "P17-3 Blender part",
+ "clip": "AN_Warden_MaskLift",
+ "source": "SourceArt/Warden/P17/Warden_MaskLift.blend (copy of V11_1w)",
+ "length": {
+  "seconds": 6.0,
+  "fps": 30,
+  "blender_frames": [
+   1,
+   181
+  ],
+  "clip_frames": 181
+ },
+ "beats": {
+  "rise_to_rims": [
+   0.0,
+   1.5
+  ],
+  "grip_curl": [
+   1.5,
+   2.2
+  ],
+  "lift": [
+   2.2,
+   3.4
+  ],
+  "lean_and_extend": [
+   3.4,
+   4.6
+  ],
+  "hold_settle": [
+   4.6,
+   6.0
+  ]
+ },
+ "grip": {
+  "t": 2.2,
+  "blender_frame": 67,
+  "clip_frame_0based": 66
+ },
+ "lifted": {
+  "t": 3.4,
+  "blender_frame": 103,
+  "clip_frame_0based": 102
+ },
+ "extended": {
+  "t": 4.6,
+  "blender_frame": 139,
+  "clip_frame_0based": 138
+ },
+ "mid_lean": {
+  "t": 4.0,
+  "blender_frame": 121,
+  "clip_frame_0based": 120
+ },
+ "end": {
+  "t": 6.0,
+  "blender_frame": 181,
+  "clip_frame_0based": 180
+ },
+ "params": {
+  "lean_deg": 32.0,
+  "settle_lean_deg": 1.6,
+  "settle_down_cm": 1.5,
+  "lift_forward_cm": 20.0,
+  "lift_up_cm": 15.0,
+  "eye_height_cm": 152.0,
+  "target_reach_cm": 100.0
+ },
+ "a_grip_contact": {
+  "frame": 67,
+  "t": 2.2,
+  "limit_cm": 8.0,
+  "right": {
+   "palm_cm": 6.02,
+   "hand_bone_cm": 16.35,
+   "nearest_fingertip_cm": 6.23
+  },
+  "left": {
+   "palm_cm": 6.02,
+   "hand_bone_cm": 16.35,
+   "nearest_fingertip_cm": 6.23
+  },
+  "passed": true,
+  "rule": "palm centre (halfway from the wrist to the middle knuckle, on the palm surface) within 8 cm of each rim point; the nearest fingertip is listed too"
+ },
+ "b_root": {
+  "passed": true,
+  "root_location_max_diff_vs_idle_frame0_cm": 0.0,
+  "root_rotation_max_diff_deg": 0.0,
+  "idle_root_rotation_spread_deg": 0.0,
+  "root_quaternion_wxyz": [
+   1.0,
+   0.0,
+   0.0,
+   0.0
+  ],
+  "bones_in_fbx": 110,
+  "idle_bones": 110,
+  "method": "both FBX imported with Blender defaults; the clip's root pose-bone matrix_basis at every frame against the Idle's first frame"
+ },
+ "c_clearance": {
+  "contact_sheet": "Docs/ArtTest/cine/p17_masklift_contact.png",
+  "numeric": {
+   "0": {
+    "frame": 1,
+    "t": 0.0,
+    "forearm": {
+     "verts": 4263,
+     "min_dist_cm": 0.04,
+     "within_1cm": 358,
+     "within_0_5cm": 121
+    },
+    "hand": {
+     "verts": 9165,
+     "min_dist_cm": 10.8,
+     "within_1cm": 0,
+     "within_0_5cm": 0
+    }
+   },
+   "grip": {
+    "frame": 67,
+    "t": 2.2,
+    "forearm": {
+     "verts": 4263,
+     "min_dist_cm": 0.04,
+     "within_1cm": 152,
+     "within_0_5cm": 32
+    },
+    "hand": {
+     "verts": 9165,
+     "min_dist_cm": 0.0,
+     "within_1cm": 1963,
+     "within_0_5cm": 1015
+    }
+   },
+   "lifted": {
+    "frame": 103,
+    "t": 3.4,
+    "forearm": {
+     "verts": 4263,
+     "min_dist_cm": 0.03,
+     "within_1cm": 130,
+     "within_0_5cm": 32
+    },
+    "hand": {
+     "verts": 9165,
+     "min_dist_cm": 2.71,
+     "within_1cm": 0,
+     "within_0_5cm": 0
+    }
+   },
+   "mid-lean": {
+    "frame": 121,
+    "t": 4.0,
+    "forearm": {
+     "verts": 4263,
+     "min_dist_cm": 0.03,
+     "within_1cm": 171,
+     "within_0_5cm": 54
+    },
+    "hand": {
+     "verts": 9165,
+     "min_dist_cm": 12.23,
+     "within_1cm": 0,
+     "within_0_5cm": 0
+    }
+   },
+   "extended": {
+    "frame": 139,
+    "t": 4.6,
+    "forearm": {
+     "verts": 4263,
+     "min_dist_cm": 0.02,
+     "within_1cm": 228,
+     "within_0_5cm": 78
+    },
+    "hand": {
+     "verts": 9165,
+     "min_dist_cm": 16.07,
+     "within_1cm": 0,
+     "within_0_5cm": 0
+    }
+   },
+   "end": {
+    "frame": 181,
+    "t": 6.0,
+    "forearm": {
+     "verts": 4263,
+     "min_dist_cm": 0.01,
+     "within_1cm": 226,
+     "within_0_5cm": 77
+    },
+    "hand": {
+     "verts": 9165,
+     "min_dist_cm": 15.98,
+     "within_1cm": 0,
+     "within_0_5cm": 0
+    }
+   }
+  },
+  "note": "numeric = skin vertices of the forearms and hands against the wool (hood, cape, robe) on the 6 sheet frames; frame 0 (Idle) is the baseline. The verdict needs the owner's eyes"
+ },
+ "d_reach": {
+  "frame": 139,
+  "t": 4.6,
+  "mask_centre_cm": [
+   -0.0,
+   -100.0,
+   152.0
+  ],
+  "mask_centre_height_cm": 152.0,
+  "horizontal_reach_cm": 100.0,
+  "stop_distance_cm": 80.0,
+  "reach_at_end_cm": 100.0,
+  "height_at_end_cm": 150.5
+ },
+ "lifted_check": {
+  "frame": 103,
+  "t": 3.4,
+  "displacement_from_grip_cm": 25.0,
+  "forward_cm": 20.0,
+  "up_cm": 15.0
+ },
+ "carry": {
+  "helper_vs_design_max_cm": 0.0,
+  "left_palm_to_left_rim_cm": {
+   "at_grip": 6.02,
+   "min": 6.02,
+   "max": 6.02
+  },
+  "note": "helper = mask copy parented to hand_r at the grip frame (Keep World); left palm vs the carried left rim point"
+ },
+ "arm_stats": {
+  "clamped_max_cm": 0.0,
+  "wrist_err_max_cm": 0.0,
+  "feet_pelvis_max_drift_cm": 0.0,
+  "elbow_interior_bend_deg": {
+   "r": [
+    40.6,
+    153.0
+   ],
+   "l": [
+    38.5,
+    158.6
+   ]
+  },
+  "wrist_twist_deg_range": {
+   "r": [
+    -0.0,
+    71.6
+   ],
+   "l": [
+    -69.2,
+    0.0
+   ]
+  }
+ },
+ "forearm_twist_deg_max": {
+  "r": 144.2,
+  "l": 139.2
+ },
+ "mask_reconstruction": {
+  "vertices": 4688,
+  "triangles": 9252,
+  "slot_names_after_blender_import": [
+   "M_Warden_BellMetal.001"
+  ],
+  "material_slot_name_in_fbx": "M_Warden_BellMetal",
+  "material_slot_count": 1,
+  "skinned_mask_vertices": 4688,
+  "max_dist_cm": 7e-05,
+  "mean_dist_cm": 4e-05,
+  "limit_cm": 0.1,
+  "passed": true,
+  "imported_mask_object_matrix_is_pure_scale": true,
+  "imported_mask_object_scale": 0.01,
+  "mask_bounds_head_local_cm": [
+   [
+    -9.69,
+    -6.74,
+    6.33
+   ],
+   [
+    9.4,
+    24.51,
+    22.73
+   ]
+  ],
+  "method": "rotated LOD0 (p13_export_lods_rotated.py on Warden_MaskLift.blend) imported with Blender defaults; the mask FBX imported the same way, its vertices placed at the head bone's rest matrix; nearest skinned slot-1 vertex"
+ },
+ "start_pose": {
+  "max_bone_head_diff_vs_idle_frame0_cm": 0.0003,
+  "bones_compared": 110,
+  "passed": true
+ },
+ "clip_fbx": {
+  "frames": [
+   2,
+   182
+  ],
+  "n_frames": 181,
+  "duration_s": 6.0,
+  "fps_in_file": 30,
+  "bones": 110
+ }
+}
