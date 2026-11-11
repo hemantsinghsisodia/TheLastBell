@@ -1,6 +1,6 @@
 """p17_villager_prep.py -- P17-5a-2: the courtyard villager from the CC0 Quaternius packs (Modular Character Outfits - Fantasy, Universal Animation Library 1 and 2).
 
-    "C:\\Program Files\\Blender Foundation\\Blender 5.2\\blender.exe" -b --factory-startup --python Tools/blender/villager/p17_villager_prep.py
+    "C:\\Program Files\\Blender Foundation\\Blender 5.2\\blender.exe" -b --factory-startup --python Tools/blender/villager/p17_villager_prep.py [-- --candle-only]
 
 Writes SourceArt/Villager/{SK_LB_Villager.fbx, AN_LB_Villager_Walk.fbx, AN_LB_Villager_IdleLantern.fbx, villager_prep.json} (nothing else; the sources in
 ExternalAssets/Incoming are only read). Textures are made by Tools/blender/villager/p17_villager_textures.py (Pillow).
@@ -17,9 +17,15 @@ ExternalAssets/Incoming are only read). Textures are made by Tools/blender/villa
 import json
 import math
 import os
+import sys
 
 import bpy
 from mathutils import Matrix
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import villager_clips as VC  # noqa: E402
+
+CANDLE_ONLY = "--candle-only" in sys.argv     # P17 3.9: write only AN_LB_Villager_WalkCandle.fbx (the hybrid walk, villager_clips.py); the mesh and the other clips stay as they are
 
 ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", ".."))
 IN = os.path.join(ROOT, "ExternalAssets", "Incoming", "villager_quaternius_peasant")
@@ -122,6 +128,7 @@ for a in bpy.data.actions:
     a.use_fake_user = True
 walk = action("Walk_Loop")
 idle = action("Idle_Lantern_Loop")
+cand = VC.build_hybrid(arm, bpy.context.scene, walk, idle, 0, "Walk_Candle") if CANDLE_ONLY else None
 META["clips"] = {"Walk_Loop": {"frames": list(walk.frame_range), "fps": bpy.context.scene.render.fps},
                  "Idle_Lantern_Loop": {"frames": list(idle.frame_range), "fps": bpy.context.scene.render.fps}}
 
@@ -139,7 +146,7 @@ for b in arm.data.edit_bones:
     b.head *= 100
     b.tail *= 100
 bpy.ops.object.mode_set(mode="OBJECT")
-for act in (walk, idle):                                         # translation keys in cm (bone-local, so the turn does not touch them)
+for act in ((walk, idle) + ((cand,) if cand else ())):             # translation keys in cm (bone-local, so the turn does not touch them)
     for layer in act.layers:
         for strip in layer.strips:
             for bag in strip.channelbags:
@@ -177,10 +184,11 @@ arm.select_set(True)
 villager.select_set(True)
 bpy.context.view_layer.objects.active = villager
 fn = os.path.join(OUT, "SK_LB_Villager.fbx")
-bpy.ops.export_scene.fbx(filepath=fn, object_types={"ARMATURE", "MESH"}, bake_anim=False, **settings)
-log("wrote", fn, os.path.getsize(fn))
+if not CANDLE_ONLY:
+    bpy.ops.export_scene.fbx(filepath=fn, object_types={"ARMATURE", "MESH"}, bake_anim=False, **settings)
+    log("wrote", fn, os.path.getsize(fn))
 
-for label, act in (("Walk", walk), ("IdleLantern", idle)):
+for label, act in ((("WalkCandle", cand),) if CANDLE_ONLY else (("Walk", walk), ("IdleLantern", idle))):
     assign(arm, act)
     scene.frame_start = int(round(act.frame_range[0]))
     scene.frame_end = int(round(act.frame_range[1]))
@@ -191,9 +199,9 @@ for label, act in (("Walk", walk), ("IdleLantern", idle)):
     fn = os.path.join(OUT, "AN_LB_Villager_%s.fbx" % label)
     bpy.ops.export_scene.fbx(filepath=fn, object_types={"ARMATURE"}, bake_anim=True, bake_anim_use_all_bones=True, bake_anim_use_nla_strips=False,
                              bake_anim_use_all_actions=False, bake_anim_force_startend_keying=True, bake_anim_step=1, bake_anim_simplify_factor=0, **settings)
-    META["clips"]["Walk_Loop" if label == "Walk" else "Idle_Lantern_Loop"]["export"] = {"frame_start": scene.frame_start, "frame_end": scene.frame_end, "file": os.path.basename(fn)}
+    META["clips"].setdefault({"Walk": "Walk_Loop", "IdleLantern": "Idle_Lantern_Loop", "WalkCandle": "Walk_Candle"}[label], {})["export"] = {"frame_start": scene.frame_start, "frame_end": scene.frame_end, "file": os.path.basename(fn)}
     log("wrote", fn, os.path.getsize(fn))
 
-with open(os.path.join(OUT, "villager_prep.json"), "w", encoding="utf-8") as fh:
+with open(os.path.join(OUT, "villager_prep_candle.json" if CANDLE_ONLY else "villager_prep.json"), "w", encoding="utf-8") as fh:
     json.dump(META, fh, indent=1)
 log("DONE")

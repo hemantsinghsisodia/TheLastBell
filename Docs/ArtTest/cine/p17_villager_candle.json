@@ -1,0 +1,79 @@
+{
+ "grip_fraction": 0.55,
+ "idle": {
+  "action": "Idle_Lantern_Loop",
+  "frames": 60,
+  "seconds": 2.5,
+  "reference_frame": 47,
+  "tilt_deg_max": 3.08,
+  "tilt_deg_mean": 1.5,
+  "rel_in_hand_bone_frame": {
+   "location_cm": [
+    6.595,
+    6.657,
+    0.647
+   ],
+   "rotation_euler_deg": [
+    83.97,
+    -69.17,
+    99.45
+   ]
+  },
+  "up_axis_in_hand_frame": [
+   0.9972,
+   0.0653,
+   0.037
+  ],
+  "min_distance_to_body_cm": 6.46
+ },
+ "walk": {
+  "action": "Walk_Candle",
+  "frames": 32,
+  "seconds": 1.333,
+  "reference_frame": 9,
+  "tilt_deg_max": 4.83,
+  "tilt_deg_mean": 4.05,
+  "rel_in_hand_bone_frame": {
+   "location_cm": [
+    6.595,
+    6.657,
+    0.647
+   ],
+   "rotation_euler_deg": [
+    83.97,
+    -69.17,
+    99.45
+   ]
+  },
+  "up_axis_in_hand_frame": [
+   0.9976,
+   0.0271,
+   0.0639
+  ],
+  "min_distance_to_body_cm": 6.46
+ },
+ "candle": {
+  "wax": {
+   "mesh": "/Engine/BasicShapes/Cylinder",
+   "scale": [
+    0.03,
+    0.03,
+    0.12
+   ],
+   "centre_z_cm": -7.0,
+   "material": "MI_LB_CandleWax"
+  },
+  "flame": {
+   "mesh": "SM_LB_Prop_CandleFlame_A",
+   "scale": 0.7,
+   "origin_z_cm": -0.92,
+   "material": "MI_Flame_Candle_Player"
+  },
+  "light_origin_cm": [
+   0,
+   0,
+   0
+  ]
+ },
+ "sheet": "C:\\Hemant\\Prj\\Learning\\TheLastBell\\Docs\\ArtTest\\cine\\p17_villager_candle.png"
+}
