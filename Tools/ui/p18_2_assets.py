@@ -55,7 +55,8 @@ VIDEO = os.path.join(ROOT, "Content", "Movies", "LB_MenuDrift.mp4")
 LOGIC_CPP = os.path.join(ROOT, "Source", "LastBell", "UI", "LBUILogic.cpp")
 CONF_GAME = os.path.join(ROOT, "Config", "DefaultGame.ini")
 CONF_INPUT = os.path.join(ROOT, "Config", "DefaultInput.ini")
-OFL_DST = os.path.join(ROOT, "Content", "LastBell", "UI", "Fonts", "OFL.txt")
+# Not in the fonts folder: that folder is asset-only (a non-UFS staging entry would copy its uncooked .uasset files loose). QA M3.
+OFL_DST = os.path.join(ROOT, "Content", "LastBell", "Licenses", "OFL_EBGaramond.txt")
 
 OUT = os.environ.get("LB_OUT", "")
 MODE = os.environ.get("LB_MODE", "apply").lower()
@@ -321,7 +322,7 @@ PACK_SECTION = "/Script/UnrealEd.ProjectPackagingSettings"
 INPUT_SECTION = "/Script/EnhancedInput.EnhancedInputDeveloperSettings"
 CONF_WANTED = [
     (CONF_GAME, GAME_SECTION, ["UIStyle=/Game/LastBell/UI/DA_UIStyle.DA_UIStyle"], "CinematicSettings"),
-    (CONF_GAME, PACK_SECTION, ['+DirectoriesToAlwaysStageAsNonUFS=(Path="LastBell/UI/Fonts")', '+DirectoriesToAlwaysStageAsNonUFS=(Path="Movies")'], None),
+    (CONF_GAME, PACK_SECTION, ['+DirectoriesToAlwaysStageAsNonUFS=(Path="LastBell/Licenses")', '+DirectoriesToAlwaysStageAsNonUFS=(Path="Movies")'], None),
     # Enhanced Input: user settings on (the 5.8 default is already on; explicit here), and IMC_LB_Gameplay registered with the user settings at
     # start-up. ALBPlayerController adds the IMC itself with the default options (bNotifyUserSettings false), so without this registration the
     # user settings know no mapping name and LBKeyBindings::IsRebindable is false. bAddImmediately=False: the controller keeps adding it.
@@ -413,9 +414,9 @@ def copy_ofl():
     if not same_file and APPLY:
         os.makedirs(os.path.dirname(OFL_DST), exist_ok=True)
         shutil.copyfile(src, OFL_DST)
-        record("OFL.txt", "(copied)", "Content/LastBell/UI/Fonts/OFL.txt")
+        record("OFL.txt", "(copied)", "Content/LastBell/Licenses/OFL_EBGaramond.txt")
         same_file = True
-    return check("Content/LastBell/UI/Fonts/OFL.txt is the licence from the repository", same_file)
+    return check("Content/LastBell/Licenses/OFL_EBGaramond.txt is the licence from the repository", same_file)
 
 
 # ---------------------------------------------------------------------------------------------------------------------------------

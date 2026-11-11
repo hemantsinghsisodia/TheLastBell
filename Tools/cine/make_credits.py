@@ -199,7 +199,7 @@ def build():
     add("Gap")
     add("Small", "Fonts")
     if garamond:
-        add("Name", "EB Garamond, Georg Duffner and Octavio Pardo (SIL OFL 1.1)")
+        add("Name", "EB Garamond, Georg Duffner, Octavio Pardo and Deborah Khodanovich (SIL OFL 1.1)")
     if roboto_ships or not garamond:
         add("Name", "Roboto, Christian Robertson (Apache 2.0)")
     add("Gap")

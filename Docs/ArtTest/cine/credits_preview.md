@@ -50,7 +50,7 @@ Zabuhailo, Zrte
 Kenney: input prompts and UI sounds
 ~
 (small) Fonts
-EB Garamond, Georg Duffner and Octavio Pardo (SIL OFL 1.1)
+EB Garamond, Georg Duffner, Octavio Pardo and Deborah Khodanovich (SIL OFL 1.1)
 Roboto, Christian Robertson (Apache 2.0)
 ~
 Thank you for playing.
