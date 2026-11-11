@@ -1,6 +1,6 @@
 # Phase 18: UI and settings
 
-**Status:** plan for the owner's approval (2026-11-11). Branch `claude/phase-18-ui`, from `main` at 95299af. The lead plans and reviews in Opus at medium effort, review agents run on `opus`/medium, and implementers run on `sonnet`/high (D-048, D-119). The standing rules are in `CLAUDE.md` and apply unchanged:
+**Status:** approved by the owner on 2026-11-11 ("approved"). P18-0 done. Branch `claude/phase-18-ui`, from `main` at 95299af. The lead plans and reviews in Opus at medium effort, review agents run on `opus`/medium, and implementers run on `sonnet`/high (D-048, D-119). The standing rules are in `CLAUDE.md` and apply unchanged:
 - git hygiene;
 - the never-save list;
 - saves one package at a time;

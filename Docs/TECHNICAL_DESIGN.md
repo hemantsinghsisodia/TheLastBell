@@ -502,7 +502,7 @@ Unchanged from the defaults: `bRain` true, `RainBoxHalfXY` 1800, `RainSpawnHeigh
 **Performance** (P15-10, D-107; `PERFORMANCE_BUDGET.md`, rows of 2026-11-09). The GPU rule passes at all six spots: with the FX on, 13.81–15.67 ms; added +0.09…+1.39 ms, each within its budget; the least headroom is the chapel, 0.93 ms under 16.6.
 
 **Known limits and open items**
-- **R-64:** the game-thread rule (≤ +0.3 ms with the FX on) could not be resolved with `stat unit` (repeats vary by up to 2 ms). Trace the storm FX with Unreal Insights in the Phase 18 pass (`ULBStormFXSubsystem::Tick`, the rain component tick, the bolt updates).
+- **R-64:** the game-thread rule (≤ +0.3 ms with the FX on) could not be resolved with `stat unit` (repeats vary by up to 2 ms). Trace the storm FX with Unreal Insights in the Phase 20 pass (moved from Phase 18, D-127) (`ULBStormFXSubsystem::Tick`, the rain component tick, the bolt updates).
 - **R-69:** the cost of the global distance field update with a moving camera is not measured (about 0 ms standing still). Phase 20.
 - **White flecks in the sky** were seen in 2–3 courtyard Simulate frames, probably splashes pinned where the coarse far distance field reports a surface. The owner did not report them in Play.
 - **`GetViewDirection` still reads the parked camera in Simulate:** a held `DebugBolt 0` always points toward world +X there. Captures use poses that look east (`cy_gate_east_sky`, `cl_garth_east_sky`).

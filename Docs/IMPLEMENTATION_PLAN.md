@@ -543,3 +543,20 @@ Items the owner asked to fold into the storm pass. **Foliage wind is now in Phas
 | Item | Scope | Notes |
 |---|---|---|
 | Foliage wind (owner, 2026-10-25, D-060) | One wind control `MPC_LB_Wind` (direction, strength, gust speed) driven by the storm; a sway material function in `M_LB_Foliage` (grass/shrubs/ferns bend by height above the pivot, roots fixed) and `M_LB_FoliageMasked` (ivy leaf flutter, wall side fixed); per-family strength in the MIs; WPO evaluation and a WPO disable distance (≈ 3000–5000 cm) on the 312 PCG ISM components (script); optional twig sway for `SM_LB_Prop_DeadTree_A` via its own bark material (never add WPO to `M_LB_Surface`) | Estimated one technical-artist task (~half a day of agent time) plus the owner's PIE check. Risk: GPU +0.3–1.5 ms, mainly VSM invalidation from shadow-casting grass (mitigate with the disable distance or the shadow-cache invalidation setting); masked ivy WPO is costlier. Owner re-runs `stat gpu` (P7-FIX3 baseline 13.1 ms at High, budget 16.6). Stills can't show motion: needs a PIE review |
+
+## Phase 18 — UI and settings: task breakdown
+
+Branch `claude/phase-18-ui`. Spec and plan: `Docs/plans/P18_UI_SETTINGS.md` (D-126…D-128, R-91…R-95). The owner approved the plan on 2026-11-11. R-64 (the game-thread trace) moved to Phase 20.
+
+| Task | Scope | Owner | Depends on |
+|---|---|---|---|
+| P18-0 | Plan approval; decisions, risks, this table | lead + owner | — |
+| A1 | Fonts (EB Garamond, OFL), Kenney input prompts and UI audio (CC0); registry | asset-curator | P18-0 |
+| S1 | Menu-video spike (MRQ render, MP4, media playback) | animation-specialist | P18-0 |
+| P18-1 | C++ UI framework, screens, settings backend, pause, rebinding; tests | gameplay-programmer | P18-0 |
+| P18-2 | Assets and hookup (`DA_UIStyle`, fonts, icons, sounds, `IA_Pause`, IMC, menu game mode, video) | technical-artist + ui-engineer | A1, S1, P18-1 |
+| P18-3 | HUD and cinematic restyle, key icons | ui-engineer | P18-1, P18-2 |
+| P18-4 | Owner session (about 20 min) | lead + owner | P18-3 |
+| P18-5 | Fixes; QA (Opus) | gameplay-programmer, qa-reviewer | P18-4 |
+| P18-6 | Docs, final suite, Game build, PHASE 18 READY FOR YOUR REVIEW | lead + docs agent | P18-5 |
+
