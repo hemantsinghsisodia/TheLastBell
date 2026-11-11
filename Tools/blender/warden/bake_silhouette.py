@@ -21,6 +21,7 @@ faces mesh +Y in Unreal and needs yaw D - 90 to face world direction D, while SK
 which the import maps to mesh +X, so the static silhouette faces +X like SK_Warden and yaw means the same on both.
 
 Options:
+    --master BLEND      source blend (default SourceArt/Warden/V5_5/Warden_Rigged.blend; W4 uses V11_1w)
     --out PATH          FBX path (default SourceArt/Warden/SM_LB_Warden_Apparition.fbx)
     --rotz DEG           rotate the baked mesh about Z (degrees, Blender frame) BEFORE export. 0 keeps the master's
                          orientation: the figure faces Blender -Y. Use 90 for this mesh (faces mesh +X in Unreal).
@@ -49,13 +50,15 @@ MASTER = os.path.join(ROOT, "SourceArt", "Warden", "V5_5", "Warden_Rigged.blend"
 
 def parse_args():
     argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
-    a = {"mask_mode": "protect", "out": os.path.join(ROOT, "SourceArt", "Warden", "SM_LB_Warden_Apparition.fbx"), "rotz": 0.0, "axis_forward": "-Y",
+    a = {"master": MASTER, "mask_mode": "protect", "out": os.path.join(ROOT, "SourceArt", "Warden", "SM_LB_Warden_Apparition.fbx"), "rotz": 0.0, "axis_forward": "-Y",
          "target": 7600, "weld": 0.003}
     i = 0
     while i < len(argv):
         k = argv[i]
         if k == "--out":
             a["out"] = argv[i + 1]; i += 1
+        elif k == "--master":
+            a["master"] = argv[i + 1]; i += 1
         elif k == "--rotz":
             a["rotz"] = float(argv[i + 1]); i += 1
         elif k == "--mask-mode":
@@ -91,7 +94,9 @@ def bbox(obj):
 
 
 def main():
+    global MASTER
     a = parse_args()
+    MASTER = a["master"]                                   # W4 (V11.1): --master SourceArt/Warden/V11_1w/Warden_Rigged.blend
     assert os.path.isfile(MASTER), MASTER
     bpy.ops.wm.open_mainfile(filepath=MASTER)           # read only: this script never saves
     scene = bpy.context.scene

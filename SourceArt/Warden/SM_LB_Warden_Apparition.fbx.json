@@ -1,57 +1,97 @@
 {
- "source": "C:\\Hemant\\Prj\\Learning\\TheLastBell\\SourceArt\\Warden\\V5_5\\Warden_Rigged.blend",
+ "source": "C:/Hemant/Prj/Learning/TheLastBell/SourceArt/Warden/V11_1w/Warden_Rigged.blend",
  "pose": "Warden_Idle frame 1",
  "lod": "SK_Warden_LOD2",
  "source_modifiers": [
   "ARMATURE"
  ],
- "triangles_after_weld": 19865,
- "triangles": 7389,
+ "triangles_after_weld": 17445,
+ "triangles": 7363,
  "slots": [
   "MAT_Body",
   "MAT_Mask"
  ],
  "triangles_per_slot_after_weld": [
-  19532,
-  333
+  17038,
+  407
  ],
  "triangles_per_slot": [
-  7056,
-  333
+  6956,
+  407
  ],
  "mask_mode": "protect",
  "bell_metal_islands": [
   {
-   "faces": 337,
-   "centre_z_m": 2.443338875482863,
+   "faces": 368,
+   "centre_z_m": 2.4307087143694144,
+   "mask": true
+  },
+  {
+   "faces": 8,
+   "centre_z_m": 3.6868098378181458,
+   "mask": true
+  },
+  {
+   "faces": 8,
+   "centre_z_m": 3.6897266507148743,
+   "mask": true
+  },
+  {
+   "faces": 6,
+   "centre_z_m": 3.120848364300198,
+   "mask": true
+  },
+  {
+   "faces": 6,
+   "centre_z_m": 3.1381597783830433,
+   "mask": true
+  },
+  {
+   "faces": 6,
+   "centre_z_m": 3.1554961469438343,
+   "mask": true
+  },
+  {
+   "faces": 6,
+   "centre_z_m": 3.1187016699049206,
+   "mask": true
+  },
+  {
+   "faces": 6,
+   "centre_z_m": 3.1361290878719754,
+   "mask": true
+  },
+  {
+   "faces": 6,
+   "centre_z_m": 3.153634442223443,
    "mask": true
   }
  ],
- "vertices": 3956,
+ "vertices": 4101,
  "bounds_m_min": [
-  -0.8380981683731079,
-  -0.6626198887825012,
-  0.00248536909930408
+  -0.8963998556137085,
+  -0.7215020656585693,
+  0.000306772708427161
  ],
  "bounds_m_max": [
-  0.6087599992752075,
-  1.0955384969711304,
-  2.8422296047210693
+  0.704264223575592,
+  1.101407766342163,
+  2.844487190246582
  ],
  "bounds_cm_min": [
-  -83.809814453125,
-  -66.2619857788086,
-  0.24853691458702087
+  -89.63998413085938,
+  -72.15020751953125,
+  0.030677270144224167
  ],
  "bounds_cm_max": [
-  60.875999450683594,
-  109.55384826660156,
-  284.22296142578125
+  70.42642211914062,
+  110.14077758789062,
+  284.44873046875
  ],
- "height_cm": 283.97442451119423,
+ "height_cm": 284.4180531986058,
  "rotz_deg": 90.0,
  "axis_forward": "-Y",
  "fbx": "C:\\Hemant\\Prj\\Learning\\TheLastBell\\SourceArt\\Warden\\SM_LB_Warden_Apparition.fbx",
- "fbx_bytes": 183964,
+ "fbx_bytes": 187916,
  "saved_master": false
 }

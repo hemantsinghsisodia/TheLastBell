@@ -1,0 +1,121 @@
+{
+ "step": "import",
+ "interchange_fbx_flag": false,
+ "before": {
+  "slots": [
+   {
+    "slot": "MAT_Body",
+    "material": "/Game/LastBell/Characters/Warden/Materials/MI_Warden_Apparition_Body.MI_Warden_Apparition_Body"
+   },
+   {
+    "slot": "MAT_Mask",
+    "material": "/Game/LastBell/Characters/Warden/Materials/MI_Warden_Apparition_Mask.MI_Warden_Apparition_Mask"
+   }
+  ],
+  "probe": [
+   "__getattribute__",
+   "get_min_lod_for_quality_levels",
+   "get_minimum_lod_for_platform",
+   "get_minimum_lod_for_platforms",
+   "get_minimum_lod_for_quality_level",
+   "get_minimum_lod_for_quality_levels",
+   "get_num_lods",
+   "get_num_nanite_triangles",
+   "get_num_nanite_vertices",
+   "get_num_sections",
+   "get_num_tex_coords",
+   "get_num_triangles",
+   "get_num_vertices",
+   "is_lod_screen_size_auto_computed",
+   "lod_for_collision",
+   "num_cinematic_mip_levels",
+   "set_min_lod_for_quality_levels",
+   "set_minimum_lod_for_platform",
+   "set_minimum_lod_for_platforms",
+   "set_num_source_models"
+  ],
+  "num_lods": 1,
+  "num_triangles_lod0": 7389,
+  "num_vertices_lod0": 3955,
+  "num_sections_lod0": 2,
+  "lod_count": 1,
+  "triangles_lod0": 7389,
+  "bounds_origin": [
+   -11.47,
+   -21.65,
+   142.24
+  ],
+  "bounds_extent": [
+   72.34,
+   87.91,
+   141.99
+  ],
+  "nanite": false,
+  "simple_collision_shapes": 0,
+  "import_data_class": "FbxStaticMeshImportData",
+  "source_files": [
+   "C:/Program Files/SourceArt/Warden/SM_LB_Warden_Silhouette.fbx"
+  ],
+  "collision_trace_flag": "<CollisionTraceFlag.CTF_USE_DEFAULT: 0>"
+ },
+ "after": {
+  "slots": [
+   {
+    "slot": "MAT_Body",
+    "material": "/Game/LastBell/Characters/Warden/Materials/MI_Warden_Apparition_Body.MI_Warden_Apparition_Body"
+   },
+   {
+    "slot": "MAT_Mask",
+    "material": "/Game/LastBell/Characters/Warden/Materials/MI_Warden_Apparition_Mask.MI_Warden_Apparition_Mask"
+   }
+  ],
+  "probe": [
+   "__getattribute__",
+   "get_min_lod_for_quality_levels",
+   "get_minimum_lod_for_platform",
+   "get_minimum_lod_for_platforms",
+   "get_minimum_lod_for_quality_level",
+   "get_minimum_lod_for_quality_levels",
+   "get_num_lods",
+   "get_num_nanite_triangles",
+   "get_num_nanite_vertices",
+   "get_num_sections",
+   "get_num_tex_coords",
+   "get_num_triangles",
+   "get_num_vertices",
+   "is_lod_screen_size_auto_computed",
+   "lod_for_collision",
+   "num_cinematic_mip_levels",
+   "set_min_lod_for_quality_levels",
+   "set_minimum_lod_for_platform",
+   "set_minimum_lod_for_platforms",
+   "set_num_source_models"
+  ],
+  "num_lods": 1,
+  "num_triangles_lod0": 7363,
+  "num_vertices_lod0": 4083,
+  "num_sections_lod0": 2,
+  "lod_count": 1,
+  "triangles_lod0": 7363,
+  "bounds_origin": [
+   -9.61,
+   -19.0,
+   142.24
+  ],
+  "bounds_extent": [
+   80.03,
+   91.15,
+   142.21
+  ],
+  "nanite": false,
+  "simple_collision_shapes": 0,
+  "import_data_class": "FbxStaticMeshImportData",
+  "source_files": [
+   "C:/Hemant/Prj/Learning/TheLastBell/SourceArt/Warden/SM_LB_Warden_Apparition.fbx"
+  ],
+  "collision_trace_flag": "<CollisionTraceFlag.CTF_USE_DEFAULT: 0>"
+ },
+ "problems": [],
+ "saved": true,
+ "dirty_packages_after_save": []
+}
