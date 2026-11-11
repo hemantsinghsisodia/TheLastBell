@@ -497,6 +497,43 @@ Already sounding from the tags, with no markers needed:
 
   Exact values come in the integration plan, from the current numbers.
 
+### 3.6 Warden V11.1 swap: steps W1–W5 (owner "ok", 2026-11-11; route from W0, `Docs/ArtTest/warden/w0_v11_1_survey.md`)
+Run with Unreal **closed**: Blender is headless, and Unreal steps are headless `-run=pythonscript`, one process at a time. The owner's folder is never written. Nothing but the named packages is saved.
+
+- **W1, robe reweight.** Copy `SourceArt/Warden/V11_1/Warden_Rigged.blend` to `SourceArt/Warden/V11_1w/Warden_Rigged.blend`, then:
+  - apply `Tools/blender/warden/p13_reweight.py` exactly as P13-4 did on V5_5 (the same parameters; read its header and `Docs/ArtTest/warden/p13_reweight.json`);
+  - **measure** with `--mode measure`: the wool-edge maximum stretch on MutantWalking, MutantRun, CrouchedWalking and ZombieAttack must be **≤ 1.2×** the shipped V5_5w2 values (24 / 30 / 43 / 44), and no wool vertex may have more than 50 % on leg bones;
+  - the mask vertices must stay 100 % on `head`;
+  - write the report to `Docs/ArtTest/warden/w1_v11_1w_reweight.json`.
+- **W2, exports.** From the V11_1w blend:
+  - `exports/` with the project's export script (LOD0/1/2 and the 3 clips);
+  - the rotated LODs into `SourceArt/Warden/V11_1w/ue_lod/` (`p13_export_lods_rotated.py`).
+- **W3, reimport into Unreal** (`Tools/warden/p13_reimport_warden.py` step `reimportlods`, with `P13W_SRC` and `P13W_ROT` pointed at V11_1w; update its slot expectation from 6 to 8):
+  - **Mesh:** `SK_Warden` reimported in place. Keep the skeleton, the physics asset and the **`mask` socket** on `head` (re-add it if the reimport drops it).
+  - **Clips:** `AN_Warden_Idle`, `AN_Warden_Walk` and `AN_Warden_DoorwayStoop` reimported in place, using the established clip import settings (root yaw convention unchanged).
+  - **Materials:** copy the V11.1 native materials and textures from `ExternalAssets/Incoming/warden_v11_1/Content/WardenArtV11_1/{Materials,Textures}` to `Content/WardenArtV11_1/`. Leave out `Preview`, `Meshes` and `Animations`. They only reference each other.
+  - **Slots:** assign slots 0–7 by name to the V11.1 materials, then re-apply the project's own tuning (`apply_p12_materials.py`, `apply_p12f_art.py`). That re-adds `TellGlow` to the mask material, and the Wool brightness keeps the project's value (0.25) rather than the V11.1 value (0.72).
+  - **The old `/Game/LastBell/Characters/Warden/Materials/M_Warden_*`** stay in place, unused, so they can be compared and rolled back; they are deleted at P17-9 review.
+  - Save only `SK_Warden`, the three clips, the new `/Game/WardenArtV11_1` packages and any material each script normally saves.
+- **W4, apparition re-bake.**
+  - Point `bake_silhouette.py`'s source at the V11_1w blend; re-bake (LOD2, Idle frame 1) and verify with `verify_silhouette_bake.py`. Note that the mask now has 9 islands.
+  - Reimport `SM_LB_Warden_Apparition` in place.
+- **W5, checks and suite.**
+  - In Blender: re-measure the stretch.
+  - Headless check: 8 slots; the `mask` socket present; the materials compile; `TellGlow` present.
+  - Run `Tools\build_and_test.ps1`. The Warden tests that look up the `M_Warden_BellMetal` slot by name must pass.
+  - Registry: update the Warden row to V11.1 and note that the Hunyuan/Modly licence texts come from `SourceArt/Warden/V5_5/licences/`.
+- **Then (owner in PIE):**
+  - the look of V11.1, the robe in a chase, and the apparition;
+  - the **slower movement** pass (3.5): lead-specified values, then the owner's judgement.
+- **Then P17-3:**
+  - `SM_LB_WardenMask`, cut from V11_1w: all slot-1 islands, pivot at the `head` bind transform, `MI_Warden_BellMetal`;
+  - `M_LB_Invisible` (masked, opacity 0): the bell-metal material has no `Fade`, so the swap switches the mask slot's material;
+  - no hood void (W0: a dark hood interior);
+  - the Blender-keyed `AN_Warden_MaskLift`.
+
+  After that come 5a-2 and P17-7.
+
 ### 3.3 Cards and styles (`DA_Cinematics.Cards`)
 | Id | Text | Style | Hold (s) | Fade (s) |
 |---|---|---|---|---|
