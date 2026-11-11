@@ -15,7 +15,7 @@
 | Settings | **Full:** quality preset plus individual graphics options; resolution, window mode, VSync, frame cap; brightness; the 6 volume sliders; sensitivity, invert Y, head bob, field of view, motion blur, film grain, high-contrast prompts; key rebinding |
 | Input | **Keyboard and mouse only.** Key icons show the current binding |
 | Escape during a cinematic | **Pause everything:** the cinematic, its music, the bell, the storm and the scheduled audio freeze together; Resume continues where it stopped |
-| Typeface | **EB Garamond** (SIL OFL 1.1), for the menus, HUD, cards and credits. The licence text ships in `Content/LastBell/UI/Fonts/` and in the credits |
+| Typeface | **EB Garamond** (SIL OFL 1.1), for the menus, HUD, cards and credits. The licence text ships in `Content/LastBell/Licenses/` (an asset-free folder, staged as non-UFS) and in the credits |
 | Brightness | **A first-launch calibration screen** before the main menu, also reachable from Settings |
 
 **Lead decisions** (the owner can veto them at approval):
@@ -80,7 +80,7 @@
 | `LBUISubsystem.{h,cpp}` | `ULBUISubsystem` (`ULocalPlayerSubsystem`):<br>• the **screen stack** (push/pop, focus, input mode, cursor);<br>• `OpenPause()`/`ClosePause()` with `SetGamePaused`;<br>• confirm dialogs;<br>• the first-launch brightness gate;<br>• routing Escape: the top screen handles Back; with no screen in play it opens Pause;<br>• UI sounds;<br>• the `OnPauseChanged` delegate |
 | `LBMenuWidgetBase.{h,cpp}` | `ULBMenuWidgetBase` (`UUserWidget`, its tree built in `NativeOnInitialized`, like `ULBCinematicWidget`): the item list with keyboard focus, hover, the flicker highlight, Back handling and style access |
 | `LBMainMenuWidget`, `LBPauseWidget`, `LBSettingsWidget` (tabs as child panels), `LBCreditsWidget` (reuses the credits layout from `ULBCinematicWidget` through a shared helper `LBCreditsLayout`), `LBBrightnessWidget`, `LBConfirmWidget`, `LBKeyIconWidget` (an image plus a text fallback for the key) | One class per screen |
-| `LBLoadingScreen.{h,cpp}` | A Slate loading screen for `GetMoviePlayer()->SetupLoadingScreen` (`bAutoCompleteWhenLoadingCompletes`, a minimum of 1.0 s), registered by the game instance on `PreLoadMap` |
+| `LBLoadingScreen.{h,cpp}` | A Slate loading screen for `GetMoviePlayer()->SetupLoadingScreen` (`bAutoCompleteWhenLoadingCompletes`, a minimum of 1.0 s), armed by the save subsystem just before a menu <-> game travel and taken back by the game instance after the map has loaded (D-133) |
 | `LBGraphicsSettings.{h,cpp}` | Wraps `UGameUserSettings`: scalability groups, resolution, window mode, VSync, the frame limit, resolution scale. Applies, reverts, and runs the 15 s keep timer |
 
 **Changes to existing code:**
@@ -106,7 +106,7 @@
   - **Rebind call:** `UEnhancedInputUserSettings::MapPlayerKey` for the rebind, saved with `SaveSettings`.
   - **Pause key:** `IA_Pause` (new, Escape) is rebindable except to the mouse buttons.
   - **Inspection keys:** `IMC_LB_Inspect` keeps fixed keys (documented).
-- **Main menu:** `BP_MenuGameMode`'s menu widget class becomes `ULBMainMenuWidget`, and `WBP_MainMenu` is retired: unused, deleted at review if the owner agrees.
+- **Main menu:** `BP_MenuPlayerController`'s `HUDWidgetClass` becomes `ULBMainMenuWidget`, and `WBP_MainMenu` is retired: unused, deleted at review if the owner agrees.
 
 ## 3. Menu background (S1 decides)
 - **Shot:** `LS_LB_MenuDrift`, built headless by the `p17_sequences` tooling.
@@ -122,7 +122,7 @@
 ## 4. Assets (P18-2; all CC0 except the OFL font)
 | Asset | Source | Where |
 |---|---|---|
-| EB Garamond (Regular, Italic, SemiBold, Bold) | Google Fonts / the `octaviopardo/EBGaramond12` repository, SIL OFL 1.1 | `/Game/LastBell/UI/Fonts/` (`UFont` and `UFontFace`); `OFL.txt` next to it |
+| EB Garamond (Regular, Italic, SemiBold, Bold) | Google Fonts / the `octaviopardo/EBGaramond12` repository, SIL OFL 1.1 | `/Game/LastBell/UI/Fonts/` (`UFont` and `UFontFace`); the licence in `Content/LastBell/Licenses/OFL_EBGaramond.txt` |
 | Keyboard and mouse key icons | Kenney "Input Prompts" (CC0) | `/Game/LastBell/UI/KeyIcons/T_Key_<Key>`: letters, digits, arrows, Shift, Ctrl, Alt, Space, Esc, Tab, Enter and the mouse buttons |
 | UI sounds: hover, select, back, slider tick | Kenney "UI Audio" or "Interface Sounds" (CC0), prepped to the P16 standard | `/Game/LastBell/Audio/UI/SFX_LB_UI_*`, class `SCL_LB_UI` |
 | Brightness symbol | Generated (a bell sigil in mid-grey, plus a near-black version) | `/Game/LastBell/UI/T_LB_BrightnessSymbol` |
@@ -130,7 +130,7 @@
 | `IA_Pause`; the IMC mapping changes | Script (headless) | `/Game/LastBell/Input/` (or the project's input folder) |
 | Menu video | S1 | `Content/Movies/` |
 
-The credits gain "Fonts / EB Garamond, Georg Duffner and Octavio Pardo (SIL OFL 1.1)" (it replaces the Roboto line), plus Kenney (input prompts, UI audio). `make_credits.py` handles both through new `ASSET_REGISTRY` rows.
+The credits gain "Fonts / EB Garamond, Georg Duffner, Octavio Pardo and Deborah Khodanovich (SIL OFL 1.1)" (the Roboto line stays: P10-8d tablet and grave glyph outlines still carry it), plus Kenney (input prompts, UI audio). `make_credits.py` handles both through new `ASSET_REGISTRY` rows.
 
 ## 5. Tasks
 | Task | Scope | Agent | Needs | Depends on |
@@ -168,7 +168,7 @@ The credits gain "Fonts / EB Garamond, Georg Duffner and Octavio Pardo (SIL OFL 
 | R-92 | Enhanced Input user-settings rebinding has edge cases (duplicates, axis keys for Move, Escape) | Move is rebound as four separate keys; conflicts are rejected; tests; Reset to defaults |
 | R-93 | A gamma or brightness change also brightens the UI | Accepted (the standard behaviour); the calibration screen shows the effect |
 | R-94 | Reverting the P16-6 workaround could bring back "the bell silent at the ending" | The ending no longer pauses (P17); a test plays the finale beat across a pause and resume |
-| R-95 | The OFL font licence must ship with the game | `OFL.txt` staged in `Content/LastBell/UI/Fonts/` and noted in the credits and the registry |
+| R-95 | The OFL font licence must ship with the game | `OFL_EBGaramond.txt` staged from `Content/LastBell/Licenses/` and noted in the credits and the registry |
 
 ## 9. Tests (P18-1 / P18-3)
 - **Unit:**
