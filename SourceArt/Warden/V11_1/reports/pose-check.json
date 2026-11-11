@@ -1,0 +1,56 @@
+[
+  {
+    "lod": 0,
+    "clip": "Warden_DoorwayStoop",
+    "samples": 181,
+    "hits": []
+  },
+  {
+    "lod": 0,
+    "clip": "Warden_Idle",
+    "samples": 241,
+    "hits": []
+  },
+  {
+    "lod": 0,
+    "clip": "Warden_Walk",
+    "samples": 121,
+    "hits": []
+  },
+  {
+    "lod": 1,
+    "clip": "Warden_DoorwayStoop",
+    "samples": 181,
+    "hits": []
+  },
+  {
+    "lod": 1,
+    "clip": "Warden_Idle",
+    "samples": 241,
+    "hits": []
+  },
+  {
+    "lod": 1,
+    "clip": "Warden_Walk",
+    "samples": 121,
+    "hits": []
+  },
+  {
+    "lod": 2,
+    "clip": "Warden_DoorwayStoop",
+    "samples": 181,
+    "hits": []
+  },
+  {
+    "lod": 2,
+    "clip": "Warden_Idle",
+    "samples": 241,
+    "hits": []
+  },
+  {
+    "lod": 2,
+    "clip": "Warden_Walk",
+    "samples": 121,
+    "hits": []
+  }
+]

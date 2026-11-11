@@ -1,0 +1,36 @@
+Traceback (most recent call last):
+  File "C:\Program Files\Blender Foundation\Blender 5.2\5.2\scripts\modules\addon_utils.py", line 544, in enable
+    mod.register()
+    ~~~~~~~~~~~~^^
+  File "C:\Program Files\Blender Foundation\Blender 5.2\5.2\scripts\addons_core\bl_pkg\__init__.py", line 986, in register
+    _remote_asset_library_restore_backups()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Program Files\Blender Foundation\Blender 5.2\5.2\scripts\addons_core\bl_pkg\__init__.py", line 580, in _remote_asset_library_restore_backups
+    from _bpy_internal.assets.remote_library import listing_downloader
+  File "C:\Program Files\Blender Foundation\Blender 5.2\5.2\scripts\modules\_bpy_internal\assets\remote_library\listing_downloader.py", line 32, in <module>
+    from _bpy_internal.http import downloader as http_dl
+  File "C:\Program Files\Blender Foundation\Blender 5.2\5.2\scripts\modules\_bpy_internal\http\downloader.py", line 53, in <module>
+    import requests
+  File "C:\Program Files\Blender Foundation\Blender 5.2\5.2\python\Lib\site-packages\requests\__init__.py", line 164, in <module>
+    from .api import delete, get, head, options, patch, post, put, request
+  File "C:\Program Files\Blender Foundation\Blender 5.2\5.2\python\Lib\site-packages\requests\api.py", line 11, in <module>
+    from . import sessions
+  File "C:\Program Files\Blender Foundation\Blender 5.2\5.2\python\Lib\site-packages\requests\sessions.py", line 15, in <module>
+    from .adapters import HTTPAdapter
+  File "C:\Program Files\Blender Foundation\Blender 5.2\5.2\python\Lib\site-packages\requests\adapters.py", line 80, in <module>
+    _preloaded_ssl_context = create_urllib3_context()
+  File "C:\Program Files\Blender Foundation\Blender 5.2\5.2\python\Lib\site-packages\urllib3\util\ssl_.py", line 369, in create_urllib3_context
+    context.keylog_filename = sslkeylogfile
+    ^^^^^^^^^^^^^^^^^^^^^^^
+PermissionError: [Errno 13] Permission denied: '\\\\.\\nllMonFltProxy\\5f17a73a2631db01'
+00:02.735  blend            | Read blend: "C:\Hemant\Prj\Learning\Warden\output\warden_art_v11_1\Warden_Rigged.blend"
+00:03.547  cycles           | WARNING HIPEW initialization failed: Error opening HIP dynamic library
+00:13.313  render           | Saved: 'C:\Hemant\Prj\Learning\Warden\output\warden_art_v11_1\previews\v11_1-neutral-hand.png'
+00:22.422  render           | Saved: 'C:\Hemant\Prj\Learning\Warden\output\warden_art_v11_1\previews\v11_1-neutral-opposite-hand.png'
+00:30.078  render           | Saved: 'C:\Hemant\Prj\Learning\Warden\output\warden_art_v11_1\previews\v11_1-neutral-forearm.png'
+00:39.375  render           | Saved: 'C:\Hemant\Prj\Learning\Warden\output\warden_art_v11_1\previews\v11_1-neutral-mask.png'
+00:49.438  render           | Saved: 'C:\Hemant\Prj\Learning\Warden\output\warden_art_v11_1\previews\v11_1-neutral-robe.png'
+Exception in module register(): C:\Program Files\Blender Foundation\Blender 5.2\5.2\scripts\addons_core\bl_pkg\__init__.py
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:37:04)
+
+Blender quit

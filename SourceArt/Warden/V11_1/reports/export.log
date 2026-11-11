@@ -1,0 +1,54 @@
+Traceback (most recent call last):
+  File "C:\Program Files\Blender Foundation\Blender 5.2\5.2\scripts\modules\addon_utils.py", line 544, in enable
+    mod.register()
+    ~~~~~~~~~~~~^^
+  File "C:\Program Files\Blender Foundation\Blender 5.2\5.2\scripts\addons_core\bl_pkg\__init__.py", line 986, in register
+    _remote_asset_library_restore_backups()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Program Files\Blender Foundation\Blender 5.2\5.2\scripts\addons_core\bl_pkg\__init__.py", line 580, in _remote_asset_library_restore_backups
+    from _bpy_internal.assets.remote_library import listing_downloader
+  File "C:\Program Files\Blender Foundation\Blender 5.2\5.2\scripts\modules\_bpy_internal\assets\remote_library\listing_downloader.py", line 32, in <module>
+    from _bpy_internal.http import downloader as http_dl
+  File "C:\Program Files\Blender Foundation\Blender 5.2\5.2\scripts\modules\_bpy_internal\http\downloader.py", line 53, in <module>
+    import requests
+  File "C:\Program Files\Blender Foundation\Blender 5.2\5.2\python\Lib\site-packages\requests\__init__.py", line 164, in <module>
+    from .api import delete, get, head, options, patch, post, put, request
+  File "C:\Program Files\Blender Foundation\Blender 5.2\5.2\python\Lib\site-packages\requests\api.py", line 11, in <module>
+    from . import sessions
+  File "C:\Program Files\Blender Foundation\Blender 5.2\5.2\python\Lib\site-packages\requests\sessions.py", line 15, in <module>
+    from .adapters import HTTPAdapter
+  File "C:\Program Files\Blender Foundation\Blender 5.2\5.2\python\Lib\site-packages\requests\adapters.py", line 80, in <module>
+    _preloaded_ssl_context = create_urllib3_context()
+  File "C:\Program Files\Blender Foundation\Blender 5.2\5.2\python\Lib\site-packages\urllib3\util\ssl_.py", line 369, in create_urllib3_context
+    context.keylog_filename = sslkeylogfile
+    ^^^^^^^^^^^^^^^^^^^^^^^
+PermissionError: [Errno 13] Permission denied: '\\\\.\\nllMonFltProxy\\5b99729a2fb2ae71'
+00:02.016  blend            | Read blend: "C:\Hemant\Prj\Learning\Warden\output\warden_art_v11_1\Warden_Rigged.blend"
+Exception in module register(): C:\Program Files\Blender Foundation\Blender 5.2\5.2\scripts\addons_core\bl_pkg\__init__.py
+
+FBX export starting... 'C:\\Hemant\\Prj\\Learning\\Warden\\output\\warden_art_v11_1\\exports\\SK_Warden_LOD0.fbx'
+(bpy.data.armatures['Warden_Skeleton'], 'POSE')
+export finished in 0.2040 sec.
+Warning: Mesh 'geometry_0.002' has polygons with more than 4 vertices, cannot compute/export tangent space for it
+
+FBX export starting... 'C:\\Hemant\\Prj\\Learning\\Warden\\output\\warden_art_v11_1\\exports\\SK_Warden_LOD1.fbx'
+(bpy.data.armatures['Warden_Skeleton'], 'POSE')
+export finished in 0.1144 sec.
+Warning: Mesh 'geometry_0.006' has polygons with more than 4 vertices, cannot compute/export tangent space for it
+
+FBX export starting... 'C:\\Hemant\\Prj\\Learning\\Warden\\output\\warden_art_v11_1\\exports\\SK_Warden_LOD2.fbx'
+(bpy.data.armatures['Warden_Skeleton'], 'POSE')
+export finished in 0.0646 sec.
+Warning: Mesh 'geometry_0.010' has polygons with more than 4 vertices, cannot compute/export tangent space for it
+
+FBX export starting... 'C:\\Hemant\\Prj\\Learning\\Warden\\output\\warden_art_v11_1\\exports\\AN_Warden_Idle.fbx'
+export finished in 0.3051 sec.
+
+FBX export starting... 'C:\\Hemant\\Prj\\Learning\\Warden\\output\\warden_art_v11_1\\exports\\AN_Warden_Walk.fbx'
+export finished in 0.2114 sec.
+
+FBX export starting... 'C:\\Hemant\\Prj\\Learning\\Warden\\output\\warden_art_v11_1\\exports\\AN_Warden_DoorwayStoop.fbx'
+export finished in 0.2503 sec.
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:37:04)
+
+Blender quit

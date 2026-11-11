@@ -1,0 +1,4961 @@
+{
+ "task": "W0 read-only survey of Warden V11.1",
+ "date": "2026-11-11",
+ "source": "C:\\Hemant\\Prj\\Learning\\Warden\\output\\warden_art_v11_1",
+ "tool_versions": {
+  "blender": "5.2.2 LTS"
+ },
+ "copy": {
+  "destination": "SourceArt/Warden/V11_1/",
+  "layout": "Warden_Rigged.blend, exports/, previews/ (incl. previews/unreal), reports/, scripts/, README.md (= the owner's Unreal-README.md)",
+  "sha256_blend_and_exports": {
+   "exports/AN_Warden_DoorwayStoop.fbx": "207d3cdda9f9e148c0b61d708adc24e7f067a6465af8941d1824f565e2084f44",
+   "exports/AN_Warden_Idle.fbx": "7ec99fb7cdc5960b3f959333149f351417180a0bc889cc9dbce1c3e10ec80cc6",
+   "exports/AN_Warden_Walk.fbx": "3ead3ad81c88f3dda795f7ab2137173a25b1b8442fc41b1cbfad3eaadc323d4e",
+   "exports/SK_Warden_LOD0.fbx": "5ab128cdcd0325a98ac5a63310110c50cc70ca608296c85dce4ba10ae2043612",
+   "exports/SK_Warden_LOD1.fbx": "2224231b6349f8643b20e1cbecb28dfe0c365828d3763360bd54be5c615b4d0a",
+   "exports/SK_Warden_LOD2.fbx": "0607739f07c6d67888dfdc38c14df3ad05419f83ee4d3dea422e376447b9277e",
+   "Warden_Rigged.blend": "382604843e0e07fac81041b4b43807f095889506a1f89f8651260499b3e86b55"
+  },
+  "zip": {
+   "path": "Warden_V11_1_Unreal_Content.zip",
+   "sha256": "8ee91d139a4035fd40bfc05a3a97c0870c1c7aa9223c60faa1f0bebd8252779a",
+   "matches_owner_sha256_file": true,
+   "copied_to_SourceArt": false
+  },
+  "extracted_to": "ExternalAssets/Incoming/warden_v11_1/ (git-ignored: .gitignore line 21, ExternalAssets/Incoming/; confirmed with git check-ignore)",
+  "extracted_files": 42,
+  "extracted_content": "Content/WardenArtV11_1/ (35 files: 3 clips, 9 materials, 1 mesh, 2 preview, 20 textures) and Verification/ (7 json)",
+  "sha256_json_check": "all 42 extracted files match the zip's SHA256.json",
+  "lfs": "*.blend, *.fbx, *.png, *.jpg are LFS-tracked by .gitattributes; V5_5w2 is stored the same way (git lfs ls-files lists its blend, exports and ue_lod)",
+  "not_extracted": [
+   "Previews/, README.md and SHA256.json inside the zip (the previews are already in SourceArt/Warden/V11_1/previews/unreal)"
+  ]
+ },
+ "skeleton": {
+  "armature_object": "Warden_Rig (data Warden_Skeleton)",
+  "bones_new": 110,
+  "bones_old_V5_5w2": 110,
+  "names_identical": true,
+  "order_identical": true,
+  "parent_differences": [],
+  "max_head_position_diff_cm": 0.0,
+  "max_tail_position_diff_cm": 0.0,
+  "bones_head_diff_gt_0.1cm": [],
+  "bones_tail_diff_gt_0.1cm": [],
+  "rest_orientation_diff_deg_gt_0.1": [
+   {
+    "bone": "middle_03_r",
+    "deg": 0.175
+   },
+   {
+    "bone": "middle_03_l",
+    "deg": 0.175
+   },
+   {
+    "bone": "index_03_r",
+    "deg": 0.149
+   },
+   {
+    "bone": "index_03_l",
+    "deg": 0.149
+   },
+   {
+    "bone": "spine_02",
+    "deg": 0.148
+   },
+   {
+    "bone": "thumb_03_r",
+    "deg": 0.147
+   },
+   {
+    "bone": "thumb_03_l",
+    "deg": 0.147
+   },
+   {
+    "bone": "robe_04_01",
+    "deg": 0.14
+   },
+   {
+    "bone": "ring_03_r",
+    "deg": 0.132
+   },
+   {
+    "bone": "ring_03_l",
+    "deg": 0.132
+   },
+   {
+    "bone": "robe_01_01",
+    "deg": 0.13
+   },
+   {
+    "bone": "robe_03_02",
+    "deg": 0.129
+   },
+   {
+    "bone": "robe_06_01",
+    "deg": 0.128
+   },
+   {
+    "bone": "robe_05_02",
+    "deg": 0.121
+   },
+   {
+    "bone": "hand_r",
+    "deg": 0.118
+   },
+   {
+    "bone": "hand_l",
+    "deg": 0.118
+   },
+   {
+    "bone": "head",
+    "deg": 0.104
+   },
+   {
+    "bone": "ring_01_r",
+    "deg": 0.102
+   },
+   {
+    "bone": "ring_01_l",
+    "deg": 0.102
+   }
+  ],
+  "max_rest_orientation_diff_deg": 0.175,
+  "note": "rest = armature-space matrix_local in the blend (rig object transform identity, scale 1, metres; values x100). Old = SourceArt/Warden/V5_5w2 blend. The UE SK_Warden_Skeleton itself was not read (Unreal stays closed); V11.1's own verification (import-v11_1.json) imported the mesh onto the V5 skeleton without error.",
+  "bones_v11_1": [
+   {
+    "name": "root",
+    "parent": null,
+    "head_cm": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "tail_cm": [
+     0.0,
+     0.0,
+     15.0286
+    ],
+    "length_cm": 15.0286,
+    "quat_wxyz": [
+     0.707107,
+     0.707107,
+     0.0,
+     0.0
+    ],
+    "deform": true
+   },
+   {
+    "name": "pelvis",
+    "parent": "root",
+    "head_cm": [
+     0.0,
+     0.0,
+     155.2051
+    ],
+    "tail_cm": [
+     0.0,
+     -1.2821,
+     175.2432
+    ],
+    "length_cm": 20.0791,
+    "quat_wxyz": [
+     0.684159,
+     0.729333,
+     0.0,
+     0.0
+    ],
+    "deform": true
+   },
+   {
+    "name": "spine_01",
+    "parent": "pelvis",
+    "head_cm": [
+     0.0,
+     -1.2821,
+     175.2432
+    ],
+    "tail_cm": [
+     0.0,
+     -8.775,
+     194.2794
+    ],
+    "length_cm": 20.4578,
+    "quat_wxyz": [
+     0.562911,
+     0.826518,
+     0.0,
+     0.0
+    ],
+    "deform": true
+   },
+   {
+    "name": "spine_02",
+    "parent": "spine_01",
+    "head_cm": [
+     0.0,
+     -8.775,
+     194.2794
+    ],
+    "tail_cm": [
+     0.0,
+     -18.7067,
+     212.3137
+    ],
+    "length_cm": 20.5882,
+    "quat_wxyz": [
+     0.508726,
+     0.860928,
+     0.0,
+     0.0
+    ],
+    "deform": true
+   },
+   {
+    "name": "spine_03",
+    "parent": "spine_02",
+    "head_cm": [
+     0.0,
+     -18.7067,
+     212.3137
+    ],
+    "tail_cm": [
+     0.0,
+     -25.9423,
+     226.3403
+    ],
+    "length_cm": 15.783,
+    "quat_wxyz": [
+     0.520362,
+     0.853946,
+     0.0,
+     0.0
+    ],
+    "deform": true
+   },
+   {
+    "name": "neck_01",
+    "parent": "spine_03",
+    "head_cm": [
+     0.0,
+     -25.9423,
+     226.3403
+    ],
+    "tail_cm": [
+     0.0,
+     -30.6225,
+     239.3651
+    ],
+    "length_cm": 13.8401,
+    "quat_wxyz": [
+     0.575255,
+     0.817974,
+     0.0,
+     0.0
+    ],
+    "deform": true
+   },
+   {
+    "name": "head",
+    "parent": "neck_01",
+    "head_cm": [
+     0.0,
+     -30.6225,
+     239.3651
+    ],
+    "tail_cm": [
+     1.8596,
+     -29.5307,
+     272.4279
+    ],
+    "length_cm": 33.1331,
+    "quat_wxyz": [
+     0.718663,
+     0.694261,
+     -0.0,
+     -0.039048
+    ],
+    "deform": true
+   },
+   {
+    "name": "chain_neck_00",
+    "parent": "neck_01",
+    "head_cm": [
+     2.5,
+     -47.6671,
+     228.5805
+    ],
+    "tail_cm": [
+     2.5,
+     -47.9494,
+     226.7195
+    ],
+    "length_cm": 1.8823,
+    "quat_wxyz": [
+     0.65192,
+     -0.758288,
+     -0.0,
+     -0.0
+    ],
+    "deform": true
+   },
+   {
+    "name": "chain_neck_01",
+    "parent": "chain_neck_00",
+    "head_cm": [
+     2.5,
+     -47.9494,
+     226.7195
+    ],
+    "tail_cm": [
+     2.5,
+     -48.2318,
+     224.8585
+    ],
+    "length_cm": 1.8823,
+    "quat_wxyz": [
+     0.65192,
+     -0.758288,
+     -0.0,
+     -0.0
+    ],
+    "deform": true
+   },
+   {
+    "name": "chain_neck_02",
+    "parent": "chain_neck_01",
+    "head_cm": [
+     2.5,
+     -48.2318,
+     224.8585
+    ],
+    "tail_cm": [
+     2.5,
+     -48.5141,
+     222.9974
+    ],
+    "length_cm": 1.8823,
+    "quat_wxyz": [
+     0.65192,
+     -0.758288,
+     -0.0,
+     -0.0
+    ],
+    "deform": true
+   },
+   {
+    "name": "chain_neck_03",
+    "parent": "chain_neck_02",
+    "head_cm": [
+     2.5,
+     -48.5141,
+     222.9974
+    ],
+    "tail_cm": [
+     2.5,
+     -48.7965,
+     221.1364
+    ],
+    "length_cm": 1.8823,
+    "quat_wxyz": [
+     0.65192,
+     -0.758288,
+     -0.0,
+     -0.0
+    ],
+    "deform": true
+   },
+   {
+    "name": "chain_neck_04",
+    "parent": "chain_neck_03",
+    "head_cm": [
+     2.5,
+     -48.7965,
+     221.1364
+    ],
+    "tail_cm": [
+     2.5,
+     -49.0788,
+     219.2753
+    ],
+    "length_cm": 1.8823,
+    "quat_wxyz": [
+     0.65192,
+     -0.758288,
+     -0.0,
+     -0.0
+    ],
+    "deform": true
+   },
+   {
+    "name": "chain_neck_05",
+    "parent": "chain_neck_04",
+    "head_cm": [
+     2.5,
+     -49.0788,
+     219.2753
+    ],
+    "tail_cm": [
+     2.5,
+     -49.3612,
+     217.4143
+    ],
+    "length_cm": 1.8823,
+    "quat_wxyz": [
+     0.65192,
+     -0.758288,
+     -0.0,
+     -0.0
+    ],
+    "deform": true
+   },
+   {
+    "name": "chain_neck_06",
+    "parent": "chain_neck_05",
+    "head_cm": [
+     2.5,
+     -49.3612,
+     217.4143
+    ],
+    "tail_cm": [
+     2.5,
+     -49.6435,
+     215.5532
+    ],
+    "length_cm": 1.8823,
+    "quat_wxyz": [
+     0.65192,
+     -0.758288,
+     -0.0,
+     -0.0
+    ],
+    "deform": true
+   },
+   {
+    "name": "chain_neck_07",
+    "parent": "chain_neck_06",
+    "head_cm": [
+     2.5,
+     -49.6435,
+     215.5532
+    ],
+    "tail_cm": [
+     2.5,
+     -49.9259,
+     213.6922
+    ],
+    "length_cm": 1.8823,
+    "quat_wxyz": [
+     0.65192,
+     -0.758288,
+     -0.0,
+     -0.0
+    ],
+    "deform": true
+   },
+   {
+    "name": "chain_neck_08",
+    "parent": "chain_neck_07",
+    "head_cm": [
+     2.5,
+     -49.9259,
+     213.6922
+    ],
+    "tail_cm": [
+     2.5,
+     -50.2082,
+     211.8311
+    ],
+    "length_cm": 1.8823,
+    "quat_wxyz": [
+     0.65192,
+     -0.758288,
+     -0.0,
+     -0.0
+    ],
+    "deform": true
+   },
+   {
+    "name": "chain_neck_09",
+    "parent": "chain_neck_08",
+    "head_cm": [
+     2.5,
+     -50.2082,
+     211.8311
+    ],
+    "tail_cm": [
+     2.5,
+     -50.4906,
+     209.9701
+    ],
+    "length_cm": 1.8823,
+    "quat_wxyz": [
+     0.65192,
+     -0.758288,
+     -0.0,
+     -0.0
+    ],
+    "deform": true
+   },
+   {
+    "name": "chain_neck_10",
+    "parent": "chain_neck_09",
+    "head_cm": [
+     2.5,
+     -50.4906,
+     209.9701
+    ],
+    "tail_cm": [
+     2.5,
+     -50.7729,
+     208.109
+    ],
+    "length_cm": 1.8823,
+    "quat_wxyz": [
+     0.65192,
+     -0.758288,
+     -0.0,
+     -0.0
+    ],
+    "deform": true
+   },
+   {
+    "name": "chain_neck_11",
+    "parent": "chain_neck_10",
+    "head_cm": [
+     2.5,
+     -50.7729,
+     208.109
+    ],
+    "tail_cm": [
+     2.5,
+     -51.0553,
+     206.248
+    ],
+    "length_cm": 1.8823,
+    "quat_wxyz": [
+     0.65192,
+     -0.758288,
+     -0.0,
+     -0.0
+    ],
+    "deform": true
+   },
+   {
+    "name": "chain_neck_12",
+    "parent": "chain_neck_11",
+    "head_cm": [
+     2.5,
+     -51.0553,
+     206.248
+    ],
+    "tail_cm": [
+     2.5,
+     -51.3376,
+     204.3869
+    ],
+    "length_cm": 1.8823,
+    "quat_wxyz": [
+     0.65192,
+     -0.758288,
+     -0.0,
+     -0.0
+    ],
+    "deform": true
+   },
+   {
+    "name": "chain_neck_13",
+    "parent": "chain_neck_12",
+    "head_cm": [
+     2.5,
+     -51.3376,
+     204.3869
+    ],
+    "tail_cm": [
+     2.5,
+     -51.62,
+     202.5259
+    ],
+    "length_cm": 1.8823,
+    "quat_wxyz": [
+     0.65192,
+     -0.758288,
+     -0.0,
+     -0.0
+    ],
+    "deform": true
+   },
+   {
+    "name": "chain_neck_14",
+    "parent": "chain_neck_13",
+    "head_cm": [
+     2.5,
+     -51.62,
+     202.5259
+    ],
+    "tail_cm": [
+     2.5,
+     -51.9023,
+     200.6648
+    ],
+    "length_cm": 1.8823,
+    "quat_wxyz": [
+     0.65192,
+     -0.758288,
+     -0.0,
+     -0.0
+    ],
+    "deform": true
+   },
+   {
+    "name": "chain_neck_15",
+    "parent": "chain_neck_14",
+    "head_cm": [
+     2.5,
+     -51.9023,
+     200.6648
+    ],
+    "tail_cm": [
+     2.5,
+     -52.1847,
+     198.8038
+    ],
+    "length_cm": 1.8824,
+    "quat_wxyz": [
+     0.65192,
+     -0.758288,
+     -0.0,
+     -0.0
+    ],
+    "deform": true
+   },
+   {
+    "name": "chain_neck_16",
+    "parent": "chain_neck_15",
+    "head_cm": [
+     2.5,
+     -52.1847,
+     198.8038
+    ],
+    "tail_cm": [
+     2.5,
+     -52.467,
+     196.9427
+    ],
+    "length_cm": 1.8824,
+    "quat_wxyz": [
+     0.65192,
+     -0.758288,
+     -0.0,
+     -0.0
+    ],
+    "deform": true
+   },
+   {
+    "name": "clavicle_l",
+    "parent": "spine_03",
+    "head_cm": [
+     0.0,
+     -24.036,
+     222.3327
+    ],
+    "tail_cm": [
+     21.3606,
+     -23.0245,
+     222.9686
+    ],
+    "length_cm": 21.394,
+    "quat_wxyz": [
+     0.72363,
+     0.020537,
+     0.0,
+     -0.689883
+    ],
+    "deform": true
+   },
+   {
+    "name": "upperarm_l",
+    "parent": "clavicle_l",
+    "head_cm": [
+     21.3606,
+     -23.0245,
+     222.9686
+    ],
+    "tail_cm": [
+     44.058,
+     -4.5659,
+     182.3974
+    ],
+    "length_cm": 50.0191,
+    "quat_wxyz": [
+     0.827354,
+     -0.490185,
+     -0.0,
+     -0.274233
+    ],
+    "deform": true
+   },
+   {
+    "name": "lowerarm_l",
+    "parent": "upperarm_l",
+    "head_cm": [
+     44.058,
+     -4.5659,
+     182.3974
+    ],
+    "tail_cm": [
+     48.716,
+     -12.0229,
+     122.6715
+    ],
+    "length_cm": 60.3696,
+    "quat_wxyz": [
+     0.661997,
+     -0.747238,
+     -0.0,
+     -0.058276
+    ],
+    "deform": true
+   },
+   {
+    "name": "hand_l",
+    "parent": "lowerarm_l",
+    "head_cm": [
+     49.1728,
+     -13.516,
+     122.7588
+    ],
+    "tail_cm": [
+     53.5006,
+     -15.62,
+     100.695
+    ],
+    "length_cm": 22.5824,
+    "quat_wxyz": [
+     0.673361,
+     -0.725489,
+     0.0,
+     -0.142303
+    ],
+    "deform": true
+   },
+   {
+    "name": "thumb_01_l",
+    "parent": "hand_l",
+    "head_cm": [
+     47.8899,
+     -17.0227,
+     105.2236
+    ],
+    "tail_cm": [
+     46.6876,
+     -16.7826,
+     99.1873
+    ],
+    "length_cm": 6.1596,
+    "quat_wxyz": [
+     0.720753,
+     -0.679838,
+     -0.0,
+     0.135407
+    ],
+    "deform": true
+   },
+   {
+    "name": "thumb_02_l",
+    "parent": "thumb_01_l",
+    "head_cm": [
+     46.6876,
+     -16.7826,
+     99.1873
+    ],
+    "tail_cm": [
+     45.4853,
+     -16.1116,
+     93.2778
+    ],
+    "length_cm": 6.0678,
+    "quat_wxyz": [
+     0.74518,
+     -0.653477,
+     -0.0,
+     0.132948
+    ],
+    "deform": true
+   },
+   {
+    "name": "thumb_03_l",
+    "parent": "thumb_02_l",
+    "head_cm": [
+     45.4853,
+     -16.1116,
+     93.2778
+    ],
+    "tail_cm": [
+     44.283,
+     -14.7519,
+     87.5708
+    ],
+    "length_cm": 5.9886,
+    "quat_wxyz": [
+     0.783276,
+     -0.608321,
+     0.0,
+     0.128154
+    ],
+    "deform": true
+   },
+   {
+    "name": "index_01_l",
+    "parent": "hand_l",
+    "head_cm": [
+     51.8975,
+     -16.8839,
+     96.2073
+    ],
+    "tail_cm": [
+     51.3632,
+     -15.483,
+     88.6255
+    ],
+    "length_cm": 7.7286,
+    "quat_wxyz": [
+     0.768522,
+     -0.638241,
+     -0.0,
+     0.044982
+    ],
+    "deform": true
+   },
+   {
+    "name": "index_02_l",
+    "parent": "index_01_l",
+    "head_cm": [
+     51.3632,
+     -15.4831,
+     88.6255
+    ],
+    "tail_cm": [
+     50.8288,
+     -12.8959,
+     81.3926
+    ],
+    "length_cm": 7.7002,
+    "quat_wxyz": [
+     0.817308,
+     -0.574635,
+     -0.0,
+     0.042453
+    ],
+    "deform": true
+   },
+   {
+    "name": "index_03_l",
+    "parent": "index_02_l",
+    "head_cm": [
+     50.8288,
+     -12.8959,
+     81.3926
+    ],
+    "tail_cm": [
+     50.2945,
+     -9.1224,
+     74.5086
+    ],
+    "length_cm": 7.8685,
+    "quat_wxyz": [
+     0.860107,
+     -0.508583,
+     -0.0,
+     0.039477
+    ],
+    "deform": true
+   },
+   {
+    "name": "middle_01_l",
+    "parent": "hand_l",
+    "head_cm": [
+     55.9051,
+     -16.8839,
+     96.2073
+    ],
+    "tail_cm": [
+     55.5044,
+     -15.31,
+     87.9216
+    ],
+    "length_cm": 8.4434,
+    "quat_wxyz": [
+     0.770195,
+     -0.637064,
+     -0.0,
+     0.030814
+    ],
+    "deform": true
+   },
+   {
+    "name": "middle_02_l",
+    "parent": "middle_01_l",
+    "head_cm": [
+     55.5044,
+     -15.31,
+     87.9216
+    ],
+    "tail_cm": [
+     55.1036,
+     -12.3131,
+     80.0544
+    ],
+    "length_cm": 8.4282,
+    "quat_wxyz": [
+     0.823281,
+     -0.566899,
+     -0.0,
+     0.028879
+    ],
+    "deform": true
+   },
+   {
+    "name": "middle_03_l",
+    "parent": "middle_02_l",
+    "head_cm": [
+     55.1036,
+     -12.3131,
+     80.0544
+    ],
+    "tail_cm": [
+     54.7028,
+     -7.8931,
+     72.6058
+    ],
+    "length_cm": 8.6706,
+    "quat_wxyz": [
+     0.868841,
+     -0.494375,
+     -0.0,
+     0.026599
+    ],
+    "deform": true
+   },
+   {
+    "name": "ring_01_l",
+    "parent": "hand_l",
+    "head_cm": [
+     59.1112,
+     -17.0209,
+     99.5634
+    ],
+    "tail_cm": [
+     58.5769,
+     -16.0675,
+     91.4726
+    ],
+    "length_cm": 8.1643,
+    "quat_wxyz": [
+     0.747251,
+     -0.663097,
+     -0.0,
+     0.043794
+    ],
+    "deform": true
+   },
+   {
+    "name": "ring_02_l",
+    "parent": "ring_01_l",
+    "head_cm": [
+     58.5769,
+     -16.0675,
+     91.4726
+    ],
+    "tail_cm": [
+     58.0425,
+     -13.8122,
+     83.7647
+    ],
+    "length_cm": 8.0488,
+    "quat_wxyz": [
+     0.800066,
+     -0.598476,
+     -0.0,
+     0.04149
+    ],
+    "deform": true
+   },
+   {
+    "name": "ring_03_l",
+    "parent": "ring_02_l",
+    "head_cm": [
+     58.0425,
+     -13.8122,
+     83.7647
+    ],
+    "tail_cm": [
+     57.5082,
+     -10.2548,
+     76.4398
+    ],
+    "length_cm": 8.1606,
+    "quat_wxyz": [
+     0.847326,
+     -0.529665,
+     -0.0,
+     0.038639
+    ],
+    "deform": true
+   },
+   {
+    "name": "pinky_01_l",
+    "parent": "hand_l",
+    "head_cm": [
+     61.115,
+     -17.0227,
+     105.2236
+    ],
+    "tail_cm": [
+     60.9814,
+     -16.7379,
+     97.691
+    ],
+    "length_cm": 7.5392,
+    "quat_wxyz": [
+     0.720338,
+     -0.693514,
+     -0.0,
+     0.012299
+    ],
+    "deform": true
+   },
+   {
+    "name": "pinky_02_l",
+    "parent": "pinky_01_l",
+    "head_cm": [
+     60.9814,
+     -16.7379,
+     97.691
+    ],
+    "tail_cm": [
+     60.8479,
+     -15.6347,
+     90.399
+    ],
+    "length_cm": 7.3762,
+    "quat_wxyz": [
+     0.758141,
+     -0.651982,
+     -0.0,
+     0.011945
+    ],
+    "deform": true
+   },
+   {
+    "name": "pinky_03_l",
+    "parent": "pinky_02_l",
+    "head_cm": [
+     60.8479,
+     -15.6347,
+     90.399
+    ],
+    "tail_cm": [
+     60.7143,
+     -13.4556,
+     83.4235
+    ],
+    "length_cm": 7.3092,
+    "quat_wxyz": [
+     0.80565,
+     -0.592284,
+     -0.0,
+     0.011343
+    ],
+    "deform": true
+   },
+   {
+    "name": "chain_l_00",
+    "parent": "lowerarm_l",
+    "head_cm": [
+     56.9067,
+     -12.0229,
+     123.027
+    ],
+    "tail_cm": [
+     56.9067,
+     -12.0229,
+     105.527
+    ],
+    "length_cm": 17.5,
+    "quat_wxyz": [
+     0.707107,
+     -0.707107,
+     0.0,
+     0.0
+    ],
+    "deform": true
+   },
+   {
+    "name": "chain_l_01",
+    "parent": "chain_l_00",
+    "head_cm": [
+     56.9067,
+     -12.0229,
+     105.527
+    ],
+    "tail_cm": [
+     56.9067,
+     -12.0229,
+     88.027
+    ],
+    "length_cm": 17.5,
+    "quat_wxyz": [
+     0.707107,
+     -0.707107,
+     0.0,
+     -0.0
+    ],
+    "deform": true
+   },
+   {
+    "name": "chain_l_02",
+    "parent": "chain_l_01",
+    "head_cm": [
+     56.9067,
+     -12.0229,
+     88.027
+    ],
+    "tail_cm": [
+     56.9067,
+     -12.0229,
+     70.527
+    ],
+    "length_cm": 17.5,
+    "quat_wxyz": [
+     0.707107,
+     -0.707107,
+     0.0,
+     -0.0
+    ],
+    "deform": true
+   },
+   {
+    "name": "chain_l_03",
+    "parent": "chain_l_02",
+    "head_cm": [
+     56.9067,
+     -12.0229,
+     70.527
+    ],
+    "tail_cm": [
+     56.9067,
+     -12.0229,
+     53.027
+    ],
+    "length_cm": 17.5,
+    "quat_wxyz": [
+     0.707107,
+     -0.707107,
+     0.0,
+     -0.0
+    ],
+    "deform": true
+   },
+   {
+    "name": "chain_l_04",
+    "parent": "chain_l_03",
+    "head_cm": [
+     56.9067,
+     -12.0229,
+     53.027
+    ],
+    "tail_cm": [
+     56.9067,
+     -12.0229,
+     35.527
+    ],
+    "length_cm": 17.5,
+    "quat_wxyz": [
+     0.707107,
+     -0.707107,
+     0.0,
+     -0.0
+    ],
+    "deform": true
+   },
+   {
+    "name": "chain_l_05",
+    "parent": "chain_l_04",
+    "head_cm": [
+     56.9067,
+     -12.0229,
+     35.527
+    ],
+    "tail_cm": [
+     56.9067,
+     -12.0229,
+     18.027
+    ],
+    "length_cm": 17.5,
+    "quat_wxyz": [
+     0.707107,
+     -0.707107,
+     0.0,
+     -0.0
+    ],
+    "deform": true
+   },
+   {
+    "name": "chain_l_06",
+    "parent": "chain_l_05",
+    "head_cm": [
+     56.9067,
+     -12.0229,
+     18.027
+    ],
+    "tail_cm": [
+     60.0293,
+     -2.7821,
+     3.5
+    ],
+    "length_cm": 17.4978,
+    "quat_wxyz": [
+     0.874102,
+     -0.474896,
+     0.0,
+     -0.102078
+    ],
+    "deform": true
+   },
+   {
+    "name": "chain_l_07",
+    "parent": "chain_l_06",
+    "head_cm": [
+     60.0293,
+     -2.7821,
+     3.5
+    ],
+    "tail_cm": [
+     65.6293,
+     13.7904,
+     3.5
+    ],
+    "length_cm": 17.4931,
+    "quat_wxyz": [
+     0.986756,
+     0.0,
+     -0.0,
+     -0.162212
+    ],
+    "deform": true
+   },
+   {
+    "name": "chain_l_08",
+    "parent": "chain_l_07",
+    "head_cm": [
+     65.6293,
+     13.7904,
+     3.5
+    ],
+    "tail_cm": [
+     71.2293,
+     30.3629,
+     3.5
+    ],
+    "length_cm": 17.4931,
+    "quat_wxyz": [
+     0.986756,
+     0.0,
+     -0.0,
+     -0.162212
+    ],
+    "deform": true
+   },
+   {
+    "name": "chain_l_09",
+    "parent": "chain_l_08",
+    "head_cm": [
+     71.2293,
+     30.3629,
+     3.5
+    ],
+    "tail_cm": [
+     76.8293,
+     46.9354,
+     3.5
+    ],
+    "length_cm": 17.4931,
+    "quat_wxyz": [
+     0.986756,
+     0.0,
+     -0.0,
+     -0.162212
+    ],
+    "deform": true
+   },
+   {
+    "name": "chain_l_10",
+    "parent": "chain_l_09",
+    "head_cm": [
+     76.8293,
+     46.9354,
+     3.5
+    ],
+    "tail_cm": [
+     82.4293,
+     63.5079,
+     3.5
+    ],
+    "length_cm": 17.4931,
+    "quat_wxyz": [
+     0.986756,
+     0.0,
+     -0.0,
+     -0.162212
+    ],
+    "deform": true
+   },
+   {
+    "name": "chain_l_11",
+    "parent": "chain_l_10",
+    "head_cm": [
+     82.4293,
+     63.5079,
+     3.5
+    ],
+    "tail_cm": [
+     88.0293,
+     80.0804,
+     3.5
+    ],
+    "length_cm": 17.4931,
+    "quat_wxyz": [
+     0.986756,
+     0.0,
+     -0.0,
+     -0.162212
+    ],
+    "deform": true
+   },
+   {
+    "name": "clavicle_r",
+    "parent": "spine_03",
+    "head_cm": [
+     0.0,
+     -24.036,
+     222.3327
+    ],
+    "tail_cm": [
+     -21.3606,
+     -23.0245,
+     217.6892
+    ],
+    "length_cm": 21.8829,
+    "quat_wxyz": [
+     0.723265,
+     -0.146693,
+     0.0,
+     0.674811
+    ],
+    "deform": true
+   },
+   {
+    "name": "upperarm_r",
+    "parent": "clavicle_r",
+    "head_cm": [
+     -21.3606,
+     -23.0245,
+     217.6892
+    ],
+    "tail_cm": [
+     -44.058,
+     -4.5659,
+     180.1118
+    ],
+    "length_cm": 47.6231,
+    "quat_wxyz": [
+     0.832946,
+     -0.473656,
+     0.0,
+     0.286097
+    ],
+    "deform": true
+   },
+   {
+    "name": "lowerarm_r",
+    "parent": "upperarm_r",
+    "head_cm": [
+     -44.058,
+     -4.5659,
+     180.1118
+    ],
+    "tail_cm": [
+     -48.716,
+     -12.0229,
+     122.6715
+    ],
+    "length_cm": 58.1093,
+    "quat_wxyz": [
+     0.66018,
+     -0.74865,
+     0.0,
+     0.06071
+    ],
+    "deform": true
+   },
+   {
+    "name": "hand_r",
+    "parent": "lowerarm_r",
+    "head_cm": [
+     -49.1728,
+     -13.516,
+     122.7587
+    ],
+    "tail_cm": [
+     -53.5006,
+     -15.62,
+     100.695
+    ],
+    "length_cm": 22.5824,
+    "quat_wxyz": [
+     0.673361,
+     -0.725489,
+     0.0,
+     0.142303
+    ],
+    "deform": true
+   },
+   {
+    "name": "thumb_01_r",
+    "parent": "hand_r",
+    "head_cm": [
+     -47.8899,
+     -17.0227,
+     105.2236
+    ],
+    "tail_cm": [
+     -46.6876,
+     -16.7826,
+     99.1873
+    ],
+    "length_cm": 6.1596,
+    "quat_wxyz": [
+     0.720753,
+     -0.679838,
+     -0.0,
+     -0.135408
+    ],
+    "deform": true
+   },
+   {
+    "name": "thumb_02_r",
+    "parent": "thumb_01_r",
+    "head_cm": [
+     -46.6876,
+     -16.7826,
+     99.1873
+    ],
+    "tail_cm": [
+     -45.4853,
+     -16.1116,
+     93.2778
+    ],
+    "length_cm": 6.0678,
+    "quat_wxyz": [
+     0.74518,
+     -0.653477,
+     0.0,
+     -0.132948
+    ],
+    "deform": true
+   },
+   {
+    "name": "thumb_03_r",
+    "parent": "thumb_02_r",
+    "head_cm": [
+     -45.4853,
+     -16.1116,
+     93.2778
+    ],
+    "tail_cm": [
+     -44.283,
+     -14.7519,
+     87.5708
+    ],
+    "length_cm": 5.9886,
+    "quat_wxyz": [
+     0.783276,
+     -0.608321,
+     0.0,
+     -0.128154
+    ],
+    "deform": true
+   },
+   {
+    "name": "index_01_r",
+    "parent": "hand_r",
+    "head_cm": [
+     -51.8975,
+     -16.8839,
+     96.2072
+    ],
+    "tail_cm": [
+     -51.3632,
+     -15.483,
+     88.6255
+    ],
+    "length_cm": 7.7286,
+    "quat_wxyz": [
+     0.768522,
+     -0.638241,
+     -0.0,
+     -0.044982
+    ],
+    "deform": true
+   },
+   {
+    "name": "index_02_r",
+    "parent": "index_01_r",
+    "head_cm": [
+     -51.3632,
+     -15.483,
+     88.6254
+    ],
+    "tail_cm": [
+     -50.8288,
+     -12.8959,
+     81.3926
+    ],
+    "length_cm": 7.7002,
+    "quat_wxyz": [
+     0.817308,
+     -0.574635,
+     0.0,
+     -0.042453
+    ],
+    "deform": true
+   },
+   {
+    "name": "index_03_r",
+    "parent": "index_02_r",
+    "head_cm": [
+     -50.8288,
+     -12.8959,
+     81.3925
+    ],
+    "tail_cm": [
+     -50.2945,
+     -9.1224,
+     74.5086
+    ],
+    "length_cm": 7.8685,
+    "quat_wxyz": [
+     0.860107,
+     -0.508583,
+     0.0,
+     -0.039477
+    ],
+    "deform": true
+   },
+   {
+    "name": "middle_01_r",
+    "parent": "hand_r",
+    "head_cm": [
+     -55.9051,
+     -16.8839,
+     96.2072
+    ],
+    "tail_cm": [
+     -55.5044,
+     -15.31,
+     87.9216
+    ],
+    "length_cm": 8.4434,
+    "quat_wxyz": [
+     0.770195,
+     -0.637064,
+     0.0,
+     -0.030814
+    ],
+    "deform": true
+   },
+   {
+    "name": "middle_02_r",
+    "parent": "middle_01_r",
+    "head_cm": [
+     -55.5044,
+     -15.31,
+     87.9216
+    ],
+    "tail_cm": [
+     -55.1036,
+     -12.3131,
+     80.0544
+    ],
+    "length_cm": 8.4282,
+    "quat_wxyz": [
+     0.823281,
+     -0.566899,
+     0.0,
+     -0.028879
+    ],
+    "deform": true
+   },
+   {
+    "name": "middle_03_r",
+    "parent": "middle_02_r",
+    "head_cm": [
+     -55.1036,
+     -12.3131,
+     80.0544
+    ],
+    "tail_cm": [
+     -54.7028,
+     -7.8931,
+     72.6058
+    ],
+    "length_cm": 8.6706,
+    "quat_wxyz": [
+     0.868841,
+     -0.494375,
+     0.0,
+     -0.026599
+    ],
+    "deform": true
+   },
+   {
+    "name": "ring_01_r",
+    "parent": "hand_r",
+    "head_cm": [
+     -59.1112,
+     -17.0209,
+     99.5634
+    ],
+    "tail_cm": [
+     -58.5769,
+     -16.0675,
+     91.4726
+    ],
+    "length_cm": 8.1643,
+    "quat_wxyz": [
+     0.747251,
+     -0.663097,
+     0.0,
+     -0.043794
+    ],
+    "deform": true
+   },
+   {
+    "name": "ring_02_r",
+    "parent": "ring_01_r",
+    "head_cm": [
+     -58.5769,
+     -16.0675,
+     91.4726
+    ],
+    "tail_cm": [
+     -58.0425,
+     -13.8122,
+     83.7647
+    ],
+    "length_cm": 8.0488,
+    "quat_wxyz": [
+     0.800066,
+     -0.598476,
+     0.0,
+     -0.04149
+    ],
+    "deform": true
+   },
+   {
+    "name": "ring_03_r",
+    "parent": "ring_02_r",
+    "head_cm": [
+     -58.0425,
+     -13.8122,
+     83.7647
+    ],
+    "tail_cm": [
+     -57.5082,
+     -10.2548,
+     76.4398
+    ],
+    "length_cm": 8.1606,
+    "quat_wxyz": [
+     0.847326,
+     -0.529665,
+     0.0,
+     -0.038639
+    ],
+    "deform": true
+   },
+   {
+    "name": "pinky_01_r",
+    "parent": "hand_r",
+    "head_cm": [
+     -61.115,
+     -17.0227,
+     105.2236
+    ],
+    "tail_cm": [
+     -60.9814,
+     -16.7379,
+     97.691
+    ],
+    "length_cm": 7.5392,
+    "quat_wxyz": [
+     0.720338,
+     -0.693514,
+     -0.0,
+     -0.012299
+    ],
+    "deform": true
+   },
+   {
+    "name": "pinky_02_r",
+    "parent": "pinky_01_r",
+    "head_cm": [
+     -60.9814,
+     -16.7379,
+     97.6909
+    ],
+    "tail_cm": [
+     -60.8479,
+     -15.6347,
+     90.399
+    ],
+    "length_cm": 7.3762,
+    "quat_wxyz": [
+     0.758141,
+     -0.651982,
+     -0.0,
+     -0.011945
+    ],
+    "deform": true
+   },
+   {
+    "name": "pinky_03_r",
+    "parent": "pinky_02_r",
+    "head_cm": [
+     -60.8478,
+     -15.6347,
+     90.399
+    ],
+    "tail_cm": [
+     -60.7143,
+     -13.4556,
+     83.4235
+    ],
+    "length_cm": 7.3092,
+    "quat_wxyz": [
+     0.80565,
+     -0.592284,
+     0.0,
+     -0.011343
+    ],
+    "deform": true
+   },
+   {
+    "name": "chain_r_00",
+    "parent": "lowerarm_r",
+    "head_cm": [
+     -56.9067,
+     -12.0229,
+     123.027
+    ],
+    "tail_cm": [
+     -56.9067,
+     -12.3979,
+     120.5553
+    ],
+    "length_cm": 2.5,
+    "quat_wxyz": [
+     0.65192,
+     -0.758288,
+     -0.0,
+     -0.0
+    ],
+    "deform": true
+   },
+   {
+    "name": "chain_r_01",
+    "parent": "chain_r_00",
+    "head_cm": [
+     -56.9067,
+     -12.3979,
+     120.5553
+    ],
+    "tail_cm": [
+     -56.9067,
+     -12.7729,
+     118.0835
+    ],
+    "length_cm": 2.5,
+    "quat_wxyz": [
+     0.65192,
+     -0.758288,
+     0.0,
+     0.0
+    ],
+    "deform": true
+   },
+   {
+    "name": "chain_r_02",
+    "parent": "chain_r_01",
+    "head_cm": [
+     -56.9067,
+     -12.7729,
+     118.0835
+    ],
+    "tail_cm": [
+     -56.9067,
+     -13.1479,
+     115.6118
+    ],
+    "length_cm": 2.5,
+    "quat_wxyz": [
+     0.65192,
+     -0.758288,
+     0.0,
+     0.0
+    ],
+    "deform": true
+   },
+   {
+    "name": "chain_r_03",
+    "parent": "chain_r_02",
+    "head_cm": [
+     -56.9067,
+     -13.1479,
+     115.6118
+    ],
+    "tail_cm": [
+     -56.9067,
+     -13.5229,
+     113.1401
+    ],
+    "length_cm": 2.5,
+    "quat_wxyz": [
+     0.65192,
+     -0.758288,
+     0.0,
+     0.0
+    ],
+    "deform": true
+   },
+   {
+    "name": "chain_r_04",
+    "parent": "chain_r_03",
+    "head_cm": [
+     -56.9067,
+     -13.5229,
+     113.1401
+    ],
+    "tail_cm": [
+     -56.9067,
+     -13.8979,
+     110.6684
+    ],
+    "length_cm": 2.5,
+    "quat_wxyz": [
+     0.65192,
+     -0.758288,
+     0.0,
+     0.0
+    ],
+    "deform": true
+   },
+   {
+    "name": "chain_r_05",
+    "parent": "chain_r_04",
+    "head_cm": [
+     -56.9067,
+     -13.8979,
+     110.6684
+    ],
+    "tail_cm": [
+     -56.9067,
+     -14.2729,
+     108.1967
+    ],
+    "length_cm": 2.5,
+    "quat_wxyz": [
+     0.65192,
+     -0.758288,
+     0.0,
+     0.0
+    ],
+    "deform": true
+   },
+   {
+    "name": "chain_r_06",
+    "parent": "chain_r_05",
+    "head_cm": [
+     -56.9067,
+     -14.2729,
+     108.1967
+    ],
+    "tail_cm": [
+     -56.9067,
+     -14.6479,
+     105.725
+    ],
+    "length_cm": 2.5,
+    "quat_wxyz": [
+     0.65192,
+     -0.758288,
+     0.0,
+     0.0
+    ],
+    "deform": true
+   },
+   {
+    "name": "chain_r_07",
+    "parent": "chain_r_06",
+    "head_cm": [
+     -56.9067,
+     -14.6479,
+     105.725
+    ],
+    "tail_cm": [
+     -56.9067,
+     -15.0229,
+     103.2533
+    ],
+    "length_cm": 2.5,
+    "quat_wxyz": [
+     0.65192,
+     -0.758288,
+     0.0,
+     0.0
+    ],
+    "deform": true
+   },
+   {
+    "name": "chain_r_08",
+    "parent": "chain_r_07",
+    "head_cm": [
+     -56.9067,
+     -15.0229,
+     103.2533
+    ],
+    "tail_cm": [
+     -56.9067,
+     -15.3979,
+     100.7816
+    ],
+    "length_cm": 2.5,
+    "quat_wxyz": [
+     0.65192,
+     -0.758288,
+     0.0,
+     0.0
+    ],
+    "deform": true
+   },
+   {
+    "name": "chain_r_09",
+    "parent": "chain_r_08",
+    "head_cm": [
+     -56.9067,
+     -15.3978,
+     100.7816
+    ],
+    "tail_cm": [
+     -56.9067,
+     -15.7729,
+     98.3099
+    ],
+    "length_cm": 2.5,
+    "quat_wxyz": [
+     0.65192,
+     -0.758288,
+     0.0,
+     0.0
+    ],
+    "deform": true
+   },
+   {
+    "name": "chain_r_10",
+    "parent": "chain_r_09",
+    "head_cm": [
+     -56.9067,
+     -15.7728,
+     98.3099
+    ],
+    "tail_cm": [
+     -56.9067,
+     -16.1479,
+     95.8382
+    ],
+    "length_cm": 2.5,
+    "quat_wxyz": [
+     0.65192,
+     -0.758288,
+     0.0,
+     0.0
+    ],
+    "deform": true
+   },
+   {
+    "name": "chain_r_11",
+    "parent": "chain_r_10",
+    "head_cm": [
+     -56.9067,
+     -16.1478,
+     95.8382
+    ],
+    "tail_cm": [
+     -56.9067,
+     -16.5229,
+     93.3664
+    ],
+    "length_cm": 2.5,
+    "quat_wxyz": [
+     0.65192,
+     -0.758288,
+     0.0,
+     0.0
+    ],
+    "deform": true
+   },
+   {
+    "name": "thigh_l",
+    "parent": "pelvis",
+    "head_cm": [
+     14.0181,
+     0.0,
+     157.2089
+    ],
+    "tail_cm": [
+     15.0286,
+     -2.0038,
+     84.0699
+    ],
+    "length_cm": 73.1735,
+    "quat_wxyz": [
+     0.697358,
+     -0.716655,
+     -2e-06,
+     -0.009901
+    ],
+    "deform": true
+   },
+   {
+    "name": "calf_l",
+    "parent": "thigh_l",
+    "head_cm": [
+     15.0286,
+     -2.0038,
+     84.0699
+    ],
+    "tail_cm": [
+     17.0324,
+     0.0,
+     14.9385
+    ],
+    "length_cm": 69.1895,
+    "quat_wxyz": [
+     0.717273,
+     -0.6965,
+     -0.0,
+     -0.020187
+    ],
+    "deform": true
+   },
+   {
+    "name": "foot_l",
+    "parent": "calf_l",
+    "head_cm": [
+     17.0324,
+     0.0,
+     14.9385
+    ],
+    "tail_cm": [
+     17.0324,
+     -22.0419,
+     7.9251
+    ],
+    "length_cm": 23.1304,
+    "quat_wxyz": [
+     0.15342,
+     -0.988161,
+     -1e-06,
+     -0.0
+    ],
+    "deform": true
+   },
+   {
+    "name": "ball_l",
+    "parent": "foot_l",
+    "head_cm": [
+     17.0324,
+     -22.0419,
+     7.9251
+    ],
+    "tail_cm": [
+     17.0324,
+     -32.0609,
+     6.9232
+    ],
+    "length_cm": 10.0688,
+    "quat_wxyz": [
+     0.049814,
+     -0.998759,
+     -1e-06,
+     -0.0
+    ],
+    "deform": true
+   },
+   {
+    "name": "thigh_r",
+    "parent": "pelvis",
+    "head_cm": [
+     -14.0181,
+     0.0,
+     157.2089
+    ],
+    "tail_cm": [
+     -15.0286,
+     -2.0038,
+     84.0699
+    ],
+    "length_cm": 73.1735,
+    "quat_wxyz": [
+     0.697358,
+     -0.716655,
+     2e-06,
+     0.009901
+    ],
+    "deform": true
+   },
+   {
+    "name": "calf_r",
+    "parent": "thigh_r",
+    "head_cm": [
+     -15.0286,
+     -2.0038,
+     84.0699
+    ],
+    "tail_cm": [
+     -17.0324,
+     0.0,
+     14.9385
+    ],
+    "length_cm": 69.1895,
+    "quat_wxyz": [
+     0.717273,
+     -0.6965,
+     0.0,
+     0.020187
+    ],
+    "deform": true
+   },
+   {
+    "name": "foot_r",
+    "parent": "calf_r",
+    "head_cm": [
+     -17.0324,
+     0.0,
+     14.9385
+    ],
+    "tail_cm": [
+     -17.0324,
+     -22.0419,
+     7.9251
+    ],
+    "length_cm": 23.1304,
+    "quat_wxyz": [
+     0.15342,
+     -0.988161,
+     1e-06,
+     0.0
+    ],
+    "deform": true
+   },
+   {
+    "name": "ball_r",
+    "parent": "foot_r",
+    "head_cm": [
+     -17.0324,
+     -22.0419,
+     7.9251
+    ],
+    "tail_cm": [
+     -17.0324,
+     -32.0609,
+     6.9232
+    ],
+    "length_cm": 10.0688,
+    "quat_wxyz": [
+     0.049814,
+     -0.998759,
+     1e-06,
+     0.0
+    ],
+    "deform": true
+   },
+   {
+    "name": "robe_00_01",
+    "parent": "pelvis",
+    "head_cm": [
+     0.0,
+     9.2295,
+     183.2584
+    ],
+    "tail_cm": [
+     0.0,
+     22.1421,
+     103.1061
+    ],
+    "length_cm": 81.1858,
+    "quat_wxyz": [
+     0.761265,
+     -0.648441,
+     0.0,
+     0.0
+    ],
+    "deform": true
+   },
+   {
+    "name": "robe_00_02",
+    "parent": "robe_00_01",
+    "head_cm": [
+     0.0,
+     22.1421,
+     103.1061
+    ],
+    "tail_cm": [
+     0.0,
+     33.8644,
+     9.929
+    ],
+    "length_cm": 93.9116,
+    "quat_wxyz": [
+     0.749941,
+     -0.661505,
+     0.0,
+     0.0
+    ],
+    "deform": true
+   },
+   {
+    "name": "robe_01_01",
+    "parent": "pelvis",
+    "head_cm": [
+     13.1421,
+     5.4147,
+     183.935
+    ],
+    "tail_cm": [
+     18.4198,
+     15.6568,
+     103.1061
+    ],
+    "length_cm": 81.6461,
+    "quat_wxyz": [
+     0.750148,
+     -0.659864,
+     0.0,
+     -0.043091
+    ],
+    "deform": true
+   },
+   {
+    "name": "robe_01_02",
+    "parent": "robe_01_01",
+    "head_cm": [
+     18.4198,
+     15.6568,
+     103.106
+    ],
+    "tail_cm": [
+     23.379,
+     23.9457,
+     9.929
+    ],
+    "length_cm": 93.6764,
+    "quat_wxyz": [
+     0.737728,
+     -0.674144,
+     0.0,
+     -0.035886
+    ],
+    "deform": true
+   },
+   {
+    "name": "robe_02_01",
+    "parent": "pelvis",
+    "head_cm": [
+     18.5857,
+     -3.7952,
+     184.171
+    ],
+    "tail_cm": [
+     26.0495,
+     0.0,
+     103.1061
+    ],
+    "length_cm": 81.4962,
+    "quat_wxyz": [
+     0.723384,
+     -0.687538,
+     -1e-06,
+     -0.063301
+    ],
+    "deform": true
+   },
+   {
+    "name": "robe_02_02",
+    "parent": "robe_02_01",
+    "head_cm": [
+     26.0495,
+     -0.0,
+     103.106
+    ],
+    "tail_cm": [
+     33.0628,
+     0.0,
+     9.929
+    ],
+    "length_cm": 93.4407,
+    "quat_wxyz": [
+     0.707107,
+     -0.705112,
+     -1e-06,
+     -0.053071
+    ],
+    "deform": true
+   },
+   {
+    "name": "robe_03_01",
+    "parent": "pelvis",
+    "head_cm": [
+     13.1421,
+     -13.0051,
+     183.935
+    ],
+    "tail_cm": [
+     18.4198,
+     -15.6568,
+     103.1061
+    ],
+    "length_cm": 81.0445,
+    "quat_wxyz": [
+     0.695443,
+     -0.717055,
+     3e-06,
+     -0.04682
+    ],
+    "deform": true
+   },
+   {
+    "name": "robe_03_02",
+    "parent": "robe_03_01",
+    "head_cm": [
+     18.4198,
+     -15.6568,
+     103.1061
+    ],
+    "tail_cm": [
+     23.379,
+     -23.9457,
+     9.929
+    ],
+    "length_cm": 93.6765,
+    "quat_wxyz": [
+     0.675098,
+     -0.736685,
+     3e-06,
+     -0.039208
+    ],
+    "deform": true
+   },
+   {
+    "name": "robe_04_01",
+    "parent": "pelvis",
+    "head_cm": [
+     0.0,
+     -16.82,
+     183.2584
+    ],
+    "tail_cm": [
+     0.0,
+     -22.1421,
+     103.1061
+    ],
+    "length_cm": 80.3289,
+    "quat_wxyz": [
+     0.683281,
+     -0.730155,
+     -0.0,
+     -0.0
+    ],
+    "deform": true
+   },
+   {
+    "name": "robe_04_02",
+    "parent": "robe_04_01",
+    "head_cm": [
+     0.0,
+     -22.1421,
+     103.106
+    ],
+    "tail_cm": [
+     0.0,
+     -33.8644,
+     9.929
+    ],
+    "length_cm": 93.9116,
+    "quat_wxyz": [
+     0.661505,
+     -0.749941,
+     -0.0,
+     -0.0
+    ],
+    "deform": true
+   },
+   {
+    "name": "robe_05_01",
+    "parent": "pelvis",
+    "head_cm": [
+     -13.1421,
+     -13.0051,
+     182.5818
+    ],
+    "tail_cm": [
+     -18.4198,
+     -15.6568,
+     103.1061
+    ],
+    "length_cm": 79.695,
+    "quat_wxyz": [
+     0.695243,
+     -0.717195,
+     -2e-06,
+     0.047626
+    ],
+    "deform": true
+   },
+   {
+    "name": "robe_05_02",
+    "parent": "robe_05_01",
+    "head_cm": [
+     -18.4198,
+     -15.6568,
+     103.1061
+    ],
+    "tail_cm": [
+     -23.379,
+     -23.9457,
+     9.929
+    ],
+    "length_cm": 93.6765,
+    "quat_wxyz": [
+     0.675098,
+     -0.736685,
+     -2e-06,
+     0.039209
+    ],
+    "deform": true
+   },
+   {
+    "name": "robe_06_01",
+    "parent": "pelvis",
+    "head_cm": [
+     -18.5857,
+     -3.7952,
+     182.3459
+    ],
+    "tail_cm": [
+     -26.0495,
+     -0.0,
+     103.1061
+    ],
+    "length_cm": 79.681,
+    "quat_wxyz": [
+     0.723751,
+     -0.68702,
+     1e-06,
+     0.06471
+    ],
+    "deform": true
+   },
+   {
+    "name": "robe_06_02",
+    "parent": "robe_06_01",
+    "head_cm": [
+     -26.0495,
+     -0.0,
+     103.106
+    ],
+    "tail_cm": [
+     -33.0628,
+     -0.0,
+     9.929
+    ],
+    "length_cm": 93.4407,
+    "quat_wxyz": [
+     0.707107,
+     -0.705112,
+     1e-06,
+     0.053071
+    ],
+    "deform": true
+   },
+   {
+    "name": "robe_07_01",
+    "parent": "pelvis",
+    "head_cm": [
+     -13.1421,
+     5.4147,
+     182.5818
+    ],
+    "tail_cm": [
+     -18.4198,
+     15.6568,
+     103.1061
+    ],
+    "length_cm": 80.3066,
+    "quat_wxyz": [
+     0.750845,
+     -0.659027,
+     -0.0,
+     0.043769
+    ],
+    "deform": true
+   },
+   {
+    "name": "robe_07_02",
+    "parent": "robe_07_01",
+    "head_cm": [
+     -18.4198,
+     15.6568,
+     103.106
+    ],
+    "tail_cm": [
+     -23.379,
+     23.9457,
+     9.929
+    ],
+    "length_cm": 93.6764,
+    "quat_wxyz": [
+     0.737727,
+     -0.674145,
+     -0.0,
+     0.035886
+    ],
+    "deform": true
+   }
+  ],
+  "head_bone_world_axes": {
+   "x": [
+    0.997,
+    -0.0561,
+    -0.0542
+   ],
+   "y": [
+    0.0561,
+    0.033,
+    0.9979
+   ],
+   "z": [
+    -0.0542,
+    -0.9979,
+    0.036
+   ],
+   "head_cm": [
+    0.0,
+    -30.6225,
+    239.3651
+   ]
+  },
+  "mask_socket_in_project": "SK_Warden mesh socket 'mask' on bone head, zero offset (Docs/ArtTest/warden/p13_reimport_pre.json). The native V11.1 SK_Warden.uasset has no socket (no SkeletalMeshSocket and no 'mask' name in the package)."
+ },
+ "mesh": {
+  "v11_1": {
+   "LOD0": {
+    "verts_fbx": 48538,
+    "tris_fbx": 94515,
+    "height_cm_fbx": 289.9947,
+    "bounds_min_cm": [
+     -66.5646,
+     -60.9626,
+     0.1
+    ],
+    "bounds_max_cm": [
+     97.4556,
+     75.1809,
+     290.0947
+    ],
+    "bounds_centre_xy_cm": [
+     15.4455,
+     7.1092
+    ],
+    "slots": [
+     {
+      "index": 0,
+      "slot": "M_Warden_Wool",
+      "material": "M_Warden_Wool",
+      "tris": 26516
+     },
+     {
+      "index": 1,
+      "slot": "M_Warden_BellMetal",
+      "material": "M_Warden_BellMetal",
+      "tris": 9252
+     },
+     {
+      "index": 2,
+      "slot": "M_Warden_RustedIron",
+      "material": "M_Warden_RustedIron",
+      "tris": 872
+     },
+     {
+      "index": 3,
+      "slot": "M_Warden_Skin",
+      "material": "M_Warden_Skin",
+      "tris": 28506
+     },
+     {
+      "index": 4,
+      "slot": "M_Warden_Leather",
+      "material": "M_Warden_Leather",
+      "tris": 7745
+     },
+     {
+      "index": 5,
+      "slot": "M_Warden_ChainIron",
+      "material": "M_Warden_ChainIron",
+      "tris": 21324
+     },
+     {
+      "index": 6,
+      "slot": "M_Warden_DimEyes",
+      "material": "M_Warden_DimEyes",
+      "tris": 40
+     },
+     {
+      "index": 7,
+      "slot": "M_Warden_Keratin",
+      "material": "M_Warden_Keratin",
+      "tris": 260
+     }
+    ],
+    "blend_polys": 93153,
+    "blend_verts": 48538,
+    "rest_height_cm_blend": 289.9947,
+    "ngon_counts_by_vertex_count": {
+     "by_vertex_count": {
+      "3": 91887,
+      "16": 2,
+      "4": 1248,
+      "6": 4,
+      "8": 4,
+      "10": 8
+     },
+     "ngons_by_slot": {
+      "5": 2,
+      "0": 4,
+      "1": 4,
+      "7": 8
+     }
+    }
+   },
+   "LOD1": {
+    "verts_fbx": 23776,
+    "tris_fbx": 45536,
+    "height_cm_fbx": 290.0682,
+    "bounds_min_cm": [
+     -66.5646,
+     -60.926,
+     0.0972
+    ],
+    "bounds_max_cm": [
+     97.5239,
+     75.1809,
+     290.1654
+    ],
+    "bounds_centre_xy_cm": [
+     15.4797,
+     7.1275
+    ],
+    "slots": [
+     {
+      "index": 0,
+      "slot": "M_Warden_Wool",
+      "material": "M_Warden_Wool",
+      "tris": 16073
+     },
+     {
+      "index": 1,
+      "slot": "M_Warden_BellMetal",
+      "material": "M_Warden_BellMetal",
+      "tris": 1022
+     },
+     {
+      "index": 2,
+      "slot": "M_Warden_RustedIron",
+      "material": "M_Warden_RustedIron",
+      "tris": 404
+     },
+     {
+      "index": 3,
+      "slot": "M_Warden_Skin",
+      "material": "M_Warden_Skin",
+      "tris": 11976
+     },
+     {
+      "index": 4,
+      "slot": "M_Warden_Leather",
+      "material": "M_Warden_Leather",
+      "tris": 6779
+     },
+     {
+      "index": 5,
+      "slot": "M_Warden_ChainIron",
+      "material": "M_Warden_ChainIron",
+      "tris": 8994
+     },
+     {
+      "index": 6,
+      "slot": "M_Warden_DimEyes",
+      "material": "M_Warden_DimEyes",
+      "tris": 40
+     },
+     {
+      "index": 7,
+      "slot": "M_Warden_Keratin",
+      "material": "M_Warden_Keratin",
+      "tris": 248
+     }
+    ],
+    "blend_polys": 44613,
+    "blend_verts": 23776,
+    "rest_height_cm_blend": 290.0682,
+    "ngon_counts_by_vertex_count": {
+     "by_vertex_count": {
+      "3": 43766,
+      "16": 2,
+      "4": 829,
+      "6": 8,
+      "8": 6,
+      "10": 2
+     },
+     "ngons_by_slot": {
+      "5": 2,
+      "0": 4,
+      "1": 4,
+      "7": 8
+     }
+    }
+   },
+   "LOD2": {
+    "verts_fbx": 9564,
+    "tris_fbx": 17858,
+    "height_cm_fbx": 290.1574,
+    "bounds_min_cm": [
+     -66.5404,
+     -61.1524,
+     0.1547
+    ],
+    "bounds_max_cm": [
+     97.4973,
+     74.8327,
+     290.3121
+    ],
+    "bounds_centre_xy_cm": [
+     15.4784,
+     6.8401
+    ],
+    "slots": [
+     {
+      "index": 0,
+      "slot": "M_Warden_Wool",
+      "material": "M_Warden_Wool",
+      "tris": 5807
+     },
+     {
+      "index": 1,
+      "slot": "M_Warden_BellMetal",
+      "material": "M_Warden_BellMetal",
+      "tris": 480
+     },
+     {
+      "index": 2,
+      "slot": "M_Warden_RustedIron",
+      "material": "M_Warden_RustedIron",
+      "tris": 250
+     },
+     {
+      "index": 3,
+      "slot": "M_Warden_Skin",
+      "material": "M_Warden_Skin",
+      "tris": 3970
+     },
+     {
+      "index": 4,
+      "slot": "M_Warden_Leather",
+      "material": "M_Warden_Leather",
+      "tris": 2079
+     },
+     {
+      "index": 5,
+      "slot": "M_Warden_ChainIron",
+      "material": "M_Warden_ChainIron",
+      "tris": 4996
+     },
+     {
+      "index": 6,
+      "slot": "M_Warden_DimEyes",
+      "material": "M_Warden_DimEyes",
+      "tris": 40
+     },
+     {
+      "index": 7,
+      "slot": "M_Warden_Keratin",
+      "material": "M_Warden_Keratin",
+      "tris": 236
+     }
+    ],
+    "blend_polys": 17330,
+    "blend_verts": 9564,
+    "rest_height_cm_blend": 290.1574,
+    "ngon_counts_by_vertex_count": {
+     "by_vertex_count": {
+      "3": 16845,
+      "4": 471,
+      "12": 1,
+      "10": 3,
+      "6": 10
+     },
+     "ngons_by_slot": {
+      "5": 2,
+      "1": 4,
+      "7": 8
+     }
+    }
+   }
+  },
+  "v5_5w2_current_source": {
+   "LOD0": {
+    "verts_fbx": 50745,
+    "tris_fbx": 99974,
+    "height_cm_fbx": 290.0,
+    "bounds_min_cm": [
+     -63.3232,
+     -54.0117,
+     0.0
+    ],
+    "bounds_max_cm": [
+     94.2458,
+     69.0093,
+     290.0
+    ],
+    "bounds_centre_xy_cm": [
+     15.4613,
+     7.4988
+    ],
+    "slots": [
+     {
+      "index": 0,
+      "slot": "M_Warden_Wool",
+      "material": "M_Warden_Wool",
+      "tris": 33007
+     },
+     {
+      "index": 1,
+      "slot": "M_Warden_BellMetal",
+      "material": "M_Warden_BellMetal",
+      "tris": 8513
+     },
+     {
+      "index": 2,
+      "slot": "M_Warden_RustedIron",
+      "material": "M_Warden_RustedIron",
+      "tris": 1331
+     },
+     {
+      "index": 3,
+      "slot": "M_Warden_Skin",
+      "material": "M_Warden_Skin",
+      "tris": 28506
+     },
+     {
+      "index": 4,
+      "slot": "M_Warden_Leather",
+      "material": "M_Warden_Leather",
+      "tris": 7241
+     },
+     {
+      "index": 5,
+      "slot": "M_Warden_ChainIron",
+      "material": "M_Warden_ChainIron",
+      "tris": 21376
+     }
+    ]
+   },
+   "LOD1": {
+    "verts_blend": 25636,
+    "tris_blend": 49975,
+    "slots": "same 6 as LOD0"
+   },
+   "LOD2": {
+    "verts_blend": 10456,
+    "tris_blend": 19973,
+    "slots": "same 6 as LOD0"
+   }
+  },
+  "ue_native_reference_vertex_counts": {
+   "v11_1_native_import_by_owner": [
+    82658,
+    52741,
+    26852
+   ],
+   "current_SK_Warden_in_project": [
+    75603,
+    45003,
+    22347
+   ]
+  },
+  "orientation": {
+   "v11_1_unrotated_export_bounds_centre_xy_cm": [
+    15.4455,
+    7.1092
+   ],
+   "v5_5w2_unrotated_export_bounds_centre_xy_cm": [
+    15.4613,
+    7.4988
+   ],
+   "v5_5w2_rotated_export_bounds_centre_xy_cm": [
+    -7.4988,
+    15.4613
+   ],
+   "finding": "The unrotated V11.1 exports use the same export.py logic, the same -Y forward / Z up axes and the same facing (-Y in the blend) as V5_5w2's. The P13 rule applies unchanged: they need the +90 deg Z turn (x,y)->(-y,x) (p13_export_lods_rotated.py) before the Force-Front-X import.",
+   "dry_run": "p13_export_lods_rotated.py was run on the V11.1 blend with --out in a scratch folder (not committed): 3 files (3,840,172 / 2,227,676 / 1,080,364 bytes), 8 slots in order, bounds centre (-7.11, 15.45) = the unrotated centre (15.45, 7.11) turned by (x,y)->(-y,x), as for V5_5w2. The blend was not saved."
+  }
+ },
+ "export_warning": "reports/export.log: 'Mesh geometry_0.002/.006/.010 has polygons with more than 4 vertices, cannot compute/export tangent space': the FBX of each LOD carries no tangents (V5_5w2 had no such n-gons). LOD0 has 18 n-gons (slots 0, 1, 5, 7).",
+ "clips": {
+  "current_source": "SourceArt/Warden/V5_5/exports/AN_Warden_*.fbx (the P13 reweight never changed the clips; V5_5w2 has no clip FBX; the project's AN_Warden_Idle/Walk/DoorwayStoop come from V5.5, commit e8d57a2)",
+  "method": "each FBX imported into an empty Blender scene with identical default settings; armature-space bone head positions (evaluated pose) at 5 frames per clip, 110 bones. The owner's own check (Verification/check-v11_1.json) shows clip-to-blend error <= 0.0007 cm.",
+  "clips": {
+   "Idle": {
+    "sha256_new": "7ec99fb7cdc5960b3f959333149f351417180a0bc889cc9dbce1c3e10ec80cc6",
+    "sha256_current_source_V5_5": "11930a39725cdbb1fceb29f0b498cb954441066dd79560328df6e3252412f15b",
+    "hash_equal": false,
+    "frame_range_new": [
+     2,
+     122
+    ],
+    "frame_range_current": [
+     2,
+     122
+    ],
+    "fps": 30,
+    "fcurves_new_current": [
+     1109,
+     1109
+    ],
+    "bones_new_current": [
+     110,
+     110
+    ],
+    "sampled_frames": [
+     "2",
+     "32",
+     "62",
+     "92",
+     "122"
+    ],
+    "bones_unchanged_lt_0.1cm": 52,
+    "bones_changed_ge_0.1cm": 58,
+    "max_diff_cm": 19.5,
+    "worst_bone": "middle_03_l",
+    "max_diff_cm_by_bone_group": {
+     "chain_l": 13.8,
+     "chain_r": 16.2,
+     "hand_l": 13.7,
+     "hand_r": 13.0,
+     "index_l": 19.2,
+     "index_r": 18.5,
+     "lowerarm_l": 5.7,
+     "lowerarm_r": 5.4,
+     "middle_l": 19.5,
+     "middle_r": 18.8,
+     "pinky_l": 18.4,
+     "pinky_r": 17.8,
+     "ring_l": 19.1,
+     "ring_r": 18.5,
+     "thumb_l": 17.6,
+     "thumb_r": 16.9
+    },
+    "unchanged_groups": [
+     "ball_l",
+     "ball_r",
+     "calf_l",
+     "calf_r",
+     "chain_neck",
+     "clavicle_l",
+     "clavicle_r",
+     "foot_l",
+     "foot_r",
+     "head",
+     "neck",
+     "pelvis",
+     "robe",
+     "root",
+     "spine",
+     "thigh_l",
+     "thigh_r",
+     "upperarm_l",
+     "upperarm_r"
+    ],
+    "max_bone_travel_cm_new": 0.17,
+    "max_bone_travel_cm_current": 0.0
+   },
+   "Walk": {
+    "sha256_new": "3ead3ad81c88f3dda795f7ab2137173a25b1b8442fc41b1cbfad3eaadc323d4e",
+    "sha256_current_source_V5_5": "a2153dacfbd72e9bc14651208b9bc6c563590f514c7312f8e341c32772860dcd",
+    "hash_equal": false,
+    "frame_range_new": [
+     2,
+     62
+    ],
+    "frame_range_current": [
+     2,
+     62
+    ],
+    "fps": 30,
+    "fcurves_new_current": [
+     1109,
+     1109
+    ],
+    "bones_new_current": [
+     110,
+     110
+    ],
+    "sampled_frames": [
+     "2",
+     "17",
+     "32",
+     "47",
+     "62"
+    ],
+    "bones_unchanged_lt_0.1cm": 52,
+    "bones_changed_ge_0.1cm": 58,
+    "max_diff_cm": 19.5,
+    "worst_bone": "middle_03_l",
+    "max_diff_cm_by_bone_group": {
+     "chain_l": 13.8,
+     "chain_r": 16.2,
+     "hand_l": 13.7,
+     "hand_r": 13.0,
+     "index_l": 19.2,
+     "index_r": 18.5,
+     "lowerarm_l": 5.7,
+     "lowerarm_r": 5.4,
+     "middle_l": 19.5,
+     "middle_r": 18.8,
+     "pinky_l": 18.4,
+     "pinky_r": 17.8,
+     "ring_l": 19.1,
+     "ring_r": 18.5,
+     "thumb_l": 17.6,
+     "thumb_r": 16.9
+    },
+    "unchanged_groups": [
+     "ball_l",
+     "ball_r",
+     "calf_l",
+     "calf_r",
+     "chain_neck",
+     "clavicle_l",
+     "clavicle_r",
+     "foot_l",
+     "foot_r",
+     "head",
+     "neck",
+     "pelvis",
+     "robe",
+     "root",
+     "spine",
+     "thigh_l",
+     "thigh_r",
+     "upperarm_l",
+     "upperarm_r"
+    ],
+    "max_bone_travel_cm_new": 32.97,
+    "max_bone_travel_cm_current": 32.97
+   },
+   "DoorwayStoop": {
+    "sha256_new": "207d3cdda9f9e148c0b61d708adc24e7f067a6465af8941d1824f565e2084f44",
+    "sha256_current_source_V5_5": "e64a12668d36c14cfd542a39ee2677d4c450a533335fb78c01efb91c499edbf4",
+    "hash_equal": false,
+    "frame_range_new": [
+     2,
+     92
+    ],
+    "frame_range_current": [
+     2,
+     92
+    ],
+    "fps": 30,
+    "fcurves_new_current": [
+     1109,
+     1109
+    ],
+    "bones_new_current": [
+     110,
+     110
+    ],
+    "sampled_frames": [
+     "2",
+     "24",
+     "47",
+     "69",
+     "92"
+    ],
+    "bones_unchanged_lt_0.1cm": 52,
+    "bones_changed_ge_0.1cm": 58,
+    "max_diff_cm": 29.9,
+    "worst_bone": "chain_l_08",
+    "max_diff_cm_by_bone_group": {
+     "chain_l": 29.9,
+     "chain_r": 16.2,
+     "hand_l": 13.7,
+     "hand_r": 13.0,
+     "index_l": 19.2,
+     "index_r": 18.5,
+     "lowerarm_l": 5.7,
+     "lowerarm_r": 5.4,
+     "middle_l": 19.5,
+     "middle_r": 18.8,
+     "pinky_l": 18.4,
+     "pinky_r": 17.8,
+     "ring_l": 19.1,
+     "ring_r": 18.5,
+     "thumb_l": 17.6,
+     "thumb_r": 16.9
+    },
+    "unchanged_groups": [
+     "ball_l",
+     "ball_r",
+     "calf_l",
+     "calf_r",
+     "chain_neck",
+     "clavicle_l",
+     "clavicle_r",
+     "foot_l",
+     "foot_r",
+     "head",
+     "neck",
+     "pelvis",
+     "robe",
+     "root",
+     "spine",
+     "thigh_l",
+     "thigh_r",
+     "upperarm_l",
+     "upperarm_r"
+    ],
+    "max_bone_travel_cm_new": 109.07,
+    "max_bone_travel_cm_current": 107.16
+   }
+  },
+  "verdict": "NOT identical. Same bone names and count, same frame counts and lengths (4.0 s / 2.0 s / 3.0 s at 30 fps). Legs, pelvis, spine, neck, head, clavicles and upper arms are unchanged (< 0.1 cm); the lower arms, hands, fingers and the chain_l/chain_r bones differ by a near-constant offset of up to 19.5 cm at the finger tips (5.4-5.7 cm at the elbows); the stoop also differs in the left chain by up to 30 cm. Cause: the arm and hand pose of the revision."
+ },
+ "mask": {
+  "object": "SK_Warden_LOD0 (also LOD1, LOD2)",
+  "faces": "material slot 1 M_Warden_BellMetal: 9156 polys / 9252 tris / 4688 verts / 1539 cm2 in LOD0 (V5_5w2: 8513 tris, 1234 cm2). 9 islands: the mask shell (4536 verts), 6 mouth studs (20 verts each) and 2 small ones near the left eye. All of slot 1 is mask (all inside the mask bounds).",
+  "weights_by_lod": {
+   "0": {
+    "slot_index": 1,
+    "slot": "M_Warden_BellMetal",
+    "polys": 9156,
+    "tris": 9252,
+    "verts": 4688,
+    "area_cm2": 1539.4,
+    "weight_share_by_bone": {
+     "head": 1.0
+    },
+    "verts_100pct_head": 4688,
+    "verts_100pct_head_fraction": 1.0,
+    "largest_non_head_weight_on_any_vertex": {},
+    "influences_per_vertex": {
+     "1": 4688
+    },
+    "bounds_head_space_cm_blender_axes": {
+     "min": [
+      -9.6935,
+      -6.744,
+      6.3335
+     ],
+     "max": [
+      9.3976,
+      24.5092,
+      22.7332
+     ]
+    },
+    "bounds_world_cm": {
+     "min": [
+      -9.558,
+      -52.5764,
+      233.2492
+     ],
+     "max": [
+      9.5829,
+      -37.1183,
+      264.5231
+     ]
+    },
+    "centroid_world_cm": [
+     0.3622,
+     -46.0791,
+     248.555
+    ],
+    "centroid_head_space_cm": [
+     0.7303,
+     8.6816,
+     15.7351
+    ],
+    "area_weighted_normal_world": [
+     0.0289,
+     -0.987,
+     -0.1582
+    ]
+   },
+   "1": {
+    "slot_index": 1,
+    "slot": "M_Warden_BellMetal",
+    "polys": 950,
+    "tris": 1022,
+    "verts": 561,
+    "area_cm2": 1284.1,
+    "weight_share_by_bone": {
+     "head": 1.0
+    },
+    "verts_100pct_head": 561,
+    "verts_100pct_head_fraction": 1.0,
+    "largest_non_head_weight_on_any_vertex": {},
+    "influences_per_vertex": {
+     "1": 561
+    },
+    "bounds_head_space_cm_blender_axes": {
+     "min": [
+      -8.5758,
+      -6.6789,
+      6.5333
+     ],
+     "max": [
+      8.9665,
+      24.2333,
+      21.8667
+     ]
+    },
+    "bounds_world_cm": {
+     "min": [
+      -8.2643,
+      -51.6523,
+      233.3224
+     ],
+     "max": [
+      9.026,
+      -37.3037,
+      264.2609
+     ]
+    },
+    "centroid_world_cm": [
+     0.4123,
+     -46.7446,
+     247.7805
+    ],
+    "centroid_head_space_cm": [
+     0.8596,
+     7.8896,
+     16.3685
+    ],
+    "area_weighted_normal_world": [
+     0.0061,
+     -0.9851,
+     -0.172
+    ]
+   },
+   "2": {
+    "slot_index": 1,
+    "slot": "M_Warden_BellMetal",
+    "polys": 420,
+    "tris": 480,
+    "verts": 278,
+    "area_cm2": 1283.9,
+    "weight_share_by_bone": {
+     "head": 1.0
+    },
+    "verts_100pct_head": 278,
+    "verts_100pct_head_fraction": 1.0,
+    "largest_non_head_weight_on_any_vertex": {},
+    "influences_per_vertex": {
+     "1": 278
+    },
+    "bounds_head_space_cm_blender_axes": {
+     "min": [
+      -8.1878,
+      -6.5043,
+      6.5411
+     ],
+     "max": [
+      8.3896,
+      24.212,
+      22.0775
+     ]
+    },
+    "bounds_world_cm": {
+     "min": [
+      -7.9259,
+      -51.8353,
+      233.4096
+     ],
+     "max": [
+      8.4315,
+      -37.3122,
+      264.2269
+     ]
+    },
+    "centroid_world_cm": [
+     0.2926,
+     -46.6316,
+     247.9338
+    ],
+    "centroid_head_space_cm": [
+     0.7256,
+     8.0394,
+     16.2677
+    ],
+    "area_weighted_normal_world": [
+     0.0719,
+     -0.9742,
+     -0.2137
+    ]
+   }
+  },
+  "weights_v5_5w2_LOD0_for_comparison": {
+   "slot_index": 1,
+   "slot": "M_Warden_BellMetal",
+   "polys": 8513,
+   "tris": 8513,
+   "verts": 4428,
+   "area_cm2": 1233.9,
+   "weight_share_by_bone": {
+    "head": 1.0
+   },
+   "verts_100pct_head": 4428,
+   "verts_100pct_head_fraction": 1.0,
+   "largest_non_head_weight_on_any_vertex": {},
+   "influences_per_vertex": {
+    "1": 4428
+   },
+   "bounds_head_space_cm_blender_axes": {
+    "min": [
+     -8.187,
+     -5.6717,
+     8.577
+    ],
+    "max": [
+     7.8174,
+     25.4671,
+     20.003
+    ]
+   },
+   "bounds_world_cm": {
+    "min": [
+     -8.0156,
+     -50.2451,
+     234.0895
+    ],
+    "max": [
+     8.0226,
+     -39.3053,
+     265.4146
+    ]
+   },
+   "centroid_world_cm": [
+    0.1146,
+    -46.2608,
+    249.7673
+   ],
+   "centroid_head_space_cm": [
+    0.4279,
+    9.871,
+    15.9734
+   ],
+   "area_weighted_normal_world": [
+    0.352,
+    -0.9301,
+    -0.1049
+   ]
+  },
+  "largest_other_weight": "none: every mask vertex has exactly one influence, head 1.0 (100 %), in LOD0, LOD1 and LOD2",
+  "bounds_head_bone_space_blender_axes_cm": {
+   "min": [
+    -9.6935,
+    -6.744,
+    6.3335
+   ],
+   "max": [
+    9.3976,
+    24.5092,
+    22.7332
+   ]
+  },
+  "head_bone_axes_in_world_at_rest": {
+   "x": [
+    0.997,
+    -0.0561,
+    -0.0542
+   ],
+   "y": [
+    0.0561,
+    0.033,
+    0.9979
+   ],
+   "z": [
+    -0.0542,
+    -0.9979,
+    0.036
+   ],
+   "head_cm": [
+    0.0,
+    -30.6225,
+    239.3651
+   ]
+  },
+  "head_bone_axes_reading": "bone Y = world up (+Z), bone Z = the Warden's forward (world -Y in the blend), bone X = world +X (the Warden's left)",
+  "bounds_world_blender_cm": {
+   "min": [
+    -9.558,
+    -52.5764,
+    233.2492
+   ],
+   "max": [
+    9.5829,
+    -37.1183,
+    264.5231
+   ]
+  },
+  "bounds_in_SK_mesh_space_unreal_cm_derived": {
+   "rule": "Blender (x,y,z) -> P13 rotated export -> UE (-y,-x,z) (the figure faces Blender -Y = mesh +X); derived, not read from the engine",
+   "x": [
+    37.12,
+    52.58
+   ],
+   "y": [
+    -9.58,
+    9.56
+   ],
+   "z": [
+    233.25,
+    264.52
+   ],
+   "centroid": [
+    46.08,
+    -0.36,
+    248.56
+   ],
+   "head_bone_head": [
+    30.62,
+    0.0,
+    239.37
+   ]
+  },
+  "size_cm": {
+   "width": 19.1516,
+   "height": 32.8029,
+   "depth_front_to_back": 14.0577
+  },
+  "renders": [
+   "Docs/ArtTest/cine/p17_f0b_mask_on.png",
+   "Docs/ArtTest/cine/p17_f0b_mask_off.png"
+  ],
+  "render_setup": "Cycles GPU, 48 samples + denoise; the owner's closeups.py 'mask' camera (ortho 0.70, at (0.35,-2,2.6) looking at (0,-0.5,2.5)); Idle frame 1; the owner's three area lights and 0.12 grey world; LOD0 only (the blend carries LOD0.001..005 leftovers, hidden from render); mask faces deleted in memory. The blend was not saved. Script: Tools/blender/warden/w0_render_mask.py",
+  "behind_mask_ray_test": {
+   "rays_covered_by_mask": 985,
+   "grid": 40,
+   "mask_extent_cm": {
+    "width": 19.1516,
+    "height": 32.8029,
+    "depth_front_to_back": 14.0577
+   },
+   "first_hit_after_removing_mask": {
+    "slot 4 M_Warden_Leather": 27,
+    "slot 0 M_Warden_Wool": 935,
+    "slot 7 M_Warden_Keratin": 23
+   },
+   "hit_depth_cm_relative_to_mask_centroid_plane": {
+    "slot 4 M_Warden_Leather": {
+     "min": -17.39,
+     "mean": -15.14,
+     "max": -5.44
+    },
+    "slot 0 M_Warden_Wool": {
+     "min": -31.96,
+     "mean": -23.66,
+     "max": 1.9
+    },
+    "slot 7 M_Warden_Keratin": {
+     "min": -3.04,
+     "mean": -1.99,
+     "max": -1.25
+    }
+   },
+   "mask_front_plane_cm_from_centroid": 7.5,
+   "mask_back_plane_cm_from_centroid": -6.55
+  },
+  "behind_mask_ray_test_v5_5w2": {
+   "rays_covered_by_mask": 974,
+   "grid": 40,
+   "mask_extent_cm": {
+    "width": 15.1892,
+    "height": 32.1707,
+    "depth_front_to_back": 11.9099
+   },
+   "first_hit_after_removing_mask": {
+    "slot 0 M_Warden_Wool": 948,
+    "slot 2 M_Warden_RustedIron": 26
+   },
+   "hit_depth_cm_relative_to_mask_centroid_plane": {
+    "slot 0 M_Warden_Wool": {
+     "min": -29.06,
+     "mean": -18.56,
+     "max": 0.68
+    },
+    "slot 2 M_Warden_RustedIron": {
+     "min": 0.93,
+     "mean": 2.11,
+     "max": 2.88
+    }
+   },
+   "mask_front_plane_cm_from_centroid": 4.01,
+   "mask_back_plane_cm_from_centroid": -7.9
+  },
+  "under_the_mask": "A void. There is no face, skin or head geometry: slot 3 Skin is forearms and hands only (z 80-194 cm). Behind the mask there is only the two-sided wool hood interior, on average 17 cm behind the mask's back plane (23.7 cm behind its centroid plane), which renders black. What stays on the head (all 100 % head) when the mask faces go: two thin DimEyes strips (slot 6, 40 tris, x -5.2..5.2, z 252.2-252.7, y -45.8, about 6.8 cm behind the mask front: the orange pin-points in the render); two small Keratin rings at the eye slits (slot 7); six tiny Keratin dots at the mouth (slot 7, z 240-243.5, the same places as the six metal studs); two small Leather bits at the cheeks (slot 4, z 252-256, x +-8.2).",
+  "f0b_rule_result": "The mask-off render shows the dark hood interior only (plus the two dim eyes and a few specks), so plan section 4.2 adds no HoodVoid."
+ },
+ "materials": {
+  "source": "Verification/materials-v11_1.json, cloth-update-v11_1.json, saved-v11_1.json, and the names and enum values readable in the native .uasset files (strings only; the numeric defaults are binary and were not decoded)",
+  "slots": [
+   {
+    "index": 0,
+    "slot": "M_Warden_Wool",
+    "material": "MI_Warden_Wool (instance of M_Warden_Wool)",
+    "params": {
+     "Weave Scale": 12.2935,
+     "Detail Strength": 0.5,
+     "Wetness": 0.15,
+     "Cloth Brightness": 0.72
+    },
+    "textures": [
+     "T_Warden_Wool_NormalDX 4096",
+     "T_Warden_Wool_DetailNormalDX 1024",
+     "T_Warden_Wool_BaseColor 4096",
+     "T_Warden_Wool_DetailMasks 1024",
+     "T_Warden_Wool_ORM 4096"
+    ],
+    "blend": "BLEND_Opaque, two-sided"
+   },
+   {
+    "index": 1,
+    "slot": "M_Warden_BellMetal",
+    "material": "M_Warden_BellMetal",
+    "params": "none: three texture samples (BaseColor, NormalDX, ORM at 2048) and constants; no scalar or vector parameter",
+    "blend": "BLEND_Opaque, DefaultLit",
+    "Fade": false,
+    "TellGlow": false
+   },
+   {
+    "index": 2,
+    "slot": "M_Warden_RustedIron",
+    "material": "M_Warden_RustedIron",
+    "params": "none (3 textures, 2048)",
+    "blend": "BLEND_Opaque"
+   },
+   {
+    "index": 3,
+    "slot": "M_Warden_Skin",
+    "material": "M_Warden_Skin",
+    "params": [
+     "Skin Brightness (scalar)"
+    ],
+    "textures": "3 x 4096",
+    "blend": "BLEND_Opaque"
+   },
+   {
+    "index": 4,
+    "slot": "M_Warden_Leather",
+    "material": "M_Warden_Leather",
+    "params": "none (3 textures, 2048)",
+    "blend": "BLEND_Opaque"
+   },
+   {
+    "index": 5,
+    "slot": "M_Warden_ChainIron",
+    "material": "M_Warden_ChainIron",
+    "params": "none (3 textures, 2048)",
+    "blend": "BLEND_Opaque"
+   },
+   {
+    "index": 6,
+    "slot": "M_Warden_DimEyes",
+    "material": "M_Warden_DimEyes (new)",
+    "params": [
+     "Eye Glow",
+     "Eye Fade Start cm",
+     "Eye Fade End cm"
+    ],
+    "textures": "none",
+    "blend": "BLEND_Opaque; emissive driven by camera distance (CameraPositionWS, WorldPosition, Distance, Clamp), so the glow fades with distance from the camera"
+   },
+   {
+    "index": 7,
+    "slot": "M_Warden_Keratin",
+    "material": "M_Warden_Keratin (new)",
+    "params": "none: constant colour and roughness",
+    "textures": "none",
+    "blend": "BLEND_Opaque, DefaultLit"
+   }
+  ],
+  "mask_slot_has_Fade": false,
+  "mask_slot_has_TellGlow": false,
+  "mask_slot_blend_mode": "BLEND_Opaque",
+  "mask_slot_translucent_or_masked": false,
+  "current_project_M_Warden_BellMetal": "BLEND_Opaque, DefaultLit, with scalar TellGlow and vector TellGlowColor (Tools/warden/apply_p12f_art.py, D-092) and no Fade. The plan's fallback therefore applies either way: switch the mask slot to M_LB_Invisible, or build a Fade variant.",
+  "textures": {
+   "count": 20,
+   "sizes": "6 at 4096 (wool and skin sets), 2 at 1024 (wool detail), 12 at 2048 (BellMetal, ChainIron, Leather, RustedIron sets)",
+   "estimated_vram_mb_all_mips": 136.5,
+   "project_current_estimate_mb": "about 130 (p12_9_qa.md)",
+   "uasset_bytes_zip": 64335119,
+   "uasset_bytes_project": 35282289,
+   "note": "V11.1's BellMetal, RustedIron, Leather and ChainIron textures are detailed maps (BellMetal BaseColor 2.7 MB); the project's current BellMetal and RustedIron texture packages are only 26-66 KB (near-flat maps)."
+  },
+  "native_asset_sizes_bytes": {
+   "SK_Warden.uasset_zip": 35240232,
+   "SK_Warden.uasset_project": 32408592,
+   "content_total_zip": 100961421
+  }
+ },
+ "dependents": {
+  "method": "byte-string scan of the first 24 MB of every .uasset/.umap under Content (1929 files) for /Game/LastBell/Characters/Warden/..., plus grep of Source/ and Tools/. Soft references and external actors are only fully visible to the editor's asset registry; no external-actor file mentions a Warden path.",
+  "SK_Warden": [
+   "/Game/LastBell/ArtTest/P17/LS_P17_Spike",
+   "/Game/LastBell/Blueprints/AI/BP_Warden",
+   "/Game/LastBell/Blueprints/Interactables/BP_WardenApparition",
+   "/Game/LastBell/Characters/Warden/Anims/AM_Warden_Attack",
+   "/Game/LastBell/Characters/Warden/Anims/AM_Warden_LookAround",
+   "/Game/LastBell/Characters/Warden/Anims/AM_Warden_TurnLeft90",
+   "/Game/LastBell/Characters/Warden/Anims/AM_Warden_TurnRight90",
+   "/Game/LastBell/Characters/Warden/Anims/AN_Warden_CrouchedWalking",
+   "/Game/LastBell/Characters/Warden/Anims/AN_Warden_CrouchingIdle",
+   "/Game/LastBell/Characters/Warden/Anims/AN_Warden_LookAround",
+   "/Game/LastBell/Characters/Warden/Anims/AN_Warden_MutantIdle",
+   "/Game/LastBell/Characters/Warden/Anims/AN_Warden_MutantRun",
+   "/Game/LastBell/Characters/Warden/Anims/AN_Warden_MutantSwiping",
+   "/Game/LastBell/Characters/Warden/Anims/AN_Warden_MutantWalking",
+   "/Game/LastBell/Characters/Warden/Anims/AN_Warden_TurnLeft90",
+   "/Game/LastBell/Characters/Warden/Anims/AN_Warden_TurnRight90",
+   "/Game/LastBell/Characters/Warden/Anims/AN_Warden_ZombieAttack",
+   "/Game/LastBell/Characters/Warden/Anims/AN_Warden_ZombieRunning",
+   "/Game/LastBell/Characters/Warden/Anims/AN_Warden_ZombieWalk",
+   "/Game/LastBell/Characters/Warden/Anims/BS_Warden_Locomotion",
+   "/Game/LastBell/Characters/Warden/Anims/BS_Warden_Stoop",
+   "/Game/LastBell/Characters/Warden/Meshes/SK_Warden_PhysicsAsset",
+   "/Game/LastBell/Characters/Warden/Meshes/SK_Warden_Skeleton",
+   "/Game/LastBell/Characters/Warden/Retarget/IK_LB_Warden",
+   "/Game/LastBell/Characters/Warden/Retarget/RTG_LB_YBot_To_Warden",
+   "/Game/LastBell/Cinematics/LS_LB_Finale"
+  ],
+  "SM_LB_Warden_Apparition": [
+   "/Game/LastBell/Blueprints/Interactables/BP_WardenApparition"
+  ],
+  "materials_outside_Warden_folder": {
+   "/Game/LastBell/Blueprints/Interactables/BP_WardenApparition.uasset": [
+    "Materials/MI_Warden_ApparitionGlow",
+    "Materials/MI_Warden_Apparition_Body",
+    "Materials/MI_Warden_Apparition_Mask"
+   ]
+  },
+  "SK_Warden_current_slots": [
+   "MI_Warden_Wool",
+   "MI_Warden_BellMetal",
+   "MI_Warden_RustedIron",
+   "MI_Warden_Skin",
+   "M_Warden_Leather (direct)",
+   "MI_Warden_ChainIron"
+  ],
+  "source_and_tools": {
+   "Source": [
+    "Source/LastBellTests/Tests/LBWardenFunctionalTests.cpp (finds the slot by name M_Warden_BellMetal, reads TellGlow)",
+    "Source/LastBell/AI/LBWardenApparition.cpp (loops over all slots of the apparition's mesh)"
+   ],
+   "Tools": [
+    "Tools/warden/*.py (p13_reimport_warden, apply_p12*, check_warden, p13_*)",
+    "Tools/blender/warden/*.py (bake_silhouette, p13_*)",
+    "Tools/cine/p17_sequences.py and p17_s1_spike.py (SK_PATH, SKEL_PATH)"
+   ]
+  },
+  "baked_static_copy": {
+   "asset": "/Game/LastBell/Characters/Warden/Meshes/SM_LB_Warden_Apparition",
+   "how": "Tools/blender/warden/bake_silhouette.py on SourceArt/Warden/V5_5/Warden_Rigged.blend (V5.5, not the P13 w2), LOD2, Warden_Idle frame 1 pose, welded, decimated to 7389 tris, 2 slots (MAT_Body, MAT_Mask), --rotz 90 (SourceArt/Warden/SM_LB_Warden_Apparition.fbx.json)",
+   "stale_after_swap": true,
+   "why": "V11.1 changes the arm, hand and forearm pose, the robe, the hood and mask shape (mask area +25 %) and the chains; the apparition silhouette would still be V5.5's. Referenced only by BP_WardenApparition (with MI_Warden_Apparition_Body/Mask, which stay valid).",
+   "fix": "re-bake from V11_1 (the script's MASTER constant points at V5_5: add a path option), re-import over the SM, check the mask islands (V11.1 has 9 BellMetal islands instead of 1)"
+  }
+ },
+ "skin_weights_vs_P13": {
+  "finding": "V11.1 does NOT contain the P13-4c reweight. It was built on the V5.5 weights: the robe is re-formed (median nearest-vertex distance to V5.5 wool 3.4 cm) and its wool weights behave like V5.5, not like V5_5w2.",
+  "evidence": {
+   "wool_verts_with_leg_bone_share_over_0.5": {
+    "V5_5": "70 of 17203",
+    "V5_5w2": "0 of 17203 (max share 0.387)",
+    "V11_1": "100 of 14298 (max share 1.0)"
+   },
+   "nearest_vertex_comparison": {
+    "changed_by_P13": 15120,
+    "v11_1_equals_v5_5": 44,
+    "v11_1_equals_v5_5w2": 0,
+    "matched": 82,
+    "mean_diff_vs_v5_5": 0.14218534569983138,
+    "mean_diff_vs_v5_5w2": 0.14871225969645868,
+    "matched_total": 2965,
+    "v11_1_verts": 48538
+   },
+   "p13_stretch_metric_wool_edges (Tools/blender/warden/p13_reweight.py --mode measure, LOD0 FBX, the P13 review clips)": {
+    "V5_5_original_max_ratio": {
+     "MutantWalking": 124.2,
+     "MutantRun": 188.7,
+     "CrouchedWalking": 91.5,
+     "ZombieAttack": 242.1
+    },
+    "V5_5w2_shipped_max_ratio": {
+     "MutantWalking": 23.7,
+     "MutantRun": 29.6,
+     "CrouchedWalking": 43.3,
+     "ZombieAttack": 44.2
+    },
+    "V11_1_max_ratio": {
+     "MutantWalking": 116.6,
+     "MutantRun": 180.3,
+     "CrouchedWalking": 92.4,
+     "ZombieAttack": 232.6
+    },
+    "V11_1_worst_frame_share_gt_1.5_pct": {
+     "MutantWalking": 3.53,
+     "MutantRun": 3.51,
+     "CrouchedWalking": 2.88,
+     "ZombieAttack": 5.48
+    },
+    "worst_edges": "0.46 cm wool edges in the shoulder and chest band (z >= 1.57 m), the V5.5 pattern",
+    "full_V11_1_result": {
+     "mesh": "C:/Hemant/Prj/Learning/TheLastBell/SourceArt/Warden/V11_1/exports/SK_Warden_LOD0.fbx",
+     "mesh_md5": "030bca49749a245cac922518dff47e66",
+     "clips": {
+      "MutantWalking": {
+       "frames": 45,
+       "wool_edges": 39951,
+       "vertices": 48538,
+       "max_ratio": 116.57861337001161,
+       "worst_frame_share_gt_1.5": 0.03529323421190959,
+       "union_share_gt_1.5": 0.04447948737203074,
+       "edges_ever_gt_1.5": 1777,
+       "p99.9_of_per_edge_max": 33.337269934197224,
+       "p99_of_per_edge_max": 4.2968286568152125,
+       "band_max_ratio": {
+        "hem_z<0.6": 67.44061260795155,
+        "robe_0.6-1.57": 50.40379504922555,
+        "upper_z>=1.57": 116.57861337001161
+       },
+       "band_worst_frame_share_gt_1.5": {
+        "hem_z<0.6": 0.01499275917880569,
+        "robe_0.6-1.57": 0.0030898104916231807,
+        "upper_z>=1.57": 0.08741207502930833
+       },
+       "worst": {
+        "ratio": 116.57861337001161,
+        "frame": 11,
+        "rest_length_cm": 0.4643110608067923,
+        "mid_rest_xyz": [
+         -32.287872314453125,
+         -14.864452838897705,
+         181.25447845458984
+        ],
+        "mid_height_m": 1.8119529222295718
+       }
+      },
+      "MutantRun": {
+       "frames": 28,
+       "wool_edges": 39951,
+       "vertices": 48538,
+       "max_ratio": 180.2697607293055,
+       "worst_frame_share_gt_1.5": 0.03511801957397812,
+       "union_share_gt_1.5": 0.045731020500112636,
+       "edges_ever_gt_1.5": 1827,
+       "p99.9_of_per_edge_max": 42.80893383481423,
+       "p99_of_per_edge_max": 4.843272997575984,
+       "band_max_ratio": {
+        "hem_z<0.6": 89.97943834923109,
+        "robe_0.6-1.57": 78.1349888334381,
+        "upper_z>=1.57": 180.2697607293055
+       },
+       "band_worst_frame_share_gt_1.5": {
+        "hem_z<0.6": 0.014311270125223614,
+        "robe_0.6-1.57": 0.005836308706399341,
+        "upper_z>=1.57": 0.08521395076201642
+       },
+       "worst": {
+        "ratio": 180.2697607293055,
+        "frame": 5,
+        "rest_length_cm": 0.4643110608067923,
+        "mid_rest_xyz": [
+         -32.287872314453125,
+         -14.864452838897705,
+         181.25447845458984
+        ],
+        "mid_height_m": 1.8119529222295718
+       }
+      },
+      "CrouchedWalking": {
+       "frames": 33,
+       "wool_edges": 39951,
+       "vertices": 48538,
+       "max_ratio": 92.39480448597448,
+       "worst_frame_share_gt_1.5": 0.028810292608445344,
+       "union_share_gt_1.5": 0.034692498310430274,
+       "edges_ever_gt_1.5": 1386,
+       "p99.9_of_per_edge_max": 43.30402192479199,
+       "p99_of_per_edge_max": 4.22430823208461,
+       "band_max_ratio": {
+        "hem_z<0.6": 92.39480448597448,
+        "robe_0.6-1.57": 34.28282686995839,
+        "upper_z>=1.57": 47.488754190292724
+       },
+       "band_worst_frame_share_gt_1.5": {
+        "hem_z<0.6": 0.014481642388619133,
+        "robe_0.6-1.57": 0.004051084866794836,
+        "upper_z>=1.57": 0.06784876905041032
+       },
+       "worst": {
+        "ratio": 92.39480448597448,
+        "frame": 8,
+        "rest_length_cm": 1.4664265842474593,
+        "mid_rest_xyz": [
+         15.983520030975342,
+         -31.077123641967773,
+         21.03951072692871
+        ],
+        "mid_height_m": 0.2103264055541108
+       }
+      },
+      "ZombieAttack": {
+       "frames": 81,
+       "wool_edges": 39951,
+       "vertices": 48538,
+       "max_ratio": 232.60094765935744,
+       "worst_frame_share_gt_1.5": 0.054817151009987235,
+       "union_share_gt_1.5": 0.0798227829090636,
+       "edges_ever_gt_1.5": 3189,
+       "p99.9_of_per_edge_max": 43.973242174121545,
+       "p99_of_per_edge_max": 7.223842543359689,
+       "band_max_ratio": {
+        "hem_z<0.6": 70.12473111737845,
+        "robe_0.6-1.57": 106.68010266125957,
+        "upper_z>=1.57": 232.60094765935744
+       },
+       "band_worst_frame_share_gt_1.5": {
+        "hem_z<0.6": 0.014226083993525854,
+        "robe_0.6-1.57": 0.01661631419939577,
+        "upper_z>=1.57": 0.13452520515826494
+       },
+       "worst": {
+        "ratio": 232.60094765935744,
+        "frame": 33,
+        "rest_length_cm": 0.4643110608067923,
+        "mid_rest_xyz": [
+         -32.287872314453125,
+         -14.864452838897705,
+         181.25447845458984
+        ],
+        "mid_height_m": 1.8119529222295718
+       }
+      }
+     },
+     "overall": {
+      "max_ratio": 232.60094765935744,
+      "worst_frame_share_gt_1.5": 0.054817151009987235,
+      "union_share_gt_1.5": 0.0798227829090636
+     },
+     "pass": false,
+     "pass_strict_union": false
+    },
+    "report": "scratch run (--report in the scratchpad); Docs/ArtTest/warden/p13_reweight.json was not touched"
+   }
+  }
+ },
+ "blend_notes": {
+  "leftovers": "The V11.1 blend carries 15 extra mesh objects (SK_Warden_LOD0/1/2.001..005; the LOD0.00x ones are 94k-99k polys and not hidden from render) and 5 extra rigs (Warden_Rig.001..005). The export scripts select by the exact names SK_Warden_LOD0..2 and Warden_Rig, so they are unaffected (the dry run worked). Blend size 329 MiB (345 MB).",
+  "actions": {
+   "Warden_DoorwayStoop": [
+    1.0,
+    91.0
+   ],
+   "Warden_Idle": [
+    1.0,
+    121.0
+   ],
+   "Warden_Walk": [
+    1.0,
+    61.0
+   ]
+  },
+  "objects": [
+   {
+    "name": "SK_Warden_LOD0",
+    "type": "MESH",
+    "parent": "Warden_Rig",
+    "hide_render": false,
+    "hide_viewport": false,
+    "collections": [
+     "Scene Collection"
+    ],
+    "verts": 48538,
+    "polys": 93153,
+    "tris": 94515,
+    "slots": [
+     {
+      "index": 0,
+      "slot": "M_Warden_Wool",
+      "material": "M_Warden_Wool"
+     },
+     {
+      "index": 1,
+      "slot": "M_Warden_BellMetal",
+      "material": "M_Warden_BellMetal"
+     },
+     {
+      "index": 2,
+      "slot": "M_Warden_RustedIron",
+      "material": "M_Warden_RustedIron"
+     },
+     {
+      "index": 3,
+      "slot": "M_Warden_Skin",
+      "material": "M_Warden_Skin"
+     },
+     {
+      "index": 4,
+      "slot": "M_Warden_Leather",
+      "material": "M_Warden_Leather"
+     },
+     {
+      "index": 5,
+      "slot": "M_Warden_ChainIron",
+      "material": "M_Warden_ChainIron"
+     },
+     {
+      "index": 6,
+      "slot": "M_Warden_DimEyes",
+      "material": "M_Warden_DimEyes"
+     },
+     {
+      "index": 7,
+      "slot": "M_Warden_Keratin",
+      "material": "M_Warden_Keratin"
+     }
+    ]
+   },
+   {
+    "name": "SK_Warden_LOD0.001",
+    "type": "MESH",
+    "parent": "Warden_Rig",
+    "hide_render": false,
+    "hide_viewport": false,
+    "collections": [
+     "V7 original \u2014 hidden backup"
+    ],
+    "verts": 50398,
+    "polys": 99221,
+    "tris": 99221,
+    "slots": [
+     {
+      "index": 0,
+      "slot": "M_Warden_Wool.001",
+      "material": "M_Warden_Wool.001"
+     },
+     {
+      "index": 1,
+      "slot": "M_Warden_BellMetal.001",
+      "material": "M_Warden_BellMetal.001"
+     },
+     {
+      "index": 2,
+      "slot": "M_Warden_RustedIron.001",
+      "material": "M_Warden_RustedIron.001"
+     },
+     {
+      "index": 3,
+      "slot": "M_Warden_Skin.001",
+      "material": "M_Warden_Skin.001"
+     },
+     {
+      "index": 4,
+      "slot": "M_Warden_Leather.001",
+      "material": "M_Warden_Leather.001"
+     },
+     {
+      "index": 5,
+      "slot": "M_Warden_ChainIron.001",
+      "material": "M_Warden_ChainIron.001"
+     }
+    ]
+   },
+   {
+    "name": "SK_Warden_LOD0.002",
+    "type": "MESH",
+    "parent": "Warden_Rig",
+    "hide_render": false,
+    "hide_viewport": false,
+    "collections": [
+     "V8 original \u2014 hidden backup"
+    ],
+    "verts": 50526,
+    "polys": 99361,
+    "tris": 99421,
+    "slots": [
+     {
+      "index": 0,
+      "slot": "M_Warden_Wool.002",
+      "material": "M_Warden_Wool.002"
+     },
+     {
+      "index": 1,
+      "slot": "M_Warden_BellMetal.002",
+      "material": "M_Warden_BellMetal.002"
+     },
+     {
+      "index": 2,
+      "slot": "M_Warden_RustedIron.002",
+      "material": "M_Warden_RustedIron.002"
+     },
+     {
+      "index": 3,
+      "slot": "M_Warden_Skin.002",
+      "material": "M_Warden_Skin.002"
+     },
+     {
+      "index": 4,
+      "slot": "M_Warden_Leather.002",
+      "material": "M_Warden_Leather.002"
+     },
+     {
+      "index": 5,
+      "slot": "M_Warden_ChainIron.002",
+      "material": "M_Warden_ChainIron.002"
+     },
+     {
+      "index": 6,
+      "slot": "M_Warden_DimEyes.001",
+      "material": "M_Warden_DimEyes.001"
+     },
+     {
+      "index": 7,
+      "slot": "M_Warden_Keratin.001",
+      "material": "M_Warden_Keratin.001"
+     }
+    ]
+   },
+   {
+    "name": "SK_Warden_LOD0.003",
+    "type": "MESH",
+    "parent": "Warden_Rig",
+    "hide_render": false,
+    "hide_viewport": false,
+    "collections": [
+     "V9 original \u2014 hidden backup"
+    ],
+    "verts": 50606,
+    "polys": 99493,
+    "tris": 99557,
+    "slots": [
+     {
+      "index": 0,
+      "slot": "M_Warden_Wool.003",
+      "material": "M_Warden_Wool.003"
+     },
+     {
+      "index": 1,
+      "slot": "M_Warden_BellMetal.003",
+      "material": "M_Warden_BellMetal.003"
+     },
+     {
+      "index": 2,
+      "slot": "M_Warden_RustedIron.003",
+      "material": "M_Warden_RustedIron.003"
+     },
+     {
+      "index": 3,
+      "slot": "M_Warden_Skin.003",
+      "material": "M_Warden_Skin.003"
+     },
+     {
+      "index": 4,
+      "slot": "M_Warden_Leather.003",
+      "material": "M_Warden_Leather.003"
+     },
+     {
+      "index": 5,
+      "slot": "M_Warden_ChainIron.003",
+      "material": "M_Warden_ChainIron.003"
+     },
+     {
+      "index": 6,
+      "slot": "M_Warden_DimEyes.002",
+      "material": "M_Warden_DimEyes.002"
+     },
+     {
+      "index": 7,
+      "slot": "M_Warden_Keratin.002",
+      "material": "M_Warden_Keratin.002"
+     }
+    ]
+   },
+   {
+    "name": "SK_Warden_LOD0.004",
+    "type": "MESH",
+    "parent": "Warden_Rig",
+    "hide_render": false,
+    "hide_viewport": false,
+    "collections": [
+     "V10 original \u2014 hidden backup"
+    ],
+    "verts": 48387,
+    "polys": 93711,
+    "tris": 94641,
+    "slots": [
+     {
+      "index": 0,
+      "slot": "M_Warden_Wool.004",
+      "material": "M_Warden_Wool.004"
+     },
+     {
+      "index": 1,
+      "slot": "M_Warden_BellMetal.004",
+      "material": "M_Warden_BellMetal.004"
+     },
+     {
+      "index": 2,
+      "slot": "M_Warden_RustedIron.004",
+      "material": "M_Warden_RustedIron.004"
+     },
+     {
+      "index": 3,
+      "slot": "M_Warden_Skin.004",
+      "material": "M_Warden_Skin.004"
+     },
+     {
+      "index": 4,
+      "slot": "M_Warden_Leather.004",
+      "material": "M_Warden_Leather.004"
+     },
+     {
+      "index": 5,
+      "slot": "M_Warden_ChainIron.004",
+      "material": "M_Warden_ChainIron.004"
+     },
+     {
+      "index": 6,
+      "slot": "M_Warden_DimEyes.003",
+      "material": "M_Warden_DimEyes.003"
+     },
+     {
+      "index": 7,
+      "slot": "M_Warden_Keratin.003",
+      "material": "M_Warden_Keratin.003"
+     }
+    ]
+   },
+   {
+    "name": "SK_Warden_LOD0.005",
+    "type": "MESH",
+    "parent": "Warden_Rig",
+    "hide_render": false,
+    "hide_viewport": false,
+    "collections": [
+     "V10.1 original \u2014 hidden backup"
+    ],
+    "verts": 48091,
+    "polys": 92742,
+    "tris": 93672,
+    "slots": [
+     {
+      "index": 0,
+      "slot": "M_Warden_Wool.005",
+      "material": "M_Warden_Wool.005"
+     },
+     {
+      "index": 1,
+      "slot": "M_Warden_BellMetal.005",
+      "material": "M_Warden_BellMetal.005"
+     },
+     {
+      "index": 2,
+      "slot": "M_Warden_RustedIron.005",
+      "material": "M_Warden_RustedIron.005"
+     },
+     {
+      "index": 3,
+      "slot": "M_Warden_Skin.005",
+      "material": "M_Warden_Skin.005"
+     },
+     {
+      "index": 4,
+      "slot": "M_Warden_Leather.005",
+      "material": "M_Warden_Leather.005"
+     },
+     {
+      "index": 5,
+      "slot": "M_Warden_ChainIron.005",
+      "material": "M_Warden_ChainIron.005"
+     },
+     {
+      "index": 6,
+      "slot": "M_Warden_DimEyes.004",
+      "material": "M_Warden_DimEyes.004"
+     },
+     {
+      "index": 7,
+      "slot": "M_Warden_Keratin.004",
+      "material": "M_Warden_Keratin.004"
+     }
+    ]
+   },
+   {
+    "name": "SK_Warden_LOD1",
+    "type": "MESH",
+    "parent": "Warden_Rig",
+    "hide_render": true,
+    "hide_viewport": false,
+    "collections": [
+     "Scene Collection"
+    ],
+    "verts": 23776,
+    "polys": 44613,
+    "tris": 45536,
+    "slots": [
+     {
+      "index": 0,
+      "slot": "M_Warden_Wool",
+      "material": "M_Warden_Wool"
+     },
+     {
+      "index": 1,
+      "slot": "M_Warden_BellMetal",
+      "material": "M_Warden_BellMetal"
+     },
+     {
+      "index": 2,
+      "slot": "M_Warden_RustedIron",
+      "material": "M_Warden_RustedIron"
+     },
+     {
+      "index": 3,
+      "slot": "M_Warden_Skin",
+      "material": "M_Warden_Skin"
+     },
+     {
+      "index": 4,
+      "slot": "M_Warden_Leather",
+      "material": "M_Warden_Leather"
+     },
+     {
+      "index": 5,
+      "slot": "M_Warden_ChainIron",
+      "material": "M_Warden_ChainIron"
+     },
+     {
+      "index": 6,
+      "slot": "M_Warden_DimEyes",
+      "material": "M_Warden_DimEyes"
+     },
+     {
+      "index": 7,
+      "slot": "M_Warden_Keratin",
+      "material": "M_Warden_Keratin"
+     }
+    ]
+   },
+   {
+    "name": "SK_Warden_LOD1.001",
+    "type": "MESH",
+    "parent": "Warden_Rig",
+    "hide_render": true,
+    "hide_viewport": false,
+    "collections": [
+     "V7 original \u2014 hidden backup"
+    ],
+    "verts": 25338,
+    "polys": 49351,
+    "tris": 49351,
+    "slots": [
+     {
+      "index": 0,
+      "slot": "M_Warden_Wool.001",
+      "material": "M_Warden_Wool.001"
+     },
+     {
+      "index": 1,
+      "slot": "M_Warden_BellMetal.001",
+      "material": "M_Warden_BellMetal.001"
+     },
+     {
+      "index": 2,
+      "slot": "M_Warden_RustedIron.001",
+      "material": "M_Warden_RustedIron.001"
+     },
+     {
+      "index": 3,
+      "slot": "M_Warden_Skin.001",
+      "material": "M_Warden_Skin.001"
+     },
+     {
+      "index": 4,
+      "slot": "M_Warden_Leather.001",
+      "material": "M_Warden_Leather.001"
+     },
+     {
+      "index": 5,
+      "slot": "M_Warden_ChainIron.001",
+      "material": "M_Warden_ChainIron.001"
+     }
+    ]
+   },
+   {
+    "name": "SK_Warden_LOD1.002",
+    "type": "MESH",
+    "parent": "Warden_Rig",
+    "hide_render": true,
+    "hide_viewport": false,
+    "collections": [
+     "V8 original \u2014 hidden backup"
+    ],
+    "verts": 25466,
+    "polys": 49491,
+    "tris": 49551,
+    "slots": [
+     {
+      "index": 0,
+      "slot": "M_Warden_Wool.002",
+      "material": "M_Warden_Wool.002"
+     },
+     {
+      "index": 1,
+      "slot": "M_Warden_BellMetal.002",
+      "material": "M_Warden_BellMetal.002"
+     },
+     {
+      "index": 2,
+      "slot": "M_Warden_RustedIron.002",
+      "material": "M_Warden_RustedIron.002"
+     },
+     {
+      "index": 3,
+      "slot": "M_Warden_Skin.002",
+      "material": "M_Warden_Skin.002"
+     },
+     {
+      "index": 4,
+      "slot": "M_Warden_Leather.002",
+      "material": "M_Warden_Leather.002"
+     },
+     {
+      "index": 5,
+      "slot": "M_Warden_ChainIron.002",
+      "material": "M_Warden_ChainIron.002"
+     },
+     {
+      "index": 6,
+      "slot": "M_Warden_DimEyes.001",
+      "material": "M_Warden_DimEyes.001"
+     },
+     {
+      "index": 7,
+      "slot": "M_Warden_Keratin.001",
+      "material": "M_Warden_Keratin.001"
+     }
+    ]
+   },
+   {
+    "name": "SK_Warden_LOD1.003",
+    "type": "MESH",
+    "parent": "Warden_Rig",
+    "hide_render": true,
+    "hide_viewport": false,
+    "collections": [
+     "V9 original \u2014 hidden backup"
+    ],
+    "verts": 25546,
+    "polys": 49623,
+    "tris": 49687,
+    "slots": [
+     {
+      "index": 0,
+      "slot": "M_Warden_Wool.003",
+      "material": "M_Warden_Wool.003"
+     },
+     {
+      "index": 1,
+      "slot": "M_Warden_BellMetal.003",
+      "material": "M_Warden_BellMetal.003"
+     },
+     {
+      "index": 2,
+      "slot": "M_Warden_RustedIron.003",
+      "material": "M_Warden_RustedIron.003"
+     },
+     {
+      "index": 3,
+      "slot": "M_Warden_Skin.003",
+      "material": "M_Warden_Skin.003"
+     },
+     {
+      "index": 4,
+      "slot": "M_Warden_Leather.003",
+      "material": "M_Warden_Leather.003"
+     },
+     {
+      "index": 5,
+      "slot": "M_Warden_ChainIron.003",
+      "material": "M_Warden_ChainIron.003"
+     },
+     {
+      "index": 6,
+      "slot": "M_Warden_DimEyes.002",
+      "material": "M_Warden_DimEyes.002"
+     },
+     {
+      "index": 7,
+      "slot": "M_Warden_Keratin.002",
+      "material": "M_Warden_Keratin.002"
+     }
+    ]
+   },
+   {
+    "name": "SK_Warden_LOD1.004",
+    "type": "MESH",
+    "parent": "Warden_Rig",
+    "hide_render": true,
+    "hide_viewport": false,
+    "collections": [
+     "V10 original \u2014 hidden backup"
+    ],
+    "verts": 23755,
+    "polys": 45150,
+    "tris": 45841,
+    "slots": [
+     {
+      "index": 0,
+      "slot": "M_Warden_Wool.004",
+      "material": "M_Warden_Wool.004"
+     },
+     {
+      "index": 1,
+      "slot": "M_Warden_BellMetal.004",
+      "material": "M_Warden_BellMetal.004"
+     },
+     {
+      "index": 2,
+      "slot": "M_Warden_RustedIron.004",
+      "material": "M_Warden_RustedIron.004"
+     },
+     {
+      "index": 3,
+      "slot": "M_Warden_Skin.004",
+      "material": "M_Warden_Skin.004"
+     },
+     {
+      "index": 4,
+      "slot": "M_Warden_Leather.004",
+      "material": "M_Warden_Leather.004"
+     },
+     {
+      "index": 5,
+      "slot": "M_Warden_ChainIron.004",
+      "material": "M_Warden_ChainIron.004"
+     },
+     {
+      "index": 6,
+      "slot": "M_Warden_DimEyes.003",
+      "material": "M_Warden_DimEyes.003"
+     },
+     {
+      "index": 7,
+      "slot": "M_Warden_Keratin.003",
+      "material": "M_Warden_Keratin.003"
+     }
+    ]
+   },
+   {
+    "name": "SK_Warden_LOD1.005",
+    "type": "MESH",
+    "parent": "Warden_Rig",
+    "hide_render": true,
+    "hide_viewport": false,
+    "collections": [
+     "V10.1 original \u2014 hidden backup"
+    ],
+    "verts": 23532,
+    "polys": 44405,
+    "tris": 45096,
+    "slots": [
+     {
+      "index": 0,
+      "slot": "M_Warden_Wool.005",
+      "material": "M_Warden_Wool.005"
+     },
+     {
+      "index": 1,
+      "slot": "M_Warden_BellMetal.005",
+      "material": "M_Warden_BellMetal.005"
+     },
+     {
+      "index": 2,
+      "slot": "M_Warden_RustedIron.005",
+      "material": "M_Warden_RustedIron.005"
+     },
+     {
+      "index": 3,
+      "slot": "M_Warden_Skin.005",
+      "material": "M_Warden_Skin.005"
+     },
+     {
+      "index": 4,
+      "slot": "M_Warden_Leather.005",
+      "material": "M_Warden_Leather.005"
+     },
+     {
+      "index": 5,
+      "slot": "M_Warden_ChainIron.005",
+      "material": "M_Warden_ChainIron.005"
+     },
+     {
+      "index": 6,
+      "slot": "M_Warden_DimEyes.004",
+      "material": "M_Warden_DimEyes.004"
+     },
+     {
+      "index": 7,
+      "slot": "M_Warden_Keratin.004",
+      "material": "M_Warden_Keratin.004"
+     }
+    ]
+   },
+   {
+    "name": "SK_Warden_LOD2",
+    "type": "MESH",
+    "parent": "Warden_Rig",
+    "hide_render": true,
+    "hide_viewport": false,
+    "collections": [
+     "Scene Collection"
+    ],
+    "verts": 9564,
+    "polys": 17330,
+    "tris": 17861,
+    "slots": [
+     {
+      "index": 0,
+      "slot": "M_Warden_Wool",
+      "material": "M_Warden_Wool"
+     },
+     {
+      "index": 1,
+      "slot": "M_Warden_BellMetal",
+      "material": "M_Warden_BellMetal"
+     },
+     {
+      "index": 2,
+      "slot": "M_Warden_RustedIron",
+      "material": "M_Warden_RustedIron"
+     },
+     {
+      "index": 3,
+      "slot": "M_Warden_Skin",
+      "material": "M_Warden_Skin"
+     },
+     {
+      "index": 4,
+      "slot": "M_Warden_Leather",
+      "material": "M_Warden_Leather"
+     },
+     {
+      "index": 5,
+      "slot": "M_Warden_ChainIron",
+      "material": "M_Warden_ChainIron"
+     },
+     {
+      "index": 6,
+      "slot": "M_Warden_DimEyes",
+      "material": "M_Warden_DimEyes"
+     },
+     {
+      "index": 7,
+      "slot": "M_Warden_Keratin",
+      "material": "M_Warden_Keratin"
+     }
+    ]
+   },
+   {
+    "name": "SK_Warden_LOD2.001",
+    "type": "MESH",
+    "parent": "Warden_Rig",
+    "hide_render": true,
+    "hide_viewport": false,
+    "collections": [
+     "V7 original \u2014 hidden backup"
+    ],
+    "verts": 10303,
+    "polys": 19662,
+    "tris": 19662,
+    "slots": [
+     {
+      "index": 0,
+      "slot": "M_Warden_Wool.001",
+      "material": "M_Warden_Wool.001"
+     },
+     {
+      "index": 1,
+      "slot": "M_Warden_BellMetal.001",
+      "material": "M_Warden_BellMetal.001"
+     },
+     {
+      "index": 2,
+      "slot": "M_Warden_RustedIron.001",
+      "material": "M_Warden_RustedIron.001"
+     },
+     {
+      "index": 3,
+      "slot": "M_Warden_Skin.001",
+      "material": "M_Warden_Skin.001"
+     },
+     {
+      "index": 4,
+      "slot": "M_Warden_Leather.001",
+      "material": "M_Warden_Leather.001"
+     },
+     {
+      "index": 5,
+      "slot": "M_Warden_ChainIron.001",
+      "material": "M_Warden_ChainIron.001"
+     }
+    ]
+   },
+   {
+    "name": "SK_Warden_LOD2.002",
+    "type": "MESH",
+    "parent": "Warden_Rig",
+    "hide_render": true,
+    "hide_viewport": false,
+    "collections": [
+     "V8 original \u2014 hidden backup"
+    ],
+    "verts": 10431,
+    "polys": 19802,
+    "tris": 19862,
+    "slots": [
+     {
+      "index": 0,
+      "slot": "M_Warden_Wool.002",
+      "material": "M_Warden_Wool.002"
+     },
+     {
+      "index": 1,
+      "slot": "M_Warden_BellMetal.002",
+      "material": "M_Warden_BellMetal.002"
+     },
+     {
+      "index": 2,
+      "slot": "M_Warden_RustedIron.002",
+      "material": "M_Warden_RustedIron.002"
+     },
+     {
+      "index": 3,
+      "slot": "M_Warden_Skin.002",
+      "material": "M_Warden_Skin.002"
+     },
+     {
+      "index": 4,
+      "slot": "M_Warden_Leather.002",
+      "material": "M_Warden_Leather.002"
+     },
+     {
+      "index": 5,
+      "slot": "M_Warden_ChainIron.002",
+      "material": "M_Warden_ChainIron.002"
+     },
+     {
+      "index": 6,
+      "slot": "M_Warden_DimEyes.001",
+      "material": "M_Warden_DimEyes.001"
+     },
+     {
+      "index": 7,
+      "slot": "M_Warden_Keratin.001",
+      "material": "M_Warden_Keratin.001"
+     }
+    ]
+   },
+   {
+    "name": "SK_Warden_LOD2.003",
+    "type": "MESH",
+    "parent": "Warden_Rig",
+    "hide_render": true,
+    "hide_viewport": false,
+    "collections": [
+     "V9 original \u2014 hidden backup"
+    ],
+    "verts": 10511,
+    "polys": 19934,
+    "tris": 19998,
+    "slots": [
+     {
+      "index": 0,
+      "slot": "M_Warden_Wool.003",
+      "material": "M_Warden_Wool.003"
+     },
+     {
+      "index": 1,
+      "slot": "M_Warden_BellMetal.003",
+      "material": "M_Warden_BellMetal.003"
+     },
+     {
+      "index": 2,
+      "slot": "M_Warden_RustedIron.003",
+      "material": "M_Warden_RustedIron.003"
+     },
+     {
+      "index": 3,
+      "slot": "M_Warden_Skin.003",
+      "material": "M_Warden_Skin.003"
+     },
+     {
+      "index": 4,
+      "slot": "M_Warden_Leather.003",
+      "material": "M_Warden_Leather.003"
+     },
+     {
+      "index": 5,
+      "slot": "M_Warden_ChainIron.003",
+      "material": "M_Warden_ChainIron.003"
+     },
+     {
+      "index": 6,
+      "slot": "M_Warden_DimEyes.002",
+      "material": "M_Warden_DimEyes.002"
+     },
+     {
+      "index": 7,
+      "slot": "M_Warden_Keratin.002",
+      "material": "M_Warden_Keratin.002"
+     }
+    ]
+   },
+   {
+    "name": "SK_Warden_LOD2.004",
+    "type": "MESH",
+    "parent": "Warden_Rig",
+    "hide_render": true,
+    "hide_viewport": false,
+    "collections": [
+     "V10 original \u2014 hidden backup"
+    ],
+    "verts": 9483,
+    "polys": 17549,
+    "tris": 17908,
+    "slots": [
+     {
+      "index": 0,
+      "slot": "M_Warden_Wool.004",
+      "material": "M_Warden_Wool.004"
+     },
+     {
+      "index": 1,
+      "slot": "M_Warden_BellMetal.004",
+      "material": "M_Warden_BellMetal.004"
+     },
+     {
+      "index": 2,
+      "slot": "M_Warden_RustedIron.004",
+      "material": "M_Warden_RustedIron.004"
+     },
+     {
+      "index": 3,
+      "slot": "M_Warden_Skin.004",
+      "material": "M_Warden_Skin.004"
+     },
+     {
+      "index": 4,
+      "slot": "M_Warden_Leather.004",
+      "material": "M_Warden_Leather.004"
+     },
+     {
+      "index": 5,
+      "slot": "M_Warden_ChainIron.004",
+      "material": "M_Warden_ChainIron.004"
+     },
+     {
+      "index": 6,
+      "slot": "M_Warden_DimEyes.003",
+      "material": "M_Warden_DimEyes.003"
+     },
+     {
+      "index": 7,
+      "slot": "M_Warden_Keratin.003",
+      "material": "M_Warden_Keratin.003"
+     }
+    ]
+   },
+   {
+    "name": "SK_Warden_LOD2.005",
+    "type": "MESH",
+    "parent": "Warden_Rig",
+    "hide_render": true,
+    "hide_viewport": false,
+    "collections": [
+     "V10.1 original \u2014 hidden backup"
+    ],
+    "verts": 9376,
+    "polys": 17177,
+    "tris": 17536,
+    "slots": [
+     {
+      "index": 0,
+      "slot": "M_Warden_Wool.005",
+      "material": "M_Warden_Wool.005"
+     },
+     {
+      "index": 1,
+      "slot": "M_Warden_BellMetal.005",
+      "material": "M_Warden_BellMetal.005"
+     },
+     {
+      "index": 2,
+      "slot": "M_Warden_RustedIron.005",
+      "material": "M_Warden_RustedIron.005"
+     },
+     {
+      "index": 3,
+      "slot": "M_Warden_Skin.005",
+      "material": "M_Warden_Skin.005"
+     },
+     {
+      "index": 4,
+      "slot": "M_Warden_Leather.005",
+      "material": "M_Warden_Leather.005"
+     },
+     {
+      "index": 5,
+      "slot": "M_Warden_ChainIron.005",
+      "material": "M_Warden_ChainIron.005"
+     },
+     {
+      "index": 6,
+      "slot": "M_Warden_DimEyes.004",
+      "material": "M_Warden_DimEyes.004"
+     },
+     {
+      "index": 7,
+      "slot": "M_Warden_Keratin.004",
+      "material": "M_Warden_Keratin.004"
+     }
+    ]
+   },
+   {
+    "name": "Warden_Rig",
+    "type": "ARMATURE",
+    "parent": null,
+    "hide_render": false,
+    "hide_viewport": false,
+    "collections": [
+     "Collection"
+    ],
+    "bones": 110
+   },
+   {
+    "name": "Warden_Rig.001",
+    "type": "ARMATURE",
+    "parent": null,
+    "hide_render": false,
+    "hide_viewport": false,
+    "collections": [
+     "V7 original \u2014 hidden backup"
+    ],
+    "bones": 110
+   },
+   {
+    "name": "Warden_Rig.002",
+    "type": "ARMATURE",
+    "parent": null,
+    "hide_render": false,
+    "hide_viewport": false,
+    "collections": [
+     "V8 original \u2014 hidden backup"
+    ],
+    "bones": 110
+   },
+   {
+    "name": "Warden_Rig.003",
+    "type": "ARMATURE",
+    "parent": null,
+    "hide_render": false,
+    "hide_viewport": false,
+    "collections": [
+     "V9 original \u2014 hidden backup"
+    ],
+    "bones": 110
+   },
+   {
+    "name": "Warden_Rig.004",
+    "type": "ARMATURE",
+    "parent": null,
+    "hide_render": false,
+    "hide_viewport": false,
+    "collections": [
+     "V10 original \u2014 hidden backup"
+    ],
+    "bones": 110
+   },
+   {
+    "name": "Warden_Rig.005",
+    "type": "ARMATURE",
+    "parent": null,
+    "hide_render": false,
+    "hide_viewport": false,
+    "collections": [
+     "V10.1 original \u2014 hidden backup"
+    ],
+    "bones": 110
+   }
+  ]
+ },
+ "lod_counts_tris": {
+  "V11_1": [
+   94515,
+   45536,
+   17858
+  ],
+  "V5_5w2": [
+   99974,
+   49975,
+   19973
+  ]
+ },
+ "scripts_added": [
+  "Tools/blender/warden/w0_survey_blend.py",
+  "Tools/blender/warden/w0_survey_fbx.py",
+  "Tools/blender/warden/w0_render_mask.py"
+ ]
+}
