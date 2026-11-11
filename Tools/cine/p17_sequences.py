@@ -442,11 +442,38 @@ def component_binding(item, seq, actor_binding, cls, prop):
 
 
 def reset_sequence(seq):
+    # Removing a spawnable binding leaves its object template (a StaticMeshActor holding a mesh, say) as an orphan subobject of the sequence's package, and the saved asset keeps
+    # depending on whatever it referenced (QA m1: SM_Wooden_Lantern_01 survived the candle rebuild). So every template is moved out to the transient package before its binding goes.
+    templates = []
+    for b in list(seq.get_spawnables()):
+        try:
+            t = b.get_object_template()
+            if t is not None:
+                templates.append(t)
+        except Exception as exc:  # noqa: BLE001
+            note("reset: template read failed: %s" % exc)
     for b in list(seq.get_bindings()):
         try:
             b.remove()
         except Exception as exc:  # noqa: BLE001
             note("reset: binding remove failed: %s" % exc)
+    transient = None
+    for fn in (lambda: unreal.find_package("/Engine/Transient"), lambda: unreal.load_object(None, "/Engine/Transient"), lambda: unreal.find_object(None, "/Engine/Transient")):
+        try:
+            transient = fn()
+            if transient is not None:
+                break
+        except Exception:  # noqa: BLE001
+            continue
+    moved = 0
+    for t in templates:
+        try:
+            t.rename(None, transient)
+            moved += 1
+        except Exception as exc:  # noqa: BLE001
+            note("reset: moving a template out of the package failed: %s" % str(exc)[:120])
+    note("reset: %d of %d spawnable templates moved to the transient package" % (moved, len(templates)))
+    unreal.SystemLibrary.collect_garbage()      # orphans left by earlier resets (templates, tracks) are unreachable now and are not saved
     for t in list(seq.get_tracks()):
         try:
             seq.remove_track(t)
@@ -792,6 +819,7 @@ def do_build():
         except Exception:  # noqa: BLE001
             results["errors"].append({"item": spec["key"], "api": "(exception)", "error": traceback.format_exc()})
             unreal.log_error("%s: EXCEPTION %s" % (TAG, traceback.format_exc()))
+    unreal.SystemLibrary.collect_garbage()
     for spec in specs:
         ok, saved = call("save", "EditorAssetLibrary.save_asset('%s', only_if_is_dirty=False)" % spec["path"], EAL.save_asset, spec["path"], False)
         if ok and saved:
@@ -1163,6 +1191,9 @@ def check_sequence(spec, facts):
         ar = unreal.AssetRegistryHelpers.get_asset_registry()
         deps = ar.get_dependencies(unreal.Name(spec["path"]), unreal.AssetRegistryDependencyOptions(include_soft_package_references=True, include_hard_package_references=True))
         results.setdefault("deps", {})[sk] = sorted(str(d) for d in deps if str(d).startswith("/Game"))
+        dl = results["deps"][sk]
+        chk(sk, "deps", "no dependency on SM_Wooden_Lantern_01 (3.9: the villager carries the candle)", [d for d in dl if "Wooden_Lantern" in d], [])
+        chk(sk, "deps", "no dependency under /Game/LastBell/ArtTest/ (spike or test assets)", [d for d in dl if d.startswith("/Game/LastBell/ArtTest/")], [])
     except Exception as exc:  # noqa: BLE001
         note("dependencies of %s: %s" % (sk, exc))
 

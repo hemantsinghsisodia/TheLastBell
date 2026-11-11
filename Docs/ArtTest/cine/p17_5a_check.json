@@ -1,15 +1,15 @@
 {
- "generated": "2026-11-11 13:19:06",
- "total_checks": 366,
- "passed": 366,
+ "generated": "2026-11-11 14:21:14",
+ "total_checks": 370,
+ "passed": 370,
  "failed": 0,
  "per_sequence": {
   "Intro": {
-   "total": 48,
+   "total": 50,
    "failed": 0
   },
   "Finale": {
-   "total": 318,
+   "total": 320,
    "failed": 0
   }
  },
@@ -96,7 +96,6 @@
    "/Game/LastBell/Audio/Music/MUS_LB_Cine_IntroText"
   ],
   "Finale": [
-   "/Game/LastBell/ArtTest/Props/Wooden_Lantern_01/SM_Wooden_Lantern_01",
    "/Game/LastBell/Audio/Music/MUS_LB_Cine_Credits",
    "/Game/LastBell/Audio/Music/MUS_LB_Cine_Finale",
    "/Game/LastBell/Audio/Player/SFX_LB_Step_Metal_02",
@@ -513,6 +512,22 @@
    "want": "True"
   },
   {
+   "seq": "Intro",
+   "item": "deps",
+   "name": "no dependency on SM_Wooden_Lantern_01 (3.9: the villager carries the candle)",
+   "ok": true,
+   "got": "[]",
+   "want": "[]"
+  },
+  {
+   "seq": "Intro",
+   "item": "deps",
+   "name": "no dependency under /Game/LastBell/ArtTest/ (spike or test assets)",
+   "ok": true,
+   "got": "[]",
+   "want": "[]"
+  },
+  {
    "seq": "Finale",
    "item": "setup",
    "name": "asset loads as LevelSequence",
@@ -645,8 +660,8 @@
    "item": "cut",
    "name": "Cam_Mask bound to the camera spawnable",
    "ok": true,
-   "got": "'324866F748BB9689D61C8D9A72320EEE'",
-   "want": "'324866F748BB9689D61C8D9A72320EEE'"
+   "got": "'131D8F754B35AF10B0EB3F99ADF34CD4'",
+   "want": "'131D8F754B35AF10B0EB3F99ADF34CD4'"
   },
   {
    "seq": "Finale",
@@ -677,8 +692,8 @@
    "item": "cut",
    "name": "Cam_WallTop bound to the camera spawnable",
    "ok": true,
-   "got": "'A72992584D88D45B08BBC2AB5CCEEB34'",
-   "want": "'A72992584D88D45B08BBC2AB5CCEEB34'"
+   "got": "'F08ED6504E216F2419E5D2842587F62D'",
+   "want": "'F08ED6504E216F2419E5D2842587F62D'"
   },
   {
    "seq": "Finale",
@@ -1549,8 +1564,8 @@
    "item": "MaskProp",
    "name": "attach WardenFigure [0.0-16.8] target binding",
    "ok": true,
-   "got": "'80C468074DBC4EEA29BF249A3A080532'",
-   "want": "'80C468074DBC4EEA29BF249A3A080532'"
+   "got": "'D14F3D944350DAF91192DBBB6C38AE37'",
+   "want": "'D14F3D944350DAF91192DBBB6C38AE37'"
   },
   {
    "seq": "Finale",
@@ -1581,8 +1596,8 @@
    "item": "MaskProp",
    "name": "attach WardenFigure [16.8-97.5] target binding",
    "ok": true,
-   "got": "'80C468074DBC4EEA29BF249A3A080532'",
-   "want": "'80C468074DBC4EEA29BF249A3A080532'"
+   "got": "'D14F3D944350DAF91192DBBB6C38AE37'",
+   "want": "'D14F3D944350DAF91192DBBB6C38AE37'"
   },
   {
    "seq": "Finale",
@@ -2397,8 +2412,8 @@
    "item": "CandleWax",
    "name": "attach Villager [0.0-97.5] target binding",
    "ok": true,
-   "got": "'462B66324514576216F89C908931ADD9'",
-   "want": "'462B66324514576216F89C908931ADD9'"
+   "got": "'894CB166429EA7F759E2C9A334226FDB'",
+   "want": "'894CB166429EA7F759E2C9A334226FDB'"
   },
   {
    "seq": "Finale",
@@ -2597,8 +2612,8 @@
    "item": "CandleFlame",
    "name": "attach Villager [0.0-97.5] target binding",
    "ok": true,
-   "got": "'462B66324514576216F89C908931ADD9'",
-   "want": "'462B66324514576216F89C908931ADD9'"
+   "got": "'894CB166429EA7F759E2C9A334226FDB'",
+   "want": "'894CB166429EA7F759E2C9A334226FDB'"
   },
   {
    "seq": "Finale",
@@ -2837,8 +2852,8 @@
    "item": "CandleLight",
    "name": "attach Villager [0.0-97.5] target binding",
    "ok": true,
-   "got": "'462B66324514576216F89C908931ADD9'",
-   "want": "'462B66324514576216F89C908931ADD9'"
+   "got": "'894CB166429EA7F759E2C9A334226FDB'",
+   "want": "'894CB166429EA7F759E2C9A334226FDB'"
   },
   {
    "seq": "Finale",
@@ -3055,6 +3070,22 @@
    "ok": true,
    "got": "True",
    "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "deps",
+   "name": "no dependency on SM_Wooden_Lantern_01 (3.9: the villager carries the candle)",
+   "ok": true,
+   "got": "[]",
+   "want": "[]"
+  },
+  {
+   "seq": "Finale",
+   "item": "deps",
+   "name": "no dependency under /Game/LastBell/ArtTest/ (spike or test assets)",
+   "ok": true,
+   "got": "[]",
+   "want": "[]"
   }
  ]
 }
