@@ -21,22 +21,55 @@ void ULBKeyIconWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
 	BuildTree();
+	// Bound from creation (NativeConstruct never runs for a widget that is not in the viewport), so the glyph follows a rebinding at any time.
+	BindExternalEvents();
 	Refresh();
 }
 
 void ULBKeyIconWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
-	BindingsHandle = LBKeyBindings::OnBindingsChanged().AddUObject(this, &ULBKeyIconWidget::HandleExternalChange);
-	SettingsHandle = ULBUserSettings::OnUserSettingsChanged().AddUObject(this, &ULBKeyIconWidget::HandleExternalChange);
+	// A widget removed and added again was unbound by NativeDestruct.
+	BindExternalEvents();
 	Refresh();
 }
 
 void ULBKeyIconWidget::NativeDestruct()
 {
-	LBKeyBindings::OnBindingsChanged().Remove(BindingsHandle);
-	ULBUserSettings::OnUserSettingsChanged().Remove(SettingsHandle);
+	UnbindExternalEvents();
 	Super::NativeDestruct();
+}
+
+void ULBKeyIconWidget::BeginDestroy()
+{
+	UnbindExternalEvents();
+	Super::BeginDestroy();
+}
+
+void ULBKeyIconWidget::BindExternalEvents()
+{
+	if (!BindingsHandle.IsValid())
+	{
+		BindingsHandle = LBKeyBindings::OnBindingsChanged().AddUObject(this, &ULBKeyIconWidget::HandleExternalChange);
+	}
+	if (!SettingsHandle.IsValid())
+	{
+		SettingsHandle = ULBUserSettings::OnUserSettingsChanged().AddUObject(this, &ULBKeyIconWidget::HandleExternalChange);
+	}
+}
+
+void ULBKeyIconWidget::UnbindExternalEvents()
+{
+	if (BindingsHandle.IsValid())
+	{
+		LBKeyBindings::OnBindingsChanged().Remove(BindingsHandle);
+		BindingsHandle.Reset();
+	}
+	if (SettingsHandle.IsValid())
+	{
+		ULBUserSettings::OnUserSettingsChanged().Remove(SettingsHandle);
+		SettingsHandle.Reset();
+	}
 }
 
 void ULBKeyIconWidget::BuildTree()

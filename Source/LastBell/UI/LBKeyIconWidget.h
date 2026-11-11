@@ -48,9 +48,12 @@ protected:
 	virtual void NativeOnInitialized() override;
 	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;
+	virtual void BeginDestroy() override;
 
 private:
 	void BuildTree();
+	void BindExternalEvents();
+	void UnbindExternalEvents();
 	const ULocalPlayer* ResolveLocalPlayer() const;
 	void HandleExternalChange();
 

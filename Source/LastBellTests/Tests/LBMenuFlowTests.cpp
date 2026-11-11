@@ -17,6 +17,8 @@
 #include "Save/LBSaveSubsystem.h"
 #include "Systems/LBPlayerController.h"
 #include "UI/LBUISubsystem.h"
+#include "Systems/LBUserSettings.h"
+#include "Tests/LBUITestUtil.h"
 #include "LBLog.h"
 
 // D-033 regression: Main Menu -> New Game left the player unable to move or look. The menu controller's UI-only input
@@ -48,7 +50,15 @@ namespace
 	class FLBMenuToGameCommand : public IAutomationLatentCommand
 	{
 	public:
-		explicit FLBMenuToGameCommand(FAutomationTestBase* InTest) : Test(InTest) {}
+		explicit FLBMenuToGameCommand(FAutomationTestBase* InTest) : Test(InTest)
+		{
+			// The first-launch brightness screen (P18) would sit on top of the menu on a machine that never confirmed it: the session runs as if it had.
+			// SettingsGuard puts the player's settings back when the command ends.
+			if (ULBUserSettings* Settings = ULBUserSettings::GetUserSettings())
+			{
+				Settings->bBrightnessCalibrated = true;
+			}
+		}
 
 		virtual bool Update() override
 		{
@@ -231,6 +241,7 @@ namespace
 		}
 
 		FAutomationTestBase* Test;
+		FLBUserSettingsGuard SettingsGuard;
 		// P17 (R-82): this test checks that input works after New Game (D-033). The intro would hold the player under a Full input lock for
 		// its first 29 s, so it is off here. LastBell.Functional.Cine.IntroOnNewGame starts PIE directly on L_Monastery and covers only the intro and
 		// its end; no test drives menu -> New Game -> travel -> intro.
