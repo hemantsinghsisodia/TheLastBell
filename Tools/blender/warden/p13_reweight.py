@@ -17,6 +17,7 @@
       --mesh FBX         mesh to measure
       --tag NAME         key in the report ("before" / "after")
       --clips A,B,..     default MutantWalking,MutantRun,CrouchedWalking,ZombieAttack
+  --src BLEND       master to reweight (default SourceArt/Warden/V5_5/Warden_Rigged.blend; W1 uses SourceArt/Warden/V11_1/Warden_Rigged.blend)
   --report FILE     JSON report that both modes merge their section into (default Docs/ArtTest/warden/p13_reweight.json)
 
 Coordinates of the rules are the master's frame in metres (the figure faces -Y, +x is the Warden's left). Only vertex-group weights change; weights are
@@ -48,7 +49,7 @@ def parse():
     a = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
     o = {"mode": "reweight", "out_root": os.path.join(ROOT, "SourceArt", "Warden", "V5_5w"), "leg_max": 0.5, "smooth": 2, "tag": None, "mesh": None,
          "clips": "MutantWalking,MutantRun,CrouchedWalking,ZombieAttack", "report": os.path.join(ROOT, "Docs", "ArtTest", "warden", "p13_reweight.json"),
-         "sleeve_near": 0.25, "round3": "0", "boot_core": 0.0, "feather_radius": 0.10, "feather_passes": 60, "flap_blend": 0.30, "band_passes": 2, "pin_leg": 0.0}
+         "sleeve_near": 0.25, "round3": "0", "boot_core": 0.0, "feather_radius": 0.10, "feather_passes": 60, "flap_blend": 0.30, "band_passes": 2, "pin_leg": 0.0, "src": SRC_BLEND}
     i = 0
     while i < len(a):
         k = a[i].lstrip("-").replace("-", "_")
@@ -650,7 +651,9 @@ def mode_summary(o):
 
 
 def main():
+    global SRC_BLEND
     o = parse()
+    SRC_BLEND = o["src"]          # W1 (V11.1): --src points the reweight at another master (default: V5_5, as in P13)
     if o["mode"] == "reweight":
         mode_reweight(o)
     elif o["mode"] == "measure":

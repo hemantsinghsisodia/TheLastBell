@@ -1,0 +1,33 @@
+{
+ "blend": "C:\\Hemant\\Prj\\Learning\\TheLastBell\\SourceArt\\Warden\\V11_1w\\Warden_Rigged.blend",
+ "LOD0": {
+  "wool_vertices": 14298,
+  "wool_leg_share_gt_0.5": 0,
+  "wool_max_leg_share": 0.3868,
+  "mask_vertices": 4688,
+  "mask_vertices_not_100pct_head": 0,
+  "max_influences": 4,
+  "weight_sum_min": 1.0,
+  "weight_sum_max": 1.0
+ },
+ "LOD1": {
+  "wool_vertices": 8844,
+  "wool_leg_share_gt_0.5": 0,
+  "wool_max_leg_share": 0.3905,
+  "mask_vertices": 561,
+  "mask_vertices_not_100pct_head": 0,
+  "max_influences": 4,
+  "weight_sum_min": 1.0,
+  "weight_sum_max": 1.0
+ },
+ "LOD2": {
+  "wool_vertices": 3412,
+  "wool_leg_share_gt_0.5": 0,
+  "wool_max_leg_share": 0.3845,
+  "mask_vertices": 278,
+  "mask_vertices_not_100pct_head": 0,
+  "max_influences": 4,
+  "weight_sum_min": 1.0,
+  "weight_sum_max": 1.0
+ }
+}
