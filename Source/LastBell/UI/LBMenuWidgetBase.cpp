@@ -11,6 +11,7 @@
 #include "Components/VerticalBoxSlot.h"
 #include "Engine/LocalPlayer.h"
 #include "Input/Events.h"
+#include "UI/LBKeyBindings.h"
 #include "UI/LBKeyIconWidget.h"
 #include "UI/LBUIBuild.h"
 #include "UI/LBUILogic.h"
@@ -793,6 +794,11 @@ FReply ULBMenuWidgetBase::NativeOnKeyDown(const FGeometry& InGeometry, const FKe
 		return FReply::Handled();
 	}
 
+	// Back: Escape always, and the player's own Pause key (rebound, for example to P) so the key that opened the pause menu also closes it. The menu's own
+	// navigation keys keep their meaning even if Pause was bound to one of them.
+	const bool bNavigationKey = Key == EKeys::Up || Key == EKeys::Down || Key == EKeys::Left || Key == EKeys::Right || Key == EKeys::Enter || Key == EKeys::SpaceBar;
+	const bool bBackKey = Key == EKeys::Escape || (!bNavigationKey && Key == LBKeyBindings::GetKey(GetOwningLocalPlayer(), ELBBindAction::Pause));
+
 	if (Key == EKeys::Up)
 	{
 		MoveSelection(-1);
@@ -815,7 +821,7 @@ FReply ULBMenuWidgetBase::NativeOnKeyDown(const FGeometry& InGeometry, const FKe
 			ActivateItem(SelectedIndex);
 			return FReply::Handled();
 		}
-		if (Key == EKeys::Escape)
+		if (bBackKey)
 		{
 			if (ULBUISubsystem* UI = GetUI())
 			{

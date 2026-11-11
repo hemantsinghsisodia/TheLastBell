@@ -118,6 +118,31 @@ const TArray<ELBBindAction>& LBUILogic::RebindableActions()
 	return Actions;
 }
 
+ELBBindAction LBUILogic::FixedKeyAction(const FKey& Key)
+{
+	if (Key == EKeys::Up) { return ELBBindAction::MoveForward; }
+	if (Key == EKeys::Down) { return ELBBindAction::MoveBack; }
+	if (Key == EKeys::Left) { return ELBBindAction::MoveLeft; }
+	if (Key == EKeys::Right) { return ELBBindAction::MoveRight; }
+	if (Key == EKeys::LeftControl) { return ELBBindAction::Crouch; }
+	return ELBBindAction::Count;
+}
+
+FText LBUILogic::FixedKeyUseName(const FKey& Key)
+{
+	return FixedKeyAction(Key) == ELBBindAction::Crouch ? NSLOCTEXT("LastBellUI", "FixedCrouch", "Crouch") : NSLOCTEXT("LastBellUI", "FixedMove", "Move");
+}
+
+bool LBUILogic::DisplayDiffersFromConfirmed(int32 Mode, const FIntPoint& Resolution, int32 ConfirmedMode, const FIntPoint& ConfirmedResolution)
+{
+	if (Mode != ConfirmedMode)
+	{
+		return true;
+	}
+	// 1 = EWindowMode::WindowedFullscreen: it always uses the desktop size.
+	return Mode != 1 && Resolution != ConfirmedResolution;
+}
+
 FText LBUILogic::KeyRefusalReason(ELBBindAction Action, const FKey& Key)
 {
 	if (!Key.IsValid())
@@ -135,6 +160,11 @@ FText LBUILogic::KeyRefusalReason(ELBBindAction Action, const FKey& Key)
 	if (Key == EKeys::Tilde)
 	{
 		return NSLOCTEXT("LastBellUI", "KeyConsole", "That key opens the console.");
+	}
+	const ELBBindAction FixedOwner = FixedKeyAction(Key);
+	if (FixedOwner != ELBBindAction::Count && FixedOwner != Action)
+	{
+		return FText::Format(NSLOCTEXT("LastBellUI", "KeyFixed", "{0} is fixed for {1}."), KeyFallbackLabel(Key), FixedKeyUseName(Key));
 	}
 	if (Action == ELBBindAction::Pause && Key.IsMouseButton())
 	{

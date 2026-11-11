@@ -103,6 +103,17 @@ public:
 	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Display")
 	bool bShowFPS = false;
 
+	/**
+	 * The resolution scale (percent, 50..100) the player chose with the Graphics tab's slider; -1 = never chosen. A quality preset normally sets the
+	 * resolution scale too (Low 50, Medium 71, High 87, Epic 100); once the player has chosen one, changing the preset keeps it.
+	 */
+	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Display", meta = (ClampMin = "-1", ClampMax = "100"))
+	float ResolutionScalePercent = -1.f;
+
+	/** "Show the brightness screen at the next launch": consumed once at startup (ConsumeBrightnessRequest), so it acts at the next process launch. */
+	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Display")
+	bool bShowBrightnessNextLaunch = false;
+
 	/** The first-launch brightness screen was confirmed. False: the main menu shows it first. */
 	UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Display")
 	bool bBrightnessCalibrated = false;
@@ -128,6 +139,19 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "LastBell|Settings")
 	void SetShowFPS(bool bNewValue);
+
+	/** Remembers the player's resolution scale choice (clamped 50..100) and saves. */
+	UFUNCTION(BlueprintCallable, Category = "LastBell|Settings")
+	void SetResolutionScalePercent(float NewPercent);
+
+	UFUNCTION(BlueprintCallable, Category = "LastBell|Settings")
+	void SetShowBrightnessNextLaunch(bool bNewValue);
+
+	/**
+	 * Called once at startup (the game instance): when the player asked for the brightness screen at the next launch, marks the brightness as not
+	 * calibrated (so the main menu shows the screen) and clears the request. Returns true if it did.
+	 */
+	bool ConsumeBrightnessRequest();
 
 	/** Applies the sliders without saving (live preview while a slider is dragged); the caller saves on release. */
 	void SetGammaTransient(float NewValue);

@@ -95,6 +95,33 @@ void ULBUserSettings::SetShowFPS(bool bNewValue)
 	OnUserSettingsChanged().Broadcast();
 }
 
+void ULBUserSettings::SetResolutionScalePercent(float NewPercent)
+{
+	ResolutionScalePercent = LBUILogic::ClampResolutionScale(NewPercent);
+	SaveConfig();
+	OnUserSettingsChanged().Broadcast();
+}
+
+void ULBUserSettings::SetShowBrightnessNextLaunch(bool bNewValue)
+{
+	bShowBrightnessNextLaunch = bNewValue;
+	SaveConfig();
+	OnUserSettingsChanged().Broadcast();
+}
+
+bool ULBUserSettings::ConsumeBrightnessRequest()
+{
+	if (!bShowBrightnessNextLaunch)
+	{
+		return false;
+	}
+	bShowBrightnessNextLaunch = false;
+	bBrightnessCalibrated = false;
+	SaveConfig();
+	OnUserSettingsChanged().Broadcast();
+	return true;
+}
+
 void ULBUserSettings::ResetControlsToDefaults()
 {
 	MouseSensitivity = 1.0f;

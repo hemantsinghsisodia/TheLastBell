@@ -162,14 +162,80 @@ void ULBSettingsWidget::SwitchTab(ELBSettingsTab Tab)
 	{
 		return;
 	}
-	// Unapplied graphics changes do not follow the player to another tab.
+	// Unapplied graphics changes do not follow the player to another tab silently: ask first.
+	if ((ActiveTab == ELBSettingsTab::Graphics || ActiveTab == ELBSettingsTab::Display) && HasPendingGraphicsChanges() && GetUI())
+	{
+		TWeakObjectPtr<ULBSettingsWidget> WeakThis(this);
+		AskApplyOrDiscard([WeakThis, Tab](bool)
+		{
+			if (WeakThis.IsValid())
+			{
+				WeakThis->DoSwitchTab(Tab);
+			}
+		});
+		return;
+	}
 	if (ActiveTab == ELBSettingsTab::Graphics || ActiveTab == ELBSettingsTab::Display)
 	{
 		FLBGraphicsSettings::Restore(GfxBaseline);
 	}
+	DoSwitchTab(Tab);
+}
+
+void ULBSettingsWidget::DoSwitchTab(ELBSettingsTab Tab)
+{
 	ActiveTab = Tab;
 	PlaySound(ELBUISound::Select);
 	RebuildTab();
+}
+
+bool ULBSettingsWidget::HasPendingGraphicsChanges() const
+{
+	return FLBGraphicsSettings::Capture().Differs(GfxBaseline);
+}
+
+void ULBSettingsWidget::AskApplyOrDiscard(TFunction<void(bool)> Continue)
+{
+	TWeakObjectPtr<ULBSettingsWidget> WeakThis(this);
+	FLBConfirmRequest Request;
+	Request.Title = NSLOCTEXT("LastBellUI", "PendingTitle", "Apply changes?");
+	Request.Message = NSLOCTEXT("LastBellUI", "PendingMessage", "You changed graphics or display settings that are not applied yet.");
+	Request.ConfirmLabel = NSLOCTEXT("LastBellUI", "PendingApply", "Apply");
+	Request.CancelLabel = NSLOCTEXT("LastBellUI", "PendingDiscard", "Discard");
+	Request.OnConfirm = [WeakThis, Continue]()
+	{
+		if (WeakThis.IsValid())
+		{
+			WeakThis->ApplyGraphics();
+		}
+		Continue(true);
+	};
+	Request.OnCancel = [WeakThis, Continue]()
+	{
+		if (WeakThis.IsValid())
+		{
+			FLBGraphicsSettings::Restore(WeakThis->GfxBaseline);
+		}
+		Continue(false);
+	};
+	GetUI()->ShowConfirm(Request);
+}
+
+void ULBSettingsWidget::FinishBack()
+{
+	// When Apply opened the keep dialog, it is on top: the settings screen stays until the player answers it.
+	if (ULBUISubsystem* UI = GetUI())
+	{
+		if (UI->GetTopWidget() == this)
+		{
+			PlaySound(ELBUISound::Back);
+			UI->PopScreen();
+		}
+	}
+	else
+	{
+		RemoveFromParent();
+	}
 }
 
 void ULBSettingsWidget::RebuildTab()
@@ -182,6 +248,8 @@ void ULBSettingsWidget::RebuildTab()
 	ClearItems();
 	GroupItems.Reset();
 	PresetItem = INDEX_NONE;
+	ScaleItem = INDEX_NONE;
+	ResolutionItem = INDEX_NONE;
 	SetStatus(FText::GetEmpty());
 	RefreshTabBar();
 
@@ -255,8 +323,18 @@ bool ULBSettingsWidget::HandleBack()
 		EndKeyCapture();
 		return true;
 	}
-	// Unapplied graphics and display changes are discarded.
-	FLBGraphicsSettings::Restore(GfxBaseline);
+	if (HasPendingGraphicsChanges() && GetUI())
+	{
+		TWeakObjectPtr<ULBSettingsWidget> WeakThis(this);
+		AskApplyOrDiscard([WeakThis](bool)
+		{
+			if (WeakThis.IsValid())
+			{
+				WeakThis->FinishBack();
+			}
+		});
+		return true;
+	}
 	return Super::HandleBack();
 }
 
@@ -299,6 +377,11 @@ void ULBSettingsWidget::RefreshGroupRows()
 	{
 		SetChoiceIndex(GroupItems[Group], FLBGraphicsSettings::GetGroupLevel(static_cast<ELBGraphicsGroup>(Group)), false);
 	}
+	// A preset also moves the resolution scale (unless the player chose one): the slider shows what will be applied.
+	if (ScaleItem != INDEX_NONE)
+	{
+		SetSliderValue(ScaleItem, FLBGraphicsSettings::GetResolutionScalePercent(), false);
+	}
 	UpdatePresetItem();
 }
 
@@ -313,7 +396,8 @@ void ULBSettingsWidget::BuildGraphicsTab()
 	{
 		if (NewIndex <= 3)
 		{
-			FLBGraphicsSettings::SetPreset(NewIndex);
+			const ULBUserSettings* User = ULBUserSettings::Get();
+			FLBGraphicsSettings::SetPresetKeepingScale(NewIndex, User ? User->ResolutionScalePercent : -1.f);
 			RefreshGroupRows();
 		}
 		else
@@ -323,9 +407,20 @@ void ULBSettingsWidget::BuildGraphicsTab()
 		}
 	}, /*SelectableCount*/ 4);
 
-	AddSliderItem(*TabContent, NSLOCTEXT("LastBellUI", "GfxResolutionScale", "Resolution scale"), LBUILogic::MinResolutionScale, LBUILogic::MaxResolutionScale, 5.f,
+	ScaleItem = AddSliderItem(*TabContent, NSLOCTEXT("LastBellUI", "GfxResolutionScale", "Resolution scale"), LBUILogic::MinResolutionScale, LBUILogic::MaxResolutionScale, 5.f,
 		FLBGraphicsSettings::GetResolutionScalePercent(), [](float Value) { return Percent(Value); },
-		[](float Value, bool) { FLBGraphicsSettings::SetResolutionScalePercent(Value); });
+		[](float Value, bool bFinal)
+		{
+			FLBGraphicsSettings::SetResolutionScalePercent(Value);
+			if (bFinal)
+			{
+				// The player chose a scale: later preset changes keep it.
+				if (ULBUserSettings* Settings = ULBUserSettings::GetUserSettings())
+				{
+					Settings->SetResolutionScalePercent(Value);
+				}
+			}
+		});
 
 	for (int32 Group = 0; Group < static_cast<int32>(ELBGraphicsGroup::Count); ++Group)
 	{
@@ -418,13 +513,15 @@ void ULBSettingsWidget::BuildDisplayTab()
 	if (!ResolutionNames.IsEmpty())
 	{
 		const int32 Current = ResolutionOptions.IndexOfByKey(FLBGraphicsSettings::GetResolution());
-		AddChoiceItem(*TabContent, NSLOCTEXT("LastBellUI", "DisplayResolution", "Resolution"), ResolutionNames, Current == INDEX_NONE ? 0 : Current, [this](int32 NewIndex)
+		ResolutionItem = AddChoiceItem(*TabContent, NSLOCTEXT("LastBellUI", "DisplayResolution", "Resolution"), ResolutionNames, Current == INDEX_NONE ? 0 : Current, [this](int32 NewIndex)
 		{
 			if (ResolutionOptions.IsValidIndex(NewIndex))
 			{
 				FLBGraphicsSettings::SetResolution(ResolutionOptions[NewIndex]);
 			}
 		});
+		// Windowed fullscreen always draws at the desktop size: the row has no effect there.
+		SetItemEnabled(ResolutionItem, Mode != EWindowMode::WindowedFullscreen);
 	}
 
 	AddToggleItem(*TabContent, NSLOCTEXT("LastBellUI", "DisplayVSync", "VSync"), FLBGraphicsSettings::GetVSync(), [](bool bOn) { FLBGraphicsSettings::SetVSync(bOn); });
@@ -665,11 +762,12 @@ void ULBSettingsWidget::BuildAccessibilityTab()
 			Settings->SetHighContrastPrompts(bOn);
 		}
 	});
-	AddToggleItem(*TabContent, NSLOCTEXT("LastBellUI", "AccShowBrightness", "Show brightness screen at next launch"), User && !User->bBrightnessCalibrated, [](bool bOn)
+	// A request, consumed at the next process launch (the game instance): it does not pop the screen up at the next main menu of this session.
+	AddToggleItem(*TabContent, NSLOCTEXT("LastBellUI", "AccShowBrightness", "Show brightness screen at next launch"), User && User->bShowBrightnessNextLaunch, [](bool bOn)
 	{
 		if (ULBUserSettings* Settings = ULBUserSettings::GetUserSettings())
 		{
-			Settings->SetBrightnessCalibrated(!bOn);
+			Settings->SetShowBrightnessNextLaunch(bOn);
 		}
 	});
 	AddFooter(false);

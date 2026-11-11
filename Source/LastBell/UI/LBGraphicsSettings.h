@@ -14,10 +14,27 @@ struct LASTBELL_API FLBGraphicsSnapshot
 	bool bVSync = false;
 	float FrameRateLimit = 0.f;
 
-	/** The window mode or the resolution differs: the changes that need the keep dialog. */
+	/**
+	 * The window mode or the resolution differs: the changes that need the keep dialog. In Windowed fullscreen the game always draws at the desktop size,
+	 * so a resolution change there is not a display change.
+	 */
 	bool DisplayModeDiffers(const FLBGraphicsSnapshot& Other) const
 	{
-		return WindowMode != Other.WindowMode || Resolution != Other.Resolution;
+		return WindowMode != Other.WindowMode || (WindowMode != EWindowMode::WindowedFullscreen && Resolution != Other.Resolution);
+	}
+
+	/** Anything differs (the settings screen asks "Apply changes?" before leaving a tab or the screen). */
+	bool Differs(const FLBGraphicsSnapshot& Other) const
+	{
+		for (int32 Index = 0; Index < static_cast<int32>(ELBGraphicsGroup::Count); ++Index)
+		{
+			if (Groups[Index] != Other.Groups[Index])
+			{
+				return true;
+			}
+		}
+		return !FMath::IsNearlyEqual(ResolutionScaleValue, Other.ResolutionScaleValue, 0.6f) || Resolution != Other.Resolution || WindowMode != Other.WindowMode
+			|| bVSync != Other.bVSync || !FMath::IsNearlyEqual(FrameRateLimit, Other.FrameRateLimit, 0.5f);
 	}
 };
 
@@ -40,6 +57,13 @@ public:
 	static int32 GetGroupLevel(ELBGraphicsGroup Group);
 	static void SetGroupLevel(ELBGraphicsGroup Group, int32 Level);
 	static FText GroupName(ELBGraphicsGroup Group);
+
+	/**
+	 * Sets the overall preset like SetPreset, then keeps the resolution scale the player chose (ChosenPercent >= 0): a preset sets the scale too (the engine's
+	 * Low 50, Medium 71, High 87, Epic 100), but a player who picked a scale of their own keeps it across preset changes. ChosenPercent < 0 (never chosen):
+	 * the preset's scale stands.
+	 */
+	static void SetPresetKeepingScale(int32 Preset, float ChosenPercent);
 
 	/** The overall preset 0..3, or -1 when the groups differ ("Custom"). */
 	static int32 GetPreset();

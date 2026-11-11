@@ -44,6 +44,12 @@ public:
 	FText GetStatusTextForTest() const;
 	/** The row index of the preset choice (Graphics tab) or INDEX_NONE. */
 	int32 GetPresetItemForTest() const { return PresetItem; }
+	int32 GetScaleItemForTest() const { return ScaleItem; }
+	int32 GetResolutionItemForTest() const { return ResolutionItem; }
+	/** Does what choosing this window mode (0 Fullscreen, 1 Windowed fullscreen, 2 Windowed) in the Display tab's first row does. */
+	void SetWindowModeRowForTest(int32 Index) { SetChoiceIndex(0, Index, /*bNotify*/ true); }
+	/** Unapplied Graphics or Display changes exist. */
+	bool HasPendingGraphicsChanges() const;
 	int32 GetGroupItemForTest(ELBGraphicsGroup Group) const { return GroupItems.IsValidIndex(static_cast<int32>(Group)) ? GroupItems[static_cast<int32>(Group)] : INDEX_NONE; }
 	const FLBGraphicsSnapshot& GetBaselineForTest() const { return GfxBaseline; }
 	/** Does what choosing this overall preset in the Graphics tab does (sets every group, refreshes the rows). */
@@ -66,6 +72,10 @@ private:
 	void RefreshGroupRows();
 	void UpdatePresetItem();
 	void SetStatus(const FText& Text);
+	void DoSwitchTab(ELBSettingsTab Tab);
+	/** "Apply changes?" Apply / Discard, then Continue (bApplied tells which). */
+	void AskApplyOrDiscard(TFunction<void(bool /*bApplied*/)> Continue);
+	void FinishBack();
 	void AddCaption(const FText& Text);
 
 	UPROPERTY(Transient)
@@ -88,4 +98,6 @@ private:
 	TArray<int32> GroupItems;
 	TArray<FIntPoint> ResolutionOptions;
 	int32 PresetItem = INDEX_NONE;
+	int32 ScaleItem = INDEX_NONE;
+	int32 ResolutionItem = INDEX_NONE;
 };

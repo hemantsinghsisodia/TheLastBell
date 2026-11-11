@@ -50,10 +50,26 @@ namespace LBUILogic
 	LASTBELL_API const TArray<ELBBindAction>& RebindableActions();
 
 	/**
+	 * The action a FIXED gameplay key belongs to (keys IMC_LB_Gameplay maps without a player-mappable name, so the Controls tab cannot change them):
+	 * the arrow keys move (Up forward, Down back, Left left, Right right) and LeftControl is the second Crouch key. Count when the key is not fixed.
+	 * This is the fallback table; LBKeyBindings also reads the live mappings, so any other unnamed gameplay key is refused too.
+	 */
+	LASTBELL_API ELBBindAction FixedKeyAction(const FKey& Key);
+
+	/** The text naming what a fixed key does ("Move", "Crouch"), for the refusal message. */
+	LASTBELL_API FText FixedKeyUseName(const FKey& Key);
+
+	/**
 	 * Why a key may not be bound to an action, or an empty text when it may. Keyboard and mouse only: gamepad and touch keys are refused;
 	 * Pause refuses the mouse buttons; mouse movement and the wheel axes are never bindable.
 	 */
 	LASTBELL_API FText KeyRefusalReason(ELBBindAction Action, const FKey& Key);
+
+	/**
+	 * At startup: the display settings differ from the last confirmed ones (an Apply the player never kept, for example a quit or crash during the keep
+	 * dialog). Windowed fullscreen has no resolution of its own, so only the mode counts there.
+	 */
+	LASTBELL_API bool DisplayDiffersFromConfirmed(int32 Mode, const FIntPoint& Resolution, int32 ConfirmedMode, const FIntPoint& ConfirmedResolution);
 
 	/**
 	 * The action (other than this one) that already uses NewKey, or Count when none does. Current maps each action to its key.

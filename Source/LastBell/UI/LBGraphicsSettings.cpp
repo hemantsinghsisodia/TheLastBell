@@ -92,6 +92,15 @@ void FLBGraphicsSettings::SetPreset(int32 Preset)
 	}
 }
 
+void FLBGraphicsSettings::SetPresetKeepingScale(int32 Preset, float ChosenPercent)
+{
+	SetPreset(Preset);
+	if (ChosenPercent >= 0.f)
+	{
+		SetResolutionScalePercent(ChosenPercent);
+	}
+}
+
 const TArray<FText>& FLBGraphicsSettings::QualityLevelNames()
 {
 	static const TArray<FText> Names = {

@@ -1,6 +1,8 @@
 #include "UI/LBKeyBindings.h"
 #include "Engine/LocalPlayer.h"
 #include "EnhancedInputSubsystems.h"
+#include "EnhancedActionKeyMapping.h"
+#include "EnhancedPlayerInput.h"
 #include "InputAction.h"
 #include "UI/LBUILogic.h"
 #include "UserSettings/EnhancedInputUserSettings.h"
@@ -16,6 +18,39 @@ namespace
 	const FPlayerKeyMapping* FirstSlot(const UEnhancedInputUserSettings* Settings, ELBBindAction Action)
 	{
 		return Settings ? Settings->FindCurrentMappingForSlot(LBUILogic::MappingNameFor(Action), EPlayerMappableKeySlot::First) : nullptr;
+	}
+
+	/**
+	 * A key that IMC_LB_Gameplay maps WITHOUT a player-mappable name is fixed: the Controls tab cannot move it, so giving it to another action would make it
+	 * do both. Read from the player's live mappings; empty when the key is free (or the mappings cannot be read, then LBUILogic's table has already refused).
+	 */
+	FText LiveFixedKeyRefusal(const ULocalPlayer* LocalPlayer, ELBBindAction Action, const FKey& Key)
+	{
+		const UEnhancedInputLocalPlayerSubsystem* Input = InputSubsystem(LocalPlayer);
+		const UEnhancedPlayerInput* PlayerInput = Input ? Input->GetPlayerInput() : nullptr;
+		if (!PlayerInput)
+		{
+			return FText::GetEmpty();
+		}
+		const UEnhancedInputUserSettings* Settings = Input->GetUserSettings();
+		const UInputAction* OwnAction = Settings ? Settings->FindInputActionForMapping(LBUILogic::MappingNameFor(Action)) : nullptr;
+		const bool bOwnIsMove = Action == ELBBindAction::MoveForward || Action == ELBBindAction::MoveBack || Action == ELBBindAction::MoveLeft || Action == ELBBindAction::MoveRight;
+		for (const FEnhancedActionKeyMapping& Mapping : PlayerInput->GetEnhancedActionMappingsView())
+		{
+			if (Mapping.Key != Key || !Mapping.Action || Mapping.IsPlayerMappable())
+			{
+				continue;
+			}
+			// The action's own second key may stay (Ctrl for Crouch, the natural arrow for a Move direction).
+			if (LBUILogic::FixedKeyAction(Key) == Action || (!bOwnIsMove && OwnAction && Mapping.Action == OwnAction))
+			{
+				continue;
+			}
+			FString Name = Mapping.Action->GetName();
+			Name.RemoveFromStart(TEXT("IA_"));
+			return FText::Format(NSLOCTEXT("LastBellUI", "KeyFixedLive", "{0} is fixed for {1}."), LBUILogic::KeyFallbackLabel(Key), FText::FromString(Name));
+		}
+		return FText::GetEmpty();
 	}
 
 	void LogOnce(const TCHAR* Text)
@@ -93,6 +128,13 @@ LBKeyBindings::FRebindResult LBKeyBindings::Rebind(ULocalPlayer* LocalPlayer, EL
 	if (!Refusal.IsEmpty())
 	{
 		Result.Message = Refusal;
+		return Result;
+	}
+
+	const FText FixedRefusal = LiveFixedKeyRefusal(LocalPlayer, Action, NewKey);
+	if (!FixedRefusal.IsEmpty())
+	{
+		Result.Message = FixedRefusal;
 		return Result;
 	}
 
