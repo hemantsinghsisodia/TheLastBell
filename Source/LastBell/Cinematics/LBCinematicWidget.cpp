@@ -156,11 +156,6 @@ void ULBCinematicWidget::ClearCard()
 	}
 }
 
-void ULBCinematicWidget::SetSkipPromptText(const FText& Text)
-{
-	SkipPromptText = Text;
-}
-
 void ULBCinematicWidget::SetSkipState(bool bSkippable, float Fraction)
 {
 	if (SkipRow)

@@ -698,7 +698,6 @@ bool ULBCinematicSubsystem::PlayDef(const FLBCinematicDef& Def)
 		Widget = CreateWidget<ULBCinematicWidget>(PC, ULBCinematicWidget::StaticClass());
 		if (Widget)
 		{
-			Widget->SetSkipPromptText(Settings->SkipPromptText);
 			Widget->AddToViewport(WidgetZOrder);
 			Widget->SetSkipState(bSkippable, 0.f);
 		}

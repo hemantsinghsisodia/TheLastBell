@@ -264,7 +264,6 @@ def build_expected(credits, seq_variant="ref"):
         "Credits": credits,
         "CreditsSeconds": 40.0,
         "SkipHoldSeconds": 1.0,
-        "SkipPromptText": "Hold E to skip",
         "MarkSeconds": 1.5,
         "LookAssistSeconds": 1.5,
         "BellActorTag": "LB_Cine_Bell",
@@ -397,6 +396,11 @@ def build_da(credits):
     if da is None:
         return None, build_expected(credits)
 
+    if APPLY and os.environ.get("LB_RESAVE", "") == "1":
+        # P18 cleanup: a property removed from the C++ class is dropped from the asset only when the package is saved again
+        mark_changed(da)
+        note("LB_RESAVE=1: DA_Cinematics is re-saved even without a value change")
+
     chosen = "ref"
     expected = build_expected(credits, chosen)
     names = list(expected.keys())
@@ -440,7 +444,7 @@ def verify_da(da, expected, credits):
     check("verify DA_Cinematics JSON read-back (every field)", not errors, errors[:3])
     report["readback"]["DA_Cinematics"] = {
         "Cinematics": rb.get("Cinematics"), "Cards": rb.get("Cards"), "CineFadeMix": rb.get("CineFadeMix"),
-        "scalars": {k: rb.get(k) for k in ("CreditsSeconds", "SkipHoldSeconds", "SkipPromptText", "MarkSeconds", "LookAssistSeconds", "BellActorTag",
+        "scalars": {k: rb.get(k) for k in ("CreditsSeconds", "SkipHoldSeconds", "MarkSeconds", "LookAssistSeconds", "BellActorTag",
                                            "BellComponentName", "BellHeadstockTag", "BellRopeTag", "BellSwingAxis", "BellSwingKickDegrees",
                                            "BellSwingMaxDegrees", "BellSwingPeriodSeconds", "BellSwingDampingPerSecond")},
         "credits_first_3": (rb.get("Credits") or [])[:3]}
@@ -471,7 +475,11 @@ def verify_da(da, expected, credits):
         note("typed count read failed (%r); the JSON counts above stand" % (exc,))
     for prop, _json_name, value in SCALARS:
         check("DA_Cinematics.%s == %g" % (prop, value), feq(da.get_editor_property(prop), value), da.get_editor_property(prop))
-    check("DA_Cinematics.skip_prompt_text", str(da.get_editor_property("skip_prompt_text")) == "Hold E to skip", da.get_editor_property("skip_prompt_text"))
+    try:
+        da.get_editor_property("skip_prompt_text")
+        check("DA_Cinematics has no skip_prompt_text (removed in P18 cleanup)", False, "the property still exists")
+    except Exception:
+        check("DA_Cinematics has no skip_prompt_text (removed in P18 cleanup)", True)
     for prop, value in (("bell_actor_tag", "LB_Cine_Bell"), ("bell_component_name", "Mesh"), ("bell_headstock_tag", "LB_Cine_BellHeadstock"),
                         ("bell_rope_tag", "LB_Cine_BellRope")):
         check("DA_Cinematics.%s == %s" % (prop, value), str(da.get_editor_property(prop)) == value, da.get_editor_property(prop))

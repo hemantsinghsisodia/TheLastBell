@@ -9,7 +9,7 @@ Environment variables:
     LB_MODE  "apply" (default): set, compile and save BP_LBPlayerController explicitly, then verify in the same process
              "verify": read-only; run it in a FRESH process to prove what is on disk
 
-Only BP_LBPlayerController is touched (one explicit EditorAssetLibrary.save_asset, never save-all). WBP_HUD and WBP_Inspect are left in place, unused:
+Only BP_LBPlayerController is touched (one explicit EditorAssetLibrary.save_asset, never save-all). WBP_HUD and WBP_Inspect were left in place, unused (deleted later by Tools/ui/p18_cleanup.py):
 the script reports their referencers so the review can delete them. The process exit code is NOT reliable; read the report (`ok`) or the log
 line "P18-3 RESULT".
 """

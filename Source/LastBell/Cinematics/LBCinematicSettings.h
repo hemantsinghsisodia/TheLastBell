@@ -44,10 +44,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Skip", meta = (ClampMin = "0.1", ClampMax = "10.0", Units = "s"))
 	float SkipHoldSeconds = 1.0f;
 
-	/** Shown bottom-right while a cinematic can be skipped. Key glyphs come in Phase 18. */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Skip")
-	FText SkipPromptText = NSLOCTEXT("LastBellCinematics", "SkipPrompt", "Hold E to skip");
-
 	/** The default seconds of a mark: marker when it gives none. */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player", meta = (ClampMin = "0.1", ClampMax = "30.0", Units = "s"))
 	float MarkSeconds = 1.5f;

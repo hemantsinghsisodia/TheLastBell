@@ -36,12 +36,6 @@ public:
 	/** The skip prompt shows only while Skippable; Fraction (0..1) fills the bar under it. */
 	void SetSkipState(bool bSkippable, float Fraction);
 
-	/**
-	 * Kept for the cinematic settings' SkipPromptText. Since P18 the prompt is built from the key icon, so the text is no longer shown;
-	 * it is remembered for tests only.
-	 */
-	void SetSkipPromptText(const FText& Text);
-
 	/** Replaces the credits box with these lines, parked below the screen. */
 	void BuildCredits(const TArray<FLBCreditLine>& Lines);
 
@@ -57,7 +51,6 @@ public:
 	int32 GetCreditLineCountForTest() const { return CreditsRoll.LineCount; }
 	bool IsSkipPromptVisibleForTest() const;
 	const ULBKeyIconWidget* GetSkipKeyIconForTest() const { return SkipKeyIcon; }
-	FText GetSkipPromptTextForTest() const { return SkipPromptText; }
 
 protected:
 	virtual void NativeOnInitialized() override;
@@ -88,7 +81,6 @@ private:
 	TObjectPtr<UProgressBar> SkipBar;
 
 	FLBCreditsRoll CreditsRoll;
-	FText SkipPromptText;
 	/** The style of the card now shown. */
 	ELBCineCardStyle ShownStyle = ELBCineCardStyle::Line;
 };
