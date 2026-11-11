@@ -185,6 +185,35 @@ bool FLBUIRebindConflictTest::RunTest(const FString& Parameters)
 	TestFalse(TEXT("Pause refuses a mouse button"), LBUILogic::KeyRefusalReason(ELBBindAction::Pause, EKeys::RightMouseButton).IsEmpty());
 	TestTrue(TEXT("Pause takes a key"), LBUILogic::KeyRefusalReason(ELBBindAction::Pause, EKeys::P).IsEmpty());
 	TestFalse(TEXT("An invalid key is refused"), LBUILogic::KeyRefusalReason(ELBBindAction::Candle, EKeys::Invalid).IsEmpty());
+
+	// The fixed keys of IMC_LB_Gameplay (the arrows move, LeftControl is the second Crouch key): no other action may take them (QA M2).
+	TestEqual(TEXT("Up is the fixed key of Move forward"), LBUILogic::FixedKeyAction(EKeys::Up), ELBBindAction::MoveForward);
+	TestEqual(TEXT("LeftControl is the fixed key of Crouch"), LBUILogic::FixedKeyAction(EKeys::LeftControl), ELBBindAction::Crouch);
+	TestEqual(TEXT("G is not fixed"), LBUILogic::FixedKeyAction(EKeys::G), ELBBindAction::Count);
+	const FText UpForInteract = LBUILogic::KeyRefusalReason(ELBBindAction::Interact, EKeys::Up);
+	TestFalse(TEXT("Interact on Up is refused"), UpForInteract.IsEmpty());
+	TestTrue(TEXT("...and the message says it is fixed for Move"), UpForInteract.ToString().Contains(TEXT("fixed")) && UpForInteract.ToString().Contains(TEXT("Move")));
+	const FText CtrlForSprint = LBUILogic::KeyRefusalReason(ELBBindAction::Sprint, EKeys::LeftControl);
+	TestFalse(TEXT("Sprint on LeftControl is refused"), CtrlForSprint.IsEmpty());
+	TestTrue(TEXT("...naming Crouch"), CtrlForSprint.ToString().Contains(TEXT("Crouch")));
+	TestFalse(TEXT("Candle on Left is refused"), LBUILogic::KeyRefusalReason(ELBBindAction::Candle, EKeys::Left).IsEmpty());
+	TestFalse(TEXT("Move left on Up is refused (that is Move forward's arrow)"), LBUILogic::KeyRefusalReason(ELBBindAction::MoveLeft, EKeys::Up).IsEmpty());
+	TestTrue(TEXT("Crouch may keep LeftControl"), LBUILogic::KeyRefusalReason(ELBBindAction::Crouch, EKeys::LeftControl).IsEmpty());
+	TestTrue(TEXT("Move forward may take its own arrow"), LBUILogic::KeyRefusalReason(ELBBindAction::MoveForward, EKeys::Up).IsEmpty());
+	return true;
+}
+
+// At startup a display mode the player never confirmed (a quit or crash inside the keep dialog) goes back to the confirmed one (QA m1).
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBUILogicUnconfirmedDisplayTest, "LastBell.UI.Logic.UnconfirmedDisplayDetected", LB_UI_UNIT_FLAGS)
+bool FLBUILogicUnconfirmedDisplayTest::RunTest(const FString& Parameters)
+{
+	const FIntPoint A(1920, 1080);
+	const FIntPoint B(1280, 720);
+	TestFalse(TEXT("Same mode and resolution: confirmed"), LBUILogic::DisplayDiffersFromConfirmed(0, A, 0, A));
+	TestTrue(TEXT("A different mode: unconfirmed"), LBUILogic::DisplayDiffersFromConfirmed(2, A, 0, A));
+	TestTrue(TEXT("A different resolution in Fullscreen: unconfirmed"), LBUILogic::DisplayDiffersFromConfirmed(0, B, 0, A));
+	TestTrue(TEXT("A different resolution in Windowed: unconfirmed"), LBUILogic::DisplayDiffersFromConfirmed(2, B, 2, A));
+	TestFalse(TEXT("In Windowed fullscreen the resolution does not count (it is the desktop's)"), LBUILogic::DisplayDiffersFromConfirmed(1, B, 1, A));
 	return true;
 }
 
@@ -281,6 +310,72 @@ bool FLBUIBrightnessFlagTest::RunTest(const FString& Parameters)
 	return true;
 }
 
+// The resolution scale a player chose survives a preset change; with none chosen the preset's scale stands (QA M1).
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBUIPresetKeepsScaleTest, "LastBell.UI.Settings.PresetKeepsChosenResolutionScale", LB_UI_UNIT_FLAGS)
+bool FLBUIPresetKeepsScaleTest::RunTest(const FString& Parameters)
+{
+	if (!TestNotNull(TEXT("The engine's user settings"), FLBGraphicsSettings::Get()))
+	{
+		return false;
+	}
+	const FLBGraphicsSnapshot Before = FLBGraphicsSettings::Capture();
+
+	// Never chosen (-1): the preset sets it (the engine's Low 50, Medium 71, High 87, Epic 100).
+	FLBGraphicsSettings::SetPresetKeepingScale(1, -1.f);
+	TestTrue(FString::Printf(TEXT("Medium with no chosen scale reads about 71 (%.1f)"), FLBGraphicsSettings::GetResolutionScalePercent()), FMath::Abs(FLBGraphicsSettings::GetResolutionScalePercent() - 71.f) < 2.f);
+	FLBGraphicsSettings::SetPresetKeepingScale(3, -1.f);
+	TestTrue(FString::Printf(TEXT("Epic reads about 100 (%.1f)"), FLBGraphicsSettings::GetResolutionScalePercent()), FMath::Abs(FLBGraphicsSettings::GetResolutionScalePercent() - 100.f) < 2.f);
+
+	// Chosen: kept across presets.
+	FLBGraphicsSettings::SetPresetKeepingScale(0, 65.f);
+	TestTrue(FString::Printf(TEXT("Low with a chosen 65 keeps 65 (%.1f)"), FLBGraphicsSettings::GetResolutionScalePercent()), FMath::Abs(FLBGraphicsSettings::GetResolutionScalePercent() - 65.f) < 2.f);
+	TestEqual(TEXT("...and the groups are still Low"), FLBGraphicsSettings::GetPreset(), 0);
+
+	// The setting stores and clamps it.
+	ULBUserSettings* Settings = ULBUserSettings::GetUserSettings();
+	if (TestNotNull(TEXT("The user settings"), Settings))
+	{
+		FLBUserSettingsGuard Guard;
+		Settings->SetResolutionScalePercent(10.f);
+		TestEqual(TEXT("A chosen scale clamps to 50"), Settings->ResolutionScalePercent, 50.f);
+		Settings->SetResolutionScalePercent(500.f);
+		TestEqual(TEXT("...and to 100"), Settings->ResolutionScalePercent, 100.f);
+	}
+	FLBGraphicsSettings::Restore(Before);
+	return true;
+}
+
+// "Show brightness screen at next launch" is a request consumed at the next process launch, not a flag that acts at the next main menu (QA m5).
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBUIBrightnessRequestTest, "LastBell.UI.Settings.BrightnessRequestWaitsForNextLaunch", LB_UI_UNIT_FLAGS)
+bool FLBUIBrightnessRequestTest::RunTest(const FString& Parameters)
+{
+	ULBUserSettings* Settings = ULBUserSettings::GetUserSettings();
+	if (!TestNotNull(TEXT("The user settings object"), Settings))
+	{
+		return false;
+	}
+	FLBUserSettingsGuard Guard;
+
+	Settings->SetBrightnessCalibrated(true);
+	Settings->SetShowBrightnessNextLaunch(true);
+	TestTrue(TEXT("The request is stored"), Settings->bShowBrightnessNextLaunch);
+	TestTrue(TEXT("...and does not touch the calibrated flag (the menu of this session keeps going straight to the menu)"), Settings->bBrightnessCalibrated);
+
+	// The next launch (the game instance's Init) consumes it.
+	TestTrue(TEXT("The launch consumes the request"), Settings->ConsumeBrightnessRequest());
+	TestFalse(TEXT("The brightness is now not calibrated: the main menu shows the screen"), Settings->bBrightnessCalibrated);
+	TestFalse(TEXT("The request is cleared"), Settings->bShowBrightnessNextLaunch);
+	TestFalse(TEXT("A second launch has nothing to consume"), Settings->ConsumeBrightnessRequest());
+
+	// It persists between the request and the launch.
+	Settings->SetBrightnessCalibrated(true);
+	Settings->SetShowBrightnessNextLaunch(true);
+	Settings->bShowBrightnessNextLaunch = false;
+	Settings->LoadConfig();
+	TestTrue(TEXT("The request survives the config until the next launch"), Settings->bShowBrightnessNextLaunch);
+	return true;
+}
+
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBUIGraphicsPresetTest, "LastBell.UI.Settings.GraphicsPresetAndCustom", LB_UI_UNIT_FLAGS)
 bool FLBUIGraphicsPresetTest::RunTest(const FString& Parameters)
 {
@@ -320,8 +415,16 @@ bool FLBUIGraphicsPresetTest::RunTest(const FString& Parameters)
 	Changed.WindowMode = Before.WindowMode == EWindowMode::Windowed ? EWindowMode::Fullscreen : EWindowMode::Windowed;
 	TestTrue(TEXT("A window-mode difference needs the keep dialog"), Changed.DisplayModeDiffers(Before));
 	Changed = Before;
+	Changed.WindowMode = EWindowMode::Windowed;
+	FLBGraphicsSnapshot WindowedBefore = Before;
+	WindowedBefore.WindowMode = EWindowMode::Windowed;
 	Changed.Resolution = FIntPoint(Before.Resolution.X + 2, Before.Resolution.Y);
-	TestTrue(TEXT("A resolution difference needs the keep dialog"), Changed.DisplayModeDiffers(Before));
+	TestTrue(TEXT("A resolution difference in a window needs the keep dialog"), Changed.DisplayModeDiffers(WindowedBefore));
+	Changed.WindowMode = EWindowMode::WindowedFullscreen;
+	WindowedBefore.WindowMode = EWindowMode::WindowedFullscreen;
+	TestFalse(TEXT("...but not in Windowed fullscreen (the desktop size is used)"), Changed.DisplayModeDiffers(WindowedBefore));
+	TestTrue(TEXT("Differs sees the resolution change anyway (the screen asks Apply or Discard)"), Changed.Differs(WindowedBefore));
+	TestFalse(TEXT("A snapshot does not differ from itself"), Before.Differs(Before));
 
 	// Nothing was applied or saved; put the pending values back.
 	FLBGraphicsSettings::Restore(Before);

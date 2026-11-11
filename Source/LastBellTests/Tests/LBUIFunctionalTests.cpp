@@ -149,7 +149,14 @@ namespace LBUITest
 		{
 			if (bTearingDown)
 			{
-				return !LBPie::World() || (FPlatformTime::Seconds() - TeardownStart) > 30.0;
+				const bool bOver = !LBPie::World() || (FPlatformTime::Seconds() - TeardownStart) > 30.0;
+				if (bOver && OnFinished)
+				{
+					// After the play session ended (what the editor looks like afterwards).
+					OnFinished();
+					OnFinished = nullptr;
+				}
+				return bOver;
 			}
 			if (bAbort || StepIndex >= Steps.Num())
 			{
@@ -203,6 +210,9 @@ namespace LBUITest
 		}
 
 		TSharedRef<FUIState> S;
+
+		/** Runs once, after the PIE session has ended. */
+		TFunction<void()> OnFinished;
 
 	private:
 		struct FStep
@@ -947,6 +957,14 @@ bool FLBUIRebindTest::RunTest(const FString& Parameters)
 		Test->TestEqual(TEXT("Candle kept its key"), LBKeyBindings::GetKey(LocalPlayer, ELBBindAction::Candle), EKeys::F);
 		Test->TestFalse(TEXT("A gamepad button is refused"), LBKeyBindings::Rebind(LocalPlayer, ELBBindAction::Candle, EKeys::Gamepad_FaceButton_Bottom).bOk);
 
+		// The fixed keys of IMC_LB_Gameplay (the arrows and LeftControl) are refused, with a message (QA M2).
+		const LBKeyBindings::FRebindResult UpClash = LBKeyBindings::Rebind(LocalPlayer, ELBBindAction::Interact, EKeys::Up);
+		Test->TestFalse(TEXT("Interact on the Up arrow is refused (it walks forward)"), UpClash.bOk);
+		Test->TestTrue(TEXT("...with a message that says it is fixed"), UpClash.Message.ToString().Contains(TEXT("fixed")));
+		Test->TestFalse(TEXT("Sprint on LeftControl is refused (it crouches)"), LBKeyBindings::Rebind(LocalPlayer, ELBBindAction::Sprint, EKeys::LeftControl).bOk);
+		Test->TestFalse(TEXT("Candle on the Left arrow is refused (it strafes)"), LBKeyBindings::Rebind(LocalPlayer, ELBBindAction::Candle, EKeys::Left).bOk);
+		Test->TestEqual(TEXT("Interact kept R"), LBKeyBindings::GetKey(LocalPlayer, ELBBindAction::Interact), EKeys::R);
+
 		LBKeyBindings::ResetAll(LocalPlayer);
 		Test->TestEqual(TEXT("Reset to defaults restores E"), LBKeyBindings::GetKey(LocalPlayer, ELBBindAction::Interact), EKeys::E);
 		Test->TestEqual(TEXT("...and the prompt follows"), Prompt->GetKey(), EKeys::E);
@@ -1165,7 +1183,15 @@ bool FLBUISettingsScreenTest::RunTest(const FString& Parameters)
 		Screen->AdjustItem(Shadows, -1);
 		Test->TestEqual(TEXT("One group differs: the preset is Custom"), FLBGraphicsSettings::GetPreset(), -1);
 		Screen->HandleBack();
-		Test->TestEqual(TEXT("Back closed the screen"), Subsystem->GetScreenCount(), 0);
+		// Unapplied changes: Back asks first (QA m8); Discard closes the screen and drops them.
+		Test->TestEqual(TEXT("Back with unapplied changes asks first"), Subsystem->GetTopScreen(), ELBScreen::Confirm);
+		Test->TestEqual(TEXT("...the settings screen waits below"), Subsystem->GetScreenCount(), 2);
+		if (ULBConfirmWidget* Ask = Cast<ULBConfirmWidget>(Subsystem->GetTopWidget()))
+		{
+			Test->TestEqual(TEXT("...with the Apply / Discard question"), Ask->GetMessageTextForTest().ToString().Contains(TEXT("not applied")), true);
+			Ask->Cancel();
+		}
+		Test->TestEqual(TEXT("Discard closed the screen"), Subsystem->GetScreenCount(), 0);
 		Test->TestTrue(TEXT("Unapplied graphics changes were discarded"), FLBGraphicsSettings::Capture().Groups[static_cast<int32>(ELBGraphicsGroup::Shadows)] == Screen->GetBaselineForTest().Groups[static_cast<int32>(ELBGraphicsGroup::Shadows)]);
 		FLBGraphicsSettings::Restore(Baseline);
 		return true;
@@ -1594,6 +1620,473 @@ bool FLBUIFPSTest::RunTest(const FString& Parameters)
 
 		Settings->SetShowFPS(false);
 		Test->TestFalse(TEXT("Off again: hidden"), HUD->IsFPSVisibleForTest());
+		return true;
+	});
+
+	UIEnqueue(R);
+	return true;
+}
+
+// =====================================================================================================================
+// QA fix round (P18-5)
+// =====================================================================================================================
+
+// M1: a preset change refreshes the resolution scale slider, and a scale the player chose is kept.
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBUIPresetScaleSliderTest, "LastBell.Functional.UI.Settings.PresetRefreshesAndKeepsScaleSlider", LB_UIFUNC_FLAGS)
+bool FLBUIPresetScaleSliderTest::RunTest(const FString& Parameters)
+{
+	TSharedRef<FUIRunner> R = UIStartSession(this);
+	const TSharedRef<FUIState> S = R->S;
+	FAutomationTestBase* Test = this;
+	UIAddReady(*R);
+
+	R->Add(TEXT("The slider follows a preset's scale; once the player chose a scale a preset keeps it"), [S, Test](FUICtx& C)
+	{
+		ULBUISubsystem* Subsystem = UIGet(C.W);
+		ULBUserSettings* Settings = ULBUserSettings::GetUserSettings();
+		if (!Subsystem || !Settings)
+		{
+			Test->AddError(TEXT("The UI subsystem or the user settings are missing"));
+			return true;
+		}
+		const FLBGraphicsSnapshot Baseline = FLBGraphicsSettings::Capture();
+		Settings->ResolutionScalePercent = -1.f;
+		Subsystem->OpenSettings();
+		ULBSettingsWidget* Screen = Cast<ULBSettingsWidget>(Subsystem->GetTopWidget());
+		if (!Test->TestNotNull(TEXT("The settings screen"), Screen))
+		{
+			return true;
+		}
+		Screen->SwitchTab(ELBSettingsTab::Graphics);
+		const int32 Scale = Screen->GetScaleItemForTest();
+		if (!Test->TestNotEqual(TEXT("The resolution scale row exists"), Scale, static_cast<int32>(INDEX_NONE)))
+		{
+			return true;
+		}
+
+		// Never chosen: the preset's scale shows on the slider and is what will be applied.
+		Screen->SetPresetForTest(3);
+		const FLBMenuItem* Slider = Screen->GetItem(Scale);
+		Test->TestTrue(FString::Printf(TEXT("Epic: the slider reads about 100 (%.0f)"), Slider ? Slider->Value : -1.f), Slider && FMath::Abs(Slider->Value - 100.f) < 3.f);
+		Screen->SetPresetForTest(1);
+		Test->TestTrue(FString::Printf(TEXT("Medium: the slider moved to about 71 (%.0f)"), Slider ? Slider->Value : -1.f), Slider && FMath::Abs(Slider->Value - 71.f) < 6.f);
+		Test->TestTrue(TEXT("...and it is the value that will be applied"), Slider && FMath::Abs(Slider->Value - FLBGraphicsSettings::GetResolutionScalePercent()) < 3.f);
+
+		// The player moves the slider: from now on presets keep that scale.
+		Screen->SetPresetForTest(3);
+		Screen->AdjustItem(Scale, -1);
+		Screen->AdjustItem(Scale, -1);
+		Test->TestTrue(FString::Printf(TEXT("The slider stepped down (%.0f)"), Slider ? Slider->Value : -1.f), Slider && Slider->Value < 95.f);
+		const float Chosen = Slider ? Slider->Value : 0.f;
+		Test->TestTrue(TEXT("The choice is remembered"), Settings->ResolutionScalePercent > 0.f && FMath::Abs(Settings->ResolutionScalePercent - Chosen) < 1.f);
+		Screen->SetPresetForTest(0);
+		Test->TestTrue(FString::Printf(TEXT("Low keeps the chosen scale on the slider (%.0f, chosen %.0f)"), Slider ? Slider->Value : -1.f, Chosen), Slider && FMath::Abs(Slider->Value - Chosen) < 2.f);
+		Test->TestTrue(TEXT("...and the engine's pending scale"), FMath::Abs(FLBGraphicsSettings::GetResolutionScalePercent() - Chosen) < 3.f);
+		Test->TestEqual(TEXT("...while the groups became Low"), FLBGraphicsSettings::GetPreset(), 0);
+
+		if (ULBConfirmWidget* None = Cast<ULBConfirmWidget>(Subsystem->GetTopWidget()))
+		{
+			None->Cancel();
+		}
+		Subsystem->ClearScreens();
+		FLBGraphicsSettings::Restore(Baseline);
+		return true;
+	});
+
+	UIEnqueue(R);
+	return true;
+}
+
+// m7 and m8: the Resolution row is off in Windowed fullscreen; leaving a tab or the screen with unapplied changes asks Apply / Discard.
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBUIPendingChangesTest, "LastBell.Functional.UI.Settings.PendingChangesAskAndResolutionRow", LB_UIFUNC_FLAGS)
+bool FLBUIPendingChangesTest::RunTest(const FString& Parameters)
+{
+	TSharedRef<FUIRunner> R = UIStartSession(this);
+	const TSharedRef<FUIState> S = R->S;
+	FAutomationTestBase* Test = this;
+	UIAddReady(*R);
+
+	R->Add(TEXT("The Resolution row is disabled in Windowed fullscreen; a tab switch with unapplied changes asks first"), [S, Test](FUICtx& C)
+	{
+		ULBUISubsystem* Subsystem = UIGet(C.W);
+		if (!Test->TestNotNull(TEXT("The UI subsystem"), Subsystem))
+		{
+			return true;
+		}
+		const FLBGraphicsSnapshot Baseline = FLBGraphicsSettings::Capture();
+		Subsystem->OpenSettings();
+		ULBSettingsWidget* Screen = Cast<ULBSettingsWidget>(Subsystem->GetTopWidget());
+		if (!Test->TestNotNull(TEXT("The settings screen"), Screen))
+		{
+			return true;
+		}
+		Test->TestFalse(TEXT("Nothing pending at the start"), Screen->HasPendingGraphicsChanges());
+
+		// Display tab: the window mode row is item 0. Windowed fullscreen (1) disables the resolution row; Windowed (2) enables it.
+		Screen->SwitchTab(ELBSettingsTab::Display);
+		Screen->SetWindowModeRowForTest(1);
+		const int32 ResolutionNow = Screen->GetResolutionItemForTest();
+		if (Test->TestNotEqual(TEXT("The resolution row exists"), ResolutionNow, static_cast<int32>(INDEX_NONE)))
+		{
+			Test->TestFalse(TEXT("Windowed fullscreen: the Resolution row is disabled"), Screen->IsItemEnabled(ResolutionNow));
+		}
+		Screen->SetWindowModeRowForTest(2);
+		Test->TestTrue(TEXT("Windowed: the Resolution row works"), Screen->IsItemEnabled(Screen->GetResolutionItemForTest()));
+		FLBGraphicsSettings::Restore(Baseline);
+		Screen->SwitchTab(ELBSettingsTab::Graphics);
+		Test->TestEqual(TEXT("Back to the baseline there is nothing to ask: the tab switches"), static_cast<int32>(Screen->GetActiveTab()), static_cast<int32>(ELBSettingsTab::Graphics));
+		Screen->SwitchTab(ELBSettingsTab::Display);
+
+		// A real pending change (VSync flipped): a tab switch asks first; Discard drops it and switches.
+		FLBGraphicsSettings::SetVSync(!Baseline.bVSync);
+		Test->TestTrue(TEXT("A change is pending"), Screen->HasPendingGraphicsChanges());
+		Screen->SwitchTab(ELBSettingsTab::Audio);
+		Test->TestEqual(TEXT("A tab switch with unapplied display changes asks first"), Subsystem->GetTopScreen(), ELBScreen::Confirm);
+		Test->TestEqual(TEXT("...and the tab did not change yet"), static_cast<int32>(Screen->GetActiveTab()), static_cast<int32>(ELBSettingsTab::Display));
+		if (ULBConfirmWidget* Ask = Cast<ULBConfirmWidget>(Subsystem->GetTopWidget()))
+		{
+			Ask->Cancel();   // Discard
+		}
+		Test->TestEqual(TEXT("Discard switched the tab"), static_cast<int32>(Screen->GetActiveTab()), static_cast<int32>(ELBSettingsTab::Audio));
+		Test->TestFalse(TEXT("...and dropped the change"), Screen->HasPendingGraphicsChanges());
+		Test->TestEqual(TEXT("...VSync is back"), FLBGraphicsSettings::GetVSync(), Baseline.bVSync);
+		Screen->SwitchTab(ELBSettingsTab::Display);
+		FLBGraphicsSettings::SetVSync(!Baseline.bVSync);
+
+		// Back with that pending change asks too; Discard closes.
+		Screen->HandleBack();
+		Test->TestEqual(TEXT("Back with unapplied changes asks first"), Subsystem->GetTopScreen(), ELBScreen::Confirm);
+		if (ULBConfirmWidget* Ask = Cast<ULBConfirmWidget>(Subsystem->GetTopWidget()))
+		{
+			Ask->Cancel();
+		}
+		Test->TestEqual(TEXT("Discard closed the settings screen"), Subsystem->GetScreenCount(), 0);
+		FLBGraphicsSettings::Restore(Baseline);
+		return true;
+	});
+
+	UIEnqueue(R);
+	return true;
+}
+
+// m3: a rebound Pause key closes the pause menu as Escape does.
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBUIPauseKeyClosesTest, "LastBell.Functional.UI.Pause.ReboundPauseKeyAlsoCloses", LB_UIFUNC_FLAGS)
+bool FLBUIPauseKeyClosesTest::RunTest(const FString& Parameters)
+{
+	TSharedRef<FUIRunner> R = UIStartSession(this);
+	const TSharedRef<FUIState> S = R->S;
+	FAutomationTestBase* Test = this;
+	UIAddReady(*R);
+
+	R->Add(TEXT("With Pause bound to P, P and Escape both close the pause menu"), [S, Test](FUICtx& C)
+	{
+		ALBPlayerController* PC = UILBController(C.W);
+		ULocalPlayer* LocalPlayer = PC ? PC->GetLocalPlayer() : nullptr;
+		ULBUISubsystem* Subsystem = UIGet(C.W);
+		if (!Subsystem || !LocalPlayer)
+		{
+			Test->AddError(TEXT("The UI subsystem or the local player is missing"));
+			return true;
+		}
+		if (!Test->TestTrue(TEXT("Pause rebinds to P"), LBKeyBindings::Rebind(LocalPlayer, ELBBindAction::Pause, EKeys::P).bOk))
+		{
+			return true;
+		}
+		auto Press = [Subsystem](const FKey& Key)
+		{
+			ULBMenuWidgetBase* Top = Subsystem->GetTopWidget();
+			if (Top)
+			{
+				const FKeyEvent Event(Key, FModifierKeysState(), 0, false, 0, 0);
+				Top->TakeWidget()->OnKeyDown(FGeometry(), Event);
+			}
+		};
+
+		Test->TestTrue(TEXT("The pause menu opens"), Subsystem->OpenPause());
+		Press(EKeys::P);
+		Test->TestFalse(TEXT("P closed it"), Subsystem->IsPauseOpen() || C.W->IsPaused());
+
+		Test->TestTrue(TEXT("The pause menu opens again"), Subsystem->OpenPause());
+		Press(EKeys::Escape);
+		Test->TestFalse(TEXT("Escape still closes it"), Subsystem->IsPauseOpen() || C.W->IsPaused());
+
+		// The menu's navigation keys keep their meaning even if Pause were bound to one.
+		Test->TestTrue(TEXT("Opens once more"), Subsystem->OpenPause());
+		Press(EKeys::Down);
+		Test->TestTrue(TEXT("Down only moves the selection"), Subsystem->IsPauseOpen());
+		Subsystem->ClosePause();
+		LBKeyBindings::ResetAll(LocalPlayer);
+		return true;
+	});
+
+	UIEnqueue(R);
+	return true;
+}
+
+// m4: FOV, motion blur and film grain apply at once, also from the pause menu (the camera component does not tick while paused).
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBUICameraPausedTest, "LastBell.Functional.UI.Settings.CameraFollowsChangesWhilePaused", LB_UIFUNC_FLAGS)
+bool FLBUICameraPausedTest::RunTest(const FString& Parameters)
+{
+	TSharedRef<FUIRunner> R = UIStartSession(this);
+	const TSharedRef<FUIState> S = R->S;
+	FAutomationTestBase* Test = this;
+	UIAddReady(*R);
+
+	R->Add(TEXT("In the pause menu the new FOV and post-process overrides reach the camera in the same frame"), [S, Test](FUICtx& C)
+	{
+		ULBUISubsystem* Subsystem = UIGet(C.W);
+		ALBCharacter* Pawn = LBPie::Pawn();
+		ULBUserSettings* Settings = ULBUserSettings::GetUserSettings();
+		UCameraComponent* Camera = Pawn ? Pawn->FindComponentByClass<UCameraComponent>() : nullptr;
+		if (!Subsystem || !Camera || !Settings)
+		{
+			Test->AddError(TEXT("The UI subsystem, the camera or the user settings are missing"));
+			return true;
+		}
+		if (S->Phase == 0)
+		{
+			if (C.Frames < 5)
+			{
+				return false;
+			}
+			Settings->SetFieldOfViewTransient(90.f);
+			Settings->bMotionBlur = false;
+			Settings->bFilmGrain = true;
+			ULBUserSettings::OnUserSettingsChanged().Broadcast();
+			if (!Test->TestTrue(TEXT("The game pauses"), Subsystem->OpenPause()))
+			{
+				return true;
+			}
+			S->Phase = 1;
+			return false;
+		}
+		Test->TestTrue(TEXT("The world is paused"), C.W->IsPaused());
+		Settings->SetFieldOfView(105.f);
+		Test->TestTrue(FString::Printf(TEXT("FOV 105 reached the camera while paused (%.2f)"), Camera->FieldOfView), FMath::IsNearlyEqual(Camera->FieldOfView, 105.f, 0.05f));
+		Settings->SetMotionBlur(true);
+		Test->TestTrue(TEXT("Motion blur on reached the camera while paused"), Camera->PostProcessSettings.bOverride_MotionBlurAmount && Camera->PostProcessSettings.MotionBlurAmount > 0.f);
+		Settings->SetFilmGrain(false);
+		Test->TestTrue(TEXT("Film grain off reached the camera while paused"), Camera->PostProcessSettings.bOverride_FilmGrainIntensity && Camera->PostProcessSettings.FilmGrainIntensity == 0.f);
+		Subsystem->ClosePause();
+		return true;
+	});
+
+	UIEnqueue(R);
+	return true;
+}
+
+// m5 in a session: the request does not show the brightness screen at the next main menu of the same session.
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBUIBrightnessSessionTest, "LastBell.Functional.UI.Brightness.RequestDoesNotActThisSession", LB_UIFUNC_FLAGS)
+bool FLBUIBrightnessSessionTest::RunTest(const FString& Parameters)
+{
+	TSharedRef<FUIRunner> R = UIStartSession(this);
+	const TSharedRef<FUIState> S = R->S;
+	FAutomationTestBase* Test = this;
+	UIAddReady(*R);
+
+	R->Add(TEXT("The Accessibility toggle sets the request; the main menu of this session goes straight to the menu"), [S, Test](FUICtx& C)
+	{
+		ULBUISubsystem* Subsystem = UIGet(C.W);
+		ULBUserSettings* Settings = ULBUserSettings::GetUserSettings();
+		if (!Subsystem || !Settings)
+		{
+			Test->AddError(TEXT("The UI subsystem or the user settings are missing"));
+			return true;
+		}
+		Settings->SetShowBrightnessNextLaunch(false);
+		Subsystem->OpenSettings();
+		ULBSettingsWidget* Screen = Cast<ULBSettingsWidget>(Subsystem->GetTopWidget());
+		if (Test->TestNotNull(TEXT("The settings screen"), Screen))
+		{
+			Screen->SwitchTab(ELBSettingsTab::Accessibility);
+			const int32 Row = Screen->FindItemByLabel(NSLOCTEXT("LastBellUI", "AccShowBrightness", "Show brightness screen at next launch"));
+			if (Test->TestNotEqual(TEXT("The row exists"), Row, static_cast<int32>(INDEX_NONE)))
+			{
+				Screen->ActivateItem(Row);
+				Test->TestTrue(TEXT("The toggle stored the request"), Settings->bShowBrightnessNextLaunch);
+				Test->TestTrue(TEXT("...and left the brightness calibrated"), Settings->bBrightnessCalibrated);
+			}
+		}
+		Subsystem->ClearScreens();
+		Subsystem->PushScreen(ELBScreen::MainMenu);
+		Test->TestEqual(TEXT("The main menu opens straight away (no brightness screen this session)"), Subsystem->GetTopScreen(), ELBScreen::MainMenu);
+		Subsystem->ClearScreens();
+		return true;
+	});
+
+	UIEnqueue(R);
+	return true;
+}
+
+// m2: a Continue the save subsystem refuses keeps the menu and says so.
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBUIContinueRefusedTest, "LastBell.Functional.UI.MainMenu.ContinueRefusedKeepsMenu", LB_UIFUNC_FLAGS)
+bool FLBUIContinueRefusedTest::RunTest(const FString& Parameters)
+{
+	TSharedRef<FUIRunner> R = UIStartSession(this);
+	const TSharedRef<FUIState> S = R->S;
+	FAutomationTestBase* Test = this;
+	UIAddReady(*R);
+
+	R->Add(TEXT("Continue with a save that is gone: the menu stays and a message shows"), [S, Test](FUICtx& C)
+	{
+		ULBUISubsystem* Subsystem = UIGet(C.W);
+		ULBSaveSubsystem* Save = ULBSaveSubsystem::Get(C.W);
+		ALBCharacter* Pawn = LBPie::Pawn();
+		if (!Subsystem || !Save || !Pawn)
+		{
+			Test->AddError(TEXT("The UI subsystem, the save subsystem or the pawn is missing"));
+			return true;
+		}
+		if (!Test->TestTrue(TEXT("A save was written"), Save->SaveCheckpoint(FName(TEXT("UITest")), Pawn->GetActorTransform())))
+		{
+			return true;
+		}
+		Subsystem->PushScreen(ELBScreen::MainMenu);
+		ULBMainMenuWidget* Menu = Cast<ULBMainMenuWidget>(Subsystem->GetTopWidget());
+		if (!Test->TestNotNull(TEXT("The main menu"), Menu))
+		{
+			return true;
+		}
+		const int32 Continue = Menu->FindItemByLabel(NSLOCTEXT("LastBellUI", "MenuContinue", "Continue"));
+		if (!Test->TestNotEqual(TEXT("Continue exists while the save does"), Continue, static_cast<int32>(INDEX_NONE)))
+		{
+			return true;
+		}
+		// The save disappears after the menu was built (deleted, or damaged).
+		LBPie::ClearSlot();
+		Menu->ActivateItem(Continue);
+		Test->TestFalse(TEXT("No travel started"), Save->IsTravelPending());
+		Test->TestEqual(TEXT("A message is on top"), Subsystem->GetTopScreen(), ELBScreen::Confirm);
+		Test->TestTrue(TEXT("The main menu is still there under it"), Subsystem->IsScreenOpen(ELBScreen::MainMenu));
+		if (ULBConfirmWidget* Message = Cast<ULBConfirmWidget>(Subsystem->GetTopWidget()))
+		{
+			Message->Confirm();
+		}
+		Test->TestEqual(TEXT("OK returns to the main menu"), Subsystem->GetTopScreen(), ELBScreen::MainMenu);
+		Subsystem->ClearScreens();
+		return true;
+	});
+
+	UIEnqueue(R);
+	return true;
+}
+
+// m10: pause refused while a checkpoint restore is pending; the focus-loss pause.
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBUIPauseRefusalsTest, "LastBell.Functional.UI.Pause.CheckpointRestoreAndFocusLoss", LB_UIFUNC_FLAGS)
+bool FLBUIPauseRefusalsTest::RunTest(const FString& Parameters)
+{
+	TSharedRef<FUIRunner> R = UIStartSession(this);
+	const TSharedRef<FUIState> S = R->S;
+	FAutomationTestBase* Test = this;
+	UIAddReady(*R);
+
+	R->Add(TEXT("No pause while a checkpoint restore is pending; losing the window focus pauses in play only"), [S, Test](FUICtx& C)
+	{
+		ULBUISubsystem* Subsystem = UIGet(C.W);
+		ULBSaveSubsystem* Save = ULBSaveSubsystem::Get(C.W);
+		if (!Subsystem || !Save)
+		{
+			Test->AddError(TEXT("The UI or the save subsystem is missing"));
+			return true;
+		}
+		FString Why;
+		Save->SetPendingRestoreForTest(true);
+		Test->TestFalse(TEXT("A checkpoint is loading: no pause"), Subsystem->CanOpenPause(&Why));
+		Test->TestTrue(TEXT("...and it says so"), Why.Contains(TEXT("checkpoint")));
+		Test->TestFalse(TEXT("OpenPause refuses"), Subsystem->OpenPause());
+		Test->TestFalse(TEXT("The world is not paused"), C.W->IsPaused());
+		Save->SetPendingRestoreForTest(false);
+		Test->TestTrue(TEXT("Once it is over the pause is allowed again"), Subsystem->CanOpenPause());
+
+		// Focus loss: the editor never pauses on it (the editor window is not the game), unless the test hook allows it.
+		Subsystem->bPauseOnFocusLossInEditor = false;
+		Subsystem->HandleApplicationActivation(false);
+		Test->TestFalse(TEXT("Losing focus in the editor does not pause"), Subsystem->IsPauseOpen());
+		Subsystem->bPauseOnFocusLossInEditor = true;
+		Subsystem->HandleApplicationActivation(true);
+		Test->TestFalse(TEXT("Gaining focus does nothing"), Subsystem->IsPauseOpen());
+		Subsystem->HandleApplicationActivation(false);
+		Test->TestTrue(TEXT("Losing focus during play opens the pause menu"), Subsystem->IsPauseOpen() && C.W->IsPaused());
+		Subsystem->HandleApplicationActivation(false);
+		Test->TestEqual(TEXT("Losing focus again does not stack a second screen"), Subsystem->GetScreenCount(), 1);
+		Subsystem->ClosePause();
+
+		// Behind a menu (the main menu) the pause never opens.
+		Subsystem->PushScreen(ELBScreen::MainMenu);
+		Subsystem->HandleApplicationActivation(false);
+		Test->TestFalse(TEXT("Losing focus on the main menu does not pause"), C.W->IsPaused());
+		Subsystem->ClearScreens();
+		Subsystem->bPauseOnFocusLossInEditor = false;
+		return true;
+	});
+
+	UIEnqueue(R);
+	return true;
+}
+
+// m6: a death with no checkpoint (NewGame called directly) shows no loading screen: only the menu's New Game does.
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBUINoLoadingOnDeathTest, "LastBell.Functional.UI.Loading.DeathWithNoCheckpointArmsNothing", LB_UIFUNC_FLAGS)
+bool FLBUINoLoadingOnDeathTest::RunTest(const FString& Parameters)
+{
+	TSharedRef<FUIRunner> R = UIStartSession(this);
+	const TSharedRef<FUIState> S = R->S;
+	FAutomationTestBase* Test = this;
+	UIAddReady(*R);
+
+	R->Add(TEXT("NewGame (what HandlePlayerDeath calls with no save) does not arm the loading screen; the menu's StartNewGame does"), [S, Test](FUICtx& C)
+	{
+		if (S->Phase == 0)
+		{
+			ULBSaveSubsystem* Save = ULBSaveSubsystem::Get(C.W);
+			if (!Test->TestNotNull(TEXT("The save subsystem"), Save))
+			{
+				return true;
+			}
+			S->ArmCount = LBLoadingScreen::GetArmCount();
+			S->OldWorld = C.W;
+			Save->NewGame(UWorld::RemovePIEPrefix(C.W->GetOutermost()->GetName()));
+			Test->TestTrue(TEXT("A travel started"), Save->IsTravelPending());
+			Test->TestEqual(TEXT("...and the loading screen was not armed for it"), LBLoadingScreen::GetArmCount(), S->ArmCount);
+			Test->TestFalse(TEXT("...so it is not armed"), LBLoadingScreen::IsArmed());
+			S->Phase = 1;
+			return false;
+		}
+		// The reload finished.
+		return C.W && C.W != S->OldWorld.Get() && C.W->HasBegunPlay();
+	}, 90.f);
+
+	UIEnqueue(R);
+	return true;
+}
+
+// m11: the game's gamma does not stay on the editor when the play session ends.
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBUIEditorGammaTest, "LastBell.Functional.UI.Settings.EditorGammaRestoredAfterPlay", LB_UIFUNC_FLAGS)
+bool FLBUIEditorGammaTest::RunTest(const FString& Parameters)
+{
+	TSharedRef<FUIRunner> R = UIStartSession(this);
+	const TSharedRef<FUIState> S = R->S;
+	FAutomationTestBase* Test = this;
+
+	// Before the play session starts: a gamma the editor has, and a different one in the player's settings.
+	const float EditorGamma = 2.05f;
+	if (GEngine)
+	{
+		GEngine->DisplayGamma = EditorGamma;
+	}
+	if (ULBUserSettings* Settings = ULBUserSettings::GetUserSettings())
+	{
+		Settings->Gamma = 2.45f;
+	}
+	R->OnFinished = [Test, EditorGamma]()
+	{
+		Test->TestTrue(FString::Printf(TEXT("After the play session the editor has its own gamma again (%.2f, wanted %.2f)"), GEngine ? GEngine->DisplayGamma : -1.f, EditorGamma),
+			GEngine && FMath::IsNearlyEqual(GEngine->DisplayGamma, EditorGamma, 0.001f));
+	};
+	UIAddReady(*R);
+
+	R->Add(TEXT("In the play session the game's gamma is on"), [S, Test](FUICtx& C)
+	{
+		Test->TestTrue(FString::Printf(TEXT("The session applied the player's gamma (%.2f)"), GEngine ? GEngine->DisplayGamma : -1.f), GEngine && FMath::IsNearlyEqual(GEngine->DisplayGamma, 2.45f, 0.001f));
 		return true;
 	});
 
