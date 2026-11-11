@@ -535,6 +535,8 @@ Branch `claude/phase-17-cinematics`. Spec and plan: `Docs/plans/P17_CINEMATICS.m
 
 **Status 2026-11-11: PHASE 17 READY FOR YOUR REVIEW**, pending the final suite and the Game build. Work stops here until the owner reviews and approves; Phase 18 is not started.
 
+- **Final verification (2026-11-11, after the QA fixes):** the suite gives **201 passed, 0 failed**, with 0 invalid tags (including `CheckpointSavesAfterCinematic` and `FinaleCreditsRunOut`). The Game target (`TheLastBell Win64 Development`) builds. **PHASE 17 READY FOR YOUR REVIEW.**
+
 ## Deferred to Phase 14–15 (Lighting, VFX: storm work)
 Items the owner asked to fold into the storm pass. **Foliage wind is now in Phase 14** (P14 section 6, D-096: `MPC_LB_Storm` replaces the planned `MPC_LB_Wind`).
 
