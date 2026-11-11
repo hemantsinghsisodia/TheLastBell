@@ -11,7 +11,7 @@ Environment variables:
                  (P16-5: LB_REIMPORT="^SFX_LB_Thunder_(Near|Strike)_" re-imports the recorded-crack thunder only)
 
 What it does (docs/plans/P16_AUDIO.md, "P16-2 brief"):
- 1. imports the 196 WAVs (P16-6: +18 creature cues; P17: +3 cinematic music tracks of SourceArt/Audio/Music) of SourceArt/Audio/Generated, Recorded and Music
+ 1. imports the 200 WAVs (P16-6: +18 creature cues; P17: +3 cinematic music tracks of SourceArt/Audio/Music; P18-2: +4 UI sounds of SourceArt/Audio/UI) of SourceArt/Audio/Generated, Recorded, Music and UI
     into /Game/LastBell/Audio/<Folder>/
  2. sets looping, sound class, attenuation, concurrency and volume per SoundWave (cue sheet, section 3)
  3. creates the SoundClasses, SMX_LB_User, 8 attenuation, 4 concurrency and 6 reverb assets (sections 6.1 to 6.4)
@@ -40,6 +40,7 @@ ROOT = r"C:\Hemant\Prj\Learning\TheLastBell"
 GEN_DIR = os.path.join(ROOT, "SourceArt", "Audio", "Generated")
 REC_DIR = os.path.join(ROOT, "SourceArt", "Audio", "Recorded")
 MUS_DIR = os.path.join(ROOT, "SourceArt", "Audio", "Music")   # P17 section 3.4: the owner's cinematic music (Tools/audio/prep/prep_cine_music.py)
+UI_DIR = os.path.join(ROOT, "SourceArt", "Audio", "UI")       # P18-2: the four UI sounds (Tools/audio/prep/prep_ui_sounds.py), class SCL_LB_UI, 2D
 OUT = os.environ.get("LB_OUT", "")
 MODE = os.environ.get("LB_MODE", "apply").lower()
 _REIMPORT_ENV = os.environ.get("LB_REIMPORT", "0")
@@ -96,10 +97,12 @@ FOLDERS = [  # (regex on the asset name, folder under /Game/LastBell/Audio)
     (r"^SFX_LB_(Step_|Breath_|Candle_|Key_|Paper_)", "Player"),
     (r"^SFX_LB_(Door_|Lever_|Winch_|Stone_|Generic_)", "Interact"),
     (r"^SFX_LB_(Warden_|Apparition_)", "Warden"),
+    (r"^SFX_LB_UI_", "UI"),   # P18-2
 ]
 
 # (regex, sound class key, attenuation asset or None); the first match wins. 2D cues (section 3 "2D") have no attenuation.
 SOUND_RULES = [
+    (r"^SFX_LB_UI_", "UI", None),   # P18-2: 2D (no attenuation), SCL_LB_UI (the only class with bIsUISound, so these play while the game is paused)
     (r"^SFX_LB_(Rain_|Wind)", "Ambience", None),
     (r"^SFX_LB_Thunder_", "Ambience", "ATT_LB_Thunder"),
     (r"^SFX_LB_Bell_Stage", "Ambience", "ATT_LB_Bell"),
@@ -357,6 +360,17 @@ def build_sound_classes():
             record(asset.get_name(), "properties.volume", wanted)
             props = asset.get_editor_property("properties")
         check("%s volume %g" % (asset.get_name(), wanted), feq(props.get_editor_property("volume"), wanted), props.get_editor_property("volume"))
+        # P18-2 (D-128): bIsUISound is true on SCL_LB_UI only. A UI sound keeps playing while the game is paused; every world class must pause with it.
+        want_ui = key == "UI"
+        if bool(props.get_editor_property("is_ui_sound")) != want_ui:
+            if APPLY:
+                props.set_editor_property("is_ui_sound", want_ui)
+                asset.set_editor_property("properties", props)
+                mark_changed(asset)
+                record(asset.get_name(), "properties.is_ui_sound", want_ui)
+                props = asset.get_editor_property("properties")
+                report["notes"].append("FIXED bIsUISound on %s -> %s" % (asset.get_name(), want_ui))
+        check("%s bIsUISound == %s" % (asset.get_name(), want_ui), bool(props.get_editor_property("is_ui_sound")) == want_ui, props.get_editor_property("is_ui_sound"))
     return assets
 
 
@@ -501,6 +515,12 @@ def collect_wavs():
         name = fname[:-4]
         check("unique name " + name, name not in items)
         items[name] = dict(path=os.path.join(MUS_DIR, fname), source="music", loop=False, gain_db=0.0)
+    for fname in sorted(os.listdir(UI_DIR)):    # P18-2: the four UI sounds (mono, -6 dBFS peak, 2D)
+        if not fname.lower().endswith(".wav"):
+            continue
+        name = fname[:-4]
+        check("unique name " + name, name not in items)
+        items[name] = dict(path=os.path.join(UI_DIR, fname), source="ui", loop=False, gain_db=0.0)
     return items
 
 
@@ -935,15 +955,16 @@ def count_folders(items):
     check("folder Physics holds 6 assets", len(phys_listed) == 6, len(phys_listed))
     report["counts"] = counts
     report["counts"]["sounds_total"] = sum(counts[f] for f in expected)
-    check("196 sounds in total", report["counts"]["sounds_total"] == 196, report["counts"]["sounds_total"])
+    check("200 sounds in total", report["counts"]["sounds_total"] == 200, report["counts"]["sounds_total"])
 
 
 def verify_all(items, classes, attenuation, concurrency, reverbs, mix, phys):
     """Reads everything back (in a fresh process this proves the saved files)."""
     count_folders(items)
-    check("196 WAVs found in SourceArt", len(items) == 196, len(items))
-    check("51 generated + 142 recorded (124 + 18 creature cues) + 3 cinematic music", sum(1 for i in items.values() if i["source"] == "generated") == 51
-          and sum(1 for i in items.values() if i["source"] == "recorded") == 142 and sum(1 for i in items.values() if i["source"] == "music") == 3)
+    check("200 WAVs found in SourceArt", len(items) == 200, len(items))
+    check("51 generated + 142 recorded (124 + 18 creature cues) + 3 cinematic music + 4 UI", sum(1 for i in items.values() if i["source"] == "generated") == 51
+          and sum(1 for i in items.values() if i["source"] == "recorded") == 142 and sum(1 for i in items.values() if i["source"] == "music") == 3
+          and sum(1 for i in items.values() if i["source"] == "ui") == 4)
     loops = []
     for name, info in items.items():
         wave = EAL.load_asset(sound_package(name))

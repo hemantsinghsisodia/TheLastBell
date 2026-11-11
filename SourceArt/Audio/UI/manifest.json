@@ -1,0 +1,30 @@
+{
+ "SFX_LB_UI_Hover": {
+  "source": "click_001.wav",
+  "seconds": 0.024,
+  "channels": 1,
+  "peak_dbfs": -6.0,
+  "sha256": "03c5c0cb04c1750d537468a7ee504900054e49c402ab15228b15189bea585463"
+ },
+ "SFX_LB_UI_Select": {
+  "source": "select_005.wav",
+  "seconds": 0.213,
+  "channels": 1,
+  "peak_dbfs": -6.0,
+  "sha256": "fdce5ea7759eff0e41671ac66446bfffe49c858ba5d5e93004366a985ad210aa"
+ },
+ "SFX_LB_UI_Back": {
+  "source": "back_002.wav",
+  "seconds": 0.075,
+  "channels": 1,
+  "peak_dbfs": -6.0,
+  "sha256": "f6c1c4bfce8433c48a6afbb4bf3e1e1e0a279d996059698199fef4152a8418fc"
+ },
+ "SFX_LB_UI_Tick": {
+  "source": "tick_004.wav",
+  "seconds": 0.055,
+  "channels": 1,
+  "peak_dbfs": -6.0,
+  "sha256": "14ab319c44a92070a48bfefb147e6ccc7b87bb07fc657203ccd993a0b3dee3d0"
+ }
+}

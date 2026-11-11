@@ -13,7 +13,7 @@ Rules:
     de-duplicated (case-insensitive), sorted (case-insensitive) and comma-joined; a line over MAX_LINE characters wraps at an
     author boundary into several Name lines (a continued line ends with a comma).
   * Excluded rows: any row whose Unreal path column says "not imported" (nothing ships); in-house / generated in-project / the owner's own build / Epic template rows; Mixamo rows (the fixed
-    "Animation / Adobe Mixamo" line covers them); the Roboto font row (the Fonts line covers it); rows whose Use says "not used" or
+    "Animation / Adobe Mixamo" line covers them); the Roboto and EB Garamond font rows (the Fonts lines cover them; P18); rows whose Use says "not used" or
     "reference ... only" (nothing of them ships).
   * Privacy: no e-mail address is ever written (the script asserts it).
 """
@@ -61,8 +61,10 @@ def provider_of(source):
         return None, "derived files (the source row carries the credit)"
     if low.startswith("quaternius"):
         return "Quaternius", ""
-    if low.startswith("https://kenney.nl") or low == "kenney":
-        return "Kenney", ""
+    if low.startswith("https://kenney.nl") or low == "kenney" or low.startswith("kenney (") or "calinou/kenney" in low:
+        return "Kenney", ""   # P18: the itch.io input prompts and the GitHub-mirrored UI audio are Kenney's work too
+    if "ebgaramond" in low:
+        return None, "EB Garamond (Fonts line)"
     s = re.sub(r"\s*\(derived\)\s*$", "", s)  # "Poly Haven (derived)"
     for key, _display, _section in PROVIDERS:
         if s == key:
@@ -183,9 +185,23 @@ def build():
                 for line in wrap_authors(disp + ":", names):
                     add("Name", line)
 
+    # P18: the interface credits (Kenney's input prompts and UI audio), and the fonts. EB Garamond is the UI typeface; Roboto stays only while an
+    # imported asset still carries its glyph outlines (the memorial tablet and the grave slabs, P10-8d).
+    kenney_ui = any(c[COL_ASSET].lower().startswith(("kenney input prompts", "kenney interface sounds")) and "imported" in c[COL_UNREAL_PATH].lower()
+                    and "not imported" not in c[COL_UNREAL_PATH].lower() for c in rows)
+    garamond = any(c[COL_ASSET].lower().startswith("eb garamond") and "imported" in c[COL_UNREAL_PATH].lower() and "not imported" not in c[COL_UNREAL_PATH].lower()
+                   for c in rows)
+    roboto_ships = any(c[COL_ASSET].lower().startswith("roboto") and not c[COL_USE].lower().startswith("not used") for c in rows)
+    if kenney_ui:
+        add("Gap")
+        add("Small", "Interface")
+        add("Name", "Kenney: input prompts and UI sounds")
     add("Gap")
     add("Small", "Fonts")
-    add("Name", "Roboto, Christian Robertson (Apache 2.0)")
+    if garamond:
+        add("Name", "EB Garamond, Georg Duffner and Octavio Pardo (SIL OFL 1.1)")
+    if roboto_ships or not garamond:
+        add("Name", "Roboto, Christian Robertson (Apache 2.0)")
     add("Gap")
     add("Name", "Thank you for playing.")
     return lines, authors, used_rows, excluded
