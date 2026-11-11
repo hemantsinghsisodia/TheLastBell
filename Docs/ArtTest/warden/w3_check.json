@@ -1,0 +1,52 @@
+{
+ "step": "check",
+ "save": false,
+ "lod_vertices": [
+  66640,
+  54206,
+  26722
+ ],
+ "dirty": {
+  "/Game/LastBell/Characters/Warden/Meshes/SK_Warden": false,
+  "/Game/WardenArtV11_1/Materials/M_Warden_BellMetal": false,
+  "/Game/WardenArtV11_1/Materials/M_Warden_RustedIron": false,
+  "/Game/WardenArtV11_1/Materials/M_Warden_ChainIron": false,
+  "/Game/WardenArtV11_1/Materials/MI_Warden_BellMetal": false,
+  "/Game/WardenArtV11_1/Materials/MI_Warden_Skin": false,
+  "/Game/WardenArtV11_1/Materials/MI_Warden_RustedIron": false,
+  "/Game/WardenArtV11_1/Materials/MI_Warden_ChainIron": false,
+  "/Game/WardenArtV11_1/Materials/MI_Warden_Wool": false,
+  "/Game/LastBell/Characters/Warden/Anims/AN_Warden_Idle": false,
+  "/Game/LastBell/Characters/Warden/Anims/AN_Warden_Walk": false,
+  "/Game/LastBell/Characters/Warden/Anims/AN_Warden_DoorwayStoop": false
+ },
+ "ok": [
+  "slots ['M_Warden_Wool', 'M_Warden_BellMetal', 'M_Warden_RustedIron', 'M_Warden_Skin', 'M_Warden_Leather', 'M_Warden_ChainIron', 'M_Warden_DimEyes', 'M_Warden_Keratin']",
+  "sections per LOD [8, 8, 8]",
+  "slot M_Warden_Wool material /Game/WardenArtV11_1/Materials/MI_Warden_Wool.MI_Warden_Wool",
+  "slot M_Warden_BellMetal material /Game/WardenArtV11_1/Materials/MI_Warden_BellMetal.MI_Warden_BellMetal",
+  "slot M_Warden_RustedIron material /Game/WardenArtV11_1/Materials/MI_Warden_RustedIron.MI_Warden_RustedIron",
+  "slot M_Warden_Skin material /Game/WardenArtV11_1/Materials/MI_Warden_Skin.MI_Warden_Skin",
+  "slot M_Warden_Leather material /Game/WardenArtV11_1/Materials/M_Warden_Leather.M_Warden_Leather",
+  "slot M_Warden_ChainIron material /Game/WardenArtV11_1/Materials/MI_Warden_ChainIron.MI_Warden_ChainIron",
+  "slot M_Warden_DimEyes material /Game/WardenArtV11_1/Materials/M_Warden_DimEyes.M_Warden_DimEyes",
+  "slot M_Warden_Keratin material /Game/WardenArtV11_1/Materials/M_Warden_Keratin.M_Warden_Keratin",
+  "sockets [('mask', 'head')]",
+  "bones 110 first root",
+  "skeleton",
+  "physics asset",
+  "height 289.99",
+  "M_Warden_BellMetal has TellGlow",
+  "M_Warden_BellMetal has TellGlowColor",
+  "M_Warden_BellMetal has BaseColorMul",
+  "M_Warden_BellMetal has MetallicMul",
+  "M_Warden_BellMetal has RoughnessMul",
+  "MI_Warden_BellMetal {'BaseColorMul': 1.6, 'MetallicMul': 0.35, 'RoughnessMul': 0.85}",
+  "MI_Warden_Wool {'Weave Scale': 12.29348, 'Detail Strength': 0.5, 'Wetness': 0.15, 'Cloth Brightness': 0.25}",
+  "MI_Warden_Skin {'Skin Brightness': 0.12}",
+  "clip AN_Warden_Idle {'length': 4.0, 'skeleton': '/Game/LastBell/Characters/Warden/Meshes/SK_Warden_Skeleton.SK_Warden_Skeleton', 'dirty': False, 'num_frames': 120, 'notifies': 0, 'rate_scale': 1.0, 'root_motion': False, 'root_quat_t0': [0.0, 0.0, 0.0, 1.0], 'root_pos_t0': [0.0, 0.0, 0.0], 'hand_l_quat_t0': [-0.055, -0.0229, 0.0641, -0.9962], 'hand_r_quat_t0': [0.0531, -0.0252, -0.0625, -0.9963], 'head_quat_t0': [0.024, -0.2373, 0.0308, 0.9707], 'pelvis_quat_t0': [0.0, -0.0319, -0.0, -0.9995], 'thigh_l_quat_t0': [0.0068, -0.9989, 0.0072, -0.0456], 'component_pos': {'0.0': {'pelvis': [0.0, -0.0, 155.21], 'head': [39.17, -0.0, 234.24], 'foot_l': [-0.0, -17.03, 14.94], 'ball_l': [22.04, -17.03, 7.93], 'foot_r': [-0.0, 17.03, 14.94], 'hand_l': [-3.84, -54.79, 126.57], 'hand_r': [-3.84, 54.48, 126.56], 'lowerarm_l': [2.6, -45.79, 186.07], 'upperarm_l': [31.09, -21.36, 219.13]}, '1.0': {'pelvis': [0.0, -0.0, 155.21], 'head': [39.17, -0.0, 234.24], 'foot_l': [-0.0, -17.03, 14.94], 'ball_l': [22.04, -17.03, 7.93], 'foot_r': [-0.0, 17.03, 14.94], 'hand_l': [-3.84, -54.79, 126.57], 'hand_r': [-3.84, 54.48, 126.56], 'lowerarm_l': [2.6, -45.79, 186.07], 'upperarm_l': [31.09, -21.36, 219.13]}}, 'source_files': ['C:/Hemant/Prj/Learning/TheLastBell/SourceArt/Warden/V11_1w/exports/AN_Warden_Idle.fbx']}",
+  "clip AN_Warden_Walk {'length': 2.0, 'skeleton': '/Game/LastBell/Characters/Warden/Meshes/SK_Warden_Skeleton.SK_Warden_Skeleton', 'dirty': False, 'num_frames': 60, 'notifies': 0, 'rate_scale': 1.0, 'root_motion': False, 'root_quat_t0': [0.0, 0.0, 0.0, 1.0], 'root_pos_t0': [0.0, 0.0, 0.0], 'hand_l_quat_t0': [-0.055, -0.0229, 0.0641, -0.9962], 'hand_r_quat_t0': [0.0531, -0.0252, -0.0625, -0.9963], 'head_quat_t0': [0.024, -0.2373, 0.0308, 0.9707], 'pelvis_quat_t0': [-0.0, 0.0319, -0.0, 0.9995], 'thigh_l_quat_t0': [0.0068, -0.9989, 0.0072, -0.0456], 'component_pos': {'0.0': {'pelvis': [-0.0, -0.0, 156.81], 'head': [39.17, 0.0, 235.84], 'foot_l': [-0.0, -17.03, 16.54], 'ball_l': [22.04, -17.03, 9.53], 'foot_r': [-0.0, 17.03, 16.54], 'hand_l': [-3.84, -54.79, 128.17], 'hand_r': [-3.84, 54.48, 128.16], 'lowerarm_l': [2.6, -45.79, 187.67], 'upperarm_l': [31.09, -21.36, 220.73]}, '1.0': {'pelvis': [-0.0, -0.0, 156.81], 'head': [39.17, 0.0, 235.84], 'foot_l': [-0.0, -17.03, 16.54], 'ball_l': [22.04, -17.03, 9.53], 'foot_r': [-0.0, 17.03, 16.54], 'hand_l': [-3.84, -54.79, 128.17], 'hand_r': [-3.84, 54.48, 128.16], 'lowerarm_l': [2.6, -45.79, 187.67], 'upperarm_l': [31.09, -21.36, 220.73]}}, 'source_files': ['C:/Hemant/Prj/Learning/TheLastBell/SourceArt/Warden/V11_1w/exports/AN_Warden_Walk.fbx']}",
+  "clip AN_Warden_DoorwayStoop {'length': 3.0, 'skeleton': '/Game/LastBell/Characters/Warden/Meshes/SK_Warden_Skeleton.SK_Warden_Skeleton', 'dirty': False, 'num_frames': 90, 'notifies': 0, 'rate_scale': 1.0, 'root_motion': False, 'root_quat_t0': [0.0, 0.0, 0.0, 1.0], 'root_pos_t0': [0.0, 0.0, 0.0], 'hand_l_quat_t0': [-0.055, -0.0229, 0.0641, -0.9962], 'hand_r_quat_t0': [0.0531, -0.0252, -0.0625, -0.9963], 'head_quat_t0': [0.024, -0.2373, 0.0308, 0.9707], 'pelvis_quat_t0': [0.0, -0.0319, -0.0, -0.9995], 'thigh_l_quat_t0': [0.0068, -0.9989, 0.0072, -0.0456], 'component_pos': {'0.0': {'pelvis': [0.0, -0.0, 155.21], 'head': [39.17, -0.0, 234.24], 'foot_l': [-0.0, -17.03, 14.94], 'ball_l': [22.04, -17.03, 7.93], 'foot_r': [-0.0, 17.03, 14.94], 'hand_l': [-3.84, -54.79, 126.57], 'hand_r': [-3.84, 54.48, 126.56], 'lowerarm_l': [2.6, -45.79, 186.07], 'upperarm_l': [31.09, -21.36, 219.13]}, '1.0': {'pelvis': [0.0, -0.0, 155.21], 'head': [66.2, -0.0, 174.94], 'foot_l': [-0.0, -17.03, 14.94], 'ball_l': [22.04, -17.03, 7.93], 'foot_r': [-0.0, 17.03, 14.94], 'hand_l': [-52.4, -19.17, 156.67], 'hand_r': [-52.97, 20.35, 158.15], 'lowerarm_l': [-0.01, -28.48, 185.52], 'upperarm_l': [49.25, -21.36, 180.54]}}, 'source_files': ['C:/Hemant/Prj/Learning/TheLastBell/SourceArt/Warden/V11_1w/exports/AN_Warden_DoorwayStoop.fbx']}"
+ ],
+ "bad": []
+}

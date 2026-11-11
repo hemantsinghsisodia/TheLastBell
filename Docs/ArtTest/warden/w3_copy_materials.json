@@ -1,0 +1,152 @@
+{
+ "copied": 29,
+ "hash_mismatch": [],
+ "foreign_references": [],
+ "files": [
+  {
+   "file": "Materials/MI_Warden_Wool.uasset",
+   "bytes": 4885,
+   "sha256": "bb9b6d8c78e062364f5206c7baac753bd1ba898a250565204213782f076dcadd"
+  },
+  {
+   "file": "Materials/M_Warden_BellMetal.uasset",
+   "bytes": 7347,
+   "sha256": "8b3f18d23d35b2144c7029328d361ad3544e5f5487f704562a524f04a271ec54"
+  },
+  {
+   "file": "Materials/M_Warden_ChainIron.uasset",
+   "bytes": 7347,
+   "sha256": "b023993284c31372015411fdda23283d4e7b954503fbf8c38a8b89136bb312aa"
+  },
+  {
+   "file": "Materials/M_Warden_DimEyes.uasset",
+   "bytes": 12261,
+   "sha256": "aac28ef52b41cc0278aceee7e91b35e4b6aa231c337fa7c6dea09cf473a83e1d"
+  },
+  {
+   "file": "Materials/M_Warden_Keratin.uasset",
+   "bytes": 5358,
+   "sha256": "8750dbe2c9a67a668bec28bea95c325fdfc70db70e3ca38b5e1942fb19426f0b"
+  },
+  {
+   "file": "Materials/M_Warden_Leather.uasset",
+   "bytes": 7325,
+   "sha256": "847798c06c15cb4c4f474ca028e0d6ee753dba9230ed7afe8c61709017d0a77a"
+  },
+  {
+   "file": "Materials/M_Warden_RustedIron.uasset",
+   "bytes": 7358,
+   "sha256": "725542845fe1afef8234ff12bb2322ec9ecb55af353a81e4d096e0264d9e83f5"
+  },
+  {
+   "file": "Materials/M_Warden_Skin.uasset",
+   "bytes": 8554,
+   "sha256": "58f580588a909d7e7aaa3479383b14bbd135f7a12a2eba53fa906d49fb18c96a"
+  },
+  {
+   "file": "Materials/M_Warden_Wool.uasset",
+   "bytes": 16144,
+   "sha256": "7d164cecd2ad35a8e6d1edcae72bf5b3c258d5b416838f1195cc78497ca60a03"
+  },
+  {
+   "file": "Textures/T_Warden_BellMetal_BaseColor.uasset",
+   "bytes": 2668905,
+   "sha256": "9405e1b86fd72d0de6a9fc9c6da879a82535f9d09b4f8dd1a0077ce220811ae1"
+  },
+  {
+   "file": "Textures/T_Warden_BellMetal_NormalDX.uasset",
+   "bytes": 1610521,
+   "sha256": "4fd28abbca614a4f9be35537f9251614d60b0ff55e7ab4411b53b9db671922d1"
+  },
+  {
+   "file": "Textures/T_Warden_BellMetal_ORM.uasset",
+   "bytes": 1505475,
+   "sha256": "6558ee38772af3cc12ae16db4e2a53d6278017912653ca9795d4d7ae5c174b41"
+  },
+  {
+   "file": "Textures/T_Warden_ChainIron_BaseColor.uasset",
+   "bytes": 2508471,
+   "sha256": "be880bde406c9ad843120db4bd6c3115fe8f50eca41e3fb3c71bc2565f5f95bd"
+  },
+  {
+   "file": "Textures/T_Warden_ChainIron_NormalDX.uasset",
+   "bytes": 2588586,
+   "sha256": "f99f1305ead2d9573ccca77290abaf1e0fe7a8299ff8818dd8459d453f0498c0"
+  },
+  {
+   "file": "Textures/T_Warden_ChainIron_ORM.uasset",
+   "bytes": 1540795,
+   "sha256": "a121c40145656f65d7df61497c5077c5c02291bf0447066fe350db6ecd9888e6"
+  },
+  {
+   "file": "Textures/T_Warden_Leather_BaseColor.uasset",
+   "bytes": 946207,
+   "sha256": "3238dde58db5ef6615a8a1fa1994729e5843f7582aa72e13c3252783c8a23245"
+  },
+  {
+   "file": "Textures/T_Warden_Leather_NormalDX.uasset",
+   "bytes": 1870182,
+   "sha256": "ee9bc1921984651955aa9c80189d686df2c0b60a760af9cab28293125665d3e8"
+  },
+  {
+   "file": "Textures/T_Warden_Leather_ORM.uasset",
+   "bytes": 975488,
+   "sha256": "619469bc40a8837a32f994c64e8d17310a119942854231827bdb37e004af17f2"
+  },
+  {
+   "file": "Textures/T_Warden_RustedIron_BaseColor.uasset",
+   "bytes": 2016800,
+   "sha256": "2db9394a765f2c268fdd0be3c18ac0730a5e2f91ace9e0ec9b62158b2faedaf7"
+  },
+  {
+   "file": "Textures/T_Warden_RustedIron_NormalDX.uasset",
+   "bytes": 2254561,
+   "sha256": "2c13ca12748356e20c64fa176248446d932e275ead5c2a47cda3a952bbeee5cb"
+  },
+  {
+   "file": "Textures/T_Warden_RustedIron_ORM.uasset",
+   "bytes": 1077006,
+   "sha256": "8c1816efb7a0d71b4b8c755200dbfce4e74a380934846a8334f3a6b57a96b2e0"
+  },
+  {
+   "file": "Textures/T_Warden_Skin_BaseColor.uasset",
+   "bytes": 6514057,
+   "sha256": "08bdafde24db29d1a1d498fd59a2142152170287fcad366a8f998736068ebfe1"
+  },
+  {
+   "file": "Textures/T_Warden_Skin_NormalDX.uasset",
+   "bytes": 8375425,
+   "sha256": "2b08a1f8a7b9e154dd6994a4075a60f0d83293c1c7180b8645c17b11b86d1238"
+  },
+  {
+   "file": "Textures/T_Warden_Skin_ORM.uasset",
+   "bytes": 3452530,
+   "sha256": "72b758082c8813a4b02b31bafa0ae88ba635f625919c63f34ccdb0f88ec71a24"
+  },
+  {
+   "file": "Textures/T_Warden_Wool_BaseColor.uasset",
+   "bytes": 4875143,
+   "sha256": "0e311e7fea442d521d5a181b7c5d93222bab5e8eb3419a25f4096aabec9040ee"
+  },
+  {
+   "file": "Textures/T_Warden_Wool_DetailMasks.uasset",
+   "bytes": 2086841,
+   "sha256": "0aeb687e3ad4a090b6ffa44e4c00dd25ee3dcecf7606fc736b7e93c2f5e2508d"
+  },
+  {
+   "file": "Textures/T_Warden_Wool_DetailNormalDX.uasset",
+   "bytes": 2218452,
+   "sha256": "5ad9f041ec6241744dcafb4b1a262d127c4a8a0c6a24dc4ea6bf4daa04bc76a8"
+  },
+  {
+   "file": "Textures/T_Warden_Wool_NormalDX.uasset",
+   "bytes": 9109380,
+   "sha256": "24fc885c06e2ef5381e3f03e2a1e181f5a3c33140f00fb9f0444fb3f4fab2243"
+  },
+  {
+   "file": "Textures/T_Warden_Wool_ORM.uasset",
+   "bytes": 6140294,
+   "sha256": "8f7020751d0ecc19510ae79cf22937e44594796ba3c2827aa97c0bef2f2c05e7"
+  }
+ ]
+}

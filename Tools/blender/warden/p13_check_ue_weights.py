@@ -17,8 +17,8 @@ import numpy as np
 from mathutils import Vector, kdtree
 
 ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", ".."))
-OLD = os.path.join(ROOT, "SourceArt", "Warden", "V5_5", "Warden_Rigged.blend")
-NEW = os.path.join(ROOT, "SourceArt", "Warden", "V5_5w2", "Warden_Rigged.blend")
+OLD = os.environ.get("W3_OLD", os.path.join(ROOT, "SourceArt", "Warden", "V5_5", "Warden_Rigged.blend"))     # W3: W3_OLD / W3_NEW point at the V11_1 and V11_1w blends
+NEW = os.environ.get("W3_NEW", os.path.join(ROOT, "SourceArt", "Warden", "V5_5w2", "Warden_Rigged.blend"))
 
 
 def read(path):

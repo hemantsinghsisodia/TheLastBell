@@ -1,0 +1,486 @@
+{
+ "step": "rotlods",
+ "before": {
+  "lod_count": 3,
+  "lod_vertices": [
+   75603,
+   45003,
+   22347
+  ],
+  "lod_sections": [
+   6,
+   6,
+   6
+  ],
+  "lod_section_material_slot": [
+   [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+   ]
+  ],
+  "slots": [
+   {
+    "slot": "M_Warden_Wool",
+    "imported": "M_Warden_Wool",
+    "material": "/Game/LastBell/Characters/Warden/Materials/MI_Warden_Wool.MI_Warden_Wool"
+   },
+   {
+    "slot": "M_Warden_BellMetal",
+    "imported": "M_Warden_BellMetal",
+    "material": "/Game/LastBell/Characters/Warden/Materials/MI_Warden_BellMetal.MI_Warden_BellMetal"
+   },
+   {
+    "slot": "M_Warden_RustedIron",
+    "imported": "M_Warden_RustedIron",
+    "material": "/Game/LastBell/Characters/Warden/Materials/MI_Warden_RustedIron.MI_Warden_RustedIron"
+   },
+   {
+    "slot": "M_Warden_Skin",
+    "imported": "M_Warden_Skin",
+    "material": "/Game/LastBell/Characters/Warden/Materials/MI_Warden_Skin.MI_Warden_Skin"
+   },
+   {
+    "slot": "M_Warden_Leather",
+    "imported": "M_Warden_Leather",
+    "material": "/Game/LastBell/Characters/Warden/Materials/M_Warden_Leather.M_Warden_Leather"
+   },
+   {
+    "slot": "M_Warden_ChainIron",
+    "imported": "M_Warden_ChainIron",
+    "material": "/Game/LastBell/Characters/Warden/Materials/MI_Warden_ChainIron.MI_Warden_ChainIron"
+   }
+  ],
+  "skeleton": "/Game/LastBell/Characters/Warden/Meshes/SK_Warden_Skeleton.SK_Warden_Skeleton",
+  "physics_asset": "/Game/LastBell/Characters/Warden/Meshes/SK_Warden_PhysicsAsset.SK_Warden_PhysicsAsset",
+  "bounds_origin": [
+   -7.4988,
+   -15.4613,
+   145.0
+  ],
+  "bounds_extent": [
+   61.5105,
+   78.7845,
+   145.0
+  ],
+  "mesh_sockets": [
+   [
+    "mask",
+    "head",
+    [
+     0.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     0.0
+    ]
+   ]
+  ],
+  "socket_outers": [
+   [
+    "mask",
+    "SkeletalMesh"
+   ]
+  ],
+  "skeleton_sockets": "unreadable: Skeleton: Property 'Sockets' for attribute 'sockets' on 'Skeleton' is protected ",
+  "toolset_socket_names": [
+   "mask"
+  ],
+  "bone_names": [
+   "root",
+   "pelvis",
+   "spine_01",
+   "spine_02",
+   "spine_03",
+   "neck_01",
+   "head",
+   "chain_neck_00",
+   "chain_neck_01",
+   "chain_neck_02",
+   "chain_neck_03",
+   "chain_neck_04",
+   "chain_neck_05",
+   "chain_neck_06",
+   "chain_neck_07",
+   "chain_neck_08",
+   "chain_neck_09",
+   "chain_neck_10",
+   "chain_neck_11",
+   "chain_neck_12",
+   "chain_neck_13",
+   "chain_neck_14",
+   "chain_neck_15",
+   "chain_neck_16",
+   "clavicle_l",
+   "upperarm_l",
+   "lowerarm_l",
+   "hand_l",
+   "thumb_01_l",
+   "thumb_02_l",
+   "thumb_03_l",
+   "index_01_l",
+   "index_02_l",
+   "index_03_l",
+   "middle_01_l",
+   "middle_02_l",
+   "middle_03_l",
+   "ring_01_l",
+   "ring_02_l",
+   "ring_03_l",
+   "pinky_01_l",
+   "pinky_02_l",
+   "pinky_03_l",
+   "chain_l_00",
+   "chain_l_01",
+   "chain_l_02",
+   "chain_l_03",
+   "chain_l_04",
+   "chain_l_05",
+   "chain_l_06",
+   "chain_l_07",
+   "chain_l_08",
+   "chain_l_09",
+   "chain_l_10",
+   "chain_l_11",
+   "clavicle_r",
+   "upperarm_r",
+   "lowerarm_r",
+   "hand_r",
+   "thumb_01_r",
+   "thumb_02_r",
+   "thumb_03_r",
+   "index_01_r",
+   "index_02_r",
+   "index_03_r",
+   "middle_01_r",
+   "middle_02_r",
+   "middle_03_r",
+   "ring_01_r",
+   "ring_02_r",
+   "ring_03_r",
+   "pinky_01_r",
+   "pinky_02_r",
+   "pinky_03_r",
+   "chain_r_00",
+   "chain_r_01",
+   "chain_r_02",
+   "chain_r_03",
+   "chain_r_04",
+   "chain_r_05",
+   "chain_r_06",
+   "chain_r_07",
+   "chain_r_08",
+   "chain_r_09",
+   "chain_r_10",
+   "chain_r_11",
+   "thigh_l",
+   "calf_l",
+   "foot_l",
+   "ball_l",
+   "thigh_r",
+   "calf_r",
+   "foot_r",
+   "ball_r",
+   "robe_00_01",
+   "robe_00_02",
+   "robe_01_01",
+   "robe_01_02",
+   "robe_02_01",
+   "robe_02_02",
+   "robe_03_01",
+   "robe_03_02",
+   "robe_04_01",
+   "robe_04_02",
+   "robe_05_01",
+   "robe_05_02",
+   "robe_06_01",
+   "robe_06_02",
+   "robe_07_01",
+   "robe_07_02"
+  ],
+  "toolset_bone_count": 110,
+  "skeleton_ref_pose_md5": "4aa50ed551297dc48639ff7c1306487e",
+  "skeleton_ref_pose_bones": 110,
+  "source_files": [
+   "C:/Hemant/Prj/Learning/TheLastBell/SourceArt/Warden/V5_5w2/exports/SK_Warden_LOD0.fbx"
+  ],
+  "lod_build_settings": [
+   "(bRecomputeNormals=False,bRecomputeTangents=False,bUseMikkTSpace=False,bComputeWeightedNormals=True,bRemoveDegenerates=True,bUseHighPrecisionTangentBasis=False,bUseHighPrecisionSkinWeights=False,bUseFullPrecisionUVs=False,bUseBackwardsCompatibleF16TruncUVs=False,bOptimizeForInstancing=False,ThresholdPosition=0.000020,ThresholdTangentNormal=0.000020,ThresholdUV=0.000977,MorphThresholdPosition=0.015",
+   "(bRecomputeNormals=False,bRecomputeTangents=False,bUseMikkTSpace=False,bComputeWeightedNormals=True,bRemoveDegenerates=True,bUseHighPrecisionTangentBasis=False,bUseHighPrecisionSkinWeights=False,bUseFullPrecisionUVs=False,bUseBackwardsCompatibleF16TruncUVs=False,bOptimizeForInstancing=False,ThresholdPosition=0.000020,ThresholdTangentNormal=0.000020,ThresholdUV=0.000977,MorphThresholdPosition=0.015",
+   "(bRecomputeNormals=False,bRecomputeTangents=False,bUseMikkTSpace=False,bComputeWeightedNormals=True,bRemoveDegenerates=True,bUseHighPrecisionTangentBasis=False,bUseHighPrecisionSkinWeights=False,bUseFullPrecisionUVs=False,bUseBackwardsCompatibleF16TruncUVs=False,bOptimizeForInstancing=False,ThresholdPosition=0.000020,ThresholdTangentNormal=0.000020,ThresholdUV=0.000977,MorphThresholdPosition=0.015"
+  ]
+ },
+ "after": {
+  "lod_count": 3,
+  "lod_vertices": [
+   66640,
+   54206,
+   26722
+  ],
+  "lod_sections": [
+   8,
+   8,
+   8
+  ],
+  "lod_section_material_slot": [
+   [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ],
+   [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ],
+   [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ]
+  ],
+  "slots": [
+   {
+    "slot": "M_Warden_Wool",
+    "imported": "M_Warden_Wool",
+    "material": "/Game/LastBell/Characters/Warden/Materials/MI_Warden_Wool.MI_Warden_Wool"
+   },
+   {
+    "slot": "M_Warden_BellMetal",
+    "imported": "M_Warden_BellMetal",
+    "material": "/Game/LastBell/Characters/Warden/Materials/MI_Warden_BellMetal.MI_Warden_BellMetal"
+   },
+   {
+    "slot": "M_Warden_RustedIron",
+    "imported": "M_Warden_RustedIron",
+    "material": "/Game/LastBell/Characters/Warden/Materials/MI_Warden_RustedIron.MI_Warden_RustedIron"
+   },
+   {
+    "slot": "M_Warden_Skin",
+    "imported": "M_Warden_Skin",
+    "material": "/Game/LastBell/Characters/Warden/Materials/MI_Warden_Skin.MI_Warden_Skin"
+   },
+   {
+    "slot": "M_Warden_Leather",
+    "imported": "M_Warden_Leather",
+    "material": "/Game/LastBell/Characters/Warden/Materials/M_Warden_Leather.M_Warden_Leather"
+   },
+   {
+    "slot": "M_Warden_ChainIron",
+    "imported": "M_Warden_ChainIron",
+    "material": "/Game/LastBell/Characters/Warden/Materials/MI_Warden_ChainIron.MI_Warden_ChainIron"
+   },
+   {
+    "slot": "M_Warden_DimEyes",
+    "imported": "M_Warden_DimEyes",
+    "material": null
+   },
+   {
+    "slot": "M_Warden_Keratin",
+    "imported": "M_Warden_Keratin",
+    "material": null
+   }
+  ],
+  "skeleton": "/Game/LastBell/Characters/Warden/Meshes/SK_Warden_Skeleton.SK_Warden_Skeleton",
+  "physics_asset": "/Game/LastBell/Characters/Warden/Meshes/SK_Warden_PhysicsAsset.SK_Warden_PhysicsAsset",
+  "bounds_origin": [
+   -7.1092,
+   -15.4455,
+   145.0974
+  ],
+  "bounds_extent": [
+   68.0717,
+   82.0101,
+   144.9973
+  ],
+  "mesh_sockets": [
+   [
+    "mask",
+    "head",
+    [
+     0.0,
+     0.0,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     0.0
+    ]
+   ]
+  ],
+  "socket_outers": [
+   [
+    "mask",
+    "SkeletalMesh"
+   ]
+  ],
+  "skeleton_sockets": "unreadable: Skeleton: Property 'Sockets' for attribute 'sockets' on 'Skeleton' is protected ",
+  "toolset_socket_names": [
+   "mask"
+  ],
+  "bone_names": [
+   "root",
+   "pelvis",
+   "spine_01",
+   "spine_02",
+   "spine_03",
+   "neck_01",
+   "head",
+   "chain_neck_00",
+   "chain_neck_01",
+   "chain_neck_02",
+   "chain_neck_03",
+   "chain_neck_04",
+   "chain_neck_05",
+   "chain_neck_06",
+   "chain_neck_07",
+   "chain_neck_08",
+   "chain_neck_09",
+   "chain_neck_10",
+   "chain_neck_11",
+   "chain_neck_12",
+   "chain_neck_13",
+   "chain_neck_14",
+   "chain_neck_15",
+   "chain_neck_16",
+   "clavicle_l",
+   "upperarm_l",
+   "lowerarm_l",
+   "hand_l",
+   "thumb_01_l",
+   "thumb_02_l",
+   "thumb_03_l",
+   "index_01_l",
+   "index_02_l",
+   "index_03_l",
+   "middle_01_l",
+   "middle_02_l",
+   "middle_03_l",
+   "ring_01_l",
+   "ring_02_l",
+   "ring_03_l",
+   "pinky_01_l",
+   "pinky_02_l",
+   "pinky_03_l",
+   "chain_l_00",
+   "chain_l_01",
+   "chain_l_02",
+   "chain_l_03",
+   "chain_l_04",
+   "chain_l_05",
+   "chain_l_06",
+   "chain_l_07",
+   "chain_l_08",
+   "chain_l_09",
+   "chain_l_10",
+   "chain_l_11",
+   "clavicle_r",
+   "upperarm_r",
+   "lowerarm_r",
+   "hand_r",
+   "thumb_01_r",
+   "thumb_02_r",
+   "thumb_03_r",
+   "index_01_r",
+   "index_02_r",
+   "index_03_r",
+   "middle_01_r",
+   "middle_02_r",
+   "middle_03_r",
+   "ring_01_r",
+   "ring_02_r",
+   "ring_03_r",
+   "pinky_01_r",
+   "pinky_02_r",
+   "pinky_03_r",
+   "chain_r_00",
+   "chain_r_01",
+   "chain_r_02",
+   "chain_r_03",
+   "chain_r_04",
+   "chain_r_05",
+   "chain_r_06",
+   "chain_r_07",
+   "chain_r_08",
+   "chain_r_09",
+   "chain_r_10",
+   "chain_r_11",
+   "thigh_l",
+   "calf_l",
+   "foot_l",
+   "ball_l",
+   "thigh_r",
+   "calf_r",
+   "foot_r",
+   "ball_r",
+   "robe_00_01",
+   "robe_00_02",
+   "robe_01_01",
+   "robe_01_02",
+   "robe_02_01",
+   "robe_02_02",
+   "robe_03_01",
+   "robe_03_02",
+   "robe_04_01",
+   "robe_04_02",
+   "robe_05_01",
+   "robe_05_02",
+   "robe_06_01",
+   "robe_06_02",
+   "robe_07_01",
+   "robe_07_02"
+  ],
+  "toolset_bone_count": 110,
+  "skeleton_ref_pose_md5": "4aa50ed551297dc48639ff7c1306487e",
+  "skeleton_ref_pose_bones": 110,
+  "source_files": [
+   "C:/Hemant/Prj/Learning/TheLastBell/SourceArt/Warden/V5_5w2/exports/SK_Warden_LOD0.fbx"
+  ],
+  "lod_build_settings": [
+   "(bRecomputeNormals=False,bRecomputeTangents=False,bUseMikkTSpace=False,bComputeWeightedNormals=True,bRemoveDegenerates=True,bUseHighPrecisionTangentBasis=False,bUseHighPrecisionSkinWeights=False,bUseFullPrecisionUVs=False,bUseBackwardsCompatibleF16TruncUVs=False,bOptimizeForInstancing=False,ThresholdPosition=0.000020,ThresholdTangentNormal=0.000020,ThresholdUV=0.000977,MorphThresholdPosition=0.015",
+   "(bRecomputeNormals=False,bRecomputeTangents=False,bUseMikkTSpace=False,bComputeWeightedNormals=True,bRemoveDegenerates=True,bUseHighPrecisionTangentBasis=False,bUseHighPrecisionSkinWeights=False,bUseFullPrecisionUVs=False,bUseBackwardsCompatibleF16TruncUVs=False,bOptimizeForInstancing=False,ThresholdPosition=0.000020,ThresholdTangentNormal=0.000020,ThresholdUV=0.000977,MorphThresholdPosition=0.015",
+   "(bRecomputeNormals=False,bRecomputeTangents=False,bUseMikkTSpace=False,bComputeWeightedNormals=True,bRemoveDegenerates=True,bUseHighPrecisionTangentBasis=False,bUseHighPrecisionSkinWeights=False,bUseFullPrecisionUVs=False,bUseBackwardsCompatibleF16TruncUVs=False,bOptimizeForInstancing=False,ThresholdPosition=0.000020,ThresholdTangentNormal=0.000020,ThresholdUV=0.000977,MorphThresholdPosition=0.015"
+  ]
+ },
+ "unchanged": true,
+ "differences": {},
+ "saved": true
+}

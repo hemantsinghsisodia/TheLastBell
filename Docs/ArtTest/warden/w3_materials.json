@@ -1,0 +1,72 @@
+{
+ "step": "materials",
+ "save": true,
+ "materials_log": [
+  "M_Warden_BellMetal: <MaterialProperty.MP_BASE_COLOR: 5> x BaseColorMul (feeder MaterialExpressionTextureSample_0.RGB)",
+  "M_Warden_BellMetal: <MaterialProperty.MP_METALLIC: 6> x MetallicMul (feeder MaterialExpressionTextureSample_2.B)",
+  "M_Warden_BellMetal: <MaterialProperty.MP_ROUGHNESS: 8> x RoughnessMul (feeder MaterialExpressionTextureSample_2.G)",
+  "M_Warden_RustedIron: <MaterialProperty.MP_BASE_COLOR: 5> x BaseColorMul (feeder MaterialExpressionTextureSample_0.RGB)",
+  "M_Warden_ChainIron: <MaterialProperty.MP_BASE_COLOR: 5> x BaseColorMul (feeder MaterialExpressionTextureSample_0.RGB)",
+  "M_Warden_BellMetal: TellGlow, TellGlowColor added; emissive was not connected",
+  "MI_Warden_BellMetal (parent M_Warden_BellMetal) {'BaseColorMul': 1.6, 'MetallicMul': 0.35, 'RoughnessMul': 0.85}",
+  "MI_Warden_Skin (parent M_Warden_Skin) {'Skin Brightness': 0.12}",
+  "MI_Warden_RustedIron (parent M_Warden_RustedIron) {'BaseColorMul': 0.6}",
+  "MI_Warden_ChainIron (parent M_Warden_ChainIron) {'BaseColorMul': 0.5}",
+  "MI_Warden_Wool Cloth Brightness before [('Weave Scale', 12.293479919433594), ('Detail Strength', 0.5), ('Wetness', 0.15000000596046448), ('Cloth Brightness', 0.7200000286102295)]",
+  "M_Warden_Wool -> /Game/WardenArtV11_1/Materials/MI_Warden_Wool.MI_Warden_Wool",
+  "M_Warden_BellMetal -> /Game/WardenArtV11_1/Materials/MI_Warden_BellMetal.MI_Warden_BellMetal",
+  "M_Warden_RustedIron -> /Game/WardenArtV11_1/Materials/MI_Warden_RustedIron.MI_Warden_RustedIron",
+  "M_Warden_Skin -> /Game/WardenArtV11_1/Materials/MI_Warden_Skin.MI_Warden_Skin",
+  "M_Warden_Leather -> /Game/WardenArtV11_1/Materials/M_Warden_Leather.M_Warden_Leather",
+  "M_Warden_ChainIron -> /Game/WardenArtV11_1/Materials/MI_Warden_ChainIron.MI_Warden_ChainIron",
+  "M_Warden_DimEyes -> /Game/WardenArtV11_1/Materials/M_Warden_DimEyes.M_Warden_DimEyes",
+  "M_Warden_Keratin -> /Game/WardenArtV11_1/Materials/M_Warden_Keratin.M_Warden_Keratin"
+ ],
+ "saves": [
+  {
+   "package": "/Game/WardenArtV11_1/Materials/M_Warden_BellMetal",
+   "saved": true,
+   "dirty_after": false
+  },
+  {
+   "package": "/Game/WardenArtV11_1/Materials/M_Warden_RustedIron",
+   "saved": true,
+   "dirty_after": false
+  },
+  {
+   "package": "/Game/WardenArtV11_1/Materials/M_Warden_ChainIron",
+   "saved": true,
+   "dirty_after": false
+  },
+  {
+   "package": "/Game/WardenArtV11_1/Materials/MI_Warden_BellMetal",
+   "saved": true,
+   "dirty_after": false
+  },
+  {
+   "package": "/Game/WardenArtV11_1/Materials/MI_Warden_Skin",
+   "saved": true,
+   "dirty_after": false
+  },
+  {
+   "package": "/Game/WardenArtV11_1/Materials/MI_Warden_RustedIron",
+   "saved": true,
+   "dirty_after": false
+  },
+  {
+   "package": "/Game/WardenArtV11_1/Materials/MI_Warden_ChainIron",
+   "saved": true,
+   "dirty_after": false
+  },
+  {
+   "package": "/Game/WardenArtV11_1/Materials/MI_Warden_Wool",
+   "saved": true,
+   "dirty_after": false
+  },
+  {
+   "package": "/Game/LastBell/Characters/Warden/Meshes/SK_Warden",
+   "saved": true,
+   "dirty_after": false
+  }
+ ]
+}
