@@ -204,3 +204,14 @@ The credits gain "Fonts / EB Garamond, Georg Duffner and Octavio Pardo (SIL OFL 
 
 ## Results
 (Filled in as the tasks finish.)
+
+### S1 menu video (2026-11-11)
+- **Built and checked:** `LS_LB_MenuDrift`, the owner's choice of a courtyard view, `p18_menu_drift.py`, check 102/102, cca35be:
+  - from (700, −300, 300), looking east;
+  - the well-head lantern centred, the arcades either side, the lit chapel door, and the belfry above the chapel roof;
+  - a 40 s ping-pong drift.
+- **The approach-path view was rejected by the owner.**
+- **Rendered** with MRQ (`Tools/cine/p18_render_menu_drift.ps1`; `lb.Cine.Enabled 0`, or the intro's black fade covers the render), 1200 frames, owner present.
+- **Encoded:** `Content/Movies/LB_MenuDrift.mp4`, H.264 1920×1080 at 30 fps, 40.0 s, 68.7 MB, LFS.
+- **Known:** the render process crashes on the GPU thread at shutdown, after every frame is written (a Niagara dispatch), which is harmless to the output. The script verifies the frame count.
+
