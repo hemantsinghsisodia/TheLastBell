@@ -581,3 +581,4 @@ Branch `claude/phase-18-ui`. Spec and plan: `Docs/plans/P18_UI_SETTINGS.md` (D-1
 - **Carried to later phases:** the menu video and UI cost (Phase 20, R-97, `PERFORMANCE_BUDGET`), the packaged-build checks (Phase 21, R-96), R-64 (Phase 20).
 
 **Status 2026-11-11: PHASE 18 READY FOR YOUR REVIEW**, pending the final suite and the Game build. Work stops here until the owner reviews and approves; Phase 19 is not started.
+- **Final verification (2026-11-12, after the QA fix round):** the suite gives **246 passed, 0 failed**, with 0 invalid tags. The Game target builds. **PHASE 18 READY FOR YOUR REVIEW.** Still to check by hand or in a packaged build: restart persistence of each setting and of rebound keys; the loading screen, menu video, `OFL` staging and first-launch fullscreen in a packaged build; the alt-tab pause (R-96, R-98).
