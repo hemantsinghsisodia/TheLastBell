@@ -570,6 +570,69 @@ Run with Unreal **closed**: Blender is headless, and Unreal steps are headless `
    - **Intro:** the new music section.
    - Then the suite, and the owner's finale review (P17-7).
 
+### 3.8 Rebuild 5a-2 (lead, 2026-11-11; mask lift reviewed and accepted from `p17_masklift_contact.png`). This supersedes the corresponding parts of 3.2b and 3.7.
+Gates from P17-3: grip 2.2 s, lifted 3.4 s, extended 4.6 s, clip 6.0 s; `StopDistance` 80; the mask ends 20 cm in front of the player's eye.
+
+**Mask hide.**
+- `M_Warden_BellMetal` gets a scalar `Fade` (default 0): blend mode **Masked**, `OpacityMask` = 1 − `Fade`, clip 0.5. This replaces `M_LB_Invisible`.
+- The sequence keys `Fade` on `WardenFigure`'s mesh, slot 1 (`M_Warden_BellMetal`), through a component material parameter track (proven in S1): 0, then 1 at the grip frame.
+
+**Figure** (3.2b path, re-timed):
+- the stop is now **(12165, 2220, 2500)**, so the B → stop leg is 555 cm and the arrival is at **11.70 s**;
+- it faces +Y.
+
+**Mask moment** (finale times):
+
+| Time | What |
+|---|---|
+| 12.5 | `Cam_Mask` cut (ease-in 0.8) |
+| **14.6** | `AN_Warden_MaskLift` section on `WardenFigure` (`DefaultSlot`, blend in 0.3, 6.0 s) |
+| 16.8 | grip |
+| 18.0 | lifted |
+| 19.2 | extended |
+| 19.5 | the fade starts (0 → 1 by 19.8), as in 3.2b; later times unchanged |
+
+**`MaskProp`** (spawnable `StaticMeshActor`, `SM_LB_WardenMask`, `MI_Warden_BellMetal`, NoCollision):
+- **Visibility:** hidden until 16.8, visible from 16.8.
+- **Attach track:**
+  - 0–16.8: `WardenFigure`'s `head`, zero offset;
+  - 16.8 → end: `hand_r`, Keep World.
+- **At 16.8,** the figure's slot-1 `Fade` goes 0 → 1 on the same frame.
+- **`TellGlow`** on the prop's material: 0 at 18.0 → 0.6 at 19.2 (component material parameter track).
+
+**`Cam_Mask`** (35 mm):
+- **Keys:**
+  - 12.5 at **(12165, 2440, 2720)**, yaw −90, pitch aimed at the mask centre at rest (the `head` bone rest position plus the W0 mask-centre offset, about (12165, 2234.5, 2748)), computed exactly;
+  - held to 17.0;
+  - cubic move from 17.0 to 19.2, ending at **(12165, 2300, 2652)** (the player's eye) with pitch 0.
+- **Manual focus:** 230 at 12.5, 210 at 17.0, 25 at 19.2.
+
+**Villager** (3.7 item 3; Quaternius CC0, `ExternalAssets/Incoming/villager_quaternius_peasant/`):
+- **Blender prep** (headless; sources to `SourceArt/Villager/`, which can be committed since it is CC0):
+  - `Male_Ranger` without the pauldron and bracers, joined into one skinned mesh;
+  - base-colour textures darkened ×0.45 (saved as new PNG files);
+  - `SK_LB_Villager.fbx`, with the UAL `Walk_Loop` and `Idle_Lantern_Loop` clips on that armature as FBX.
+- **Unreal import:** into `/Game/LastBell/Characters/Villager/` (its own skeleton).
+- **In the sequence:** spawnable `SkeletalMeshActor` `Villager`, NoCollision.
+  - **Visibility:** hidden until 23.5.
+  - **Path:** the X keys of the old lantern (−600 at 23.5, linear; 204 at 36.0; 250 at 37.5), Y 0, on the floor.
+  - **Facing:** +X, plus the import's yaw offset (measured).
+  - **Animation:** `Walk_Loop` from 23.5 (looping) at play rate = 61 / the clip's native speed (measured from root travel per cycle); `Idle_Lantern_Loop` from 37.0, with a 0.5 s blend.
+- **`LanternProp`:** spawnable `StaticMeshActor` `SM_Wooden_Lantern_01`, attached to the villager's `hand_r` (offset so the handle sits in the palm).
+- **`Lantern`:** the PointLight, attached to `LanternProp` at its flame, with the existing intensity, colour, radius and flicker. **The bob is removed**; the walk carries it.
+
+**`Cam_WallTop`:** focal **70 mm**, with the same position and aim.
+
+**Intro music:**
+- re-prep 330599 as 0:00–0:30, peak −3 dBFS, no baked fade;
+- the intro section runs 0.0–27.5, with volume keys 0 at 0.0, 1 at 0.5, 1 at 25.0 and 0 at 27.5.
+
+**Imports** (headless, Unreal closed):
+- `SM_LB_WardenMask` into `/Game/LastBell/Characters/Warden/Cine/`: default FBX conversion, **Force Front X off**, no Nanite, no collision. Verify that a zero-offset attach to `head` matches the skinned mask (in the sequence check, or by sampling the bounds).
+- `AN_Warden_MaskLift` into `/Game/LastBell/Characters/Warden/Anims/`, onto `SK_Warden_Skeleton`. Use W3's Interchange-off clip route, so the root stays the identity like the Idle.
+
+**Then:** `check`, then the suite. The owner's finale review (P17-7) follows.
+
 ### 3.3 Cards and styles (`DA_Cinematics.Cards`)
 | Id | Text | Style | Hold (s) | Fade (s) |
 |---|---|---|---|---|
