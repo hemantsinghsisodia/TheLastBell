@@ -1,0 +1,211 @@
+{
+ "mode": "verify",
+ "ok": true,
+ "checks": 82,
+ "failures": [],
+ "notes": [],
+ "saved": [],
+ "facts": {
+  "head_ref_comp": [
+   30.623,
+   -0.0,
+   239.365
+  ],
+  "mask_centre_comp": [
+   44.824,
+   0.437,
+   248.76
+  ],
+  "mask_bounds_local_origin": [
+   14.533,
+   0.148,
+   8.883
+  ],
+  "mask_bounds_extent": [
+   8.2,
+   9.546,
+   15.627
+  ],
+  "mask_centre_comp_truth": [
+   44.85,
+   -0.01,
+   248.89
+  ],
+  "lift_pose_comp": {
+   "0.0": {
+    "hand_l": [
+     -3.841,
+     -54.794,
+     126.572
+    ],
+    "hand_r": [
+     -3.844,
+     54.476,
+     126.563
+    ],
+    "head": [
+     39.172,
+     -0.0,
+     234.239
+    ],
+    "pelvis": [
+     0.0,
+     -0.0,
+     155.205
+    ]
+   },
+   "2.2": {
+    "hand_l": [
+     48.232,
+     -15.51,
+     233.316
+    ],
+    "hand_r": [
+     48.546,
+     15.373,
+     233.004
+    ],
+    "head": [
+     39.172,
+     -0.0,
+     234.239
+    ],
+    "pelvis": [
+     0.0,
+     -0.0,
+     155.205
+    ]
+   },
+   "3.4": {
+    "hand_l": [
+     68.232,
+     -15.51,
+     248.316
+    ],
+    "hand_r": [
+     68.546,
+     15.373,
+     248.004
+    ],
+    "head": [
+     39.172,
+     -0.0,
+     234.239
+    ],
+    "pelvis": [
+     0.0,
+     -0.0,
+     155.205
+    ]
+   },
+   "4.6": {
+    "hand_l": [
+     94.969,
+     -15.445,
+     142.506
+    ],
+    "hand_r": [
+     95.136,
+     15.437,
+     142.06
+    ],
+    "head": [
+     53.763,
+     -0.0,
+     219.365
+    ],
+    "pelvis": [
+     0.0,
+     -0.0,
+     155.205
+    ]
+   },
+   "6.0": {
+    "hand_l": [
+     94.969,
+     -15.445,
+     141.006
+    ],
+    "hand_r": [
+     95.136,
+     15.437,
+     140.56
+    ],
+    "head": [
+     54.332,
+     -0.0,
+     218.495
+    ],
+    "pelvis": [
+     0.0,
+     -0.0,
+     155.205
+    ]
+   }
+  },
+  "lift_extended_hands_mid_comp": [
+   95.05,
+   -0.0,
+   142.28
+  ],
+  "villager_slots": [
+   [
+    "M_LB_Villager_Cloth",
+    "M_LB_Villager_Cloth"
+   ],
+   [
+    "M_LB_Villager_Skin",
+    "M_LB_Villager_Skin"
+   ]
+  ],
+  "villager_bounds_origin": [
+   -1.921,
+   0.0,
+   93.054
+  ],
+  "villager_bounds_extent": [
+   18.675,
+   89.941,
+   93.45
+  ],
+  "villager_facing_vector_foot_to_ball": [
+   14.22,
+   0.0
+  ],
+  "villager_yaw_offset_deg": 0.0,
+  "villager_ref_hand_r": [
+   -6.54,
+   68.32,
+   145.55
+  ],
+  "villager_Walk_length": 1.3333,
+  "villager_Walk_root_quat_t0": [
+   0.0,
+   0.0,
+   -0.7071,
+   0.7071
+  ],
+  "villager_Walk_root_pos_t0": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "villager_IdleLantern_length": 2.5,
+  "villager_IdleLantern_root_quat_t0": [
+   0.0,
+   0.0,
+   -0.7071,
+   0.7071
+  ],
+  "villager_IdleLantern_root_pos_t0": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "villager_walk_planted_foot_speed_cm_s": [
+   -2.7,
+   100.6
+  ],
+  "villager_walk_native_speed_cm_s_from_RM_clip": 97.5
+ }
+}

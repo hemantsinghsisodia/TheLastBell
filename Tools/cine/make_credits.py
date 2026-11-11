@@ -35,6 +35,7 @@ PROVIDERS = [
     ("ambientCG", "ambientCG", "Models and textures"),
     ("Fab", "Fab", "Models and textures"),
     ("BlenderKit", "BlenderKit", "Models and textures"),
+    ("Quaternius", "Quaternius", "Models and textures"),   # P17-5a-2: the courtyard villager (CC0, credit appreciated)
     ("Kenney", "Kenney", "Sound"),
     ("Freesound", "Freesound", "Sound"),
 ]
@@ -56,6 +57,10 @@ def provider_of(source):
         return None, "engine font (Fonts line)"
     if low.startswith("mixamo"):
         return None, "Mixamo (fixed Animation line)"
+    if low.startswith("derived from"):
+        return None, "derived files (the source row carries the credit)"
+    if low.startswith("quaternius"):
+        return "Quaternius", ""
     if low.startswith("https://kenney.nl") or low == "kenney":
         return "Kenney", ""
     s = re.sub(r"\s*\(derived\)\s*$", "", s)  # "Poly Haven (derived)"

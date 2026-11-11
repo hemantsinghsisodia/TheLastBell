@@ -30,6 +30,7 @@ Dimitrios Savva, Greg Zaal, James Ray Cock, Jenelle van Heerden, Josh Dean, Kles
 Kuutti Siitonen, Rico Cilliers, Rob Tuytel, Serhii Khromov, Tina, Ulan Cabanilla
 ambientCG
 Fab: Bugrimov Maksim, PackDev, PawelBrzustowski, UB / Bucket team
+Quaternius
 ~
 # Sound
 Kenney
@@ -53,19 +54,21 @@ Thank you for playing.
 
 ## Summary
 
-- 43 lines: 3 Heading, 6 Small, 25 Name, 9 Gap
+- 44 lines: 3 Heading, 6 Small, 26 Name, 9 Gap
 - Registry rows credited and distinct authors per provider:
   - Poly Haven: 42 rows, 18 authors
   - ambientCG: 12 rows, 0 authors
   - Fab: 32 rows, 4 authors
   - BlenderKit: 0 rows, 0 authors
+  - Quaternius: 1 rows, 0 authors
   - Kenney: 2 rows, 0 authors
   - Freesound: 76 rows, 73 authors
-- Excluded registry rows (29):
+- Excluded registry rows (33):
   - Mixamo (fixed Animation line) (13): Y Bot (character, Mixamo T-pose); Mixamo clip: Mutant Walking; Mixamo clip: Zombie Walk; Mixamo clip: Mutant Run; Mixamo clip: Zombie Running; Mixamo clip: Mutant Breathing Idle ...
+  - derived files (the source row carries the credit) (1): Villager textures at 2048 and the villager FBX (
   - engine font (Fonts line) (1): Roboto Bold (font, outlines only)
-  - in-house (1): Modular architecture kit P0 (28 meshes `SM_LB_Ki
+  - in-house (3): Modular architecture kit P0 (28 meshes `SM_LB_Ki; SM_LB_WardenMask (the Warden's bell-metal mask a; AN_Warden_MaskLift (6.0 s, 30 fps, Blender-keyed
   - not imported (nothing ships) (7): Small Half-Dead Tree (model, photoscan); Hessian 230 (material, P12 Warden robe); Brown Leather (material, P12 Warden skin creases; Human Base Mesh (Sculpting) (model); Freesound 404152: Bats squeak in the small cave; Freesound 867131: Tawny Owl Calling at Night, 02 ...
   - not used in the game (1): Fab Dungeon Environment (PackDev) - Flames BP_Fl
-  - owner's own build (1): Warden V5.5 (character: mesh, skeleton, physics 
+  - owner's own build (2): Warden V11.1 (character: mesh with 8 slots, 3 cl; Warden V5.5 (superseded by V11.1 on 2026-11-11; 
   - project-generated (5): Chapel grime decal textures (generated); Crypt procedural meshes P9-3 (21 pieces: Ossuary; P9-R2A meshes (7: SM_LB_Prop_BellWheel_A, SM_LB_; Water ripple normal map (generated); Crack decal textures (own work, P11-6)
