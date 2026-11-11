@@ -1,15 +1,15 @@
 {
- "generated": "2026-11-11 08:40:47",
- "total_checks": 232,
- "passed": 232,
+ "generated": "2026-11-11 12:07:22",
+ "total_checks": 339,
+ "passed": 339,
  "failed": 0,
  "per_sequence": {
   "Intro": {
-   "total": 47,
+   "total": 48,
    "failed": 0
   },
   "Finale": {
-   "total": 185,
+   "total": 291,
    "failed": 0
   }
  },
@@ -47,15 +47,44 @@
    1.0,
    1.0
   ],
-  "sk_bounds_min_z": 3.940716851502657e-06,
+  "sk_bounds_min_z": 0.10000482201576233,
   "head_z": 239.36507418953977,
-  "cam_mask_pitch": 10.052544827076881
+  "mask_centre_comp": [
+   44.8240607630469,
+   0.4369337824959992,
+   248.7601218495037
+  ],
+  "villager_yaw_offset": 2.01736832252185e-05,
+  "villager_native_speed": 97.5,
+  "villager_walk_rate": 0.6256410256410256,
+  "lantern_rel_loc": [
+   -49.82098791373927,
+   -3.714468702669521,
+   -0.42411850603875223
+  ],
+  "lantern_rel_rot_rpy": [
+   88.21259492581353,
+   -20.581354716149484,
+   -92.51849185175621
+  ],
+  "villager_grip_comp": [
+   36.473580182585664,
+   24.891937515580626,
+   140.19550924621174
+  ],
+  "cam_mask_pitch": 9.323557705850241,
+  "mask_centre_world": [
+   12164.563066217504,
+   2264.824060763047,
+   2748.760121849504
+  ]
  },
  "deps": {
   "Intro": [
    "/Game/LastBell/Audio/Music/MUS_LB_Cine_IntroText"
   ],
   "Finale": [
+   "/Game/LastBell/ArtTest/Props/Wooden_Lantern_01/SM_Wooden_Lantern_01",
    "/Game/LastBell/Audio/Music/MUS_LB_Cine_Credits",
    "/Game/LastBell/Audio/Music/MUS_LB_Cine_Finale",
    "/Game/LastBell/Audio/Player/SFX_LB_Step_Metal_02",
@@ -71,7 +100,12 @@
    "/Game/LastBell/Audio/Warden/SFX_LB_Warden_Chain_02",
    "/Game/LastBell/Audio/Warden/SFX_LB_Warden_Chain_03",
    "/Game/LastBell/Audio/Warden/SFX_LB_Warden_Chain_04",
+   "/Game/LastBell/Characters/Villager/AN_LB_Villager_IdleLantern",
+   "/Game/LastBell/Characters/Villager/AN_LB_Villager_Walk",
+   "/Game/LastBell/Characters/Villager/SK_LB_Villager",
    "/Game/LastBell/Characters/Warden/ABP_Warden",
+   "/Game/LastBell/Characters/Warden/Anims/AN_Warden_MaskLift",
+   "/Game/LastBell/Characters/Warden/Cine/SM_LB_WardenMask",
    "/Game/LastBell/Characters/Warden/Meshes/SK_Warden",
    "/Game/LastBell/Materials/PostProcess/MI_LB_PP_MaskView"
   ]
@@ -212,8 +246,8 @@
    "item": "cut",
    "name": "Cam_Intro bound to the camera spawnable",
    "ok": true,
-   "got": "'E0C4D0D8462DBB329C9C12B9E903E44D'",
-   "want": "'E0C4D0D8462DBB329C9C12B9E903E44D'"
+   "got": "'7ED5683141CC6C9681C71880A2DAF37E'",
+   "want": "'7ED5683141CC6C9681C71880A2DAF37E'"
   },
   {
    "seq": "Intro",
@@ -393,6 +427,14 @@
   },
   {
    "seq": "Intro",
+   "item": "Cam_Intro",
+   "name": "no attach track",
+   "ok": true,
+   "got": "0",
+   "want": "0"
+  },
+  {
+   "seq": "Intro",
    "item": "audio2d",
    "name": "master audio track count",
    "ok": true,
@@ -420,8 +462,8 @@
    "item": "audio2d",
    "name": "2D MUS_LB_Cine_IntroText @0.000 end (s)",
    "ok": true,
-   "got": "15.500041961669922",
-   "want": "15.5"
+   "got": "27.500041961669922",
+   "want": "27.5"
   },
   {
    "seq": "Intro",
@@ -492,8 +534,8 @@
    "item": "setup",
    "name": "spawnable names",
    "ok": true,
-   "got": "['Cam_Mask', 'Cam_WallTop', 'Lantern', 'WardenFigure']",
-   "want": "['Cam_Mask', 'Cam_WallTop', 'Lantern', 'WardenFigure']"
+   "got": "['Cam_Mask', 'Cam_WallTop', 'Lantern', 'LanternProp', 'MaskProp', 'Villager', 'WardenFigure']",
+   "want": "['Cam_Mask', 'Cam_WallTop', 'Lantern', 'LanternProp', 'MaskProp', 'Villager', 'WardenFigure']"
   },
   {
    "seq": "Finale",
@@ -588,8 +630,8 @@
    "item": "cut",
    "name": "Cam_Mask bound to the camera spawnable",
    "ok": true,
-   "got": "'722FD6254C813E6E163608B8460B4465'",
-   "want": "'722FD6254C813E6E163608B8460B4465'"
+   "got": "'3ABF15B942F17FF85E980A82B8C8FD32'",
+   "want": "'3ABF15B942F17FF85E980A82B8C8FD32'"
   },
   {
    "seq": "Finale",
@@ -620,8 +662,8 @@
    "item": "cut",
    "name": "Cam_WallTop bound to the camera spawnable",
    "ok": true,
-   "got": "'0F68A74E4F01A4E1E4787599025199E5'",
-   "want": "'0F68A74E4F01A4E1E4787599025199E5'"
+   "got": "'64010EB3470F999CC1FFAD93517C8C2F'",
+   "want": "'64010EB3470F999CC1FFAD93517C8C2F'"
   },
   {
    "seq": "Finale",
@@ -790,6 +832,126 @@
    "ok": true,
    "got": "'ok'",
    "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "skeletal animation track count",
+   "ok": true,
+   "got": "1",
+   "want": "1"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "skeletal animation section count",
+   "ok": true,
+   "got": "1",
+   "want": "1"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "anim AN_Warden_MaskLift @14.600 present",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "anim AN_Warden_MaskLift range (s)",
+   "ok": true,
+   "got": "(14.6, 20.6)",
+   "want": "(14.6, 20.6)"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "anim AN_Warden_MaskLift slot",
+   "ok": true,
+   "got": "'DefaultSlot'",
+   "want": "'DefaultSlot'"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "anim AN_Warden_MaskLift play rate",
+   "ok": true,
+   "got": "1.0",
+   "want": "1.0"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "anim AN_Warden_MaskLift row",
+   "ok": true,
+   "got": "0",
+   "want": "0"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "anim AN_Warden_MaskLift ease in (ticks)",
+   "ok": true,
+   "got": "7200",
+   "want": "7200"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "anim AN_Warden_MaskLift ease out (ticks)",
+   "ok": true,
+   "got": "0",
+   "want": "0"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "Fade material component binding is a child possessable",
+   "ok": true,
+   "got": "1",
+   "want": "1"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "Fade material track on slot 1",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "Fade slot name / type",
+   "ok": true,
+   "got": "('M_Warden_BellMetal', 'INDEXED_MATERIAL')",
+   "want": "('M_Warden_BellMetal', 'INDEXED_MATERIAL')"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "channel named 'Fade' exists",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "Fade keys (2 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "WardenFigure",
+   "name": "no attach track",
+   "ok": true,
+   "got": "0",
+   "want": "0"
   },
   {
    "seq": "Finale",
@@ -1233,6 +1395,198 @@
   },
   {
    "seq": "Finale",
+   "item": "MaskProp",
+   "name": "binding exists and is a spawnable",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "MaskProp",
+   "name": "template class",
+   "ok": true,
+   "got": "'StaticMeshActor'",
+   "want": "'StaticMeshActor'"
+  },
+  {
+   "seq": "Finale",
+   "item": "MaskProp",
+   "name": "static mesh",
+   "ok": true,
+   "got": "'SM_LB_WardenMask'",
+   "want": "'SM_LB_WardenMask'"
+  },
+  {
+   "seq": "Finale",
+   "item": "MaskProp",
+   "name": "collision enabled",
+   "ok": true,
+   "got": "'NO_COLLISION'",
+   "want": "'NO_COLLISION'"
+  },
+  {
+   "seq": "Finale",
+   "item": "MaskProp",
+   "name": "collision profile",
+   "ok": true,
+   "got": "'NoCollision'",
+   "want": "'NoCollision'"
+  },
+  {
+   "seq": "Finale",
+   "item": "MaskProp",
+   "name": "slot 0 material is MI_Warden_BellMetal",
+   "ok": true,
+   "got": "'MI_Warden_BellMetal'",
+   "want": "'MI_Warden_BellMetal'"
+  },
+  {
+   "seq": "Finale",
+   "item": "MaskProp",
+   "name": "transform track count",
+   "ok": true,
+   "got": "0",
+   "want": "0"
+  },
+  {
+   "seq": "Finale",
+   "item": "MaskProp",
+   "name": "visibility track count",
+   "ok": true,
+   "got": "1",
+   "want": "1"
+  },
+  {
+   "seq": "Finale",
+   "item": "MaskProp",
+   "name": "visibility (True = visible) (2 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "MaskProp",
+   "name": "TellGlow material component binding is a child possessable",
+   "ok": true,
+   "got": "1",
+   "want": "1"
+  },
+  {
+   "seq": "Finale",
+   "item": "MaskProp",
+   "name": "TellGlow material track on slot 0",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "MaskProp",
+   "name": "TellGlow slot name / type",
+   "ok": true,
+   "got": "('M_Warden_BellMetal', 'INDEXED_MATERIAL')",
+   "want": "('M_Warden_BellMetal', 'INDEXED_MATERIAL')"
+  },
+  {
+   "seq": "Finale",
+   "item": "MaskProp",
+   "name": "channel named 'TellGlow' exists",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "MaskProp",
+   "name": "TellGlow keys (2 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "MaskProp",
+   "name": "attach track count",
+   "ok": true,
+   "got": "1",
+   "want": "1"
+  },
+  {
+   "seq": "Finale",
+   "item": "MaskProp",
+   "name": "attach section count",
+   "ok": true,
+   "got": "2",
+   "want": "2"
+  },
+  {
+   "seq": "Finale",
+   "item": "MaskProp",
+   "name": "attach WardenFigure [0.0-16.8] range (s)",
+   "ok": true,
+   "got": "(0.0, 16.8)",
+   "want": "(0.0, 16.8)"
+  },
+  {
+   "seq": "Finale",
+   "item": "MaskProp",
+   "name": "attach WardenFigure [0.0-16.8] target binding",
+   "ok": true,
+   "got": "'A434EC24445F29E944BEC4AD137D27EA'",
+   "want": "'A434EC24445F29E944BEC4AD137D27EA'"
+  },
+  {
+   "seq": "Finale",
+   "item": "MaskProp",
+   "name": "attach WardenFigure [0.0-16.8] socket",
+   "ok": true,
+   "got": "'head'",
+   "want": "'head'"
+  },
+  {
+   "seq": "Finale",
+   "item": "MaskProp",
+   "name": "attach WardenFigure [0.0-16.8] rules (loc/rot/scale)",
+   "ok": true,
+   "got": "['KEEP_RELATIVE', 'KEEP_RELATIVE', 'KEEP_RELATIVE']",
+   "want": "['KEEP_RELATIVE', 'KEEP_RELATIVE', 'KEEP_RELATIVE']"
+  },
+  {
+   "seq": "Finale",
+   "item": "MaskProp",
+   "name": "attach WardenFigure [16.8-97.5] range (s)",
+   "ok": true,
+   "got": "(16.8, 97.5)",
+   "want": "(16.8, 97.5)"
+  },
+  {
+   "seq": "Finale",
+   "item": "MaskProp",
+   "name": "attach WardenFigure [16.8-97.5] target binding",
+   "ok": true,
+   "got": "'A434EC24445F29E944BEC4AD137D27EA'",
+   "want": "'A434EC24445F29E944BEC4AD137D27EA'"
+  },
+  {
+   "seq": "Finale",
+   "item": "MaskProp",
+   "name": "attach WardenFigure [16.8-97.5] socket",
+   "ok": true,
+   "got": "'hand_r'",
+   "want": "'hand_r'"
+  },
+  {
+   "seq": "Finale",
+   "item": "MaskProp",
+   "name": "attach WardenFigure [16.8-97.5] rules (loc/rot/scale)",
+   "ok": true,
+   "got": "['KEEP_WORLD', 'KEEP_WORLD', 'KEEP_WORLD']",
+   "want": "['KEEP_WORLD', 'KEEP_WORLD', 'KEEP_WORLD']"
+  },
+  {
+   "seq": "Finale",
    "item": "Cam_Mask",
    "name": "binding exists and is a spawnable",
    "ok": true,
@@ -1282,7 +1636,7 @@
   {
    "seq": "Finale",
    "item": "Cam_Mask",
-   "name": "transform Location.X (1 keys)",
+   "name": "transform Location.X (3 keys)",
    "ok": true,
    "got": "'ok'",
    "want": "'ok'"
@@ -1290,7 +1644,7 @@
   {
    "seq": "Finale",
    "item": "Cam_Mask",
-   "name": "transform Location.Y (1 keys)",
+   "name": "transform Location.Y (3 keys)",
    "ok": true,
    "got": "'ok'",
    "want": "'ok'"
@@ -1298,7 +1652,7 @@
   {
    "seq": "Finale",
    "item": "Cam_Mask",
-   "name": "transform Location.Z (1 keys)",
+   "name": "transform Location.Z (3 keys)",
    "ok": true,
    "got": "'ok'",
    "want": "'ok'"
@@ -1306,7 +1660,7 @@
   {
    "seq": "Finale",
    "item": "Cam_Mask",
-   "name": "transform Rotation.X (1 keys)",
+   "name": "transform Rotation.X (3 keys)",
    "ok": true,
    "got": "'ok'",
    "want": "'ok'"
@@ -1314,7 +1668,7 @@
   {
    "seq": "Finale",
    "item": "Cam_Mask",
-   "name": "transform Rotation.Y (1 keys)",
+   "name": "transform Rotation.Y (3 keys)",
    "ok": true,
    "got": "'ok'",
    "want": "'ok'"
@@ -1322,7 +1676,7 @@
   {
    "seq": "Finale",
    "item": "Cam_Mask",
-   "name": "transform Rotation.Z (1 keys)",
+   "name": "transform Rotation.Z (3 keys)",
    "ok": true,
    "got": "'ok'",
    "want": "'ok'"
@@ -1386,10 +1740,18 @@
   {
    "seq": "Finale",
    "item": "Cam_Mask",
-   "name": "FocusSettings.ManualFocusDistance keys (2 keys)",
+   "name": "FocusSettings.ManualFocusDistance keys (3 keys)",
    "ok": true,
    "got": "'ok'",
    "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Cam_Mask",
+   "name": "no attach track",
+   "ok": true,
+   "got": "0",
+   "want": "0"
   },
   {
    "seq": "Finale",
@@ -1420,8 +1782,8 @@
    "item": "Cam_WallTop",
    "name": "focal length",
    "ok": true,
-   "got": "35.0",
-   "want": "35.0"
+   "got": "70.0",
+   "want": "70.0"
   },
   {
    "seq": "Finale",
@@ -1545,6 +1907,486 @@
   },
   {
    "seq": "Finale",
+   "item": "Cam_WallTop",
+   "name": "no attach track",
+   "ok": true,
+   "got": "0",
+   "want": "0"
+  },
+  {
+   "seq": "Finale",
+   "item": "Villager",
+   "name": "binding exists and is a spawnable",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "Villager",
+   "name": "template class",
+   "ok": true,
+   "got": "'SkeletalMeshActor'",
+   "want": "'SkeletalMeshActor'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Villager",
+   "name": "skeletal mesh",
+   "ok": true,
+   "got": "'SK_LB_Villager'",
+   "want": "'SK_LB_Villager'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Villager",
+   "name": "actor tag",
+   "ok": true,
+   "got": "['LB_Cine_Villager']",
+   "want": "['LB_Cine_Villager']"
+  },
+  {
+   "seq": "Finale",
+   "item": "Villager",
+   "name": "collision enabled",
+   "ok": true,
+   "got": "'NO_COLLISION'",
+   "want": "'NO_COLLISION'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Villager",
+   "name": "collision profile",
+   "ok": true,
+   "got": "'NoCollision'",
+   "want": "'NoCollision'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Villager",
+   "name": "VisibilityBasedAnimTickOption",
+   "ok": true,
+   "got": "'ALWAYS_TICK_POSE'",
+   "want": "'ALWAYS_TICK_POSE'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Villager",
+   "name": "transform track count",
+   "ok": true,
+   "got": "1",
+   "want": "1"
+  },
+  {
+   "seq": "Finale",
+   "item": "Villager",
+   "name": "transform Location.X (3 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Villager",
+   "name": "transform Location.Y (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Villager",
+   "name": "transform Location.Z (3 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Villager",
+   "name": "transform Rotation.X (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Villager",
+   "name": "transform Rotation.Y (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Villager",
+   "name": "transform Rotation.Z (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Villager",
+   "name": "transform Scale.X (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Villager",
+   "name": "transform Scale.Y (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Villager",
+   "name": "transform Scale.Z (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Villager",
+   "name": "visibility track count",
+   "ok": true,
+   "got": "1",
+   "want": "1"
+  },
+  {
+   "seq": "Finale",
+   "item": "Villager",
+   "name": "visibility (True = visible) (2 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Villager",
+   "name": "skeletal animation track count",
+   "ok": true,
+   "got": "1",
+   "want": "1"
+  },
+  {
+   "seq": "Finale",
+   "item": "Villager",
+   "name": "skeletal animation section count",
+   "ok": true,
+   "got": "2",
+   "want": "2"
+  },
+  {
+   "seq": "Finale",
+   "item": "Villager",
+   "name": "anim AN_LB_Villager_Walk @23.500 present",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "Villager",
+   "name": "anim AN_LB_Villager_Walk range (s)",
+   "ok": true,
+   "got": "(23.5, 37.5)",
+   "want": "(23.5, 37.5)"
+  },
+  {
+   "seq": "Finale",
+   "item": "Villager",
+   "name": "anim AN_LB_Villager_Walk slot",
+   "ok": true,
+   "got": "'DefaultSlot'",
+   "want": "'DefaultSlot'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Villager",
+   "name": "anim AN_LB_Villager_Walk play rate",
+   "ok": true,
+   "got": "0.6256410256410256",
+   "want": "0.6256410256410256"
+  },
+  {
+   "seq": "Finale",
+   "item": "Villager",
+   "name": "anim AN_LB_Villager_Walk row",
+   "ok": true,
+   "got": "0",
+   "want": "0"
+  },
+  {
+   "seq": "Finale",
+   "item": "Villager",
+   "name": "anim AN_LB_Villager_Walk ease in (ticks)",
+   "ok": true,
+   "got": "0",
+   "want": "0"
+  },
+  {
+   "seq": "Finale",
+   "item": "Villager",
+   "name": "anim AN_LB_Villager_Walk ease out (ticks)",
+   "ok": true,
+   "got": "12000",
+   "want": "12000"
+  },
+  {
+   "seq": "Finale",
+   "item": "Villager",
+   "name": "anim AN_LB_Villager_IdleLantern @37.000 present",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "Villager",
+   "name": "anim AN_LB_Villager_IdleLantern range (s)",
+   "ok": true,
+   "got": "(37.0, 97.5)",
+   "want": "(37.0, 97.5)"
+  },
+  {
+   "seq": "Finale",
+   "item": "Villager",
+   "name": "anim AN_LB_Villager_IdleLantern slot",
+   "ok": true,
+   "got": "'DefaultSlot'",
+   "want": "'DefaultSlot'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Villager",
+   "name": "anim AN_LB_Villager_IdleLantern play rate",
+   "ok": true,
+   "got": "1.0",
+   "want": "1.0"
+  },
+  {
+   "seq": "Finale",
+   "item": "Villager",
+   "name": "anim AN_LB_Villager_IdleLantern row",
+   "ok": true,
+   "got": "1",
+   "want": "1"
+  },
+  {
+   "seq": "Finale",
+   "item": "Villager",
+   "name": "anim AN_LB_Villager_IdleLantern ease in (ticks)",
+   "ok": true,
+   "got": "12000",
+   "want": "12000"
+  },
+  {
+   "seq": "Finale",
+   "item": "Villager",
+   "name": "anim AN_LB_Villager_IdleLantern ease out (ticks)",
+   "ok": true,
+   "got": "0",
+   "want": "0"
+  },
+  {
+   "seq": "Finale",
+   "item": "Villager",
+   "name": "no attach track",
+   "ok": true,
+   "got": "0",
+   "want": "0"
+  },
+  {
+   "seq": "Finale",
+   "item": "LanternProp",
+   "name": "binding exists and is a spawnable",
+   "ok": true,
+   "got": "True",
+   "want": "True"
+  },
+  {
+   "seq": "Finale",
+   "item": "LanternProp",
+   "name": "template class",
+   "ok": true,
+   "got": "'StaticMeshActor'",
+   "want": "'StaticMeshActor'"
+  },
+  {
+   "seq": "Finale",
+   "item": "LanternProp",
+   "name": "static mesh",
+   "ok": true,
+   "got": "'SM_Wooden_Lantern_01'",
+   "want": "'SM_Wooden_Lantern_01'"
+  },
+  {
+   "seq": "Finale",
+   "item": "LanternProp",
+   "name": "collision enabled",
+   "ok": true,
+   "got": "'NO_COLLISION'",
+   "want": "'NO_COLLISION'"
+  },
+  {
+   "seq": "Finale",
+   "item": "LanternProp",
+   "name": "collision profile",
+   "ok": true,
+   "got": "'NoCollision'",
+   "want": "'NoCollision'"
+  },
+  {
+   "seq": "Finale",
+   "item": "LanternProp",
+   "name": "transform track count",
+   "ok": true,
+   "got": "1",
+   "want": "1"
+  },
+  {
+   "seq": "Finale",
+   "item": "LanternProp",
+   "name": "transform Location.X (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "LanternProp",
+   "name": "transform Location.Y (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "LanternProp",
+   "name": "transform Location.Z (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "LanternProp",
+   "name": "transform Rotation.X (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "LanternProp",
+   "name": "transform Rotation.Y (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "LanternProp",
+   "name": "transform Rotation.Z (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "LanternProp",
+   "name": "transform Scale.X (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "LanternProp",
+   "name": "transform Scale.Y (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "LanternProp",
+   "name": "transform Scale.Z (1 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "LanternProp",
+   "name": "visibility track count",
+   "ok": true,
+   "got": "1",
+   "want": "1"
+  },
+  {
+   "seq": "Finale",
+   "item": "LanternProp",
+   "name": "visibility (True = visible) (2 keys)",
+   "ok": true,
+   "got": "'ok'",
+   "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "LanternProp",
+   "name": "attach track count",
+   "ok": true,
+   "got": "1",
+   "want": "1"
+  },
+  {
+   "seq": "Finale",
+   "item": "LanternProp",
+   "name": "attach section count",
+   "ok": true,
+   "got": "1",
+   "want": "1"
+  },
+  {
+   "seq": "Finale",
+   "item": "LanternProp",
+   "name": "attach Villager [0.0-97.5] range (s)",
+   "ok": true,
+   "got": "(0.0, 97.5)",
+   "want": "(0.0, 97.5)"
+  },
+  {
+   "seq": "Finale",
+   "item": "LanternProp",
+   "name": "attach Villager [0.0-97.5] target binding",
+   "ok": true,
+   "got": "'3EF0EB894E24374AB999BE96840EE759'",
+   "want": "'3EF0EB894E24374AB999BE96840EE759'"
+  },
+  {
+   "seq": "Finale",
+   "item": "LanternProp",
+   "name": "attach Villager [0.0-97.5] socket",
+   "ok": true,
+   "got": "'hand_r'",
+   "want": "'hand_r'"
+  },
+  {
+   "seq": "Finale",
+   "item": "LanternProp",
+   "name": "attach Villager [0.0-97.5] rules (loc/rot/scale)",
+   "ok": true,
+   "got": "['KEEP_RELATIVE', 'KEEP_RELATIVE', 'KEEP_RELATIVE']",
+   "want": "['KEEP_RELATIVE', 'KEEP_RELATIVE', 'KEEP_RELATIVE']"
+  },
+  {
+   "seq": "Finale",
    "item": "Lantern",
    "name": "binding exists and is a spawnable",
    "ok": true,
@@ -1618,7 +2460,7 @@
   {
    "seq": "Finale",
    "item": "Lantern",
-   "name": "transform Location.X (3 keys)",
+   "name": "transform Location.X (1 keys)",
    "ok": true,
    "got": "'ok'",
    "want": "'ok'"
@@ -1634,7 +2476,7 @@
   {
    "seq": "Finale",
    "item": "Lantern",
-   "name": "transform Location.Z (141 keys)",
+   "name": "transform Location.Z (1 keys)",
    "ok": true,
    "got": "'ok'",
    "want": "'ok'"
@@ -1734,6 +2576,54 @@
    "ok": true,
    "got": "'ok'",
    "want": "'ok'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Lantern",
+   "name": "attach track count",
+   "ok": true,
+   "got": "1",
+   "want": "1"
+  },
+  {
+   "seq": "Finale",
+   "item": "Lantern",
+   "name": "attach section count",
+   "ok": true,
+   "got": "1",
+   "want": "1"
+  },
+  {
+   "seq": "Finale",
+   "item": "Lantern",
+   "name": "attach LanternProp [0.0-97.5] range (s)",
+   "ok": true,
+   "got": "(0.0, 97.5)",
+   "want": "(0.0, 97.5)"
+  },
+  {
+   "seq": "Finale",
+   "item": "Lantern",
+   "name": "attach LanternProp [0.0-97.5] target binding",
+   "ok": true,
+   "got": "'D6EC85F94694DA235540BA8A5795E3DC'",
+   "want": "'D6EC85F94694DA235540BA8A5795E3DC'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Lantern",
+   "name": "attach LanternProp [0.0-97.5] socket",
+   "ok": true,
+   "got": "'None'",
+   "want": "'None'"
+  },
+  {
+   "seq": "Finale",
+   "item": "Lantern",
+   "name": "attach LanternProp [0.0-97.5] rules (loc/rot/scale)",
+   "ok": true,
+   "got": "['KEEP_RELATIVE', 'KEEP_RELATIVE', 'KEEP_RELATIVE']",
+   "want": "['KEEP_RELATIVE', 'KEEP_RELATIVE', 'KEEP_RELATIVE']"
   },
   {
    "seq": "Finale",
