@@ -4,8 +4,10 @@
 #include "GameFramework/PlayerController.h"
 #include "LBPlayerController.generated.h"
 
+class UInputAction;
 class UInputMappingContext;
 class UUserWidget;
+struct FInputActionValue;
 
 UCLASS()
 class LASTBELL_API ALBPlayerController : public APlayerController
@@ -27,6 +29,17 @@ public:
 	/** Adds or removes InspectMappingContext. Safe to call repeatedly. */
 	void SetInspectionContextActive(bool bActive);
 
+	/**
+	 * The Pause action (IA_Pause, Escape; created in P18-2). Pressed, it calls ULBUISubsystem::HandleBack: the top screen goes back, otherwise
+	 * the pause menu opens. Unset: no pause key is bound and a log line says so.
+	 */
+	UPROPERTY(EditDefaultsOnly, Category = "LastBell|Input")
+	TObjectPtr<UInputAction> PauseAction;
+
+	/**
+	 * The gameplay HUD. On a menu map this may instead be a ULBMenuWidgetBase subclass (ULBMainMenuWidget): it is then pushed on the UI subsystem's
+	 * screen stack as the main menu rather than added to the viewport directly.
+	 */
 	UPROPERTY(EditDefaultsOnly, Category = "LastBell|UI")
 	TSubclassOf<UUserWidget> HUDWidgetClass;
 
@@ -34,7 +47,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "LastBell|UI")
 	bool bMenuMode = false;
 
-	/** Switches cursor and input mode at runtime (e.g. the ending screen). */
+	/** Switches cursor and input mode at runtime (e.g. the ending screen). Forwards to ULBUISubsystem::SetMenuMode, which keeps a screen on the stack in charge. */
 	UFUNCTION(BlueprintCallable, Category = "LastBell|UI")
 	void SetMenuMode(bool bInMenuMode);
 
@@ -53,8 +66,11 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+	virtual void SetupInputComponent() override;
 
 private:
+	void HandlePausePressed(const FInputActionValue& Value);
+
 	UPROPERTY(Transient)
 	TObjectPtr<UUserWidget> HUDWidget;
 

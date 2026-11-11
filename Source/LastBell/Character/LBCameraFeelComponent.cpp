@@ -2,6 +2,7 @@
 #include "Character/LBCharacter.h"
 #include "Character/LBPlayerTuningData.h"
 #include "Systems/LBUserSettings.h"
+#include "UI/LBUILogic.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -156,9 +157,28 @@ void ULBCameraFeelComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 		LastAppliedLocation = NewLocation;
 	}
 
+	// The user's base FOV (P18, 70..110; the default 90 is the camera's FOV from before Phase 18), then the sprint widening on top.
+	const float UserFOV = Settings ? LBUILogic::ClampFOV(Settings->FieldOfView) : BaseFOV;
+
+	// Motion blur and film grain are overrides on this camera's own post-process settings; the level volumes are untouched. Film grain on
+	// leaves the level's value alone (the override is removed); off forces it to 0. Motion blur on forces the engine default amount, off forces 0.
+	const bool bWantBlur = Settings && Settings->bMotionBlur;
+	const bool bWantGrain = !Settings || Settings->bFilmGrain;
+	if (!bAppliedPostProcess || bWantBlur != bAppliedMotionBlur || bWantGrain != bAppliedFilmGrain)
+	{
+		FPostProcessSettings& PostProcess = Cam->PostProcessSettings;
+		PostProcess.bOverride_MotionBlurAmount = true;
+		PostProcess.MotionBlurAmount = bWantBlur ? 0.5f : 0.f;
+		PostProcess.bOverride_FilmGrainIntensity = !bWantGrain;
+		PostProcess.FilmGrainIntensity = 0.f;
+		bAppliedMotionBlur = bWantBlur;
+		bAppliedFilmGrain = bWantGrain;
+		bAppliedPostProcess = true;
+	}
+
 	// Sprint FOV.
 	SprintAlpha = FMath::FInterpConstantTo(SprintAlpha, Gait == ELBGait::Sprint ? 1.f : 0.f, DeltaTime, 1.f / FMath::Max(T->SprintFOVEaseTime, KINDA_SMALL_NUMBER));
-	const float NewFOV = BaseFOV + T->SprintFOVDelta * FMath::SmoothStep(0.f, 1.f, SprintAlpha);
+	const float NewFOV = UserFOV + T->SprintFOVDelta * FMath::SmoothStep(0.f, 1.f, SprintAlpha);
 	if (!bHasApplied || !FMath::IsNearlyEqual(NewFOV, LastAppliedFOV, ApplyEpsilon))
 	{
 		Cam->SetFieldOfView(NewFOV);

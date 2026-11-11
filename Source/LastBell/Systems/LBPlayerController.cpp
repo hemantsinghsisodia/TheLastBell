@@ -1,8 +1,12 @@
 #include "Systems/LBPlayerController.h"
 #include "Blueprint/UserWidget.h"
 #include "Engine/LocalPlayer.h"
+#include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "InputAction.h"
 #include "InputMappingContext.h"
+#include "UI/LBMenuWidgetBase.h"
+#include "UI/LBUISubsystem.h"
 #include "LBLog.h"
 
 void ALBPlayerController::BeginPlay()
@@ -30,7 +34,13 @@ void ALBPlayerController::BeginPlay()
 		}
 	}
 
-	if (HUDWidgetClass)
+	ULBUISubsystem* UI = ULocalPlayer::GetSubsystem<ULBUISubsystem>(GetLocalPlayer());
+	if (HUDWidgetClass && HUDWidgetClass->IsChildOf(ULBMenuWidgetBase::StaticClass()) && UI)
+	{
+		// A menu map: the C++ main menu is the root screen of the UI stack, not a HUD.
+		UI->PushScreen(ELBScreen::MainMenu, HUDWidgetClass.Get());
+	}
+	else if (HUDWidgetClass)
 	{
 		HUDWidget = CreateWidget<UUserWidget>(this, HUDWidgetClass);
 		if (HUDWidget)
@@ -41,6 +51,11 @@ void ALBPlayerController::BeginPlay()
 				HUDWidget->SetVisibility(ESlateVisibility::Collapsed);
 			}
 		}
+	}
+	else if (bMenuMode && UI && !UI->IsScreenOpen(ELBScreen::MainMenu))
+	{
+		// A menu map with no widget class assigned still gets the main menu.
+		UI->PushScreen(ELBScreen::MainMenu);
 	}
 	else
 	{
@@ -80,12 +95,48 @@ void ALBPlayerController::SetHUDHidden(bool bInHidden)
 	}
 }
 
+void ALBPlayerController::SetupInputComponent()
+{
+	Super::SetupInputComponent();
+	if (!IsLocalController())
+	{
+		return;
+	}
+	if (!PauseAction)
+	{
+		UE_LOG(LogLB, Verbose, TEXT("%s has no PauseAction (IA_Pause): the pause key is not bound"), *GetName());
+		return;
+	}
+	if (UEnhancedInputComponent* Enhanced = Cast<UEnhancedInputComponent>(InputComponent))
+	{
+		Enhanced->BindAction(PauseAction, ETriggerEvent::Started, this, &ALBPlayerController::HandlePausePressed);
+	}
+}
+
+void ALBPlayerController::HandlePausePressed(const FInputActionValue& Value)
+{
+	if (ULBUISubsystem* UI = ULocalPlayer::GetSubsystem<ULBUISubsystem>(GetLocalPlayer()))
+	{
+		UI->HandleBack();
+	}
+}
+
 void ALBPlayerController::SetMenuMode(bool bInMenuMode)
 {
 	bMenuMode = bInMenuMode;
 	if (!IsLocalController())
 	{
 		return;
+	}
+	// A screen on the UI stack, a menu map and plain play are all decided by the UI subsystem.
+	if (ULBUISubsystem* UI = ULocalPlayer::GetSubsystem<ULBUISubsystem>(GetLocalPlayer()))
+	{
+		UI->SetMenuMode(bMenuMode);
+		if (UI->HasAnyScreen() || !HUDWidget)
+		{
+			return;
+		}
+		// A menu map still using a UMG widget as its HUD (before P18-2): fall through to give that widget the focus.
 	}
 	if (bMenuMode)
 	{

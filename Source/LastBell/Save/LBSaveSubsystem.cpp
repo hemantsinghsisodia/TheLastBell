@@ -8,6 +8,7 @@
 #include "Systems/LBGameSettings.h"
 #include "Misc/PackageName.h"
 #include "Misc/Crc.h"
+#include "UI/LBLoadingScreen.h"
 #include "LBLog.h"
 
 namespace
@@ -104,6 +105,8 @@ void ULBSaveSubsystem::NewGame(const FString& MapName)
 	PlayTimeBase = 0.f;
 	PlayTimeSegmentStart = FPlatformTime::Seconds();
 	bTravelPending = true;
+	// P18: the black loading screen with the candle for menu -> game (a death with no save also lands here).
+	LBLoadingScreen::ArmForTravel();
 	UGameplayStatics::OpenLevel(GetGameInstance(), FName(*MapName));
 }
 
@@ -347,7 +350,14 @@ bool ULBSaveSubsystem::ContinueGame()
 		UE_LOG(LogLB, Log, TEXT("ContinueGame ignored: travel already pending"));
 		return false;
 	}
-	return LoadLastCheckpoint();
+	// P18: Continue shows the loading screen; a checkpoint reload after a death (LoadLastCheckpoint directly) does not.
+	LBLoadingScreen::ArmForTravel();
+	if (LoadLastCheckpoint())
+	{
+		return true;
+	}
+	LBLoadingScreen::OnTravelFinished();
+	return false;
 }
 
 bool ULBSaveSubsystem::OpenMainMenuMap()
@@ -368,6 +378,8 @@ bool ULBSaveSubsystem::OpenMainMenuMap()
 		return false;
 	}
 	bTravelPending = true;
+	// P18: game -> menu (Return to main menu, the ending) shows the loading screen.
+	LBLoadingScreen::ArmForTravel();
 	UGameplayStatics::OpenLevel(GetGameInstance(), FName(*Settings->MainMenuMap.GetLongPackageName()));
 	return true;
 }

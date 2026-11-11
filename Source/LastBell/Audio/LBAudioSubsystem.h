@@ -154,8 +154,12 @@ public:
 	virtual TStatId GetStatId() const override;
 	/** Ticks while active or still waiting for the storm's first active tick. */
 	virtual bool IsTickable() const override { return !bGaveUp; }
-	/** True: the great bell of the ending must keep tolling while the ending sequence pauses the game (P16-6). */
-	virtual bool IsTickableWhenPaused() const override { return true; }
+	/**
+	 * Not tickable when paused (P18, R-77 part 2): the whole schedule (thunder, tolls, the great bell, the drone changes) freezes with the
+	 * world and resumes where it stopped. P16-6 had made this true so the great bell could keep tolling under the ending's pause; P17 removed that
+	 * pause, so the workaround is gone.
+	 */
+	virtual bool IsTickableWhenPaused() const override { return false; }
 
 	// ---- Control --------------------------------------------------------------------------------------------------------------
 
@@ -296,11 +300,6 @@ private:
 		/** Thunder: the direction (horizontal, unit) from the listener. */
 		FVector Direction = FVector::ForwardVector;
 		bool bAmbient = false;
-		/**
-		 * Time is on World->GetUnpausedTimeSeconds() (which keeps running while the game is paused) instead of GetTimeSeconds().
-		 * The great bell's strikes use it so the finale keeps tolling under the ending's pause (P16-6).
-		 */
-		bool bUnpausedClock = false;
 	};
 
 	// ---- Activation ----
@@ -342,7 +341,7 @@ private:
 
 	// ---- Per frame ----
 	void TickWorld(UWorld& World, ULBStormSubsystem& Storm, float DeltaSeconds);
-	void UpdateScheduled(double Now, double UnpausedNow, bool bPaused);
+	void UpdateScheduled(double Now);
 	void UpdateZone(double Now);
 	void UpdateWardenLink(double Now);
 	void UpdateWeather(const ULBStormSubsystem& Storm, float DeltaSeconds);

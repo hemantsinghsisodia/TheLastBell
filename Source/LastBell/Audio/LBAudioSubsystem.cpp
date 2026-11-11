@@ -127,6 +127,8 @@ void FLBAudioLoop::Update(ULBAudioSubsystem& Audio, FName Cue, const TSoftObject
 					Comp = UGameplayStatics::CreateSound2D(World, Sound, Level, Pitch, 0.f, nullptr, false, false);
 					if (Comp)
 					{
+						// CreateSound2D makes it a UI sound; the weather and music loops must pause with the world (P18).
+						Comp->SetUISound(false);
 						Comp->Play();
 					}
 				}
@@ -516,7 +518,18 @@ UAudioComponent* ULBAudioSubsystem::Play2D(FName Cue, const TSoftObjectPtr<USoun
 	Request.bSoundResolved = Sound != nullptr;
 	RecordRequest(Request);
 	UWorld* World = GetWorld();
-	return (Sound && World) ? UGameplayStatics::SpawnSound2D(World, Sound, Volume, Pitch) : nullptr;
+	if (!Sound || !World)
+	{
+		return nullptr;
+	}
+	// CreateSound2D marks the component a UI sound (it keeps playing while the game is paused). Game sounds must pause with the world (P18, R-77 part 2).
+	UAudioComponent* Component = UGameplayStatics::CreateSound2D(World, Sound, Volume, Pitch, 0.f, nullptr, false, true);
+	if (Component)
+	{
+		Component->SetUISound(false);
+		Component->Play();
+	}
+	return Component;
 }
 
 UAudioComponent* ULBAudioSubsystem::PlayAt(FName Cue, const TSoftObjectPtr<USoundBase>& Ref, const FVector& Location, float Volume, float Pitch, int32 Variant, int32 Aux)
@@ -965,8 +978,7 @@ void ULBAudioSubsystem::Tick(float DeltaTime)
 
 	if (World->IsPaused())
 	{
-		// The ending sequence pauses the game: only the great bell's strikes keep running (they use the unpaused clock and play as UI sounds).
-		UpdateScheduled(World->GetTimeSeconds(), World->GetUnpausedTimeSeconds(), /*bPaused*/ true);
+		// Not reached (IsTickableWhenPaused is false); kept so a future change cannot let the schedule run under a pause.
 		return;
 	}
 	TickWorld(*World, *Storm, DeltaTime);
@@ -987,7 +999,7 @@ void ULBAudioSubsystem::TickWorld(UWorld& World, ULBStormSubsystem& Storm, float
 		LastListener = Listener;
 	}
 
-	UpdateScheduled(Now, World.GetUnpausedTimeSeconds(), /*bPaused*/ false);
+	UpdateScheduled(Now);
 	UpdateZone(Now);
 	UpdateWardenLink(Now);
 	BindPlayerEvents();
@@ -1303,7 +1315,7 @@ void ULBAudioSubsystem::DrawDebugOverlay(double Now)
 // Scheduled sounds
 // ---------------------------------------------------------------------------------------------------------------------
 
-void ULBAudioSubsystem::UpdateScheduled(double Now, double UnpausedNow, bool bPaused)
+void ULBAudioSubsystem::UpdateScheduled(double Now)
 {
 	if (Scheduled.IsEmpty())
 	{
@@ -1314,8 +1326,7 @@ void ULBAudioSubsystem::UpdateScheduled(double Now, double UnpausedNow, bool bPa
 	for (int32 Index = Scheduled.Num() - 1; Index >= 0; --Index)
 	{
 		const FScheduled& Candidate = Scheduled[Index];
-		// While paused only the items on the unpaused clock (the great bell) are due; the others wait for the game to resume.
-		if (Candidate.bUnpausedClock ? Candidate.Time <= UnpausedNow : (!bPaused && Candidate.Time <= Now))
+		if (Candidate.Time <= Now)
 		{
 			Due.Add(Scheduled[Index]);
 			Scheduled.RemoveAtSwap(Index, EAllowShrinking::No);
@@ -1347,13 +1358,8 @@ void ULBAudioSubsystem::PlayScheduled(const FScheduled& Item, double Now)
 		const int32 Stage = FMath::Clamp(Item.Aux, 1, 5);
 		const TArray<TSoftObjectPtr<USoundBase>>& Set = Settings->Bell.Stage;
 		const TSoftObjectPtr<USoundBase> Ref = Set.IsValidIndex(Stage - 1) ? Set[Stage - 1] : TSoftObjectPtr<USoundBase>();
-		UAudioComponent* Strike = PlayAt(Item.bAmbient ? LBAudioCue::BellAmbient : LBAudioCue::Bell, Ref, Settings->BellLocation, Item.Volume, 1.f, Stage - 1, Stage);
-		if (Strike && !Item.bAmbient)
-		{
-			// A UI sound keeps sounding while the game is paused (the ending sequence pauses it).
-			Strike->SetUISound(true);
-		}
-		// P17: the bell swings by itself on every great-bell strike (also without an audio device, when Strike is null).
+		PlayAt(Item.bAmbient ? LBAudioCue::BellAmbient : LBAudioCue::Bell, Ref, Settings->BellLocation, Item.Volume, 1.f, Stage - 1, Stage);
+		// P17: the bell swings by itself on every great-bell strike (also without an audio device).
 		OnGreatBellStrike.Broadcast(Stage, Item.Volume);
 		break;
 	}
@@ -1391,7 +1397,6 @@ void ULBAudioSubsystem::ScheduleBell(int32 Stage, int32 Strikes, float FirstDela
 		return;
 	}
 	const double Now = World->GetTimeSeconds();
-	const double UnpausedNow = World->GetUnpausedTimeSeconds();
 	for (int32 K = 0; K < Strikes; ++K)
 	{
 		FScheduled Item;
@@ -1399,8 +1404,7 @@ void ULBAudioSubsystem::ScheduleBell(int32 Stage, int32 Strikes, float FirstDela
 		Item.Aux = Stage;
 		Item.Volume = bAmbient ? Settings->AmbientTollVolume : 1.f;
 		Item.bAmbient = bAmbient;
-		Item.bUnpausedClock = !bAmbient;
-		Item.Time = (Item.bUnpausedClock ? UnpausedNow : Now) + static_cast<double>(FirstDelay) + static_cast<double>(Spacing) * K;
+		Item.Time = Now + static_cast<double>(FirstDelay) + static_cast<double>(Spacing) * K;
 		if (K == 0 && bPlayFirstNow && FirstDelay <= 0.f)
 		{
 			PlayScheduled(Item, Now);

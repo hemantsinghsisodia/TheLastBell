@@ -36,7 +36,12 @@ private:
 	TWeakObjectPtr<const ULBPlayerTuningData> Tuning;
 
 	FVector BaseRelativeLocation = FVector::ZeroVector;
+	/** The camera's authored FOV (the fallback when the user setting cannot be read). The user's FieldOfView replaces it every tick (P18). */
 	float BaseFOV = 90.f;
+	/** The motion blur and film grain overrides last written to the camera's post-process settings (P18). */
+	bool bAppliedPostProcess = false;
+	bool bAppliedMotionBlur = false;
+	bool bAppliedFilmGrain = true;
 	FVector LastAppliedLocation = FVector::ZeroVector;
 	float LastAppliedFOV = 0.f;
 	bool bHasApplied = false;
