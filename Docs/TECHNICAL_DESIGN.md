@@ -1,6 +1,6 @@
 # THE LAST BELL — Technical Design
 
-Status: Phase 0, revised after the independent architecture review (findings in DECISIONS D-011 to D-020). Nothing is implemented yet. Engine: UE 5.8.3 launcher build, Win64, DX12 SM6.
+Status: living architecture document, updated phase by phase (Phases 1–18 implemented; each section says "as built" where it records the shipped design). The Phase 0 version was revised after the independent architecture review (DECISIONS D-011 to D-020). Engine: UE 5.8.3 launcher build, Win64, DX12 SM6.
 This document is the source of truth for the architecture. Any deviation must be recorded in `DECISIONS.md`.
 
 ## 1. Principles
