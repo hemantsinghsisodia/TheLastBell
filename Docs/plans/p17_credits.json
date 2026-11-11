@@ -161,7 +161,23 @@
  },
  {
   "style": "Small",
+  "text": "Interface"
+ },
+ {
+  "style": "Name",
+  "text": "Kenney: input prompts and UI sounds"
+ },
+ {
+  "style": "Gap",
+  "text": ""
+ },
+ {
+  "style": "Small",
   "text": "Fonts"
+ },
+ {
+  "style": "Name",
+  "text": "EB Garamond, Georg Duffner and Octavio Pardo (SIL OFL 1.1)"
  },
  {
   "style": "Name",

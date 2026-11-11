@@ -46,7 +46,11 @@ SamsterBirdies, scalywhale, ShaneF91, Sheyvan, sophiehall3535, sound368, squarea
 szegvari, TheKingOfGeeks360, tlcolbe, tony2metal, TRP, ulla_petersen, Voices_Of_Marz,
 Zabuhailo, Zrte
 ~
+(small) Interface
+Kenney: input prompts and UI sounds
+~
 (small) Fonts
+EB Garamond, Georg Duffner and Octavio Pardo (SIL OFL 1.1)
 Roboto, Christian Robertson (Apache 2.0)
 ~
 Thank you for playing.
@@ -54,16 +58,17 @@ Thank you for playing.
 
 ## Summary
 
-- 44 lines: 3 Heading, 6 Small, 26 Name, 9 Gap
+- 48 lines: 3 Heading, 7 Small, 28 Name, 10 Gap
 - Registry rows credited and distinct authors per provider:
   - Poly Haven: 42 rows, 18 authors
   - ambientCG: 12 rows, 0 authors
   - Fab: 32 rows, 4 authors
   - BlenderKit: 0 rows, 0 authors
   - Quaternius: 1 rows, 0 authors
-  - Kenney: 2 rows, 0 authors
+  - Kenney: 4 rows, 0 authors
   - Freesound: 76 rows, 73 authors
-- Excluded registry rows (33):
+- Excluded registry rows (34):
+  - EB Garamond (Fonts line) (1): EB Garamond (Regular, Italic, SemiBold, Bold; st
   - Mixamo (fixed Animation line) (13): Y Bot (character, Mixamo T-pose); Mixamo clip: Mutant Walking; Mixamo clip: Zombie Walk; Mixamo clip: Mutant Run; Mixamo clip: Zombie Running; Mixamo clip: Mutant Breathing Idle ...
   - derived files (the source row carries the credit) (1): Villager textures at 2048 and the villager FBX (
   - engine font (Fonts line) (1): Roboto Bold (font, outlines only)
