@@ -35,8 +35,8 @@ Everything is built from primitives using engine basic shapes and template mater
 | 14 | Cloister | Pull 3 counterweight levers spread around the arcade | `State.Cloister.Weight.1/2/3` | — |
 | 15 | Tower base | **Ritual Mechanism 3** (requires all 3 weights). The tower door AND the courtyard shortcut gate open (AutoOpen) | `State.Ritual.3` | `CP_TowerBase` |
 | 16 | Bell Tower | Climb the switchback ramps and platforms every 5 m to the bell chamber at Z≈3200 | `State.Event.TowerTop` (trigger) | `CP_TowerTop` |
-| 17 | Finale | Interact with the **Bell** (a large cylinder) | `State.Event.Finale`, `State.Warden.Stage.6` | — |
-| 18 | Ending | `BP_EndingTrigger` (listens for Finale) shows WBP_Ending ("The bell rings for you." / "THE LAST BELL"), and after 8 s calls `CompleteGame` → `L_MainMenu` | — | — |
+| 17 | Finale | Interact with the **Bell**. The player is eased to `CINE_FinaleMark` (12165, 2300, 2500, yaw −90; `TargetPoint`, tag `LB_Cine_FinaleMark`) and can only look; the player's look assist points at `CINE_StairTop` (12165, 1665, 2730; `TargetPoint`, tag `LB_Cine_StairTop`: the top of the last flight, at head height), where the scripted Warden comes into sight, and the Warden walks from there to a stop point (12165, 2220, 2500) in front of the player. The bell, `TWA_Headstock` and `TWA_BellRope` carry the tags `LB_Cine_Bell`, `LB_Cine_BellHeadstock` and `LB_Cine_BellRope` and are **Movable** (they swing on every great-bell strike). The two marks sit in the Outliner folder `Cinematics` (P17-5b, D-115) | `State.Event.Finale`, `State.Warden.Stage.6` | — |
+| 18 | Ending | **`EndingTrigger` is removed (P17-5b, D-117).** The `Finale` cinematic (`LS_LB_Finale`, started by the `State.Event.Finale` tag) plays the mask moment, the last view from the courtyard wall top, the end cards ("The bell rings for you." / "THE LAST BELL") and the credits, then `end` calls `CompleteGame` → `L_MainMenu`. `BP_EndingTrigger` and `WBP_Ending` are unused | — | — |
 
 ## Objective chain (DA_ObjectiveChain_Main)
 1. "Follow the sound of the bell": CourtyardEntered
@@ -57,5 +57,5 @@ Everything is built from primitives using engine basic shapes and template mater
 - Corridors where the Warden will path (crypt, cloister) are at least 200 wide. Doors are 120×240.
 - Ramps have a slope of 30° or less, which the CharacterMovement default walkable angle (44.7°) allows.
 - Every area gets at least one non-shadow PointLight or RectLight, so darkness never blocks navigation (the readability rule).
-- Outliner folders: `Approach`, `Courtyard`, `Chapel`, `Crypt`, `Cloister`, `BellTower`, `Gameplay/<Area>`, `Lighting`.
+- Outliner folders: `Approach`, `Courtyard`, `Chapel`, `Crypt`, `Cloister`, `BellTower`, `Gameplay/<Area>`, `Lighting`, `Cinematics` (P17: `CINE_FinaleMark`, `CINE_StairTop`).
 - Every interactable stand-in has a unique, readable label (e.g. `Candle_Nave`), and every checkpoint has a unique `CheckpointId`.

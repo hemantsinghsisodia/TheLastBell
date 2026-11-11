@@ -497,7 +497,7 @@ Branch `claude/phase-17-cinematics`. Spec and plan: `Docs/plans/P17_CINEMATICS.m
 | P17-8 | QA and owner play-through | qa-reviewer + owner | P17-7 |
 | P17-9 | Docs, final suite, Game build; PHASE 17 READY FOR YOUR REVIEW | lead + docs agent | all |
 
-**Outcome:** filled in as the tasks finish.
+**Outcome** (results in `Docs/plans/P17_CINEMATICS.md`, "Results" and the revisions 3.2b and 3.4–3.9; commits from `git log --oneline main..HEAD`; D-114…D-125, R-78…R-87; the architecture is in `TECHNICAL_DESIGN.md` section 17):
 - **F0 (2026-11-10):** done (6596144) and reviewed. The values are in the plan; the lead's changes:
   - a crane-down intro camera;
   - sound-only glimpses, since no lower flight is in sight from the mark;
@@ -512,6 +512,28 @@ Branch `claude/phase-17-cinematics`. Spec and plan: `Docs/plans/P17_CINEMATICS.m
 - **P17-2 (2026-11-10):** `DA_Cinematics`, `SMX_LB_CineFade` and `DA_Audio` (Arrival beat, no new-game toll) done (ee0fb76). A1 found no Mixamo fit, so the mask lift will be Blender-keyed after the new Warden asset.
 - **P17-5a-1 (2026-11-11):** both sequences built (2eab748; the finale without the mask moment), and cinematics are live. The suite gives 196 passed and 3 failed; the failures are expected until P17-5b. 
 - **P17-5b (2026-11-11):** level edits done (fe631f8, check 49/49). The suite gives **199 passed, 0 failed**. Next is the P17-6 intro review.
+- **A1 (2026-11-10):** the owner found no Mixamo clip with the hands at the face (b01f129), so `AN_Warden_MaskLift` is Blender-keyed and committed; R-79, R-80 closed.
+- **S1b (2026-11-10, b3400b4):** the owner's PIE check passed the blends, the markers, the slot animation, the attach and the skip, and failed the skip's fade-up (the engine's fade restore cancelled it); fixed in P17-1 (6826cec: hold black, destroy the sequence, fade up on the next tick) and tested (`SkipFadesUp`, `SkipClearsFade`). R-78 closed.
+- **P17-6 (2026-11-11, e1a3943):** the owner's intro review passed with no changes; a skip at 5.02 s fired the two must markers. The finale preview before the mask moment passed too (2ef742f).
+- **Finale revision 3.2b and the music (2026-11-11, D-120):** the Warden in sight about 3.5 s after the ring, a 97.5 s finale, no intro or outro drones (e37e01c, 9ad5211; check 214/214, suite 199/199); the owner's three cinematic music tracks, `SCL_LB_CineMusic` (3934c8a; check 232/232, suite 199/199).
+- **Warden V11.1 swap, W0–W5 (2026-11-11, D-121):** the survey (09cc3df); the robe reweight, with the stretch gate passed at 16.2 / 17.6 / 30.7 / 33.1 (27dc7f2); exports (ac17d89); in-place reimport with 8 slots, check 26/26 (2681b2a); the apparition re-baked, 7,363 triangles (0b26c5a); checks and suite 199/199 (3ebb5d7).
+- **P17-3 and 5a-2 (2026-11-11, D-122, D-123):**
+  - **Blender (81d4061):** `SM_LB_WardenMask` (9 islands, head-local pivot) and the hand-keyed `AN_Warden_MaskLift` (grip 2.2 s, lifted 3.4 s, extended 4.6 s, reach 100 cm, `StopDistance` 80); the contact sheet was accepted.
+  - **Villager (4a98611, a3cc0cd):** the CC0 Quaternius `Male_Ranger` with the UAL walk and idle, textures ×0.45.
+  - **Assets, headless (f8d8f30, 2042242):** `M_Warden_BellMetal` with `Fade` (Masked), the mask with its measured import rotation (roll 90, yaw −90), the clip, the villager, the intro music re-cut; verify 82/82.
+  - **Sequences rebuilt (2919da0):** the mask moment, the push-in, the 70 mm wall top; check 339/339.
+- **P17-7 and the candle (2026-11-11, 9e1b5b2, 5f50da8, d307bab; D-123 to D-125):** the owner's finale review passed ("rest is fine"); the bell swing is kept at every great-bell strike. The villager carries the player's candle instead of a lantern: a Blender contact sheet and the hybrid `Walk_Candle` clip (5f50da8), then `LS_LB_Finale` rebuilt with the candle parts; check 366/366 (d307bab).
+- **P17-9 (docs):** `TECHNICAL_DESIGN` section 17, `GAME_DESIGN` (beat 0, the finale, the ending), `AI_DESIGN`, `AUDIO_DESIGN`, `GREYBOX_SPEC` rows 17 and 18, `MCP_NOTES` (Sequencer scripting, P17-4 MCP, W3 Interchange, the mask import rotation), `PERFORMANCE_BUDGET`, `RISKS` (R-78, R-79, R-80 and R-83 closed; R-81, R-82, R-84 updated; R-85 to R-87 added), `DECISIONS` D-120 to D-125.
+
+**Summary.** New Game plays a 29 s skippable intro (four text cards, a crane-down camera, lightning, the Arrival tolls, a piano). Ringing the great bell plays a 97.5 s finale: the player is locked to look-only, the bell swings, the scripted Warden climbs into sight within about 3.5 s, lifts its mask, and the picture goes black. The last view is through the mask from the courtyard wall top at 70 mm as a villager comes in with the player's candle. End cards, 40 s of skippable credits, then the menu with the save deleted. The cinematics are Level Sequences (`LS_LB_Intro`, `LS_LB_Finale`) with labelled markers carried out by `ULBCinematicSubsystem`; the sequences are built headless by `Tools/cine/p17_sequences.py`. The Warden is now V11.1. Phase 17 adds 24 tests to the earlier 175 (suite 199/199 at the last recorded full run).
+
+**Open, for the owner and the final gates:**
+- **Not validated yet:** the final full suite with Unreal closed (the last recorded run, 199/199, is from 3ebb5d7, before the mask moment, the villager and the candle were built), the Game target build, the P17-8 QA pass and the owner's play-through.
+- **Needs the owner's eyes:** the mask-view look, the villager's colour (R-86) and the credits list.
+- **Carried to later phases:** the GPU cost of the cinematic shots (Phase 20, `PERFORMANCE_BUDGET`), the skip prompt's key glyphs and the restyled cards and credits (Phase 18), R-77 part 2 (the pause menu and the bell, Phase 18).
+- **Offered for deletion at review:** `BP_EndingTrigger`, `WBP_Ending`, the old `M_Warden_*` materials and `WSpawn_Tower`.
+
+**Status 2026-11-11: PHASE 17 READY FOR YOUR REVIEW**, pending the final suite and the Game build. Work stops here until the owner reviews and approves; Phase 18 is not started.
 
 ## Deferred to Phase 14–15 (Lighting, VFX: storm work)
 Items the owner asked to fold into the storm pass. **Foliage wind is now in Phase 14** (P14 section 6, D-096: `MPC_LB_Storm` replaces the planned `MPC_LB_Wind`).
