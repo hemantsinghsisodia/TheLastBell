@@ -487,6 +487,16 @@ Already sounding from the tags, with no markers needed:
 - **Registry and credits:** three rows in `ASSET_REGISTRY` (Freesound IDs 330599, 610534, 839571, CC0, the prep noted). Then regenerate the credits with `make_credits.py`; Dasgoat, szegvari and CVLTIV8R appear under Freesound. Then update `DA_Cinematics` with `p17_assets.py`.
 - **The owner tunes** the levels and windows in the next finale and intro look.
 
+### 3.5 Warden V11.1 and slower movement (owner, 2026-11-11)
+- **The new asset:** `C:\Hemant\Prj\Learning\Warden\output\warden_art_v11_1` (read-only). W0 surveys it, then a written integration step replaces the current Warden (route chosen from W0). This unblocks F0 item 6, F0b, P17-3 and 5a-2.
+- **Slower movement** (owner: "keep the hand, legs and turn movement of warden slower than it is right now"), tuned **after** the V11.1 swap and checked by the owner in PIE:
+  - the AI Warden's locomotion and idle playback rate (the hands and legs);
+  - the turn-in-place montage rate and its rotation rate;
+  - `ALBWardenApparition`'s `WalkTurnDegreesPerSecond`;
+  - in the finale, the figure's walk speed and corner turns, re-timed with the same 3.2b arrival rule (in sight in under 5 s).
+
+  Exact values come in the integration plan, from the current numbers.
+
 ### 3.3 Cards and styles (`DA_Cinematics.Cards`)
 | Id | Text | Style | Hold (s) | Fade (s) |
 |---|---|---|---|---|
