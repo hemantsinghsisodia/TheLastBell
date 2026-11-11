@@ -74,6 +74,9 @@ public:
 	/** A modal question on top of the stack. */
 	ULBMenuWidgetBase* ShowConfirm(const FLBConfirmRequest& Request);
 
+	/** A short notice on top of the stack (OK / Back both close it). */
+	ULBMenuWidgetBase* ShowMessage(const FText& Title, const FText& Message);
+
 	void OpenSettings();
 	void OpenCredits();
 	/** bFirstLaunch: Back is ignored and Confirm marks the brightness as calibrated. */

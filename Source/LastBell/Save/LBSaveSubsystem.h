@@ -59,6 +59,9 @@ public:
 	UFUNCTION(BlueprintPure, Category = "LastBell|Save")
 	bool HasPendingRestore() const { return bPendingRestore; }
 
+	/** Test hook: marks a checkpoint restore as pending (or not) without travelling, so a test can check what refuses while one is. */
+	void SetPendingRestoreForTest(bool bPending) { bPendingRestore = bPending; }
+
 	UFUNCTION(BlueprintPure, Category = "LastBell|Save")
 	FTransform GetPendingTransform() const { return PendingTransform; }
 

@@ -31,6 +31,12 @@ private:
 	UFUNCTION()
 	void HandleLanded(const FHitResult& Hit);
 
+	void HandleUserSettingsChanged();
+	/** Writes the user's FOV (plus the sprint widening) and the motion blur / film grain overrides to the camera. Called each tick and on a settings change. */
+	void ApplyUserCameraSettings();
+
+	FDelegateHandle SettingsHandle;
+
 	TWeakObjectPtr<ALBCharacter> Character;
 	TWeakObjectPtr<UCameraComponent> Camera;
 	TWeakObjectPtr<const ULBPlayerTuningData> Tuning;

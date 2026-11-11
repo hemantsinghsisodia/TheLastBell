@@ -38,10 +38,14 @@ void ULBCameraFeelComponent::BeginPlay()
 	}
 	StandingHalfHeight = Owner->GetDefaultHalfHeight();
 	Owner->LandedDelegate.AddDynamic(this, &ULBCameraFeelComponent::HandleLanded);
+	// A settings change (the pause menu's Accessibility tab) applies at once: this component does not tick while the game is paused.
+	SettingsHandle = ULBUserSettings::OnUserSettingsChanged().AddUObject(this, &ULBCameraFeelComponent::HandleUserSettingsChanged);
 }
 
 void ULBCameraFeelComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
+	ULBUserSettings::OnUserSettingsChanged().Remove(SettingsHandle);
+	SettingsHandle.Reset();
 	if (ALBCharacter* Owner = Character.Get())
 	{
 		Owner->LandedDelegate.RemoveDynamic(this, &ULBCameraFeelComponent::HandleLanded);
@@ -63,6 +67,49 @@ void ULBCameraFeelComponent::HandleLanded(const FHitResult& Hit)
 	{
 		DipElapsed = 0.f;
 		bDipActive = true;
+	}
+}
+
+void ULBCameraFeelComponent::HandleUserSettingsChanged()
+{
+	ApplyUserCameraSettings();
+}
+
+void ULBCameraFeelComponent::ApplyUserCameraSettings()
+{
+	UCameraComponent* Cam = Camera.Get();
+	const ULBPlayerTuningData* T = Tuning.Get();
+	if (!Cam || !T)
+	{
+		return;
+	}
+	constexpr float ApplyEpsilon = 0.001f;
+	const ULBUserSettings* Settings = ULBUserSettings::Get();
+
+	// The user's base FOV (P18, 70..110; the default 90 is the camera's FOV from before Phase 18), then the sprint widening on top.
+	const float UserFOV = Settings ? LBUILogic::ClampFOV(Settings->FieldOfView) : BaseFOV;
+
+	// Motion blur and film grain are overrides on this camera's own post-process settings; the level volumes are untouched. Film grain on
+	// leaves the level's value alone (the override is removed); off forces it to 0. Motion blur on forces the engine default amount, off forces 0.
+	const bool bWantBlur = Settings && Settings->bMotionBlur;
+	const bool bWantGrain = !Settings || Settings->bFilmGrain;
+	if (!bAppliedPostProcess || bWantBlur != bAppliedMotionBlur || bWantGrain != bAppliedFilmGrain)
+	{
+		FPostProcessSettings& PostProcess = Cam->PostProcessSettings;
+		PostProcess.bOverride_MotionBlurAmount = true;
+		PostProcess.MotionBlurAmount = bWantBlur ? 0.5f : 0.f;
+		PostProcess.bOverride_FilmGrainIntensity = !bWantGrain;
+		PostProcess.FilmGrainIntensity = 0.f;
+		bAppliedMotionBlur = bWantBlur;
+		bAppliedFilmGrain = bWantGrain;
+		bAppliedPostProcess = true;
+	}
+
+	const float NewFOV = UserFOV + T->SprintFOVDelta * FMath::SmoothStep(0.f, 1.f, SprintAlpha);
+	if (!bHasApplied || !FMath::IsNearlyEqual(NewFOV, LastAppliedFOV, ApplyEpsilon))
+	{
+		Cam->SetFieldOfView(NewFOV);
+		LastAppliedFOV = NewFOV;
 	}
 }
 
@@ -157,32 +204,8 @@ void ULBCameraFeelComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 		LastAppliedLocation = NewLocation;
 	}
 
-	// The user's base FOV (P18, 70..110; the default 90 is the camera's FOV from before Phase 18), then the sprint widening on top.
-	const float UserFOV = Settings ? LBUILogic::ClampFOV(Settings->FieldOfView) : BaseFOV;
-
-	// Motion blur and film grain are overrides on this camera's own post-process settings; the level volumes are untouched. Film grain on
-	// leaves the level's value alone (the override is removed); off forces it to 0. Motion blur on forces the engine default amount, off forces 0.
-	const bool bWantBlur = Settings && Settings->bMotionBlur;
-	const bool bWantGrain = !Settings || Settings->bFilmGrain;
-	if (!bAppliedPostProcess || bWantBlur != bAppliedMotionBlur || bWantGrain != bAppliedFilmGrain)
-	{
-		FPostProcessSettings& PostProcess = Cam->PostProcessSettings;
-		PostProcess.bOverride_MotionBlurAmount = true;
-		PostProcess.MotionBlurAmount = bWantBlur ? 0.5f : 0.f;
-		PostProcess.bOverride_FilmGrainIntensity = !bWantGrain;
-		PostProcess.FilmGrainIntensity = 0.f;
-		bAppliedMotionBlur = bWantBlur;
-		bAppliedFilmGrain = bWantGrain;
-		bAppliedPostProcess = true;
-	}
-
-	// Sprint FOV.
+	// Sprint FOV: the ease runs here; the user's FOV, motion blur and film grain are applied by ApplyUserCameraSettings (also on a settings change).
 	SprintAlpha = FMath::FInterpConstantTo(SprintAlpha, Gait == ELBGait::Sprint ? 1.f : 0.f, DeltaTime, 1.f / FMath::Max(T->SprintFOVEaseTime, KINDA_SMALL_NUMBER));
-	const float NewFOV = UserFOV + T->SprintFOVDelta * FMath::SmoothStep(0.f, 1.f, SprintAlpha);
-	if (!bHasApplied || !FMath::IsNearlyEqual(NewFOV, LastAppliedFOV, ApplyEpsilon))
-	{
-		Cam->SetFieldOfView(NewFOV);
-		LastAppliedFOV = NewFOV;
-	}
+	ApplyUserCameraSettings();
 	bHasApplied = true;
 }

@@ -105,8 +105,6 @@ void ULBSaveSubsystem::NewGame(const FString& MapName)
 	PlayTimeBase = 0.f;
 	PlayTimeSegmentStart = FPlatformTime::Seconds();
 	bTravelPending = true;
-	// P18: the black loading screen with the candle for menu -> game (a death with no save also lands here).
-	LBLoadingScreen::ArmForTravel();
 	UGameplayStatics::OpenLevel(GetGameInstance(), FName(*MapName));
 }
 
@@ -340,7 +338,14 @@ void ULBSaveSubsystem::StartNewGame()
 		UE_LOG(LogLB, Error, TEXT("StartNewGame: NewGameMap is not set in Project Settings > The Last Bell"));
 		return;
 	}
+	// P18: the black loading screen with the candle for menu -> game. Only this menu path arms it: NewGame is also what a death with no checkpoint uses.
+	LBLoadingScreen::ArmForTravel();
 	NewGame(Settings->NewGameMap.GetLongPackageName());
+	if (!bTravelPending)
+	{
+		// The new game was refused: nothing will load, so take the screen back.
+		LBLoadingScreen::OnTravelFinished();
+	}
 }
 
 bool ULBSaveSubsystem::ContinueGame()

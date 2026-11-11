@@ -438,6 +438,16 @@ ULBMenuWidgetBase* ULBUISubsystem::ShowConfirm(const FLBConfirmRequest& Request)
 	return Widget;
 }
 
+ULBMenuWidgetBase* ULBUISubsystem::ShowMessage(const FText& Title, const FText& Message)
+{
+	FLBConfirmRequest Request;
+	Request.Title = Title;
+	Request.Message = Message;
+	Request.ConfirmLabel = NSLOCTEXT("LastBellUI", "MessageOK", "OK");
+	Request.CancelLabel = NSLOCTEXT("LastBellUI", "MessageBack", "Back");
+	return ShowConfirm(Request);
+}
+
 void ULBUISubsystem::OpenSettings()
 {
 	PushScreen(ELBScreen::Settings);
@@ -492,8 +502,16 @@ void ULBUISubsystem::StartNewGameFlow()
 		{
 			if (ULBSaveSubsystem* SaveNow = ULBSaveSubsystem::Get(UI->GetUIWorld()))
 			{
-				UI->ClearScreens();
+				// The menu stays until the save subsystem has taken the travel: a refusal (a bad map, a travel already pending) must not leave an empty screen.
 				SaveNow->StartNewGame();
+				if (SaveNow->IsTravelPending())
+				{
+					UI->ClearScreens();
+				}
+				else
+				{
+					UI->ShowMessage(NSLOCTEXT("LastBellUI", "NewGameFailedTitle", "New Game"), NSLOCTEXT("LastBellUI", "NewGameFailedMessage", "The game could not be started. Please try again."));
+				}
 			}
 		}
 	};
@@ -516,10 +534,15 @@ void ULBUISubsystem::ContinueFlow()
 {
 	if (ULBSaveSubsystem* Save = ULBSaveSubsystem::Get(GetUIWorld()))
 	{
-		ClearScreens();
-		if (!Save->ContinueGame())
+		// Only once the save subsystem has accepted: a missing or damaged save keeps the menu and says so.
+		if (Save->ContinueGame())
+		{
+			ClearScreens();
+		}
+		else
 		{
 			UE_LOG(LogLB, Warning, TEXT("UI: Continue found no valid save"));
+			ShowMessage(NSLOCTEXT("LastBellUI", "ContinueFailedTitle", "Continue"), NSLOCTEXT("LastBellUI", "ContinueFailedMessage", "The saved game could not be loaded."));
 		}
 	}
 }
