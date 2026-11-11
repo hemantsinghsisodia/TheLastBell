@@ -1,0 +1,62 @@
+{
+ "T_LB_Villager_Ranger_BaseColor.png": {
+  "source": "T_Ranger_BaseColor.png",
+  "source_size": [
+   4096,
+   4096
+  ],
+  "mode": "RGB",
+  "darkened": true,
+  "bytes": 1588779
+ },
+ "T_LB_Villager_Ranger_Normal.png": {
+  "source": "T_Ranger_Normal.png",
+  "source_size": [
+   4096,
+   4096
+  ],
+  "mode": "RGB",
+  "darkened": false,
+  "bytes": 3089418
+ },
+ "T_LB_Villager_Ranger_ORM.png": {
+  "source": "T_Ranger_ORM.png",
+  "source_size": [
+   4096,
+   4096
+  ],
+  "mode": "RGB",
+  "darkened": false,
+  "bytes": 2909619
+ },
+ "T_LB_Villager_Skin_BaseColor.png": {
+  "source": "T_Regular_Male_Dark_BaseColor.png",
+  "source_size": [
+   2048,
+   2048
+  ],
+  "mode": "RGB",
+  "darkened": true,
+  "bytes": 699218
+ },
+ "T_LB_Villager_Skin_Normal.png": {
+  "source": "T_Regular_Male_Normal.png",
+  "source_size": [
+   2048,
+   2048
+  ],
+  "mode": "RGBA",
+  "darkened": false,
+  "bytes": 3729701
+ },
+ "T_LB_Villager_Skin_Roughness.png": {
+  "source": "T_Regular_Male_Roughness.png",
+  "source_size": [
+   2048,
+   2048
+  ],
+  "mode": "RGB",
+  "darkened": false,
+  "bytes": 2351774
+ }
+}
