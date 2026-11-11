@@ -24,6 +24,8 @@
 #include "MovieScene.h"
 #include "Sections/MovieSceneFadeSection.h"
 #include "Tracks/MovieSceneFadeTrack.h"
+#include "HAL/ThreadSafeCounter.h"
+#include "Misc/OutputDeviceRedirector.h"
 #include "Misc/PackageName.h"
 #include "Save/LBCheckpoint.h"
 #include "Save/LBSaveSubsystem.h"
@@ -37,8 +39,8 @@
 //
 // Content-free tests (NoCheckpointDuringCinematic, DisabledByCVar, MissingSequenceFailsSafe, BellSwingPieces) load L_Test_Warden and play a
 // transient ULevelSequence built here (marked frames through UMovieScene::AddMarkedFrame), handed over with OverrideSettings + Rearm, so they
-// need none of the LS_LB_* sequences or DA_Cinematics. The others open L_Monastery and need the content of P17-2 to P17-5b: they are EXPECTED
-// TO FAIL until it exists (Monastery.CinematicSetup, IntroOnNewGame, NoIntroOnContinue, IntroSkip, FinaleOnBell, BellSwingsOnStrike).
+// need none of the LS_LB_* sequences or DA_Cinematics (CheckpointSavesAfterCinematic is content-free too). The others open L_Monastery and need the content of P17-2 to P17-5b: they are EXPECTED
+// TO FAIL until it exists (Monastery.CinematicSetup, IntroOnNewGame, NoIntroOnContinue, IntroSkip, FinaleOnBell, FinaleCreditsRunOut, BellSwingsOnStrike).
 // lb.Warden.Enabled is 0 for the sessions; lb.Cine.Enabled and lb.Cine.Rate are put back afterwards.
 
 #define LB_CINEFUNC_FLAGS (EAutomationTestFlags::EditorContext | EAutomationTestFlags::ProductFilter)
@@ -85,9 +87,32 @@ namespace LBCineTest
 		int32 Previous = 0;
 	};
 
+	/** Counts the LogLB lines that contain a text (the save subsystem logs one line per SaveCheckpoint). Registered for its lifetime. */
+	class FSaveLogCounter : public FOutputDevice
+	{
+	public:
+		explicit FSaveLogCounter(const FString& InNeedle) : Needle(InNeedle) { GLog->AddOutputDevice(this); }
+		virtual ~FSaveLogCounter() override { GLog->RemoveOutputDevice(this); }
+
+		virtual void Serialize(const TCHAR* V, ELogVerbosity::Type Verbosity, const FName& Category) override
+		{
+			if (Category == TEXT("LogLB") && FCString::Strstr(V, *Needle) != nullptr)
+			{
+				Counter.Increment();
+			}
+		}
+
+		int32 Count() const { return Counter.GetValue(); }
+
+	private:
+		FString Needle;
+		FThreadSafeCounter Counter;
+	};
+
 	struct FCineState
 	{
 		TSharedPtr<FNoEndGuard> NoEnd;
+		TSharedPtr<FSaveLogCounter> SaveLog;
 		TStrongObjectPtr<ULBCinematicSettings> Settings;
 		TArray<TStrongObjectPtr<ULevelSequence>> Sequences;
 		TArray<FString> Fired;
@@ -385,6 +410,122 @@ bool FLBCineNoCheckpointDuringCinematicTest::RunTest(const FString& Parameters)
 		{
 			Test->TestTrue(TEXT("The checkpoint can save again"), Checkpoint->CanSaveNow());
 		}
+		return true;
+	}, 60.f);
+
+	Enqueue(R);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBCineCheckpointSavesAfterCinematicTest, "LastBell.Functional.Cine.CheckpointSavesAfterCinematic", LB_CINEFUNC_FLAGS)
+bool FLBCineCheckpointSavesAfterCinematicTest::RunTest(const FString& Parameters)
+{
+	// M1 (P17-8): a checkpoint refused because a cinematic plays saves once when the cinematic ends, even if the player has left its box
+	// (CP_Approach after an intro that plays to its end).
+	TSharedRef<FCineRunner> R = StartSession(this, GCineTestMap, /*bCineEnabled*/ true, /*Rate*/ 1.f);
+	const TSharedRef<FCineState> S = R->S;
+	FAutomationTestBase* Test = this;
+	AddReady(*R);
+
+	R->Add(TEXT("The player enters a checkpoint during the cinematic (refused), leaves, the cinematic ends: exactly one save, right after the end"), [S, Test](FCineCtx& C)
+	{
+		static const FName CheckpointName(TEXT("CP_CineAfter"));
+		static const FVector FarAway(0.0, 0.0, -90000.0);
+		ULBCinematicSubsystem* Sub = Cine(C.W);
+		ULBSaveSubsystem* Save = ULBSaveSubsystem::Get(C.W);
+		ALBCheckpoint* Checkpoint = Cast<ALBCheckpoint>(S->Actors.IsValidIndex(0) ? S->Actors[0].Get() : nullptr);
+		if (!Sub || !Save)
+		{
+			Test->AddError(TEXT("The cinematic or the save subsystem is missing"));
+			return true;
+		}
+		if (S->Phase == 0)
+		{
+			// 4 s sequence. The player stays where it is: the checkpoint's box is moved onto the player and off again.
+			FLBCinematicDef Def;
+			Def.Id = TEXT("Test");
+			Def.InitialLock = ELBInputLock::None;
+			Def.Sequence = MakeSequence(*S, 4.0, { { 3.5, TEXT("tag:State.Test.Door1Open") } });
+			Sub->OverrideSettings(MakeSettings(*S, Def));
+			Sub->Rearm();
+
+			S->SaveLog = MakeShared<FSaveLogCounter>(FString::Printf(TEXT("SaveCheckpoint '%s'"), *CheckpointName.ToString()));
+			Checkpoint = C.W->SpawnActor<ALBCheckpoint>(FarAway, FRotator::ZeroRotator);
+			if (!Test->TestNotNull(TEXT("A checkpoint was spawned"), Checkpoint))
+			{
+				return true;
+			}
+			Checkpoint->CheckpointId = CheckpointName;
+			S->Actors.Add(Checkpoint);
+			Test->TestFalse(TEXT("The checkpoint has not saved yet"), Save->HasReachedCheckpoint(CheckpointName));
+			if (!Test->TestTrue(TEXT("Play starts the cinematic"), Sub->Play(TEXT("Test"))))
+			{
+				return true;
+			}
+			S->T0 = C.Now;
+			S->Phase = 1;
+			return false;
+		}
+		if (!Checkpoint)
+		{
+			Test->AddError(TEXT("The checkpoint is gone"));
+			return true;
+		}
+		if (S->Phase == 1)
+		{
+			if (C.Now - S->T0 < 0.3)
+			{
+				return false;
+			}
+			// Enter: the player stands still, the checkpoint's box is brought onto it.
+			Checkpoint->SetActorLocation(LBPie::Pawn()->GetActorLocation());
+			S->Phase = 2;
+			return false;
+		}
+		if (S->Phase == 2)
+		{
+			if (C.Now - S->T0 < 0.9)
+			{
+				return false;
+			}
+			Test->TestTrue(TEXT("The cinematic is still playing"), Sub->IsPlaying());
+			Test->TestTrue(TEXT("The player is inside the checkpoint's box"), Checkpoint->IsOverlappingActor(LBPie::Pawn()));
+			Test->TestFalse(TEXT("The checkpoint is refused during the cinematic"), Checkpoint->CanSaveNow());
+			Test->TestFalse(TEXT("...and has not reached its save"), Save->HasReachedCheckpoint(CheckpointName));
+			Test->TestEqual(TEXT("...and nothing was saved during the cinematic (inside the box)"), S->SaveLog->Count(), 0);
+			// Leave: the box goes away while the cinematic still has about 3 s to run.
+			Checkpoint->SetActorLocation(FarAway);
+			S->Phase = 3;
+			return false;
+		}
+		if (S->Phase == 3)
+		{
+			if (Sub->IsPlaying())
+			{
+				if (C.Now - S->T0 >= 1.9 && !S->bFlagA)
+				{
+					S->bFlagA = true;
+					Test->TestFalse(TEXT("The player has left the box"), Checkpoint->IsOverlappingActor(LBPie::Pawn()));
+					Test->TestEqual(TEXT("Nothing was saved after the player left, while the cinematic still plays"), S->SaveLog->Count(), 0);
+					Test->TestFalse(TEXT("...the checkpoint has not saved"), Save->HasReachedCheckpoint(CheckpointName));
+				}
+				return false;
+			}
+			Test->TestTrue(TEXT("The previous check ran before the cinematic ended"), S->bFlagA);
+			Test->TestTrue(TEXT("The checkpoint has saved as the cinematic ended"), Save->HasReachedCheckpoint(CheckpointName));
+			Test->TestEqual(TEXT("...with exactly one save"), S->SaveLog->Count(), 1);
+			Test->TestFalse(TEXT("The player is still outside the box"), Checkpoint->IsOverlappingActor(LBPie::Pawn()));
+			S->T0 = C.Now;
+			S->Phase = 4;
+			return false;
+		}
+		// Phase 4: no second save.
+		if (C.Now - S->T0 < 1.5)
+		{
+			return false;
+		}
+		Test->TestEqual(TEXT("Still exactly one save 1.5 s later"), S->SaveLog->Count(), 1);
+		S->SaveLog.Reset();
 		return true;
 	}, 60.f);
 
@@ -1258,6 +1399,74 @@ bool FLBCineFinaleOnBellTest::RunTest(const FString& Parameters)
 		Test->TestFalse(TEXT("The save is gone"), MenuSave && MenuSave->HasValidSave());
 		return true;
 	}, 150.f);
+
+	Enqueue(R);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FLBCineFinaleCreditsRunOutTest, "LastBell.Functional.Cine.FinaleCreditsRunOut", LB_CINEFUNC_FLAGS)
+bool FLBCineFinaleCreditsRunOutTest::RunTest(const FString& Parameters)
+{
+	if (!FPackageName::DoesPackageExist(GCineMonasteryMap))
+	{
+		AddWarning(TEXT("L_Monastery does not exist: FinaleCreditsRunOut is skipped"));
+		return true;
+	}
+	// The same as FinaleOnBell but never skipped: the credits run out on their own, !end runs with lb.Cine.NoEnd 0 and the game completes.
+	TSharedRef<FCineRunner> R = StartSession(this, GCineMonasteryMap, /*bCineEnabled*/ false, /*Rate*/ 8.f);
+	const TSharedRef<FCineState> S = R->S;
+	FAutomationTestBase* Test = this;
+	AddReady(*R);
+
+	R->Add(TEXT("State.Event.Finale with lb.Cine.NoEnd 0 and no skip: the credits roll and run out, CompleteGame travels to L_MainMenu, the save is gone"), [S, Test](FCineCtx& C)
+	{
+		if (S->Phase == 2)
+		{
+			if (LBPie::MapShortName() != GCineMainMenuMap)
+			{
+				return false;
+			}
+			const ULBSaveSubsystem* MenuSave = ULBSaveSubsystem::Get(LBPie::World());
+			Test->TestTrue(TEXT("CompleteGame travelled to L_MainMenu"), MenuSave != nullptr);
+			Test->TestFalse(TEXT("The save is gone"), MenuSave && MenuSave->HasValidSave());
+			S->NoEnd.Reset();
+			return true;
+		}
+		ULBCinematicSubsystem* Sub = Cine(C.W);
+		ULBSaveSubsystem* Save = ULBSaveSubsystem::Get(C.W);
+		if (!Sub || !Save)
+		{
+			if (S->Phase == 1 && S->bFlagA)
+			{
+				S->Phase = 2; // the old world is already going away: the travel has started
+				return false;
+			}
+			Test->AddError(TEXT("The cinematic or the save subsystem is missing"));
+			return true;
+		}
+		if (S->Phase == 0)
+		{
+			S->NoEnd = MakeShared<FNoEndGuard>(0);
+			Save->SaveCheckpoint(TEXT("CP_TowerTop"), LBPie::Pawn()->GetActorTransform());
+			Test->TestTrue(TEXT("There is a save to be deleted"), Save->HasValidSave());
+			SetCVar(TEXT("lb.Cine.Enabled"), 1.f);
+			ULBWorldStateSubsystem::Get(C.W)->AddState(LBPie::Tag(TEXT("State.Event.Finale")));
+			Test->TestTrue(TEXT("The Finale plays"), Sub->IsPlaying() && Sub->GetActiveId() == FName(TEXT("Finale")));
+			S->Phase = 1;
+			return false;
+		}
+		// Phase 1: RequestSkip is never called. The sequence and the credits end by themselves, then !end completes the game.
+		if (Sub->IsCreditsRolling())
+		{
+			S->bFlagA = true;
+		}
+		if (!Sub->IsPlaying())
+		{
+			Test->TestTrue(TEXT("The credits were seen rolling before the run ended"), S->bFlagA);
+			S->Phase = 2;
+		}
+		return false;
+	}, 200.f);
 
 	Enqueue(R);
 	return true;

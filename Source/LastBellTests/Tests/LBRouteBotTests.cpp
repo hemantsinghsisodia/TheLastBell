@@ -251,7 +251,8 @@ bool FLBRouteBotMonasteryTest::RunTest(const FString& Parameters)
 	StartPie(GMonasteryMap);
 
 	TSharedRef<FMonasteryContext> Ctx = MakeShared<FMonasteryContext>();
-	// P17: the intro and the finale play for real, at 8x. With no DA_Cinematics (today) nothing plays and the old EndingTrigger still travels.
+	// P17: the intro and the finale play for real, at 8x. The old EndingTrigger is gone (P17-5b): the ending is the Finale cinematic, which
+	// travels through CompleteGame. With DA_Cinematics unlinked nothing would play or travel, and the ending step would time out.
 	Ctx->Rate = MakeShared<LBPie::FCineRate>(8.f);
 	FLBRouteBot::FConfig ToTower;
 	const int32 ClimbTowerIndex = FindClimbTowerIndex();
@@ -324,8 +325,8 @@ bool FLBRouteBotMonasteryTest::RunTest(const FString& Parameters)
 	// 4. Through the finale
 	Steps.Add(BotStep(TEXT("Route through State.Event.Finale"), FinaleBot, 400.f, [Ctx]() { Ctx->FinaleTime = FPlatformTime::Seconds(); }));
 
-	// 5. Ending: within 60 s of the ring the game is at the main menu with the save wiped. If the finale cinematic plays, it is skipped once
-	// the credits are skippable; without it, the old EndingTrigger travels by itself.
+	// 5. Ending: within 60 s of the ring the game is at the main menu with the save wiped. The finale cinematic is skipped once the credits are
+	// skippable (the natural run-out is covered by LastBell.Functional.Cine.FinaleCreditsRunOut).
 	Steps.Add({ TEXT("Ending returns to main menu"), 120.f, [this, Ctx](FLBStepRunner& R)
 	{
 		if (LBPie::MapShortName() != GMainMenuMap)

@@ -223,7 +223,8 @@ namespace
 
 		FAutomationTestBase* Test;
 		// P17 (R-82): this test checks that input works after New Game (D-033). The intro would hold the player under a Full input lock for
-		// its first 29 s, so it is off here; LastBell.Functional.Cine.IntroOnNewGame covers the real New Game flow with the intro.
+		// its first 29 s, so it is off here. LastBell.Functional.Cine.IntroOnNewGame starts PIE directly on L_Monastery and covers only the intro and
+		// its end; no test drives menu -> New Game -> travel -> intro.
 		LBPie::FCineSwitch CineOff{ false };
 		EPhase Phase = EPhase::MenuReady;
 		bool bStarted = false;
