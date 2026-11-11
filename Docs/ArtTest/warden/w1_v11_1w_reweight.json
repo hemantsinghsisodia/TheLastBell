@@ -509,5 +509,156 @@
    }
   },
   "gate_passed": true
+ },
+ "w5_final_exports": {
+  "mesh": "C:/Hemant/Prj/Learning/TheLastBell/SourceArt/Warden/V11_1w/exports/SK_Warden_LOD0.fbx",
+  "mesh_md5": "2be0a6bcc8eb0d5cb8cf2059a2663007",
+  "clips": {
+   "MutantWalking": {
+    "frames": 45,
+    "wool_edges": 39951,
+    "vertices": 48538,
+    "max_ratio": 16.15549442140351,
+    "worst_frame_share_gt_1.5": 0.037070411253785886,
+    "union_share_gt_1.5": 0.05852168906910966,
+    "edges_ever_gt_1.5": 2338,
+    "p99.9_of_per_edge_max": 6.806207016219706,
+    "p99_of_per_edge_max": 3.1510073334040403,
+    "band_max_ratio": {
+     "hem_z<0.6": 7.229578744920241,
+     "robe_0.6-1.57": 16.15549442140351,
+     "upper_z>=1.57": 16.090108092393244
+    },
+    "band_worst_frame_share_gt_1.5": {
+     "hem_z<0.6": 0.046170883380185705,
+     "robe_0.6-1.57": 0.03529250205987366,
+     "upper_z>=1.57": 0.037148300117233295
+    },
+    "worst": {
+     "ratio": 16.15549442140351,
+     "frame": 19,
+     "rest_length_cm": 9.5367431640625e-07,
+     "mid_rest_xyz": [
+      -23.111589431762695,
+      -15.387836933135986,
+      148.96902465820312
+     ],
+     "mid_height_m": 1.4892038081075347
+    }
+   },
+   "MutantRun": {
+    "frames": 28,
+    "wool_edges": 39951,
+    "vertices": 48538,
+    "max_ratio": 17.640740781866302,
+    "worst_frame_share_gt_1.5": 0.039873845460689346,
+    "union_share_gt_1.5": 0.06255162574153338,
+    "edges_ever_gt_1.5": 2499,
+    "p99.9_of_per_edge_max": 7.492648379858958,
+    "p99_of_per_edge_max": 3.5197943018548807,
+    "band_max_ratio": {
+     "hem_z<0.6": 6.869952061373359,
+     "robe_0.6-1.57": 16.15549442140351,
+     "upper_z>=1.57": 17.640740781866302
+    },
+    "band_worst_frame_share_gt_1.5": {
+     "hem_z<0.6": 0.04455234687792827,
+     "robe_0.6-1.57": 0.04669046965119473,
+     "upper_z>=1.57": 0.04337631887456037
+    },
+    "worst": {
+     "ratio": 17.640740781866302,
+     "frame": 20,
+     "rest_length_cm": 1.6443862661458053,
+     "mid_rest_xyz": [
+      -11.889886856079102,
+      -42.61048698425293,
+      228.5928497314453
+     ],
+     "mid_height_m": 2.2851820578626323
+    }
+   },
+   "CrouchedWalking": {
+    "frames": 33,
+    "wool_edges": 39951,
+    "vertices": 48538,
+    "max_ratio": 30.67100325253216,
+    "worst_frame_share_gt_1.5": 0.04107531726364797,
+    "union_share_gt_1.5": 0.05236414607894671,
+    "edges_ever_gt_1.5": 2092,
+    "p99.9_of_per_edge_max": 10.002680853598402,
+    "p99_of_per_edge_max": 3.3699836116358033,
+    "band_max_ratio": {
+     "hem_z<0.6": 6.9974080286098586,
+     "robe_0.6-1.57": 16.61324772583615,
+     "upper_z>=1.57": 30.67100325253216
+    },
+    "band_worst_frame_share_gt_1.5": {
+     "hem_z<0.6": 0.035692989181361275,
+     "robe_0.6-1.57": 0.050878879428728374,
+     "upper_z>=1.57": 0.03773446658851114
+    },
+    "worst": {
+     "ratio": 30.67100325253216,
+     "frame": 23,
+     "rest_length_cm": 0.9925429670761561,
+     "mid_rest_xyz": [
+      11.10208797454834,
+      -43.59956359863281,
+      232.9210205078125
+     ],
+     "mid_height_m": 2.3284496325621005
+    }
+   },
+   "ZombieAttack": {
+    "frames": 81,
+    "wool_edges": 39951,
+    "vertices": 48538,
+    "max_ratio": 33.05105647698515,
+    "worst_frame_share_gt_1.5": 0.04773347350504368,
+    "union_share_gt_1.5": 0.07464143575880454,
+    "edges_ever_gt_1.5": 2982,
+    "p99.9_of_per_edge_max": 10.412234012587902,
+    "p99_of_per_edge_max": 3.9006886124996845,
+    "band_max_ratio": {
+     "hem_z<0.6": 6.638078196075427,
+     "robe_0.6-1.57": 17.88854381999832,
+     "upper_z>=1.57": 33.05105647698515
+    },
+    "band_worst_frame_share_gt_1.5": {
+     "hem_z<0.6": 0.031263310333077776,
+     "robe_0.6-1.57": 0.052801428179071686,
+     "upper_z>=1.57": 0.07173212192262603
+    },
+    "worst": {
+     "ratio": 33.05105647698515,
+     "frame": 17,
+     "rest_length_cm": 0.9925429670761561,
+     "mid_rest_xyz": [
+      11.10208797454834,
+      -43.59956359863281,
+      232.9210205078125
+     ],
+     "mid_height_m": 2.3284496325621005
+    }
+   }
+  },
+  "overall": {
+   "max_ratio": 33.05105647698515,
+   "worst_frame_share_gt_1.5": 0.04773347350504368,
+   "union_share_gt_1.5": 0.07464143575880454
+  },
+  "pass": false,
+  "pass_strict_union": false
+ },
+ "w5_remeasure": {
+  "mesh": "SourceArt/Warden/V11_1w/exports/SK_Warden_LOD0.fbx (the W2 export by the owner's export.py)",
+  "max_ratio": {
+   "MutantWalking": 16.2,
+   "MutantRun": 17.6,
+   "CrouchedWalking": 30.7,
+   "ZombieAttack": 33.1
+  },
+  "same_as_W1": true
  }
 }

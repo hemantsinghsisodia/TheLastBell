@@ -1,0 +1,19 @@
+{
+ "command": "Tools\build_and_test.ps1 (Unreal closed)",
+ "build": "Succeeded",
+ "tests_passed": 199,
+ "tests_failed": 0,
+ "invalid_tags": 0,
+ "stall_lines": [
+  "one 'very large delta of 3.00 seconds' line (the kind earlier runs also print, not a stall)"
+ ],
+ "warden_tests_named": [
+  "LastBell.Functional.Warden.Tell.MaskGlowFollowsState",
+  "LastBell.Functional.Warden.Apparition.* (7 tests)"
+ ],
+ "headless_checks": {
+  "w5_check.json": "26/26 (8 slots, materials, mask socket, 110 bones, TellGlow, clips, nothing dirty)",
+  "w5_check_apparition.json": "SM_LB_Warden_Apparition: 7363 tris, 2 slots, no Nanite, no collision, not dirty"
+ },
+ "stretch_remeasure": "w1_v11_1w_reweight.json key w5_remeasure: 16.2 / 17.6 / 30.7 / 33.1"
+}
