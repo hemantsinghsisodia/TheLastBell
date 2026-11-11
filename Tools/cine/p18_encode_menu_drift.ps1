@@ -29,6 +29,7 @@ if ($files[-1].Name -match '^(.*?)(\d+)\.png$') { $last = [int]$Matches[2] }
 Write-Host ("{0} frames, {1} .. {2}, pattern {3}%0{4}d.png" -f $files.Count, $first, $last, $prefix, $pad)
 if ($first -ne 0) { throw "the sequence starts at frame $first, not 0" }
 if (($last - $first + 1) -ne $files.Count) { throw "the sequence has gaps ($($files.Count) files for frames $first..$last)" }
+if ($files.Count -gt 1 -and (($files | Select-Object -ExpandProperty Length -Unique | Measure-Object).Count -eq 1)) { throw "every PNG has the same size ($($files[0].Length) bytes): the frames are blank (black). Not encoding." }
 $expected = if ($Test) { $files.Count } else { 1200 }
 if ($files.Count -ne $expected) { throw "expected $expected frames, found $($files.Count) (use -Test for a partial run)" }
 

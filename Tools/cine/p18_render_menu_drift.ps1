@@ -65,6 +65,10 @@ $ueArgs = @(
     "/Engine/Maps/Entry?game=/Script/MovieRenderPipelineCore.MoviePipelineGameMode",
     "-game", "-windowed", "-ResX=1920", "-ResY=1080", "-nohmd", "-NoLoadingScreen", "-nosplash", "-nosound", "-NoP4", "-unattended",
     "-EnablePlugins=MovieRenderPipeline",
+    # The project's cinematic subsystem plays LS_LB_Intro on the first tick of L_Monastery ("New Game") and starts with a black camera fade, which made the first test render black.
+    # lb.Cine.Enabled 0 must be in force before the map's BeginPlay, hence the device-profile CVar (applied at start-up) and ExecCmds (run before the executor loads the map).
+    "-dpcvars=lb.Cine.Enabled=0",
+    "-ExecCmds=`"lb.Cine.Enabled 0`"",
     "-MoviePipelineConfig=`"MovieRenderPipeline/QueueManifest.utxt`"",
     "-forcelogflush", "-log", "-abslog=`"$rlog`""
 )
@@ -82,7 +86,18 @@ $sw.Stop()
 $n = (Get-ChildItem $outDir -Filter *.png -ErrorAction SilentlyContinue | Measure-Object).Count
 Write-Host ("exit code {0}; {1} PNG files in {2}; {3:mm\:ss} elapsed" -f $p.ExitCode, $n, $outDir, $sw.Elapsed)
 if ($n -gt 0) { Write-Host ("about {0:N2} s per frame including start-up" -f ($sw.Elapsed.TotalSeconds / $n)) }
+# --- checks on the log and the frames
+$bad = $false
+if (Test-Path $rlog) {
+    $cine = Select-String -CaseSensitive -Path $rlog -Pattern "LogLB: Cine: (play |.* will start)" | Select-Object -First 3
+    if ($cine) { Write-Warning "the project's cinematic subsystem started a cinematic during the render (black fade, wrong camera): lb.Cine.Enabled 0 did not take effect."; $cine | ForEach-Object { Write-Warning $_.Line }; $bad = $true }
+    $crash = Select-String -Path $rlog -Pattern "Critical error|Unhandled Exception" | Select-Object -First 1
+    if ($crash) { Write-Warning ("the render process crashed: " + $crash.Line + " (if all frames are on disk this may be a shutdown crash, see Docs\ArtTest\cine\p18_menu_drift.md)") }
+}
+$pngs = Get-ChildItem $outDir -Filter *.png -ErrorAction SilentlyContinue
+if ($pngs.Count -gt 1 -and (($pngs | Select-Object -ExpandProperty Length -Unique | Measure-Object).Count -eq 1)) { Write-Warning "every PNG has the same size ($($pngs[0].Length) bytes): the frames are blank (black)."; $bad = $true }
 if ($n -ne $expected) { Write-Warning "expected $expected frames, found $n. Read $rlog (look for LogMovieRenderPipeline lines and errors)." ; exit 2 }
 $next = "Tools\cine\p18_encode_menu_drift.ps1"
 if ($Test) { $next += " -Test" }
+if ($bad) { exit 3 }
 Write-Host "done. Next: $next"
