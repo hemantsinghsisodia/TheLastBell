@@ -52,6 +52,35 @@ The player is **a villager from below**, sent up to find out why the bell rang. 
 
 **The ending's meaning (D-114).** You become the Warden. The Warden puts its mask on the player, and the last view, from the wall top where the player first saw the Warden, shows the next villager coming through the gate with a candle: the story loops. The bell rings only "for the one who is meant to hear it" (the traveller's note at the gate, which says no living hand has rung it), and the end card says it rang for you. The opening text, that note and the arrival apparition all set this up.
 
+## Menus and settings, as built (Phase 18, D-126…D-134)
+Keyboard and mouse only (no gamepad). The menus are text in EB Garamond over a slow, looping video of the courtyard in the storm (D-129); the selected item glows like a candle flame. Up and Down (or the mouse) choose an item, Enter, Space or a click uses it, Left and Right change a value, and Escape goes back. Menu clicks and ticks are the only sounds that continue while the game is paused. The architecture is in `TECHNICAL_DESIGN.md` section 18.
+
+**First launch.** The game opens in true fullscreen at the monitor's resolution (D-130). Before the main menu, a **brightness screen** shows a symbol that should be barely visible on a dark field, with a slider and Confirm. It appears once; the Accessibility tab's "Show brightness screen at next launch" brings it back, and Display > Brightness opens it at any time.
+
+**Main menu** (the game's first screen):
+- **Continue**, only when a save exists;
+- **New Game**, which asks "This will erase your progress." when a save exists;
+- **Settings**;
+- **Credits**, the same roll as the ending;
+- **Quit**, which asks first.
+
+Going between the menu and the game shows a black loading screen with the title and a small flickering candle (shown at least 1 s). A reload after dying shows none.
+
+**Pause** (Escape, in play):
+- **Resume**, **Settings**, **Return to main menu** ("Unsaved progress since the last checkpoint will be lost."; the save is kept) and **Quit to desktop** (asks first).
+- The game is truly paused: the world, the Warden, the storm, the thunder and tolls, the music, the bell, and a cinematic with its music all freeze, and Resume (or Escape again) continues exactly where it stopped. The picture behind the menu darkens and blurs.
+- Escape while reading a note closes the note first; the next press pauses. Escape does nothing during the death fade or a level travel, and on the main menu it means Back. Losing the window's focus (alt-tab) pauses a game in play.
+
+**Settings** (five tabs; Tab, Q and E, or PageUp and PageDown switch them):
+- **Graphics:** a quality preset (Low, Medium, High, Epic), each of ten groups on its own (view distance, anti-aliasing, shadows, global illumination, reflections, post-processing, textures, effects, foliage, shading), and the resolution scale (50 to 100 %). "Custom" shows when the groups differ from the preset.
+- **Display:** window mode (Fullscreen, Windowed fullscreen, Windowed), resolution, VSync, the frame-rate limit (30, 60, 90, 120, 144, Unlimited), **Show FPS counter** (a small number at the top right, off by default) and Brightness. Graphics and Display use **Apply** and **Revert**; changing the window mode or the resolution asks "Keep these display settings?" and reverts by itself after 15 s without an answer.
+- **Audio:** six sliders (Master, Effects, Ambience, Music, Voice, Interface), live.
+- **Controls:** mouse sensitivity, invert Y, head bob, and **key rebinding** for Move forward, back, left and right, Sprint, Crouch, Interact, Candle and Pause. Select a row and press the new key; Escape cancels. A key already used is refused with a message, and the mouse buttons cannot be the Pause key. **Reset to defaults** restores everything. The defaults are W, A, S, D, Shift, C (Ctrl always crouches too), E, F and Escape. Notes keep E and the right mouse button to close.
+- **Accessibility:** field of view (70 to 110°, default 90), motion blur (off by default), film grain (on by default), high-contrast prompts (white on a dark plate with an outline) and the brightness screen at next launch.
+- Audio, Controls and Accessibility apply and save at once; everything persists across a restart.
+
+**Key prompts** show the key's icon and follow rebinding: the interact prompt in the HUD, "Hold [key] to skip" in the intro and the finale, and the Controls list.
+
 ## Puzzle rules
 Puzzles are environmental, readable on sight and mechanically simple. Every solution has to be signposted in the space. No arbitrary codes without an in-world source.
 

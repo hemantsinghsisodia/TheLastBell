@@ -215,8 +215,29 @@ The credits gain "Fonts / EB Garamond, Georg Duffner and Octavio Pardo (SIL OFL 
 - **Encoded:** `Content/Movies/LB_MenuDrift.mp4`, H.264 1920×1080 at 30 fps, 40.0 s, 68.7 MB, LFS.
 - **Known:** the render process crashes on the GPU thread at shutdown, after every frame is written (a Niagara dispatch), which is harmless to the output. The script verifies the frame count.
 
+### P18-1 C++ UI framework (2026-11-11)
+- **Built:** `Source/LastBell/UI/` as planned (section 2), plus `LBKeyBindings`, `LBUILogic`, `LBUIBuild` and `LBHUDWidget` (later); `ULBGameInstance`; the `ULBUserSettings` additions; the camera applies the FOV, motion blur and film grain; the pause key and the P16-6 revert (4ce1765, bbf89d2, 36dfe63).
+- **Tests:** the UI unit and functional tests (d1278e3); phase B fixed the first-launch flag (reset by a stale-screen prune before the brightness screen was on the stack), made the test module build without unity and linked UMG and Slate (796e900). The content tests were red until P18-2, as expected.
+- **Changed from the plan:** the loading screen is armed from the save subsystem and cleared by the game instance, not armed from a `PreLoadMap` handler (D-133); the Crouch rebinding is C only, with Ctrl a fixed second key; the HUD became a C++ widget in P18-3 (D-132).
+- **Not validated here:** anything packaged (R-96), and by eye.
+
+### P18-2 Assets and hookup (2026-11-11)
+- **Built, headless (Unreal closed), by `Tools/ui/p18_2_assets.py` (it verifies in the same process, and `LB_MODE=verify` re-checks in a fresh one):** the four EB Garamond fonts (`FF_` faces and `F_` composite fonts, `OFL.txt` beside them), 53 key icons, the brightness symbol and the menu still, `MS_LB_MenuDrift`, `DA_UIStyle`, `IA_Pause` (`trigger_when_paused`), the `IMC_LB_Gameplay` mapping names, `BP_LBPlayerController.PauseAction` and `BP_MenuPlayerController.HUDWidgetClass`, the four UI sounds in `SCL_LB_UI` (via `p16_2_assets.py`), and the credits for the fonts and Kenney (7f6c55d, 9809003, 9bd6bc8).
+- **Config (3b30547):** the `UIStyle` link, non-UFS staging of `Movies` and `LastBell/UI/Fonts`, and Enhanced Input user settings with `IMC_LB_Gameplay` registered through `bRegisterWithUserSettings` (without it rebinding finds no mapping; `Tools/mcp/MCP_NOTES.md`).
+- **Notes for later:** the font importer needs Slate, so the script runs as `-ExecutePythonScript`, not `-run=pythonscript` (`MCP_NOTES.md`).
+
+### P18-3 HUD and key icons (2026-11-11)
+- **Built:** `ULBHUDWidget` replaces `WBP_HUD` and `WBP_Inspect` (crosshair, the prompt with a key icon bound to Interact, the objective, the relight message and the inspection overlay); `BP_LBPlayerController.HUDWidgetClass` set by `Tools/ui/p18_3_assets.py`; the key icon follows rebinding from creation (1154880, eed66c8, D-132). The cinematic widget's restyle and the "Hold [key] to skip" prompt came with P18-1 (bbf89d2).
+- **Test:** `LastBell.Functional.UI.HUD.PromptKeyAndObjective`.
+- **Left in place:** `WBP_HUD`, `WBP_Inspect` and `WBP_MainMenu`, unused, for the owner to approve deleting at the review.
+
 ### Owner additions during P18-4 (2026-11-11)
 These are queued for P18-5, together with the session notes:
 1. **True fullscreen by default on first launch.** Add `Config/DefaultGameUserSettings.ini` `[/Script/Engine.GameUserSettings]` with `FullscreenMode=0` (and `LastConfirmedFullscreenMode=0`, `PreferredFullscreenMode=0`) at the desktop resolution. A saved user setting overrides it.
 2. **A "Show FPS" option** (Accessibility or Display tab; default off). It's a small HUD counter in the top-right corner, in EB Garamond, smoothed over 0.5 s, persisted in `ULBUserSettings` (`bShowFPS`), and it works in Shipping too (no `stat` console).
 
+### P18-5 Fixes from P18-4 (2026-11-11)
+- **Done:** the quality preset row cycles only Low to Epic, "Custom" is display-only (d79bb15); true fullscreen by default (addition 1) through `Config/DefaultGameUserSettings.ini` with `Version=5` (15bf5d5, D-130); Show FPS (addition 2) as `bShowFPS`, a Display tab toggle and the HUD counter (c7296fd; its tests also cover the preset cycle, graphics Apply persisting and the fullscreen config, and the `Cine.CheckpointSavesAfterCinematic` check no longer races the log: at most one save right after the end); `Tools/build_and_test.ps1 -Filter <prefix>` for targeted runs while iterating, the full suite staying the default (1c46c1b, D-131).
+- **Suite:** 234 passed, 0 failed at the last recorded full run (2026-11-11 22:39, at c7296fd); 16 `LastBell.UI.*` and 17 `LastBell.Functional.UI.*` tests are new. The final suite and the Game build are still to run (P18-6).
+- **QA:** the `qa-reviewer` pass (menu flows, every setting persisting across a restart, pause edge cases, rebinding conflicts) is run separately, and its report is not summarised here.
+- **Closed by the code and the tests:** R-77 part 2, R-90 and R-94 (`RISKS.md`). Open: R-96 (packaged checks), R-97 (UI and video cost), R-98 (alt-tab pause), and R-92's persistence check.

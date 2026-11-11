@@ -1,6 +1,6 @@
 # P18-S1: the menu-drift shot and how to render it
 
-Spec: `Docs/plans/P18_UI_SETTINGS.md` section 3. Nothing here has been rendered. The sequence is built and checked headless; the render and encode scripts are prepared and their first half (the queue manifest) was run.
+Spec: `Docs/plans/P18_UI_SETTINGS.md` section 3. **Status (P18-6): rendered and encoded** (d8b634c: 1200 frames, `Content/Movies/LB_MenuDrift.mp4`, H.264 1080p30, 40.0 s, 68.7 MB, LFS); the shutdown crash below recurred and is harmless (R-91). The sections below keep the history of the build and of the first (black) test render; "Nothing here has been rendered" and "NOT verified" there are from before the render.
 
 ## The shot: `/Game/LastBell/Cinematics/LS_LB_MenuDrift` (courtyard version, owner's choice 2026-11-11)
 
