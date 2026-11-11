@@ -3,17 +3,23 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "Cinematics/LBCinematicTypes.h"
+#include "UI/LBCreditsLayout.h"
 #include "LBCinematicWidget.generated.h"
 
 class UCanvasPanel;
+class UHorizontalBox;
+class ULBKeyIconWidget;
 class UProgressBar;
 class UTextBlock;
 class UVerticalBox;
 
 /**
  * The cinematic overlay (plan P17 section 2.9): story cards, the credits roll and the skip prompt. It builds its own widget tree in C++
- * (no WBP asset; Phase 18 restyles it) and draws no black of its own: black comes from the camera fade. The cinematic subsystem drives
- * it every tick (card opacity, credits progress, skip hold fraction), so the widget has no timers of its own.
+ * (no WBP asset) and draws no black of its own: black comes from the camera fade. The cinematic subsystem drives it every tick (card
+ * opacity, credits progress, skip hold fraction), so the widget has no timers of its own.
+ *
+ * P18: fonts and colours come from DA_UIStyle (ULBUIStyle::Resolve; with none linked, the engine font and the P17 colours). The skip prompt is
+ * "Hold [key] to skip" with the key icon of the current Interact binding.
  */
 UCLASS()
 class LASTBELL_API ULBCinematicWidget : public UUserWidget
@@ -30,6 +36,10 @@ public:
 	/** The skip prompt shows only while Skippable; Fraction (0..1) fills the bar under it. */
 	void SetSkipState(bool bSkippable, float Fraction);
 
+	/**
+	 * Kept for the cinematic settings' SkipPromptText. Since P18 the prompt is built from the key icon, so the text is no longer shown;
+	 * it is remembered for tests only.
+	 */
 	void SetSkipPromptText(const FText& Text);
 
 	/** Replaces the credits box with these lines, parked below the screen. */
@@ -44,8 +54,10 @@ public:
 	/** The text of the card now shown (empty when none): for tests. */
 	FText GetCardTextForTest() const;
 	float GetCardOpacityForTest() const;
-	int32 GetCreditLineCountForTest() const { return CreditLineCount; }
+	int32 GetCreditLineCountForTest() const { return CreditsRoll.LineCount; }
 	bool IsSkipPromptVisibleForTest() const;
+	const ULBKeyIconWidget* GetSkipKeyIconForTest() const { return SkipKeyIcon; }
+	FText GetSkipPromptTextForTest() const { return SkipPromptText; }
 
 protected:
 	virtual void NativeOnInitialized() override;
@@ -65,16 +77,18 @@ private:
 	UPROPERTY(Transient)
 	TObjectPtr<UVerticalBox> CreditsBox;
 
+	/** "Hold [key] to skip": the row fades as one. */
 	UPROPERTY(Transient)
-	TObjectPtr<UTextBlock> SkipText;
+	TObjectPtr<UHorizontalBox> SkipRow;
+
+	UPROPERTY(Transient)
+	TObjectPtr<ULBKeyIconWidget> SkipKeyIcon;
 
 	UPROPERTY(Transient)
 	TObjectPtr<UProgressBar> SkipBar;
 
-	int32 CreditLineCount = 0;
-	/** The credits content height, measured once after the first layout pass in which it is non-zero (0 = not measured yet). */
-	float CachedCreditsHeight = 0.f;
-	bool bCreditsPrepassDone = false;
+	FLBCreditsRoll CreditsRoll;
+	FText SkipPromptText;
 	/** The style of the card now shown. */
 	ELBCineCardStyle ShownStyle = ELBCineCardStyle::Line;
 };

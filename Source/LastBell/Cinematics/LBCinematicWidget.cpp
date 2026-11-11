@@ -3,37 +3,23 @@
 #include "Blueprint/WidgetTree.h"
 #include "Components/CanvasPanel.h"
 #include "Components/CanvasPanelSlot.h"
+#include "Components/HorizontalBox.h"
+#include "Components/HorizontalBoxSlot.h"
 #include "Components/ProgressBar.h"
-#include "Components/Spacer.h"
 #include "Components/TextBlock.h"
 #include "Components/VerticalBox.h"
-#include "Components/VerticalBoxSlot.h"
-#include "Engine/Engine.h"
-#include "Engine/GameViewportClient.h"
-#include "Styling/CoreStyle.h"
+#include "UI/LBKeyIconWidget.h"
+#include "UI/LBUIBuild.h"
+#include "UI/LBUIStyle.h"
 
 namespace
 {
-	// Section 2.9. All text colour is this; fonts are the default Roboto faces.
-	const FLinearColor TextColour(0.85f, 0.82f, 0.76f, 1.f);
-	constexpr float CreditsWidth = 1200.f;
-	constexpr float CreditGapHeight = 40.f;
-	constexpr float FallbackViewportHeight = 1080.f;
+	constexpr float CreditsWidth = FLBCreditsRoll::CreditsWidth;
+	constexpr float FallbackViewportHeight = FLBCreditsRoll::FallbackViewportHeight;
 
-	FSlateFontInfo Font(const TCHAR* Face, float Size, int32 LetterSpacing = 0)
+	UTextBlock* MakeCentred(UWidgetTree& Tree, const FSlateFontInfo& Font, const FLinearColor& Colour)
 	{
-		FSlateFontInfo Info = FCoreStyle::GetDefaultFontStyle(FName(Face), Size);
-		Info.LetterSpacing = LetterSpacing;
-		return Info;
-	}
-
-	UTextBlock* MakeText(UWidgetTree& Tree, const FSlateFontInfo& InFont, const FLinearColor& Colour)
-	{
-		UTextBlock* Text = Tree.ConstructWidget<UTextBlock>(UTextBlock::StaticClass());
-		Text->SetFont(InFont);
-		Text->SetColorAndOpacity(FSlateColor(Colour));
-		Text->SetJustification(ETextJustify::Center);
-		return Text;
+		return LBUIBuild::MakeText(Tree, FText::GetEmpty(), Font, Colour, ETextJustify::Center);
 	}
 }
 
@@ -49,12 +35,14 @@ void ULBCinematicWidget::BuildTree()
 	{
 		return;
 	}
+	// Fonts and colours come from DA_UIStyle; with none linked this is the engine font and the P17 colours.
+	const ULBUIStyle& Style = *ULBUIStyle::Resolve();
 
 	Root = WidgetTree->ConstructWidget<UCanvasPanel>(UCanvasPanel::StaticClass(), TEXT("Root"));
 	WidgetTree->RootWidget = Root;
 
 	// The story card: centred, wraps at 1400.
-	CardText = MakeText(*WidgetTree, Font(TEXT("Light"), 30.f), TextColour);
+	CardText = MakeCentred(*WidgetTree, Style.MakeFont(ELBFontWeight::Regular, Style.ItemSize), Style.Ink);
 	CardText->SetAutoWrapText(true);
 	CardText->SetWrapTextAt(1400.f);
 	CardText->SetRenderOpacity(0.f);
@@ -67,7 +55,7 @@ void ULBCinematicWidget::BuildTree()
 	}
 
 	// The title: large, letter-spaced.
-	TitleText = MakeText(*WidgetTree, Font(TEXT("Light"), 72.f, 300), TextColour);
+	TitleText = MakeCentred(*WidgetTree, Style.TitleFont(), Style.Ink);
 	TitleText->SetRenderOpacity(0.f);
 	if (UCanvasPanelSlot* PanelSlot = Root->AddChildToCanvas(TitleText))
 	{
@@ -88,11 +76,33 @@ void ULBCinematicWidget::BuildTree()
 		PanelSlot->SetSize(FVector2D(CreditsWidth, 100.0));
 	}
 
-	// The skip prompt and its bar: bottom-right, 48 px margin.
-	SkipText = MakeText(*WidgetTree, Font(TEXT("Regular"), 16.f), TextColour);
-	SkipText->SetJustification(ETextJustify::Right);
-	SkipText->SetRenderOpacity(0.f);
-	if (UCanvasPanelSlot* PanelSlot = Root->AddChildToCanvas(SkipText))
+	// The skip prompt "Hold [key] to skip" and its bar: bottom-right, 48 px margin.
+	SkipRow = WidgetTree->ConstructWidget<UHorizontalBox>(UHorizontalBox::StaticClass());
+	SkipRow->SetRenderOpacity(0.f);
+	{
+		const FSlateFontInfo SkipFont = Style.MakeFont(ELBFontWeight::Regular, Style.SmallSize);
+		UTextBlock* Hold = LBUIBuild::MakeText(*WidgetTree, NSLOCTEXT("LastBellCinematics", "SkipHold", "Hold"), SkipFont, Style.Ink);
+		if (UHorizontalBoxSlot* BoxSlot = SkipRow->AddChildToHorizontalBox(Hold))
+		{
+			BoxSlot->SetVerticalAlignment(VAlign_Center);
+			BoxSlot->SetPadding(FMargin(0.f, 0.f, 8.f, 0.f));
+		}
+		SkipKeyIcon = WidgetTree->ConstructWidget<ULBKeyIconWidget>(ULBKeyIconWidget::StaticClass());
+		SkipKeyIcon->SetPlayerContext(GetPlayerContext());
+		SkipKeyIcon->SetGlyphHeight(static_cast<float>(Style.SmallSize) * 1.5f);
+		SkipKeyIcon->SetBoundAction(ELBBindAction::Interact);
+		if (UHorizontalBoxSlot* BoxSlot = SkipRow->AddChildToHorizontalBox(SkipKeyIcon))
+		{
+			BoxSlot->SetVerticalAlignment(VAlign_Center);
+			BoxSlot->SetPadding(FMargin(0.f, 0.f, 8.f, 0.f));
+		}
+		UTextBlock* ToSkip = LBUIBuild::MakeText(*WidgetTree, NSLOCTEXT("LastBellCinematics", "SkipTo", "to skip"), SkipFont, Style.Ink);
+		if (UHorizontalBoxSlot* BoxSlot = SkipRow->AddChildToHorizontalBox(ToSkip))
+		{
+			BoxSlot->SetVerticalAlignment(VAlign_Center);
+		}
+	}
+	if (UCanvasPanelSlot* PanelSlot = Root->AddChildToCanvas(SkipRow))
 	{
 		PanelSlot->SetAnchors(FAnchors(1.f, 1.f));
 		PanelSlot->SetAlignment(FVector2D(1.0, 1.0));
@@ -102,7 +112,7 @@ void ULBCinematicWidget::BuildTree()
 
 	SkipBar = WidgetTree->ConstructWidget<UProgressBar>(UProgressBar::StaticClass());
 	SkipBar->SetPercent(0.f);
-	SkipBar->SetFillColorAndOpacity(TextColour);
+	SkipBar->SetFillColorAndOpacity(Style.Ink);
 	SkipBar->SetRenderOpacity(0.f);
 	if (UCanvasPanelSlot* PanelSlot = Root->AddChildToCanvas(SkipBar))
 	{
@@ -148,17 +158,14 @@ void ULBCinematicWidget::ClearCard()
 
 void ULBCinematicWidget::SetSkipPromptText(const FText& Text)
 {
-	if (SkipText)
-	{
-		SkipText->SetText(Text);
-	}
+	SkipPromptText = Text;
 }
 
 void ULBCinematicWidget::SetSkipState(bool bSkippable, float Fraction)
 {
-	if (SkipText)
+	if (SkipRow)
 	{
-		SkipText->SetRenderOpacity(bSkippable ? 0.6f : 0.f);
+		SkipRow->SetRenderOpacity(bSkippable ? 0.6f : 0.f);
 	}
 	if (SkipBar)
 	{
@@ -169,7 +176,7 @@ void ULBCinematicWidget::SetSkipState(bool bSkippable, float Fraction)
 
 bool ULBCinematicWidget::IsSkipPromptVisibleForTest() const
 {
-	return SkipText && SkipText->GetRenderOpacity() > 0.f;
+	return SkipRow && SkipRow->GetRenderOpacity() > 0.f;
 }
 
 void ULBCinematicWidget::BuildCredits(const TArray<FLBCreditLine>& Lines)
@@ -178,117 +185,24 @@ void ULBCinematicWidget::BuildCredits(const TArray<FLBCreditLine>& Lines)
 	{
 		return;
 	}
-	CreditsBox->ClearChildren();
-	CreditLineCount = 0;
-	CachedCreditsHeight = 0.f;
-	bCreditsPrepassDone = false;
-	for (const FLBCreditLine& Line : Lines)
-	{
-		UWidget* Child = nullptr;
-		switch (Line.Style)
-		{
-		case ELBCreditStyle::Heading:
-		{
-			UTextBlock* Text = MakeText(*WidgetTree, Font(TEXT("Light"), 36.f), TextColour);
-			Text->SetText(Line.Text);
-			Child = Text;
-			break;
-		}
-		case ELBCreditStyle::Name:
-		{
-			UTextBlock* Text = MakeText(*WidgetTree, Font(TEXT("Light"), 26.f), TextColour);
-			Text->SetText(Line.Text);
-			Child = Text;
-			break;
-		}
-		case ELBCreditStyle::Small:
-		{
-			// Colour x 0.7 (the alpha stays 1).
-			const FLinearColor Dim(TextColour.R * 0.7f, TextColour.G * 0.7f, TextColour.B * 0.7f, 1.f);
-			UTextBlock* Text = MakeText(*WidgetTree, Font(TEXT("Regular"), 18.f), Dim);
-			Text->SetText(Line.Text);
-			Child = Text;
-			break;
-		}
-		case ELBCreditStyle::Gap:
-		{
-			USpacer* Gap = WidgetTree->ConstructWidget<USpacer>(USpacer::StaticClass());
-			Gap->SetSize(FVector2D(1.0, CreditGapHeight));
-			Child = Gap;
-			break;
-		}
-		}
-		if (Child)
-		{
-			if (UVerticalBoxSlot* BoxSlot = CreditsBox->AddChildToVerticalBox(Child))
-			{
-				BoxSlot->SetHorizontalAlignment(HAlign_Center);
-				BoxSlot->SetPadding(FMargin(0.f, 3.f));
-			}
-			++CreditLineCount;
-		}
-	}
-	// Parked below the screen until SetCreditsProgress moves it.
-	if (UCanvasPanelSlot* PanelSlot = Cast<UCanvasPanelSlot>(CreditsBox->Slot))
-	{
-		PanelSlot->SetPosition(FVector2D(0.0, FallbackViewportHeight * 2.0));
-	}
+	CreditsRoll.Build(*WidgetTree, *CreditsBox, Cast<UCanvasPanelSlot>(CreditsBox->Slot), Lines, *ULBUIStyle::Resolve());
 }
 
 void ULBCinematicWidget::ClearCredits()
 {
 	if (CreditsBox)
 	{
-		CreditsBox->ClearChildren();
+		CreditsRoll.Clear(*CreditsBox);
 	}
-	CreditLineCount = 0;
 }
 
 void ULBCinematicWidget::SetCreditsProgress(float ElapsedSeconds, float TotalSeconds)
 {
-	if (!CreditsBox || CreditLineCount == 0)
+	if (!CreditsBox)
 	{
 		return;
 	}
-	UCanvasPanelSlot* PanelSlot = Cast<UCanvasPanelSlot>(CreditsBox->Slot);
-	if (!PanelSlot)
-	{
-		return;
-	}
-
-	// The viewport height in slate units: the canvas fills the viewport, so its own size is it. Before the first layout pass, ask the viewport.
-	float ViewportHeight = static_cast<float>(GetCachedGeometry().GetLocalSize().Y);
-	if (ViewportHeight < 1.f && GEngine && GEngine->GameViewport)
-	{
-		FVector2D Size = FVector2D::ZeroVector;
-		GEngine->GameViewport->GetViewportSize(Size);
-		ViewportHeight = static_cast<float>(Size.Y);
-	}
-	if (ViewportHeight < 1.f)
-	{
-		ViewportHeight = FallbackViewportHeight;
-	}
-
-	// Measured once: the first layout pass in which the content has a height. Until then the box stays parked below the screen.
-	if (CachedCreditsHeight <= 0.f)
-	{
-		if (!bCreditsPrepassDone)
-		{
-			bCreditsPrepassDone = true;
-			CreditsBox->ForceLayoutPrepass();
-		}
-		const float Measured = static_cast<float>(CreditsBox->GetDesiredSize().Y);
-		if (Measured <= 1.f)
-		{
-			return;
-		}
-		CachedCreditsHeight = Measured;
-		PanelSlot->SetSize(FVector2D(CreditsWidth, CachedCreditsHeight));
-	}
-	const float BoxHeight = CachedCreditsHeight;
-
-	const float Speed = LBCinematicLogic::CreditsPixelsPerSecond(BoxHeight, ViewportHeight, TotalSeconds);
-	PanelSlot->SetPosition(FVector2D(0.0, ViewportHeight - FMath::Clamp(ElapsedSeconds, 0.f, TotalSeconds) * Speed));
+	CreditsRoll.SetProgress(*CreditsBox, Cast<UCanvasPanelSlot>(CreditsBox->Slot), *this, ElapsedSeconds, TotalSeconds);
 }
 
 FText ULBCinematicWidget::GetCardTextForTest() const
