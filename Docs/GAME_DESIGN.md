@@ -10,7 +10,7 @@ First-person atmospheric survival horror, 20–30 minutes, high-end Windows PC. 
 4. **The world remembers.** Spaces the player has already visited change after major events.
 
 ## Player verbs
-Walk, sprint, crouch, look, interact (doors, levers, mechanisms, notes), toggle lantern, hide by breaking line of sight, flee.
+Walk, sprint, crouch, look, interact (doors, levers, mechanisms, notes), toggle candle, hide by breaking line of sight, flee.
 Out of scope unless approved: firearms, combat, crafting, inventory beyond key-item states, dialogue trees, multiplayer, additional major enemies.
 
 ## Progression (critical path)
@@ -26,10 +26,10 @@ Out of scope unless approved: firearms, combat, crafting, inventory beyond key-i
 | 7 | Warden escalation: it physically patrols the crypt and cloister; stealth section | Crypt / cloister | 4 Patrol/Search | 3–4 min |
 | 8 | **Ritual Mechanism 3** (bell sequence or counterweight restoration) | Cloister / tower base | 5 Hunt | 3–4 min |
 | 9 | Climb the bell tower | Bell Tower | 5 | 2–3 min |
-| 10 | Finale: the bell, the storm, the Warden freed; look-only, the Warden climbs to the player (scripted; the AI is dormant, D-116) | Bell Tower | 6 Finale | about 1 min |
-| 11 | Ending: the mask, the last view, end cards, credits (skippable) → return to menu | — | — | about 1 min (the credits 40 s) |
+| 10 | Finale: the bell, the storm, the Warden freed; look-only, the Warden climbs to the player (scripted; the AI is dormant, D-116) | Bell Tower | 6 Finale | about 20 s (the Warden in sight within about 3.5 s) |
+| 11 | Ending: the mask, the last view, end cards, credits (skippable) → return to menu | — | — | about 75 s (the wall-top shot, the end cards, the credits 40 s); the finale cinematic is 97.5 s in all |
 
-Total: about 27–35 minutes on a first playthrough (the intro and the finale add about 2.5 minutes of cinematic). Phase 2 greybox timing will calibrate this.
+Total: about 27–35 minutes on a first playthrough (the intro and the finale add about 2.1 minutes of cinematic). Phase 2 greybox timing will calibrate this.
 
 ## The intro and the ending, as built (Phase 17, D-114…D-125)
 The player is **a villager from below**, sent up to find out why the bell rang. The story is a loop: the player becomes the Warden they first saw on the wall, and the next villager comes through the gate. Built with Sequencer; the spec and the final timing are in `Docs/plans/P17_CINEMATICS.md`, the architecture in `TECHNICAL_DESIGN.md` section 17.
