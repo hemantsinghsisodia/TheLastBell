@@ -38,8 +38,6 @@ Content/LastBell/Characters/Warden/Anims/AN_Warden_TurnRight90.uasset
 Content/LastBell/Characters/Warden/Anims/AN_Warden_ZombieAttack.uasset
 Content/LastBell/Characters/Warden/Anims/AN_Warden_ZombieRunning.uasset
 Content/LastBell/Characters/Warden/Anims/AN_Warden_ZombieWalk.uasset
-# P17 spike, local, references Mixamo-derived clips, deleted in P17-9
-Content/LastBell/ArtTest/P17/
 
 # Local Claude settings
 .claude/settings.local.json

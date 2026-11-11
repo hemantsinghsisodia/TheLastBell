@@ -54,7 +54,6 @@ DEFAULT_OUT = os.path.join(ROOT, "Docs", "ArtTest", "cine", "p17_5b_check.json")
 
 # packages that must never be saved here (and must not be dirty when the map is saved)
 NEVER_SAVE = list(P15.NEVER_SAVE_P158) + [
-    "/Game/LastBell/ArtTest/P17/LS_P17_Spike",
     "/Game/LastBell/Cinematics/LS_LB_Intro",
     "/Game/LastBell/Cinematics/LS_LB_Finale",
     "/Game/LastBell/Data/DA_Cinematics",

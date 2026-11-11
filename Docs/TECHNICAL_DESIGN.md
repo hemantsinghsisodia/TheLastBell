@@ -209,7 +209,7 @@ These live in `Content/LastBell/Blueprints/`:
     - Placed instances don't pick up template edits; per-instance differences go in a child (`Tools/mcp/MCP_NOTES.md`).
 - `Puzzles/` has one Blueprint per puzzle. It also holds the puzzle props and their art children: `BP_SmallBell` → `_Cloister`, `BP_DialLever` → `_Crypt`, `BP_StainedGlassClue` → `_Saints`, `BP_Inscription` (whose child `BP_Inscription_Cloister` is in `Interactables/`), and `BP_PuzzleCandle`. They communicate only through WorldState tags.
 - Scripted beats live in small `BP_Event_*` actors, not in Level Blueprints.
-- UI: `WBP_HUD` (prompt and objective) from P1. `WBP_MainMenu` from P2. `WBP_Ending` and `BP_EndingTrigger` (P2) are unused since Phase 17 (D-117): the placed `EndingTrigger` was removed from `L_Monastery`, and the cinematic widget is built in C++ (section 17). `WBP_Pause` and `WBP_Settings` come later.
+- UI: `WBP_HUD` (prompt and objective) from P1. `WBP_MainMenu` from P2. `WBP_Ending` and `BP_EndingTrigger` (P2) were replaced in Phase 17 (D-117): the placed `EndingTrigger` was removed from `L_Monastery`, the cinematic widget is built in C++ (section 17), and both assets were deleted in P17-9. `WBP_Pause` and `WBP_Settings` come later.
 
 **Blueprint rule:** a Blueprint never reaches into another Blueprint's internals. Communication goes through tags, components or delegates.
 
@@ -704,6 +704,6 @@ Spec and results: `Docs/plans/P17_CINEMATICS.md` (spec sections 0–13, then the
 - **The GPU cost of the cinematic shots is not measured** (the finale close-up, the wall-top shot at 70 mm, the villager, the mask-view post-process; no instruction count was available): Phase 20 (`PERFORMANCE_BUDGET.md`).
 - **Only the owner's eyes have judged the look:** the intro (P17-6) and the finale (P17-7, "rest is fine"), both in PIE. The mask-view post-process and the villager's colour are the likeliest to need a tweak: the owner's shot showed a pale villager, and plan 3.9 asked for the darkened textures' assignment to be confirmed in Unreal.
 - **The cards, the credits roll and the skip prompt use the engine font and no key glyphs.** Phase 18 restyles them; the pause menu and what it does to the bell are Phase 18 (R-77 part 2).
-- **`Tools/warden/check_warden.py` still expects the V5.5 numbers** (6 slots, the old LOD sizes). For V11.1 use `w3_swap_v11_1.py` `check` (`Docs/ArtTest/warden/w5_check.json`), or update the script.
+- **`Tools/warden/check_warden.py` was deleted in P17-9** (it expected the V5.5 numbers; R-87 closed). For V11.1 use `w3_swap_v11_1.py` `check` (`Docs/ArtTest/warden/w5_check.json`).
 - **Getting control back on the tower** exists only with `lb.Cine.NoEnd 1`. In play, `!end` always goes to `CompleteGame` and the menu.
-- **`BP_EndingTrigger` and `WBP_Ending` are unused** and offered for deletion at review.
+- **`BP_EndingTrigger` and `WBP_Ending` are deleted** (P17-9, owner-approved), as are the old V5.5 `M_Warden_*`/`MI_Warden_*` materials, the 20 `T_Warden_*` textures under `Characters/Warden/Textures/` and `WSpawn_Tower` (census 3103 → 3102). `Characters/Warden/Materials/` keeps only the apparition materials.

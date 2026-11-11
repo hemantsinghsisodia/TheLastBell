@@ -307,7 +307,7 @@ NEVER_SAVE = ["/Game/LastBell/Materials/Master/M_LB_Surface",
               "/Game/LastBell/Blueprints/Puzzles/BP_SmallBell", "/Game/LastBell/Blueprints/Puzzles/BP_SequencePuzzle",
               "/Game/LastBell/Blueprints/Puzzles/BP_Inscription", "/Game/LastBell/Blueprints/Interactables/BP_RitualMechanism",
               "/Game/LastBell/Blueprints/Interactables/BP_Door_Base", "/Game/LastBell/Blueprints/Interactables/BP_TagInteractable",
-              "/Game/LastBell/Blueprints/Interactables/BP_TagTrigger", "/Game/LastBell/Blueprints/BP_EndingTrigger",
+              "/Game/LastBell/Blueprints/Interactables/BP_TagTrigger",
               "/Game/LastBell/Blueprints/Interactables/BP_Inspectable_Note", "/Game/LastBell/Blueprints/Interactables/BP_Door_Base_Dungeon",
               "/Game/LastBell/Blueprints/Interactables/BP_RitualMechanism_CryptWinch", "/Game/LastBell/Blueprints/Interactables/BP_WardenApparition"]
 

@@ -531,7 +531,7 @@ Branch `claude/phase-17-cinematics`. Spec and plan: `Docs/plans/P17_CINEMATICS.m
 - **Not validated yet:** the final full suite with Unreal closed (the last recorded run, 199/199, is from 3ebb5d7, before the mask moment, the villager and the candle were built), the Game target build, the P17-8 QA pass and the owner's play-through.
 - **Needs the owner's eyes:** the mask-view look, the villager's colour (R-86) and the credits list.
 - **Carried to later phases:** the GPU cost of the cinematic shots (Phase 20, `PERFORMANCE_BUDGET`), the skip prompt's key glyphs and the restyled cards and credits (Phase 18), R-77 part 2 (the pause menu and the bell, Phase 18).
-- **Offered for deletion at review:** `BP_EndingTrigger`, `WBP_Ending`, the old `M_Warden_*` materials and `WSpawn_Tower`.
+- **Deleted in P17-9 (owner-approved):** `BP_EndingTrigger`, `WBP_Ending`, the old V5.5 `M_Warden_*`/`MI_Warden_*` materials and `T_Warden_*` textures (33 assets), `WSpawn_Tower` (census 3103 → 3102), `Tools/warden/check_warden.py` (R-87) and the local spike `LS_P17_Spike`.
 
 **Status 2026-11-11: PHASE 17 READY FOR YOUR REVIEW**, pending the final suite and the Game build. Work stops here until the owner reviews and approves; Phase 18 is not started.
 

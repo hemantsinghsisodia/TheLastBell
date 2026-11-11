@@ -43,7 +43,7 @@ CACHE = os.path.join(ROOT, "Saved", "p15_f0_cache.jsonl")
 TIMEOUT_S = 180
 
 NEVER_SAVE = ["BP_SmallBell", "BP_SequencePuzzle", "BP_Inscription", "BP_RitualMechanism", "BP_Door_Base", "BP_TagInteractable",
-              "BP_TagTrigger", "BP_EndingTrigger", "BP_Inspectable_Note", "BP_Door_Base_Dungeon", "BP_RitualMechanism_CryptWinch",
+              "BP_TagTrigger", "BP_Inspectable_Note", "BP_Door_Base_Dungeon", "BP_RitualMechanism_CryptWinch",
               "BP_WardenApparition"]
 
 J = lambda x: json.loads(x) if isinstance(x, str) else x  # noqa: E731

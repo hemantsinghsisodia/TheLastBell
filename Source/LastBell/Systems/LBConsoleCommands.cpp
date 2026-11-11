@@ -427,7 +427,7 @@ namespace LBConsole
 	{
 		if (Args.Num() < 1)
 		{
-			UE_LOG(LogLB, Error, TEXT("lb.Cine.PlayAsset: expected <LevelSequence asset path>, for example /Game/LastBell/ArtTest/P17/LS_P17_Spike.LS_P17_Spike"));
+			UE_LOG(LogLB, Error, TEXT("lb.Cine.PlayAsset: expected <LevelSequence asset path>, for example /Game/LastBell/Cinematics/LS_LB_Intro.LS_LB_Intro"));
 			return;
 		}
 		if (ULBCinematicSubsystem* Cinematics = GetCinematics(World, TEXT("lb.Cine.PlayAsset")))
