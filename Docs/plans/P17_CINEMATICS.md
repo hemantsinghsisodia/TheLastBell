@@ -405,6 +405,73 @@ Already sounding from the tags, with no markers needed:
 
 **Glimpses G1 and G2** followed the F0 sight-line rule (section 7, item 5). **Neither qualified** on any mark candidate: the belfry floor and the core hide every flight below F11, and every point in sight has a drop of at most 4.4 cm (drop = eye Z − (point Z + 245)), far short of the 3 m that G2 needs. Both are sound-only, as the rows above say. The owner judges this in P17-7. The traces see greybox collision only, so the art's open risers could show more than this. No new geometry.
 
+### 3.2b Finale revision (owner, 2026-11-11, after the finale preview). **This replaces the 3.2 timeline.**
+**What the owner asked for:**
+- the Warden appears less than 5 s after the ring;
+- no intro or outro music;
+- the close-up must show the face (it showed the robe's chest).
+
+**Timeline (seconds; playback 0–97.5):**
+- **Markers:**
+
+  | Seconds | Label |
+  |---|---|
+  | 0.0 | `mark:LB_Cine_FinaleMark,1.2` |
+  | 1.3 | `lock:Look` |
+  | 1.5 | `look:LB_Cine_StairTop,1.0` |
+  | 3.6 | `flash:1.0` |
+  | 9.5 | `look:LB_Cine_Warden,1.0` |
+  | 12.0 | `lock:Full` |
+  | 33.5 | `bell:5x1` |
+  | 37.5 | `mix:on` |
+  | 41.5 | `card:End_1` |
+  | 47.5 | `card:End_2` |
+  | 53.5 | `skip:1` |
+  | 53.5 + 1 frame | `credits:40` |
+  | 94.5 | `!end` |
+
+  **Removed:** the `bell:5x1` markers at 18, 36 and 54, and the flashes at 22.0 and 40.3. The Finale beat (5 tolls, 0–8 s) and the storm's two Finale strikes still play, from the tag.
+- **`WardenFigure`:**
+  - **Location keys** (linear):
+
+    | Seconds | Location | Point |
+    |---|---|---|
+    | 0.0 | (12730, 1665, 2272.73) | `WP_21` |
+    | 1.0 | same | walk starts |
+    | 1.351 | (12695, 1665, 2288.96) | `Stair_F11_00` |
+    | 5.382 | (12305, 1665, 2500) | `Stair_F11_13` |
+    | 6.655 | (12165, 1665, 2500) | stair top |
+    | 11.519 | (12165, 2200, 2500) | stop |
+
+    That is 110 cm/s. In sight from `Stair_F11_07`, about 3.5 s.
+  - **Travel yaw keys** (+`MeshYaw` 0): −180 at 0; −180 at 6.405; −270 at 6.905; holds.
+  - **Visibility:** hidden 0 → 1.351, visible → 21.5, hidden after.
+  - **Audio on the figure:** strides at 1.0 + 1.36·k for k = 0…7, with the 3.2 stride and chain pattern; `SFX_LB_Warden_Breath_Heavy` loop 1.0–19.5.
+- **Removed spawnables:** `Snd_Base`, `Snd_Low` and `Snd_Mid`, with their audio.
+- **`Cam_Mask`** (placeholder until 5a-2):
+  - at **(12165, 2420, 2700)**, aimed at the head point (12165, 2200, 2739): yaw −90, pitch = atan2(39, 220) ≈ 10.0°;
+  - focal 35; manual focus keys 220 at 13.0 and 200 at 18.5;
+  - camera cut 12.5–22.5, ease-in 0.8.
+
+  5a-2 re-frames it on the real mask socket with the lift, where the Warden leans to the player's eye height.
+- **Fade** (Keep State): 0 at 0; 0 at 19.5; 1 at 19.8; 1 at 22.5; 0 at 24.5; 0 at 38.5; 1 at 40.5.
+- **2D audio:**
+  - 19.5: `SFX_LB_Step_Metal_02` at pitch 0.55, plus `SFX_LB_Warden_Chain_02` at pitch 0.7;
+  - `SFX_LB_Warden_Breath_Slow`, loop, 19.8–39.5;
+  - **no `MUS_LB_Drone_C`.**
+- **`Cam_WallTop`:** cut 22.5–97.5, unchanged otherwise.
+- **`Lantern`:**
+  - visible from 23.5;
+  - X keys: −600 at 23.5 (linear), 204 at 36.0, 250 at 37.5;
+  - bob from 23.5, with the amplitude falling to 0 between 36.0 and 37.5;
+  - flicker 23.5–40.5.
+
+**Music:**
+- **Intro:** the `DA_Audio` Arrival row's drone goes from 0 (Drone A) to **−1**, so no music starts in the intro. Music now begins at Ritual.1 (Drone B), in line with `AUDIO_DESIGN`'s "drones only at story beats". Edit `p16_2_assets.py` `beats` and `FLBAudioSettings::FillPlanDefaults` together.
+- **Outro:** `SMX_LB_CineFade` adds `SCL_LB_Music` at 0 (fade 4 s), so the TowerTop drone fades out with everything else at `mix:on`.
+
+**Control after the end:** getting control back on the tower happens only with `lb.Cine.NoEnd 1` (a review aid). In play, `!end` goes to `CompleteGame` and the menu. No change.
+
 ### 3.3 Cards and styles (`DA_Cinematics.Cards`)
 | Id | Text | Style | Hold (s) | Fade (s) |
 |---|---|---|---|---|
