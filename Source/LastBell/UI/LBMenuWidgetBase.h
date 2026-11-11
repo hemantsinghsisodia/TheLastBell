@@ -94,6 +94,11 @@ struct FLBMenuItem
 	// Choice and toggle
 	int32 Index = 0;
 	TArray<FText> Options;
+	/**
+	 * Choice rows: how many of the first Options can be stepped to. Options beyond that are display-only states (the preset row's "Custom"):
+	 * stepping forward from one goes to option 0, stepping back to the last selectable option. -1 = all of them.
+	 */
+	int32 SelectableCount = -1;
 
 	TFunction<void()> OnActivate;
 	TFunction<void(float /*Value*/, bool /*bFinal*/)> OnSlide;
@@ -162,7 +167,7 @@ protected:
 	// ---- Builders: each adds a row to Parent and returns its item index ----
 	int32 AddButtonItem(UPanelWidget& Parent, const FText& Label, TFunction<void()> OnActivate, bool bDanger = false);
 	int32 AddToggleItem(UPanelWidget& Parent, const FText& Label, bool bInitial, TFunction<void(bool)> OnChanged);
-	int32 AddChoiceItem(UPanelWidget& Parent, const FText& Label, const TArray<FText>& Options, int32 Initial, TFunction<void(int32)> OnChanged);
+	int32 AddChoiceItem(UPanelWidget& Parent, const FText& Label, const TArray<FText>& Options, int32 Initial, TFunction<void(int32)> OnChanged, int32 SelectableCount = -1);
 	int32 AddSliderItem(UPanelWidget& Parent, const FText& Label, float Min, float Max, float Step, float Initial, TFunction<FText(float)> Format, TFunction<void(float, bool)> OnSlide);
 	/** A row showing a key icon; activating it starts capturing the next key press (OnKeyCaptured). */
 	int32 AddKeyItem(UPanelWidget& Parent, const FText& Label, ELBBindAction Action);

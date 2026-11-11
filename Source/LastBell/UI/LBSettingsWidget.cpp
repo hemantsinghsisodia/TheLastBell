@@ -321,7 +321,7 @@ void ULBSettingsWidget::BuildGraphicsTab()
 			// "Custom" is a state, not a choice: it shows when the groups differ.
 			UpdatePresetItem();
 		}
-	});
+	}, /*SelectableCount*/ 4);
 
 	AddSliderItem(*TabContent, NSLOCTEXT("LastBellUI", "GfxResolutionScale", "Resolution scale"), LBUILogic::MinResolutionScale, LBUILogic::MaxResolutionScale, 5.f,
 		FLBGraphicsSettings::GetResolutionScalePercent(), [](float Value) { return Percent(Value); },
@@ -441,6 +441,16 @@ void ULBSettingsWidget::BuildDisplayTab()
 		if (Options.IsValidIndex(NewIndex))
 		{
 			FLBGraphicsSettings::SetFrameRateLimit(static_cast<float>(Options[NewIndex]));
+		}
+	});
+
+	// Saves at once, like the other settings that are not Apply / Revert: a counter in the HUD's top-right corner.
+	const ULBUserSettings* User = ULBUserSettings::Get();
+	AddToggleItem(*TabContent, NSLOCTEXT("LastBellUI", "DisplayShowFPS", "Show FPS counter"), User && User->bShowFPS, [](bool bOn)
+	{
+		if (ULBUserSettings* Settings = ULBUserSettings::GetUserSettings())
+		{
+			Settings->SetShowFPS(bOn);
 		}
 	});
 

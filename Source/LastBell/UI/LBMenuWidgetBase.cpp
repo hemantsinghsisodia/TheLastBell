@@ -256,13 +256,14 @@ int32 ULBMenuWidgetBase::AddToggleItem(UPanelWidget& Parent, const FText& Label,
 	return Index;
 }
 
-int32 ULBMenuWidgetBase::AddChoiceItem(UPanelWidget& Parent, const FText& Label, const TArray<FText>& Options, int32 Initial, TFunction<void(int32)> OnChanged)
+int32 ULBMenuWidgetBase::AddChoiceItem(UPanelWidget& Parent, const FText& Label, const TArray<FText>& Options, int32 Initial, TFunction<void(int32)> OnChanged, int32 SelectableCount)
 {
 	UHorizontalBox* Row = nullptr;
 	FLBMenuItem& Item = NewRow(Parent, ELBMenuItemKind::Choice, Label, Row);
 	Item.Options = Options;
 	Item.Index = Options.IsEmpty() ? 0 : FMath::Clamp(Initial, 0, Options.Num() - 1);
 	Item.OnChoose = MoveTemp(OnChanged);
+	Item.SelectableCount = SelectableCount;
 
 	const ULBUIStyle& Style = GetStyle();
 	const int32 Size = RowTextSize > 0 ? RowTextSize : Style.ItemSize;
@@ -548,7 +549,11 @@ void ULBMenuWidgetBase::ActivateItem(int32 Index)
 		if (!Item.Options.IsEmpty())
 		{
 			PlaySound(ELBUISound::Select);
-			SetChoiceIndex(Index, (Item.Index + 1) % Item.Options.Num(), true);
+			{
+				// Only the selectable options are steps; from a display-only state (Custom) the next step is the first option.
+				const int32 Selectable = (Item.SelectableCount > 0 && Item.SelectableCount <= Item.Options.Num()) ? Item.SelectableCount : Item.Options.Num();
+				SetChoiceIndex(Index, Item.Index >= Selectable ? 0 : (Item.Index + 1) % Selectable, true);
+			}
 		}
 		break;
 	case ELBMenuItemKind::KeyBinding:
@@ -587,7 +592,9 @@ void ULBMenuWidgetBase::AdjustItem(int32 Index, int32 Direction)
 	case ELBMenuItemKind::Choice:
 		if (!Item.Options.IsEmpty())
 		{
-			const int32 NewIndex = FMath::Clamp(Item.Index + Step, 0, Item.Options.Num() - 1);
+			const int32 Selectable = (Item.SelectableCount > 0 && Item.SelectableCount <= Item.Options.Num()) ? Item.SelectableCount : Item.Options.Num();
+			// From a display-only state, back goes to the last selectable option and forward to the first.
+			const int32 NewIndex = Item.Index >= Selectable ? (Step > 0 ? 0 : Selectable - 1) : FMath::Clamp(Item.Index + Step, 0, Selectable - 1);
 			if (NewIndex != Item.Index)
 			{
 				PlaySound(ELBUISound::SliderTick);
