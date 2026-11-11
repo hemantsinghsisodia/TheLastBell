@@ -53,3 +53,32 @@ Also seen: szegvari "Dark Sad Mood Orchestra Strings Piano Choir ..." 1:12.8, CC
 - Freesound search listings show unreliable durations; the durations above are from each sound's own page.
 - OpenGameArt could not be read (HTTP 403), so no OpenGameArt entry is offered.
 - Freesound pages were fetched while logged out. Downloading needs the owner's account. The licence shown on a page can change if the author edits it, so re-check it at download time and record it in `Docs/ASSET_REGISTRY.md` as for the other Freesound rows.
+
+## Intro, round 2 (5 options)
+
+Owner decisions so far: finale = szegvari 610534, credits = CVLTIV8R 839571. The round 1 intro options were rejected. This round widens the palette to five distinct styles, none repeated from the lists above. Cue: about 13-15 s over black with four story lines, then it fades out as the storm picture fades in.
+
+All five were read on their own Freesound pages (logged out) on 2026-11-11 and show **Creative Commons 0**. **Nothing was listened to and no waveform was inspected**, so "best 15 s window" is a suggestion from duration and the page text only. Every file needs an audition and a fade-out edit. The owner downloads; nothing was downloaded here.
+
+| # | Style | Title | Author | URL | Licence (page) | Duration / format / rate |
+|---|---|---|---|---|---|---|
+| 1 | Slow solo piano | The sad piano | Dasgoat | https://freesound.org/people/Dasgoat/sounds/330599/ | Creative Commons 0 | 1:27.4, MP3 271 kbps, 44.1 kHz, stereo |
+| 2 | Solo cello phrase | cello.wav | animatrick | https://freesound.org/people/animatrick/sounds/46711/ | Creative Commons 0 | 32.2 s, WAV, 44.1 kHz, 16-bit, stereo |
+| 3 | Distant monk chant "Ahh" | Gregorian choir & organ in Rome | tullio | https://freesound.org/people/tullio/sounds/780488/ | Creative Commons 0 | 1:05.3, WAV, 48 kHz, 16-bit, stereo |
+| 4 | Low organ | Ecclesiastical organ chant choral1 | Jim-Bretherick | https://freesound.org/people/Jim-Bretherick/sounds/747807/ | Creative Commons 0 | 2:28.5, WAV, 48 kHz, 32-bit, stereo |
+| 5 | Struck or tolling bell | St Peters Church, Kinver - Distant Tolling Bell | TicAshfield | https://freesound.org/people/TicAshfield/sounds/824588/ | Creative Commons 0 | 29.2 s, WAV, 48 kHz, 24-bit, stereo |
+
+| # | Why it fits | Best 15 s window | Risks |
+|---|---|---|---|
+| 1 | Page: "Sad piano piece made by me", tags depressive, sad, solo instrument. A real melodic piano line suits the story text; by far the most downloaded sound in this search (12.4K) | Not determinable without listening. Try 0:00-0:15 first; if it opens slowly with sparse notes, that is ideal under line 1 | Lossy MP3 source; unknown whether it is cold or too warm and romantic; no loop and no stated ending, so a fade is required; may be piano-library quality |
+| 2 | Page: a melancholy melody improvised on a real cello (it says "I took my cello and tried to improvise it again"); a single instrument, close to the "single cello" in the brief | 0:00-0:15, assuming the phrase starts early; 32 s total leaves room to shift the window | 2008 amateur recording, so possible bow or room noise and uneven level; the page says it is a remembered melody, so it may not be a finished phrase; a bit exposed and may need reverb to feel "distant" |
+| 3 | Real recorded Gregorian chant with organ in a Roman basilica, 23 Dec 2024 (page); comments call it "soothing" and "hauntingly beautiful". Authentic monastic sound, and the natural reverb gives the "distant" feel | Not determinable without listening; try 0:05-0:20 to skip any room noise at the start | Live recording: coughs, footsteps or congregation noise are possible and unchecked; the page does not say whether it is solo chant or choir, or how loud the organ is; sacred text is sung (Latin), unlikely to matter but unverified |
+| 4 | Page: "church-like vocal harmonies produced by an organ", meditative, tags dark, ecclesiastical, atmosphere; a low-organ pad that sits under spoken text and can swell and fade easily | Not determinable without listening; try 0:00-0:15 or any steady section, then fade | Electronic processing (Morphagene, Mimeophon) so it may sound more like a synth than a pipe organ; 54 MB and 32-bit float (convert before use); no melodic phrase, closer to a pad than a tune; a Morphagene reel so it may glitch or loop internally |
+| 5 | Bell is the game's central object and the text names the bell twice. A real village-church bell recorded at a distance, wet-sounding, 48 kHz | Not determinable without listening; try the first 15 s. If the tolls are regular, one toll per story line would work | Field recording: wind, birds, traffic and the exact toll count are unchecked; **it is a sound effect, not music**, so it may need a drone under it; a village bell may clash with the real bell ring in the intro/finale. Possibly best used as a layer |
+
+Reserves, not full options, all CC0 on their pages and unlistened:
+- "(Piano Loop) I Am Cry" by plasterbrain, https://freesound.org/people/plasterbrain/sounds/464922/: 14.8 s FLAC, 44.1 kHz 16-bit, a sad piano loop with cello, flute and carillon; exactly the right length, but it is a loop with a stated "carillon" and will probably sound like a game jingle.
+- "Music Box - J. Brahms - Opus 39 - Waltz no 3" by Flying_Deer_Fx, https://freesound.org/people/Flying_Deer_Fx/sounds/369405/: 59 s WAV 44.1 kHz 24-bit; a recognisable melody from the first note, but a waltz and a lullaby tone, which may be too sweet for the horror brief.
+- "Dark Piano Loop 131bpm" by CVLTIV8R, https://freesound.org/people/CVLTIV8R/sounds/813038/: 34 s WAV 44.1 kHz 32-bit; "looming piano riff", cathedral reverb, tagged "perc", so it may have percussion.
+- "Dark Mystical atmosphere - Healing / Ghostly Presence" by Vrymaa, https://freesound.org/people/Vrymaa/sounds/825857/: 3:18 WAV; female choir, bells, reverb; **the page says the choir is AI-generated** (Myedit AI, Paulstretch), so use only if the owner accepts that.
+- "Wine Glass Resonances by Violin Bow - 03" by robin.kaf, https://freesound.org/people/robin.kaf/sounds/711891/: 12.6 s WAV 48 kHz 24-bit; bowed glass resonance, too short to cover 15 s alone.
