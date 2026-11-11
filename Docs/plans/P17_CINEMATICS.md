@@ -755,6 +755,15 @@ The GPU cost of the cinematic shots is not measured in this phase (the finale cl
 ## Results
 (Filled in as the tasks finish.)
 
+### P17-6 (2026-11-11, owner in PIE)
+**Intro review: passed with no changes** (owner: "looks fine, skip worked"). The log confirms:
+- the New Game rule fired;
+- all 9 markers fired at their times;
+- `CP_Approach` refused to save during the cinematic, then the next checkpoint saved normally;
+- a skip at 5.02 s fired the 2 must markers (Arrival, unlock) and finished the run.
+
+The credits preview is still open for the owner's comments.
+
 ### P17-5b (2026-11-11, fe631f8)
 The level edits in section 5 are applied by `Tools/cine/p17_level.py`:
 - `CINE_FinaleMark` and `CINE_StairTop` placed, in the Outliner folder `Cinematics`;
