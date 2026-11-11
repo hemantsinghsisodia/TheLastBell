@@ -472,6 +472,21 @@ Already sounding from the tags, with no markers needed:
 
 **Control after the end:** getting control back on the tower happens only with `lb.Cine.NoEnd 1` (a review aid). In play, `!end` goes to `CompleteGame` and the menu. No change.
 
+### 3.4 Cinematic music (owner, 2026-11-11; the tracks were chosen by the owner, Freesound CC0)
+| Asset | Source (`ExternalAssets/Incoming/audio/p17_music/`) | Prep | Use |
+|---|---|---|---|
+| `MUS_LB_Cine_IntroText` | `330599__dasgoat__the-sad-piano.mp3` (Dasgoat, 1:27, MP3) | Decode to WAV 48 kHz stereo; take 0:00–0:16; peak −3 dBFS; 2 s fade-out tail | `LS_LB_Intro`, 2D, section 0.0–15.5. Volume keys: 0 at 0.0, 1 at 0.5, 1 at 13.0, 0 at 15.5 (it fades as the picture fades in) |
+| `MUS_LB_Cine_Finale` | `610534__szegvari__…-surround.wav` (szegvari, 6-channel, 96 kHz) | Down-mix to stereo (L = FL + 0.707·FC + 0.707·SL; R = FR + 0.707·FC + 0.707·SR; drop the LFE), resample to 48 kHz, take the first 0:55, peak −3 dBFS | `LS_LB_Finale`, 2D, section 3.6–54.5. Volume keys: 0 at 3.6, 1 at 5.0, 1 at 52.0, 0 at 54.5 |
+| `MUS_LB_Cine_Credits` | `839571__cvltiv8r__contemplative-string-loop-violin-and-cello.wav` (CVLTIV8R, 45 s loop) | 48 kHz, peak −3 dBFS | `LS_LB_Finale`, 2D, section 53.5–94.5. Volume keys: 0 at 53.5, 1 at 55.0, 1 at 92.5, 0 at 94.5 |
+
+- **Sound class `SCL_LB_CineMusic`:**
+  - a child of `SCL_LB_Music`, so the user's music volume slider applies;
+  - in `SMX_LB_CineFade`, the `SCL_LB_Music` adjuster has `bApplyToChildren` **false**, so `mix:on` fades the game's drones but never the cinematic music;
+  - in `SMX_LB_User`, the Music adjuster must have `bApplyToChildren` **true**.
+- **Import settings:** the three waves get no attenuation (2D), are not looping, and use the project's music compression settings.
+- **Registry and credits:** three rows in `ASSET_REGISTRY` (Freesound IDs 330599, 610534, 839571, CC0, the prep noted). Then regenerate the credits with `make_credits.py`; Dasgoat, szegvari and CVLTIV8R appear under Freesound. Then update `DA_Cinematics` with `p17_assets.py`.
+- **The owner tunes** the levels and windows in the next finale and intro look.
+
 ### 3.3 Cards and styles (`DA_Cinematics.Cards`)
 | Id | Text | Style | Hold (s) | Fade (s) |
 |---|---|---|---|---|
