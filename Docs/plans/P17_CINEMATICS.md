@@ -755,6 +755,17 @@ The GPU cost of the cinematic shots is not measured in this phase (the finale cl
 ## Results
 (Filled in as the tasks finish.)
 
+### P17-5b (2026-11-11, fe631f8)
+The level edits in section 5 are applied by `Tools/cine/p17_level.py`:
+- `CINE_FinaleMark` and `CINE_StairTop` placed, in the Outliner folder `Cinematics`;
+- the bell, headstock and rope tags; the headstock and rope set to Movable;
+- the `Note_Gatehouse` text, read back character for character on both the actor and the component;
+- `EndingTrigger` deleted.
+
+**Checks:** 49 of 49 pass. The census went from 3102 to 3103, the mark is on the floor, and the lane is clear (9 of 9 traces). A second `--apply` changed nothing. There was one map save; nothing else became dirty.
+
+**Suite** (Unreal closed, run by the lead): **199 passed, 0 failed**, with 0 invalid tags. All the content tests now pass: `Monastery.CinematicSetup`, `IntroOnNewGame`, `IntroSkip`, `FinaleOnBell` and `BellSwingsOnStrike`, as do `RouteBot.Monastery` and `MicroSlice`.
+
 ### P17-5a-1 (2026-11-11, 2eab748)
 `LS_LB_Intro` and `LS_LB_Finale` (without the mask moment) were built headless by `Tools/cine/p17_sequences.py`.
 - **Build:** 883 API calls, 0 errors, only the 2 packages saved.

@@ -510,7 +510,8 @@ Branch `claude/phase-17-cinematics`. Spec and plan: `Docs/plans/P17_CINEMATICS.m
 - **P17-1 (2026-11-10):** built (e24a3ef…5f981b8). After an independent review and its fix set (cfec379), the suite gives 193 passed and 5 failed; the failures are the content tests expected until P17-5b. `RouteBot.Monastery` passes.
 - **P17-4 (2026-11-10):** `M_LB_PP_MaskView` and its MI built (a9e8055); the look is reviewed in P17-7.
 - **P17-2 (2026-11-10):** `DA_Cinematics`, `SMX_LB_CineFade` and `DA_Audio` (Arrival beat, no new-game toll) done (ee0fb76). A1 found no Mixamo fit, so the mask lift will be Blender-keyed after the new Warden asset.
-- **P17-5a-1 (2026-11-11):** both sequences built (2eab748; the finale without the mask moment), and cinematics are live. The suite gives 196 passed and 3 failed; the failures are expected until P17-5b. **Paused here; next is P17-5b (level edits, Unreal open), then P17-6.**
+- **P17-5a-1 (2026-11-11):** both sequences built (2eab748; the finale without the mask moment), and cinematics are live. The suite gives 196 passed and 3 failed; the failures are expected until P17-5b. 
+- **P17-5b (2026-11-11):** level edits done (fe631f8, check 49/49). The suite gives **199 passed, 0 failed**. Next is the P17-6 intro review.
 
 ## Deferred to Phase 14–15 (Lighting, VFX: storm work)
 Items the owner asked to fold into the storm pass. **Foliage wind is now in Phase 14** (P14 section 6, D-096: `MPC_LB_Storm` replaces the planned `MPC_LB_Wind`).
